@@ -17,7 +17,7 @@ export function AcademyPublicCTA({
                     variant: "primary",
                     size: "smd",
                     className:
-                        "rounded-full bg-gold hover:bg-amber-600 text-white font-bold shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 hover:scale-105 transition-all duration-300",
+                        "rounded-lg bg-gold hover:bg-amber-600 !text-white font-bold shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 active:scale-95 transition-all duration-200",
                 })}
             >
                 <PlayCircle size={15} />
@@ -33,7 +33,7 @@ export function AcademyPublicCTA({
                 variant: "primary",
                 size: "smd",
                 className:
-                    "rounded-full bg-gold hover:bg-amber-600 text-white font-bold shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 hover:scale-105 transition-all duration-300",
+                    "rounded-lg bg-gold hover:bg-amber-600 !text-white font-bold shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 active:scale-95 transition-all duration-200",
             })}
         >
             <PlayCircle size={15} />

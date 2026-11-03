@@ -16,10 +16,10 @@ interface ProfitDistributionChartProps {
 
 const COLORS = [
     "hsl(var(--primary))",
-    "#3B82F6",
     "#F59E0B",
-    "#8B5CF6",
-    "#EC4899",
+    "#10B981",
+    "#D97706",
+    "#64748B",
     "#EF4444",
 ];
 
@@ -35,7 +35,7 @@ export function ProfitDistributionChart({
     const header = (
         <div className="px-5 py-3.5 border-b border-dashboard flex items-center justify-between shrink-0">
             <div className="flex items-center gap-2.5">
-                <div className="p-2 bg-blue-500/10 rounded-lg text-blue-500">
+                <div className="p-2 bg-gold/10 rounded-lg text-amber-600 dark:text-gold">
                     <PieChartIcon size={18} />
                 </div>
                 <div>
@@ -140,7 +140,7 @@ export function ProfitDistributionChart({
                                                     <p className="text-xs font-medium text-gray-500">
                                                         {d.name}
                                                     </p>
-                                                    <p className="text-sm font-black text-gray-700 dark:text-white">
+                                                    <p className="text-sm font-black font-mono tabular-nums text-gray-700 dark:text-white">
                                                         $
                                                         {Number(d.value).toFixed(2)}
                                                     </p>
@@ -166,7 +166,7 @@ export function ProfitDistributionChart({
                                 y="56%"
                                 textAnchor="middle"
                                 dominantBaseline="central"
-                                className={`text-[10px] font-black ${totalProfit >= 0 ? "fill-emerald-600 dark:fill-emerald-400" : "fill-red-500"}`}
+                                className={`text-[10px] font-black font-mono tabular-nums ${totalProfit >= 0 ? "fill-emerald-600 dark:fill-emerald-400" : "fill-red-500"}`}
                             >
                                 ${Math.abs(totalProfit).toFixed(0)}
                             </text>

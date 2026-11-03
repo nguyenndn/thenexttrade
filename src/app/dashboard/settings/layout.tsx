@@ -1,7 +1,5 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import {
     Brain,
     Flame,
@@ -11,12 +9,11 @@ import {
     MessageSquare,
     Globe,
     RefreshCw,
+    type LucideIcon,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { TabBar } from "@/components/ui/TabBar";
 import { useSystemConfig } from "@/lib/dashboard-context";
-import { type LucideIcon } from "lucide-react";
 
 interface NavItem {
     title: string;
@@ -63,7 +60,6 @@ export default function SettingsLayout({
 }: {
     children: React.ReactNode;
 }) {
-    const pathname = usePathname();
     const { feedbackEnabled } = useSystemConfig();
 
     const navItems = feedbackEnabled

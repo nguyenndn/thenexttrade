@@ -17,8 +17,6 @@ import {
     Target,
 } from "lucide-react";
 
-const GOLD = "#EAB308";
-
 const launchSteps = [
     {
         label: "Create workspace",
@@ -73,7 +71,7 @@ const valueCards = [
 
 export function PublicGetStarted() {
     return (
-        <div className="relative overflow-hidden bg-white text-slate-950 dark:bg-transparent dark:text-white">
+        <div className="relative overflow-hidden bg-white text-gray-900 dark:bg-transparent dark:text-white">
             {/* Ambient Background Atmosphere & Technical Grid */}
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_50%_15%,rgba(245,158,11,0.08),transparent_75%)] dark:bg-[radial-gradient(ellipse_70%_60%_at_50%_15%,rgba(245,158,11,0.12),transparent_75%)] pointer-events-none" />
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_70%_70%_at_50%_40%,#000_70%,transparent_100%)] pointer-events-none" />
@@ -81,16 +79,17 @@ export function PublicGetStarted() {
             <section className="relative z-10 px-4 pb-16 pt-28 sm:px-6 lg:px-8">
                 <div className="mx-auto max-w-[1180px]">
                     <div className="mx-auto max-w-4xl text-center">
-                        <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-gold/20 bg-white/80 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-gold shadow-sm dark:border-gold/30 dark:bg-white/5 dark:text-gold/90">
-                            <Crown size={15} />
-                            Start here
+                        <div className="mb-5 inline-flex items-center gap-2 rounded-lg border border-gold/20 bg-gold/10 px-3.5 py-1.5 text-xs font-black uppercase tracking-[0.16em] text-amber-700 dark:text-gold shadow-xs">
+                            <Crown size={14} />
+                            <span>Start here</span>
                         </div>
 
-                        <h1 className="text-4xl font-black tracking-tight sm:text-5xl md:text-6xl">
-                            Your Trading Edge, Fully Automated.
+                        <h1 className="text-4xl font-black font-heading tracking-tight sm:text-5xl md:text-6xl">
+                            Your Trading Edge,{" "}
+                            <span className="text-gold">Fully Automated.</span>
                         </h1>
 
-                        <p className="mx-auto mt-5 max-w-2xl text-base font-medium leading-8 text-slate-700 dark:text-slate-300 sm:text-lg">
+                        <p className="mx-auto mt-5 max-w-2xl text-base tabular-nums font-medium leading-8 text-gray-600 dark:text-gray-300 sm:text-lg">
                             Connect your MT5 terminal in 60 seconds. Stop
                             wasting time on manual spreadsheets, and start
                             tracking your real execution edge.
@@ -101,13 +100,13 @@ export function PublicGetStarted() {
                                 href="/auth/signup?source=get_started"
                                 className={cn(
                                     buttonVariants({
-                                        variant: "primary",
+                                        variant: "gold",
                                         size: "smd",
                                     }),
-                                    "w-full rounded-lg bg-gold hover:bg-amber-600 text-white font-bold border-none"
+                                    "w-full sm:w-auto rounded-lg bg-gold hover:bg-amber-600 !text-white font-bold border-none"
                                 )}
                             >
-                                Open Free Workspace
+                                <span>Open Free Workspace</span>
                                 <ArrowRight size={16} className="ml-1" />
                             </Link>
                             <Link
@@ -117,7 +116,7 @@ export function PublicGetStarted() {
                                         variant: "outline",
                                         size: "smd",
                                     }),
-                                    "w-full rounded-lg border-dashboard hover:border-gold hover:bg-gold/5 dark:hover:bg-white/10"
+                                    "w-full sm:w-auto rounded-lg border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] hover:border-gold"
                                 )}
                             >
                                 I already have an account
@@ -131,23 +130,23 @@ export function PublicGetStarted() {
                             return (
                                 <div
                                     key={step.title}
-                                    className="rounded-lg border-2 border-gold/10 bg-white/95 p-5 shadow-md shadow-gold/5 backdrop-blur transition-all duration-300 hover:border-gold/30 hover:shadow-lg dark:border-white/[0.06] dark:bg-white/[0.03] dark:hover:border-gold/20"
+                                    className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-5 shadow-sm transition-all duration-200 hover:border-amber-500/35 dark:hover:border-gold/30 hover:shadow-md"
                                 >
                                     <div className="mb-5 flex items-center justify-between">
-                                        <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-gold/10 text-gold ring-1 ring-gold/20 dark:bg-gold/10 dark:text-gold dark:ring-gold/30">
-                                            <Icon size={21} />
+                                        <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-gold/10 text-amber-600 dark:text-gold border border-gold/20">
+                                            <Icon size={20} />
                                         </div>
-                                        <span className="text-xs font-black text-gold">
+                                        <span className="text-xs tabular-nums font-black text-amber-600 dark:text-gold">
                                             0{index + 1}
                                         </span>
                                     </div>
-                                    <div className="text-[10px] font-black uppercase tracking-[0.16em] text-gold">
+                                    <div className="text-[10px] font-black uppercase tracking-[0.16em] text-amber-600 dark:text-gold">
                                         {step.label}
                                     </div>
-                                    <h2 className="mt-2 text-lg font-black text-slate-950 dark:text-white">
+                                    <h2 className="mt-2 text-lg font-black text-gray-900 dark:text-white">
                                         {step.title}
                                     </h2>
-                                    <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300">
+                                    <p className="mt-3 text-sm leading-6 text-gray-600 dark:text-gray-300">
                                         {step.description}
                                     </p>
                                 </div>
@@ -156,16 +155,16 @@ export function PublicGetStarted() {
                     </div>
 
                     <div className="mt-8 grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
-                        <div className="rounded-lg border border-gold/10 bg-white p-6 shadow-xl shadow-gold/5 dark:border-white/[0.06] dark:bg-white/[0.03]">
+                        <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 shadow-sm">
                             <div className="flex items-center gap-3">
-                                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gold text-white">
+                                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gold text-white shrink-0">
                                     <ClipboardCheck size={22} />
                                 </div>
                                 <div>
-                                    <h2 className="text-xl font-black">
+                                    <h2 className="text-xl font-black text-gray-900 dark:text-white">
                                         What happens after signup?
                                     </h2>
-                                    <p className="text-sm text-slate-500 dark:text-slate-300">
+                                    <p className="text-sm text-gray-500 dark:text-gray-300">
                                         You will be guided into the exact next
                                         step.
                                     </p>
@@ -178,16 +177,16 @@ export function PublicGetStarted() {
                                     return (
                                         <div
                                             key={card.title}
-                                            className="rounded-lg border border-dashboard bg-slate-50 p-4 dark:bg-white/[0.04]"
+                                            className="rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] p-4"
                                         >
                                             <Icon
-                                                className="text-gold"
+                                                className="text-amber-600 dark:text-gold"
                                                 size={20}
                                             />
-                                            <h3 className="mt-4 text-sm font-black">
+                                            <h3 className="mt-4 text-sm tabular-nums font-black text-gray-900 dark:text-white">
                                                 {card.title}
                                             </h3>
-                                            <p className="mt-2 text-xs leading-5 text-slate-500 dark:text-slate-300">
+                                            <p className="mt-2 text-xs leading-5 text-gray-600 dark:text-gray-300">
                                                 {card.description}
                                             </p>
                                         </div>
@@ -196,14 +195,14 @@ export function PublicGetStarted() {
                             </div>
                         </div>
 
-                        <div className="rounded-lg border border-gold/30 bg-white dark:bg-[#0E1118] p-6 text-slate-950 dark:text-white shadow-xl shadow-gold/5 dark:shadow-black/20">
-                            <div className="text-xs font-black uppercase tracking-[0.18em] text-gold">
+                        <div className="rounded-xl border border-gold/30 bg-white dark:bg-[#1E2028] p-6 text-gray-900 dark:text-white shadow-sm">
+                            <div className="text-xs font-black uppercase tracking-[0.18em] text-amber-600 dark:text-gold">
                                 Recommended path
                             </div>
-                            <h2 className="mt-3 text-3xl font-black text-slate-950 dark:text-white">
+                            <h2 className="mt-3 text-3xl font-black text-gray-900 dark:text-white">
                                 Trade Manager EA.
                             </h2>
-                            <p className="mt-3 text-sm leading-7 text-slate-600 dark:text-amber-50/80">
+                            <p className="mt-3 text-sm tabular-nums leading-7 text-gray-600 dark:text-gray-300">
                                 The easiest, safest way to link MetaTrader 5. It
                                 runs quietly on your chart or VPS, pushing
                                 closed positions to your secure dashboard in
@@ -218,13 +217,13 @@ export function PublicGetStarted() {
                                 ].map((item) => (
                                     <div
                                         key={item}
-                                        className="flex items-center gap-3 text-sm font-bold text-slate-800 dark:text-white"
+                                        className="flex items-center gap-3 text-sm tabular-nums font-bold text-gray-800 dark:text-white"
                                     >
                                         <CheckCircle2
                                             size={17}
-                                            style={{ color: GOLD }}
+                                            className="text-amber-500 dark:text-gold shrink-0"
                                         />
-                                        {item}
+                                        <span>{item}</span>
                                     </div>
                                 ))}
                             </div>
@@ -232,13 +231,13 @@ export function PublicGetStarted() {
                                 href="/auth/signup?source=get_started"
                                 className={cn(
                                     buttonVariants({
-                                        variant: "primary",
+                                        variant: "gold",
                                         size: "smd",
                                     }),
-                                    "mt-7 w-full rounded-lg bg-gold hover:bg-amber-600 text-white border-none font-bold"
+                                    "mt-7 w-full rounded-lg bg-gold hover:bg-amber-600 !text-white border-none font-bold"
                                 )}
                             >
-                                Start Workspace Setup
+                                <span>Start Workspace Setup</span>
                                 <ArrowRight size={14} className="ml-1" />
                             </Link>
                         </div>

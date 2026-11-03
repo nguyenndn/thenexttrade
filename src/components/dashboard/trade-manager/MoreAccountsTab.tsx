@@ -92,7 +92,7 @@ export function MoreAccountsTab({
                                             <span
                                                 className={`h-2.5 w-2.5 rounded-full ${
                                                     accLive
-                                                        ? "bg-emerald-400 animate-pulse"
+                                                        ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"
                                                         : "bg-gray-400"
                                                 }`}
                                             />
@@ -104,7 +104,7 @@ export function MoreAccountsTab({
                                                     Under IB • Free 24/5
                                                 </span>
                                             ) : (
-                                                <span className="rounded-lg bg-amber-500/15 px-2 py-0.5 text-[10px] font-bold text-amber-400">
+                                                <span className="rounded-lg bg-gold/15 px-2 py-0.5 text-[10px] font-bold text-amber-600 dark:text-gold">
                                                     Trial Access
                                                 </span>
                                             )}
@@ -132,7 +132,7 @@ export function MoreAccountsTab({
                                                     onClick={() =>
                                                         onDisconnectAccount(acc.id)
                                                     }
-                                                    className="h-8 text-xs text-amber-600 dark:text-amber-400"
+                                                    className="h-8 text-xs text-amber-600 dark:text-gold"
                                                 >
                                                     <PowerOff size={12} />
                                                     <span>Disconnect</span>
@@ -146,7 +146,7 @@ export function MoreAccountsTab({
                                                     onClick={() =>
                                                         onUnlinkAccount(acc.id)
                                                     }
-                                                    className="h-8 text-xs text-red-400"
+                                                    className="h-8 text-xs text-rose-500 dark:text-rose-400"
                                                 >
                                                     <Unlink size={12} />
                                                     <span>Forget Password</span>
@@ -156,12 +156,12 @@ export function MoreAccountsTab({
                                     </div>
 
                                     {/* 2x2 MATRIX SPECS CARD */}
-                                    <div className="grid grid-cols-2 divide-x divide-y divide-gray-100 dark:divide-white/5 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028]">
+                                    <div className="grid grid-cols-2 divide-x divide-y divide-gray-100 dark:divide-white/5 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028]">
                                         <div className="p-2.5">
                                             <div className="text-[10px] font-bold uppercase text-gray-400">
                                                 Account #
                                             </div>
-                                            <div className="text-xs font-extrabold text-gray-900 dark:text-white truncate">
+                                            <div className="text-xs font-extrabold font-mono tabular-nums text-gray-900 dark:text-white truncate">
                                                 {acc.accountNumber}
                                             </div>
                                         </div>
@@ -185,7 +185,7 @@ export function MoreAccountsTab({
                                             <div className="text-[10px] font-bold uppercase text-gray-400">
                                                 Active Until
                                             </div>
-                                            <div className="text-xs font-extrabold text-amber-400 truncate">
+                                            <div className="text-xs font-extrabold font-mono tabular-nums text-amber-600 dark:text-gold truncate">
                                                 {acc.accessExpiresAt
                                                     ? new Date(
                                                           acc.accessExpiresAt
@@ -217,7 +217,7 @@ export function MoreAccountsTab({
             {/* TELEGRAM NOTIFICATION SETTINGS */}
             <div className="rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 p-4 space-y-3">
                 <div className="flex items-center gap-2">
-                    <Send size={15} className="text-cyan-400" />
+                    <Send size={15} className="text-amber-600 dark:text-gold" />
                     <span className="text-xs font-extrabold uppercase tracking-wider text-gray-900 dark:text-white">
                         Telegram 24/5 Alert Handle
                     </span>

@@ -45,7 +45,7 @@ export function TagsCell({ entry, onUpdate }: TagsCellProps) {
                         tags.map((tag: string, idx: number) => (
                             <span
                                 key={idx}
-                                className="px-2 py-1 rounded-full bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 text-[10px] font-medium border border-dashboard whitespace-nowrap"
+                                className="px-2 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 text-[10px] font-medium border border-dashboard whitespace-nowrap"
                             >
                                 {tag}
                             </span>
@@ -55,7 +55,7 @@ export function TagsCell({ entry, onUpdate }: TagsCellProps) {
                             variant="outline"
                             size="icon"
                             aria-label="Add Tags"
-                            className="w-6 h-6 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors hover:bg-gray-200 dark:hover:bg-white/10"
+                            className="w-6 h-6 rounded-lg bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors hover:bg-gray-200 dark:hover:bg-white/10"
                         >
                             <Plus size={12} />
                         </Button>
@@ -64,17 +64,17 @@ export function TagsCell({ entry, onUpdate }: TagsCellProps) {
             </DropdownMenuTrigger>
             <DropdownMenuContent
                 align="center"
-                className="p-3 w-64"
+                className="p-3 w-64 rounded-xl bg-white dark:bg-[#1E2028] border border-dashboard"
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className="space-y-3">
                     <form onSubmit={handleAddTag} className="flex gap-2">
                         <input
                             type="text"
+                            aria-label="New tag name"
                             value={newTag}
                             onChange={(e) => setNewTag(e.target.value)}
-                            placeholder="Add tag..."
-                            className="flex-1 px-2 py-1 text-sm bg-gray-50 dark:bg-white/5 border border-dashboard rounded-lg focus:outline-none focus:border-blue-500"
+                            className="flex-1 px-2 py-1 text-sm bg-gray-50/80 dark:bg-[#151925] border border-dashboard rounded-lg focus:outline-none focus:border-gold"
                             autoFocus
                         />
                         <Button

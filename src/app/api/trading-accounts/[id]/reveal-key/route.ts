@@ -32,7 +32,15 @@ export async function GET(
             );
         }
 
-        return NextResponse.json({ apiKey: account.apiKey });
+        return NextResponse.json(
+            { apiKey: account.apiKey },
+            {
+                headers: {
+                    "Cache-Control":
+                        "no-store, no-cache, must-revalidate, private",
+                },
+            }
+        );
     } catch (error) {
         return NextResponse.json(
             { error: "Failed to fetch key" },

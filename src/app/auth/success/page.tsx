@@ -38,7 +38,7 @@ function SuccessTransitionContent() {
             <div className="mb-2 animate-in zoom-in-75 duration-600 ease-out">
                 <div className="relative">
                     {/* Glow ring behind logo */}
-                    <div className="absolute inset-0 scale-[2] rounded-full bg-gradient-to-r from-amber-500/20 via-amber-400/10 to-amber-500/20 blur-2xl animate-pulse" />
+                    <div className="absolute inset-0 scale-[2] rounded-full bg-gradient-to-r from-amber-500/20 via-amber-400/10 to-amber-500/20 blur-2xl" />
                     <div className="relative scale-[1.6]">
                         <Logo />
                     </div>
@@ -47,19 +47,19 @@ function SuccessTransitionContent() {
 
             {/* Welcome text */}
             <div className="space-y-2 animate-in slide-in-from-bottom-3 fade-in duration-700 delay-200 fill-mode-both">
-                <h1 className="text-2xl font-bold tracking-tight text-white">
-                    Welcome back, <span className="text-gold">{name}</span>
+                <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+                    Welcome back, <span className="text-amber-600 dark:text-gold">{name}</span>
                 </h1>
-                <p className="text-sm text-gray-400 font-medium">
+                <p className="text-sm text-slate-500 dark:text-gray-400 font-medium">
                     Preparing your dashboard…
                 </p>
             </div>
 
             {/* Glowing progress bar */}
             <div className="w-56 animate-in fade-in duration-500 delay-400 fill-mode-both">
-                <div className="h-1 bg-white/[0.08] rounded-full overflow-hidden relative">
+                <div className="h-1 bg-gray-200 dark:bg-white/[0.08] rounded-full overflow-hidden relative">
                     <div
-                        className="h-full rounded-full bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 shadow-[0_0_16px_rgba(245,158,11,0.55),0_0_4px_rgba(245,158,11,0.8)] transition-all duration-2000 ease-login"
+                        className="h-full rounded-full bg-gold shadow-[0_0_16px_rgba(245,158,11,0.55),0_0_4px_rgba(245,158,11,0.8)] transition-all duration-2000 ease-login"
                         style={{ width: `${progress}%` }}
                     />
                 </div>
@@ -70,7 +70,7 @@ function SuccessTransitionContent() {
 
 export default function SuccessTransitionPage() {
     return (
-        <main className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#0B0E14] text-white overflow-hidden select-none">
+        <main className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-white dark:bg-[#0B0E14] text-slate-900 dark:text-white overflow-hidden select-none">
             {/* Radial glow background */}
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(245,158,11,0.07)_0%,rgba(245,158,11,0.02)_40%,transparent_70%)] pointer-events-none" />
 
@@ -84,15 +84,15 @@ export default function SuccessTransitionPage() {
             <div className="animate-in fade-in duration-500 flex flex-col items-center justify-center">
                 <Suspense
                     fallback={
-                        <div className="flex flex-col items-center space-y-8 max-w-sm px-6 text-center z-10 animate-pulse">
+                        <div className="flex flex-col items-center space-y-8 max-w-sm px-6 text-center z-10">
                             <div className="scale-[1.6] mb-2">
                                 <Logo />
                             </div>
                             <div className="space-y-2">
-                                <div className="h-7 w-48 bg-slate-800 rounded-lg mx-auto" />
-                                <div className="h-4 w-36 bg-slate-800/60 rounded-lg mx-auto" />
+                                <div className="h-7 w-48 bg-gray-200 dark:bg-slate-800 rounded-lg mx-auto" />
+                                <div className="h-4 w-36 bg-gray-100 dark:bg-slate-800/60 rounded-lg mx-auto" />
                             </div>
-                            <div className="w-56 h-1 bg-white/[0.08] rounded-full" />
+                            <div className="w-56 h-1 bg-gray-200 dark:bg-white/[0.08] rounded-full" />
                         </div>
                     }
                 >

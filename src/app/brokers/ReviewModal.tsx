@@ -56,8 +56,8 @@ function StarRating({ rating }: { rating: number }) {
                     />
                 ))}
             </div>
-            <span className="text-base font-bold text-gray-700 dark:text-white">
-                {rating}
+            <span className="text-base font-bold font-mono tabular-nums text-gray-700 dark:text-white">
+                {rating.toFixed(1)}
             </span>
         </div>
     );
@@ -78,7 +78,7 @@ export function ReviewBadge({ item }: { item: ReviewItem }) {
                 variant="outline"
                 size="sm"
                 onClick={() => setOpen(true)}
-                className="inline-flex items-center gap-1 px-2.5 h-6 rounded-full text-[11px] font-semibold bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 hover:bg-gold/10 hover:text-amber-600 dark:hover:bg-gold/20 dark:hover:text-gold transition-all duration-200 border-transparent hover:border-gold/25"
+                className="inline-flex items-center gap-1 px-2.5 h-6 rounded-lg text-[11px] font-semibold bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 hover:bg-gold/10 hover:text-amber-600 dark:hover:bg-gold/20 dark:hover:text-gold transition-all duration-200 border-transparent hover:border-gold/25"
             >
                 <PenLine size={12} className="shrink-0" />
                 Our Review
@@ -154,7 +154,7 @@ function ReviewModal({
                         className={`w-12 h-12 rounded-lg flex-shrink-0 flex items-center justify-center overflow-hidden ${
                             item.logo
                                 ? "bg-white border border-gray-200 dark:border-white/10"
-                                : `bg-gradient-to-br ${item.color} text-white text-sm font-black`
+                                : "bg-gold/10 text-gold border border-gold/20 text-sm font-black"
                         }`}
                     >
                         {item.logo ? (
@@ -220,8 +220,8 @@ function ReviewModal({
                     {/* Cons */}
                     <div>
                         <div className="flex items-center gap-2 mb-2.5">
-                            <ThumbsDown size={14} className="text-red-500" />
-                            <span className="text-xs font-bold text-red-600 dark:text-red-400 uppercase tracking-wider">
+                            <ThumbsDown size={14} className="text-rose-500" />
+                            <span className="text-xs font-bold text-rose-600 dark:text-rose-400 uppercase tracking-wider">
                                 Cons
                             </span>
                         </div>
@@ -231,7 +231,7 @@ function ReviewModal({
                                     key={i}
                                     className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300"
                                 >
-                                    <span className="text-red-500 mt-0.5 shrink-0">
+                                    <span className="text-rose-500 mt-0.5 shrink-0">
                                         <X size={14} />
                                     </span>
                                     {con}

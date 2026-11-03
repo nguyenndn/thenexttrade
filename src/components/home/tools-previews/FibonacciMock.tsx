@@ -9,58 +9,58 @@ export function FibonacciMock() {
         {
             label: "100%",
             price: "1.2050",
-            color: "bg-amber-500",
-            textColor: "text-amber-600",
+            color: "bg-slate-400",
+            textColor: "text-slate-500 dark:text-slate-400",
         },
         {
             label: "78.6%",
             price: "1.1925",
-            color: "bg-cyan-500",
-            textColor: "text-cyan-600",
+            color: "bg-emerald-500",
+            textColor: "text-emerald-600 dark:text-emerald-400",
         },
         {
             label: "61.8%",
             price: "1.1834",
-            color: "bg-violet-500",
-            textColor: "text-violet-600",
+            color: "bg-gold",
+            textColor: "text-amber-600 dark:text-gold",
         },
         {
             label: "50%",
             price: "1.1775",
-            color: "bg-emerald-500",
-            textColor: "text-emerald-600",
+            color: "bg-amber-500",
+            textColor: "text-amber-600 dark:text-amber-400",
         },
         {
             label: "38.2%",
             price: "1.1716",
-            color: "bg-blue-500",
-            textColor: "text-blue-600",
+            color: "bg-emerald-500/70",
+            textColor: "text-emerald-600 dark:text-emerald-400",
         },
         {
             label: "0%",
             price: "1.1550",
             color: "bg-slate-400",
-            textColor: "text-slate-500",
+            textColor: "text-slate-500 dark:text-slate-400",
         },
     ];
 
     return (
         <div
-            className="h-44 w-full bg-slate-50 dark:bg-slate-900/80 rounded-lg p-4 flex flex-col justify-between relative overflow-hidden border border-gray-200 dark:border-white/10 select-none cursor-pointer"
+            className="h-44 w-full bg-gray-50/80 dark:bg-[#151925] rounded-lg p-4 flex flex-col justify-between relative overflow-hidden border border-gray-200 dark:border-white/10 select-none cursor-pointer"
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
         >
             {/* Decorative glow */}
-            <div className="absolute top-0 right-0 w-24 h-24 bg-violet-500/5 rounded-full blur-2xl pointer-events-none" />
+            <div className="absolute top-0 right-0 w-24 h-24 bg-gold/5 rounded-full blur-2xl pointer-events-none" />
 
             {/* Header */}
-            <div className="flex items-center justify-between z-10 font-mono text-[9px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest">
+            <div className="flex items-center justify-between z-10 font-mono tabular-nums text-[9px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest">
                 <span>Fibonacci Levels</span>
-                <span className="text-violet-600/80 dark:text-violet-400">RETRACEMENT MODEL</span>
+                <span className="text-amber-600 dark:text-gold">RETRACEMENT MODEL</span>
             </div>
 
             {/* Levels list */}
-            <div className="flex-1 flex flex-col justify-center gap-1.5 z-10 py-1.5 font-mono text-[9px] font-bold">
+            <div className="flex-1 flex flex-col justify-center gap-1.5 z-10 py-1.5 font-mono tabular-nums text-[9px] font-bold">
                 {levels.map((lvl) => (
                     <div
                         key={lvl.label}
@@ -99,7 +99,7 @@ export function FibonacciMock() {
             </div>
 
             {/* Footer */}
-            <div className="text-[8px] font-bold text-slate-400 dark:text-slate-400 flex justify-between items-center z-10 border-t border-gray-200 dark:border-white/10 pt-2 font-mono">
+            <div className="text-[8px] font-bold text-slate-400 dark:text-slate-400 flex justify-between items-center z-10 border-t border-gray-200 dark:border-white/10 pt-2 font-mono tabular-nums">
                 <span>EURUSD Daily Anchor</span>
                 <span>Auto calculate active</span>
             </div>

@@ -36,7 +36,6 @@ import {
 } from "@/actions/first-session-onboarding";
 import { trackEvent } from "@/lib/track";
 import type {
-    FirstSessionStep,
     FirstSessionComputedState,
     SyncMethod,
 } from "@/lib/onboarding/first-session.server";
@@ -131,9 +130,9 @@ export function FirstSessionWizard({
     };
 
     /**
-     * Handle manual journal selection from Step 1 (Connect Account).
-     * Saves MANUAL preference before routing so dashboard shows correct CTA on return.
-     */
+      * Handle manual journal selection from Step 1 (Connect Account).
+      * Saves MANUAL preference before routing so dashboard shows correct CTA on return.
+      */
     const handleManualSelect = async (href: string) => {
         trackEvent("first_session_sync_method_selected", { method: "MANUAL" });
         await saveFirstSessionSyncMethodAction("MANUAL");
@@ -146,9 +145,9 @@ export function FirstSessionWizard({
     };
 
     /**
-     * Handle sync method selection from Step 2 (Choose Sync Method).
-     * Saves preference AND navigates to the setup URL (or shows mobile fallback warning).
-     */
+      * Handle sync method selection from Step 2 (Choose Sync Method).
+      * Saves preference AND navigates to the setup URL (or shows mobile fallback warning).
+      */
     const handleSyncMethodSelect = async (method: SyncMethod, href: string) => {
         trackEvent("first_session_sync_method_selected", { method });
         await saveFirstSessionSyncMethodAction(method);
@@ -206,7 +205,7 @@ export function FirstSessionWizard({
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent
                 hideCloseButton
-                className="border-dashboard bg-white dark:bg-[#0F1116] p-0 rounded-2xl shadow-2xl overflow-hidden"
+                className="border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0D111C] p-0 rounded-2xl shadow-2xl overflow-hidden"
                 style={{
                     width: "min(560px, calc(100vw - 32px))",
                     maxWidth: "560px",
@@ -215,7 +214,7 @@ export function FirstSessionWizard({
                     wordBreak: "break-word",
                 }}
             >
-                <div className="flex items-center justify-between border-b border-dashboard px-5 py-3">
+                <div className="flex items-center justify-between border-b border-gray-200 dark:border-white/10 px-5 py-3">
                     <span className="text-[10px] font-black uppercase tracking-[0.18em] text-gray-400 dark:text-gray-500">
                         Setup Guide
                     </span>
@@ -225,7 +224,7 @@ export function FirstSessionWizard({
                         size="icon"
                         aria-label="Close setup wizard"
                         onClick={() => onOpenChange(false)}
-                        className="flex h-8 w-8 items-center justify-center rounded-full border border-dashboard bg-white text-gray-500 shadow-sm transition-all hover:border-gray-300 hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary/40 dark:bg-white/[0.03] dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-white"
+                        className="flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 dark:border-white/10 bg-white text-gray-500 shadow-sm transition-all hover:border-gray-300 hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-gold/40 dark:bg-white/[0.03] dark:text-gray-400 dark:hover:bg-white/[0.06] dark:hover:text-white"
                     >
                         <X size={15} strokeWidth={2.4} />
                     </Button>
@@ -246,7 +245,7 @@ export function FirstSessionWizard({
                             ? "Mobile setup warning"
                             : "Set up your trading workspace"}
                     </DialogTitle>
-                    <DialogDescription className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    <DialogDescription className="text-xs text-gray-500 dark:text-gray-400 mt-1 tabular-nums">
                         {mobileFallbackMethod
                             ? "MetaTrader 5 auto-sync setup requires desktop"
                             : "One account, one sync path, one useful dashboard."}
@@ -297,17 +296,17 @@ export function FirstSessionWizard({
                 <div className="px-5 pb-5 pt-2 flex items-center justify-between">
                     <Button
                         type="button"
-                        variant="ghost"
+                        variant="outline"
                         size="sm"
                         onClick={handleDismiss}
-                        className="h-auto p-0 text-xs font-semibold text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-transparent flex items-center gap-1"
+                        className="h-8 px-3 text-xs font-semibold text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white border-gray-200 dark:border-white/10 rounded-lg flex items-center gap-1.5"
                     >
                         <Clock size={12} />
                         <span>Remind me later</span>
                     </Button>
                     <Link
                         href="/get-started"
-                        className="text-xs font-semibold text-gray-400 dark:text-gray-500 hover:text-primary transition-colors flex items-center gap-1"
+                        className="text-xs font-semibold text-gray-400 dark:text-gray-500 hover:text-amber-600 dark:hover:text-gold transition-colors flex items-center gap-1"
                     >
                         <HelpCircle size={12} />
                         <span>Need help?</span>
@@ -342,13 +341,13 @@ function StepConnectAccount({
 
     return (
         <div className="space-y-3">
-            <div className="p-3.5 bg-gradient-to-br from-primary/[0.04] to-cyan-500/[0.02] border border-primary/15 rounded-lg space-y-2.5">
+            <div className="p-3.5 bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg space-y-2.5">
                 <div className="flex items-start gap-2.5">
-                    <div className="p-2 bg-primary/10 rounded-lg shrink-0">
-                        <Cable size={18} className="text-primary" />
+                    <div className="p-2 bg-gold/10 rounded-lg shrink-0">
+                        <Cable size={18} className="text-amber-600 dark:text-gold" />
                     </div>
                     <div className="min-w-0">
-                        <h3 className="text-sm font-black text-gray-800 dark:text-white">
+                        <h3 className="text-sm font-black text-gray-800 dark:text-white tabular-nums">
                             Connect your first MT5 account
                         </h3>
                         <p className="mt-1 text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
@@ -362,7 +361,7 @@ function StepConnectAccount({
                         href={addHref}
                         onClick={() => onCtaClick("CONNECT_ACCOUNT", addHref)}
                     >
-                        <Button className="bg-gold hover:bg-amber-600 text-white font-extrabold text-xs h-9 px-5 rounded-lg shadow-sm shadow-amber-500/20 hover:shadow-md hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-1.5 border-0 group">
+                        <Button className="bg-gold hover:bg-amber-600 !text-white font-extrabold text-xs h-9 px-5 rounded-lg shadow-sm shadow-amber-500/20 hover:shadow-md active:scale-95 transition-all duration-200 flex items-center gap-1.5 border-0 group">
                             <span>Add Account</span>
                             <ArrowRight
                                 size={14}
@@ -379,9 +378,9 @@ function StepConnectAccount({
                 variant="ghost"
                 onClick={handleManualClick}
                 disabled={isPending}
-                className="h-auto w-full text-left flex items-center gap-3 p-3 rounded-lg border border-dashboard hover:border-primary/30 dark:hover:border-primary/20 bg-white dark:bg-white/[0.01] transition-all duration-300 group disabled:opacity-60 justify-start"
+                className="h-auto w-full text-left flex items-center gap-3 p-3 rounded-lg border border-gray-200 dark:border-white/10 hover:border-gold/40 bg-gray-50/80 dark:bg-[#151925] transition-all duration-200 group disabled:opacity-60 justify-start"
             >
-                <div className="p-2 bg-gray-100 dark:bg-white/5 rounded-lg shrink-0">
+                <div className="p-2 bg-white dark:bg-white/5 rounded-lg shrink-0">
                     <PenLine
                         size={16}
                         className="text-gray-500 dark:text-gray-400"
@@ -397,7 +396,7 @@ function StepConnectAccount({
                 </div>
                 <ChevronRight
                     size={14}
-                    className="text-gray-300 dark:text-gray-600 group-hover:text-primary group-hover:translate-x-0.5 transition-all shrink-0"
+                    className="text-gray-300 dark:text-gray-600 group-hover:text-amber-600 dark:group-hover:text-gold group-hover:translate-x-0.5 transition-all shrink-0"
                 />
             </Button>
         </div>
@@ -447,7 +446,7 @@ function StepChooseSyncMethod({
                 />
             ),
             badgeClass:
-                "bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-gray-400 border-dashboard ",
+                "bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-gray-400 border-gray-200 dark:border-white/10",
         },
     ];
 
@@ -457,7 +456,7 @@ function StepChooseSyncMethod({
                 <h3 className="text-sm font-black text-gray-800 dark:text-white">
                     Choose how trades get into your journal
                 </h3>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
+                <p className="text-xs text-gray-500 dark:text-gray-400 tabular-nums">
                     Pick the setup that matches how you use MT5. You can change
                     this later.
                 </p>
@@ -469,9 +468,9 @@ function StepChooseSyncMethod({
                     type="button"
                     variant="ghost"
                     onClick={() => onSelect(opt.method, opt.href)}
-                    className="h-auto w-full text-left flex items-start gap-3 p-3 rounded-lg border border-dashboard hover:border-primary/30 dark:hover:border-primary/20 bg-white dark:bg-white/[0.01] transition-all duration-300 group justify-start whitespace-normal"
+                    className="h-auto w-full text-left flex items-start gap-3 p-3 rounded-lg border border-gray-200 dark:border-white/10 hover:border-gold/40 bg-gray-50/80 dark:bg-[#151925] transition-all duration-200 group justify-start whitespace-normal"
                 >
-                    <div className="p-2 bg-gray-100 dark:bg-white/5 rounded-lg shrink-0 group-hover:bg-primary/10 transition-colors">
+                    <div className="p-2 bg-white dark:bg-white/5 rounded-lg shrink-0 group-hover:bg-gold/10 transition-colors">
                         {React.cloneElement(
                             opt.icon as React.ReactElement<{ size?: number }>,
                             {
@@ -490,13 +489,13 @@ function StepChooseSyncMethod({
                                 {opt.badge}
                             </span>
                         </div>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed font-normal">
+                        <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed font-normal tabular-nums">
                             {opt.description}
                         </p>
                     </div>
                     <ChevronRight
                         size={14}
-                        className="text-gray-300 dark:text-gray-600 group-hover:text-primary group-hover:translate-x-0.5 transition-all shrink-0 mt-2"
+                        className="text-gray-300 dark:text-gray-600 group-hover:text-amber-600 dark:group-hover:text-gold group-hover:translate-x-0.5 transition-all shrink-0 mt-2"
                     />
                 </Button>
             ))}
@@ -538,7 +537,7 @@ function StepBringFirstData({
                 "Manually log a trade or bulk upload a CSV from your broker to start seeing insights.",
             cta: "Open Journal",
             href: "/dashboard/journal?action=log-trade&source=first-session-wizard",
-            icon: <PenLine size={20} className="text-gray-500" />,
+            icon: <PenLine size={20} className="text-amber-600 dark:text-gold" />,
         },
     };
 
@@ -546,10 +545,10 @@ function StepBringFirstData({
 
     return (
         <div className="space-y-3">
-            <div className="p-3.5 bg-gradient-to-br from-primary/[0.04] to-cyan-500/[0.02] border border-primary/15 rounded-lg space-y-2.5">
+            <div className="p-3.5 bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg space-y-2.5">
                 <div className="flex items-center gap-2">
                     {c.icon && (
-                        <div className="p-2 bg-primary/10 rounded-lg">
+                        <div className="p-2 bg-gold/10 rounded-lg">
                             {c.icon}
                         </div>
                     )}
@@ -557,14 +556,14 @@ function StepBringFirstData({
                         {c.title}
                     </h3>
                 </div>
-                <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
+                <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed tabular-nums">
                     {c.description}
                 </p>
                 <Link
                     href={c.href}
                     onClick={() => onCtaClick("BRING_FIRST_DATA", c.href)}
                 >
-                    <Button className="bg-gold hover:bg-amber-600 text-white font-extrabold text-xs h-9 px-4 rounded-lg shadow-sm shadow-amber-500/20 hover:shadow-md active:scale-95 transition-all duration-300 flex items-center gap-1.5 border-0 group mt-1">
+                    <Button className="bg-gold hover:bg-amber-600 !text-white font-extrabold text-xs h-9 px-4 rounded-lg shadow-sm shadow-amber-500/20 hover:shadow-md active:scale-95 transition-all duration-200 flex items-center gap-1.5 border-0 group mt-1">
                         <span>{c.cta}</span>
                         <ArrowRight
                             size={14}
@@ -575,7 +574,7 @@ function StepBringFirstData({
             </div>
 
             {/* Context hint */}
-            <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-50 dark:bg-white/[0.02] border border-dashboard">
+            <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10">
                 <HelpCircle
                     size={14}
                     className="text-gray-400 dark:text-gray-500 shrink-0"
@@ -603,8 +602,8 @@ function StepReviewDashboard({
 }) {
     return (
         <div className="space-y-3">
-            <div className="p-4 bg-gradient-to-br from-emerald-500/[0.05] to-primary/[0.03] border border-emerald-500/15 rounded-lg space-y-3 text-center">
-                <div className="w-10 h-10 mx-auto bg-emerald-500/10 rounded-full flex items-center justify-center">
+            <div className="p-4 bg-gray-50/80 dark:bg-[#151925] border border-emerald-500/20 rounded-lg space-y-3 text-center">
+                <div className="w-10 h-10 mx-auto bg-emerald-500/10 rounded-lg border border-emerald-500/20 flex items-center justify-center">
                     <BarChart3 size={20} className="text-emerald-500" />
                 </div>
                 <div className="space-y-1">
@@ -619,7 +618,7 @@ function StepReviewDashboard({
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-1">
                     <Link href="/dashboard" onClick={onComplete}>
-                        <Button className="bg-gold hover:bg-amber-600 text-white font-extrabold text-xs h-9 px-5 rounded-lg shadow-sm shadow-amber-500/20 hover:shadow-md hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-1.5 border-0 group">
+                        <Button className="bg-gold hover:bg-amber-600 !text-white font-extrabold text-xs h-9 px-5 rounded-lg shadow-sm shadow-amber-500/20 hover:shadow-md active:scale-95 transition-all duration-200 flex items-center gap-1.5 border-0 group">
                             <BarChart3 size={14} />
                             <span>Open Dashboard</span>
                         </Button>
@@ -631,7 +630,7 @@ function StepReviewDashboard({
                         >
                             <Button
                                 variant="outline"
-                                className="font-extrabold text-xs h-9 px-4 rounded-lg border-dashboard hover:border-primary/30 transition-all"
+                                className="font-extrabold text-xs h-9 px-4 rounded-lg border-gray-200 dark:border-white/10 hover:border-gold/30 transition-all"
                             >
                                 Generate Weekly Review
                             </Button>
@@ -657,7 +656,6 @@ interface StepMobileSyncFallbackProps {
 }
 
 function StepMobileSyncFallback({
-    method,
     onSendLink,
     onLogManually,
     onContinueAnyway,
@@ -667,16 +665,16 @@ function StepMobileSyncFallback({
     const setupName = "Trade Manager";
     return (
         <div className="space-y-4">
-            <div className="p-4 bg-gradient-to-br from-amber-500/[0.05] to-red-500/[0.02] border border-amber-500/15 rounded-lg space-y-3">
+            <div className="p-4 bg-gold/5 dark:bg-gold/10 border border-gold/20 rounded-lg space-y-3">
                 <div className="flex items-start gap-3">
-                    <div className="p-2.5 bg-amber-500/10 rounded-lg text-amber-500 shrink-0">
+                    <div className="p-2.5 bg-gold/15 rounded-lg text-amber-600 dark:text-gold shrink-0">
                         <Monitor className="w-5 h-5" />
                     </div>
                     <div>
                         <h3 className="text-sm font-black text-gray-800 dark:text-white">
                             Desktop Required for {setupName}
                         </h3>
-                        <p className="mt-1.5 text-xs text-gray-600 dark:text-gray-400 leading-relaxed font-semibold">
+                        <p className="mt-1.5 text-xs text-gray-600 dark:text-gray-400 leading-relaxed font-semibold tabular-nums">
                             Because MetaTrader 5 auto-syncing requires running
                             our local helper app, setup must be completed on a{" "}
                             <strong>Windows Desktop or VPS</strong>.
@@ -691,7 +689,7 @@ function StepMobileSyncFallback({
                     size="smd"
                     onClick={onSendLink}
                     disabled={isPending || linkSent}
-                    className="w-full font-bold flex items-center justify-center gap-2"
+                    className="w-full bg-gold hover:bg-amber-600 !text-white font-bold rounded-lg flex items-center justify-center gap-2"
                 >
                     <Mail className="w-4 h-4 shrink-0" />
                     {linkSent
@@ -705,7 +703,7 @@ function StepMobileSyncFallback({
                     size="smd"
                     onClick={onLogManually}
                     disabled={isPending}
-                    className="w-full font-bold flex items-center justify-center gap-2"
+                    className="w-full font-bold rounded-lg border-gray-200 dark:border-white/10 flex items-center justify-center gap-2"
                 >
                     <PenLine className="w-4 h-4 shrink-0" />
                     Log Trades Manually for Now
@@ -714,11 +712,11 @@ function StepMobileSyncFallback({
                 {/* Action 3: Continue anyway */}
                 <Button
                     type="button"
-                    variant="ghost"
+                    variant="outline"
                     size="sm"
                     onClick={onContinueAnyway}
                     disabled={isPending}
-                    className="w-full text-center text-[10px] text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 font-black uppercase tracking-wider py-2 h-auto"
+                    className="w-full text-center text-[10px] text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 border-gray-200 dark:border-white/10 rounded-lg font-black uppercase tracking-wider py-2 h-auto"
                 >
                     Continue anyway (I am on a remote desktop/VPS)
                 </Button>

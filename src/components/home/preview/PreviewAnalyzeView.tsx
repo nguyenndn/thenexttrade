@@ -1,5 +1,3 @@
-"use client";
-
 import { BarChart3, TrendingUp } from "lucide-react";
 
 export function PreviewAnalyzeView() {
@@ -7,34 +5,34 @@ export function PreviewAnalyzeView() {
         <div className="h-full flex flex-col justify-between gap-2 animate-in fade-in duration-300">
             {/* Top 3 KPI Cards */}
             <div className="grid grid-cols-3 gap-2 shrink-0">
-                <div className="p-2 rounded-lg bg-white dark:bg-white/[0.02] border border-gray-200 dark:border-white/10 shadow-sm">
+                <div className="p-2 rounded-lg bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 shadow-sm">
                     <span className="text-[9px] text-gray-500 font-bold uppercase tracking-wider block">
                         Net P/L
                     </span>
-                    <span className="text-xs sm:text-sm font-black text-emerald-600 dark:text-emerald-400 mt-0.5 flex items-center gap-0.5">
-                        +$12,450 <TrendingUp size={11} className="hidden sm:inline" />
+                    <span className="text-xs sm:text-sm font-mono tabular-nums font-black text-emerald-600 dark:text-emerald-400 mt-0.5 flex items-center gap-0.5">
+                        +$12,450.00 <TrendingUp size={11} className="hidden sm:inline" />
                     </span>
                 </div>
-                <div className="p-2 rounded-lg bg-white dark:bg-white/[0.02] border border-gray-200 dark:border-white/10 shadow-sm">
+                <div className="p-2 rounded-lg bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 shadow-sm">
                     <span className="text-[9px] text-gray-500 font-bold uppercase tracking-wider block">
                         Win Rate
                     </span>
-                    <span className="text-xs sm:text-sm font-black text-gray-900 dark:text-white mt-0.5 block">
+                    <span className="text-xs sm:text-sm font-mono tabular-nums font-black text-gray-900 dark:text-white mt-0.5 block">
                         64.2%
                     </span>
                 </div>
-                <div className="p-2 rounded-lg bg-white dark:bg-white/[0.02] border border-gray-200 dark:border-white/10 shadow-sm">
+                <div className="p-2 rounded-lg bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 shadow-sm">
                     <span className="text-[9px] text-gray-500 font-bold uppercase tracking-wider block">
                         Profit Factor
                     </span>
-                    <span className="text-xs sm:text-sm font-black text-gray-900 dark:text-white mt-0.5 block">
+                    <span className="text-xs sm:text-sm font-mono tabular-nums font-black text-gray-900 dark:text-white mt-0.5 block">
                         2.18
                     </span>
                 </div>
             </div>
 
             {/* Equity Curve Area */}
-            <div className="p-2 sm:p-2.5 rounded-lg bg-white dark:bg-white/[0.02] border border-gray-200 dark:border-white/10 shadow-sm flex-1 flex flex-col justify-between">
+            <div className="p-2 sm:p-2.5 rounded-lg bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 shadow-sm flex-1 flex flex-col justify-between">
                 <div className="flex items-center justify-between mb-1 shrink-0">
                     <div className="flex items-center gap-1.5">
                         <BarChart3 size={11} className="text-gold" />
@@ -42,7 +40,7 @@ export function PreviewAnalyzeView() {
                             Equity Curve
                         </span>
                     </div>
-                    <span className="text-[9px] text-emerald-600 dark:text-emerald-400 font-bold">
+                    <span className="text-[9px] font-mono tabular-nums text-emerald-600 dark:text-emerald-400 font-bold">
                         Last 30 Days · +18.4%
                     </span>
                 </div>
@@ -92,14 +90,20 @@ export function PreviewAnalyzeView() {
             </div>
 
             {/* Session Breakdown Mini Bar */}
-            <div className="px-2.5 py-1.5 rounded-lg bg-gray-50/80 dark:bg-white/[0.02] border border-gray-200 dark:border-white/5 flex items-center justify-between text-[10px] shrink-0">
+            <div className="px-2.5 py-1.5 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 flex items-center justify-between text-[10px] shrink-0">
                 <div className="flex items-center gap-3">
                     <span className="text-gray-500 font-bold uppercase">Sessions:</span>
                     <span className="font-bold text-gray-800 dark:text-gray-200">
-                        London <span className="text-emerald-600 font-extrabold">72%</span>
+                        London{" "}
+                        <span className="text-emerald-600 dark:text-emerald-400 font-mono tabular-nums font-extrabold">
+                            72.0%
+                        </span>
                     </span>
                     <span className="font-bold text-gray-800 dark:text-gray-200">
-                        New York <span className="text-emerald-600 font-extrabold">65%</span>
+                        New York{" "}
+                        <span className="text-emerald-600 dark:text-emerald-400 font-mono tabular-nums font-extrabold">
+                            65.0%
+                        </span>
                     </span>
                 </div>
             </div>

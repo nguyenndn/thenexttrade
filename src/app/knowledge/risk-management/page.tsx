@@ -17,6 +17,7 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
 import { prisma } from "@/lib/prisma";
 import { getBaseUrl } from "@/lib/url";
+import { getAuthUser } from "@/lib/auth-cache";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -49,8 +50,9 @@ const RISK_TOOLS = [
             "Determine the exact lot size for any trade based on your risk parameters and stop loss distance.",
         href: "/tools/position-size-calculator",
         icon: Calculator,
-        color: "text-amber-500",
-        bg: "bg-amber-500/10",
+        color: "text-amber-600 dark:text-gold",
+        bg: "bg-gold/10",
+        border: "border-gold/20",
     },
     {
         title: "Drawdown Calculator",
@@ -58,8 +60,9 @@ const RISK_TOOLS = [
             "Visualize the impact of consecutive losses on your account and plan recovery strategies.",
         href: "/tools/drawdown-calculator",
         icon: TrendingDown,
-        color: "text-amber-500",
-        bg: "bg-amber-500/10",
+        color: "text-amber-600 dark:text-gold",
+        bg: "bg-gold/10",
+        border: "border-gold/20",
     },
     {
         title: "Risk Reward Calculator",
@@ -67,8 +70,9 @@ const RISK_TOOLS = [
             "Evaluate trade setups by comparing potential profit against potential loss before entering.",
         href: "/tools/risk-reward-calculator",
         icon: Target,
-        color: "text-amber-500",
-        bg: "bg-amber-500/10",
+        color: "text-amber-600 dark:text-gold",
+        bg: "bg-gold/10",
+        border: "border-gold/20",
     },
     {
         title: "Risk of Ruin Calculator",
@@ -78,6 +82,7 @@ const RISK_TOOLS = [
         icon: BarChart3,
         color: "text-red-500",
         bg: "bg-red-500/10",
+        border: "border-red-500/20",
     },
 ];
 
@@ -114,27 +119,29 @@ export const revalidate = 86400;
 export default async function RiskManagementPage() {
     const baseUrl = getBaseUrl();
 
-    // Fetch related articles about risk management
-    const relatedArticles = await prisma.article.findMany({
-        where: {
-            status: "PUBLISHED",
-            OR: [
-                { title: { contains: "risk", mode: "insensitive" } },
-                { title: { contains: "position size", mode: "insensitive" } },
-                { title: { contains: "drawdown", mode: "insensitive" } },
-            ],
-        },
-        take: 6,
-        orderBy: { views: "desc" },
-        select: { title: true, slug: true, excerpt: true, thumbnail: true },
-    });
+    const [relatedArticles, user] = await Promise.all([
+        prisma.article.findMany({
+            where: {
+                status: "PUBLISHED",
+                OR: [
+                    { title: { contains: "risk", mode: "insensitive" } },
+                    { title: { contains: "position size", mode: "insensitive" } },
+                    { title: { contains: "drawdown", mode: "insensitive" } },
+                ],
+            },
+            take: 6,
+            orderBy: { views: "desc" },
+            select: { title: true, slug: true, excerpt: true, thumbnail: true },
+        }),
+        getAuthUser(),
+    ]);
 
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-transparent text-gray-700 dark:text-gray-300 relative overflow-hidden transition-colors duration-300">
+        <div className="min-h-screen bg-white dark:bg-[#0B0E14] text-gray-700 dark:text-gray-300 relative overflow-hidden transition-colors duration-300">
             {/* Ambient gold radial glow top */}
             <div className="absolute top-0 left-0 right-0 h-[600px] bg-gradient-to-b from-amber-500/[0.06] via-amber-500/[0.01] to-transparent pointer-events-none" />
 
-            <PublicHeader />
+            <PublicHeader user={user} />
 
             {/* SEO Schemas */}
             <BreadcrumbJsonLd
@@ -165,12 +172,12 @@ export default async function RiskManagementPage() {
             <main className="relative z-10 pt-28 pb-20">
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                     {/* ── Breadcrumb Panel ── */}
-                    <div className="flex items-center gap-2.5 text-xs font-semibold bg-white/60 dark:bg-white/[0.01] border border-amber-900/10 rounded-lg px-4 py-2.5 mb-8 w-fit shadow-sm backdrop-blur-sm">
+                    <div className="flex items-center gap-2.5 text-xs font-semibold bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl px-4 py-2.5 mb-8 w-fit shadow-sm">
                         <Link
                             href="/"
-                            className="text-gray-500 dark:text-gray-400 hover:text-amber-600 dark:hover:text-amber-400 transition-colors shrink-0 flex items-center gap-1.5"
+                            className="text-gray-500 dark:text-gray-400 hover:text-amber-600 dark:hover:text-gold transition-colors shrink-0 flex items-center gap-1.5"
                         >
-                            <Home size={13} />
+                            <Home size={13} className="text-amber-600 dark:text-gold" />
                             <span>Home</span>
                         </Link>
                         <ChevronRight
@@ -179,7 +186,7 @@ export default async function RiskManagementPage() {
                         />
                         <Link
                             href="/knowledge"
-                            className="text-gray-500 dark:text-gray-400 hover:text-amber-600 dark:hover:text-amber-400 transition-colors shrink-0"
+                            className="text-gray-500 dark:text-gray-400 hover:text-amber-600 dark:hover:text-gold transition-colors shrink-0"
                         >
                             Knowledge
                         </Link>
@@ -187,81 +194,88 @@ export default async function RiskManagementPage() {
                             size={12}
                             className="text-gray-400 dark:text-gray-600 shrink-0"
                         />
-                        <span className="text-gray-800 dark:text-gray-200 font-bold truncate">
+                        <span className="text-gray-900 dark:text-white font-bold truncate">
                             Risk Management
                         </span>
                     </div>
 
-                    {/* ── Header Section: Option B Split-Staggered HUD ── */}
+                    {/* ── Header Section: Split-Staggered HUD ── */}
                     <div className="mb-14 relative group">
                         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
                             {/* Column Left: Staggered Content */}
                             <div className="md:col-span-7 lg:col-span-8 text-left space-y-4">
-                                {/* Capsule Category Badge */}
-                                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold/10 border border-gold/20 text-gold text-xs font-black uppercase tracking-widest">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse" />
+                                {/* Category Badge */}
+                                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-gold/10 border border-gold/20 text-amber-600 dark:text-gold text-xs font-black uppercase tracking-widest">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                                     <span>Pillar Guide</span>
                                 </div>
 
                                 {/* Title with icon backdrop */}
                                 <div className="flex items-center gap-2.5 sm:gap-3">
-                                    <div className="p-2.5 bg-gold/10 text-gold border border-gold/20 rounded-lg shadow-sm shrink-0">
+                                    <div className="p-2.5 bg-gold/10 text-amber-600 dark:text-gold border border-gold/20 rounded-lg shadow-sm shrink-0">
                                         <Shield
                                             size={22}
-                                            className="stroke-[2.5]"
+                                            className="stroke-[2]"
                                         />
                                     </div>
-                                    <h1 className="text-[20px] sm:text-3xl md:text-5xl font-black text-slate-800 dark:text-white tracking-tight leading-none font-heading">
+                                    <h1 className="text-2xl sm:text-3xl md:text-5xl font-black text-gray-900 dark:text-white tracking-tight leading-none font-heading">
                                         Forex{" "}
-                                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-gold to-amber-500">
+                                        <span className="text-amber-600 dark:text-gold">
                                             Risk Management
                                         </span>
                                     </h1>
                                 </div>
 
-                                {/* Sophisticated Description */}
-                                <p className="text-sm md:text-base text-slate-500 dark:text-gray-400 leading-relaxed max-w-2xl font-semibold">
-                                    The absolute #1 core discipline that
-                                    separates profitable market masters from
-                                    blown accounts. Learn how TheNextTrade automates
-                                    capital protection.
+                                {/* Description */}
+                                <p className="text-sm md:text-base text-gray-600 dark:text-gray-400 leading-relaxed max-w-2xl font-medium tabular-nums">
+                                    The #1 core discipline that separates consistent funded accounts from blown capital. Protect your balance with cold risk math, hard stop-loss sizing, and automated drawdown telemetry.
                                 </p>
                             </div>
 
-                            {/* Column Right: Glassmorphic Micro HUD Panel */}
+                            {/* Column Right: 2x2 Matrix Specs Card */}
                             <div className="md:col-span-5 lg:col-span-4">
-                                <div className="bg-white/80 dark:bg-white/[0.02] border border-amber-500/20 rounded-lg p-5 shadow-lg relative backdrop-blur-md overflow-hidden group-hover:border-amber-500/35 transition-colors duration-300">
-                                    <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/[0.04] dark:bg-amber-500/[0.02] rounded-full blur-2xl pointer-events-none" />
-
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-3.5 font-heading">
-                                        Guide Terminal
-                                    </p>
-
-                                    <div className="space-y-3">
-                                        <div className="flex items-center justify-between border-b border-dashboard pb-2">
-                                            <span className="text-xs font-extrabold text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-                                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                                Live Tracking
-                                            </span>
-                                            <span className="text-xs font-black text-slate-800 dark:text-white uppercase tracking-wider">
-                                                Active
-                                            </span>
+                                <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
+                                    <div className="px-4 py-2.5 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
+                                        <span className="text-[10px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-400">
+                                            Risk Parameters
+                                        </span>
+                                        <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
+                                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                            Strict Mode
+                                        </span>
+                                    </div>
+                                    <div className="grid grid-cols-2 divide-x divide-y divide-gray-200 dark:divide-white/10">
+                                        <div className="p-3.5 bg-gray-50/80 dark:bg-[#151925]">
+                                            <div className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                                                Risk Per Trade
+                                            </div>
+                                            <div className="text-sm font-black font-mono tabular-nums text-amber-600 dark:text-gold mt-0.5">
+                                                1.0%–2.0%
+                                            </div>
                                         </div>
-                                        <div className="flex items-center justify-between border-b border-dashboard pb-2">
-                                            <span className="text-xs font-extrabold text-slate-500 dark:text-slate-400">
-                                                Sync Mode
-                                            </span>
-                                            <span className="text-xs font-black text-amber-600 dark:text-amber-400">
-                                                Continuous
-                                            </span>
+                                        <div className="p-3.5 bg-gray-50/80 dark:bg-[#151925]">
+                                            <div className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                                                Max Drawdown
+                                            </div>
+                                            <div className="text-sm font-black font-mono tabular-nums text-red-500 mt-0.5">
+                                                &lt; 15.0%
+                                            </div>
                                         </div>
-                                        <div className="flex items-center justify-between">
-                                            <span className="text-xs font-extrabold text-slate-500 dark:text-slate-400">
-                                                Risk Model
-                                            </span>
-                                            <span className="text-xs font-black text-emerald-500 dark:text-emerald-400">
-                                                Strict
-                                            </span>
+                                        <div className="p-3.5 bg-gray-50/80 dark:bg-[#151925]">
+                                            <div className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                                                Min R:R Ratio
+                                            </div>
+                                            <div className="text-sm font-black font-mono tabular-nums text-emerald-600 dark:text-emerald-400 mt-0.5">
+                                                1 : 2.0
+                                            </div>
+                                        </div>
+                                        <div className="p-3.5 bg-gray-50/80 dark:bg-[#151925]">
+                                            <div className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                                                MT5 Telemetry
+                                            </div>
+                                            <div className="text-sm font-black font-mono tabular-nums text-gray-900 dark:text-white mt-0.5">
+                                                24/7 Live
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -270,19 +284,19 @@ export default async function RiskManagementPage() {
                     </div>
 
                     {/* ── Content Sections ── */}
-                    <div className="space-y-8 mb-16">
+                    <div className="space-y-6 mb-16">
                         {PILLAR_SECTIONS.map((section, idx) => (
                             <section
                                 key={idx}
-                                className="bg-white/70 dark:bg-white/[0.02] border border-amber-900/10 rounded-lg p-6 md:p-8 hover:border-amber-500/20 hover:bg-white/80 dark:hover:bg-white/[0.03] transition-all duration-300 shadow-sm"
+                                className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-6 md:p-8 hover:border-gold/30 transition-colors shadow-sm"
                             >
-                                <h2 className="text-lg md:text-xl font-bold mb-4 flex items-center gap-3 text-slate-800 dark:text-white font-heading">
-                                    <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 text-sm font-black border border-amber-500/20">
+                                <h2 className="text-lg md:text-xl font-bold mb-4 flex items-center gap-3 text-gray-900 dark:text-white font-heading">
+                                    <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-gold/10 text-amber-600 dark:text-gold text-sm font-black font-mono tabular-nums border border-gold/20 shrink-0">
                                         {idx + 1}
                                     </span>
                                     {section.title}
                                 </h2>
-                                <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-sm md:text-base font-medium">
+                                <p className="text-gray-600 dark:text-gray-300 leading-relaxed text-sm md:text-base font-medium tabular-nums">
                                     {section.content}
                                 </p>
                             </section>
@@ -292,13 +306,13 @@ export default async function RiskManagementPage() {
                     {/* ── Risk Management Tools Grid ── */}
                     <div className="mb-16">
                         <div className="flex items-center gap-3 mb-8">
-                            <div className="p-2 bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 rounded-lg">
+                            <div className="p-2 bg-gold/10 text-amber-600 dark:text-gold border border-gold/20 rounded-lg">
                                 <Calculator
                                     size={20}
-                                    className="stroke-[2.5]"
+                                    className="stroke-[2]"
                                 />
                             </div>
-                            <h2 className="text-2xl font-black text-slate-800 dark:text-white font-heading tracking-tight">
+                            <h2 className="text-2xl font-black text-gray-900 dark:text-white font-heading tracking-tight">
                                 Interactive Calculators
                             </h2>
                         </div>
@@ -307,10 +321,10 @@ export default async function RiskManagementPage() {
                                 <Link
                                     key={tool.href}
                                     href={tool.href}
-                                    className="group flex items-start gap-4 p-5 rounded-lg border border-amber-900/10 bg-white/70 dark:bg-white/[0.02] hover:border-amber-500/30 hover:bg-white/90 dark:hover:bg-[#11100C]/50 hover:shadow-lg hover:shadow-amber-500/[0.02] transition-all duration-300"
+                                    className="group flex items-start gap-4 p-5 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] hover:border-gold/40 shadow-sm transition-all duration-200"
                                 >
                                     <div
-                                        className={`p-2.5 rounded-lg ${tool.bg} shrink-0 border border-white/5`}
+                                        className={`p-2.5 rounded-lg ${tool.bg} shrink-0 border ${tool.border}`}
                                     >
                                         <tool.icon
                                             size={20}
@@ -318,16 +332,16 @@ export default async function RiskManagementPage() {
                                         />
                                     </div>
                                     <div className="min-w-0 flex-1">
-                                        <h3 className="font-extrabold text-slate-800 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors mb-1 text-base font-heading">
+                                        <h3 className="font-extrabold text-gray-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-gold transition-colors mb-1 text-base font-heading">
                                             {tool.title}
                                         </h3>
-                                        <p className="text-xs md:text-sm text-slate-500 dark:text-gray-400 leading-relaxed font-semibold">
+                                        <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400 leading-relaxed font-medium">
                                             {tool.description}
                                         </p>
                                     </div>
                                     <ArrowRight
                                         size={16}
-                                        className="text-slate-400 group-hover:text-amber-500 group-hover:translate-x-1 transition-all shrink-0 mt-1"
+                                        className="text-gray-400 group-hover:text-amber-600 dark:group-hover:text-gold group-hover:translate-x-1 transition-all shrink-0 mt-1"
                                     />
                                 </Link>
                             ))}
@@ -338,13 +352,13 @@ export default async function RiskManagementPage() {
                     {relatedArticles.length > 0 && (
                         <div className="mb-16">
                             <div className="flex items-center gap-3 mb-8">
-                                <div className="p-2 bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 rounded-lg">
+                                <div className="p-2 bg-gold/10 text-amber-600 dark:text-gold border border-gold/20 rounded-lg">
                                     <BookOpen
                                         size={20}
-                                        className="stroke-[2.5]"
+                                        className="stroke-[2]"
                                     />
                                 </div>
-                                <h2 className="text-2xl font-black text-slate-800 dark:text-white font-heading tracking-tight">
+                                <h2 className="text-2xl font-black text-gray-900 dark:text-white font-heading tracking-tight">
                                     Advanced Risk Publications
                                 </h2>
                             </div>
@@ -353,13 +367,13 @@ export default async function RiskManagementPage() {
                                     <Link
                                         key={article.slug}
                                         href={`/articles/${article.slug}`}
-                                        className="group p-5 rounded-lg border border-amber-900/10 bg-white/70 dark:bg-white/[0.02] hover:border-amber-500/30 hover:bg-white/90 dark:hover:bg-[#11100C]/50 hover:shadow-md transition-all duration-300"
+                                        className="group p-5 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] hover:border-gold/40 shadow-sm transition-all duration-200"
                                     >
-                                        <h4 className="font-extrabold text-slate-800 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors line-clamp-2 text-sm font-heading mb-2 leading-snug">
+                                        <h4 className="font-extrabold text-gray-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-gold transition-colors line-clamp-2 text-sm font-heading mb-2 leading-snug">
                                             {article.title}
                                         </h4>
                                         {article.excerpt && (
-                                            <p className="text-xs text-slate-500 dark:text-gray-400 line-clamp-2 font-semibold leading-relaxed">
+                                            <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-2 font-medium leading-relaxed">
                                                 {article.excerpt}
                                             </p>
                                         )}
@@ -370,12 +384,11 @@ export default async function RiskManagementPage() {
                     )}
 
                     {/* ── Academy Level 9 CTA ── */}
-                    <div className="bg-gradient-to-br from-amber-500/[0.06] to-amber-600/[0.02] border border-amber-500/20 rounded-lg p-8 md:p-10 text-center relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 w-48 h-48 bg-amber-500/[0.05] rounded-full blur-3xl pointer-events-none" />
-                        <h3 className="text-xl md:text-2xl font-black text-slate-800 dark:text-white mb-3 font-heading tracking-tight">
+                    <div className="bg-white dark:bg-[#1E2028] border border-gold/25 rounded-xl p-8 md:p-10 text-center relative overflow-hidden shadow-sm">
+                        <h3 className="text-xl md:text-2xl font-black text-gray-900 dark:text-white mb-3 font-heading tracking-tight tabular-nums">
                             Level 9: Risk Management Blueprint
                         </h3>
-                        <p className="text-sm md:text-base text-slate-500 dark:text-gray-400 mb-6 max-w-md mx-auto font-semibold leading-relaxed">
+                        <p className="text-sm md:text-base text-gray-600 dark:text-gray-400 mb-6 max-w-md mx-auto font-medium leading-relaxed">
                             A structured framework covering position sizing, drawdown control, risk-of-ruin math, and emotional discipline.
                         </p>
                         <Link
@@ -384,10 +397,10 @@ export default async function RiskManagementPage() {
                                 variant: "primary",
                                 size: "smd",
                                 className:
-                                    "items-center gap-2 rounded-lg bg-gradient-to-r from-gold to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-black shadow-lg shadow-gold/20 hover:shadow-gold/30 hover:scale-[1.02]",
+                                    "items-center gap-2 rounded-lg bg-gold hover:bg-amber-600 !text-white font-bold shadow-lg shadow-amber-500/20",
                             })}
                         >
-                            <BookOpen size={15} className="stroke-[2.5]" />
+                            <BookOpen size={15} className="stroke-[2]" />
                             Explore the Academy
                         </Link>
                     </div>

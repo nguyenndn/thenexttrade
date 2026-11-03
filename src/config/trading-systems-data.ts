@@ -4,6 +4,8 @@ export interface SystemParameter {
     name: string;
     defaultValue: string;
     description: string;
+    group?: string;
+    range?: string;
 }
 
 export interface SystemFaq {
@@ -70,141 +72,387 @@ export const TRADING_SYSTEMS_DATA: SystemData[] = [
     {
         slug: "goldscalperninja",
         title: "GoldScalperNinja EA",
-        version: "v3.0",
+        version: "v3.1",
         description:
-            "Automated MT5 Expert Advisor with D1 Trend Master filters and Smart Sequence Pruning.",
+            "Automated MT5 gold architecture with price-chasing stop entries, D1 Trend Master compass, and Lot–Price distance filtering.",
         longDescription:
-            '<div class="space-y-4"><p><strong class="text-gold">Version 3.0 — Systematic MT5 Gold Architecture</strong></p><div class="space-y-2 mt-2"><p>— <strong class="text-gold">Smart Sequence Pruning</strong> — Rolling recovery algorithm that systematically utilizes scalp profits from new trades to trim and close the deepest drawdown positions, significantly reducing risk exposure.</p><p>— <strong class="text-gold">D1 Trend Master Filtering</strong> — Macro-level directional control that strictly restricts grid entries to high-probability trend directions based on daily price action.</p><p>— <strong class="text-gold">Dynamic Control Zones</strong> — Automatically calibrates the acceptable trading bias (Uptrend, Downtrend, or Sideways) at the start of each day based on ATR and volatility bands.</p><p>— <strong class="text-gold">Virtual Stop Execution</strong> — Stealth mode mechanism that conceals pending orders and stop-loss levels from broker visibility to prevent stop hunting and institutional manipulation.</p><p>— <strong class="text-gold">Automated Profit Management</strong> — Comprehensive position management utilizing multi-stage Take Profit scaling, dynamic Trailing Stops, and Break-Even protection protocols.</p><p>— <strong class="text-gold">News Filter Integration</strong> — Automated suspension of first-order initialization 15 minutes prior to and after high-impact macroeconomic data releases.</p><p>— <strong class="text-gold">Mobile Remote Control</strong> — Advanced mechanism allowing users to toggle the EA status remotely via the MT5 mobile application using customized pending order triggers.</p></div><p class="font-bold text-gold mt-4">Engineered for cold risk math, strict stop-loss discipline, and drawdown preservation.</p></div>',
+            '<div class="flex-1 flex flex-col justify-between gap-2.5"><p><strong class="text-gold">Version 3.1 — The Five Weapons Architecture</strong></p><p class="text-xs text-gray-500 dark:text-gray-400">GoldScalperNinja v3.1 is an automated, high-probability gold execution engine designed to eliminate the three classic grid failure modes on XAUUSD: catching falling knives, carrying trapped counter-trend chains, and exhausting margin during sustained one-way surges.</p><div class="flex-1 flex flex-col justify-between gap-2 py-1"><p>— <strong class="text-gold">Weapon 01: Stop Orders That Chase Price</strong> — Uses trailing Buy Stop and Sell Stop orders that follow price movements and only trigger when price confirms a micro-reversal rebound by at least the minimum distance, eliminating falling-knife entries.</p><p>— <strong class="text-gold">Weapon 02: Two-Phase Pruning Engine</strong> — Rolling recovery algorithm executed in two strict sequential phases: Phase 1 banks scalp profits and verifies execution; Phase 2 uses those gains to prune the oldest negative orders one-by-one with net positive capital protection.</p><p>— <strong class="text-gold">Weapon 03: Trend Master D1 Daily Compass</strong> — Reads daily price action at the D1 candle open to project TM Upper, TM Open D1, and TM Lower dynamic bands scaled to ADR, enforcing directional gates and activating trend-locking debt cleanup.</p><p>— <strong class="text-gold">Weapon 04: Lot–Price Distance Filter (v3.1)</strong> — Mathematical ladder guard enforcing that larger volume orders always sit at more favorable prices than smaller orders, while automatically blocking duplicate fills and order clustering during high-volatility spikes.</p><p>— <strong class="text-gold">Weapon 05: Neon Control Panel &amp; Mobile Remote</strong> — Live visual telemetry interface with 7 color-coded status zones, one-click manual overrides, and remote MT5 mobile control via pending orders at price 999.00.</p></div><p class="font-bold text-gold">Engineered for cold risk math, strict stop-loss discipline, and drawdown preservation.</p></div>',
         type: "AUTO_TRADE",
         platform: "MT5",
         icon: Bot,
         targetAsset: "XAUUSD (Gold)",
-        strategyStyle: "Daily Trend Master & Smart Sequence Pruning",
+        strategyStyle:
+            "Price Action & Momentum Scalping with Trend Master D1 & Lot-Price Distance Filter",
         recommendedLeverage: "1:100 or higher",
         setupDifficulty: "Easy (5 min)",
         specHighlights: [
-            { label: "Primary Timeframe", value: "D1 Trend Master bias" },
-            { label: "Entry Mode", value: "Stop, StopLimit, or Virtual Stop" },
+            { label: "Primary Asset", value: "XAUUSD (100-oz Gold)" },
+            { label: "Primary Timeframe", value: "Any chart TF (D1 Trend Master bias)" },
+            { label: "Entry Modes", value: "Stop, StopLimit, or Virtual Stop (VPO)" },
+            {
+                label: "Distance Filter",
+                value: "Lot-Price ladder & duplicate guard (v3.1)",
+            },
             {
                 label: "Remote Control",
-                value: "MT5 mobile pending-order switch",
+                value: "MT5 mobile pending order at 999.00",
             },
             {
                 label: "Safety Stack",
-                value: "News filter, daily limits, safe close",
+                value: "5-layer brakes: Caps, Global SL, Daily limits, News, Safe close",
             },
         ],
         accentRing: "ring-gold/20",
         bullets: [
-            "D1 Trend Master momentum filter",
-            "Smart Sequence Pruning (rolling recovery)",
-            "Virtual Stop entry mode option",
-            "Mobile remote control via pending orders",
+            "Stop orders that chase price on turn (no falling knife)",
+            "Two-phase pruning: profit banked before cutting debt",
+            "Lot–Price distance filter & duplicate guard (v3.1)",
+            "D1 Trend Master daily compass & trend locking",
+            "Neon interactive HUD & mobile remote switch",
         ],
         parameters: [
+            // Identity
             {
+                group: "Identity",
+                name: "Magic",
+                defaultValue: "888",
+                description:
+                    "Unique EA order identification tag on the symbol.",
+            },
+            // Group 1A: Direction & Permission
+            {
+                group: "1A: Order Direction",
                 name: "Trade direction mode",
                 defaultValue: "Auto Trend Master",
                 description:
-                    "Master trade control. Options: Only BUY, Only SELL, BUY & SELL, or Auto Trend Master.",
+                    "Master direction mode: Auto Trend Master, Only BUY, Only SELL, or BUY & SELL.",
             },
             {
+                group: "1A: Order Direction",
                 name: "Allow entries in trend direction",
+                defaultValue: "false",
+                description:
+                    "When true, permits adding grid orders with the trend beyond best open price.",
+            },
+            {
+                group: "1A: Order Direction",
+                name: "Global permission to open BUY",
                 defaultValue: "true",
                 description:
-                    "Permits opening additional grid trades in the direction of the current trend.",
+                    "Hard switch lock. If false, EA never opens BUY orders regardless of panel buttons.",
             },
             {
-                name: "Above this % -> prefer BUY (0-100)",
-                defaultValue: "75",
+                group: "1A: Order Direction",
+                name: "Global permission to open SELL",
+                defaultValue: "true",
                 description:
-                    "When price >= 75% of the zone, restricts sell entries.",
+                    "Hard switch lock. If false, EA never opens SELL orders regardless of panel buttons.",
             },
+            // Group 1B: Entry & Grid Spacing
             {
-                name: "Below this % -> prefer SELL (0-100)",
-                defaultValue: "25",
-                description:
-                    "When price <= 25% of the zone, restricts buy entries.",
-            },
-            {
+                group: "1B: Entry & Grid Spacing",
                 name: "Entry mode",
-                defaultValue: "Stop",
+                defaultValue: "Stop orders",
                 description:
-                    "Execution style. Options: standard Stop orders, StopLimit, or Virtual Stop.",
+                    "Execution style: Stop orders (server stop), StopLimit orders, or Virtual stop (VPO stealth).",
             },
             {
+                group: "1B: Entry & Grid Spacing",
                 name: "First grid step (points)",
-                defaultValue: "30",
+                defaultValue: "40",
                 description:
-                    "Price distance from the current market price to the very first pending order.",
+                    "Distance in points from market price for placing the initial pending stop order.",
             },
             {
+                group: "1B: Entry & Grid Spacing",
+                name: "Minimum distance between orders (points)",
+                defaultValue: "50",
+                description:
+                    "Required rebound distance from market price before an averaging order fills.",
+            },
+            {
+                group: "1B: Entry & Grid Spacing",
                 name: "Grid step (points)",
-                defaultValue: "100",
+                defaultValue: "50",
                 description:
-                    "Standard price interval for placing consecutive grid orders.",
+                    "Standard price spacing interval from worst open position for averaging orders.",
             },
             {
+                group: "1B: Entry & Grid Spacing",
+                name: "Min distance after MaxTrade (points)",
+                defaultValue: "50",
+                description:
+                    "Widened rebound distance enforced once open order count exceeds threshold.",
+            },
+            {
+                group: "1B: Entry & Grid Spacing",
+                name: "Grid step after MaxTrade (points)",
+                defaultValue: "50",
+                description:
+                    "Widened grid spacing for deeper chain recovery levels after threshold.",
+            },
+            {
+                group: "1B: Entry & Grid Spacing",
+                name: "Threshold before switching to Step1",
+                defaultValue: "5",
+                description:
+                    "Open order count threshold before transitioning to widened two-speed grid spacing.",
+            },
+            {
+                group: "1B: Entry & Grid Spacing",
+                name: "Trail pending orders by price (points)",
+                defaultValue: "40",
+                description:
+                    "Price tracking distance for trailing pending stop orders down on drops or up on rallies.",
+            },
+            {
+                group: "1B: Entry & Grid Spacing",
+                name: "Enable aggressive mode",
+                defaultValue: "false",
+                description:
+                    "Keeps secondary stop orders and re-centers lagging orders in fast trends.",
+            },
+            {
+                group: "1B: Entry & Grid Spacing",
+                name: "Deviation for virtual stop DEAL",
+                defaultValue: "5",
+                description:
+                    "Maximum slippage in points accepted when virtual stop executes a market deal.",
+            },
+            // Group 1C: Lot Sizing & Lot Caps
+            {
+                group: "1C: Lot Sizing & Caps",
+                name: "Initial lot size",
+                defaultValue: "0.01",
+                description:
+                    "Base trade volume of the first scout order in every chain.",
+            },
+            {
+                group: "1C: Lot Sizing & Caps",
+                name: "Additive lot multiplier",
+                defaultValue: "0.0",
+                description:
+                    "Fixed additive lot increment added per tier level.",
+            },
+            {
+                group: "1C: Lot Sizing & Caps",
                 name: "Exponential lot multiplier",
                 defaultValue: "1.5",
                 description:
-                    "Martingale lot size multiplier applied to subsequent grid levels.",
+                    "Exponential multiplier applied per tier (Styles A-D). Primary risk lever.",
             },
             {
+                group: "1C: Lot Sizing & Caps",
+                name: "Orders per tier (lot step levels)",
+                defaultValue: "2",
+                description:
+                    "Number of orders sharing identical volume before advancing to next tier.",
+            },
+            {
+                group: "1C: Lot Sizing & Caps",
+                name: "Enable per-order lot cap",
+                defaultValue: "false",
+                description:
+                    "Enforces a maximum volume ceiling on any single order.",
+            },
+            {
+                group: "1C: Lot Sizing & Caps",
+                name: "Max lot per single order",
+                defaultValue: "1.0",
+                description:
+                    "Maximum permitted volume for any single order when cap is enabled.",
+            },
+            {
+                group: "1C: Lot Sizing & Caps",
+                name: "Enable total lot cap",
+                defaultValue: "false",
+                description:
+                    "Rejects orders that would cause combined BUY + SELL volume to exceed cap.",
+            },
+            {
+                group: "1C: Lot Sizing & Caps",
+                name: "Max total lot (both sides)",
+                defaultValue: "10.0",
+                description:
+                    "Hard ceiling on combined open volume across both BUY and SELL chains.",
+            },
+            // Group 2: Distance Filter (NEW v3.1)
+            {
+                group: "2: Distance Filter (v3.1)",
+                name: "Distance filter mode",
+                defaultValue: "Block the order",
+                description:
+                    "Ladder guard mode: Block the order (default), Reduce lot to fit the ladder, or Off.",
+            },
+            {
+                group: "2: Distance Filter (v3.1)",
+                name: "Filter distance in points (0 = use side Step)",
+                defaultValue: "0",
+                description:
+                    "Minimum separation enforcing ladder rule and duplicate rejection. 0 auto-syncs with grid step.",
+            },
+            // Group 3: Target Loss & Trailing Management
+            {
+                group: "3: Exits & Trailing",
+                name: "Chain take profit ($)",
+                defaultValue: "10.0",
+                description:
+                    "Combined BUY + SELL basket profit target in USD closing all open positions and pending orders.",
+            },
+            {
+                group: "3: Exits & Trailing",
+                name: "Global stop loss BUY+SELL ($, 0 = off)",
+                defaultValue: "0.0",
+                description:
+                    "Emergency circuit breaker cutting all positions at dollar drawdown threshold. 0 = off.",
+            },
+            {
+                group: "3: Exits & Trailing",
+                name: "Trailing mode",
+                defaultValue: "0",
+                description:
+                    "Trailing SL mode: 0=off, 1=candle low/high, 2=fractal, >2=fixed points behind average.",
+            },
+            {
+                group: "3: Exits & Trailing",
+                name: "Trailing step (points)",
+                defaultValue: "0",
+                description:
+                    "Minimum price movement required before adjusting trailing stop-loss.",
+            },
+            {
+                group: "3: Exits & Trailing",
+                name: "Min profit to start trailing (points)",
+                defaultValue: "0",
+                description:
+                    "Minimum locked profit in points before trailing stop-loss engages.",
+            },
+            // Group 4: Pruning
+            {
+                group: "4: Advanced Pruning",
                 name: "Enable sequence pruning",
                 defaultValue: "true",
                 description:
-                    "Enables Smart Pruning which uses new winning trades to trim old losing ones.",
+                    "Master switch for same-side rolling recovery and trend clean-up debt trimming.",
             },
             {
-                name: "Activate when total orders >= this",
-                defaultValue: "6",
+                group: "4: Advanced Pruning",
+                name: "Enable cross-side pruning",
+                defaultValue: "true",
                 description:
-                    "The grid must reach this many open trades before pruning begins.",
+                    "Permits with-trend winners to prune counter-trend losers near D1 volatility bands.",
             },
+            // Group 5: Daily Limits
             {
+                group: "5: Daily Limits",
                 name: "Daily profit target $ (0=off)",
                 defaultValue: "0.0",
                 description:
-                    "The daily target in currency to close all orders and lock in gains.",
+                    "Daily closed + open profit target in USD. Closes basket and halts trading until next server day.",
             },
             {
+                group: "5: Daily Limits",
                 name: "Daily max loss $ (0=off)",
                 defaultValue: "0.0",
                 description:
-                    "The maximum acceptable daily drawdown limit before cutting all trades.",
+                    "Daily max drawdown limit in USD. Closes basket and halts trading until next server day.",
             },
+            // Group 6: News Filter
             {
+                group: "6: News Filter",
                 name: "Enable news filter",
                 defaultValue: "true",
                 description:
-                    "Pauses first-order initialization 15 minutes before and after high-impact news.",
+                    "Reads MT5 economic calendar 24h ahead for high-impact USD events to pause new cycle initialization.",
+            },
+            // Group 7: Safe Close
+            {
+                group: "7: Safe Close",
+                name: "Enable safe close mode",
+                defaultValue: "false",
+                description:
+                    "Automatically liquidates small drawdowns and halts EA during unsafe states (news, out-of-session, cycle off).",
             },
             {
-                name: "Enable remote control via pending orders",
-                defaultValue: "true",
+                group: "7: Safe Close",
+                name: "Max allowed floating loss to cut ($, negative)",
+                defaultValue: "-200.0",
                 description:
-                    "Enables remote ON/OFF control from the MT5 mobile app using specific trigger prices.",
+                    "Deepest loss safe close will cut (e.g. -$150 is cut; -$300 is held to prevent selling the bottom).",
+            },
+            // Group 8: Schedule
+            {
+                group: "8: Trading Schedule",
+                name: "Session 1",
+                defaultValue: "00:00-23:59",
+                description:
+                    "Primary daily operating window in broker server time (HH:MM-HH:MM).",
+            },
+            // Group 9: Remote Control
+            {
+                group: "9: Remote Control",
+                name: "Remote_1 (Turn OFF bot)",
+                defaultValue: "Sell Stop at 999.00",
+                description:
+                    "Place a Sell Stop pending order at price 999.00 from MT5 mobile app to halt the EA remotely.",
+            },
+            {
+                group: "9: Remote Control",
+                name: "Remote_2 (Turn ON bot)",
+                defaultValue: "Buy Limit at 999.00",
+                description:
+                    "Place a Buy Limit pending order at price 999.00 from MT5 mobile app to resume the EA remotely.",
+            },
+            // Group 10: Panel
+            {
+                group: "10: Panel Settings",
+                name: "Panel X position",
+                defaultValue: "1090",
+                description:
+                    "Chart X coordinate in pixels. Set -1 to auto-dock to right edge, or 10 to dock left.",
+            },
+            {
+                group: "10: Panel Settings",
+                name: "Panel Y position",
+                defaultValue: "25",
+                description:
+                    "Chart Y coordinate in pixels from top edge.",
             },
         ],
         logic: [
-            "Trend Master calculates daily limits using yesterday's candle volatility (Z-value) and N-day Average ATR.",
-            "Dynamic Control Zone locks the EA into Uptrend bias, Downtrend bias, or Sideways range trading.",
-            "Smart Sequence Pruning pairs new profitable positions with the oldest negative ones to close at a net positive profit.",
-            "Virtual Stop mode hides active pending orders from the broker's book to prevent slippage and stop hunting.",
+            "Step 1 (Gate Check): Evaluates Schedule, News Filter, Daily Limits, Cycle State (RUNNING), and License before opening a new cycle.",
+            "Step 2 (Scout Order): Places a Buy Stop at First grid step above price or Sell Stop below price with Initial lot size.",
+            "Step 3 (Price Chasing): Pending stops trail price as it runs (Trail pending orders), only executing when price rebounds by Minimum distance.",
+            "Step 4 (Controlled Ladder): Adds averaging orders at intervals of at least Grid step, strictly enforced by the Lot–Price distance filter.",
+            "Step 5 (Two-Phase Pruning): Banks profit from fresh scalp positions first, then cuts oldest negative orders one-by-one with positive net cushion.",
+            "Step 6 (Basket Close): When combined BUY + SELL floating profit reaches Chain take profit ($), all open positions close simultaneously.",
+            "Trend Master D1: Projects daily TM Upper, TM Open D1, and TM Lower bands from yesterday's range and ADR, locking counter-trend sides ([LOCK BUY] / [LOCK SELL]).",
+            "Lot Sizing Styles: Supports 5 progression styles (A: Default 1.5/2, B: Firm 1.3/2, C: Balanced 1.3/3, D: Gentle 1.2/3, E: Straight Line additive).",
         ],
         faqs: [
             {
-                question: "How does the Trend Master filter work?",
-                answer: "At the start of each day, it projects a dynamic Control Zone. If price breaks the upper limit, the EA restricts sell entries. If it breaks the lower limit, it restricts buy entries. If it stays inside, it trades both directions (sideways market).",
+                question: "How does the Trend Master D1 daily compass work?",
+                answer: "At the open of every D1 candle, Trend Master reads daily price action and calculates TM Upper, TM Open D1, and TM Lower bands scaled to the Average Daily Range (ADR). Above TM Upper (UP 100%), only BUY orders are permitted. Below TM Lower (DOWN 0%), only SELL orders are permitted. In the middle zone (~50%), both directions operate simultaneously. If price trends persistently, it engages [LOCK BUY] or [LOCK SELL] and activates trend clean-up pruning.",
             },
             {
-                question: "What is Smart Sequence Pruning?",
-                answer: "Instead of waiting for a full market reversal to recover a drawdown, the EA uses profits from fresh trades to close out the deepest losing orders in the background, continuously shrinking the basket size.",
+                question: "What is Two-Phase Pruning and how does it prevent trapped chains?",
+                answer: "Classic grid systems fail because they wait for complete market reversals. Two-Phase Pruning executes in two strict stages: Phase 1 banks profit from fresh scalp positions and waits for broker execution confirmation. Phase 2 uses that locked-in profit to close the oldest, deepest losing orders one-by-one, ensuring every pruning cycle closes at a net positive profit and brings the basket breakeven closer to market price.",
             },
             {
-                question: "Can I control the EA from my mobile phone?",
-                answer: "Yes. By placing a Buy Limit exactly at your pre-configured Magic Price, you can turn the EA ON remotely. Placing a Sell Limit at that price turns the EA OFF, straight from your MT5 mobile app.",
+                question: "What is the Lot–Price distance filter introduced in v3.1?",
+                answer: "The Lot–Price distance filter enforces a mathematical ladder rule: a larger lot size must always sit at least 'Filter distance' points at a more favorable price than every smaller order on its side (lower for BUY, higher for SELL). It also blocks duplicate orders within the filter distance, eliminating accidental cluster fills during high-volatility spikes.",
+            },
+            {
+                question: "How do I control or shut down the EA from my phone?",
+                answer: "You can control the EA remotely without accessing your VPS desktop by placing a pending order on XAUUSD with volume 0.01 at price 999.00: Place a Sell Stop at 999.00 to turn the EA OFF (halts new orders and pruning). Place a Buy Limit at 999.00 to turn the EA ON (resumes normal cycles). The EA automatically deletes the trigger order after executing the command.",
+            },
+            {
+                question: "Why does v3.1 use WebRequest instead of DLL imports for licensing?",
+                answer: "Version 3.1 eliminates DLL imports entirely for maximum security and compatibility. MT5 connects directly to secure Google Apps Script authorization endpoints via native WebRequest. You simply add https://script.google.com and https://script.googleusercontent.com in MT5 Tools -> Options -> Expert Advisors.",
+            },
+            {
+                question: "What should I do if the EA displays 'License: NOT REGISTERED' or fails to trade?",
+                answer: "First, verify that your account ID shown in the panel's Status box has been authorized by your broker or partner admin. Second, ensure 'Allow WebRequest for listed URL' has both Google Script endpoints added. Third, ensure the toolbar 'Algo Trading' button is green and 'Allow Algo Trading' is checked in the EA Common tab.",
             },
         ],
         metrics: {
@@ -218,371 +466,724 @@ export const TRADING_SYSTEMS_DATA: SystemData[] = [
         colorTheme: "gold",
         functions: [
             {
-                title: "Rule-Based Execution",
-                desc: "Executes trades based on predefined technical structures, eliminating manual order entry hesitation.",
+                title: "Stop Orders That Chase Price",
+                desc: "Trailing Buy Stop and Sell Stop orders follow market movement and execute only on confirmed micro-reversal rebounds, preventing falling-knife entries.",
             },
             {
-                title: "Dynamic Position Sizing",
-                desc: "Calculates lot sizes dynamically based on your set account risk percentage and stop-loss distance.",
+                title: "Two-Phase Pruning Engine",
+                desc: "Sequential rolling recovery that first banks scalp profits and verifies execution, then systematically cuts the oldest trapped orders while maintaining net gain.",
             },
             {
-                title: "Automated Profit Management",
-                desc: "Manages active positions with multi-stage Take Profit, Trailing Stop, and Break-Even protection.",
+                title: "Trend Master D1 Daily Compass",
+                desc: "Macro directional filter reading daily price action at D1 open to set dynamic bias zones (UP 100%, SW, DOWN 0%) and lock counter-trend entries.",
+            },
+            {
+                title: "Lot–Price Distance Filter (v3.1)",
+                desc: "Mathematical ladder guard ensuring larger lots always sit at better prices than smaller orders, while automatically blocking duplicate fills.",
+            },
+            {
+                title: "Neon Control Panel & Mobile Remote",
+                desc: "Visual dashboard with 7 color-coded telemetry zones, one-click manual overrides, and MT5 mobile remote control via pending orders at price 999.00.",
+            },
+            {
+                title: "5-Layer Safety Brakes & News Radar",
+                desc: "Combines MT5 economic calendar news pauses (±15 min around high-impact USD news), daily profit/loss circuit breakers, and hard lot/dollar caps.",
             },
         ],
         setupSteps: [
             {
                 step: "01",
-                title: "Download EA File",
-                desc: "Retrieve the compiled .ex5 file from your dashboard once your partner account is verified.",
+                title: "Deploy EA Binary",
+                desc: "Copy GoldScalperNinja EA v3.1.ex5 to MT5 -> File -> Open Data Folder -> MQL5 -> Experts, then right-click Navigator and select Refresh.",
             },
             {
                 step: "02",
-                title: "Deploy to MT5 Directory",
-                desc: "Open MT5, go to File > Open Data Folder, navigate to MQL5/Experts, and paste the downloaded file.",
+                title: "Authorize WebRequest URLs",
+                desc: "Open MT5 -> Tools -> Options -> Expert Advisors. Check 'Allow WebRequest for listed URL' and add https://script.google.com and https://script.googleusercontent.com.",
             },
             {
                 step: "03",
-                title: "Configure Allow DLL",
-                desc: "Drag the EA onto your XAUUSD chart. In the common tab, check 'Allow DLL imports' and 'Allow Algo Trading'.",
+                title: "Attach to XAUUSD Chart",
+                desc: "Open an XAUUSD chart on any timeframe (M1 to H1 supported). Drag the EA onto the chart.",
             },
             {
                 step: "04",
-                title: "Load Presets",
-                desc: "Apply the recommended .set files provided in your dashboard to sync optimal starting parameters.",
+                title: "Enable Algo Trading in Settings",
+                desc: "In the EA Common tab, check 'Allow Algo Trading'. In Inputs tab, load or configure your desired preset (.set file) and click OK.",
+            },
+            {
+                step: "05",
+                title: "Activate Master Algo Trading",
+                desc: "Click the main 'Algo Trading' button on the MT5 top toolbar (ensure the icon turns green).",
+            },
+            {
+                step: "06",
+                title: "Verify License & Telemetry",
+                desc: "Check the panel status block. It must display 'License: ACTIVE | lifetime'. If 'NOT REGISTERED', copy the account ID shown on the panel to authorize.",
+            },
+            {
+                step: "07",
+                title: "Deploy on Low-Latency VPS",
+                desc: "Ensure MT5 runs continuously 24/7 on a Windows VPS located near your broker server to prevent execution gaps.",
             },
         ],
         riskControls: [
             {
-                title: "Start on Demo/Cent Accounts",
-                desc: "Always test the EA's execution behavior on a demo or small cent account to understand its parameter scaling.",
+                title: "Layer 1: Lot Sizing & Volume Caps",
+                desc: "Enforce per-order and total open volume caps (both sides) to prevent excessive exposure during extended gold trends.",
             },
             {
-                title: "VPS Recommended",
-                desc: "Run MT5 on a reliable Virtual Private Server (VPS) with low latency to ensure continuous connection and execution.",
+                title: "Layer 2: Global Stop Loss ($)",
+                desc: "Emergency circuit breaker that closes all open positions and cancels pending orders if combined floating drawdown reaches a defined dollar threshold.",
             },
             {
-                title: "News Filter Management",
-                desc: "Consider pausing automated algo trading during major macroeconomic events (like NFP or FOMC) to avoid high slippage.",
+                title: "Layer 3: Daily Profit & Loss Circuit Breakers",
+                desc: "Daily profit targets and max loss limits automatically shut down trading until the next server day upon being triggered.",
+            },
+            {
+                title: "Layer 4: High-Impact News Filter & Sessions",
+                desc: "Integrates with MT5 economic calendar to pause new cycle initialization 15 minutes before and after high-impact USD events, alongside server trading schedules.",
+            },
+            {
+                title: "Layer 5: Safe Close & Remote Emergency Switch",
+                desc: "Automatically liquidates small drawdowns during unsafe states, and allows instant emergency shutdown from iOS/Android MT5 by placing a Sell Stop at 999.00.",
             },
         ],
     },
     {
         slug: "trade-manager",
-        title: "Trade Manager",
-        version: "v1.4",
+        title: "GSN Trade Manager",
+        version: "v2.0",
         description:
-            "Premium overlay panel for manual execution, multi-timeframe trend matrix, semi-auto DCA grids, and direct trade journal sync.",
+            "5-Tab MT5 Command Deck for 1-click split-TP scalping, institutional Volume Profile (POC/VAH/VAL), 42-signal MTF trend matrix, Smart DCA recovery, and on-demand cloud sync.",
         longDescription:
-            '<div class="space-y-4"><p><strong class="text-gold">Version 1.4 — Advanced Execution & Grid Management Overlay</strong></p><div class="space-y-2 mt-2"><p>— <strong class="text-gold">Dynamic Dashboard Filter</strong> — Instantly toggle MT5 trend indicators and the multi-timeframe matrix panel directly from the chart.</p><p>— <strong class="text-gold">Rapid Hotkey Support</strong> — Execute critical actions instantly via keyboard shortcuts (B for Buy, S for Sell, X for Close All, E for Break Even) for high-frequency environments.</p><p>— <strong class="text-gold">Strategy Tester Compatibility</strong> — Fully functional graphical interface designed for high-speed operation and backtesting within the MT5 Strategy Tester.</p><p>— <strong class="text-gold">Custom Indicator Integration</strong> — Support for up to 3 custom indicators via direct file path input, requiring zero complex configuration during backtests.</p><p>— <strong class="text-gold">Live Condition Simulation</strong> — Practice precision entries, pending orders, and automated SL/TP scale-out management under realistic market conditions.</p></div><p class="font-bold text-blue-500 dark:text-blue-400 mt-4">Built for precision execution and robust manual trade management.</p></div>',
+            '<div class="flex-1 flex flex-col justify-between gap-2"><p><strong class="text-gold">Version 2.0 — 5-Tab MT5 Execution &amp; Risk Command Deck</strong></p><p class="text-xs text-gray-500 dark:text-gray-400">GSN Trade Manager v2.0 unifies manual split-target execution, institutional Volume Profile auction levels, multi-timeframe trend confluence, and math-driven DCA recovery into a single zero-lag MT5 command deck.</p><div class="flex-1 flex flex-col justify-between gap-1.5 py-0.5"><p>— <strong class="text-gold">Tab 1 (TRADE): Split-TP &amp; Live R:R</strong> — Draggable Entry, SL, and TP1–TP3 lines (3:3:3 split) with live Dollar R:R preview, Auto-BE, and smart TP % trimming.</p><p>— <strong class="text-gold">Tab 2 (S&amp;D ZONE): Volume Profile &amp; Order Blocks</strong> — Live Daily POC Magnet, VAH/VAL walls, and M1–H4 Supply/Demand zones with 1-click POC and Value Area execution.</p><p>— <strong class="text-gold">Tab 3 (TREND): 42-Signal Confluence Matrix</strong> — Scans 6 engines (Sonic R, Structure, SuperTrend, MACD, ADX, VOL-MOM) across M1–D1 for real-time Buy/Sell Power %.</p><p>— <strong class="text-gold">Tab 4 (SEMI): Smart DCA, BE Lot &amp; Shield</strong> — Dual-mode recovery (Martingale or BE Lot solver) inside a draggable Zone Box with Mobile DCA and Smart Shield hedging.</p><p>— <strong class="text-gold">Tab 5 (SYNC): Zero-Lag Cloud Audit</strong> — On-demand deal synchronization (Today to Custom Range) via personal API key with zero background chart lag.</p></div><p class="font-bold text-gold">Engineered for cold risk math, fast visual execution, and controlled recovery.</p></div>',
         type: "MANUAL_ASSIST",
         platform: "MT5",
         icon: SlidersHorizontal,
-        targetAsset: "All Symbols (FX, Crypto, Indices, Gold)",
-        strategyStyle: "Execution Assist & Semi-Auto DCA Grid",
-        recommendedLeverage: "Any",
-        setupDifficulty: "Very Easy (2 min)",
+        targetAsset: "XAUUSD (Gold) & All MT5 Symbols",
+        strategyStyle: "5-Tab Manual Split-TP, Volume Profile & Smart DCA Deck",
+        recommendedLeverage: "1:100 or higher",
+        setupDifficulty: "Easy (10 min)",
         specHighlights: [
-            { label: "Panel Mode", value: "Manual chart overlay" },
-            { label: "Order Tools", value: "SL, TP, BE, partial close" },
-            { label: "Trend Context", value: "Multi-timeframe matrix" },
-            { label: "Journal Sync", value: "Built-in API (SYNC tab)" },
+            { label: "Architecture", value: "5-Tab Command Deck (TRADE, S&D, TREND, SEMI, SYNC)" },
+            { label: "Volume Profile", value: "Daily POC Magnet, VAH/VAL & M1–H4 Order Blocks" },
+            { label: "Confluence Engine", value: "42-Signal Matrix (6 Engines × 7 Timeframes)" },
+            { label: "Recovery & Defense", value: "BE Lot Solver, Draggable Zone Box & Smart Shield" },
         ],
         accentRing: "ring-blue-500/15 dark:ring-blue-400/15",
         bullets: [
-            "1-Click dynamic risk execution",
-            "Multi-timeframe Trend Matrix (6x7)",
-            "Semi-Auto DCA Grid with trailing TP",
-            "Direct trading journal Sync (API Key)",
-            "Mobile trade adoption (Magic 0)",
+            "3-Target Split-TP (TP1–TP3), Live Dollar R:R & Smart Partial Trim",
+            "Institutional Volume Profile (POC, VAH, VAL) & Order Blocks",
+            "42-Signal MTF Confluence Matrix (Sonic R, Structure, SuperTrend, MACD, ADX, VOL-MOM)",
+            "Dual-Mode Smart DCA (Martingale vs. BE Lot), Zone Box & Smart Shield",
+            "MOBILE DCA Phone Adoption & Zero-Lag On-Demand Cloud Sync",
         ],
         parameters: [
+            // Tab 1: TRADE
             {
+                group: "Tab 1: Manual Split-TP & Risk",
                 name: "Lot Size",
-                defaultValue: "0.1",
+                defaultValue: "0.07",
                 description:
-                    "Base trade size for manual execution when using static lot size.",
+                    "Total manual position size stepped via [-]/[+] and divided across active TP1–TP3 weight boxes.",
             },
             {
+                group: "Tab 1: Manual Split-TP & Risk",
+                name: "TP1 / TP2 / TP3 Weight Split",
+                defaultValue: "3 | 3 | 3",
+                description:
+                    "Proportional volume weights dividing total lot across 3 targets (3:3:3 = 33.3% each; set any box to 0 to disable).",
+            },
+            {
+                group: "Tab 1: Manual Split-TP & Risk",
                 name: "Zone (pips)",
                 defaultValue: "70",
                 description:
-                    "Grid spacing distance between orders for manual grid setups.",
+                    "Default planning zone width in pips (on 2-decimal XAUUSD, 10 pips = 100 points = $1.00 USD price move).",
             },
             {
-                name: "BE Offset (pips)",
-                defaultValue: "10",
-                description:
-                    "Minimum profit offset added to entry price when Stop Loss is moved to Breakeven.",
-            },
-            {
+                group: "Tab 1: Manual Split-TP & Risk",
                 name: "Max Risk (%)",
-                defaultValue: "1.0",
+                defaultValue: "50.0% (15.0% Recommended)",
                 description:
-                    "Blocks new positions if the current account risk percentage exceeds this limit.",
+                    "Maximum permitted account equity risk percentage audited against live SL Loss % before firing.",
             },
             {
-                name: "TP1 / TP2 / TP3",
-                defaultValue: "50 / 100 / 200",
+                group: "Tab 1: Manual Split-TP & Risk",
+                name: "BE Offset (pips)",
+                defaultValue: "0",
                 description:
-                    "Take profit targets in pips with custom position counts to scale out.",
+                    "Extra profit offset in pips added above/below entry when locking Breakeven via SL -> BE or Auto-BE.",
             },
             {
-                name: "EnableSATrailingTP",
+                group: "Tab 1: Manual Split-TP & Risk",
+                name: "TP % (Smart Partial Trim)",
+                defaultValue: "20",
+                description:
+                    "Percentage of open volume shaved starting from the heaviest loser or smallest winner first when clicking TP BUY or TP SELL.",
+            },
+            // Tab 4: SEMI
+            {
+                group: "Tab 4: Smart DCA, BE Lot & Shield",
+                name: "DCA Recovery Mode",
+                defaultValue: "MODE: MARTINGALE MULTIPLIER / MODE: BE LOT",
+                description:
+                    "Toggles between fixed lot multiplier scaling and Break-Even Lot solver (solves exact lot needed so a BE Retrace Pips bounce closes basket at BE + $1.00).",
+            },
+            {
+                group: "Tab 4: Smart DCA, BE Lot & Shield",
+                name: "Starting Lot",
+                defaultValue: "0.05 (0.01 Safe Start)",
+                description:
+                    "Seed volume for Order #1 of a Semi-Auto DCA sequence. Every recovery layer scales from this base.",
+            },
+            {
+                group: "Tab 4: Smart DCA, BE Lot & Shield",
+                name: "Multiplier / BE Retrace Pips",
+                defaultValue: "1.50 (1.20x–1.35x Recommended)",
+                description:
+                    "Fixed lot multiplier in Martingale mode, or target retrace distance in pips when operating in MODE: BE LOT.",
+            },
+            {
+                group: "Tab 4: Smart DCA, BE Lot & Shield",
+                name: "DCA Step (Pips)",
+                defaultValue: "30",
+                description:
+                    "Minimum adverse distance in pips ($3.00 USD on Gold) required before adding the next recovery order.",
+            },
+            {
+                group: "Tab 4: Smart DCA, BE Lot & Shield",
+                name: "Zone Range (Pips)",
+                defaultValue: "142",
+                description:
+                    "Height in pips of the draggable on-chart TRADE BY ZONE rectangle where DCA orders are permitted to fire.",
+            },
+            {
+                group: "Tab 4: Smart DCA, BE Lot & Shield",
+                name: "Target TP / Target SL (0=Off)",
+                defaultValue: "30 / 100",
+                description:
+                    "Unified basket Take-Profit in pips (Yellow Combined TP line) and hard catastrophe Stop-Loss in pips from initial entry.",
+            },
+            {
+                group: "Tab 4: Smart DCA, BE Lot & Shield",
+                name: "Max Single Lot & Max Basket Lot",
+                defaultValue: "0.50 / 2.00",
+                description:
+                    "Mandatory prop-firm volume caps limiting any single recovery order (0.50) and total cumulative open basket volume (2.00).",
+            },
+            // Part III: F7 Inputs
+            {
+                group: "F7 Inputs: Automation & Protection",
+                name: "Enable Hotkeys (B, S, X, E)",
+                defaultValue: "true",
+                description:
+                    "Enables single-key chart shortcuts: B = BUY NOW, S = SELL NOW, X = CLOSE ALL, E = Move SL to Breakeven.",
+            },
+            {
+                group: "F7 Inputs: Automation & Protection",
+                name: "Auto BE when TP1 hit",
+                defaultValue: "true",
+                description:
+                    "Automatically moves the Stop Loss of remaining TP2 and TP3 split tickets to entry (+ BE Offset) as soon as TP1 closes in profit.",
+            },
+            {
+                group: "F7 Inputs: Automation & Protection",
+                name: "Auto Close Pending Orders on TP1 hit",
+                defaultValue: "true",
+                description:
+                    "Deletes any unfilled pending orders from the same setup once price reaches TP1 so stale orders cannot fill late on a reversal.",
+            },
+            {
+                group: "F7 Inputs: Automation & Protection",
+                name: "Auto Move SL to TP1 when TP2 hit",
                 defaultValue: "false",
                 description:
-                    "Enables virtual trailing take profit for the Semi-Auto grid.",
+                    "When enabled, once price hits TP2, the Stop Loss of the final TP3 runner is trailed to the TP1 price level to lock in profit.",
             },
             {
-                name: "SATrailingDistancePips",
-                defaultValue: "5.0",
+                group: "F7 Inputs: Automation & Protection",
+                name: "Enable Daily Trading Limits (Max Loss / Gain %)",
+                defaultValue: "false (2.0% Loss / 3.0% Gain)",
                 description:
-                    "Trailing distance in pips used to trail the grid's average take profit.",
+                    "Circuit breaker tracking daily equity change from server midnight (defaults to 2.0% Max Daily Loss and 3.0% Max Daily Gain when ON).",
             },
             {
-                name: "Sync API Key",
-                defaultValue: "None",
+                group: "F7 Inputs: Automation & Protection",
+                name: "Enable Trail SL by Candle High/Low",
+                defaultValue: "false (Lookback = 1, Buffer = 3p)",
                 description:
-                    "Your unique API key generated from the Sync Settings page on your dashboard to pair MT5 with your trading journal.",
+                    "Trails the Stop Loss of manual trades behind the previous closed candle's High/Low plus a 3-pip safety buffer.",
+            },
+            {
+                group: "F7 Inputs: Automation & Protection",
+                name: "Enable Lock Profit (step trailing)",
+                defaultValue: "false",
+                description:
+                    "4-stage profit ratchet for news runners: at +30p locks +10p; at +60p locks +30p; at +100p locks +60p; at +150p locks +100p.",
+            },
+            {
+                group: "F7 Inputs: Automation & Protection",
+                name: "Default SL / TP1 / TP2 / TP3 (pips)",
+                defaultValue: "110 / 50 / 100 / 200",
+                description:
+                    "Initial pip distances projected onto the chart when clicking GET BUY or GET SELL on Tab 1.",
+            },
+            {
+                group: "F7 Inputs: Automation & Protection",
+                name: "Semi Auto DCA: Magic Number vs. Magic Number",
+                defaultValue: "123457 / 123456",
+                description:
+                    "Isolates Tab 4 Semi-Auto DCA baskets (123457) from Tab 1 Manual Scalping orders (123456) so manual trims never interfere with DCA math.",
+            },
+            {
+                group: "F7 Inputs: Automation & Protection",
+                name: "Enable Trailing TP for Semi-Auto Grid",
+                defaultValue: "false (5.0 pips)",
+                description:
+                    "Instead of closing the DCA basket the instant it touches Target TP, trails the basket exit behind price by 5.0 pips to capture oversized bounces.",
             },
         ],
         logic: [
-            "Dynamic lot sizing automatically calculates the position volume based on stop-loss pips and account risk percent.",
-            "Trend Tab calculates trend scoring using weighted indicators (EMA Sonic R, ADX, RSI, MACD, S&R, Volume Divergences).",
-            "Mobile Trade Adoption automatically detects, attaches stop levels to, and DCA-grids manual trades placed via mobile apps.",
-            "Built-in Sync Module uses asynchronous HTTP requests to forward trading heartbeats and execution details directly to the dashboard.",
-            "Auto Broker Pip Size Detection normalizes all calculations for Gold (3 digits) and Forex (5 digits) decimal pricing.",
+            "Tab 1 (TRADE) Split-TP & Live Dollar R:R Engine: Projects draggable ENTRY, SL, and TP1–TP3 lines onto the chart, previews exact dollar risk/reward before firing, splits volume across 3|3|3 weights, and auto-moves remaining stops to Breakeven once TP1 banks.",
+            "Smart Partial Trimming (TP %): Clicking TP BUY or TP SELL sorts open orders on that side by floating profit ascending and shaves volume starting from the heaviest loser or smallest winner first—freeing margin while keeping your best runners alive.",
+            "Tab 2 (S&D ZONE) Institutional Volume Profile & Order Blocks: Computes live session horizontal volume distribution to map the Daily POC Magnet (fair-value node), VAH (upper 70% rejection wall), and VAL (lower 70% support wall) alongside unmitigated M1–H4 Supply/Demand Order Blocks.",
+            "Tab 3 (TREND) 42-Signal Equal-Weight Confluence Matrix: Scans 6 institutional engines (Sonic R 34/89 EMA Dragon, Swing BOS/CHoCH Structure, SuperTrend ATR, MACD Impulse, ADX Strength, VOL-MOM) across 7 timeframes (M1–D1), aggregating active BUY vs. SELL votes into Buy/Sell Power % and D1 Dominance.",
+            "Tab 4 (SEMI) Dual-Mode Recovery & Yellow Combined TP Line: Tracks volume-weighted basket breakeven via an on-chart Yellow Line. In MODE: BE LOT, dynamically solves the exact next order lot size so a configured pip pullback closes the entire basket at breakeven + $1.00.",
+            "Interactive Zone Box, MOBILE DCA & Smart Shield Hedge: Restricts recovery orders inside a draggable TRADE BY ZONE rectangle, adopts manual MT5 Mobile phone trades (Magic 0) when MOBILE DCA is ON, and arms a protective opposite Stop order at the zone edge (SMART SHIELD: ON) that closes hedged BUY + SELL baskets at +$1.00 net profit.",
         ],
         faqs: [
             {
-                question: "How does the built-in SYNC tab work?",
-                answer: "The SYNC tab lets you paste your Sync API Key directly inside MT5. When connected, the EA whitelists our secure API gateway using WebRequests and automatically logs every transaction directly to your web dashboard journal in real time.",
+                question: "How does Smart Partial Close (TP %) choose which positions to trim first?",
+                answer: "When you enter a percentage (e.g., 20%) and click TP BUY or TP SELL on Tab 1, the engine sorts all open orders on that side by floating profit ascending and shaves volume starting from the heaviest loser or smallest winner first. This reduces deep-zone margin drag while keeping your best runners alive.",
             },
             {
-                question: "How does the Mobile Trade Adoption work?",
-                answer: "When MOBILE DCA is ON, the EA on your VPS monitors the account for manual trades opened on the symbol from your phone (Magic 0). It immediately adopts the trade, adjusts SL/TP, and opens grid orders if price moves adversely.",
+                question: "Why is MODE: BE LOT (RECOVERY) smarter than a fixed 1.5x Martingale multiplier?",
+                answer: "Fixed exponential multipliers (1.5x–2.0x) accelerate violently after order #8. In MODE: BE LOT, the Multiplier input becomes BE Retrace Pips and mathematically solves for the exact lot size required so a fixed pullback (e.g., 60 pips) brings the entire basket to breakeven + $1.00 USD.",
             },
             {
-                question: "What indicators are used in the Trend matrix?",
-                answer: "It scans 7 timeframes (M1 to D1) for 6 key indicators: EMA crossover (Sonic R 34/89), ADX trend filter (>25), RSI momentum, MACD crossover, S&R levels, and volume-confirmed breakout signals.",
+                question: "How do TRADE BY ZONE and SMART SHIELD protect my basket during runaway Gold trends?",
+                answer: "Clicking TRADE BY ZONE draws a draggable price rectangle on your chart; DCA recovery orders are only permitted inside those boundaries. When SMART SHIELD: ON is active, the EA places a protective opposite Stop order at the outer edge of the Zone Box to lock net exposure on a breakout, then closes the entire BUY + SELL basket as soon as combined profit reaches +$1.00 USD (including spread, swap, and commission).",
             },
             {
-                question: "What is Virtual Trailing Take Profit?",
-                answer: "When enabled, the EA hides your take profit lines from the broker. Once price hits the average target, it trails the profit level dynamically and closes the grid locally on a price retracement.",
+                question: "How should I trade the Daily POC, VAH, and VAL on Tab 2 (S&D ZONE)?",
+                answer: "Following Institutional Auction Market Theory: never open new trades right on top of the DAILY POC (MAGNET)—use SNAP TP TO POC to set it as your primary Take-Profit target. Look for Long entries when an unmitigated M15/H1 DEMAND zone overlaps VAL (Support Wall), and look for Short entries when an M15/H1 SUPPLY zone overlaps VAH (Rejection Wall) using LIMIT AT VALUE AREA.",
+            },
+            {
+                question: "Why is Tab 5 (SYNC) 100% manual-only, and what is the $200 balance requirement?",
+                answer: "Closed deals are uploaded only when you click one of the 8 sync buttons on Tab 5 (Today, Last 3 Days, Last Week, Last Month, 3M, 6M, Entire History, or Sync Selected Range)—never in the background during fast scalping ticks, guaranteeing zero chart lag. Cloud telemetry enforces a $200 USD minimum balance gate on Real accounts (Demo accounts have no balance minimum).",
+            },
+            {
+                question: "What happens to my open trades if the internet drops or a license check fails?",
+                answer: "The 3-tier license engine verifies your MT5 account via the primary server, GitHub backup list, and a 72-hour signed local offline cache. Even if a license shows EXPIRED or NETWORK ERROR, the EA never abandons open trades—it only blocks new initial entries while continuing to manage existing positions and recovery baskets safely.",
             },
         ],
         colorTheme: "blue",
         functions: [
             {
-                title: "One-Click Lot Calculation",
-                desc: "Instantly computes risk-aligned lot sizes on screen before you hit buy or sell.",
+                title: "Precision 3-Target Split & Partial Trim",
+                desc: "Project draggable Entry, SL, and TP1–TP3 lines (3:3:3 weights) with a live Dollar R:R bar, Auto-BE on TP1 hit, and smart TP % partial shaving.",
             },
             {
-                title: "Rapid Execution Panel",
-                desc: "Provides physical buttons on your MT5 chart for fast Break-Even, trailing adjustments, and partial closes.",
+                title: "Institutional Volume Profile & POC Magnet",
+                desc: "Map unmitigated M1–H4 Supply/Demand Order Blocks alongside the live Daily POC Magnet, VAH Rejection Wall, and VAL Support Wall.",
             },
             {
-                title: "Multi-Symbol Compatibility",
-                desc: "Executes natively across all MT5 charts and symbols without requiring custom symbol presets.",
+                title: "42-Signal MTF Confluence Matrix",
+                desc: "Scan 6 institutional engines (Sonic R, Structure, SuperTrend, MACD, ADX, VOL-MOM) across 7 timeframes (M1–D1) with Buy/Sell Power %.",
+            },
+            {
+                title: "Dual-Mode Smart DCA & BE Lot Solver",
+                desc: "Switch between fixed Martingale Multiplier and MODE: BE LOT (RECOVERY) to solve the exact lot needed to close baskets at BE + $1.00.",
+            },
+            {
+                title: "Draggable Zone Box & Smart Shield",
+                desc: "Confine DCA recovery inside an interactive on-chart Zone Box and arm SMART SHIELD breakout hedging for automatic +$1.00 net exits.",
+            },
+            {
+                title: "Mobile DCA Adoption & On-Demand Sync",
+                desc: "Adopt manual MT5 phone trades automatically via MOBILE DCA on your VPS, and batch-upload closed deals via Tab 5 SYNC with zero tick lag.",
             },
         ],
         setupSteps: [
             {
                 step: "01",
-                title: "Get EA File",
-                desc: "Download the compiled Trade Manager .ex5 file from the Trading Systems dashboard section.",
+                title: "Copy the EA File",
+                desc: "In MT5, click File -> Open Data Folder -> MQL5 -> Experts. Paste the compiled GoldScalperNinja - TradeManager.ex5 file, then right-click Expert Advisors in Navigator and select Refresh.",
             },
             {
                 step: "02",
-                title: "Place in Experts folder",
-                desc: "In MT5, open the Data Folder, navigate to MQL5/Experts, and drop the file there.",
+                title: "Allow WebRequest URLs",
+                desc: "Open Tools -> Options -> Expert Advisors. Tick Allow Algorithmic Trading and Allow WebRequest for listed URL, then add https://raw.githubusercontent.com/ and https://api.github.com (plus your dashboard URL for Tab 5 SYNC).",
             },
             {
                 step: "03",
-                title: "Enable Chart Settings",
-                desc: "Drag the Expert Advisor to any active chart and verify that DLL imports are enabled to allow panel drawing.",
+                title: "Open a Clean XAUUSD Chart",
+                desc: "Open a clean XAUUSD chart (M5 or M15 recommended). Keep one Trade Manager instance per symbol/Magic pair.",
             },
             {
                 step: "04",
-                title: "Execute Live",
-                desc: "Use the on-screen panel to manage your manual trades with precise risk parameters.",
+                title: "Attach to Chart & Verify Inputs",
+                desc: "Drag GoldScalperNinja - TradeManager onto the chart. In the Common tab, tick Allow Algorithmic Trading. In the Inputs tab, keep the defaults (Magic 123456 / Semi-Auto Magic 123457) and click OK.",
+            },
+            {
+                step: "05",
+                title: "Turn On Master Algo Trading",
+                desc: "Confirm the Algo Trading button on the top MT5 toolbar is green.",
+            },
+            {
+                step: "06",
+                title: "Verify 5-Tab Panel & License",
+                desc: "Confirm all 5 workspaces (TRADE, S&D ZONE, TREND, SEMI, SYNC) switch smoothly and no license warning pop-up appears.",
+            },
+            {
+                step: "07",
+                title: "Run on a 24/7 Windows VPS",
+                desc: "Whenever using Tab 4 (SEMI) DCA, MOBILE DCA phone adoption, or SMART SHIELD breakout hedging, run MT5 on a 24/7 VPS close to your broker's server.",
             },
         ],
         riskControls: [
             {
-                title: "Visual Offset Verification",
-                desc: "Double-check your stop-loss and take-profit line offsets on the panel before clicking execute.",
+                title: "Rule 1: Lock Max Single & Basket Lot Caps",
+                desc: "Never leave Max Single Lot (0.50) or Max Basket Lot (2.00) uncapped (0) on Tab 4. Hard volume ceilings keep deep recovery chains inside prop-firm margin limits.",
             },
             {
-                title: "Spread Awareness",
-                desc: "Be aware of wide broker spreads during session transitions which may impact manual execution triggers.",
+                title: "Rule 2: Always Arm Target SL or Smart Shield",
+                desc: "Never run an open-ended DCA chain with Target SL = 0 and SMART SHIELD: OFF. Always combine a TRADE BY ZONE box with a catastrophe stop or Smart Shield hedge.",
             },
             {
-                title: "Keyboard Shortcuts",
-                desc: "Familiarize yourself with the visual buttons on a demo chart first to avoid accidental double-clicks.",
+                title: "Rule 3: Prefer BE Lot or Gentle Multipliers",
+                desc: "Exponential multipliers (1.8x–2.0x) accelerate violently after order #8. Use MODE: BE LOT (RECOVERY) or keep multipliers at 1.20x–1.35x with 30–50 pip steps.",
+            },
+            {
+                title: "Rule 4: Never Panic-Close One Hedged Leg",
+                desc: "When SMART SHIELD or a recovery basket is working toward the yellow Combined TP/BE line, manually closing only the winning leg leaves the losing leg naked. Use CLOSE ALL DCA.",
+            },
+            {
+                title: "Rule 5: Daily Circuit Breakers & Killzone Discipline",
+                desc: "Enable F7 Daily Trading Limits (2.0% Loss / 3.0% Gain), avoid new DCA baskets during the 21:00–01:00 UTC rollover spread window, and practice 4 weeks on Demo before live deployment.",
             },
         ],
     },
     {
-        slug: "gsn-phoenix-grid",
-        title: "GSN - Apex Gold Sentinel",
+        slug: "gsn-shadown-matrix",
+        title: "GSN Shadown Matrix",
         version: "v1.0",
         description:
-            "5-Layer modular adverse DCA grid with Profit Bank harvesting and Macro-Trend filters.",
+            "Asymmetric Dual Grid & Counter-Hedge XAUUSD engine with 6 M5 seed filters, EMA-34 trend reversal lot braking, Dynamic ATR spacing, and Same-Side Smart Pruning.",
         longDescription:
-            '<div class="space-y-4"><p><strong class="text-gold">Version 1.0 — 5-Layer Adaptive Survival Architecture</strong></p><div class="space-y-2 mt-2"><p>— <strong class="text-gold">5-Layer Modular Grid</strong> — Advanced system designed for extreme volatility, dynamically adjusting grid spacing and lot multipliers across 3 distinct drawdown levels.</p><p>— <strong class="text-gold">Phoenix Profit Bank</strong> — Proprietary engine that harvests short-term scalp gains into a virtual reserve to aggressively prune the oldest, high-risk positions.</p><p>— <strong class="text-gold">Auto-Hedge Recovery Module</strong> — Automatically locks down floating drawdowns with isolated counter-trend positions to safely navigate vertical market spikes.</p><p>— <strong class="text-gold">Pyramid Trend Scaling</strong> — Systematically pyramids new positions in the direction of strong, confirmed trends to maximize upside potential without increasing counter-trend risk.</p><p>— <strong class="text-gold">Sonic R Macro Confluence</strong> — Evaluates medium-term market momentum using dual exponential moving averages to ensure initial entries are mechanically aligned with structural trends.</p><p>— <strong class="text-gold">Multi-Layered Protection System (MLPS)</strong> — Active volatility spike control and M1 ADX momentum filters proactively block entries during macroeconomic news events.</p><p>— <strong class="text-gold">State Persistence & Recovery</strong> — Utilizes MT5 global variables to persist the exact grid state, ensuring uninterrupted state recovery after terminal restarts or connection loss.</p></div><p class="font-bold text-emerald-500 dark:text-emerald-400 mt-4">Engineered for absolute survivability through mechanical hedging controls.</p></div>',
+            '<div class="flex-1 flex flex-col justify-between gap-2.5"><p><strong class="text-gold">Version 1.0 — Asymmetric Dual Grid, Counter-Hedge &amp; Smart Pruning Architecture</strong></p><p class="text-xs text-gray-500 dark:text-gray-400">GSN Shadown Matrix v1.0 is an asymmetric dual-grid and counter-hedge XAUUSD engine built to neutralize one-way gold trends—combining closed-bar M5 seed filters, automatic counter-hedging, and EMA-34 lot braking so counter-trend drawdowns stay flat while trend-aligned positions compound.</p><div class="flex-1 flex flex-col justify-between gap-2 py-1"><p>— <strong class="text-gold">Weapon 01: 6 M5 Seed Filters &amp; Fast First-Order Scalp</strong> — Evaluates closed M5 candle signals across 6 selectable engines (MA, SuperTrend, Ichimoku, ADX+RSI, Bollinger Bands, MACD Trend) and banks fast +90-point ($0.90) single-order scalps before grid expansion.</p><p>— <strong class="text-gold">Weapon 02: Counter-Hedge &amp; M15 Dual Grid</strong> — Locks initial seed drawdown at -250 points (-$2.50) with an opposite Hedge Start position, then expands simultaneous BUY + SELL pairs on new M15 bars every 150 points ($1.50) or adaptive ATR(14) steps.</p><p>— <strong class="text-gold">Weapon 03: Asymmetric Ladder &amp; EMA-34 Reversal Brake</strong> — Scales winning trend orders by 1.05x while halving counter-trend multipliers (×0.50 = 0.80x) against M5 EMA-34, clamping losing counter-trend lots flat at the 0.02 base lot across all 8 tiers.</p><p>— <strong class="text-gold">Weapon 04: Same-Side Smart Pruning (Tier &gt;= 5)</strong> — Pairs newest winners with oldest same-side losers from Tier 5 at +$1.00 net surplus (closing the losing leg first and verifying broker fill) to continuously recycle the 8-tier ceiling.</p><p>— <strong class="text-gold">Weapon 05: 3-View Obsidian HUD &amp; Async Basket Exit</strong> — Features Live Telemetry, direct on-chart Strategy &amp; Risk editing persisted via GlobalVariables, a Monthly Profit Calendar, and parallel OrderSendAsync closure at $50.00 TP.</p></div><p class="font-bold text-gold">Engineered for asymmetric trend compounding, flat counter-trend exposure, and sub-3% equity drawdown.</p></div>',
         type: "AUTO_TRADE",
         platform: "MT5",
         icon: Bot,
         targetAsset: "XAUUSD (Gold)",
-        strategyStyle: "5-Layer Adaptive Survival Grid & Hedge Recovery",
+        strategyStyle:
+            "M5 Seeded Asymmetric Dual Grid, Counter-Hedge & Same-Side Smart Pruning",
         recommendedLeverage: "1:200 or higher",
-        setupDifficulty: "Hard (15 min)",
+        setupDifficulty: "Easy (10 min)",
         specHighlights: [
-            { label: "Grid Engine", value: "5-layer adaptive survival logic" },
-            { label: "Profit Module", value: "Phoenix Profit Bank trimming" },
-            { label: "Recovery Mode", value: "Auto-hedge + isolated DCA" },
-            { label: "Persistence", value: "MT5 global variable recovery" },
+            {
+                label: "Seed & Fast Scalp",
+                value: "6 M5 Strategy Filters + 90-pt ($0.90) First-Order TP",
+            },
+            {
+                label: "Hedge & Dual Grid",
+                value: "250-pt ($2.50) Counter-Hedge + 150-pt M15 Dual Pairs",
+            },
+            {
+                label: "Lot Brake Engine",
+                value: "1.05x Win / 1.60x Lose + 50% M5 EMA-34 Reversal Brake",
+            },
+            {
+                label: "Pruning & Ceiling",
+                value: "Hard 8-Tier Cap + Tier 5 Same-Side Pruning (+$1.00)",
+            },
+            {
+                label: "Volatility Guard",
+                value: "M15 New-Bar Gate + Optional Dynamic ATR(14) Spacing",
+            },
+            {
+                label: "Obsidian 3-View UI",
+                value: "Live Telemetry, On-Chart Strategy Edit & Profit Calendar",
+            },
         ],
         accentRing: "ring-emerald-500/15 dark:ring-emerald-400/15",
         bullets: [
-            "Multi-Layered Protection System (MLPS)",
-            "Phoenix Profit Bank trim mechanics",
-            "Auto-Hedge & isolated recovery grid",
-            "State persistence & crash recovery (GV)",
+            "6 selectable M5 seed filters & +90-pt ($0.90) fast first-order scalp",
+            "250-pt counter-hedge & 150-pt M15 simultaneous BUY + SELL grid",
+            "EMA-34 Trend Reversal Brake keeps counter-trend lots flat at 0.02",
+            "Same-Side Smart Pruning (Tier >= 5) & $50.00 OrderSendAsync exit",
+            "3-View Obsidian HUD: Live Telemetry, Direct Strategy Edit & Profit Calendar",
         ],
         parameters: [
+            // Section 1: General & Persistent On-Chart Controls
             {
-                name: "BaseLot",
-                defaultValue: "0.01",
+                group: "1: General & On-Chart Controls",
+                name: "Magic Number (InpMagicNumber)",
+                defaultValue: "6868686",
                 description:
-                    "Starting volume for the initial position of a new grid cycle.",
+                    "Unique order identification tag stamped onto every Shadow Matrix position.",
             },
             {
-                name: "LotMode",
-                defaultValue: "Lot Compensation",
+                group: "1: General & On-Chart Controls",
+                name: "Entry Signal Strategy (InpFilterType)",
+                defaultValue: "MA (EMA/SMA) [0..5]",
                 description:
-                    "Martingale calculation mode: Multiplier (recursive compounding) or Lot Compensation (slippage compensation).",
+                    "Selectable live on View 1 (2x3 Grid): MA (EMA/SMA), SuperTrend, Ichimoku, ADX + RSI, Bollinger Bands, or MACD Trend. Persisted in MT5 GlobalVariables.",
             },
             {
-                name: "Adaptive Risk Levels",
-                defaultValue: "Level 1 / 2 / 3",
+                group: "1: General & On-Chart Controls",
+                name: "Base Lot Size (InpBaseLot)",
+                defaultValue: "0.02",
                 description:
-                    "Transitions grid spacing and multipliers automatically based on floating loss thresholds.",
+                    "Tier 1 seed lot size adjustable live on View 1 (±0.01 steppers, range 0.01 – 100.0).",
             },
             {
-                name: "ProfitBankGroupSize",
-                defaultValue: "3",
-                description:
-                    "Number of deep Level 3 positions grouped together to harvest scalp profits.",
-            },
-            {
-                name: "ProfitBankAutoTrim",
-                defaultValue: "true",
-                description:
-                    "Automatically triggers virtual bank funds to close the worst-performing Level 1 and 2 positions.",
-            },
-            {
-                name: "HedgeActivationPips",
+                group: "1: General & On-Chart Controls",
+                name: "Grid Step Distance (InpGridStep)",
                 defaultValue: "150",
                 description:
-                    "Maximum adverse movement in pips before locking drawdown with opposite positions.",
+                    "Distance in points ($1.50 on Gold) between M15 dual grid tiers, adjustable live on View 1 (±10 pts).",
             },
             {
-                name: "RecoveryStep",
-                defaultValue: "600",
+                group: "1: General & On-Chart Controls",
+                name: "Dynamic ATR Grid Spacing (InpUseDynamicATR)",
+                defaultValue: "false (OFF / FIXED)",
                 description:
-                    "Minimum grid spacing points for the isolated trend-following recovery grid.",
+                    "Toggles between deterministic 150-point fixed spacing and adaptive volatility spacing (150 + ATR(14) × 1.0).",
             },
             {
-                name: "HedgeCloseProfit",
-                defaultValue: "10.0",
+                group: "1: General & On-Chart Controls",
+                name: "Basket Take Profit $ (InpTPTotal)",
+                defaultValue: "50.0",
                 description:
-                    "Reduced profit target in currency to exit the entire locked hedged basket.",
+                    "Combined floating USD profit target ($50.00) that triggers instant parallel OrderSendAsync basket closure.",
+            },
+            // Section 2: Money Management
+            {
+                group: "2: Money Management & EMA-34 Brake",
+                name: "Winning Side Multiplier (InpMultWin)",
+                defaultValue: "1.05",
+                description:
+                    "Gentle multiplier applied when price is in profit relative to the newest open order of that direction (rounded up via MathCeil).",
             },
             {
-                name: "MLPS_SpikeMultiplier",
-                defaultValue: "2.5",
+                group: "2: Money Management & EMA-34 Brake",
+                name: "Losing Side Multiplier (InpMultLose)",
+                defaultValue: "1.60",
                 description:
-                    "Candle high-low ATR multiplier to trigger cooling period grid stretching.",
+                    "Base multiplier when price is in loss relative to the newest order of that direction, prior to EMA-34 reversal braking.",
             },
             {
-                name: "MLPS_ADXThreshold",
-                defaultValue: "35",
+                group: "2: Money Management & EMA-34 Brake",
+                name: "Reduce Lot on Trend Reversal (InpUseTrendRev)",
+                defaultValue: "true",
                 description:
-                    "ADX threshold on M5 timeframe to block counter-trend first-order entries.",
+                    "Activates the M5 EMA-34 Trend Reversal Brake. Halves the multiplier whenever an order is placed against the M5 EMA-34 trend.",
+            },
+            {
+                group: "2: Money Management & EMA-34 Brake",
+                name: "Reversal Reduction Ratio (InpTrendRevMult)",
+                defaultValue: "0.50",
+                description:
+                    "Multiplier reduction factor (50%) when counter-trend: 1.60 × 0.50 = 0.80x, clamping counter-trend losing lots back to Base Lot (0.02).",
+            },
+            // Section 3: Grid & Hedge Engine
+            {
+                group: "3: Grid & Hedge Engine",
+                name: "Grid Bar Timeframe (InpGridTF)",
+                defaultValue: "15 Minutes (PERIOD_M15)",
+                description:
+                    "New-bar gate for regular dual grid expansion. Prevents opening multiple grid pairs inside a single 60-second news spike candle.",
+            },
+            {
+                group: "3: Grid & Hedge Engine",
+                name: "Hedge Distance Points (InpHedgeDist)",
+                defaultValue: "250",
+                description:
+                    "Adverse distance in points ($2.50 on Gold) before a solitary seed order locks drawdown with an opposite 'Hedge Start' position.",
+            },
+            {
+                group: "3: Grid & Hedge Engine",
+                name: "Max Grid Tiers Per Direction (InpMaxGridTiers)",
+                defaultValue: "8",
+                description:
+                    "Hard per-side ceiling (max 8 BUY and 8 SELL orders). Blocks further expansion until Same-Side Smart Pruning frees tier capacity.",
+            },
+            // Section 4: Smart Pruning Defense
+            {
+                group: "4: Same-Side Smart Pruning",
+                name: "Enable Smart Pruning (InpEnablePruning)",
+                defaultValue: "true",
+                description:
+                    "Activates Same-Side Smart Pruning (BUY with BUY, SELL with SELL) to trim tail risk without unbalancing hedge delta.",
+            },
+            {
+                group: "4: Same-Side Smart Pruning",
+                name: "Danger Tier Threshold (InpPruneDangerTier)",
+                defaultValue: "5",
+                description:
+                    "Minimum open orders on a single side (>= 5) before pairing the newest winning order with the oldest losing order of that same side.",
+            },
+            {
+                group: "4: Same-Side Smart Pruning",
+                name: "Pruning Surplus Profit $ (InpPruneMinProfit)",
+                defaultValue: "1.0",
+                description:
+                    "Minimum combined net profit ($1.00 USD including swap and commission) required to close the oldest loser first and newest winner second.",
+            },
+            // Section 5: First Order TP
+            {
+                group: "5: First Order Fast Scalp",
+                name: "First Order TP Points (InpTPFirstPoints)",
+                defaultValue: "90",
+                description:
+                    "When only the initial seed order is open (total_orders == 1), closes it immediately at +90 points ($0.90) profit and re-arms the next cycle.",
+            },
+            // Section 6: Strategy Filters & Sessions
+            {
+                group: "6: M5 Seed Filters & Sessions",
+                name: "6 Built-In M5 Strategy Engines",
+                defaultValue: "MA(34) / ST(10,3.0) / Ichi(9,26,52) / ADX+RSI / BB(20,2) / MACD(12,26,9)",
+                description:
+                    "Closed-bar (shift=1) M5 entry engines selectable directly from the on-chart Strategy Settings panel.",
+            },
+            {
+                group: "6: M5 Seed Filters & Sessions",
+                name: "Server & 4 Custom Intraday Sessions",
+                defaultValue: "07:30–23:59 (Server) / 4 Intraday Slots",
+                description:
+                    "Optional time gates restricting when a new seed cycle (total_orders == 0) may start while keeping active basket management running 24/5.",
             },
         ],
         logic: [
-            "Volatility-Adaptive Grid Spacing (ATR Engine) compresses/stretches grid steps based on current market volatility.",
-            "Phoenix Profit Bank harvests L3 layers at profit and uses Virtual Bank Balance to trim adverse L1/L2 positions.",
-            "Multi-Layered Protection System (MLPS) checks H1 EMA confluence, M5 Spike stretching, and Dow weekly swing breakouts.",
-            "Global Variables (GV) persist balance, sequence indexes, and re-entry locks to prevent reset upon terminal crashes.",
+            "Stage 1 (Gate & License Check): Verifies online/cached license state, checks the on-chart EA ACTIVE: ON toggle, and validates trading session windows before starting a new cycle.",
+            "Stage 2 (M5 Seed Entry & +90-Pt Fast Scalp): When total_orders == 0, evaluates closed M5 candle signals on the active Strategy Filter (1..6) to open a 0.02 lot seed trade. If it reaches +90 points ($0.90) before hedging, CheckFirstOrderTP() banks the scalp immediately.",
+            "Stage 3 (Initial Counter-Hedge at -250 Pts): If the solitary seed order moves -250 points (-$2.50) against entry, CheckHedgeLogic() opens an opposite 'Hedge Start' order, locking the basket into hedged mode (is_hedged = true).",
+            "Stage 4 (M15 Dual Grid Expansion): Once hedged, opens simultaneous BUY + SELL pairs ('Grid Buy' + 'Grid Sell') on new M15 bars whenever price moves 150 points ($1.50) beyond boundary orders (or 150 + ATR(14) when Dynamic ATR Spacing is ON), capped at 8 tiers per side.",
+            "Stage 5 (Asymmetric Lot Ladder & EMA-34 Reversal Brake): Winning trend sides scale gently by 1.05x (0.02 -> 0.03 -> 0.04...), while losing counter-trend sides against M5 EMA-34 have their 1.60x multiplier halved (×0.50 = 0.80x) and clamped back to 0.02 lot.",
+            "Stage 6 (Same-Side Smart Pruning & Async Exit): When either side reaches >= 5 orders, PruneSideSequence() pairs the newest winner with the oldest same-side loser at >= +$1.00 net profit (closing the losing leg first). When total basket profit hits $50.00, CloseAll() flattens all positions in parallel via OrderSendAsync.",
         ],
         faqs: [
             {
-                question: "What is the Multi-Layered Protection System (MLPS)?",
-                answer: "It is a 3-layer defense system: Layer 1 blocks counter-trend cycles using H1 EMA; Layer 2 stretches spacing by 2.0x during M5 price spikes (news); Layer 3 blocks entries on ADX strength and shifts spacing on H1 weekly breakouts.",
-            },
-            {
-                question: "How does the Profit Bank reduce grid drawdowns?",
-                answer: "It harvests scalp profits from the volatile Level 3 (martingale) positions and puts them into a virtual bank. The EA then uses this bank to pay off and close the highest-drawdown Level 1 and 2 positions, drawing break-even closer.",
+                question:
+                    "How does the EMA-34 Trend Reversal Brake prevent runaway Martingale lot sizes?",
+                answer: "In an unprotected 1.60x grid, a violent one-way Gold trend accumulates 2.13 lots on the losing side by Tier 8. Shadow Matrix checks the M5 EMA-34 on every new order: whenever a losing side is counter-trend (e.g., SELL while Close > EMA-34), its 1.60x multiplier is multiplied by 0.50 (= 0.80x) and clamped back to the 0.02 base lot. By Tier 8, the losing side holds only 0.16 lots total while the winning trend side holds 0.44 lots, driving the basket naturally to its $50.00 Take Profit.",
             },
             {
                 question:
-                    "How does the Hedge Recovery module resolve locked positions?",
-                answer: "When drawdown hits the activation threshold, the EA hedges the losing side. It then runs an isolated Recovery DCA grid on the winning side, using separate lot sizing sequences, to exit the entire basket at a small net-neutral target.",
+                    "What is Same-Side Smart Pruning and why does it close the losing leg first?",
+                answer: "Once either BUY or SELL accumulates 5 or more open positions (Danger Tier Threshold = 5), the EA pairs the newest profitable order on that side with the oldest losing order of that exact same direction. When their combined net profit reaches +$1.00 (including commission and swap), it closes the oldest losing leg first and only closes the winning leg after broker confirmation—ensuring a requote never leaves a deep loser stranded without its winning pair.",
+            },
+            {
+                question:
+                    "Why does the dual grid wait for a new M15 bar and how does Dynamic ATR Spacing work?",
+                answer: "Waiting for the opening tick of a new M15 candle prevents the EA from firing multiple grid levels inside a single 60-second news spike candle. When Dynamic ATR Grid Spacing is toggled [ON], the EA adds M15 ATR(14) × 1.0 on top of the 150-point base step to automatically widen spacing during extreme volatility.",
+            },
+            {
+                question:
+                    "Can I switch strategies or change Base Lot, Grid Step, and Basket TP directly on the chart?",
+                answer: "Yes. Clicking [ STRATEGY SETTINGS ] on the Obsidian panel opens View 1, where you can switch between all 6 M5 seed filters (MA, SuperTrend, Ichimoku, ADX+RSI, Bollinger Bands, MACD Trend) and edit Base Lot Size, Grid Step Distance, Dynamic ATR Spacing, and Basket Take Profit ($). All 5 settings persist automatically in MT5 Terminal GlobalVariables across chart reloads and restarts.",
+            },
+            {
+                question:
+                    "How should I use the [ LAST ROUND ] button before high-impact USD news?",
+                answer: "Two hours before FOMC, NFP, or US CPI releases (or before Friday market close), click [ LAST ROUND ] on the main dashboard. The EA will continue managing, pruning, and hedging your currently open basket until it hits the $50.00 target and closes—and will then pause without opening any new cycles until you toggle [ LAST ROUND ] off.",
+            },
+            {
+                question:
+                    "What happens if my license expires while a grid basket is still open?",
+                answer: "Shadow Matrix uses Graceful License Protection. It never abandons or force-closes open trades in drawdown. If a license check fails while positions are open, the EA blocks new seed cycles (total_orders == 0) while continuing full dual-grid hedging, Same-Side Smart Pruning, and $50.00 basket take-profit closure until your chart is completely flat.",
             },
         ],
+        metrics: {
+            winRate: "71.6%",
+            profitFactor: "1.82",
+            maxDrawdown: "2.88%",
+            monthlyAvg: "+29.29% ($2,929 / $10k)",
+            verifiedLink:
+                "https://myfxbook.com/members/thenexttrade/shadow-matrix-real/10294816",
+        },
         colorTheme: "emerald",
         functions: [
             {
-                title: "Grid Recovery Leg",
-                desc: "Deploys mathematical grid scaling with customized lot multipliers when positions move into floating drawdown.",
+                title: "6 M5 Seed Filters & +90-Pt Fast Scalp",
+                desc: "Select from MA (EMA 34), SuperTrend, Ichimoku, ADX+RSI, Bollinger Bands, or MACD Trend on M5, banking quick +90-point ($0.90) single-order scalps.",
             },
             {
-                title: "Profit Bank Harvesting",
-                desc: "Secures a percentage of active profits into a separate Profit Bank buffer prior to cycle completion.",
+                title: "250-Pt Counter-Hedge & M15 Dual Grid",
+                desc: "Caps initial seed drawdown at -250 points ($2.50) with an opposite hedge, then expands simultaneous BUY + SELL pairs on M15 every 150 points ($1.50).",
             },
             {
-                title: "Max Drawdown Protection",
-                desc: "Monitors daily and total account drawdown thresholds, initiating an auto-close if limits are breached.",
+                title: "Asymmetric Ladder & EMA-34 Lot Brake",
+                desc: "Compounds with-trend winners by 1.05x while halving counter-trend multipliers (×0.50) against M5 EMA-34 to keep losing counter-trend lots flat at 0.02.",
+            },
+            {
+                title: "M15 New-Bar Gate & Dynamic ATR Spacing",
+                desc: "Prevents multi-order clustering during 1-minute news spikes and optionally widens grid steps dynamically using M15 ATR(14) volatility buffers.",
+            },
+            {
+                title: "Same-Side Smart Pruning (Tier >= 5)",
+                desc: "Pairs the newest winner with the oldest loser of the same direction at +$1.00 net surplus—closing the losing leg first to recycle the 8-tier ceiling.",
+            },
+            {
+                title: "3-View Obsidian HUD & Async Basket Exit",
+                desc: "Includes Live Telemetry, direct on-chart Strategy & Risk Settings, a Monthly Profit Calendar heatmap, and parallel OrderSendAsync closure at $50.00 TP.",
             },
         ],
         setupSteps: [
             {
                 step: "01",
-                title: "Retrieve EA File",
-                desc: "Download the compiled GSN - Apex Gold Sentinel .ex5 file from your dashboard under verified accounts.",
+                title: "Copy the Compiled EA File",
+                desc: "In MT5, click File -> Open Data Folder -> MQL5 -> Experts, paste GoldScalperNinja - Shadow Matrix.ex5, then refresh Expert Advisors in Navigator.",
             },
             {
                 step: "02",
-                title: "Deploy to Experts folder",
-                desc: "In MT5, open Data Folder, go to MQL5/Experts, and paste the downloaded file.",
+                title: "Authorize License WebRequest URLs",
+                desc: "Open Tools -> Options -> Expert Advisors, enable Allow Algorithmic Trading and Allow WebRequest for listed URL, and add https://raw.githubusercontent.com and https://api.github.com.",
             },
             {
                 step: "03",
-                title: "Check EA Settings",
-                desc: "Drag the EA onto your chart. Ensure 'Allow DLL imports' is enabled for recovery calculations.",
+                title: "Attach to Clean XAUUSD Chart",
+                desc: "Open an XAUUSD (GOLD) chart on M5 or M15. Drag Shadow Matrix onto the chart (signal M5 and grid M15 timeframes are locked internally).",
             },
             {
                 step: "04",
-                title: "Load Recovery Presets",
-                desc: "Import the designated recovery preset (.set) file from your dashboard to configure initial multipliers.",
+                title: "Verify Obsidian Panel & EA ACTIVE: ON",
+                desc: "Confirm the Obsidian Control Panel renders on the chart and the top-right status indicator reads EA ACTIVE : ON in bright green.",
+            },
+            {
+                step: "05",
+                title: "Configure On-Chart Strategy & Risk (View 1)",
+                desc: "Click [ STRATEGY SETTINGS ] on the panel to choose your M5 Seed Filter (1..6), Base Lot Size (0.02), Grid Step (150), ATR Spacing, and Basket TP ($50.0).",
+            },
+            {
+                step: "06",
+                title: "Run 24/5 on a Low-Latency VPS",
+                desc: "Deploy on a dedicated Windows VPS (<15ms latency to broker) so dual-grid management and OrderSendAsync basket exits execute without interruption.",
             },
         ],
         riskControls: [
             {
-                title: "Exposure Warning",
-                desc: "Grid and hedging algorithms can dramatically increase margins. Never run high multipliers without testing.",
+                title: "Rule 1: Respect Capital Per 0.02 Base Lot",
+                desc: "Use $3,000–$5,000 minimum ($10,000 recommended for <3% max DD) per 0.01–0.02 base lot on Standard accounts (1:200+ leverage), or $300 USD (30,000 USC) on Cent accounts.",
             },
             {
-                title: "Lot Size Calibration",
-                desc: "Always start with the absolute minimum base lot (0.01) to verify distance settings.",
+                title: "Rule 2: Keep EMA-34 Trend Reversal Brake ON",
+                desc: "Always leave Reduce Lot on Trend Reversal = true (0.50 ratio). It prevents counter-trend martingale lot inflation by clamping counter-trend tiers to 0.02 lot.",
             },
             {
-                title: "Drawdown Trim Limits",
-                desc: "Keep conservative daily drawdown limits configured within the EA settings to prevent major margin calls.",
+                title: "Rule 3: Arm [ LAST ROUND ] Before High-Impact News",
+                desc: "Click [ LAST ROUND ] 2 hours before FOMC, NFP, or US CPI releases so the active basket closes cleanly at $50.00 TP and pauses before the news spike.",
+            },
+            {
+                title: "Rule 4: Never Manually Close Only the Winning Side",
+                desc: "The winning trend ladder (0.02 -> 0.03 -> 0.04...) funds Same-Side Smart Pruning and the $50.00 Basket TP. Never strip green positions while leaving red tiers open.",
+            },
+            {
+                title: "Rule 5: Hard 8-Tier Ceiling & Scheduled Withdrawals",
+                desc: "Keep Max Grid Tiers Per Direction at 7–8 with Danger Tier Threshold at 4–5, and withdraw realized profits on a regular weekly or monthly schedule.",
             },
         ],
     },
@@ -590,6 +1191,9 @@ export const TRADING_SYSTEMS_DATA: SystemData[] = [
 
 export function getSystemBySlug(slug: string): SystemData | undefined {
     const normalized = slug.toLowerCase().replace(/[^a-z0-9]/g, "");
+    if (normalized === "gsnphoenixgrid" || normalized === "gsnshadowmatrix") {
+        return TRADING_SYSTEMS_DATA.find((s) => s.slug === "gsn-shadown-matrix");
+    }
     return TRADING_SYSTEMS_DATA.find(
         (s) => s.slug.toLowerCase().replace(/[^a-z0-9]/g, "") === normalized
     );

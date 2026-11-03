@@ -17,19 +17,20 @@ function isAuthenticated(request: NextRequest): boolean {
     const secret = process.env.INTERNAL_SECURITY_SECRET;
     const authHeader = request.headers.get("Authorization");
 
-    if (isProd) {
-        if (!secret) {
-            console.error(
-                "[Security] INTERNAL_SECURITY_SECRET is missing in production!"
-            );
-            return false; // Fail closed
-        }
+    if (secret) {
         return authHeader === `Bearer ${secret}`;
-    } else {
-        // Dev fallback
-        const internalHeader = request.headers.get("x-internal-security");
-        return authHeader === `Bearer ${secret}` || internalHeader === "1";
     }
+
+    if (isProd) {
+        console.error(
+            "[Security] INTERNAL_SECURITY_SECRET is missing in production!"
+        );
+        return false; // Fail closed
+    }
+
+    // Dev fallback only when INTERNAL_SECURITY_SECRET is not configured
+    const internalHeader = request.headers.get("x-internal-security");
+    return internalHeader === "1";
 }
 
 export async function POST(request: NextRequest) {

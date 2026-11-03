@@ -126,7 +126,7 @@ export function ArchetypeMoves({
                 </span>
                 <Link
                     href={archetype.keystone.href}
-                    className="group mt-1.5 block rounded-xl border border-dashboard bg-white/90 p-4 shadow-sm backdrop-blur-sm transition-all hover:border-gray-400/50 hover:shadow-md dark:bg-[#151925]/90 dark:hover:border-white/20"
+                    className="group mt-1.5 block rounded-xl border border-dashboard bg-gray-50/70 p-4 shadow-sm transition-all hover:border-gold/40 hover:shadow-md dark:bg-[#151925]"
                 >
                     <div className="flex items-start justify-between gap-3">
                         <div>
@@ -155,9 +155,9 @@ export function ArchetypeMoves({
                             <li key={m.label}>
                                 <Link
                                     href={m.href}
-                                    className="group flex items-start gap-3 rounded-xl border border-dashboard bg-white/70 p-3.5 backdrop-blur-sm transition-all hover:border-gray-400/50 hover:bg-gray-50/50 dark:bg-white/[0.02] dark:hover:border-white/20 dark:hover:bg-white/[0.04]"
+                                    className="group flex items-start gap-3 rounded-xl border border-dashboard bg-gray-50/70 p-3.5 transition-all hover:border-gold/40 dark:bg-[#151925]"
                                 >
-                                    <span className="mt-0.5 shrink-0 font-mono text-[10px] font-bold text-gray-400 dark:text-gray-500">
+                                    <span className="mt-0.5 shrink-0 font-mono tabular-nums text-[10px] font-bold text-gray-400 dark:text-gray-500">
                                         0{idx + 1}
                                     </span>
                                     <span className="min-w-0 flex-1">

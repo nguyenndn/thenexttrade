@@ -118,10 +118,10 @@ export function CorrelationMatrix() {
                                 setError(null);
                             }}
                             className={cn(
-                                "relative px-4 py-2 rounded-lg text-xs font-bold border transition-colors z-10 h-auto",
+                                "relative px-4 py-2 rounded-lg text-xs font-mono tabular-nums font-bold border transition-colors z-10 h-auto",
                                 period === p.value
-                                    ? "text-white border-transparent hover:text-white"
-                                    : "bg-white dark:bg-white/5 text-gray-600 dark:text-gray-500 border-dashboard hover:border-primary/50"
+                                    ? "!text-white border-transparent hover:!text-white"
+                                    : "bg-gray-50/80 dark:bg-[#151925] text-gray-600 dark:text-gray-400 border-gray-200 dark:border-white/10 hover:border-gold/40"
                             )}
                         >
                             {period === p.value && (
@@ -144,7 +144,7 @@ export function CorrelationMatrix() {
                     size="sm"
                     onClick={fetchCorrelation}
                     disabled={loading}
-                    className="px-4 py-2 rounded-lg shadow-sm shadow-amber-500/20"
+                    className="px-4 py-2 rounded-lg bg-gold hover:bg-amber-600 !text-white font-bold shadow-sm shadow-amber-500/20 border-none"
                 >
                     <RefreshCw
                         size={14}
@@ -231,7 +231,7 @@ export function CorrelationMatrix() {
                                             title={`${rowPair} vs ${colPair}: ${val.toFixed(2)}`}
                                         >
                                             {isDiagonal ? (
-                                                <span className="text-base font-bold">
+                                                <span className="text-base font-mono tabular-nums font-bold">
                                                     100%
                                                 </span>
                                             ) : (
@@ -248,7 +248,7 @@ export function CorrelationMatrix() {
                                                             ""
                                                         )}
                                                     </p>
-                                                    <p className="text-base font-black">
+                                                    <p className="text-base font-mono tabular-nums font-black">
                                                         {pct > 0 ? "+" : ""}
                                                         {pct}%
                                                     </p>
@@ -290,10 +290,10 @@ export function CorrelationMatrix() {
                     </div>
 
                     <div className="flex items-center justify-center gap-2 text-xs text-gray-600 dark:text-gray-300">
-                        <Info size={14} className="shrink-0 text-primary/60" />
+                        <Info size={14} className="shrink-0 text-amber-600 dark:text-gold" />
                         <span>
                             Based on{" "}
-                            <span className="font-semibold text-gray-600 dark:text-gray-300">
+                            <span className="font-mono tabular-nums font-semibold text-gray-600 dark:text-gray-300">
                                 {period}-day
                             </span>{" "}
                             historical price data using Pearson correlation.

@@ -201,7 +201,7 @@ export function TimezoneSelector({ value, onChange }: TimezoneSelectorProps) {
                     hour12: false,
                 }).format(now);
                 setCurrentTime(timeString);
-            } catch (e) {
+            } catch {
                 setCurrentTime("--:--");
             }
         };
@@ -241,17 +241,17 @@ export function TimezoneSelector({ value, onChange }: TimezoneSelectorProps) {
                 onClick={() => setIsOpen(!isOpen)}
                 className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-all h-auto w-full sm:w-auto font-normal ${
                     isDark
-                        ? "bg-slate-800 border-slate-700 hover:border-slate-600 text-gray-200"
-                        : "bg-white border-dashboard hover:border-gray-300 text-gray-700"
+                        ? "bg-[#1E2028] border-white/10 hover:border-gold/40 text-gray-200"
+                        : "bg-white border-gray-200 hover:border-gold/40 text-gray-700"
                 }`}
             >
                 <Clock size={15} className="text-gray-500 shrink-0" />
                 <span className="text-xs font-medium truncate">
                     <span className="opacity-70 hidden sm:inline">Time: </span>
-                    <span className="opacity-70">
+                    <span className="opacity-70 font-mono tabular-nums">
                         ({selectedZone.offsetDisplay})
                     </span>
-                    <span className="ml-1 font-bold text-cyan-500">
+                    <span className="ml-1 font-mono tabular-nums font-bold text-amber-600 dark:text-gold">
                         {currentTime}
                     </span>
                 </span>
@@ -263,17 +263,17 @@ export function TimezoneSelector({ value, onChange }: TimezoneSelectorProps) {
 
             {isOpen && (
                 <div
-                    className={`absolute right-0 mt-2 w-64 rounded-lg shadow-xl border overflow-hidden z-50 ${
+                    className={`absolute right-0 mt-2 w-64 rounded-xl shadow-xl border overflow-hidden z-50 ${
                         isDark
-                            ? "bg-slate-800 border-slate-700"
-                            : "bg-white border-dashboard"
+                            ? "bg-[#1E2028] border-white/10"
+                            : "bg-white border-gray-200"
                     }`}
                 >
                     <div
                         className={`px-4 py-2 text-xs font-bold uppercase tracking-wider border-b ${
                             isDark
-                                ? "bg-slate-900/50 text-gray-500 border-slate-700"
-                                : "bg-gray-50 text-gray-600 border-dashboard"
+                                ? "bg-[#151925] text-gray-400 border-white/10"
+                                : "bg-gray-50 text-gray-600 border-gray-200"
                         }`}
                     >
                         Select Timezone
@@ -287,24 +287,24 @@ export function TimezoneSelector({ value, onChange }: TimezoneSelectorProps) {
                                 onClick={() => handleSelect(zone)}
                                 className={`w-full flex items-center justify-between px-4 py-2.5 text-sm transition-colors h-auto font-normal rounded-none ${
                                     isDark
-                                        ? "hover:bg-slate-700 text-gray-300"
+                                        ? "hover:bg-white/[0.04] text-gray-300"
                                         : "hover:bg-gray-50 text-gray-700"
-                                } ${selectedZone.value === zone.value ? (isDark ? "bg-slate-700/50" : "bg-cyan-50/50") : ""}`}
+                                } ${selectedZone.value === zone.value ? "bg-gold/10" : ""}`}
                             >
                                 <div className="flex flex-col items-start text-left">
                                     <span
-                                        className={`font-medium ${selectedZone.label === zone.label ? "text-cyan-500" : ""}`}
+                                        className={`font-medium ${selectedZone.label === zone.label ? "text-amber-600 dark:text-gold" : ""}`}
                                     >
                                         {zone.label}
                                     </span>
-                                    <span className="text-xs opacity-50">
+                                    <span className="text-xs font-mono tabular-nums opacity-60">
                                         {zone.offsetDisplay}
                                     </span>
                                 </div>
                                 {selectedZone.value === zone.value && (
                                     <Check
                                         size={16}
-                                        className="text-cyan-500 shrink-0"
+                                        className="text-amber-600 dark:text-gold shrink-0"
                                     />
                                 )}
                             </Button>

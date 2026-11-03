@@ -1,5 +1,3 @@
-"use client";
-
 export function MissionManifestoHeader() {
     return (
         <div className="px-6 py-4 sm:px-8 sm:py-5 border-b border-gray-200 dark:border-white/[0.08] bg-white/50 dark:bg-white/[0.015] text-center">

@@ -33,6 +33,7 @@ import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
 import { parseHowToSteps, minutesToIsoDuration } from "@/lib/parseHowToSteps";
 import { parseFaq } from "@/lib/parseFaq";
 import { splitArticleTitle } from "@/lib/utils";
+import { getAuthUser } from "@/lib/auth-cache";
 
 // CACHING: Cache article data + processed content for 60 seconds
 const generateId = (text: string) => {
@@ -97,21 +98,6 @@ const getCachedArticle = unstable_cache(
     { revalidate: 60, tags: ["articles"] }
 );
 
-// SSG: Pre-render the top 50 most recent articles at build time
-/*
-export async function generateStaticParams() {
- const articles = await prisma.article.findMany({
- take: 50,
- select: { slug: true },
- orderBy: { createdAt: 'desc' }
- });
-
- return articles.map((article) => ({
- slug: article.slug,
- }));
-}
-*/
-
 export async function generateMetadata({
     params,
 }: {
@@ -163,8 +149,8 @@ export default async function ArticlePage({
 }) {
     const { slug } = await params;
 
-    // Parallel Fetching: Article & Related Articles (Spec 3.4)
-    const [article, relatedArticles] = await Promise.all([
+    // Parallel Fetching: Article, Related Articles & Auth User
+    const [article, relatedArticles, user] = await Promise.all([
         getCachedArticle(slug),
         prisma.article.findMany({
             where: {
@@ -182,6 +168,7 @@ export default async function ArticlePage({
                 createdAt: true,
             },
         }),
+        getAuthUser(),
     ]);
 
     if (!article) {
@@ -208,7 +195,7 @@ export default async function ArticlePage({
     ]);
 
     return (
-        <main className="min-h-screen bg-slate-50/50 dark:bg-transparent">
+        <main className="min-h-screen bg-gray-50 dark:bg-[#0B0E14]">
             <ReadingProgressBar />
             <ViewCounter articleId={article.id} />
             <BreadcrumbJsonLd
@@ -282,7 +269,7 @@ export default async function ArticlePage({
                 );
             })()}
 
-            <PublicHeader />
+            <PublicHeader user={user} />
 
             <div className="pt-[84px]" />
 
@@ -292,15 +279,15 @@ export default async function ArticlePage({
                 <header className="mb-8 sm:mb-10 text-center">
                     {/* Slim Full-Width Breadcrumb Bar with Article Title (Centered) */}
                     <nav
-                        className="w-full mb-5 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-lg bg-white/80 dark:bg-card/50 border border-gold/20 dark:border-white/10 flex items-center justify-center min-w-0 text-xs text-gray-500 dark:text-gray-400 overflow-hidden"
+                        className="w-full mb-5 px-3.5 sm:px-4 py-2 rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm flex items-center justify-center min-w-0 text-xs text-gray-500 dark:text-gray-400 overflow-hidden"
                         aria-label="Breadcrumb"
                     >
                         <div className="flex items-center justify-center gap-1.5 sm:gap-2 min-w-0 overflow-x-auto no-scrollbar py-0.5">
                             <Link
                                 href="/"
-                                className="text-gray-600 dark:text-gray-300 hover:text-gold transition-colors flex items-center gap-1 shrink-0"
+                                className="text-gray-600 dark:text-gray-300 hover:text-amber-600 dark:hover:text-gold transition-colors flex items-center gap-1 shrink-0"
                             >
-                                <Home size={13} className="text-gold" />
+                                <Home size={13} className="text-amber-600 dark:text-gold" />
                                 <span>Home</span>
                             </Link>
                             <ChevronRight
@@ -309,7 +296,7 @@ export default async function ArticlePage({
                             />
                             <Link
                                 href="/knowledge"
-                                className="text-gray-600 dark:text-gray-300 hover:text-gold transition-colors shrink-0"
+                                className="text-gray-600 dark:text-gray-300 hover:text-amber-600 dark:hover:text-gold transition-colors shrink-0"
                             >
                                 Knowledge
                             </Link>
@@ -319,7 +306,7 @@ export default async function ArticlePage({
                             />
                             <Link
                                 href={`/knowledge?category=${article.category.slug}`}
-                                className="text-gray-700 dark:text-gray-300 hover:text-gold transition-colors shrink-0 font-medium"
+                                className="text-gray-700 dark:text-gray-300 hover:text-amber-600 dark:hover:text-gold transition-colors shrink-0 font-medium"
                             >
                                 {article.category.name}
                             </Link>
@@ -328,7 +315,7 @@ export default async function ArticlePage({
                                 className="text-gray-300 dark:text-gray-600 shrink-0"
                             />
                             <span
-                                className="text-gold font-medium truncate max-w-[240px] sm:max-w-md lg:max-w-xl"
+                                className="text-amber-600 dark:text-gold font-medium truncate max-w-[240px] sm:max-w-md lg:max-w-xl"
                                 title={article.title}
                             >
                                 {mainTitle}
@@ -338,7 +325,7 @@ export default async function ArticlePage({
 
                     {/* Center-Aligned H1 Title (Punchy, balanced main headline) */}
                     <h1
-                        className={`text-2xl sm:text-3xl lg:text-[34px] font-black text-gray-900 dark:text-white leading-[1.25] tracking-tight text-center mx-auto max-w-4xl [text-wrap:balance] ${
+                        className={`text-2xl sm:text-3xl lg:text-[34px] font-black text-gray-900 dark:text-white leading-[1.25] tracking-tight text-center mx-auto max-w-4xl font-heading [text-wrap:balance] ${
                             subtitle ? "mb-3" : "mb-6"
                         }`}
                     >
@@ -356,8 +343,8 @@ export default async function ArticlePage({
                 {/* ===== 2. HERO IMAGE (Full containment, never cropped) ===== */}
                 {article.thumbnail && (
                     <div className="mb-5">
-                        <div className="relative w-full rounded-xl overflow-hidden shadow-sm border border-dashboard dark:border-white/10 bg-slate-100/70 dark:bg-card/50 p-2 sm:p-4">
-                            <div className="relative w-full aspect-[16/9] sm:aspect-[16/9] max-h-[620px] rounded-lg overflow-hidden flex items-center justify-center">
+                        <div className="relative w-full rounded-xl overflow-hidden shadow-sm border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-2 sm:p-4">
+                            <div className="relative w-full aspect-[16/9] sm:aspect-[16/9] max-h-[620px] rounded-lg bg-gray-50/80 dark:bg-[#151925] overflow-hidden flex items-center justify-center">
                                 <SafeImage
                                     src={article.thumbnail}
                                     alt={article.title}
@@ -407,8 +394,8 @@ export default async function ArticlePage({
                         </span>
 
                         {/* Date */}
-                        <div className="flex items-center gap-1.5">
-                            <Calendar size={13} className="text-gold" />
+                        <div className="flex items-center gap-1.5 font-mono tabular-nums">
+                            <Calendar size={13} className="text-amber-600 dark:text-gold" />
                             <span>{formattedDate}</span>
                         </div>
 
@@ -417,8 +404,8 @@ export default async function ArticlePage({
                         </span>
 
                         {/* Read time */}
-                        <div className="flex items-center gap-1.5">
-                            <Clock size={13} className="text-gold" />
+                        <div className="flex items-center gap-1.5 font-mono tabular-nums">
+                            <Clock size={13} className="text-amber-600 dark:text-gold" />
                             <span>
                                 {Math.ceil(article.content.length / 1000)}{" "}
                                 min read
@@ -430,8 +417,8 @@ export default async function ArticlePage({
                         </span>
 
                         {/* Views */}
-                        <div className="flex items-center gap-1.5">
-                            <Flame size={13} className="text-gold" />
+                        <div className="flex items-center gap-1.5 font-mono tabular-nums">
+                            <Flame size={13} className="text-amber-600 dark:text-gold" />
                             <span>
                                 {article.views.toLocaleString()} views
                             </span>
@@ -445,11 +432,11 @@ export default async function ArticlePage({
                                 </span>
                                 <a
                                     href="#comments"
-                                    className="flex items-center gap-1.5 hover:text-gold transition-colors"
+                                    className="flex items-center gap-1.5 font-mono tabular-nums hover:text-amber-600 dark:hover:text-gold transition-colors"
                                 >
                                     <MessageSquare
                                         size={13}
-                                        className="text-gold"
+                                        className="text-amber-600 dark:text-gold"
                                     />
                                     <span>{commentCount} comments</span>
                                 </a>
@@ -462,7 +449,7 @@ export default async function ArticlePage({
                                 <span className="text-gray-300 dark:text-gray-700">
                                     ·
                                 </span>
-                                <div className="flex items-center gap-1.5 text-gold font-medium">
+                                <div className="flex items-center gap-1.5 text-amber-600 dark:text-gold font-medium font-mono tabular-nums">
                                     <ThumbsUp
                                         size={13}
                                         className="fill-gold/30"
@@ -474,7 +461,7 @@ export default async function ArticlePage({
                     </div>
                 </div>
 
-                {/* ===== 3. TWO-COLUMN ARTICLE BODY ===== */}
+                {/* ===== 4. TWO-COLUMN ARTICLE BODY ===== */}
                 <div className="flex items-start">
                     {/* --- Left Floating Social Rail (xl screens, zero overlap) --- */}
                     <div className="hidden xl:block shrink-0 w-12 mr-6">
@@ -491,9 +478,9 @@ export default async function ArticlePage({
                     {/* --- Main Content Column --- */}
                     <article className="flex-1 min-w-0">
                         {/* Content Card */}
-                        <div className="bg-white dark:bg-card rounded-xl shadow-sm border border-dashboard px-6 pb-6 pt-4 sm:px-8 sm:pb-8 sm:pt-5 lg:px-10 lg:pb-10 lg:pt-6">
+                        <div className="bg-white dark:bg-[#1E2028] rounded-xl shadow-sm border border-gray-200 dark:border-white/10 px-6 pb-6 pt-4 sm:px-8 sm:pb-8 sm:pt-5 lg:px-10 lg:pb-10 lg:pt-6">
                             <div
-                                className="article-content prose dark:prose-invert prose-lg max-w-none prose-headings:font-black prose-headings:tracking-tight prose-headings:text-gray-700 dark:prose-headings:text-white prose-h2:text-2xl prose-h2:mt-8 prose-h2:mb-4 prose-h2:pb-3 prose-h2:border-b prose-h2:border-dashboard dark:prose-h2:border-white/5 prose-h3:text-xl prose-h3:mt-6 prose-h3:mb-3 prose-p:text-gray-600 dark:prose-p:text-gray-300 prose-p:leading-relaxed prose-a:text-gold dark:prose-a:text-gold prose-a:no-underline hover:prose-a:underline prose-a:font-semibold prose-img:rounded-lg prose-img:shadow-md prose-blockquote:border-l-gold prose-blockquote:bg-gray-50 dark:prose-blockquote:bg-white/5 prose-blockquote:rounded-r-lg prose-blockquote:py-1 prose-blockquote:px-2 prose-li:text-gray-600 dark:prose-li:text-gray-300 prose-strong:text-gray-700 dark:prose-strong:text-white prose-pre:bg-gray-800 prose-pre:text-gray-100 prose-pre:rounded-lg prose-pre:p-5 prose-pre:text-sm prose-pre:leading-relaxed prose-pre:overflow-x-auto prose-pre:shadow-inner prose-code:bg-gray-100 dark:prose-code:bg-white/10 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-lg prose-code:text-sm prose-code:font-semibold prose-code:text-gray-800 dark:prose-code:text-gray-200 [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-gray-100 [&_pre_code]:font-mono [&>*:first-child]:!mt-0 [&>h2:first-child]:!mt-0 [&>h3:first-child]:!mt-0 [&>p:first-child]:!mt-0 [&>div:first-child]:!mt-0"
+                                className="article-content prose dark:prose-invert prose-lg max-w-none prose-headings:font-black prose-headings:tracking-tight prose-headings:text-gray-800 dark:prose-headings:text-white prose-h2:text-2xl prose-h2:mt-8 prose-h2:mb-4 prose-h2:pb-3 prose-h2:border-b prose-h2:border-gray-200 dark:prose-h2:border-white/10 prose-h3:text-xl prose-h3:mt-6 prose-h3:mb-3 prose-p:text-gray-600 dark:prose-p:text-gray-300 prose-p:leading-relaxed prose-a:text-amber-600 dark:prose-a:text-gold prose-a:no-underline hover:prose-a:underline prose-a:font-semibold prose-img:rounded-lg prose-img:shadow-md prose-blockquote:border-l-gold prose-blockquote:bg-gray-50 dark:prose-blockquote:bg-[#151925] prose-blockquote:rounded-r-lg prose-blockquote:py-1 prose-blockquote:px-2 prose-li:text-gray-600 dark:prose-li:text-gray-300 prose-strong:text-gray-800 dark:prose-strong:text-white prose-pre:bg-gray-800 prose-pre:text-gray-100 prose-pre:rounded-lg prose-pre:p-5 prose-pre:text-sm prose-pre:leading-relaxed prose-pre:overflow-x-auto prose-pre:shadow-inner prose-code:bg-gray-100 dark:prose-code:bg-white/10 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-lg prose-code:text-sm prose-code:font-semibold prose-code:text-gray-800 dark:prose-code:text-gray-200 [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-gray-100 [&_pre_code]:font-mono [&>*:first-child]:!mt-0 [&>h2:first-child]:!mt-0 [&>h3:first-child]:!mt-0 [&>p:first-child]:!mt-0 [&>div:first-child]:!mt-0"
                                 dangerouslySetInnerHTML={{
                                     __html: DOMPurify.sanitize(
                                         processedContent
@@ -502,11 +489,9 @@ export default async function ArticlePage({
                             />
                         </div>
 
-
-
                         {/* Editorial Disclaimer Footnote */}
-                        <div className="mt-6 flex items-center justify-center gap-2 text-xs text-gray-500 dark:text-gray-400 italic text-center px-4">
-                            <span className="w-1.5 h-1.5 rounded-full bg-gold/60 shrink-0" />
+                        <div className="mt-6 flex items-center justify-center gap-2 text-xs text-gray-500 dark:text-gray-400 text-center px-4 py-3 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10">
+                            <span className="w-1.5 h-1.5 rounded-full bg-gold shrink-0" />
                             <span>
                                 Editorial Note: Illustrations and diagrams are
                                 educational visualizations and do not constitute
@@ -521,7 +506,7 @@ export default async function ArticlePage({
                                     <Link
                                         key={tag.id}
                                         href={`/knowledge?tag=${tag.slug}`}
-                                        className="px-4 py-2 bg-white dark:bg-card border border-dashboard rounded-full text-sm font-bold text-gray-600 dark:text-gray-400 hover:bg-gold hover:text-white hover:border-gold hover:shadow-md hover:shadow-gold/20 transition-all shadow-sm"
+                                        className="px-3.5 py-1.5 bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg text-xs font-bold text-gray-600 dark:text-gray-300 hover:bg-gold hover:!text-white hover:border-gold transition-colors shadow-sm"
                                     >
                                         #{tag.name}
                                     </Link>
@@ -550,7 +535,7 @@ export default async function ArticlePage({
                         {/* Related Articles */}
                         <Suspense
                             fallback={
-                                <div className="h-64 bg-gray-50 dark:bg-white/5 animate-pulse rounded-xl mt-16" />
+                                <div className="h-64 bg-gray-50 dark:bg-[#1E2028] animate-pulse rounded-xl mt-16" />
                             }
                         >
                             <RelatedArticlesBottom
@@ -564,7 +549,7 @@ export default async function ArticlePage({
                         <div id="comments" className="mt-8">
                             <Suspense
                                 fallback={
-                                    <div className="py-12 border-t border-dashboard space-y-8">
+                                    <div className="py-12 border-t border-gray-200 dark:border-white/10 space-y-8">
                                         <div className="flex items-center gap-3">
                                             <div className="w-10 h-10 bg-gray-200 dark:bg-white/5 rounded-lg animate-pulse" />
                                             <div className="h-8 w-40 bg-gray-200 dark:bg-white/5 rounded-lg animate-pulse" />
@@ -600,8 +585,8 @@ export default async function ArticlePage({
                             <Suspense
                                 fallback={
                                     <div className="space-y-6">
-                                        <div className="h-64 bg-gray-50 dark:bg-white/5 animate-pulse rounded-lg" />
-                                        <div className="h-64 bg-gray-50 dark:bg-white/5 animate-pulse rounded-lg" />
+                                        <div className="h-64 bg-gray-50 dark:bg-[#1E2028] animate-pulse rounded-xl" />
+                                        <div className="h-64 bg-gray-50 dark:bg-[#1E2028] animate-pulse rounded-xl" />
                                     </div>
                                 }
                             >

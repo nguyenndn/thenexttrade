@@ -81,11 +81,11 @@ export default function StreakClient() {
             } else {
                 toast.error(data.error);
             }
-        } catch (error: any) {
+        } catch (error: unknown) {
             toast.error(
                 error instanceof Error
                     ? error.message
-                    : error?.message || "Failed to check in"
+                    : "Failed to check in"
             );
         } finally {
             setIsCheckingIn(false);
@@ -123,48 +123,28 @@ export default function StreakClient() {
                 .join(" + ") || "Special Reward",
     }));
 
-    // Calculate Progress
-    const nextMilestone =
-        MILESTONES.find((m) => m.days > streak) ||
-        MILESTONES[MILESTONES.length - 1];
-    const prevMilestoneDays =
-        MILESTONES.slice()
-            .reverse()
-            .find((m) => m.days <= streak)?.days || 0;
-    const progressPercent = Math.min(
-        100,
-        Math.max(
-            0,
-            ((streak - prevMilestoneDays) /
-                (nextMilestone.days - prevMilestoneDays)) *
-                100
-        )
-    );
-
     return (
         <div className="w-full grid grid-cols-1 xl:grid-cols-5 gap-6 items-stretch">
             {/* Left Column: Login Info (40%) */}
             <div className="xl:col-span-2 h-full">
                 {/* 1. Hero Section: Current Streak & Check-in */}
-                <div className="bg-white dark:bg-[#0B0E14] p-8 rounded-xl border border-dashboard shadow-sm flex flex-col relative overflow-hidden h-full">
+                <div className="bg-white dark:bg-[#1E2028] p-8 rounded-xl border border-dashboard shadow-sm flex flex-col relative overflow-hidden h-full">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-gold to-transparent opacity-50"></div>
 
                     {/* TOP PART: Stats & Action */}
                     <div className="flex-1 flex flex-col items-center justify-center w-full min-h-[300px]">
-                        {" "}
-                        {/* Added min-h to ensure space */}
                         <div className="relative mb-6">
-                            <div className="absolute inset-0 bg-orange-500 blur-[50px] opacity-20 rounded-full"></div>
+                            <div className="absolute inset-0 bg-gold blur-[50px] opacity-20 rounded-full"></div>
                             <Flame
                                 size={80}
-                                className="text-orange-500 relative z-10 animate-pulse"
+                                className="text-amber-500 dark:text-gold relative z-10"
                             />
                         </div>
                         <div className="mb-6 text-center">
                             <p className="text-gray-600 dark:text-gray-400 font-bold uppercase tracking-[0.2em] text-xs mb-2">
                                 Current Login Streak
                             </p>
-                            <h2 className="text-6xl font-black text-gray-700 dark:text-white mb-2">
+                            <h2 className="text-6xl font-black font-mono tabular-nums text-gray-700 dark:text-white mb-2">
                                 {streak}
                             </h2>
                             <p className="text-sm text-gray-500 font-medium">
@@ -178,8 +158,8 @@ export default function StreakClient() {
                             className={cn(
                                 "rounded-lg font-bold transition-all flex items-center gap-2 w-auto",
                                 isCheckedInToday
-                                    ? "bg-amber-500/10 text-gold cursor-not-allowed border border-amber-500/20"
-                                    : "bg-gold hover:bg-amber-600 text-white shadow-lg shadow-amber-500/20 active:scale-95"
+                                    ? "bg-gold/10 text-amber-600 dark:text-gold cursor-not-allowed border border-gold/20"
+                                    : "bg-gold hover:bg-amber-600 !text-white shadow-lg shadow-amber-500/20 active:scale-95"
                             )}
                         >
                             {isCheckingIn ? (
@@ -204,7 +184,7 @@ export default function StreakClient() {
                     <div className="w-full h-px bg-gray-100 dark:bg-white/5 my-0"></div>
 
                     {/* BOTTOM PART: Rewards Timeline */}
-                    <div className="flex-1 w-full bg-gray-50/50 dark:bg-white/[0.02] overflow-hidden flex flex-col">
+                    <div className="flex-1 w-full bg-gray-50/80 dark:bg-[#151925] rounded-lg mt-4 overflow-hidden flex flex-col border border-dashboard">
                         <div className="p-4 pb-2">
                             <h4 className="text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
                                 Upcoming Rewards
@@ -225,19 +205,19 @@ export default function StreakClient() {
                                         className={cn(
                                             "flex items-center gap-3 p-3 rounded-lg border transition-all",
                                             isAchieved
-                                                ? "bg-primary/10 border-primary/20"
+                                                ? "bg-emerald-500/10 border-emerald-500/20"
                                                 : isNext
-                                                  ? "bg-white dark:bg-white/5 border-orange-200 dark:border-orange-500/30 shadow-sm"
+                                                  ? "bg-white dark:bg-[#1E2028] border-gold/30 shadow-sm"
                                                   : "bg-transparent border-transparent opacity-50"
                                         )}
                                     >
                                         <div
                                             className={cn(
-                                                "w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0",
+                                                "w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold font-mono tabular-nums shrink-0",
                                                 isAchieved
-                                                    ? "bg-primary text-white"
+                                                    ? "bg-emerald-500 text-white"
                                                     : isNext
-                                                      ? "bg-orange-100 text-orange-600 dark:bg-orange-500/20 dark:text-orange-400"
+                                                      ? "bg-gold/10 text-amber-600 dark:text-gold border border-gold/20"
                                                       : "bg-gray-100 dark:bg-white/10 text-gray-500"
                                             )}
                                         >
@@ -252,9 +232,9 @@ export default function StreakClient() {
                                             <div className="flex items-center justify-between mb-0.5">
                                                 <span
                                                     className={cn(
-                                                        "text-sm font-bold truncate",
+                                                        "text-sm font-bold tabular-nums truncate",
                                                         isAchieved
-                                                            ? "text-primary"
+                                                            ? "text-emerald-600 dark:text-emerald-400"
                                                             : isNext
                                                               ? "text-gray-700 dark:text-white"
                                                               : "text-gray-600 dark:text-gray-400"
@@ -263,7 +243,7 @@ export default function StreakClient() {
                                                     {milestone.days} Day Streak
                                                 </span>
                                                 {isNext && (
-                                                    <span className="text-[10px] font-bold bg-orange-100 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400 px-2 py-0.5 rounded-full">
+                                                    <span className="text-[10px] font-bold bg-gold/10 text-amber-600 dark:text-gold border border-gold/20 px-2 py-0.5 rounded-lg">
                                                         Next Goal
                                                     </span>
                                                 )}
@@ -281,12 +261,12 @@ export default function StreakClient() {
             </div>
 
             {/* Right Column: Calendar Wrapper (60%) */}
-            <div className="bg-white dark:bg-[#0B0E14] p-6 rounded-xl border border-dashboard shadow-sm h-full flex flex-col xl:col-span-3">
+            <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-dashboard shadow-sm h-full flex flex-col xl:col-span-3">
                 <div className="flex items-center justify-between mb-6">
                     <h3 className="font-bold text-gray-700 dark:text-white">
                         Monthly History
                     </h3>
-                    <div className="px-3 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-xs font-medium text-gray-600">
+                    <div className="px-3 py-1 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-dashboard text-xs font-medium tabular-nums text-gray-600 dark:text-gray-300">
                         {format(currentDate, "MMMM yyyy")}
                     </div>
                 </div>
@@ -330,13 +310,13 @@ export default function StreakClient() {
                                 <div
                                     key={day.toISOString()}
                                     className={cn(
-                                        "aspect-square flex flex-col items-center justify-center rounded-lg md:rounded-lg border transition-all relative group",
+                                        "aspect-square flex flex-col items-center justify-center rounded-lg border transition-all relative group",
                                         isCurrentDay
-                                            ? "bg-blue-50 dark:bg-blue-500/10 border-blue-500 text-blue-600 dark:text-blue-400"
-                                            : "bg-gray-50/50 dark:bg-white/5 border-transparent text-gray-700 dark:text-gray-300"
+                                            ? "bg-gold/10 border-gold text-amber-600 dark:text-gold"
+                                            : "bg-gray-50/80 dark:bg-[#151925] border-dashboard text-gray-700 dark:text-gray-300"
                                     )}
                                 >
-                                    <span className="text-sm font-bold">
+                                    <span className="text-sm font-bold font-mono tabular-nums">
                                         {format(day, "d")}
                                     </span>
 

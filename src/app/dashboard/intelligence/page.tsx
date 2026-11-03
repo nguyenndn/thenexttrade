@@ -179,7 +179,7 @@ function IntelligenceLoadingSkeleton() {
         <div className="space-y-4 animate-in fade-in">
             <div className="flex items-center gap-3">
                 <div className="h-6 w-40 bg-gray-200 dark:bg-white/5 rounded-lg animate-pulse" />
-                <div className="h-6 w-20 bg-gray-200 dark:bg-white/5 rounded-full animate-pulse" />
+                <div className="h-6 w-20 bg-gray-200 dark:bg-white/5 rounded-lg animate-pulse" />
             </div>
             <div className="h-20 bg-gray-200 dark:bg-white/5 rounded-xl animate-pulse" />
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">

@@ -84,7 +84,7 @@ export function GoalModal({ isOpen, onClose, onSuccess }: GoalModalProps) {
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-            <DialogContent className="max-w-md bg-white dark:bg-[#11141d] border-dashboard dark:border-white/[0.08] p-6 rounded-2xl">
+            <DialogContent className="max-w-md bg-white dark:bg-[#0D111C] border-dashboard dark:border-white/[0.08] p-6 rounded-2xl">
                 <DialogHeader className="border-b border-dashboard/80 dark:border-white/[0.08] pb-4">
                     <DialogTitle className="text-lg font-bold text-gray-800 dark:text-white">
                         Create Behavior Goal

@@ -201,14 +201,14 @@ export function CommandPalette({
                 className="absolute left-1/2 top-[30%] w-full max-w-[640px] px-4"
             >
                 <Command
-                    className="rounded-2xl border border-dashboard dark:border-gray-800 bg-white dark:bg-[#1E2028] shadow-2xl overflow-hidden"
+                    className="rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] shadow-2xl overflow-hidden"
                     shouldFilter={true}
                     filter={customFilter}
                 >
                     {/* Search Input */}
-                    <div className="relative border-b border-dashboard dark:border-gray-800 px-4">
+                    <div className="relative border-b border-gray-200 dark:border-white/10 px-4">
                         <CommandInput
-                            placeholder="Search for anything..."
+                            placeholder="Search tools, EAs, guides..."
                             autoFocus
                             value={searchQuery}
                             onValueChange={setSearchQuery}
@@ -345,7 +345,7 @@ export function CommandPalette({
                     </CommandList>
 
                     {/* Footer */}
-                    <div className="flex items-center justify-between px-4 py-2.5 border-t border-dashboard dark:border-gray-800 bg-gray-50/50 dark:bg-white/[0.02] text-xs text-gray-500">
+                    <div className="flex items-center justify-between px-4 py-2.5 border-t border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/[0.02] text-xs text-gray-500">
                         <div className="flex items-center gap-4">
                             <span className="flex items-center gap-1">
                                 <kbd className="px-1.5 py-0.5 rounded-lg bg-gray-200 dark:bg-white/10 text-gray-600 dark:text-gray-300 font-mono text-[10px]">
@@ -399,7 +399,7 @@ export function CommandPaletteTrigger({ className }: { className?: string }) {
         >
             <Search size={16} />
             <span className="hidden sm:inline">Search...</span>
-            <kbd className="hidden sm:inline-flex h-5 items-center gap-0.5 rounded-lg border border-dashboard bg-white dark:bg-black/20 px-1.5 font-mono text-[10px] font-medium text-gray-600 dark:text-gray-300">
+            <kbd className="hidden sm:inline-flex h-5 items-center gap-0.5 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-black/20 px-1.5 font-mono text-[10px] font-medium text-gray-600 dark:text-gray-300">
                 <span className="text-[10px]">Ctrl</span>K
             </kbd>
         </Button>

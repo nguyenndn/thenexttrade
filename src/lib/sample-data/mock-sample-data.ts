@@ -63,6 +63,22 @@ export const SAMPLE_JOURNAL_STATS = {
     totalSwap: -24.20,
 };
 
+export const SAMPLE_PROFIT_TARGETS = {
+    weeklyTarget: 800,
+    weeklyTargetType: "USD" as const,
+    monthlyTarget: 3500,
+    monthlyTargetType: "USD" as const,
+    weeklyPnL: 574.0,
+    monthlyPnL: 3420.0,
+    initialBalance: 10000,
+    balance: 13420,
+};
+
+export const SAMPLE_DATE_RANGE = {
+    from: "2026-09-01",
+    to: "2026-09-30",
+};
+
 export const SAMPLE_TRADES: SampleTradeEntry[] = [
     {
         id: "sample-trade-01",

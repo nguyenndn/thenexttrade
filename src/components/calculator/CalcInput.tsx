@@ -24,6 +24,13 @@ export function CalcInput({
     suffix,
     className,
 }: CalcInputProps) {
+    const sanitizedValue =
+        typeof value === "number"
+            ? isNaN(value)
+                ? ""
+                : Number(value.toFixed(6))
+            : value;
+
     return (
         <div className={cn("space-y-2", className)}>
             <label className="text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
@@ -39,7 +46,7 @@ export function CalcInput({
                 <input
                     type={type}
                     step={step}
-                    value={value}
+                    value={sanitizedValue}
                     onChange={(e) => onChange(e.target.value)}
                     className={cn(
                         "w-full py-3 bg-white dark:bg-white/5 border border-dashboard rounded-lg",

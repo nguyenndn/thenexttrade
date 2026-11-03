@@ -27,7 +27,7 @@ export function WinLossComparisonChart({
     const header = (
         <div className="px-5 py-3.5 border-b border-dashboard flex items-center justify-between shrink-0">
             <div className="flex items-center gap-2.5">
-                <div className="p-2 bg-cyan-500/10 rounded-lg text-cyan-500">
+                <div className="p-2 bg-gold/10 rounded-lg text-amber-600 dark:text-gold">
                     <Scale size={18} />
                 </div>
                 <div>
@@ -114,7 +114,7 @@ export function WinLossComparisonChart({
                                                 <p className="text-xs font-bold text-gray-600 dark:text-gray-400 mb-1">
                                                     {entry.name}
                                                 </p>
-                                                <p className="text-sm font-black text-gray-900 dark:text-white">
+                                                <p className="text-sm font-black font-mono tabular-nums text-gray-900 dark:text-white">
                                                     $
                                                     {Number(entry.value).toFixed(2)}
                                                 </p>
@@ -147,7 +147,7 @@ export function WinLossComparisonChart({
                 <div className="flex items-center justify-around text-xs mt-2 border-t border-gray-100 dark:border-white/5 pt-2.5 shrink-0">
                     <div className="text-center">
                         <p className="text-gray-400">Ratio (W/L)</p>
-                        <p className="font-extrabold text-gray-800 dark:text-gray-200">
+                        <p className="font-extrabold font-mono tabular-nums text-gray-800 dark:text-gray-200">
                             {avgLoss > 0
                                 ? (avgWin / avgLoss).toFixed(2)
                                 : avgWin > 0
@@ -157,13 +157,13 @@ export function WinLossComparisonChart({
                     </div>
                     <div className="text-center">
                         <p className="text-gray-400">Avg Win</p>
-                        <p className="font-extrabold text-emerald-500">
+                        <p className="font-extrabold font-mono tabular-nums text-emerald-500">
                             ${avgWin.toFixed(2)}
                         </p>
                     </div>
                     <div className="text-center">
                         <p className="text-gray-400">Avg Loss</p>
-                        <p className="font-extrabold text-red-500">
+                        <p className="font-extrabold font-mono tabular-nums text-red-500">
                             ${avgLoss.toFixed(2)}
                         </p>
                     </div>

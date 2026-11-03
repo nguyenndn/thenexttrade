@@ -46,12 +46,14 @@ export function MarginCalc() {
                     <CalcInput
                         label="Lot Size"
                         value={inputs.lotSize}
-                        onChange={(v) =>
+                        onChange={(v) => {
+                            const parsed = parseFloat(v);
                             setInputs({
                                 ...inputs,
-                                lotSize: parseFloat(v) || 0,
-                            })
-                        }
+                                lotSize:
+                                    isNaN(parsed) ? 0 : Number(parsed.toFixed(4)),
+                            });
+                        }}
                     />
 
                     <div className="space-y-2">
@@ -109,12 +111,14 @@ export function MarginCalc() {
                     <CalcInput
                         label="Current Price"
                         value={inputs.currentPrice}
-                        onChange={(v) =>
+                        onChange={(v) => {
+                            const parsed = parseFloat(v);
                             setInputs({
                                 ...inputs,
-                                currentPrice: parseFloat(v) || 0,
-                            })
-                        }
+                                currentPrice:
+                                    isNaN(parsed) ? 0 : Number(parsed.toFixed(5)),
+                            });
+                        }}
                         step="0.0001"
                     />
                 </div>

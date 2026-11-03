@@ -15,11 +15,11 @@ interface LotDistributionChartProps {
 }
 
 const COLORS = [
-    "hsl(var(--primary))",
-    "#3B82F6",
     "#F59E0B",
-    "#8B5CF6",
-    "#EC4899",
+    "hsl(var(--primary))",
+    "#D97706",
+    "#10B981",
+    "#64748B",
     "#EF4444",
 ];
 
@@ -33,7 +33,7 @@ export function LotDistributionChart({
     const header = (
         <div className="px-5 py-3.5 border-b border-dashboard flex items-center justify-between shrink-0">
             <div className="flex items-center gap-2.5">
-                <div className="p-2 bg-violet-500/10 rounded-lg text-violet-500">
+                <div className="p-2 bg-gold/10 rounded-lg text-amber-600 dark:text-gold">
                     <Layers size={18} />
                 </div>
                 <div>
@@ -145,7 +145,7 @@ export function LotDistributionChart({
                                                     <p className="text-xs font-medium text-gray-500">
                                                         {d.name}
                                                     </p>
-                                                    <p className="text-sm font-black text-gray-700 dark:text-white">
+                                                    <p className="text-sm font-black font-mono tabular-nums text-gray-700 dark:text-white">
                                                         {Number(d.value).toFixed(2)}{" "}
                                                         Lots{" "}
                                                         <span className="text-gray-400 font-medium">
@@ -174,7 +174,7 @@ export function LotDistributionChart({
                                 y="56%"
                                 textAnchor="middle"
                                 dominantBaseline="central"
-                                className="fill-gray-700 dark:fill-white text-[10px] font-black"
+                                className="fill-gray-700 dark:fill-white text-[10px] font-black font-mono tabular-nums"
                             >
                                 {totalLots.toFixed(2)}
                             </text>

@@ -80,7 +80,7 @@ function PeriodComparison({
 
         if (value === 0) {
             return (
-                <span className="inline-flex items-center gap-1 text-sm font-bold text-gray-400 dark:text-gray-500">
+                <span className="inline-flex items-center gap-1 text-sm font-bold font-mono tabular-nums text-gray-400 dark:text-gray-500">
                     <Minus size={14} /> 0{suffix}
                 </span>
             );
@@ -88,7 +88,7 @@ function PeriodComparison({
 
         return (
             <span
-                className={`inline-flex items-center gap-0.5 text-sm font-bold ${isPositive ? "text-emerald-500" : "text-red-500"}`}
+                className={`inline-flex items-center gap-0.5 text-sm font-bold font-mono tabular-nums ${isPositive ? "text-emerald-500" : "text-red-500"}`}
             >
                 {isPositive ? (
                     <ArrowUpRight size={14} />
@@ -108,21 +108,21 @@ function PeriodComparison({
             value: String(current.tradeScore.score),
             prev: String(previous.tradeScore.score),
             delta: <DeltaBadge value={scoreDelta} />,
-            accent: "border-t-indigo-500",
+            accent: "border-t-amber-500",
         },
         {
             label: "Win Rate",
             value: `${current.quickStats.winRate.toFixed(1)}%`,
             prev: `${previous.quickStats.winRate.toFixed(1)}%`,
             delta: <DeltaBadge value={winRateDelta} suffix="%" />,
-            accent: "border-t-blue-500",
+            accent: "border-t-emerald-500",
         },
         {
             label: "Risk:Reward",
             value: current.quickStats.avgRR.toFixed(2),
             prev: previous.quickStats.avgRR.toFixed(2),
             delta: <DeltaBadge value={Math.round(rrDelta * 100) / 100} />,
-            accent: "border-t-cyan-500",
+            accent: "border-t-amber-500",
         },
         {
             label: "Issues",
@@ -141,10 +141,10 @@ function PeriodComparison({
     ];
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard shadow-sm p-6">
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-6">
             <div className="flex items-center gap-2.5 mb-5">
-                <div className="p-2 rounded-lg bg-indigo-500/10">
-                    <Activity size={18} className="text-indigo-500" />
+                <div className="p-2 rounded-lg bg-gold/10 border border-gold/20">
+                    <Activity size={18} className="text-amber-600 dark:text-gold" />
                 </div>
                 <div>
                     <h3 className="text-sm font-bold text-gray-700 dark:text-white">
@@ -158,7 +158,7 @@ function PeriodComparison({
                 {cards.map((card) => (
                     <div
                         key={card.label}
-                        className={`text-center p-4 rounded-lg bg-gray-50 dark:bg-white/[0.03] border-t-[3px] ${card.accent} ${
+                        className={`text-center p-4 rounded-lg bg-gray-50/80 dark:bg-[#151925] border-t-[3px] ${card.accent} ${
                             card.label === "Strengths"
                                 ? "col-span-2 sm:col-span-1"
                                 : ""
@@ -168,12 +168,12 @@ function PeriodComparison({
                             {card.label}
                         </p>
                         <div className="flex items-center justify-center gap-2 mb-1">
-                            <span className="text-2xl font-black text-gray-800 dark:text-white">
+                            <span className="text-2xl font-black font-mono tabular-nums text-gray-800 dark:text-white">
                                 {card.value}
                             </span>
                             {card.delta}
                         </div>
-                        <p className="text-xs text-gray-400 dark:text-gray-500">
+                        <p className="text-xs font-mono tabular-nums text-gray-400 dark:text-gray-500">
                             was {card.prev}
                         </p>
                     </div>
@@ -206,17 +206,16 @@ function ScoreHistoryChart({ data }: { data: ScoreHistoryPoint[] }) {
 
     const getScoreColor = (score: number) => {
         if (score >= 75) return "#10B981";
-        if (score >= 60) return "#3B82F6";
-        if (score >= 40) return "#F59E0B";
+        if (score >= 45) return "#F59E0B";
         return "#EF4444";
     };
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard shadow-sm p-5">
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-5">
             <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
-                    <div className="p-1.5 rounded-lg bg-violet-500/10">
-                        <TrendingUp size={16} className="text-violet-500" />
+                    <div className="p-1.5 rounded-lg bg-gold/10 border border-gold/20">
+                        <TrendingUp size={16} className="text-amber-600 dark:text-gold" />
                     </div>
                     <div>
                         <h3 className="text-sm font-bold text-gray-700 dark:text-white">
@@ -232,7 +231,7 @@ function ScoreHistoryChart({ data }: { data: ScoreHistoryPoint[] }) {
                         <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">
                             Average
                         </p>
-                        <p className="text-base font-black text-gray-700 dark:text-white">
+                        <p className="text-base font-black font-mono tabular-nums text-gray-700 dark:text-white">
                             {avgScore}
                         </p>
                     </div>
@@ -253,7 +252,7 @@ function ScoreHistoryChart({ data }: { data: ScoreHistoryPoint[] }) {
                                 />
                             )}
                             <p
-                                className={`text-base font-black ${trend >= 0 ? "text-emerald-500" : "text-red-500"}`}
+                                className={`text-base font-black font-mono tabular-nums ${trend >= 0 ? "text-emerald-500" : "text-red-500"}`}
                             >
                                 {trend >= 0 ? "+" : ""}
                                 {trend}
@@ -279,12 +278,12 @@ function ScoreHistoryChart({ data }: { data: ScoreHistoryPoint[] }) {
                             >
                                 <stop
                                     offset="0%"
-                                    stopColor="#8B5CF6"
+                                    stopColor="#F59E0B"
                                     stopOpacity={0.2}
                                 />
                                 <stop
                                     offset="100%"
-                                    stopColor="#8B5CF6"
+                                    stopColor="#F59E0B"
                                     stopOpacity={0}
                                 />
                             </linearGradient>
@@ -334,7 +333,7 @@ function ScoreHistoryChart({ data }: { data: ScoreHistoryPoint[] }) {
                                                 Week of {d.weekLabel}
                                             </p>
                                             <p
-                                                className="text-sm font-black"
+                                                className="text-sm font-black font-mono tabular-nums"
                                                 style={{
                                                     color: getScoreColor(
                                                         d.score
@@ -343,7 +342,7 @@ function ScoreHistoryChart({ data }: { data: ScoreHistoryPoint[] }) {
                                             >
                                                 Score: {d.score}
                                             </p>
-                                            <p className="text-xs text-gray-500 mt-0.5">
+                                            <p className="text-xs font-mono tabular-nums text-gray-500 mt-0.5">
                                                 {d.trades} trades · {d.label}
                                             </p>
                                         </div>
@@ -355,7 +354,7 @@ function ScoreHistoryChart({ data }: { data: ScoreHistoryPoint[] }) {
                         <Area
                             type="monotone"
                             dataKey="score"
-                            stroke="#8B5CF6"
+                            stroke="#F59E0B"
                             strokeWidth={2.5}
                             fillOpacity={1}
                             fill="url(#scoreGradient)"
@@ -404,19 +403,19 @@ function ScoreAndRiskPanel({ data }: { data: IntelligenceData }) {
             bg: "bg-emerald-500/10",
         },
         blue: {
-            stroke: "stroke-blue-500",
-            text: "text-blue-500",
-            bg: "bg-blue-500/10",
+            stroke: "stroke-amber-500",
+            text: "text-amber-600 dark:text-gold",
+            bg: "bg-gold/10",
         },
         yellow: {
-            stroke: "stroke-yellow-500",
-            text: "text-yellow-500",
-            bg: "bg-yellow-500/10",
+            stroke: "stroke-amber-500",
+            text: "text-amber-500",
+            bg: "bg-amber-500/10",
         },
         orange: {
-            stroke: "stroke-orange-500",
-            text: "text-orange-500",
-            bg: "bg-orange-500/10",
+            stroke: "stroke-rose-500",
+            text: "text-rose-500",
+            bg: "bg-rose-500/10",
         },
         red: {
             stroke: "stroke-red-500",
@@ -463,9 +462,9 @@ function ScoreAndRiskPanel({ data }: { data: IntelligenceData }) {
         riskBg = "bg-red-500/10";
     } else if (healthScore < 70) {
         riskLabel = "Moderate Risk";
-        riskColor = "text-yellow-500";
-        barColor = "bg-yellow-500";
-        riskBg = "bg-yellow-500/10";
+        riskColor = "text-amber-500";
+        barColor = "bg-amber-500";
+        riskBg = "bg-amber-500/10";
     }
 
     const riskSummary =
@@ -476,15 +475,15 @@ function ScoreAndRiskPanel({ data }: { data: IntelligenceData }) {
               : "No significant behavioral risks detected. Keep it up.";
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard shadow-sm overflow-hidden">
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm overflow-hidden">
             <div className="p-4 sm:p-6">
                 {/* Responsive grid: 1 col → 2 col → 3 col */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
                     {/* ═══ COL 1: Score Gauge ═══ */}
                     <div className="flex flex-col items-center justify-center md:border-r md:border-dashboard md: md:pr-6 lg:pr-8 pb-4 md:pb-0 border-b md:border-b-0 border-dashboard">
                         <div className="flex items-center gap-2 mb-4 self-start">
-                            <div className="p-1.5 rounded-lg bg-cyan-500/10">
-                                <Brain size={16} className="text-cyan-500" />
+                            <div className="p-1.5 rounded-lg bg-gold/10 border border-gold/20">
+                                <Brain size={16} className="text-amber-600 dark:text-gold" />
                             </div>
                             <h2 className="text-sm font-bold text-gray-700 dark:text-white">
                                 Trade Score
@@ -518,18 +517,18 @@ function ScoreAndRiskPanel({ data }: { data: IntelligenceData }) {
                             </svg>
                             <div className="absolute inset-0 flex flex-col items-center justify-center">
                                 <span
-                                    className={`text-3xl sm:text-4xl font-black ${c.text}`}
+                                    className={`text-3xl sm:text-4xl font-black font-mono tabular-nums ${c.text}`}
                                 >
                                     {tradeScore.score}
                                 </span>
-                                <span className="text-xs font-bold text-gray-500">
+                                <span className="text-xs font-bold font-mono tabular-nums text-gray-500">
                                     / 100
                                 </span>
                             </div>
                         </div>
 
                         <span
-                            className={`mt-3 px-4 py-1.5 rounded-full text-xs font-bold ${c.bg} ${c.text}`}
+                            className={`mt-3 px-4 py-1.5 rounded-lg text-xs font-bold ${c.bg} ${c.text}`}
                         >
                             {tradeScore.label}
                         </span>
@@ -560,7 +559,7 @@ function ScoreAndRiskPanel({ data }: { data: IntelligenceData }) {
                                             />
                                         </div>
                                         <span
-                                            className={`text-sm font-black w-14 text-right ${impactColors[factor.impact]}`}
+                                            className={`text-sm font-black font-mono tabular-nums w-14 text-right ${impactColors[factor.impact]}`}
                                         >
                                             {factor.name === "Revenge Trades"
                                                 ? factor.value
@@ -581,7 +580,7 @@ function ScoreAndRiskPanel({ data }: { data: IntelligenceData }) {
                                 </h3>
                             </div>
                             <span
-                                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold ${riskBg} ${riskColor}`}
+                                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold ${riskBg} ${riskColor}`}
                             >
                                 {riskLabel}
                             </span>
@@ -589,7 +588,7 @@ function ScoreAndRiskPanel({ data }: { data: IntelligenceData }) {
 
                         {/* Risk gauge bar */}
                         <div className="w-full h-3 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden relative">
-                            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-emerald-500 via-yellow-500 to-red-500 opacity-20" />
+                            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-emerald-500 via-amber-500 to-red-500 opacity-20" />
                             <div
                                 className={`h-full rounded-full ${barColor} transition-all duration-700 relative z-10`}
                                 style={{ width: `${100 - healthScore}%` }}
@@ -609,7 +608,7 @@ function ScoreAndRiskPanel({ data }: { data: IntelligenceData }) {
                         {/* Quick stats */}
                         <div className="mt-4 pt-4 border-t border-dashboard grid grid-cols-3 gap-3">
                             <div className="text-center">
-                                <p className="text-lg font-black text-gray-700 dark:text-white">
+                                <p className="text-lg font-black font-mono tabular-nums text-gray-700 dark:text-white">
                                     {data.issues.length}
                                 </p>
                                 <p className="text-[11px] font-bold text-gray-500">
@@ -617,7 +616,7 @@ function ScoreAndRiskPanel({ data }: { data: IntelligenceData }) {
                                 </p>
                             </div>
                             <div className="text-center">
-                                <p className="text-lg font-black text-gray-700 dark:text-white">
+                                <p className="text-lg font-black font-mono tabular-nums text-gray-700 dark:text-white">
                                     {data.strengths.length}
                                 </p>
                                 <p className="text-[11px] font-bold text-gray-500">
@@ -625,7 +624,7 @@ function ScoreAndRiskPanel({ data }: { data: IntelligenceData }) {
                                 </p>
                             </div>
                             <div className="text-center">
-                                <p className={`text-lg font-black ${c.text}`}>
+                                <p className={`text-lg font-black font-mono tabular-nums ${c.text}`}>
                                     {tradeScore.score}
                                 </p>
                                 <p className="text-[11px] font-bold text-gray-500">
@@ -649,24 +648,13 @@ function ScoreAndRiskPanel({ data }: { data: IntelligenceData }) {
 function EmptyState({ totalTrades }: { totalTrades: number }) {
     const progress = Math.min(100, (totalTrades / 30) * 100);
     return (
-        <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-lg border-2 border-dashed border-dashboard mt-8">
-            {/* Animated Brain Icon */}
-            <div className="relative w-20 h-20 mb-6 mx-auto">
-                <div className="absolute inset-0 rounded-full bg-cyan-500/10 dark:bg-cyan-500/5 animate-[intel-ping_3s_cubic-bezier(0,0,0.2,1)_infinite]" />
-                <div className="relative w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-full flex items-center justify-center animate-[intel-float_3s_ease-in-out_infinite]">
-                    <Brain
-                        size={32}
-                        className="text-cyan-500 dark:text-cyan-400"
-                        strokeWidth={1.5}
-                    />
-                    {/* Neural pulse dots */}
-                    <div className="absolute -top-1 right-2 w-1.5 h-1.5 rounded-full bg-cyan-400/50 animate-[intel-neuron_2s_ease-in-out_infinite]" />
-                    <div className="absolute -bottom-1 left-4 w-1 h-1 rounded-full bg-cyan-400/30 animate-[intel-neuron_2.5s_ease-in-out_infinite_0.5s]" />
-                    <div className="absolute top-1 -left-2 w-1 h-1 rounded-full bg-cyan-400/40 animate-[intel-neuron_3s_ease-in-out_infinite_1s]" />
-                    {/* Sparkle dots */}
-                    <div className="absolute -top-2 left-3 w-1.5 h-1.5 rounded-full bg-primary/40 animate-[intel-sparkle_2.5s_ease-in-out_infinite_1.2s]" />
-                    <div className="absolute -bottom-1 -right-1 w-1 h-1 rounded-full bg-primary/30 animate-[intel-sparkle_3s_ease-in-out_infinite_0.8s]" />
-                </div>
+        <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-xl border-2 border-dashed border-dashboard mt-8">
+            <div className="w-16 h-16 mb-6 mx-auto bg-gold/10 border border-gold/20 rounded-xl flex items-center justify-center">
+                <Brain
+                    size={28}
+                    className="text-amber-600 dark:text-gold"
+                    strokeWidth={1.75}
+                />
             </div>
 
             <h3 className="text-xl font-bold text-gray-700 dark:text-white mb-2">
@@ -677,16 +665,16 @@ function EmptyState({ totalTrades }: { totalTrades: number }) {
             </p>
             <div className="max-w-xs mx-auto mb-6">
                 <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-bold text-gray-600">
+                    <span className="text-sm font-bold font-mono tabular-nums text-gray-600 dark:text-gray-400">
                         {totalTrades} / 30 trades
                     </span>
-                    <span className="text-sm font-bold text-primary">
+                    <span className="text-sm font-bold font-mono tabular-nums text-amber-600 dark:text-gold">
                         {Math.round(progress)}%
                     </span>
                 </div>
-                <div className="w-full h-3 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
+                <div className="w-full h-3 bg-gray-100 dark:bg-[#151925] rounded-full overflow-hidden">
                     <div
-                        className="h-full bg-gradient-to-r from-primary to-cyan-500 rounded-full"
+                        className="h-full bg-gold rounded-full"
                         style={{ width: `${progress}%` }}
                     />
                 </div>
@@ -697,51 +685,6 @@ function EmptyState({ totalTrades }: { totalTrades: number }) {
             >
                 Log a Trade <ChevronRight size={16} />
             </Link>
-
-            <style jsx>{`
-                @keyframes intel-float {
-                    0%,
-                    100% {
-                        transform: translateY(0px);
-                    }
-                    50% {
-                        transform: translateY(-6px);
-                    }
-                }
-                @keyframes intel-ping {
-                    0% {
-                        transform: scale(1);
-                        opacity: 0.3;
-                    }
-                    75%,
-                    100% {
-                        transform: scale(1.3);
-                        opacity: 0;
-                    }
-                }
-                @keyframes intel-neuron {
-                    0%,
-                    100% {
-                        opacity: 0;
-                        transform: scale(0.5);
-                    }
-                    50% {
-                        opacity: 1;
-                        transform: scale(1.2);
-                    }
-                }
-                @keyframes intel-sparkle {
-                    0%,
-                    100% {
-                        opacity: 0;
-                        transform: scale(0);
-                    }
-                    50% {
-                        opacity: 1;
-                        transform: scale(1);
-                    }
-                }
-            `}</style>
         </div>
     );
 }
@@ -794,7 +737,7 @@ export function IntelligenceDashboard({
                     <Crosshair size={14} className="text-primary" />
                     <span>
                         Analyzed{" "}
-                        <span className="font-bold text-gray-700 dark:text-white">
+                        <span className="font-bold font-mono tabular-nums text-gray-700 dark:text-white">
                             {data.totalAnalyzed.toLocaleString()}
                         </span>{" "}
                         trades
@@ -826,7 +769,7 @@ export function IntelligenceDashboard({
 
             {/* Insights Grid — Issues + Strengths removed to avoid duplication with EdgeLeakDetector */}
             {data.issues.length === 0 && data.strengths.length === 0 && (
-                <div className="bg-white dark:bg-[#1E2028] rounded-lg p-8 border border-dashboard shadow-sm text-center">
+                <div className="bg-white dark:bg-[#1E2028] rounded-xl p-8 border border-dashboard shadow-sm text-center">
                     <Activity size={24} className="text-primary mx-auto mb-3" />
                     <p className="text-gray-600 dark:text-gray-300">
                         No significant patterns detected yet.

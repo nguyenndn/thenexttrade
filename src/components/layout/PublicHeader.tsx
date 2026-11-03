@@ -1,46 +1,40 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import { Logo } from "@/components/ui/Logo";
 import { AuthUser } from "@/lib/auth-types";
-import { Search, Menu, X } from "lucide-react";
-
+import dynamic from "next/dynamic";
 import { DesktopNav } from "@/components/layout/DesktopNav";
-import { MobileNavigation } from "@/components/layout/MobileNavigation";
-import { UserMenu } from "@/components/layout/UserMenu";
-import { ThemeToggleSwitch } from "@/components/ui/ThemeToggleSwitch";
-import { Button } from "@/components/ui/Button";
-import { PublicSearchModal } from "@/components/search/PublicSearchModal";
-import { usePathname } from "next/navigation";
+import { HeaderActionGroup } from "./header/HeaderActionGroup";
+
+const PublicSearchModal = dynamic(
+    () =>
+        import("@/components/search/PublicSearchModal").then(
+            (m) => m.PublicSearchModal
+        ),
+    { ssr: false }
+);
+
+const MobileNavigation = dynamic(
+    () =>
+        import("@/components/layout/MobileNavigation").then(
+            (m) => m.MobileNavigation
+        ),
+    { ssr: false }
+);
 
 interface PublicHeaderProps {
     user?: AuthUser | null;
-    profile?: any;
 }
 
 export function PublicHeader({
     user: initialUser,
-    profile,
 }: PublicHeaderProps) {
-    const pathname = usePathname();
-    const isSearchPage = pathname === "/search";
-
     const [isMounted, setIsMounted] = useState(false);
     const [user, setUser] = useState<AuthUser | null>(initialUser || null);
     const [isAuthLoaded, setIsAuthLoaded] = useState(initialUser !== undefined);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
-
-    const handleSearchClick = () => {
-        document.dispatchEvent(
-            new KeyboardEvent("keydown", {
-                key: "k",
-                ctrlKey: true,
-                bubbles: true,
-            })
-        );
-    };
 
     useEffect(() => {
         setIsMounted(true);
@@ -48,7 +42,7 @@ export function PublicHeader({
 
     // Auto-fetch user when not provided (client-side pages)
     useEffect(() => {
-        if (initialUser !== undefined) return; // Skip if prop was explicitly passed
+        if (initialUser !== undefined) return;
         fetch("/api/profile")
             .then((res) => (res.ok ? res.json() : null))
             .then((data) => {
@@ -79,21 +73,13 @@ export function PublicHeader({
 
     useEffect(() => {
         const onScroll = () => setIsScrolled(window.scrollY > 10);
-        onScroll(); // check on mount
+        onScroll();
         window.addEventListener("scroll", onScroll, { passive: true });
         return () => window.removeEventListener("scroll", onScroll);
     }, []);
 
-    // Determine loading state: on server or client hydration phase, if initialUser is undefined,
-    // we must render the skeleton to match the server output perfectly.
     const isHeaderLoading =
         initialUser === undefined && (!isMounted || !isAuthLoaded);
-
-    const userData = {
-        name: user?.name || "Trader",
-        image: user?.image || null,
-        username: user?.profile?.username || "User",
-    };
 
     return (
         <header
@@ -104,84 +90,36 @@ export function PublicHeader({
                 paddingTop: isScrolled ? "12px" : "0px",
             }}
         >
-            {/* Full-width bar — bg + rounded here */}
             <div
                 className={[
                     "h-16 transition-all duration-500 ease-header",
                     isScrolled
-                        ? "mx-4 sm:mx-6 lg:mx-2 xl:mx-20 2xl:mx-48 rounded-full border shadow-lg shadow-black/5 dark:shadow-black/20 backdrop-blur-xl bg-white dark:bg-card/90 border-dashboard/50 "
-                        : "mx-0 rounded-none border-b border-dashboard bg-white dark:bg-card",
+                        ? "mx-4 sm:mx-6 lg:mx-2 xl:mx-20 2xl:mx-48 rounded-full border shadow-lg shadow-black/5 dark:shadow-black/20 backdrop-blur-xl bg-white dark:bg-card/90 border-gray-200 dark:border-white/10"
+                        : "mx-0 rounded-none border-b border-gray-200 dark:border-white/10 bg-white dark:bg-card",
                 ].join(" ")}
             >
-                {/* Content constrained to 1440px */}
                 <div className="flex w-full max-w-[1440px] mx-auto items-center justify-between gap-2 sm:gap-4 lg:gap-2.5 xl:gap-6 px-3 sm:px-4 lg:px-3.5 xl:px-6 h-full">
-                    {/* Logo */}
                     <div className="flex-shrink-0 lg:min-w-0 xl:min-w-[180px]">
                         <Logo />
                     </div>
 
-                    {/* Navigation Links - Desktop */}
                     <DesktopNav />
 
-                    {/* Action Buttons */}
-                    <div className="flex items-center justify-end gap-2 sm:gap-2.5 xl:gap-4 flex-shrink-0 lg:min-w-0 xl:min-w-[180px]">
-                        {/* Theme Toggle */}
-                        <ThemeToggleSwitch />
-
-                        {/* Search Trigger Button (Symmetrical to Theme Switcher) */}
-                        <Button
-                            type="button"
-                            variant="outline"
-                            size="icon"
-                            onClick={handleSearchClick}
-                            aria-label="Search website (Ctrl+K)"
-                            className="relative w-9 h-9 p-0 flex items-center justify-center rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-amber-500/40 bg-white dark:bg-slate-800/80 border-2 border-dashboard dark:border-slate-700 text-gold hover:bg-gray-50 dark:hover:bg-slate-700/80 hover:text-amber-600 dark:hover:text-amber-300 hover:border-gold/50"
-                        >
-                            <Search
-                                className="w-[18px] h-[18px]"
-                                strokeWidth={2.5}
-                            />
-                        </Button>
-
-                        {/* Login / User Menu — hidden on mobile/tablet, shown on lg+ */}
-                        <div className="hidden lg:flex items-center">
-                            <UserMenu
-                                user={user}
-                                profile={profile}
-                                isLoading={isHeaderLoading}
-                            />
-                        </div>
-
-                        {/* Mobile/Tablet Menu Button */}
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() =>
-                                setIsMobileMenuOpen(!isMobileMenuOpen)
-                            }
-                            className="lg:hidden p-2 rounded-lg text-gray-700 dark:text-white hover:bg-amber-50 dark:hover:bg-amber-400/10 hover:text-amber-600 dark:hover:text-amber-300"
-                            aria-label="Toggle menu"
-                            aria-expanded={isMobileMenuOpen}
-                            aria-controls="mobile-navigation"
-                        >
-                            {isMobileMenuOpen ? (
-                                <X className="w-6 h-6" />
-                            ) : (
-                                <Menu className="w-6 h-6" />
-                            )}
-                        </Button>
-                    </div>
+                    <HeaderActionGroup
+                        user={user}
+                        isHeaderLoading={isHeaderLoading}
+                        isMobileMenuOpen={isMobileMenuOpen}
+                        onToggleMobileMenu={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                    />
                 </div>
             </div>
 
-            {/* Mobile Menu */}
             <MobileNavigation
                 isOpen={isMobileMenuOpen}
                 onClose={() => setIsMobileMenuOpen(false)}
                 user={user}
             />
 
-            {/* Search Modal (Ctrl+K) */}
             <PublicSearchModal />
         </header>
     );

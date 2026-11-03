@@ -1,23 +1,12 @@
-"use client";
-
 import React from "react";
 import Link from "next/link";
-import {
-    ArrowRight,
-    ArrowDown,
-    CheckCircle2,
-    XCircle,
-    ShieldCheck,
-    Wallet,
-    RotateCcw,
-    Lock,
-    Building2,
-    Zap,
-    Check,
-} from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { cn } from "@/lib/utils";
 import { HomeSectionHeading } from "@/components/home/HomeSectionHeading";
+import { BrokerComparisonCards } from "./broker-funded/BrokerComparisonCards";
+import { BrokerTrustPillars } from "./broker-funded/BrokerTrustPillars";
+import { BrokerCapitalFlow } from "./broker-funded/BrokerCapitalFlow";
 
 interface BrokerFundedMembershipSectionProps {
     isLoggedIn?: boolean;
@@ -27,8 +16,8 @@ export function BrokerFundedMembershipSection({
     isLoggedIn = false,
 }: BrokerFundedMembershipSectionProps) {
     return (
-        <section id="sponsorship-preview" className="relative overflow-hidden bg-white dark:bg-transparent py-8 sm:py-12 border-t border-dashboard">
-            {/* Grid Pattern Background - matching Academy */}
+        <section id="sponsorship-preview" className="relative overflow-hidden bg-white dark:bg-transparent py-8 sm:py-12 border-t border-gray-200 dark:border-white/10">
+            {/* Grid Pattern Background */}
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)] pointer-events-none" />
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gold/5 via-transparent to-transparent dark:from-gold/[0.03] dark:via-transparent dark:to-transparent pointer-events-none" />
 
@@ -42,225 +31,18 @@ export function BrokerFundedMembershipSection({
                             <span className="text-gold">Your $200 stays 100% yours</span>
                         </>
                     }
-                    description="Why pay $100/mo for VIP signals? Simply fund your own broker account with $200 to unlock institutional MT5 EAs, AI Coach, and Full Academy at $0 cost."
+                    description="Why pay $100/mo for VIP signals? Simply fund your own broker account with $200 to unlock rule-based MT5 EAs, AI Coach, and Pro Analytics at $0 cost."
                     className="mb-6 sm:mb-8"
                 />
 
                 {/* 2. Side-by-Side Full-Width Comparison Cards */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6 mb-6 sm:mb-8 w-full">
-                    {/* Left: Traditional Academy / Courses (The Cost Trap) */}
-                    <div className="relative rounded-lg p-5 sm:p-6 bg-slate-50/90 dark:bg-card/40 border border-gray-200 dark:border-white/10 shadow-sm flex flex-col justify-between backdrop-blur-sm">
-                        <div>
-                            <div className="flex items-center justify-between mb-3">
-                                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg bg-gray-200/60 dark:bg-white/10 text-slate-700 dark:text-slate-300 text-xs font-black uppercase tracking-wider border border-gray-300/40 dark:border-white/10">
-                                    <XCircle size={12} /> Typical Trading Course
-                                </span>
-                                <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400 font-bold">
-                                    High Sunk Cost
-                                </span>
-                            </div>
+                <BrokerComparisonCards />
 
-                            <h3 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-4">
-                                You pay them upfront
-                            </h3>
+                {/* 3. Four Trust Pillars Grid */}
+                <BrokerTrustPillars />
 
-                            <div className="space-y-2.5">
-                                <div className="flex items-start gap-2.5 text-slate-700 dark:text-slate-300 text-xs sm:text-sm">
-                                    <div className="w-4 h-4 rounded-full bg-slate-200 dark:bg-white/10 text-slate-500 dark:text-slate-400 flex items-center justify-center shrink-0 mt-0.5">
-                                        <XCircle size={12} strokeWidth={2.5} />
-                                    </div>
-                                    <span><strong>$50 to $500/mo subscription or course fee</strong> paid straight to their pocket</span>
-                                </div>
-                                <div className="flex items-start gap-2.5 text-slate-700 dark:text-slate-300 text-xs sm:text-sm">
-                                    <div className="w-4 h-4 rounded-full bg-slate-200 dark:bg-white/10 text-slate-500 dark:text-slate-400 flex items-center justify-center shrink-0 mt-0.5">
-                                        <XCircle size={12} strokeWidth={2.5} />
-                                    </div>
-                                    <span>That capital is <strong>gone for good</strong> before placing a single profitable trade</span>
-                                </div>
-                                <div className="flex items-start gap-2.5 text-slate-700 dark:text-slate-300 text-xs sm:text-sm">
-                                    <div className="w-4 h-4 rounded-full bg-slate-200 dark:bg-white/10 text-slate-500 dark:text-slate-400 flex items-center justify-center shrink-0 mt-0.5">
-                                        <XCircle size={12} strokeWidth={2.5} />
-                                    </div>
-                                    <span><strong>Cherry-picked screenshots</strong> hide the reality of blown signal accounts</span>
-                                </div>
-                                <div className="flex items-start gap-2.5 text-slate-700 dark:text-slate-300 text-xs sm:text-sm">
-                                    <div className="w-4 h-4 rounded-full bg-slate-200 dark:bg-white/10 text-slate-500 dark:text-slate-400 flex items-center justify-center shrink-0 mt-0.5">
-                                        <XCircle size={12} strokeWidth={2.5} />
-                                    </div>
-                                    <span>Still <strong>$0 balance</strong> remaining in your own broker account to actually execute</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="mt-5 pt-3.5 border-t border-gray-200 dark:border-white/10 text-xs text-slate-600 dark:text-slate-400 font-medium flex items-center gap-1.5">
-                            <span className="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500" />
-                            <span>100% financial risk before taking your first live market trade.</span>
-                        </div>
-                    </div>
-
-                    {/* Right: TheNextTrade (The Zero-Cost Ecosystem) */}
-                    <div className="relative rounded-lg p-5 sm:p-6 bg-gradient-to-b from-gold/15 via-gold/[0.04] to-white dark:from-gold/20 dark:via-gold/[0.05] dark:to-card/80 border-2 border-gold/50 dark:border-gold/40 shadow-[0_12px_32px_rgba(229,165,10,0.15)] flex flex-col justify-between backdrop-blur-md">
-                        <div className="absolute -top-3 right-5 px-3 py-0.5 rounded-full bg-gradient-to-r from-amber-500 to-gold text-white text-[10px] font-black uppercase tracking-wider shadow-md flex items-center gap-1">
-                            <ShieldCheck size={12} /> The Pro Model
-                        </div>
-
-                        <div>
-                            <div className="flex items-center justify-between mb-3">
-                                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg bg-gold/15 text-amber-900 dark:text-gold text-xs font-black uppercase tracking-wider border border-gold/30">
-                                    <Check size={12} strokeWidth={3} /> TheNextTrade Ecosystem
-                                </span>
-                                <span className="text-[11px] font-mono text-emerald-600 dark:text-emerald-400 font-black">
-                                    100% Liquid Capital
-                                </span>
-                            </div>
-
-                            <h3 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-4">
-                                You fund your own account
-                            </h3>
-
-                            <div className="space-y-2.5">
-                                <div className="flex items-start gap-2.5 text-gray-900 dark:text-white font-medium text-xs sm:text-sm">
-                                    <div className="w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 mt-0.5">
-                                        <CheckCircle2 size={13} strokeWidth={2.5} />
-                                    </div>
-                                    <span><strong>$0 ever paid</strong> to TheNextTrade — zero subscription or hidden fees</span>
-                                </div>
-                                <div className="flex items-start gap-2.5 text-gray-900 dark:text-white font-medium text-xs sm:text-sm">
-                                    <div className="w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 mt-0.5">
-                                        <CheckCircle2 size={13} strokeWidth={2.5} />
-                                    </div>
-                                    <span><strong>Your $200 stays 100% yours</strong> — sits in your personal regulated broker account</span>
-                                </div>
-                                <div className="flex items-start gap-2.5 text-gray-900 dark:text-white font-medium text-xs sm:text-sm">
-                                    <div className="w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 mt-0.5">
-                                        <CheckCircle2 size={13} strokeWidth={2.5} />
-                                    </div>
-                                    <span><strong>Full VIP Suite unlocked:</strong> GSN Trade Manager, GoldScalperNinja EA, AI Coach & Academy</span>
-                                </div>
-                                <div className="flex items-start gap-2.5 text-gray-900 dark:text-white font-medium text-xs sm:text-sm">
-                                    <div className="w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 mt-0.5">
-                                        <CheckCircle2 size={13} strokeWidth={2.5} />
-                                    </div>
-                                    <span><strong>100% custody:</strong> Withdraw your principal or profits anytime at your sole discretion</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="mt-5 pt-3.5 border-t border-gold/25 text-xs font-extrabold text-amber-900 dark:text-gold flex items-center gap-1.5">
-                            <ShieldCheck size={16} className="text-emerald-500 shrink-0" />
-                            <span>Zero course fees · Zero financial lockup · Zero risk to capital access</span>
-                        </div>
-                    </div>
-                </div>
-
-                {/* 3. Four Trust Pillars Grid (Compact & Sleek Single Line Pills) */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8 w-full">
-                    <div className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-lg bg-white dark:bg-card/50 border border-gray-200 dark:border-white/10 shadow-sm hover:border-gold/40 transition-all group">
-                        <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                            <RotateCcw size={15} />
-                        </div>
-                        <div className="min-w-0">
-                            <h4 className="text-xs font-extrabold text-gray-900 dark:text-white truncate">Withdraw Anytime</h4>
-                            <p className="text-[10px] text-gray-500 dark:text-gray-400 font-medium truncate">100% at your command</p>
-                        </div>
-                    </div>
-
-                    <div className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-lg bg-white dark:bg-card/50 border border-gray-200 dark:border-white/10 shadow-sm hover:border-gold/40 transition-all group">
-                        <div className="w-8 h-8 rounded-lg bg-gold/15 text-gold flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                            <Lock size={15} />
-                        </div>
-                        <div className="min-w-0">
-                            <h4 className="text-xs font-extrabold text-gray-900 dark:text-white truncate">100% In Your Name</h4>
-                            <p className="text-[10px] text-gray-500 dark:text-gray-400 font-medium truncate">Regulated broker account</p>
-                        </div>
-                    </div>
-
-                    <div className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-lg bg-white dark:bg-card/50 border border-gray-200 dark:border-white/10 shadow-sm hover:border-gold/40 transition-all group">
-                        <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-slate-300 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                            <Building2 size={15} />
-                        </div>
-                        <div className="min-w-0">
-                            <h4 className="text-xs font-extrabold text-gray-900 dark:text-white truncate">New or Existing</h4>
-                            <p className="text-[10px] text-gray-500 dark:text-gray-400 font-medium truncate">Flexible broker connection</p>
-                        </div>
-                    </div>
-
-                    <div className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-lg bg-white dark:bg-card/50 border border-gray-200 dark:border-white/10 shadow-sm hover:border-gold/40 transition-all group">
-                        <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-slate-300 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                            <Zap size={15} />
-                        </div>
-                        <div className="min-w-0">
-                            <h4 className="text-xs font-extrabold text-gray-900 dark:text-white truncate">No Monthly Subscription</h4>
-                            <p className="text-[10px] text-gray-500 dark:text-gray-400 font-medium truncate">No recurring card charges</p>
-                        </div>
-                    </div>
-                </div>
-
-                {/* 4. Capital Flow Diagram (Compact Console) */}
-                <div className="w-full bg-white/90 dark:bg-card/60 rounded-lg p-5 sm:p-6 border border-gray-200 dark:border-white/10 shadow-md mb-6 sm:mb-8 backdrop-blur-md">
-                    <div className="text-center max-w-2xl mx-auto mb-5">
-                        <h4 className="text-base sm:text-lg font-black text-gray-900 dark:text-white mb-1">
-                            Where does your <span className="text-gold">$200 deposit</span> actually go?
-                        </h4>
-                        <p className="text-xs text-gray-600 dark:text-gray-400">
-                            See how your funds flow directly between you and your chosen regulated broker without touching TheNextTrade.
-                        </p>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 items-center mb-5">
-                        {/* Node 1: Trader */}
-                        <div className="p-3.5 rounded-lg bg-gray-50/80 dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 text-center flex flex-col items-center">
-                            <div className="w-9 h-9 rounded-lg bg-white dark:bg-white/10 text-gray-800 dark:text-white flex items-center justify-center mb-1.5 shadow-sm border border-gray-200 dark:border-white/5">
-                                <Wallet size={18} />
-                            </div>
-                            <h5 className="text-sm font-extrabold text-gray-900 dark:text-white">You (Trader)</h5>
-                            <span className="text-[11px] text-gray-500 dark:text-gray-400 font-medium">100% Sole Owner of Capital</span>
-                        </div>
-
-                        {/* Mid Indicator: Direct Deposit with Running Flow Animation */}
-                        <div className="flex flex-col items-center justify-center p-2 text-center relative w-full">
-                            {/* Animated Flow Track */}
-                            <div className="relative w-full max-w-[240px] flex items-center justify-center mb-2 py-1">
-                                {/* Connecting Background Track (Desktop/Tablet) */}
-                                <div className="hidden md:block absolute inset-x-0 top-1/2 -translate-y-1/2 h-[2px] bg-gradient-to-r from-gray-200 via-gold/30 to-gray-200 dark:from-white/10 dark:via-gold/30 dark:to-white/10" />
-
-                                {/* Flowing Animated Gradient Stream (Desktop/Tablet) */}
-                                <div className="hidden md:block absolute inset-x-0 top-1/2 -translate-y-1/2 h-[2px] bg-gradient-to-r from-transparent via-amber-400 to-transparent animate-pulse" />
-
-                                {/* Central Floating Badge with Gold Glow */}
-                                <div className="relative z-10 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-amber-50/90 dark:bg-slate-900/90 text-amber-900 dark:text-gold text-[11px] font-black uppercase tracking-wider border-2 border-gold/60 shadow-[0_0_15px_rgba(229,165,10,0.3)] backdrop-blur-md hover:scale-105 transition-transform">
-                                    <span className="relative flex h-2 w-2">
-                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-gold opacity-75" />
-                                        <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500" />
-                                    </span>
-                                    <span>Deposit $200</span>
-                                    <ArrowRight size={13} className="text-gold animate-pulse hidden md:inline" />
-                                    <ArrowDown size={13} className="text-gold animate-pulse md:hidden" />
-                                </div>
-                            </div>
-
-                            <div className="flex items-center gap-1.5 text-[11px] text-emerald-600 dark:text-emerald-400 font-bold">
-                                <RotateCcw size={11} className="shrink-0" />
-                                <span>Withdraw whenever you choose</span>
-                            </div>
-                        </div>
-
-                        {/* Node 2: Regulated Broker */}
-                        <div className="p-3.5 rounded-lg bg-gold/10 dark:bg-gold/15 border-2 border-gold/40 text-center flex flex-col items-center">
-                            <div className="w-9 h-9 rounded-lg bg-gold text-white flex items-center justify-center mb-1.5 shadow-md shadow-gold/20">
-                                <Building2 size={18} />
-                            </div>
-                            <h5 className="text-sm font-extrabold text-gray-900 dark:text-white">Your Broker Account</h5>
-                            <span className="text-[11px] font-bold text-amber-900 dark:text-gold">100% In Your Legal Name</span>
-                        </div>
-                    </div>
-
-                    {/* Zero Fee Guarantee Banner */}
-                    <div className="p-3 sm:p-3.5 rounded-lg bg-emerald-500/10 dark:bg-emerald-500/15 border border-emerald-500/30 text-emerald-900 dark:text-emerald-200 text-xs font-semibold flex items-center justify-center gap-2 text-center">
-                        <ShieldCheck size={16} className="text-emerald-600 dark:text-emerald-400 shrink-0 hidden sm:block" />
-                        <span><strong>TheNextTrade receives $0.</strong> Your full VIP membership unlocks automatically — there is nothing to pay us, ever.</span>
-                    </div>
-                </div>
+                {/* 4. Capital Flow Diagram */}
+                <BrokerCapitalFlow />
 
                 {/* 5. Primary Call-to-Action */}
                 <div className="text-center max-w-xl mx-auto">
@@ -271,19 +53,19 @@ export function BrokerFundedMembershipSection({
                                 : "/auth/signup?intent=BROKER_FUNDED&source=broker_funded_section"
                         }
                         className={cn(
-                            buttonVariants({ variant: "gold", size: "smd" }),
-                            "w-full sm:w-auto px-6 rounded-lg bg-gold hover:bg-amber-600 text-white font-extrabold shadow-[0_8px_20px_rgba(245,158,11,0.22)] hover:shadow-[0_12px_28px_rgba(245,158,11,0.32)] transition-all duration-300 inline-flex items-center justify-center gap-2"
+                            buttonVariants({ variant: "gold" }),
+                            "w-full sm:w-auto min-h-12 px-8 rounded-lg bg-gold hover:bg-amber-600 text-white font-extrabold text-sm shadow-[0_8px_20px_rgba(245,158,11,0.22)] hover:shadow-[0_12px_28px_rgba(245,158,11,0.32)] transition-all duration-300 inline-flex items-center justify-center gap-2 group"
                         )}
                     >
                         <span>
                             {isLoggedIn
                                 ? "Connect Your Broker Account"
-                                : "Start Your Free 7-Day Trial"}
+                                : "Unlock VIP via Broker Deposit"}
                         </span>
-                        <ArrowRight size={14} />
+                        <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform duration-300" />
                     </Link>
                     <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-2.5 font-medium">
-                        7-day free trial · No card required · Everything unlocked day one
+                        Zero software fee · Your $200 deposit stays 100% in your own name · Withdraw anytime
                     </p>
                 </div>
             </div>

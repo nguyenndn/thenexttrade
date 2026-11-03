@@ -159,7 +159,7 @@ export function TradingRuleModal({
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-            <DialogContent className="max-w-md bg-white dark:bg-[#11141d] border-dashboard dark:border-white/[0.08] p-6 rounded-2xl">
+            <DialogContent className="max-w-md bg-white dark:bg-[#0D111C] border-dashboard dark:border-white/[0.08] p-6 rounded-2xl">
                 <DialogHeader className="border-b border-dashboard/80 dark:border-white/[0.08] pb-4">
                     <DialogTitle className="text-lg font-bold text-gray-800 dark:text-white">
                         {ruleToEdit
@@ -193,9 +193,8 @@ export function TradingRuleModal({
                             Description / Notes
                         </label>
                         <textarea
-                            placeholder="Provide context on why this rule exists..."
                             {...register("description")}
-                            className="w-full min-h-[80px] p-3 rounded-lg border border-dashboard dark:border-white/10 bg-gray-50 dark:bg-[#151925] text-sm text-gray-800 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all resize-none"
+                            className="w-full min-h-[80px] p-3 rounded-lg border border-dashboard dark:border-white/10 bg-gray-50 dark:bg-[#151925] text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-gold transition-all resize-none"
                         />
                     </div>
 

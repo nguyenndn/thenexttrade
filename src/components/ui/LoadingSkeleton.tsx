@@ -11,7 +11,7 @@ export function CardSkeleton({ className }: { className?: string }) {
     return (
         <div
             className={cn(
-                "rounded-lg border border-dashboard dark:border-slate-800 bg-white dark:bg-slate-900 p-4",
+                "rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-card p-4",
                 className
             )}
         >
@@ -66,7 +66,7 @@ export function StatsSkeleton({ className }: { className?: string }) {
             {Array.from({ length: 4 }).map((_, i) => (
                 <div
                     key={i}
-                    className="rounded-lg border border-dashboard dark:border-slate-800 bg-white dark:bg-slate-900 p-6"
+                    className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-card p-6"
                 >
                     <div className="h-4 w-24 rounded-lg bg-slate-200 dark:bg-slate-800 animate-pulse mb-4" />
                     <div className="h-8 w-16 rounded-lg bg-slate-200 dark:bg-slate-800 animate-pulse" />
@@ -78,8 +78,8 @@ export function StatsSkeleton({ className }: { className?: string }) {
 
 export function TableSkeleton({ rows = 5 }: { rows?: number }) {
     return (
-        <div className="rounded-lg border border-dashboard dark:border-slate-800 bg-white dark:bg-slate-900">
-            <div className="p-4 border-b border-dashboard dark:border-slate-800">
+        <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-card">
+            <div className="p-4 border-b border-gray-200 dark:border-white/10">
                 <div className="h-6 w-32 rounded-lg bg-slate-200 dark:bg-slate-800 animate-pulse" />
             </div>
             <div className="p-4 space-y-4">
@@ -110,8 +110,8 @@ export function DashboardSkeleton() {
 
 export function PageSkeleton() {
     return (
-        <div className="min-h-screen bg-white dark:bg-slate-900">
-            <div className="h-16 border-b border-dashboard dark:border-slate-800 bg-white dark:bg-slate-900 animate-pulse" />
+        <div className="min-h-screen bg-white dark:bg-card">
+            <div className="h-16 border-b border-gray-200 dark:border-white/10 bg-white dark:bg-card animate-pulse" />
             <main className="mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="space-y-8">
                     <HeroSkeleton />
@@ -133,25 +133,31 @@ export function PageSkeleton() {
 
 export function HomeFeedSkeleton() {
     return (
-        <div className="pt-24 pb-8 mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
-                <div className="lg:col-span-2 space-y-4">
-                    <HeroSkeleton />
+        <div className="pt-24 sm:pt-32 pb-16 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-12">
+            {/* Centered Hero Skeleton */}
+            <div className="flex flex-col items-center text-center space-y-6 max-w-4xl mx-auto">
+                <div className="h-6 w-48 rounded-full bg-gray-200 dark:bg-white/10 animate-pulse" />
+                <div className="space-y-3 w-full flex flex-col items-center">
+                    <div className="h-12 sm:h-16 w-3/4 rounded-xl bg-gray-200 dark:bg-white/10 animate-pulse" />
+                    <div className="h-12 sm:h-16 w-1/2 rounded-xl bg-gray-200 dark:bg-white/10 animate-pulse" />
                 </div>
-                <div className="space-y-4 flex flex-col h-full min-h-[400px]">
-                    <div className="h-6 w-32 rounded-lg bg-slate-200 dark:bg-slate-800 animate-pulse mb-4" />
-                    <ArticleCardSkeleton count={4} />
+                <div className="h-5 w-2/3 max-w-lg rounded-lg bg-gray-200 dark:bg-white/10 animate-pulse" />
+                <div className="flex flex-col sm:flex-row gap-4 pt-2">
+                    <div className="h-12 w-48 rounded-lg bg-gray-200 dark:bg-white/10 animate-pulse" />
+                    <div className="h-12 w-48 rounded-lg bg-gray-200 dark:bg-white/10 animate-pulse" />
                 </div>
+                <div className="h-4 w-64 rounded-md bg-gray-200 dark:bg-white/10 animate-pulse" />
             </div>
-            <div className="space-y-8">
-                <div className="h-10 w-48 mx-auto rounded-lg bg-slate-200 dark:bg-slate-800 animate-pulse" />
-                <div className="flex gap-4 justify-center">
-                    <div className="h-12 w-24 rounded-full bg-slate-200 dark:bg-slate-800 animate-pulse" />
-                    <div className="h-12 w-24 rounded-full bg-slate-200 dark:bg-slate-800 animate-pulse" />
-                    <div className="h-12 w-24 rounded-full bg-slate-200 dark:bg-slate-800 animate-pulse" />
-                    <div className="h-12 w-24 rounded-full bg-slate-200 dark:bg-slate-800 animate-pulse" />
+
+            {/* Discipline Cockpit Skeleton */}
+            <div className="rounded-2xl border border-gray-200 dark:border-white/10 p-6 sm:p-8 space-y-6 bg-slate-50/50 dark:bg-white/[0.02]">
+                <div className="h-6 w-full max-w-md rounded-lg bg-gray-200 dark:bg-white/10 animate-pulse" />
+                <div className="h-10 w-3/4 mx-auto rounded-lg bg-gray-200 dark:bg-white/10 animate-pulse" />
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
+                    <div className="h-32 rounded-xl bg-gray-200 dark:bg-white/10 animate-pulse" />
+                    <div className="h-32 rounded-xl bg-gray-200 dark:bg-white/10 animate-pulse" />
+                    <div className="h-32 rounded-xl bg-gray-200 dark:bg-white/10 animate-pulse" />
                 </div>
-                <StatsSkeleton className="mt-8" />
             </div>
         </div>
     );

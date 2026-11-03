@@ -2,7 +2,21 @@
 
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { X, Lightbulb } from "lucide-react";
+import {
+    X,
+    Lightbulb,
+    Home,
+    Briefcase,
+    BookOpen,
+    Target,
+    TrendingUp,
+    BarChart3,
+    Cpu,
+    GraduationCap,
+    Trophy,
+    Settings,
+    type LucideIcon,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 
@@ -10,7 +24,7 @@ import { Button } from "@/components/ui/Button";
 // PAGE GUIDES — 1 card per page
 // ============================
 interface PageGuide {
-    icon: string;
+    icon: LucideIcon;
     title: string;
     description: string;
     tips: string[];
@@ -18,7 +32,7 @@ interface PageGuide {
 
 const pageGuides: Record<string, PageGuide> = {
     "/dashboard": {
-        icon: "🏠",
+        icon: Home,
         title: "Welcome to your Dashboard!",
         description: "Your trading command center — everything at a glance.",
         tips: [
@@ -28,7 +42,7 @@ const pageGuides: Record<string, PageGuide> = {
         ],
     },
     "/dashboard/accounts": {
-        icon: "💼",
+        icon: Briefcase,
         title: "Trading Accounts",
         description: "Connect and manage your MT5 trading accounts.",
         tips: [
@@ -38,7 +52,7 @@ const pageGuides: Record<string, PageGuide> = {
         ],
     },
     "/dashboard/journal": {
-        icon: "📖",
+        icon: BookOpen,
         title: "Trading Journal",
         description: "Your complete trade history synced from MT5.",
         tips: [
@@ -48,7 +62,7 @@ const pageGuides: Record<string, PageGuide> = {
         ],
     },
     "/dashboard/strategies": {
-        icon: "♟️",
+        icon: Target,
         title: "Strategies",
         description: "Create strategies and track their performance.",
         tips: [
@@ -57,7 +71,7 @@ const pageGuides: Record<string, PageGuide> = {
         ],
     },
     "/dashboard/analytics": {
-        icon: "📈",
+        icon: TrendingUp,
         title: "Analytics Hub",
         description: "Audit detailed trading telemetry and analytics.",
         tips: [
@@ -66,7 +80,7 @@ const pageGuides: Record<string, PageGuide> = {
         ],
     },
     "/dashboard/reports": {
-        icon: "📊",
+        icon: BarChart3,
         title: "Reports",
         description: "Detailed performance reports for your trading.",
         tips: [
@@ -75,7 +89,7 @@ const pageGuides: Record<string, PageGuide> = {
         ],
     },
     "/dashboard/intelligence": {
-        icon: "🧠",
+        icon: Cpu,
         title: "Trading Intelligence",
         description:
             "Execution leak radar, discipline scoring, and behavioral pattern detection.",
@@ -85,7 +99,7 @@ const pageGuides: Record<string, PageGuide> = {
         ],
     },
     "/dashboard/academy": {
-        icon: "🎓",
+        icon: GraduationCap,
         title: "Trading Academy",
         description: "Structured learning from beginner to advanced.",
         tips: [
@@ -94,7 +108,7 @@ const pageGuides: Record<string, PageGuide> = {
         ],
     },
     "/dashboard/leaderboard": {
-        icon: "🏆",
+        icon: Trophy,
         title: "Leaderboard",
         description: "See how you rank against other traders.",
         tips: [
@@ -103,7 +117,7 @@ const pageGuides: Record<string, PageGuide> = {
         ],
     },
     "/dashboard/settings": {
-        icon: "⚙️",
+        icon: Settings,
         title: "Settings",
         description: "Customize your profile and preferences.",
         tips: [
@@ -154,6 +168,8 @@ export function PageWelcomeGuide() {
 
     if (!guide || !visible) return null;
 
+    const GuideIcon = guide.icon;
+
     return (
         <div
             className={cn(
@@ -165,7 +181,7 @@ export function PageWelcomeGuide() {
                     : "opacity-100 translate-y-0 scale-100"
             )}
         >
-            <div className="bg-white dark:bg-[#1A1D27] rounded-lg border border-dashboard shadow-2xl shadow-black/10 dark:shadow-black/40 overflow-hidden">
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-2xl shadow-black/10 dark:shadow-black/40 overflow-hidden">
                 {/* Accent bar */}
                 <div className="h-1 bg-gold" />
 
@@ -173,8 +189,8 @@ export function PageWelcomeGuide() {
                     {/* Header */}
                     <div className="flex items-start justify-between mb-3">
                         <div className="flex items-center gap-3">
-                            <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10 text-xl">
-                                {guide.icon}
+                            <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-gold/10 text-amber-600 dark:text-gold shrink-0">
+                                <GuideIcon size={20} />
                             </div>
                             <div>
                                 <h3 className="text-sm font-bold text-gray-900 dark:text-white leading-tight">
@@ -187,10 +203,10 @@ export function PageWelcomeGuide() {
                         </div>
                         <Button
                             type="button"
-                            variant="ghost"
+                            variant="outline"
                             size="icon"
                             onClick={handleDismiss}
-                            className="h-7 w-7 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 -mt-1 -mr-1"
+                            className="h-7 w-7 rounded-lg border-gray-200 dark:border-white/10 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 -mt-1 -mr-1"
                             aria-label="Dismiss guide"
                         >
                             <X size={16} />
@@ -206,7 +222,7 @@ export function PageWelcomeGuide() {
                             >
                                 <Lightbulb
                                     size={14}
-                                    className="text-primary mt-0.5 shrink-0"
+                                    className="text-amber-600 dark:text-gold mt-0.5 shrink-0"
                                 />
                                 <span className="leading-snug">{tip}</span>
                             </div>
@@ -219,7 +235,7 @@ export function PageWelcomeGuide() {
                         variant="gold"
                         size="sm"
                         onClick={handleDismiss}
-                        className="w-full text-xs font-bold text-white shadow-sm"
+                        className="w-full text-xs font-bold bg-gold hover:bg-amber-600 !text-white rounded-lg shadow-sm"
                     >
                         Got It
                     </Button>

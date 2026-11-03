@@ -2,7 +2,6 @@ import { SessionDashboard } from "@/components/sessions/SessionDashboard";
 import { Metadata } from "next";
 import { Suspense } from "react";
 import { cookies } from "next/headers";
-import { Loader2 } from "lucide-react";
 import { TabBar } from "@/components/ui/TabBar";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { DashboardFilter } from "@/components/dashboard/DashboardFilter";
@@ -64,8 +63,16 @@ export default async function SessionAnalysisPage({
 
             <Suspense
                 fallback={
-                    <div className="min-h-[400px] flex items-center justify-center">
-                        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                    <div className="space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            {[1, 2, 3].map((i) => (
+                                <div
+                                    key={i}
+                                    className="bg-white dark:bg-[#1E2028] rounded-xl p-6 border border-dashboard h-44 animate-pulse"
+                                />
+                            ))}
+                        </div>
+                        <div className="bg-white dark:bg-[#1E2028] rounded-xl p-6 border border-dashboard h-72 animate-pulse" />
                     </div>
                 }
             >

@@ -298,7 +298,7 @@ export function StrategyModal({
     );
 
     const inputClasses =
-        "w-full rounded-lg border border-dashboard bg-white dark:bg-white/5 px-4 py-2.5 text-sm outline-none focus:border-gold focus:ring-2 focus:ring-amber-500/20 transition-all placeholder:text-gray-500 dark:placeholder:text-gray-600 text-gray-700 dark:text-white";
+        "w-full rounded-lg border border-dashboard bg-white dark:bg-[#151925] px-4 py-2.5 text-sm outline-none focus:border-gold focus:ring-2 focus:ring-amber-500/20 transition-all text-gray-700 dark:text-white";
     const labelClasses = "text-sm font-bold text-gray-700 dark:text-gray-300";
 
     return (
@@ -323,12 +323,12 @@ export function StrategyModal({
                 animate="animate"
                 exit="exit"
                 transition={SPRING_SOFT}
-                className={`relative z-10 bg-white dark:bg-[#1E2028] w-full max-h-[90vh] flex flex-col rounded-2xl shadow-2xl border border-dashboard ${
+                className={`relative z-10 bg-white dark:bg-[#0D111C] w-full max-h-[90vh] flex flex-col rounded-2xl shadow-2xl border border-dashboard ${
                     formData.isPlaybook ? "max-w-2xl" : "max-w-lg"
                 } transition-all duration-300 overflow-hidden`}
             >
                 {/* Fixed Header */}
-                <div className="flex items-center justify-between p-5 sm:p-6 border-b border-dashboard shrink-0 bg-white dark:bg-[#1E2028]">
+                <div className="flex items-center justify-between p-5 sm:p-6 border-b border-dashboard shrink-0 bg-white dark:bg-[#0D111C]">
                     <div className="flex items-center gap-3">
                         {formData.isPlaybook && (
                             <div className="w-9 h-9 rounded-lg bg-amber-500/10 flex items-center justify-center text-gold">
@@ -392,7 +392,7 @@ export function StrategyModal({
                             variant="outline"
                             size="icon"
                             onClick={onClose}
-                            className="text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors rounded-full border-dashboard h-9 w-9"
+                            className="text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors rounded-lg border-dashboard h-9 w-9"
                             aria-label="Close modal"
                         >
                             <X size={18} />
@@ -505,7 +505,6 @@ export function StrategyModal({
                             <textarea
                                 id="description"
                                 rows={2}
-                                placeholder="Brief summary of when and how to trade this strategy..."
                                 className={`${inputClasses} resize-none`}
                                 value={formData.description}
                                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -519,7 +518,6 @@ export function StrategyModal({
                             <textarea
                                 id="rules"
                                 rows={3}
-                                placeholder={"- HTF Trend Aligned\n- Asian Range Swept\n- M15 MSS Confirmation"}
                                 className={`${inputClasses} font-mono text-xs`}
                                 value={formData.rules}
                                 onChange={(e) => setFormData({ ...formData, rules: e.target.value })}
@@ -535,8 +533,10 @@ export function StrategyModal({
                                     type="button"
                                     variant="ghost"
                                     onClick={() => setFormData((p) => ({ ...p, isPlaybook: !p.isPlaybook }))}
-                                    className={`p-0 relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none hover:bg-transparent ${
-                                        formData.isPlaybook ? "bg-gold" : "bg-gray-200 dark:bg-white/20"
+                                    className={`p-0 relative inline-flex items-center justify-start h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                                        formData.isPlaybook
+                                            ? "bg-gold hover:bg-gold"
+                                            : "bg-gray-200 dark:bg-white/20 hover:bg-gray-300 dark:hover:bg-white/25"
                                     }`}
                                     role="switch"
                                     aria-checked={formData.isPlaybook}
@@ -677,7 +677,7 @@ export function StrategyModal({
                                             <div className="relative">
                                                 <input
                                                     type="text"
-                                                    placeholder="Search or enter symbol (XAUUSD, NAS100)..."
+                                                    aria-label="Applicable Pairs or Symbols"
                                                     className={inputClasses}
                                                     value={pairInput}
                                                     onFocus={() => setShowPairSuggestions(true)}
@@ -757,7 +757,7 @@ export function StrategyModal({
                                                     step="0.1"
                                                     min="0"
                                                     max="100"
-                                                    className={`${inputClasses} max-w-[140px]`}
+                                                    className={`${inputClasses} max-w-[140px] font-mono tabular-nums`}
                                                     value={formData.riskRewardMin ?? ""}
                                                     onChange={(e) =>
                                                         setFormData({
@@ -766,7 +766,7 @@ export function StrategyModal({
                                                         })
                                                     }
                                                 />
-                                                <span className="text-xs font-bold text-gray-400">: 1</span>
+                                                <span className="text-xs font-bold font-mono tabular-nums text-gray-400">: 1</span>
                                             </div>
                                         </div>
 
@@ -774,7 +774,7 @@ export function StrategyModal({
                                         <div className="space-y-2">
                                             <div className="flex items-center justify-between">
                                                 <label className={labelClasses}>
-                                                    Reference Charts ({formData.referenceImages.length}/3)
+                                                    Reference Charts (<span className="font-mono tabular-nums">{formData.referenceImages.length}/3</span>)
                                                 </label>
                                                 <span className="text-[11px] text-gray-500">Max 1MB per image</span>
                                             </div>
@@ -808,7 +808,7 @@ export function StrategyModal({
                                                             variant="destructive"
                                                             size="icon"
                                                             onClick={() => removeImage(idx)}
-                                                            className="absolute top-1.5 right-1.5 w-6 h-6 p-0 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md"
+                                                            className="absolute top-1.5 right-1.5 w-6 h-6 p-0 rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md"
                                                             aria-label={`Remove image ${idx + 1}`}
                                                         >
                                                             <Trash2 size={12} />

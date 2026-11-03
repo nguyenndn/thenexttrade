@@ -53,7 +53,12 @@ export async function POST(request: NextRequest) {
             select: {
                 id: true,
                 tradingAccounts: {
-                    select: { id: true, accountNumber: true },
+                    select: {
+                        id: true,
+                        accountNumber: true,
+                        broker: true,
+                        server: true,
+                    },
                 },
             },
         });
@@ -64,7 +69,12 @@ export async function POST(request: NextRequest) {
                 select: {
                     id: true,
                     tradingAccounts: {
-                        select: { id: true, accountNumber: true },
+                        select: {
+                            id: true,
+                            accountNumber: true,
+                            broker: true,
+                            server: true,
+                        },
                     },
                 },
             });
@@ -125,14 +135,18 @@ export async function POST(request: NextRequest) {
             if (balance !== undefined) updateData.balance = balance;
             if (equity !== undefined) updateData.equity = equity;
 
-            // Auto-detect broker
+            // Auto-detect broker & server only on first connect (lock once set, matching /api/ea/heartbeat)
             if (acct.server) {
-                const detectedBroker = detectBroker(
-                    acct.server,
-                    acct.broker || ""
-                );
-                if (detectedBroker) updateData.broker = detectedBroker;
-                updateData.server = acct.server;
+                if (!dbAccount.broker) {
+                    const detectedBroker = detectBroker(
+                        acct.server,
+                        acct.broker || ""
+                    );
+                    if (detectedBroker) updateData.broker = detectedBroker;
+                }
+                if (!dbAccount.server) {
+                    updateData.server = acct.server;
+                }
             }
             if (acct.currency) updateData.currency = acct.currency;
             if (acct.leverage) updateData.leverage = String(acct.leverage);

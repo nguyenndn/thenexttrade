@@ -50,6 +50,10 @@ const updateProfileSchema = z
     })
     .strict();
 
+const NO_STORE_HEADERS = {
+    "Cache-Control": "no-store, no-cache, must-revalidate, private",
+};
+
 export async function GET() {
     const supabase = await createClient();
     const {
@@ -57,7 +61,10 @@ export async function GET() {
     } = await supabase.auth.getUser();
 
     if (!user) {
-        return NextResponse.json({ user: null }, { status: 200 });
+        return NextResponse.json(
+            { user: null },
+            { status: 200, headers: NO_STORE_HEADERS }
+        );
     }
 
     try {
@@ -69,31 +76,34 @@ export async function GET() {
         if (!dbUser) {
             return NextResponse.json(
                 { error: "User not found" },
-                { status: 404 }
+                { status: 404, headers: NO_STORE_HEADERS }
             );
         }
 
         const onboarding = await getOnboardingState(user.id);
 
-        return NextResponse.json({
-            id: dbUser.id,
-            name: dbUser.name,
-            email: dbUser.email,
-            image: dbUser.image,
-            bio: dbUser.profile?.bio || "",
-            telegramId: dbUser.profile?.telegramId || "",
-            country: dbUser.profile?.country || "",
-            role: dbUser.profile?.role || "USER",
-            streak: dbUser.streak || 0,
-            level: dbUser.level || 1,
-            xp: dbUser.xp || 0,
-            username: dbUser.profile?.username || "",
-            tradingGoal: onboarding?.tradingGoal || "",
-        });
+        return NextResponse.json(
+            {
+                id: dbUser.id,
+                name: dbUser.name,
+                email: dbUser.email,
+                image: dbUser.image,
+                bio: dbUser.profile?.bio || "",
+                telegramId: dbUser.profile?.telegramId || "",
+                country: dbUser.profile?.country || "",
+                role: dbUser.profile?.role || "USER",
+                streak: dbUser.streak || 0,
+                level: dbUser.level || 1,
+                xp: dbUser.xp || 0,
+                username: dbUser.profile?.username || "",
+                tradingGoal: onboarding?.tradingGoal || "",
+            },
+            { headers: NO_STORE_HEADERS }
+        );
     } catch {
         return NextResponse.json(
             { error: "Internal Server Error" },
-            { status: 500 }
+            { status: 500, headers: NO_STORE_HEADERS }
         );
     }
 }
@@ -213,12 +223,12 @@ export async function PUT(request: Request) {
         revalidatePath("/dashboard", "layout");
 
         return NextResponse.json({ message: "Profile updated successfully" });
-    } catch (error: any) {
+    } catch (error: unknown) {
         if (error instanceof z.ZodError) {
             return NextResponse.json({ error: error.issues }, { status: 400 });
         }
         return NextResponse.json(
-            { error: error?.message || "Internal Server Error" },
+            { error: "Internal Server Error" },
             { status: 500 }
         );
     }

@@ -6,17 +6,27 @@ import { ReportView } from "@/components/reports/ReportView";
 import { TabBar } from "@/components/ui/TabBar";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { ANALYTICS_TABS } from "@/config/navigation";
+import { TargetProgressWidget } from "@/components/dashboard/targets/TargetProgressWidget";
+import { resolveDefaultAccountId } from "@/actions/main-account";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-    title: "Weekly Review | Trading Dashboard",
+    title: "Weekly Review | TheNextTrade",
     description: "Review your weekly trading performance and patterns",
 };
 
-export default async function WeeklyReviewPage() {
+export default async function WeeklyReviewPage({
+    searchParams,
+}: {
+    searchParams?: Promise<{ accountId?: string }>;
+}) {
     const user = await getAuthUser();
     if (!user) redirect("/auth/login");
+
+    const resolved = searchParams ? await searchParams : undefined;
+    const defaultAccId = await resolveDefaultAccountId(user.id);
+    const accountId = resolved?.accountId || defaultAccId || "all";
 
     const { reports, total } = await getReports("WEEKLY", 1, 20);
 
@@ -29,6 +39,8 @@ export default async function WeeklyReviewPage() {
             <div className="mb-4">
                 <TabBar tabs={ANALYTICS_TABS} />
             </div>
+
+            <TargetProgressWidget accountId={accountId} highlightPeriod="WEEKLY" />
 
             <ReportView reports={reports as any} total={total} type="weekly" />
         </div>

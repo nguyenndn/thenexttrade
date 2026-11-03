@@ -37,10 +37,10 @@ export function TradeShareCard({
     // Theme Colors based on Result
 
     const bgGradient = isWin
-        ? "from-green-500/10 to-transparent"
+        ? "from-emerald-500/10 to-transparent"
         : "from-red-500/10 to-transparent";
-    const textColor = isWin ? "text-green-500" : "text-red-500";
-    const badgeBg = isWin ? "bg-green-500" : "bg-red-500";
+    const textColor = isWin ? "text-emerald-500" : "text-red-500";
+    const badgeBg = isWin ? "bg-emerald-500" : "bg-red-500";
 
     const percentGain = entry.pnl
         ? ((entry.pnl / 10000) * 100).toFixed(2)
@@ -53,7 +53,7 @@ export function TradeShareCard({
     return (
         <div
             className={cn(
-                "relative w-full max-w-3xl mx-auto rounded-lg overflow-hidden bg-white dark:bg-[#1E2028] shadow-2xl border border-dashboard transition-all text-left",
+                "relative w-full max-w-3xl mx-auto rounded-xl overflow-hidden bg-white dark:bg-[#1E2028] shadow-2xl border border-dashboard transition-all text-left",
                 className
             )}
         >
@@ -88,7 +88,7 @@ export function TradeShareCard({
                                 {entry.account?.accountType && (
                                     <span
                                         className={cn(
-                                            "px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest border",
+                                            "px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest border",
                                             entry.account.accountType === "DEMO"
                                                 ? "border-amber-400/40 text-amber-600 bg-amber-50 dark:bg-amber-500/10 dark:text-amber-400"
                                                 : "border-emerald-400/40 text-emerald-600 bg-emerald-50 dark:bg-emerald-500/10 dark:text-emerald-400"
@@ -99,7 +99,7 @@ export function TradeShareCard({
                                             : "Real"}
                                     </span>
                                 )}
-                                <span className="flex items-center gap-1 px-2 py-0.5 rounded-full border border-blue-500/30 text-blue-500 text-[9px] font-black uppercase tracking-widest bg-blue-500/5">
+                                <span className="flex items-center gap-1 px-2 py-0.5 rounded-lg border border-gold/30 text-amber-600 dark:text-gold text-[9px] font-black uppercase tracking-widest bg-gold/10">
                                     <ShieldCheck size={10} strokeWidth={3} />
                                     Verified
                                 </span>
@@ -117,7 +117,7 @@ export function TradeShareCard({
                                 {entry.type}
                             </span>
                             <span>|</span>
-                            <span>{Number(entry.lotSize)} Lots</span>
+                            <span className="font-mono tabular-nums">{Number(entry.lotSize)} Lots</span>
                             <span>|</span>
                             <span>{entry.symbol}</span>
                         </div>
@@ -125,7 +125,7 @@ export function TradeShareCard({
                         {/* Big PnL */}
                         <div
                             className={cn(
-                                "text-4xl md:text-6xl font-black tracking-tighter mb-6 md:mb-8",
+                                "text-4xl md:text-6xl font-black font-mono tabular-nums tracking-tighter mb-6 md:mb-8",
                                 textColor
                             )}
                         >
@@ -149,7 +149,7 @@ export function TradeShareCard({
                             <span className="text-gray-500 font-bold text-xs uppercase tracking-wider">
                                 Entry Price
                             </span>
-                            <span className="font-black text-gray-700 dark:text-white font-mono">
+                            <span className="font-black text-gray-700 dark:text-white font-mono tabular-nums">
                                 {Number(entry.entryPrice)}
                             </span>
                         </div>
@@ -159,16 +159,16 @@ export function TradeShareCard({
                             </span>
                             <div className="flex items-center gap-2">
                                 {isTPHit && (
-                                    <span className="px-1.5 py-0.5 bg-green-500 text-white text-[9px] font-black uppercase rounded-lg shadow-sm">
-                                        🎯 TP HIT
+                                    <span className="px-1.5 py-0.5 bg-emerald-500 text-white text-[9px] font-black uppercase rounded-lg shadow-sm">
+                                        TP HIT
                                     </span>
                                 )}
                                 {isSLHit && (
                                     <span className="px-1.5 py-0.5 bg-red-500 text-white text-[9px] font-black uppercase rounded-lg shadow-sm">
-                                        🛡️ SL HIT
+                                        SL HIT
                                     </span>
                                 )}
-                                <span className="font-black text-gray-700 dark:text-white font-mono">
+                                <span className="font-black text-gray-700 dark:text-white font-mono tabular-nums">
                                     {Number(entry.exitPrice || 0)}
                                 </span>
                             </div>
@@ -178,7 +178,7 @@ export function TradeShareCard({
                                 Gain
                             </span>
                             <span
-                                className={cn("font-black text-lg", textColor)}
+                                className={cn("font-black font-mono tabular-nums text-lg", textColor)}
                             >
                                 {percentGain}%
                             </span>
@@ -201,7 +201,7 @@ export function TradeShareCard({
 
                         {/* Watermark / Brand in Chart */}
                         <div className="absolute top-6 right-6 flex items-center gap-2 opacity-50 z-20">
-                            <Medal size={16} className="text-blue-500" />
+                            <Medal size={16} className="text-amber-600 dark:text-gold" />
                             <span className="text-xs font-bold text-gray-500">
                                 Verified by TheNextTrade
                             </span>

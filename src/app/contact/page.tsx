@@ -94,7 +94,7 @@ export default function ContactPage() {
     };
 
     return (
-        <div className="flex flex-col min-h-screen bg-white dark:bg-transparent text-gray-700 dark:text-white relative isolate overflow-hidden transition-colors duration-300">
+        <div className="flex flex-col min-h-screen bg-white dark:bg-transparent text-gray-700 dark:text-white relative isolate overflow-hidden transition-colors duration-200">
             {/* Subtle Gold Atmosphere Background */}
             <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_70%_60%_at_50%_15%,rgba(245,158,11,0.08),transparent_75%)] dark:bg-[radial-gradient(ellipse_70%_60%_at_50%_15%,rgba(245,158,11,0.12),transparent_75%)] pointer-events-none" />
 
@@ -111,7 +111,7 @@ export default function ContactPage() {
             <main className="flex-grow pt-24 pb-14 relative z-10 px-4 flex flex-col justify-center">
                 {/* Compact Letterhead Header */}
                 <div className="max-w-2xl mx-auto text-center space-y-2 mb-6 sm:mb-8 mt-2 sm:mt-4">
-                    <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-gray-900 dark:text-white leading-tight">
+                    <h1 className="text-3xl sm:text-4xl md:text-5xl font-black font-heading tracking-tight text-gray-900 dark:text-white leading-tight">
                         Send a Letter to <span className="text-gold">Our Desk</span>
                     </h1>
                     <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 max-w-lg mx-auto leading-relaxed">
@@ -119,16 +119,16 @@ export default function ContactPage() {
                     </p>
                 </div>
 
-                {/* The Letter Stationery Sheet */}
+                {/* The Letter Stationery Sheet (Level 1 Surface, Shape Lock rounded-xl) */}
                 <div className="max-w-2xl w-full mx-auto">
-                    <div className="bg-white dark:bg-[#161922] border border-gray-200 dark:border-white/10 rounded-xl shadow-xl shadow-gray-200/50 dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative overflow-hidden transition-all duration-300">
-                        {/* Top Airmail Postal Accent Ribbon */}
-                        <div className="h-1.5 bg-gradient-to-r from-amber-500 via-gold to-amber-600" />
+                    <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl shadow-sm relative overflow-hidden transition-all duration-200">
+                        {/* Top Solid Gold Accent Ribbon (Law 1) */}
+                        <div className="h-1.5 bg-gold" />
 
                         {status === "success" ? (
                             /* Letter Dispatched State */
-                            <div className="p-8 sm:p-10 text-center space-y-6 animate-in fade-in zoom-in-95 duration-300">
-                                <div className="w-16 h-16 rounded-full bg-emerald-50 dark:bg-emerald-500/15 border border-emerald-200 dark:border-emerald-500/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto shadow-sm">
+                            <div className="p-8 sm:p-10 text-center space-y-6 animate-in fade-in zoom-in-95 duration-200">
+                                <div className="w-16 h-16 rounded-full bg-emerald-50 dark:bg-emerald-500/15 border border-emerald-200 dark:border-emerald-500/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto shadow-xs">
                                     <CheckCircle2 size={32} />
                                 </div>
 
@@ -138,14 +138,14 @@ export default function ContactPage() {
                                     </h3>
                                     <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 leading-relaxed">
                                         Your correspondence has been sealed and securely delivered to our desk. A copy has been dispatched to{" "}
-                                        <span className="font-bold text-gray-800 dark:text-gray-100 font-mono">
+                                        <span className="font-bold text-gray-900 dark:text-white">
                                             {lastSubmitted?.email}
                                         </span>.
                                     </p>
                                 </div>
 
                                 {lastSubmitted && (
-                                    <div className="bg-gray-50/80 dark:bg-white/[0.02] border border-gray-200 dark:border-white/10 rounded-lg p-4 max-w-md mx-auto text-left text-sm space-y-1.5">
+                                    <div className="bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg p-4 max-w-md mx-auto text-left text-sm space-y-1.5">
                                         <div className="text-xs font-bold uppercase tracking-wider text-gray-400">
                                             Dispatch Record
                                         </div>
@@ -155,7 +155,9 @@ export default function ContactPage() {
                                         <div className="text-gray-500 dark:text-gray-400 flex items-center gap-1.5 text-xs">
                                             <span>From: {lastSubmitted.name}</span>
                                             <span>•</span>
-                                            <span className="font-mono">{new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</span>
+                                            <span className="tabular-nums font-semibold">
+                                                {new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                                            </span>
                                         </div>
                                     </div>
                                 )}
@@ -173,8 +175,8 @@ export default function ContactPage() {
                                     <Link
                                         href="/trading-systems"
                                         className={cn(
-                                            buttonVariants({ variant: "primary", size: "md" }),
-                                            "w-full sm:w-auto rounded-lg bg-gold hover:bg-amber-600 text-white text-sm font-bold"
+                                            buttonVariants({ variant: "gold", size: "md" }),
+                                            "w-full sm:w-auto rounded-lg bg-gold hover:bg-amber-600 !text-white text-sm font-bold"
                                         )}
                                     >
                                         Explore Trading Systems
@@ -187,8 +189,8 @@ export default function ContactPage() {
                                 {/* Letterhead Strip */}
                                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 border-b border-gray-200 dark:border-white/10">
                                     <div className="space-y-1">
-                                        <div className="text-xs font-black uppercase tracking-[0.2em] text-amber-600 dark:text-gold flex items-center gap-2">
-                                            <span className="w-2 h-2 rounded-full bg-gold animate-pulse" />
+                                        <div className="text-xs font-black uppercase tracking-[0.18em] text-amber-600 dark:text-gold flex items-center gap-2">
+                                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                                             TheNextTrade · Official Dispatch
                                         </div>
                                         <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
@@ -196,10 +198,10 @@ export default function ContactPage() {
                                         </div>
                                     </div>
 
-                                    <div className="inline-flex items-center gap-2 self-start sm:self-auto px-3.5 py-2 rounded-lg bg-gray-50/80 dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 text-xs sm:text-sm">
-                                        <Mail size={14} className="text-amber-500 shrink-0" />
+                                    <div className="inline-flex items-center gap-2 self-start sm:self-auto px-3.5 py-2 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 text-xs sm:text-sm">
+                                        <Mail size={14} className="text-amber-500 dark:text-gold shrink-0" />
                                         <span className="text-gray-500 dark:text-gray-400 font-medium">To:</span>
-                                        <span className="font-mono font-bold text-gray-900 dark:text-white">
+                                        <span className="font-bold text-gray-900 dark:text-white">
                                             support@thenexttrade.com
                                         </span>
                                     </div>
@@ -207,7 +209,7 @@ export default function ContactPage() {
 
                                 {/* Error Banner */}
                                 {status === "error" && (
-                                    <div className="mt-4 rounded-lg bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 p-3.5 flex items-start gap-3 text-sm animate-in fade-in duration-200">
+                                    <div className="mt-4 rounded-lg bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 p-3.5 flex items-start gap-3 text-sm animate-in fade-in duration-150">
                                         <AlertCircle size={18} className="text-red-600 dark:text-red-400 shrink-0 mt-0.5" />
                                         <div>
                                             <div className="font-bold text-red-800 dark:text-red-400">
@@ -227,9 +229,9 @@ export default function ContactPage() {
                                         <div className="space-y-1.5">
                                             <label
                                                 htmlFor="name"
-                                                className="text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 flex items-center gap-1.5"
+                                                className="text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 flex items-center gap-1.5"
                                             >
-                                                <User size={14} className="text-amber-500" />
+                                                <User size={14} className="text-amber-500 dark:text-gold" />
                                                 <span>From (Full Name)</span>
                                             </label>
                                             <input
@@ -240,11 +242,11 @@ export default function ContactPage() {
                                                 disabled={isPending}
                                                 aria-invalid={errors.name ? "true" : undefined}
                                                 aria-describedby={errors.name ? "name-error" : undefined}
-                                                className={`w-full px-4 py-2.5 rounded-lg bg-gray-50/70 dark:bg-white/[0.03] border ${
+                                                className={`w-full px-4 py-2.5 rounded-lg bg-gray-50/70 dark:bg-[#151925] border ${
                                                     errors.name
                                                         ? "border-red-500 focus:border-red-500"
                                                         : "border-gray-200 dark:border-white/10"
-                                                } text-sm sm:text-base font-medium text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-colors`}
+                                                } text-sm font-medium text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-gold/25 focus:border-gold transition-colors`}
                                             />
                                             {errors.name && (
                                                 <p id="name-error" className="text-red-500 text-xs font-semibold">
@@ -256,9 +258,9 @@ export default function ContactPage() {
                                         <div className="space-y-1.5">
                                             <label
                                                 htmlFor="email"
-                                                className="text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 flex items-center gap-1.5"
+                                                className="text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 flex items-center gap-1.5"
                                             >
-                                                <Mail size={14} className="text-amber-500" />
+                                                <Mail size={14} className="text-amber-500 dark:text-gold" />
                                                 <span>Return Email</span>
                                             </label>
                                             <input
@@ -269,11 +271,11 @@ export default function ContactPage() {
                                                 disabled={isPending}
                                                 aria-invalid={errors.email ? "true" : undefined}
                                                 aria-describedby={errors.email ? "email-error" : undefined}
-                                                className={`w-full px-4 py-2.5 rounded-lg bg-gray-50/70 dark:bg-white/[0.03] border ${
+                                                className={`w-full px-4 py-2.5 rounded-lg bg-gray-50/70 dark:bg-[#151925] border ${
                                                     errors.email
                                                         ? "border-red-500 focus:border-red-500"
                                                         : "border-gray-200 dark:border-white/10"
-                                                } text-sm sm:text-base font-medium text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-colors`}
+                                                } text-sm font-medium text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-gold/25 focus:border-gold transition-colors`}
                                             />
                                             {errors.email && (
                                                 <p id="email-error" className="text-red-500 text-xs font-semibold">
@@ -287,9 +289,9 @@ export default function ContactPage() {
                                     <div className="space-y-1.5">
                                         <label
                                             htmlFor="subject"
-                                            className="text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 flex items-center gap-1.5"
+                                            className="text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 flex items-center gap-1.5"
                                         >
-                                            <FileText size={14} className="text-amber-500" />
+                                            <FileText size={14} className="text-amber-500 dark:text-gold" />
                                             <span>Regarding (Subject)</span>
                                         </label>
                                         <input
@@ -300,11 +302,11 @@ export default function ContactPage() {
                                             disabled={isPending}
                                             aria-invalid={errors.subject ? "true" : undefined}
                                             aria-describedby={errors.subject ? "subject-error" : undefined}
-                                            className={`w-full px-4 py-2.5 rounded-lg bg-gray-50/70 dark:bg-white/[0.03] border ${
+                                            className={`w-full px-4 py-2.5 rounded-lg bg-gray-50/70 dark:bg-[#151925] border ${
                                                 errors.subject
                                                     ? "border-red-500 focus:border-red-500"
                                                     : "border-gray-200 dark:border-white/10"
-                                            } text-sm sm:text-base font-medium text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-colors`}
+                                            } text-sm font-medium text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-gold/25 focus:border-gold transition-colors`}
                                         />
                                         {errors.subject && (
                                             <p id="subject-error" className="text-red-500 text-xs font-semibold">
@@ -315,9 +317,11 @@ export default function ContactPage() {
 
                                     {/* Letter Body (Row 3) */}
                                     <div className="space-y-1.5 pt-1">
-                                        <div className="flex items-center justify-between text-xs sm:text-sm font-semibold text-gray-600 dark:text-gray-400 italic">
-                                            <span>Dear TheNextTrade Support Team,</span>
-                                            <span className="font-mono text-xs not-italic text-gray-400">
+                                        <div className="flex items-center justify-between text-xs font-bold text-gray-700 dark:text-gray-300">
+                                            <label htmlFor="message">
+                                                Message Body (Dear TheNextTrade Support Team)
+                                            </label>
+                                            <span className="tabular-nums text-xs font-semibold text-gray-400">
                                                 {message.length} chars
                                             </span>
                                         </div>
@@ -329,11 +333,11 @@ export default function ContactPage() {
                                             disabled={isPending}
                                             aria-invalid={errors.message ? "true" : undefined}
                                             aria-describedby={errors.message ? "message-error" : undefined}
-                                            className={`w-full p-4 rounded-lg bg-gray-50/70 dark:bg-white/[0.02] border ${
+                                            className={`w-full p-4 rounded-lg bg-gray-50/70 dark:bg-[#151925] border ${
                                                 errors.message
                                                     ? "border-red-500 focus:border-red-500"
                                                     : "border-gray-200 dark:border-white/10"
-                                            } text-sm sm:text-base font-normal leading-relaxed text-gray-800 dark:text-gray-100 outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-colors resize-none`}
+                                            } text-sm font-normal leading-relaxed text-gray-800 dark:text-gray-100 outline-none focus:ring-2 focus:ring-gold/25 focus:border-gold transition-colors resize-none`}
                                         />
                                         {errors.message && (
                                             <p id="message-error" className="text-red-500 text-xs font-semibold">
@@ -343,8 +347,8 @@ export default function ContactPage() {
                                     </div>
 
                                     {/* Sign-off & Dispatch Bar */}
-                                    <div className="pt-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-t border-gray-100 dark:border-white/5">
-                                        <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-500 dark:text-gray-400 font-medium">
+                                    <div className="pt-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-t border-gray-100 dark:border-white/10">
+                                        <div className="flex items-center gap-2 text-xs sm:text-sm tabular-nums text-gray-500 dark:text-gray-400 font-medium">
                                             <ShieldCheck size={16} className="text-emerald-500 shrink-0" />
                                             <span>Encrypted transmission · Response &lt; 24h</span>
                                         </div>
@@ -352,9 +356,9 @@ export default function ContactPage() {
                                         <div className="flex items-center gap-3">
                                             <Button
                                                 type="submit"
-                                                variant="primary"
+                                                variant="gold"
                                                 size="md"
-                                                className="w-full sm:w-auto rounded-lg bg-gold hover:bg-amber-600 text-white font-bold text-sm px-6 py-2.5 shadow-sm shadow-amber-500/20 flex items-center justify-center gap-2 border-none active:scale-[0.98] transition-all"
+                                                className="w-full sm:w-auto rounded-lg bg-gold hover:bg-amber-600 !text-white font-bold text-sm px-6 py-2.5 shadow-sm flex items-center justify-center gap-2 border-none active:scale-[0.98] transition-all"
                                                 isLoading={isPending}
                                             >
                                                 <Send size={15} className="shrink-0" />

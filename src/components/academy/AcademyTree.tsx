@@ -94,6 +94,33 @@ const LEVEL_SUBTITLES: Record<number, string> = {
     12: "Live Execution Master",
 };
 
+const GOLD_PALETTE = {
+    border: "border-amber-400 dark:border-gold",
+    glow: "bg-amber-500",
+    text: "text-amber-600 dark:text-gold",
+    bg: "bg-gold/10",
+    gradient: "from-amber-500 to-yellow-500",
+    hex: "#f59e0b",
+};
+
+const EMERALD_PALETTE = {
+    border: "border-emerald-400",
+    glow: "bg-emerald-500",
+    text: "text-emerald-600 dark:text-emerald-400",
+    bg: "bg-emerald-500/10",
+    gradient: "from-emerald-400 to-emerald-600",
+    hex: "#10b981",
+};
+
+const RISK_PALETTE = {
+    border: "border-rose-400",
+    glow: "bg-rose-500",
+    text: "text-rose-500",
+    bg: "bg-rose-500/10",
+    gradient: "from-rose-400 to-red-500",
+    hex: "#f43f5e",
+};
+
 const LEVEL_COLORS: Record<
     number,
     {
@@ -105,107 +132,23 @@ const LEVEL_COLORS: Record<
         hex: string;
     }
 > = {
-    1: {
-        border: "border-blue-400",
-        glow: "bg-blue-500",
-        text: "text-blue-500",
-        bg: "bg-blue-500/10",
-        gradient: "from-blue-400 to-cyan-500",
-        hex: "#3b82f6",
-    },
-    2: {
-        border: "border-cyan-400",
-        glow: "bg-cyan-500",
-        text: "text-cyan-500",
-        bg: "bg-cyan-500/10",
-        gradient: "from-cyan-400 to-teal-500",
-        hex: "#06b6d4",
-    },
-    3: {
-        border: "border-teal-400",
-        glow: "bg-teal-500",
-        text: "text-teal-500",
-        bg: "bg-teal-500/10",
-        gradient: "from-teal-400 to-emerald-500",
-        hex: "#14b8a6",
-    },
-    4: {
-        border: "border-emerald-400",
-        glow: "bg-emerald-500",
-        text: "text-emerald-500",
-        bg: "bg-emerald-500/10",
-        gradient: "from-emerald-400 to-green-500",
-        hex: "#10b981",
-    },
-    5: {
-        border: "border-green-400",
-        glow: "bg-green-500",
-        text: "text-green-500",
-        bg: "bg-green-500/10",
-        gradient: "from-green-400 to-lime-500",
-        hex: "#22c55e",
-    },
-    6: {
-        border: "border-amber-400",
-        glow: "bg-amber-500",
-        text: "text-amber-500",
-        bg: "bg-amber-500/10",
-        gradient: "from-amber-400 to-yellow-500",
-        hex: "#f59e0b",
-    },
-    7: {
-        border: "border-orange-400",
-        glow: "bg-orange-500",
-        text: "text-orange-500",
-        bg: "bg-orange-500/10",
-        gradient: "from-orange-400 to-amber-500",
-        hex: "#f97316",
-    },
-    8: {
-        border: "border-rose-400",
-        glow: "bg-rose-500",
-        text: "text-rose-500",
-        bg: "bg-rose-500/10",
-        gradient: "from-rose-400 to-pink-500",
-        hex: "#f43f5e",
-    },
-    9: {
-        border: "border-red-400",
-        glow: "bg-red-500",
-        text: "text-red-500",
-        bg: "bg-red-500/10",
-        gradient: "from-red-400 to-orange-500",
-        hex: "#ef4444",
-    },
-    10: {
-        border: "border-purple-400",
-        glow: "bg-purple-500",
-        text: "text-purple-500",
-        bg: "bg-purple-500/10",
-        gradient: "from-purple-400 to-indigo-500",
-        hex: "#a855f7",
-    },
-    11: {
-        border: "border-pink-400",
-        glow: "bg-pink-500",
-        text: "text-pink-500",
-        bg: "bg-pink-500/10",
-        gradient: "from-pink-400 to-rose-500",
-        hex: "#ec4899",
-    },
-    12: {
-        border: "border-amber-400",
-        glow: "bg-amber-500",
-        text: "text-amber-500",
-        bg: "bg-amber-500/10",
-        gradient: "from-amber-400 to-yellow-500",
-        hex: "#f59e0b",
-    },
+    1: GOLD_PALETTE,
+    2: EMERALD_PALETTE,
+    3: GOLD_PALETTE,
+    4: EMERALD_PALETTE,
+    5: GOLD_PALETTE,
+    6: EMERALD_PALETTE,
+    7: GOLD_PALETTE,
+    8: EMERALD_PALETTE,
+    9: RISK_PALETTE,
+    10: EMERALD_PALETTE,
+    11: GOLD_PALETTE,
+    12: GOLD_PALETTE,
 };
 
 const ICON_ANIMATIONS: Record<
     number,
-    { animate: Record<string, number[]>; transition: Record<string, any> }
+    { animate: Record<string, number[]>; transition: Record<string, unknown> }
 > = {
     1: {
         animate: { rotateY: [0, 20, 0, -20, 0] },
@@ -587,7 +530,7 @@ export function AcademyTree({
         <>
             <div
                 className={cn(
-                    "relative min-h-[600px] w-full py-16 px-4 overflow-hidden bg-[#fbfaf6] dark:bg-[#0B0E14] transition-colors duration-300",
+                    "relative min-h-[600px] w-full py-16 px-4 overflow-hidden bg-white dark:bg-[#0B0E14] transition-colors duration-300",
                     className
                 )}
             >
@@ -629,7 +572,7 @@ export function AcademyTree({
 
                 {/* Gradient Orbs (dark mode only) */}
                 <div className="absolute inset-0 opacity-0 dark:opacity-50 z-0 pointer-events-none">
-                    <div className="absolute top-[10%] left-[20%] w-[400px] h-[400px] bg-cyan-500/15 rounded-full blur-[120px]" />
+                    <div className="absolute top-[10%] left-[20%] w-[400px] h-[400px] bg-amber-500/10 rounded-full blur-[120px]" />
                     <div className="absolute bottom-[20%] right-[15%] w-[350px] h-[350px] bg-primary/15 rounded-full blur-[120px]" />
                 </div>
 
@@ -751,7 +694,7 @@ export function AcademyTree({
                                     >
                                         <span
                                             className={cn(
-                                                "text-[10px] font-bold uppercase tracking-[0.2em]",
+                                                "text-[10px] font-bold uppercase tracking-[0.2em] font-mono tabular-nums",
                                                 isLevelLocked
                                                     ? "text-gray-500"
                                                     : colors.text
@@ -794,7 +737,7 @@ export function AcademyTree({
                                         )}
 
                                         {isLevelLocked && (
-                                            <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                                            <div className="flex items-center gap-1.5 text-xs text-gray-500 tabular-nums">
                                                 <Lock size={11} />
                                                 <span>
                                                     Complete Level{" "}
@@ -813,13 +756,13 @@ export function AcademyTree({
 
                                         {isGuest &&
                                             level.accessLevel !== "PUBLIC" && (
-                                                <div className="flex items-center gap-1.5 text-xs font-bold text-amber-500">
+                                                <div className="flex items-center gap-1.5 text-xs font-bold text-amber-600 dark:text-gold">
                                                     <Lock size={11} />
                                                     <span>PREMIUM</span>
                                                 </div>
                                             )}
 
-                                        <div className="flex items-center gap-3 text-xs text-gray-500">
+                                        <div className="flex items-center gap-3 text-xs text-gray-500 font-mono tabular-nums">
                                             <span className="flex items-center gap-1">
                                                 <Layers size={11} />
                                                 {level.modules.length} modules
@@ -890,7 +833,7 @@ export function AcademyTree({
                                                         repeat: Infinity,
                                                         ease: "easeInOut",
                                                     }}
-                                                    className="w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center border-[3px] border-emerald-400 shadow-lg bg-white dark:bg-gray-900 relative group-hover:scale-110 group-hover:shadow-xl transition-all duration-300"
+                                                    className="w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center border-[3px] border-emerald-400 shadow-lg bg-white dark:bg-[#1E2028] relative group-hover:scale-110 group-hover:shadow-xl transition-all duration-300"
                                                 >
                                                     <div className="absolute inset-0 rounded-full bg-emerald-500 blur-xl opacity-20 group-hover:opacity-40 transition-opacity" />
                                                     <CheckCircle
@@ -905,7 +848,7 @@ export function AcademyTree({
                                                     scale: 1.05,
                                                     rotate: [0, -3, 3, 0],
                                                 }}
-                                                className="w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center border-[3px] border-dashed border-dashboard bg-gray-50 dark:bg-gray-900/50 opacity-50"
+                                                className="w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center border-[3px] border-dashed border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] opacity-50"
                                             >
                                                 <Lock
                                                     size={24}
@@ -933,7 +876,7 @@ export function AcademyTree({
                                                     className={cn(
                                                         "w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center border-[3px] shadow-lg transition-all duration-300 relative",
                                                         colors.border,
-                                                        "bg-white dark:bg-gray-900",
+                                                        "bg-white dark:bg-[#1E2028]",
                                                         "group-hover:scale-110 group-hover:shadow-xl"
                                                     )}
                                                 >
@@ -1137,7 +1080,7 @@ export function AcademyTree({
                                                                 }
                                                                 className={cn(
                                                                     "flex items-center gap-2.5 py-2 px-3 rounded-lg border w-full max-w-[85%] sm:max-w-xs cursor-pointer select-none transition-all",
-                                                                    "bg-gray-50 dark:bg-white/[0.01] border-dashboard hover:border-gray-400 dark:hover:border-white/20",
+                                                                    "bg-gray-50/80 dark:bg-[#151925] border-gray-200 dark:border-white/10 hover:border-gray-400 dark:hover:border-white/20",
                                                                     isLevelLocked
                                                                         ? "opacity-40"
                                                                         : "opacity-60",
@@ -1158,7 +1101,7 @@ export function AcademyTree({
                                                                 <span className="text-sm text-gray-600 dark:text-gray-300 truncate flex-1">
                                                                     {mod.title}
                                                                 </span>
-                                                                <span className="text-[10px] text-gray-400 dark:text-gray-600 font-bold whitespace-nowrap">
+                                                                <span className="text-[10px] text-gray-400 dark:text-gray-500 font-bold font-mono tabular-nums whitespace-nowrap">
                                                                     {
                                                                         mod
                                                                             ._count
@@ -1363,7 +1306,7 @@ export function AcademyTree({
                                                                     }
                                                                     className={cn(
                                                                         "group flex items-center gap-2.5 py-2.5 px-3 rounded-lg border-2 transition-all w-full max-w-[85%] sm:max-w-xs relative z-10 text-left h-auto font-normal",
-                                                                        "bg-white dark:bg-white/[0.03] border-gold/60 dark:border-gold/40",
+                                                                        "bg-white dark:bg-[#1E2028] border-gold/60 dark:border-gold/40",
                                                                         "hover:border-gold dark:hover:border-gold/60 hover:shadow-md hover:shadow-amber-500/10",
                                                                         isEven
                                                                             ? "mx-auto md:ml-0 md:mr-auto"
@@ -1398,7 +1341,7 @@ export function AcademyTree({
                                                                             mod.title
                                                                         }
                                                                     </span>
-                                                                    <span className="text-[10px] text-primary font-bold whitespace-nowrap">
+                                                                    <span className="text-[10px] text-primary font-bold font-mono tabular-nums whitespace-nowrap">
                                                                         {
                                                                             mod
                                                                                 ._count
@@ -1469,7 +1412,7 @@ export function AcademyTree({
                                                                 }
                                                                 className={cn(
                                                                     "group flex items-center gap-2.5 py-2 px-3 rounded-lg border transition-all w-full max-w-[85%] sm:max-w-xs text-left h-auto font-normal",
-                                                                    "bg-white dark:bg-white/[0.03] border-dashboard ",
+                                                                    "bg-white dark:bg-[#1E2028] border-gray-200 dark:border-white/10",
                                                                     "hover:border-gold/50 dark:hover:border-gold/30 hover:shadow-md hover:shadow-amber-500/5",
                                                                     isEven
                                                                         ? "mx-auto md:ml-0 md:mr-auto"
@@ -1482,7 +1425,7 @@ export function AcademyTree({
                                                                         isPremiumLevel
                                                                             ? "bg-amber-100 dark:bg-amber-500/10 text-amber-500"
                                                                             : "bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300",
-                                                                        "group-hover:bg-gold group-hover:text-white transition-colors"
+                                                                        "group-hover:bg-gold group-hover:!text-white transition-colors"
                                                                     )}
                                                                 >
                                                                     {isPremiumLevel ? (
@@ -1500,7 +1443,7 @@ export function AcademyTree({
                                                                 <span className="text-sm font-medium text-gray-600 dark:text-gray-300 group-hover:text-gray-700 dark:group-hover:text-white transition-colors truncate flex-1">
                                                                     {mod.title}
                                                                 </span>
-                                                                <span className="text-[10px] text-gray-400 dark:text-gray-500 font-bold whitespace-nowrap">
+                                                                <span className="text-[10px] text-gray-400 dark:text-gray-500 font-bold font-mono tabular-nums whitespace-nowrap">
                                                                     {
                                                                         mod
                                                                             ._count
@@ -1588,10 +1531,10 @@ export function AcademyTree({
                         <motion.div
                             initial={{ scale: 0.8, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
-                            className="bg-white dark:bg-gray-900 rounded-lg shadow-2xl border border-dashboard p-3 space-y-2 min-w-[200px]"
+                            className="bg-white dark:bg-[#1E2028] rounded-xl shadow-2xl border border-gray-200 dark:border-white/10 p-3 space-y-2 min-w-[200px]"
                         >
                             <div className="flex items-center justify-between mb-1">
-                                <span className="text-xs font-bold text-gray-600 flex items-center gap-1">
+                                <span className="text-xs font-bold text-gray-600 dark:text-gray-300 flex items-center gap-1">
                                     <FlaskConical size={12} /> DEV TEST
                                 </span>
                                 <Button
@@ -1624,7 +1567,7 @@ export function AcademyTree({
                                 size="sm"
                                 onClick={() => handleDevAction("module")}
                                 disabled={devLoading}
-                                className="w-full flex items-center justify-start gap-2 px-3 py-2 text-sm font-medium bg-cyan-50 hover:bg-cyan-100 dark:bg-cyan-500/10 dark:hover:bg-cyan-500/20 text-cyan-600 border-cyan-200 dark:border-cyan-500/20 transition-colors h-auto"
+                                className="w-full flex items-center justify-start gap-2 px-3 py-2 text-sm font-medium bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-500/10 dark:hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/20 transition-colors h-auto"
                             >
                                 <Layers size={14} />
                                 {devLoading
@@ -1642,7 +1585,7 @@ export function AcademyTree({
                                 <RotateCcw size={14} />
                                 Reset All Progress
                             </Button>
-                            <div className="border-t border-dashboard pt-2 mt-1">
+                            <div className="border-t border-gray-200 dark:border-white/10 pt-2 mt-1">
                                 <Button
                                     type="button"
                                     variant="outline"
@@ -1668,7 +1611,7 @@ export function AcademyTree({
                                             prev >= 12 ? 1 : prev + 1
                                         );
                                     }}
-                                    className="w-full flex items-center justify-start gap-2 px-3 py-2 text-sm font-medium bg-amber-50 hover:bg-amber-100 dark:bg-amber-500/10 dark:hover:bg-amber-500/20 text-amber-600 border-amber-200 dark:border-amber-500/20 transition-colors h-auto"
+                                    className="w-full flex items-center justify-start gap-2 px-3 py-2 text-sm font-medium tabular-nums bg-amber-50 hover:bg-amber-100 dark:bg-amber-500/10 dark:hover:bg-amber-500/20 text-amber-600 border-amber-200 dark:border-amber-500/20 transition-colors h-auto"
                                 >
                                     <Trophy size={14} />
                                     Test Level {devTestLevel} Effect
@@ -1685,7 +1628,7 @@ export function AcademyTree({
                                 variant="primary"
                                 size="icon"
                                 onClick={() => setDevOpen(true)}
-                                className="w-12 h-12 rounded-full bg-amber-500 hover:bg-amber-600 text-white shadow-lg flex items-center justify-center transition-colors p-0"
+                                className="w-12 h-12 rounded-full bg-gold hover:bg-amber-600 !text-white shadow-lg flex items-center justify-center transition-colors p-0"
                                 aria-label="Dev Test Panel"
                                 title="Dev Test Panel"
                             >

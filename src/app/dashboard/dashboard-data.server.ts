@@ -22,6 +22,7 @@ import {
 import { getIntelligenceData } from "@/lib/smart-analytics";
 import { getActivationState } from "@/lib/activation/activation.server";
 import { format, subDays, startOfMonth } from "date-fns";
+import { SAMPLE_DATE_RANGE } from "@/lib/sample-data/mock-sample-data";
 import { parseLocalStartOfDay, parseLocalEndOfDay } from "@/lib/utils";
 import { measurePerformance } from "@/lib/performance/timing";
 import { getNextBestAction } from "@/lib/coach/next-action.server";
@@ -150,6 +151,8 @@ export async function resolveAccountAndDates(
 ): Promise<ResolvedParams> {
     const cookieStore = await cookies();
     const lastAccountId = cookieStore.get("last_account_id")?.value;
+    const isSampleMode =
+        cookieStore.get("the_next_trade_sample_mode")?.value === "true";
 
     let accountId =
         typeof searchParams?.accountId === "string"
@@ -174,13 +177,18 @@ export async function resolveAccountAndDates(
         }
     }
 
-    // Resolve date params if missing (always default to Start of Month -> Today)
+    // Resolve date params if missing (always default to Start of Month -> Today, or SAMPLE_DATE_RANGE in sample mode)
     if (!fromParam || !toParam) {
-        const now = new Date();
-        const startMonthStr = format(startOfMonth(now), "yyyy-MM-dd");
-        const todayStr = format(now, "yyyy-MM-dd");
-        fromParam = fromParam || startMonthStr;
-        toParam = toParam || todayStr;
+        if (isSampleMode) {
+            fromParam = fromParam || SAMPLE_DATE_RANGE.from;
+            toParam = toParam || SAMPLE_DATE_RANGE.to;
+        } else {
+            const now = new Date();
+            const startMonthStr = format(startOfMonth(now), "yyyy-MM-dd");
+            const todayStr = format(now, "yyyy-MM-dd");
+            fromParam = fromParam || startMonthStr;
+            toParam = toParam || todayStr;
+        }
         needsRedirect = true;
     }
 

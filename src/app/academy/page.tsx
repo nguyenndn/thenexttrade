@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     },
     openGraph: {
         title: "The Trader's Ascent - Zero to Pro",
-        description: "Master market structure, liquidity mechanics, and cold risk math.",
+        description: "Market structure, liquidity mechanics, and cold risk math.",
         url: "/academy",
         siteName: "TheNextTrade",
         images: ["/academy-og.jpg"],
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     twitter: {
         card: "summary_large_image",
         title: "The Trader's Ascent | TheNextTrade Academy",
-        description: "Master market structure, liquidity mechanics, and cold risk math.",
+        description: "Market structure, liquidity mechanics, and cold risk math.",
         images: ["/academy-og.jpg"],
     },
 };
@@ -82,7 +82,7 @@ export default async function AcademyPage() {
     );
 
     return (
-        <div className="min-h-screen flex flex-col bg-[#fbfaf6] dark:bg-[#0B0E14] text-gray-700 dark:text-white">
+        <div className="min-h-screen flex flex-col bg-white dark:bg-[#0B0E14] text-gray-700 dark:text-white">
             <JsonLd
                 type="Course"
                 data={{
@@ -212,19 +212,21 @@ export default async function AcademyPage() {
                 </div>
 
                 <div className="max-w-5xl mx-auto text-center relative z-10">
-                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary font-bold text-xs uppercase tracking-wider mb-6">
-                        <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-lg bg-gold/10 border border-gold/20 text-amber-600 dark:text-gold font-bold text-xs uppercase tracking-wider mb-6">
+                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                         <span>Trading Academy</span>
                     </div>
 
-                    <h1 className="text-4xl md:text-6xl font-black mb-6 leading-tight tracking-tight">
+                    <h1 className="text-4xl md:text-6xl font-black mb-6 leading-tight tracking-tight text-gray-900 dark:text-white font-heading">
                         The Trader&apos;s{" "}
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-cyan-500">
+                        <span className="text-amber-600 dark:text-gold">
                             Ascent
                         </span>
                     </h1>
-                    <p className="text-lg md:text-xl mb-6 sm:mb-10 text-gray-600 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed lg:whitespace-nowrap">
-                        {levels.length} levels. {totalModules} modules. Built on market structure, liquidity mechanics, and disciplined risk math.
+                    <p className="text-lg md:text-xl mb-6 sm:mb-10 text-gray-600 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed tabular-nums">
+                        <span className="font-bold text-gray-900 dark:text-white font-mono tabular-nums">{levels.length}</span> levels.{" "}
+                        <span className="font-bold text-gray-900 dark:text-white font-mono tabular-nums">{totalModules}</span> modules.{" "}
+                        <span className="font-bold text-gray-900 dark:text-white font-mono tabular-nums">{totalLessons}</span> lessons built on market structure, liquidity mechanics, and disciplined risk math.
                     </p>
 
                     <AcademyPublicCTA isLoggedIn={isLoggedIn} />
@@ -238,7 +240,7 @@ export default async function AcademyPage() {
 
             {/* ── Academy Tree (Visual Map with Gamified Module Quest Modal — Full-Bleed Edge-to-Edge) ── */}
             <AcademyTree
-                levels={levels as any}
+                levels={levels}
                 basePath={basePath}
                 isGuest={!isLoggedIn}
                 completedLessonIds={completedLessonIds}

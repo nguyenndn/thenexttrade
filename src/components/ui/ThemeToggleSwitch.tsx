@@ -2,7 +2,6 @@
 
 import { useTheme } from "@/components/providers/ThemeProvider";
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 
 export function ThemeToggleSwitch() {
@@ -15,7 +14,7 @@ export function ThemeToggleSwitch() {
 
     if (!mounted) {
         return (
-            <div className="w-9 h-9 rounded-full bg-gray-100 dark:bg-slate-800 border-2 border-transparent" />
+            <div className="w-9 h-9 rounded-full bg-gray-100 dark:bg-card border-2 border-transparent" />
         );
     }
 
@@ -31,8 +30,8 @@ export function ThemeToggleSwitch() {
  focus:outline-none focus:ring-2 focus:ring-amber-500/40
  ${
      isDark
-         ? "bg-slate-800/80 border-2 border-slate-700 text-blue-400 hover:bg-slate-700/80 hover:text-blue-400"
-         : "bg-white border-2 border-dashboard text-amber-500 hover:bg-gray-50 hover:text-amber-500"
+         ? "bg-card/80 border-2 border-white/10 text-amber-400 hover:bg-white/10 hover:text-amber-300"
+         : "bg-white border-2 border-gray-200 text-amber-500 hover:bg-gray-50 hover:text-amber-600"
  }
  `}
         >

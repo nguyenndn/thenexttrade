@@ -169,7 +169,7 @@ export default async function UserAcademyDashboard() {
     for (const level of levels) {
         for (const module of level.modules) {
             for (const lesson of module.lessons) {
-                if (lesson.progress.some((p: any) => p.isCompleted)) {
+                if (lesson.progress.some((p) => p.isCompleted)) {
                     completedLessonIds.push(lesson.id);
                 }
             }
@@ -203,12 +203,12 @@ export default async function UserAcademyDashboard() {
                 description="Curated execution playbooks, risk math, and structured trader curriculum."
             >
                 <div className="flex items-center gap-3 text-sm font-bold w-full sm:w-auto">
-                    <div className="flex items-center justify-center gap-1.5 text-gray-700 dark:text-gray-200 bg-gray-100 dark:bg-white/[0.05] border border-dashboard dark:border-white/[0.08] px-3.5 py-1.5 rounded-lg flex-1 sm:flex-none text-xs font-semibold">
-                        <GraduationCap size={15} className="text-primary" />
+                    <div className="flex items-center justify-center gap-1.5 text-gray-700 dark:text-gray-200 bg-gray-100 dark:bg-white/[0.05] border border-dashboard dark:border-white/[0.08] px-3.5 py-1.5 rounded-lg flex-1 sm:flex-none text-xs font-semibold font-mono tabular-nums">
+                        <GraduationCap size={15} className="text-amber-600 dark:text-gold" />
                         <span>{Math.round(overallProgress)}% Complete</span>
                     </div>
-                    <div className="flex items-center justify-center gap-1.5 text-gray-700 dark:text-gray-200 bg-gray-100 dark:bg-white/[0.05] border border-dashboard dark:border-white/[0.08] px-3.5 py-1.5 rounded-lg flex-1 sm:flex-none text-xs font-semibold">
-                        <BookOpen size={15} className="text-primary" />
+                    <div className="flex items-center justify-center gap-1.5 text-gray-700 dark:text-gray-200 bg-gray-100 dark:bg-white/[0.05] border border-dashboard dark:border-white/[0.08] px-3.5 py-1.5 rounded-lg flex-1 sm:flex-none text-xs font-semibold font-mono tabular-nums">
+                        <BookOpen size={15} className="text-amber-600 dark:text-gold" />
                         <span>
                             {completedLessons}/{totalLessons} Lessons
                         </span>
@@ -233,15 +233,15 @@ export default async function UserAcademyDashboard() {
                             <div className="relative z-10 flex flex-col items-start gap-4">
                                 <div className="flex flex-wrap items-center gap-2">
                                     <div className="flex items-center gap-2">
-                                        <div className="w-2 h-2 rounded-full bg-primary" />
-                                        <span className="text-primary font-bold text-xs uppercase tracking-wider">
+                                        <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                                        <span className="text-emerald-600 dark:text-emerald-400 font-bold text-xs uppercase tracking-wider">
                                             {hasStarted
                                                 ? "Ready to Resume"
                                                 : "Get Started"}
                                         </span>
                                     </div>
                                     {idleDays >= 7 && (
-                                        <span className="flex items-center gap-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold text-[10px] uppercase tracking-wider px-2.5 py-0.5 rounded-full border border-amber-500/20">
+                                        <span className="flex items-center gap-1 bg-gold/10 text-amber-600 dark:text-gold font-bold font-mono tabular-nums text-[10px] uppercase tracking-wider px-2.5 py-0.5 rounded-lg border border-gold/20">
                                             <Clock
                                                 size={10}
                                                 className="shrink-0"
@@ -261,11 +261,11 @@ export default async function UserAcademyDashboard() {
                                 </div>
 
                                 {idleDays >= 7 && (
-                                    <p className="text-xs font-bold text-amber-600 dark:text-amber-400/90 mt-1 flex items-start gap-1.5 leading-relaxed max-w-2xl">
+                                    <p className="text-xs font-bold text-amber-600 dark:text-gold mt-1 flex items-start gap-1.5 leading-relaxed max-w-2xl">
                                         <AlertTriangle size={15} className="shrink-0 mt-0.5" />
                                         <span>
                                             You paused your learning path for{" "}
-                                            {idleDays} days. Let&apos;s resume
+                                            <span className="font-mono tabular-nums">{idleDays}</span> days. Let&apos;s resume
                                             to keep your trading routine sharp
                                             and refine your edge!
                                         </span>
@@ -279,7 +279,7 @@ export default async function UserAcademyDashboard() {
                                             variant: "primary",
                                             size: "smd",
                                             className:
-                                                "group whitespace-nowrap shadow-lg shadow-amber-500/20 gap-1.5 font-bold rounded-lg",
+                                                "group whitespace-nowrap bg-gold hover:bg-amber-600 !text-white shadow-lg shadow-amber-500/20 gap-1.5 font-bold rounded-lg",
                                         })}
                                     >
                                         {hasStarted
@@ -291,7 +291,7 @@ export default async function UserAcademyDashboard() {
                                         />
                                     </Link>
                                     {nextLesson.duration && (
-                                        <span className="text-xs text-gray-400 dark:text-gray-500 font-semibold">
+                                        <span className="text-xs font-mono tabular-nums text-gray-400 dark:text-gray-500 font-semibold">
                                             Estimated: {nextLesson.duration}{" "}
                                             mins
                                         </span>
@@ -300,7 +300,7 @@ export default async function UserAcademyDashboard() {
                             </div>
                         </div>
                     ) : (
-                        <div className="p-6 rounded-xl bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/20 text-yellow-600 dark:text-yellow-400 flex items-center gap-4">
+                        <div className="p-6 rounded-xl bg-gold/10 border border-gold/20 text-amber-600 dark:text-gold flex items-center gap-4">
                             <Trophy size={24} />
                             <div>
                                 <h3 className="font-bold">Mission Complete!</h3>
@@ -315,7 +315,7 @@ export default async function UserAcademyDashboard() {
                     {/* Visual Journey Tree with Gamified Module Quest Modal */}
                     <div id="onborda-academy-tree">
                         <AcademyTree
-                            levels={levels as any}
+                            levels={levels as unknown as React.ComponentProps<typeof AcademyTree>["levels"]}
                             basePath="/dashboard/academy"
                             isGuest={false}
                             completedLessonIds={completedLessonIds}
@@ -331,7 +331,7 @@ export default async function UserAcademyDashboard() {
                     <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-dashboard dark:border-white/[0.08] shadow-sm relative overflow-hidden">
                         <div className="relative z-10">
                             <div className="flex items-center gap-2.5 mb-3">
-                                <div className="p-2 bg-amber-500/10 rounded-lg text-amber-500">
+                                <div className="p-2 bg-gold/10 rounded-lg text-amber-600 dark:text-gold">
                                     <Zap
                                         size={18}
                                         className="fill-current"
@@ -345,7 +345,7 @@ export default async function UserAcademyDashboard() {
                                 Daily discipline and playbook consistency.
                             </p>
                             <div className="flex items-baseline gap-2">
-                                <span className="text-4xl font-black text-gray-900 dark:text-white tabular-nums">
+                                <span className="text-4xl font-black text-gray-900 dark:text-white font-mono tabular-nums">
                                     {currentStreak}
                                 </span>
                                 <span className="text-gray-500 dark:text-gray-400 text-xs font-bold uppercase tracking-wider">
@@ -358,7 +358,7 @@ export default async function UserAcademyDashboard() {
                     {/* Available Quizzes */}
                     <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-dashboard dark:border-white/[0.08] shadow-sm">
                         <h3 className="font-extrabold text-sm text-gray-700 dark:text-white mb-4 flex items-center gap-2 tracking-wider uppercase">
-                            <Trophy size={18} className="text-yellow-500" />{" "}
+                            <Trophy size={18} className="text-amber-600 dark:text-gold" />{" "}
                             Quizzes
                         </h3>
 
@@ -369,9 +369,9 @@ export default async function UserAcademyDashboard() {
                                 for (const mod of level.modules) {
                                     const allDone =
                                         mod.lessons.length > 0 &&
-                                        mod.lessons.every((l: any) =>
+                                        mod.lessons.every((l) =>
                                             l.progress.some(
-                                                (p: any) => p.isCompleted
+                                                (p) => p.isCompleted
                                             )
                                         );
                                     if (allDone) completedModuleIds.add(mod.id);
@@ -395,7 +395,7 @@ export default async function UserAcademyDashboard() {
                             if (actionableQuizzes.length === 0) {
                                 return (
                                     <div className="space-y-3">
-                                        <div className="flex items-center justify-between text-xs text-gray-500">
+                                        <div className="flex items-center justify-between text-xs font-mono tabular-nums text-gray-500">
                                             <span>
                                                 {passedCount}/
                                                 {allQuizzes.length} passed
@@ -412,7 +412,7 @@ export default async function UserAcademyDashboard() {
 
                             return (
                                 <div className="space-y-1 max-h-[280px] overflow-y-auto">
-                                    <div className="flex items-center justify-between text-xs text-gray-500 mb-2 px-1">
+                                    <div className="flex items-center justify-between text-xs font-mono tabular-nums text-gray-500 mb-2 px-1">
                                         <span>
                                             {passedCount}/{allQuizzes.length}{" "}
                                             passed
@@ -433,14 +433,14 @@ export default async function UserAcademyDashboard() {
                                                 className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 border border-transparent hover:border-dashboard/50 transition-all group"
                                             >
                                                 <div className="flex-1 truncate pr-3">
-                                                    <p className="text-sm font-bold text-gray-700 dark:text-gray-200 truncate group-hover:text-primary transition-colors">
+                                                    <p className="text-sm font-bold text-gray-700 dark:text-gray-200 truncate group-hover:text-amber-600 dark:group-hover:text-gold transition-colors">
                                                         {quiz.title}
                                                     </p>
                                                     <p className="text-[11px] text-gray-400 dark:text-gray-500 font-semibold truncate mt-0.5">
                                                         {quiz.module?.title ??
                                                             "General"}
                                                         {attemptCount > 0 && (
-                                                            <span>
+                                                            <span className="font-mono tabular-nums">
                                                                 {" "}
                                                                 · {
                                                                     attemptCount
@@ -455,15 +455,15 @@ export default async function UserAcademyDashboard() {
                                                     </p>
                                                 </div>
                                                 {hasPassed ? (
-                                                    <span className="flex-shrink-0 text-[10px] font-black px-2.5 py-1 rounded-lg bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20">
+                                                    <span className="flex-shrink-0 text-[10px] font-black font-mono tabular-nums px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                                                         <Check size={12} className="inline-block mr-1 align-[-1px]" /> {bestAttempt.score}%
                                                     </span>
                                                 ) : bestAttempt ? (
-                                                    <span className="flex-shrink-0 text-[10px] font-black px-2.5 py-1 rounded-lg bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20">
+                                                    <span className="flex-shrink-0 text-[10px] font-black font-mono tabular-nums px-2.5 py-1 rounded-lg bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20">
                                                         {bestAttempt.score}%
                                                     </span>
                                                 ) : (
-                                                    <span className="flex-shrink-0 text-[10px] font-black px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                                                    <span className="flex-shrink-0 text-[10px] font-black px-2.5 py-1 rounded-lg bg-gold/10 text-amber-600 dark:text-gold border border-gold/20">
                                                         New
                                                     </span>
                                                 )}
@@ -480,13 +480,13 @@ export default async function UserAcademyDashboard() {
                         href="/dashboard/academy/certificates"
                         className="block"
                     >
-                        <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-dashboard dark:border-white/[0.08] shadow-sm hover:border-primary/30 hover:shadow-md transition-all group">
+                        <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-dashboard dark:border-white/[0.08] shadow-sm hover:border-gold/30 hover:shadow-md transition-all group">
                             <h3 className="font-extrabold text-sm text-gray-700 dark:text-white mb-3 flex items-center gap-2 tracking-wider uppercase">
-                                <Award size={18} className="text-primary" />{" "}
+                                <Award size={18} className="text-amber-600 dark:text-gold" />{" "}
                                 Certificates
                             </h3>
-                            <div className="flex items-baseline gap-2 mb-3">
-                                <span className="text-3xl font-black text-primary">
+                            <div className="flex items-baseline gap-2 mb-3 font-mono tabular-nums">
+                                <span className="text-3xl font-black text-amber-600 dark:text-gold">
                                     {earnedCerts}
                                 </span>
                                 <span className="text-gray-400 text-xs font-bold uppercase tracking-wider">
@@ -495,13 +495,13 @@ export default async function UserAcademyDashboard() {
                             </div>
                             <div className="w-full h-2 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden mb-4 border border-dashboard/20">
                                 <div
-                                    className="h-full bg-gradient-to-r from-primary to-teal-500 rounded-full transition-all duration-500"
+                                    className="h-full bg-gold rounded-full transition-all duration-500"
                                     style={{
                                         width: `${totalLevels > 0 ? (earnedCerts / totalLevels) * 100 : 0}%`,
                                     }}
                                 />
                             </div>
-                            <p className="text-xs font-bold text-gray-500 dark:text-gray-400 group-hover:text-primary transition-colors flex items-center gap-1">
+                            <p className="text-xs font-bold text-gray-500 dark:text-gray-400 group-hover:text-amber-600 dark:group-hover:text-gold transition-colors flex items-center gap-1">
                                 {earnedCerts > 0
                                     ? `${earnedCerts} certificate${earnedCerts > 1 ? "s" : ""} earned`
                                     : "Pass all quizzes to earn certificates"}

@@ -40,7 +40,8 @@ export function HourlyHeatmap({ data }: HourlyHeatmapProps) {
     const maxPnL = Math.max(...fullHours.map((h) => Math.abs(h.totalPnL)), 1);
 
     const getColor = (hour: (typeof fullHours)[0]) => {
-        if (hour.totalTrades === 0) return "bg-gray-100 dark:bg-gray-800";
+        if (hour.totalTrades === 0)
+            return "bg-gray-50/80 dark:bg-[#151925] border-gray-200/60 dark:border-white/[0.06]";
 
         const pnl = hour.totalPnL;
         const intensity = Math.min(Math.abs(pnl) / maxPnL, 1);
@@ -63,7 +64,7 @@ export function HourlyHeatmap({ data }: HourlyHeatmapProps) {
             return "bg-red-200 dark:bg-red-500/20 text-gray-700 dark:text-gray-300";
         } else {
             // Breakeven but traded
-            return "bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300";
+            return "bg-gold/15 dark:bg-gold/20 text-amber-700 dark:text-gold";
         }
     };
 
@@ -92,11 +93,11 @@ export function HourlyHeatmap({ data }: HourlyHeatmapProps) {
                                 }}
                                 className={`
  w-full h-[80px] rounded-lg flex flex-col items-center justify-center
- cursor-pointer transition-all hover:scale-105 focus:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50 relative shadow-sm border border-transparent hover:border-white/20 hover:z-20 focus:z-20
+ cursor-pointer transition-all hover:scale-105 focus:scale-105 focus:outline-none focus:ring-2 focus:ring-gold/50 relative shadow-sm border border-transparent hover:border-white/20 hover:z-20 focus:z-20
  ${getColor(hour)}
  `}
                             >
-                                <span className="font-bold text-[13px] opacity-100">
+                                <span className="font-bold font-mono tabular-nums text-[13px] opacity-100">
                                     {hour.totalTrades > 0
                                         ? hour.totalTrades
                                         : ""}
@@ -108,9 +109,9 @@ export function HourlyHeatmap({ data }: HourlyHeatmapProps) {
                         <TooltipContent
                             side={isTopRow ? "bottom" : "top"}
                             sideOffset={8}
-                            className="w-36 bg-gray-900 dark:bg-gray-900 border-gray-800 text-white p-3 shadow-xl rounded-lg z-[100]"
+                            className="w-36 bg-white dark:bg-[#1E2028] border border-dashboard text-gray-800 dark:text-white p-3 shadow-xl rounded-lg z-[100]"
                         >
-                            <p className="font-bold border-b border-gray-700 pb-2 mb-2">
+                            <p className="font-bold font-mono tabular-nums border-b border-dashboard pb-2 mb-2">
                                 {hour.hourLabel} UTC
                             </p>
                             <div className="space-y-1.5">
@@ -118,7 +119,7 @@ export function HourlyHeatmap({ data }: HourlyHeatmapProps) {
                                     <span className="text-gray-500">
                                         Trades:
                                     </span>
-                                    <span className="font-medium">
+                                    <span className="font-medium font-mono tabular-nums">
                                         {hour.totalTrades}
                                     </span>
                                 </div>
@@ -126,14 +127,14 @@ export function HourlyHeatmap({ data }: HourlyHeatmapProps) {
                                     <span className="text-gray-500">
                                         Win Rate:
                                     </span>
-                                    <span className="font-medium">
+                                    <span className="font-medium font-mono tabular-nums">
                                         {hour.winRate.toFixed(0)}%
                                     </span>
                                 </div>
                                 <div className="flex justify-between items-center gap-2">
                                     <span className="text-gray-500">P&L:</span>
                                     <span
-                                        className={`font-medium ${hour.totalPnL > 0 ? "text-primary dark:text-[#00C888]" : hour.totalPnL < 0 ? "text-red-400" : "text-gray-300"}`}
+                                        className={`font-medium font-mono tabular-nums ${hour.totalPnL > 0 ? "text-primary dark:text-[#00C888]" : hour.totalPnL < 0 ? "text-red-500" : "text-gray-400"}`}
                                     >
                                         {hour.totalPnL > 0 ? "+" : ""}
                                         {hour.totalPnL.toFixed(2)}
@@ -150,7 +151,7 @@ export function HourlyHeatmap({ data }: HourlyHeatmapProps) {
                 {hoursData.map((hour) => (
                     <div
                         key={hour.hour}
-                        className="text-center text-[10px] font-medium text-gray-500"
+                        className="text-center text-[10px] font-medium font-mono tabular-nums text-gray-500"
                     >
                         {hour.hour}
                     </div>
@@ -160,7 +161,7 @@ export function HourlyHeatmap({ data }: HourlyHeatmapProps) {
     );
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-lg border border-dashboard shadow-sm transition-shadow hover:shadow-md">
+        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-dashboard shadow-sm transition-shadow hover:shadow-md">
             <h3 className="font-bold text-gray-700 dark:text-white mb-2">
                 24-Hour Trading Heatmap
             </h3>
@@ -179,13 +180,13 @@ export function HourlyHeatmap({ data }: HourlyHeatmapProps) {
             </TooltipProvider>
 
             {/* Color Legend */}
-            <div className="flex items-center justify-end gap-4 mt-6 text-xs text-gray-600">
+            <div className="flex items-center justify-end gap-4 mt-6 text-xs text-gray-600 dark:text-gray-400">
                 <div className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full bg-red-400"></div>
                     <span>High Loss</span>
                 </div>
                 <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-gray-100 dark:bg-gray-800"></div>
+                    <div className="w-3 h-3 rounded-full bg-gray-200 dark:bg-[#151925] border border-gray-300 dark:border-white/10"></div>
                     <span>No Activity</span>
                 </div>
                 <div className="flex items-center gap-2">

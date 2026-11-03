@@ -4,11 +4,7 @@ import { useState } from "react";
 import {
     Mail,
     ShieldAlert,
-    CheckCircle,
-    XCircle,
     Info,
-    Eye,
-    Send,
     Layers,
     Key,
     Sparkles,
@@ -19,26 +15,21 @@ import {
 import { toast } from "sonner";
 import { Button } from "@/components/ui/Button";
 import { PremiumInput } from "@/components/ui/PremiumInput";
+import { PageHeader } from "@/components/ui/PageHeader";
 import {
     sendEmailLabTest,
     renderEmailLabPreview,
     type EmailLabTemplateId,
 } from "./actions";
 import { EmailPreviewModal } from "@/components/admin/email-lab/EmailPreviewModal";
+import {
+    EmailTemplateCard,
+    type TemplateCardInfo,
+} from "@/components/admin/email-lab/EmailTemplateCard";
 
 interface EmailLabClientProps {
     defaultRecipient: string;
     allowCustomRecipient: boolean;
-}
-
-interface TemplateCardInfo {
-    id: EmailLabTemplateId | string;
-    title: string;
-    description: string;
-    sourceFile: string;
-    status: "active" | "supabase" | "needs_fix";
-    statusLabel: string;
-    category: "system" | "vip" | "reports" | "onboarding" | "ea_academy" | "auth";
 }
 
 export function EmailLabClient({
@@ -380,32 +371,6 @@ export function EmailLabClient({
         },
     ];
 
-    const getStatusBadge = (
-        status: "active" | "supabase" | "needs_fix",
-        label: string
-    ) => {
-        switch (status) {
-            case "active":
-                return (
-                    <span className="bg-amber-500/10 text-amber-600 dark:text-amber-400 px-2.5 py-1 rounded-lg text-xs font-bold tracking-wide border border-amber-500/20">
-                        {label}
-                    </span>
-                );
-            case "supabase":
-                return (
-                    <span className="bg-amber-500/10 text-amber-600 dark:text-amber-400 px-2.5 py-1 rounded-lg text-xs font-bold tracking-wide border border-amber-500/20">
-                        {label}
-                    </span>
-                );
-            case "needs_fix":
-                return (
-                    <span className="bg-red-500/10 text-red-500 px-2.5 py-1 rounded-lg text-xs font-bold tracking-wide border border-red-500/20">
-                        {label}
-                    </span>
-                );
-        }
-    };
-
     const vipCount = activeTemplates.filter((t) => t.category === "vip").length;
     const eaAcademyCount = activeTemplates.filter(
         (t) => t.category === "ea_academy" || t.category === "system"
@@ -418,6 +383,15 @@ export function EmailLabClient({
     ).length;
     const authCount = supabaseTemplates.length;
     const totalCount = activeTemplates.length + supabaseTemplates.length;
+
+    const filterTabs = [
+        { id: "all" as const, label: "All Templates", count: totalCount, icon: Layers },
+        { id: "vip" as const, label: "VIP & Retention", count: vipCount, icon: Crown },
+        { id: "ea_academy" as const, label: "EA & Systems", count: eaAcademyCount, icon: Key },
+        { id: "reports" as const, label: "Reports & Reviews", count: reportsCount, icon: BarChart3 },
+        { id: "onboarding" as const, label: "Onboarding", count: onboardingCount, icon: Sparkles },
+        { id: "auth" as const, label: "Supabase Auth", count: authCount, icon: ShieldCheck },
+    ];
 
     const filteredActiveTemplates = activeTemplates.filter((t) => {
         if (activeTab === "all") return true;
@@ -433,371 +407,151 @@ export function EmailLabClient({
 
     return (
         <div className="space-y-6">
-            {/* Header section with brand accent */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-gray-200 dark:border-white/10 pb-6">
-                <div className="flex flex-col gap-2">
-                    <div className="flex items-center gap-3">
-                        <div className="w-1.5 h-8 bg-amber-500 rounded-full"></div>
-                        <h1 className="text-2xl font-bold text-gray-700 dark:text-white tracking-tight">
-                            Email Lab
-                        </h1>
-                    </div>
-                    <p className="text-base text-gray-500 pl-4 font-medium">
-                        Test, preview, and verify system-generated transactional HTML email templates.
-                    </p>
+            <PageHeader
+                title="Email Lab"
+                description="Test, preview, and verify system-generated transactional HTML email templates."
+            >
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white dark:bg-[#1E2028] border border-dashboard text-xs font-semibold text-gray-600 dark:text-gray-300">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="font-mono tabular-nums font-bold text-gray-800 dark:text-white">
+                        {totalCount}
+                    </span>
+                    <span>Templates Ready</span>
                 </div>
-            </div>
+            </PageHeader>
 
-            {/* Warning block */}
-            <div className="bg-amber-500/[0.03] border border-amber-500/20 rounded-lg p-5 flex items-start gap-3.5">
-                <ShieldAlert
-                    className="text-amber-500 shrink-0 mt-0.5"
-                    size={20}
-                />
-                <div className="text-sm text-amber-600 dark:text-amber-500/90 space-y-1.5">
-                    <p className="font-bold uppercase tracking-wider">
-                        Internal Testing Environment Only
-                    </p>
-                    <p className="leading-relaxed">
-                        Every active SMTP trigger will dispatch a real email
-                        through the configured host server. Ensure you use local
-                        sandbox environments (like Mailtrap) to prevent sending
-                        mock data to production clients.
-                    </p>
-                </div>
-            </div>
-
-            {/* Recipient controller Card */}
-            <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg p-6 shadow-sm">
-                <h3 className="text-base font-bold text-gray-700 dark:text-white mb-4 flex items-center gap-2">
-                    <Mail size={18} className="text-amber-500" />
-                    Recipient Configuration
-                </h3>
-                <div className="max-w-xl">
+            {/* Unified Control Bar: Recipient Configuration + Sandbox Notice */}
+            <div className="bg-white dark:bg-[#1E2028] border border-dashboard rounded-xl p-5 shadow-sm grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
+                <div className="lg:col-span-7 space-y-2">
                     <PremiumInput
-                        label="Default Test Recipient Address"
+                        label="Test Recipient Address"
                         icon={Mail}
                         value={customTo}
                         onChange={(e) => setCustomTo(e.target.value)}
                         disabled={!allowCustomRecipient}
                         aria-label="Default test recipient address"
-                        className="text-sm"
                     />
-                    {!allowCustomRecipient ? (
-                        <p className="text-xs text-gray-500 mt-2 flex items-center gap-1 font-medium">
-                            <Info size={14} className="text-amber-500" />
-                            Custom recipient is locked by environment config.
-                            Sending only to default:{" "}
-                            <code className="text-gray-700 dark:text-gray-300 font-bold bg-gray-100 dark:bg-white/5 px-1.5 py-0.5 rounded-lg text-xs">
-                                {defaultRecipient}
-                            </code>
-                            .
+                    <p className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1.5 font-medium">
+                        <Info size={13} className="text-gold shrink-0" />
+                        {!allowCustomRecipient ? (
+                            <span>
+                                Custom recipient locked by environment config. Dispatching to{" "}
+                                <code className="font-mono tabular-nums text-gray-700 dark:text-gray-200 font-bold bg-gray-100 dark:bg-[#151925] px-1.5 py-0.5 rounded-lg text-[11px]">
+                                    {defaultRecipient}
+                                </code>
+                            </span>
+                        ) : (
+                            <span>
+                                Custom recipient unlocked. Dispatches will route to the sandbox address above.
+                            </span>
+                        )}
+                    </p>
+                </div>
+
+                <div className="lg:col-span-5 bg-amber-500/[0.04] dark:bg-[#151925] border border-amber-500/20 rounded-lg p-4 flex items-start gap-3">
+                    <ShieldAlert
+                        className="text-gold shrink-0 mt-0.5"
+                        size={18}
+                    />
+                    <div className="text-xs text-gray-600 dark:text-gray-300 space-y-1">
+                        <p className="font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
+                            Sandbox Dispatch Notice
                         </p>
-                    ) : (
-                        <p className="text-xs text-gray-500 mt-2 flex items-center gap-1 font-medium">
-                            <Info size={14} className="text-amber-500" />
-                            Custom recipient is enabled. You can direct emails to your custom sandbox inbox.
+                        <p className="leading-relaxed">
+                            Active SMTP triggers send live payloads via your configured relay host. Use a sandbox inbox (Mailtrap) in non-production environments.
                         </p>
-                    )}
+                    </div>
                 </div>
             </div>
 
-            {/* Category Filter Tabs */}
-            <div className="flex flex-wrap items-center gap-2 border-b border-gray-200 dark:border-white/10 pb-3">
-                <Button
-                    type="button"
-                    variant="ghost"
-                    onClick={() => setActiveTab("all")}
-                    className={`h-auto flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold transition-all ${activeTab === "all"
-                            ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-sm shadow-amber-500/20 hover:text-white"
-                            : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5"
-                        }`}
-                >
-                    <Layers size={14} />
-                    <span>All Templates ({totalCount})</span>
-                </Button>
-                <Button
-                    type="button"
-                    variant="ghost"
-                    onClick={() => setActiveTab("vip")}
-                    className={`h-auto flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold transition-all ${activeTab === "vip"
-                            ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-sm shadow-amber-500/20 hover:text-white"
-                            : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5"
-                        }`}
-                >
-                    <Crown size={14} />
-                    <span>VIP & Trial ({vipCount})</span>
-                </Button>
-                <Button
-                    type="button"
-                    variant="ghost"
-                    onClick={() => setActiveTab("ea_academy")}
-                    className={`h-auto flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold transition-all ${activeTab === "ea_academy"
-                            ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-sm shadow-amber-500/20 hover:text-white"
-                            : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5"
-                        }`}
-                >
-                    <Key size={14} />
-                    <span>EA & Systems ({eaAcademyCount})</span>
-                </Button>
-
-                <Button
-                    type="button"
-                    variant="ghost"
-                    onClick={() => setActiveTab("reports")}
-                    className={`h-auto flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold transition-all ${activeTab === "reports"
-                            ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-sm shadow-amber-500/20 hover:text-white"
-                            : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5"
-                        }`}
-                >
-                    <BarChart3 size={14} />
-                    <span>Reports & Reviews ({reportsCount})</span>
-                </Button>
-
-                <Button
-                    type="button"
-                    variant="ghost"
-                    onClick={() => setActiveTab("onboarding")}
-                    className={`h-auto flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold transition-all ${activeTab === "onboarding"
-                            ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-sm shadow-amber-500/20 hover:text-white"
-                            : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5"
-                        }`}
-                >
-                    <Sparkles size={14} />
-                    <span>Onboarding & Activation ({onboardingCount})</span>
-                </Button>
-                <Button
-                    type="button"
-                    variant="ghost"
-                    onClick={() => setActiveTab("auth")}
-                    className={`h-auto flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold transition-all ${activeTab === "auth"
-                            ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-sm shadow-amber-500/20 hover:text-white"
-                            : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5"
-                        }`}
-                >
-                    <ShieldCheck size={14} />
-                    <span>Supabase Auth ({authCount})</span>
-                </Button>
+            {/* Category Filter Segmented Pill Bar */}
+            <div className="overflow-x-auto scrollbar-hide flex">
+                <div className="inline-flex items-center bg-[#F1F3F5] dark:bg-[#1A1D27] border border-dashboard rounded-xl p-1 gap-1 shrink-0">
+                    {filterTabs.map((tab) => {
+                        const Icon = tab.icon;
+                        const isActive = activeTab === tab.id;
+                        return (
+                            <Button
+                                key={tab.id}
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => setActiveTab(tab.id)}
+                                className={`h-auto flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-colors duration-150 whitespace-nowrap ${
+                                    isActive
+                                        ? "bg-gold hover:bg-gold text-white shadow-sm shadow-amber-500/20"
+                                        : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-white/[0.04]"
+                                }`}
+                            >
+                                <Icon size={14} />
+                                <span>{tab.label}</span>
+                                <span
+                                    className={`font-mono tabular-nums text-[11px] px-1.5 py-0.5 rounded-lg ${
+                                        isActive
+                                            ? "bg-black/15 text-white"
+                                            : "bg-gray-200/70 dark:bg-white/[0.06] text-gray-600 dark:text-gray-400"
+                                    }`}
+                                >
+                                    {tab.count}
+                                </span>
+                            </Button>
+                        );
+                    })}
+                </div>
             </div>
 
             {/* Group 1: SMTP and System Generated Emails */}
             {shouldShowActive && (
                 <div className="space-y-4">
-                    <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 border-b border-gray-200 dark:border-white/10 pb-2 flex items-center justify-between">
-                        <span>App-Owned Transactional Templates (SMTP)</span>
-                        <span className="text-xs font-medium text-gray-400">
+                    <div className="flex items-center justify-between border-b border-dashboard pb-2.5">
+                        <h2 className="text-base font-bold text-gray-800 dark:text-white">
+                            App-Owned Transactional Templates (SMTP)
+                        </h2>
+                        <span className="text-xs font-mono tabular-nums font-semibold text-gray-500 dark:text-gray-400">
                             {filteredActiveTemplates.length} templates
                         </span>
-                    </h2>
+                    </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {filteredActiveTemplates.map((template) => {
-                            const loading = sending[template.id] || false;
-                            const isPreviewLoading = loadingPreview[template.id] || false;
-                            const res = results[template.id];
-
-                            return (
-                                <div
-                                    key={template.id}
-                                    className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg p-6 shadow-sm flex flex-col justify-between hover:shadow-md transition-all group"
-                                >
-                                    <div className="space-y-3">
-                                        <div className="flex justify-between items-start gap-2">
-                                            <h4 className="text-base font-bold text-gray-700 dark:text-white leading-tight">
-                                                {template.title}
-                                            </h4>
-                                            {getStatusBadge(
-                                                template.status,
-                                                template.statusLabel
-                                            )}
-                                        </div>
-                                        <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed min-h-[48px]">
-                                            {template.description}
-                                        </p>
-                                        <div className="text-xs font-mono text-gray-400 bg-gray-50 dark:bg-white/[0.02] p-2 rounded-lg truncate">
-                                            {template.sourceFile}
-                                        </div>
-                                    </div>
-
-                                    <div className="mt-4 pt-4 border-t border-gray-200 dark:border-white/10 space-y-3">
-                                        <div className="grid grid-cols-2 gap-2">
-                                            <Button
-                                                variant="outline"
-                                                className="w-full text-xs font-semibold py-2 px-3 rounded-lg flex items-center justify-center gap-1.5"
-                                                isLoading={isPreviewLoading}
-                                                onClick={() =>
-                                                    handlePreview(
-                                                        template.id as EmailLabTemplateId,
-                                                        template.title
-                                                    )
-                                                }
-                                            >
-                                                <Eye size={14} />
-                                                Live Preview
-                                            </Button>
-
-                                            <Button
-                                                className="w-full text-xs font-bold py-2 px-3 rounded-lg flex items-center justify-center gap-1.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-sm shadow-amber-500/20"
-                                                isLoading={loading}
-                                                onClick={() =>
-                                                    handleSend(
-                                                        template.id as EmailLabTemplateId
-                                                    )
-                                                }
-                                            >
-                                                <Send size={14} />
-                                                Send Test
-                                            </Button>
-                                        </div>
-
-                                        {res && (
-                                            <div
-                                                className={`p-2.5 rounded-lg text-xs font-medium flex gap-1.5 items-start ${res.success
-                                                        ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20"
-                                                        : "bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20"
-                                                    }`}
-                                            >
-                                                {res.success ? (
-                                                    <CheckCircle
-                                                        size={15}
-                                                        className="shrink-0 mt-0.5 text-amber-500"
-                                                    />
-                                                ) : (
-                                                    <XCircle
-                                                        size={15}
-                                                        className="shrink-0 mt-0.5 text-red-500"
-                                                    />
-                                                )}
-                                                <div className="space-y-0.5 leading-snug">
-                                                    <p className="font-semibold">
-                                                        {res.message}
-                                                    </p>
-                                                    <p className="opacity-60 text-[10px]">
-                                                        {res.timestamp}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            );
-                        })}
+                        {filteredActiveTemplates.map((template) => (
+                            <EmailTemplateCard
+                                key={template.id}
+                                template={template}
+                                isSending={sending[template.id] || false}
+                                isPreviewLoading={loadingPreview[template.id] || false}
+                                result={results[template.id]}
+                                onPreview={handlePreview}
+                                onSend={handleSend}
+                            />
+                        ))}
                     </div>
                 </div>
             )}
 
             {/* Group 2: Supabase Auth Emails */}
             {shouldShowAuth && (
-                <div className="space-y-4 pt-4">
-                    <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 border-b border-gray-200 dark:border-white/10 pb-2 flex items-center justify-between">
-                        <span>Supabase Authentication Flows (Auth Hook)</span>
-                        <span className="text-xs font-medium text-gray-400">
+                <div className="space-y-4 pt-2">
+                    <div className="flex items-center justify-between border-b border-dashboard pb-2.5">
+                        <h2 className="text-base font-bold text-gray-800 dark:text-white">
+                            Supabase Authentication Flows (Auth Hook)
+                        </h2>
+                        <span className="text-xs font-mono tabular-nums font-semibold text-gray-500 dark:text-gray-400">
                             {supabaseTemplates.length} templates
                         </span>
-                    </h2>
-                    <div className="bg-amber-500/[0.02] border border-amber-500/15 rounded-lg p-5 flex items-start gap-3.5">
-                        <Info className="text-amber-500 shrink-0 mt-0.5" size={20} />
-                        <p className="text-sm text-amber-700 dark:text-amber-400 leading-relaxed font-medium">
-                            Auth emails are managed and dispatched directly by the{" "}
-                            <strong>Supabase Auth microservice</strong>. In local
-                            development or staging, configure Supabase Custom SMTP
-                            settings to redirect auth emails to Mailtrap, or trigger
-                            them manually from the login forms.
-                        </p>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {supabaseTemplates.map((template) => {
-                            const loading = sending[template.id] || false;
-                            const isPreviewLoading = loadingPreview[template.id] || false;
-                            const res = results[template.id];
-
-                            return (
-                                <div
-                                    key={template.id}
-                                    className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-lg p-6 shadow-sm flex flex-col justify-between hover:shadow-md transition-all group"
-                                >
-                                    <div className="space-y-3">
-                                        <div className="flex justify-between items-start gap-2">
-                                            <h4 className="text-base font-bold text-gray-700 dark:text-white leading-tight">
-                                                {template.title}
-                                            </h4>
-                                            {getStatusBadge(
-                                                template.status,
-                                                template.statusLabel
-                                            )}
-                                        </div>
-                                        <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed min-h-[48px]">
-                                            {template.description}
-                                        </p>
-                                        <div className="text-xs font-mono text-gray-400 bg-gray-50 dark:bg-white/[0.02] p-2 rounded-lg truncate">
-                                            {template.sourceFile}
-                                        </div>
-                                    </div>
-
-                                    <div className="mt-4 pt-4 border-t border-gray-200 dark:border-white/10 space-y-3">
-                                        <div className="grid grid-cols-2 gap-2">
-                                            <Button
-                                                variant="outline"
-                                                className="w-full text-xs font-semibold py-2 px-3 rounded-lg flex items-center justify-center gap-1.5"
-                                                isLoading={isPreviewLoading}
-                                                onClick={() =>
-                                                    handlePreview(
-                                                        template.id as EmailLabTemplateId,
-                                                        template.title
-                                                    )
-                                                }
-                                            >
-                                                <Eye size={14} />
-                                                Live Preview
-                                            </Button>
-
-                                            <Button
-                                                className="w-full text-xs font-bold py-2 px-3 rounded-lg flex items-center justify-center gap-1.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-sm shadow-amber-500/20"
-                                                isLoading={loading}
-                                                onClick={() =>
-                                                    handleSend(
-                                                        template.id as EmailLabTemplateId
-                                                    )
-                                                }
-                                            >
-                                                <Send size={14} />
-                                                Send Test
-                                            </Button>
-                                        </div>
-
-                                        {res && (
-                                            <div
-                                                className={`p-2.5 rounded-lg text-xs font-medium flex gap-1.5 items-start ${res.success
-                                                        ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20"
-                                                        : "bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20"
-                                                    }`}
-                                            >
-                                                {res.success ? (
-                                                    <CheckCircle
-                                                        size={15}
-                                                        className="shrink-0 mt-0.5 text-amber-500"
-                                                    />
-                                                ) : (
-                                                    <XCircle
-                                                        size={15}
-                                                        className="shrink-0 mt-0.5 text-red-500"
-                                                    />
-                                                )}
-                                                <div className="space-y-0.5 leading-snug">
-                                                    <p className="font-semibold">
-                                                        {res.message}
-                                                    </p>
-                                                    <p className="opacity-60 text-[10px]">
-                                                        {res.timestamp}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            );
-                        })}
+                        {supabaseTemplates.map((template) => (
+                            <EmailTemplateCard
+                                key={template.id}
+                                template={template}
+                                isSending={sending[template.id] || false}
+                                isPreviewLoading={loadingPreview[template.id] || false}
+                                result={results[template.id]}
+                                onPreview={handlePreview}
+                                onSend={handleSend}
+                            />
+                        ))}
                     </div>
                 </div>
             )}

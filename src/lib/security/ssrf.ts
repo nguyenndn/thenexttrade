@@ -79,3 +79,47 @@ export async function isSafeUrl(urlString: string): Promise<boolean> {
         return false;
     }
 }
+
+const REDIRECT_STATUS_CODES = new Set([301, 302, 303, 307, 308]);
+
+/**
+ * Fetch a URL with manual redirect handling so every redirect hop is validated
+ * against SSRF rules (preventing 301/302 redirects from a public URL to
+ * 127.0.0.1, 169.254.169.254, or RFC1918 private networks).
+ */
+export async function safeFetchWithRedirects(
+    urlString: string,
+    init?: RequestInit,
+    maxRedirects = 3
+): Promise<Response> {
+    let currentUrl = urlString;
+
+    for (let hop = 0; hop <= maxRedirects; hop++) {
+        const safe = await isSafeUrl(currentUrl);
+        if (!safe) {
+            throw new Error(`Unsafe URL blocked by SSRF guard: ${currentUrl}`);
+        }
+
+        const res = await fetch(currentUrl, {
+            ...init,
+            redirect: "manual",
+        });
+
+        if (!REDIRECT_STATUS_CODES.has(res.status)) {
+            return res;
+        }
+
+        if (hop === maxRedirects) {
+            throw new Error(`Too many redirects (>${maxRedirects}) for ${urlString}`);
+        }
+
+        const location = res.headers.get("location");
+        if (!location) {
+            throw new Error(`Redirect response (${res.status}) missing Location header`);
+        }
+
+        currentUrl = new URL(location, currentUrl).toString();
+    }
+
+    throw new Error(`Too many redirects for ${urlString}`);
+}

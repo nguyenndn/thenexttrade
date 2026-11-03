@@ -42,8 +42,8 @@ const ICON_MAP: Record<
     },
     FileText: {
         Icon: FileText,
-        gradient: "from-blue-500 to-cyan-400",
-        shadow: "shadow-blue-500/30",
+        gradient: "from-amber-400 to-amber-600",
+        shadow: "shadow-amber-500/30",
     },
     Trophy: {
         Icon: Trophy,
@@ -52,8 +52,8 @@ const ICON_MAP: Record<
     },
     GraduationCap: {
         Icon: GraduationCap,
-        gradient: "from-purple-500 to-violet-400",
-        shadow: "shadow-purple-500/30",
+        gradient: "from-amber-400 to-amber-600",
+        shadow: "shadow-amber-500/30",
     },
     TrendingUp: {
         Icon: TrendingUp,
@@ -141,7 +141,7 @@ export function MilestoneCelebrationModal() {
                     x: randomInRange(0.2, 0.4),
                     y: randomInRange(0.2, 0.4),
                 },
-                colors: ["#FFD700", "#00C888", "#06B6D4", "#8B5CF6"],
+                colors: ["#FFD700", "#00C888", "#F59E0B", "#10B981"],
             });
             confetti({
                 ...defaults,
@@ -150,7 +150,7 @@ export function MilestoneCelebrationModal() {
                     x: randomInRange(0.6, 0.8),
                     y: randomInRange(0.2, 0.4),
                 },
-                colors: ["#FFD700", "#FFA500", "#00C888", "#3B82F6"],
+                colors: ["#FFD700", "#FFA500", "#00C888", "#D97706"],
             });
         }, 200);
     }, []);
@@ -208,7 +208,7 @@ export function MilestoneCelebrationModal() {
                                 animate="animate"
                                 exit="exit"
                                 transition={SPRING_SOFT}
-                                className="relative z-10 bg-white dark:bg-[#1E2028] rounded-2xl w-full max-w-md overflow-hidden border border-dashboard shadow-2xl"
+                                className="relative z-10 bg-white dark:bg-[#0D111C] rounded-2xl w-full max-w-md overflow-hidden border border-dashboard shadow-2xl"
                             >
                 {/* Close */}
                 <Button
@@ -236,7 +236,7 @@ export function MilestoneCelebrationModal() {
 
                         {/* Queue indicator */}
                         {queue.length > 0 && (
-                            <div className="absolute top-2 left-6 flex items-center gap-1.5 text-xs font-bold text-gray-400 dark:text-gray-500">
+                            <div className="absolute top-2 left-6 flex items-center gap-1.5 text-xs font-bold font-mono tabular-nums text-gray-400 dark:text-gray-500">
                                 <Trophy size={12} className="text-primary" />+
                                 {queue.length} more
                             </div>

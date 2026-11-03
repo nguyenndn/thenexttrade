@@ -74,7 +74,7 @@ export function PrescriptionCard({
         <section
             aria-label="Tailored Action Plan"
             className={cn(
-                "rounded-xl border border-dashboard bg-white/90 p-5 shadow-sm backdrop-blur-sm sm:p-6 dark:bg-[#1E2028]/90",
+                "rounded-xl border border-dashboard bg-white p-5 shadow-sm sm:p-6 dark:bg-[#1E2028]",
                 className
             )}
         >
@@ -90,15 +90,15 @@ export function PrescriptionCard({
                             : `Tailored Action Plan for ${archetype.name}`}
                     </h3>
                 </div>
-                <div className="flex items-center rounded-lg border border-dashboard bg-gray-50 px-2.5 py-1 text-[11px] font-mono font-semibold text-gray-600 dark:bg-white/[0.03] dark:text-gray-400">
+                <div className="flex items-center rounded-lg border border-dashboard bg-gray-50/70 px-2.5 py-1 text-[11px] font-mono tabular-nums font-semibold text-gray-600 dark:bg-[#151925] dark:text-gray-400">
                     <span>3 Prescribed Solutions</span>
                 </div>
             </div>
 
             {/* Diagnostic Diagnosis Box (Behavioral Leak Radar) */}
-            <div className="mb-5 rounded-xl border border-red-500/20 bg-red-500/[0.02] p-4 sm:p-5 dark:border-red-500/25 dark:bg-red-950/[0.12]">
+            <div className="mb-5 rounded-xl border border-rose-500/20 bg-rose-500/[0.03] p-4 sm:p-5 dark:border-rose-500/25 dark:bg-rose-950/[0.12]">
                 <div className="flex flex-wrap items-center gap-2">
-                    <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-red-600 dark:text-red-400">
+                    <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400">
                         BEHAVIORAL LEAK RADAR
                     </span>
                     <span className="text-gray-300 dark:text-gray-600">/</span>
@@ -109,7 +109,7 @@ export function PrescriptionCard({
                 <p className="mt-1.5 text-xs leading-relaxed text-gray-600 dark:text-gray-300">
                     {rx.diagnosisText}
                 </p>
-                <div className="mt-3 flex items-start gap-2.5 rounded-lg border border-dashboard bg-white/80 p-3 text-xs dark:bg-white/[0.03]">
+                <div className="mt-3 flex items-start gap-2.5 rounded-lg border border-dashboard bg-white p-3 text-xs dark:bg-[#151925]">
                     <span className="mt-0.5 shrink-0 font-mono text-[10px] font-bold uppercase tracking-wider text-amber-700 dark:text-gold">
                         TARGET RX
                     </span>
@@ -131,18 +131,18 @@ export function PrescriptionCard({
                 {solutions.map((item) => (
                     <div
                         key={item.stepNum}
-                        className="group flex flex-col justify-between rounded-xl border border-dashboard bg-white/90 p-5 shadow-sm backdrop-blur-sm transition-all hover:border-gray-400/50 hover:shadow-md dark:bg-[#151925]/90 dark:hover:border-white/20"
+                        className="group flex flex-col justify-between rounded-xl border border-dashboard bg-gray-50/70 p-5 shadow-sm transition-all hover:border-gold/40 hover:shadow-md dark:bg-[#151925]"
                     >
                         <div>
                             {/* Top Step & Badge Row */}
                             <div className="mb-2 flex items-center justify-between gap-2">
-                                <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                                <span className="font-mono tabular-nums text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
                                     <span className="mr-1.5 font-semibold text-gray-400 dark:text-gray-500">
                                         {item.stepNum} ·
                                     </span>
                                     {item.stepLabel}
                                 </span>
-                                <span className="rounded-lg border border-dashboard bg-gray-50 px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-gray-700 dark:bg-white/[0.04] dark:text-gray-300">
+                                <span className="rounded-lg border border-dashboard bg-white px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-gray-700 dark:bg-white/[0.04] dark:text-gray-300">
                                     {item.badge}
                                 </span>
                             </div>
@@ -158,7 +158,7 @@ export function PrescriptionCard({
                             </p>
                         </div>
 
-                        <div className="mt-4 border-t border-gray-100 pt-3 dark:border-white/[0.06]">
+                        <div className="mt-4 border-t border-gray-200/70 pt-3 dark:border-white/[0.06]">
                             <Link
                                 href={item.href}
                                 className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-700 transition-colors hover:text-amber-800 dark:text-gold dark:hover:text-amber-300"

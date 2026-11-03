@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getAuthUser } from "@/lib/auth-cache";
-import { getTradingRulesList, getTraderGoalsList } from "@/actions/rulebook";
+import { getTradingRulesList } from "@/actions/rulebook";
 import { getStrategies } from "@/actions/strategies";
 import { prisma } from "@/lib/prisma";
 import { RulebookClient } from "@/components/rules/RulebookClient";
@@ -10,9 +10,9 @@ import { isRulebookGoalsEnabled } from "@/lib/feature-flags";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-    title: "Trading Rulebook & Behavior Goals | TheNextTrade",
+    title: "Trading Rulebook & Compliance | TheNextTrade",
     description:
-        "Manage your personal trading rules, discipline guidelines, and behavioral goals.",
+        "Manage your personal trading rules and discipline compliance.",
 };
 
 export default async function RulesPage() {
@@ -26,9 +26,8 @@ export default async function RulesPage() {
     }
 
     // Fetch data in parallel
-    const [rules, goals, { strategies }, accounts] = await Promise.all([
+    const [rules, { strategies }, accounts] = await Promise.all([
         getTradingRulesList(),
-        getTraderGoalsList(),
         getStrategies(),
         prisma.tradingAccount.findMany({
             where: { userId: user.id },
@@ -40,7 +39,6 @@ export default async function RulesPage() {
         <div className="space-y-4">
             <RulebookClient
                 initialRules={rules}
-                initialGoals={goals}
                 strategies={strategies}
                 accounts={accounts}
             />

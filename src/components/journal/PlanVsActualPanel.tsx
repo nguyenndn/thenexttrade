@@ -75,10 +75,10 @@ export function PlanVsActualPanel({ plan, entry }: PlanVsActualPanelProps) {
 
     return (
         <div className="space-y-5">
-            <div className="flex items-center gap-2 p-3.5 rounded-lg border border-dashboard bg-purple-500/5">
-                <Scale size={18} className="text-purple-500 flex-shrink-0" />
+            <div className="flex items-center gap-2 p-3.5 rounded-xl border border-gold/20 bg-gold/5">
+                <Scale size={18} className="text-amber-600 dark:text-gold flex-shrink-0" />
                 <div className="min-w-0">
-                    <p className="text-xs font-black uppercase text-purple-600 dark:text-purple-400">
+                    <p className="text-xs font-black uppercase text-amber-600 dark:text-gold">
                         Plan Matching Analysis
                     </p>
                     <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">
@@ -94,8 +94,8 @@ export function PlanVsActualPanel({ plan, entry }: PlanVsActualPanelProps) {
             {/* Side-by-Side Parameter Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Plan Column */}
-                <div className="bg-purple-50/40 dark:bg-purple-500/[0.02] p-4 rounded-lg border border-purple-100 dark:border-purple-500/10 space-y-3">
-                    <h4 className="text-xs font-black uppercase text-purple-600 dark:text-purple-400 tracking-wider">
+                <div className="bg-white dark:bg-[#1E2028] p-4 rounded-xl border border-dashboard space-y-3">
+                    <h4 className="text-xs font-black uppercase text-amber-600 dark:text-gold tracking-wider">
                         Planned Setup
                     </h4>
 
@@ -108,7 +108,7 @@ export function PlanVsActualPanel({ plan, entry }: PlanVsActualPanelProps) {
                                 className={cn(
                                     "font-black uppercase px-2 py-0.5 rounded-lg text-[10px]",
                                     plan.type === "BUY"
-                                        ? "bg-blue-500/10 text-blue-500"
+                                        ? "bg-emerald-500/10 text-emerald-500"
                                         : "bg-red-500/10 text-red-500"
                                 )}
                             >
@@ -120,7 +120,7 @@ export function PlanVsActualPanel({ plan, entry }: PlanVsActualPanelProps) {
                             <span className="text-gray-400 font-medium">
                                 Entry Target
                             </span>
-                            <span className="font-mono font-bold text-gray-700 dark:text-white">
+                            <span className="font-mono tabular-nums font-bold text-gray-700 dark:text-white">
                                 {plan.plannedEntry
                                     ? plan.plannedEntry.toFixed(5)
                                     : "Market"}
@@ -131,7 +131,7 @@ export function PlanVsActualPanel({ plan, entry }: PlanVsActualPanelProps) {
                             <span className="text-red-500/80 font-medium">
                                 Stop Loss
                             </span>
-                            <span className="font-mono font-bold text-red-500">
+                            <span className="font-mono tabular-nums font-bold text-red-500">
                                 {plan.plannedStopLoss
                                     ? plan.plannedStopLoss.toFixed(5)
                                     : "-"}
@@ -142,7 +142,7 @@ export function PlanVsActualPanel({ plan, entry }: PlanVsActualPanelProps) {
                             <span className="text-emerald-500/80 font-medium">
                                 Take Profit
                             </span>
-                            <span className="font-mono font-bold text-emerald-500">
+                            <span className="font-mono tabular-nums font-bold text-emerald-500">
                                 {plan.plannedTakeProfit
                                     ? plan.plannedTakeProfit.toFixed(5)
                                     : "-"}
@@ -153,7 +153,7 @@ export function PlanVsActualPanel({ plan, entry }: PlanVsActualPanelProps) {
                             <span className="text-gray-400 font-medium">
                                 Position Size
                             </span>
-                            <span className="font-bold text-gray-700 dark:text-white">
+                            <span className="font-mono tabular-nums font-bold text-gray-700 dark:text-white">
                                 {plan.plannedLotSize
                                     ? `${plan.plannedLotSize} lots`
                                     : "-"}
@@ -164,7 +164,7 @@ export function PlanVsActualPanel({ plan, entry }: PlanVsActualPanelProps) {
                             <span className="text-gray-400 font-medium">
                                 Risk Amount
                             </span>
-                            <span className="font-bold text-gray-700 dark:text-white">
+                            <span className="font-mono tabular-nums font-bold text-gray-700 dark:text-white">
                                 {plan.riskAmount ? `$${plan.riskAmount}` : "-"}
                             </span>
                         </div>
@@ -172,7 +172,7 @@ export function PlanVsActualPanel({ plan, entry }: PlanVsActualPanelProps) {
                 </div>
 
                 {/* Actual Column */}
-                <div className="bg-white dark:bg-black/10 p-4 rounded-lg border border-dashboard space-y-3">
+                <div className="bg-white dark:bg-[#1E2028] p-4 rounded-xl border border-dashboard space-y-3">
                     <h4 className="text-xs font-black uppercase text-gray-400 tracking-wider">
                         Actual Execution
                     </h4>
@@ -186,7 +186,7 @@ export function PlanVsActualPanel({ plan, entry }: PlanVsActualPanelProps) {
                                 className={cn(
                                     "font-black uppercase px-2 py-0.5 rounded-lg text-[10px]",
                                     entry.type.toUpperCase() === "BUY"
-                                        ? "bg-blue-500/10 text-blue-500"
+                                        ? "bg-emerald-500/10 text-emerald-500"
                                         : "bg-red-500/10 text-red-500"
                                 )}
                             >
@@ -199,13 +199,13 @@ export function PlanVsActualPanel({ plan, entry }: PlanVsActualPanelProps) {
                                 Execution Entry
                             </span>
                             <div className="text-right">
-                                <span className="font-mono font-bold text-gray-700 dark:text-white block">
+                                <span className="font-mono tabular-nums font-bold text-gray-700 dark:text-white block">
                                     {entry.entryPrice.toFixed(5)}
                                 </span>
                                 {plan.plannedEntry && entryDiffAbs > 0 && (
                                     <span
                                         className={cn(
-                                            "text-[10px] font-bold block mt-0.5",
+                                            "text-[10px] font-mono tabular-nums font-bold block mt-0.5",
                                             isBetterEntry
                                                 ? "text-emerald-500"
                                                 : "text-red-500"
@@ -227,7 +227,7 @@ export function PlanVsActualPanel({ plan, entry }: PlanVsActualPanelProps) {
                                 Stop Loss
                             </span>
                             <div className="text-right">
-                                <span className="font-mono font-bold text-red-500 block">
+                                <span className="font-mono tabular-nums font-bold text-red-500 block">
                                     {entry.stopLoss
                                         ? entry.stopLoss.toFixed(5)
                                         : "-"}
@@ -237,7 +237,7 @@ export function PlanVsActualPanel({ plan, entry }: PlanVsActualPanelProps) {
                                     slDeviation !== 0 && (
                                         <span
                                             className={cn(
-                                                "text-[10px] font-bold block mt-0.5",
+                                                "text-[10px] font-mono tabular-nums font-bold block mt-0.5",
                                                 slDeviation > 0
                                                     ? "text-emerald-500"
                                                     : "text-red-500"
@@ -256,7 +256,7 @@ export function PlanVsActualPanel({ plan, entry }: PlanVsActualPanelProps) {
                                 Take Profit
                             </span>
                             <div className="text-right">
-                                <span className="font-mono font-bold text-emerald-500 block">
+                                <span className="font-mono tabular-nums font-bold text-emerald-500 block">
                                     {entry.takeProfit
                                         ? entry.takeProfit.toFixed(5)
                                         : "-"}
@@ -266,7 +266,7 @@ export function PlanVsActualPanel({ plan, entry }: PlanVsActualPanelProps) {
                                     tpDeviation !== 0 && (
                                         <span
                                             className={cn(
-                                                "text-[10px] font-bold block mt-0.5",
+                                                "text-[10px] font-mono tabular-nums font-bold block mt-0.5",
                                                 tpDeviation > 0
                                                     ? "text-emerald-500"
                                                     : "text-red-500"
@@ -285,11 +285,11 @@ export function PlanVsActualPanel({ plan, entry }: PlanVsActualPanelProps) {
                                 Position Size
                             </span>
                             <div className="text-right">
-                                <span className="font-bold text-gray-700 dark:text-white block">
+                                <span className="font-mono tabular-nums font-bold text-gray-700 dark:text-white block">
                                     {entry.lotSize} lots
                                 </span>
                                 {lotDiff !== 0 && (
-                                    <span className="text-[10px] font-bold text-amber-500 block mt-0.5">
+                                    <span className="text-[10px] font-mono tabular-nums font-bold text-amber-500 block mt-0.5">
                                         Size change: {lotDiff > 0 ? "+" : ""}
                                         {lotDiff.toFixed(2)} lots
                                     </span>
@@ -303,7 +303,7 @@ export function PlanVsActualPanel({ plan, entry }: PlanVsActualPanelProps) {
                             </span>
                             <span
                                 className={cn(
-                                    "font-bold",
+                                    "font-mono tabular-nums font-bold",
                                     entry.pnl && entry.pnl >= 0
                                         ? "text-emerald-500"
                                         : "text-red-500"
@@ -318,7 +318,7 @@ export function PlanVsActualPanel({ plan, entry }: PlanVsActualPanelProps) {
 
             {/* Checklist Compliance review */}
             {entry.ruleChecks && entry.ruleChecks.length > 0 && (
-                <div className="p-4 rounded-lg border border-dashboard bg-white dark:bg-black/10 space-y-3">
+                <div className="p-4 rounded-xl border border-dashboard bg-white dark:bg-[#1E2028] space-y-3">
                     <h4 className="text-xs font-black uppercase text-gray-400 tracking-wider">
                         Rulebook Checklist Verification
                     </h4>
@@ -335,7 +335,7 @@ export function PlanVsActualPanel({ plan, entry }: PlanVsActualPanelProps) {
                             return (
                                 <div
                                     key={check.id}
-                                    className="p-3 rounded-lg border border-dashboard bg-gray-50/50 dark:bg-black/20 flex items-start gap-2 justify-between"
+                                    className="p-3 rounded-lg border border-dashboard bg-gray-50/80 dark:bg-[#151925] flex items-start gap-2 justify-between"
                                 >
                                     <div className="min-w-0">
                                         <p className="text-xs font-bold truncate text-gray-700 dark:text-white">
@@ -364,7 +364,7 @@ export function PlanVsActualPanel({ plan, entry }: PlanVsActualPanelProps) {
 
             {/* Pre-Trade Checklist Snapshot */}
             {plan.tradeCheckSnapshot && (
-                <div className="p-4 rounded-lg border border-dashboard bg-white dark:bg-black/10 space-y-3">
+                <div className="p-4 rounded-xl border border-dashboard bg-white dark:bg-[#1E2028] space-y-3">
                     <div className="flex items-center justify-between">
                         <h4 className="text-xs font-black uppercase text-gray-400 tracking-wider flex items-center gap-1.5">
                             <CheckCircle
@@ -459,9 +459,9 @@ export function PlanVsActualPanel({ plan, entry }: PlanVsActualPanelProps) {
             {/* Thesis vs Execution Notes */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {plan.thesis && (
-                    <div className="p-3.5 rounded-lg border border-dashboard bg-gray-50/30 dark:bg-black/20 space-y-1">
+                    <div className="p-3.5 rounded-xl border border-dashboard bg-gray-50/80 dark:bg-[#151925] space-y-1">
                         <h5 className="text-[10px] font-black uppercase text-gray-400 flex items-center gap-1">
-                            <BookOpen size={12} className="text-purple-500" />
+                            <BookOpen size={12} className="text-amber-600 dark:text-gold" />
                             Planned Thesis
                         </h5>
                         <p className="text-xs text-gray-600 dark:text-gray-400 italic leading-relaxed">
@@ -471,7 +471,7 @@ export function PlanVsActualPanel({ plan, entry }: PlanVsActualPanelProps) {
                 )}
 
                 {entry.notes && (
-                    <div className="p-3.5 rounded-lg border border-dashboard bg-gray-50/30 dark:bg-black/20 space-y-1">
+                    <div className="p-3.5 rounded-xl border border-dashboard bg-gray-50/80 dark:bg-[#151925] space-y-1">
                         <h5 className="text-[10px] font-black uppercase text-gray-400 flex items-center gap-1">
                             <CheckCircle
                                 size={12}

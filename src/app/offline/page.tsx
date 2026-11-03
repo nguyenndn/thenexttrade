@@ -20,10 +20,10 @@ export default function OfflinePage() {
         <>
             <PublicHeader />
             <main className="flex flex-col items-center justify-center min-h-[70vh] px-4 text-center">
-                <div className="w-20 h-20 rounded-lg bg-gradient-to-br from-primary/20 to-cyan-500/20 flex items-center justify-center mb-6">
-                    <WifiOff size={36} className="text-primary" />
+                <div className="w-20 h-20 rounded-xl bg-gold/10 border border-gold/20 flex items-center justify-center mb-6">
+                    <WifiOff size={36} className="text-amber-600 dark:text-gold" />
                 </div>
-                <h1 className="text-3xl font-black text-gray-800 dark:text-white mb-3">
+                <h1 className="text-3xl font-black text-gray-800 dark:text-white mb-3 font-heading tracking-tight">
                     You&apos;re Offline
                 </h1>
                 <p className="text-gray-600 dark:text-gray-400 max-w-md mb-8 leading-relaxed">
@@ -38,7 +38,7 @@ export default function OfflinePage() {
                             variant: "primary",
                             size: "smd",
                             className:
-                                "rounded-full shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 hover:scale-105",
+                                "rounded-lg font-bold bg-gold hover:bg-amber-600 !text-white shadow-sm shadow-amber-500/20 border-none",
                         })}
                     >
                         <RefreshCw size={14} />

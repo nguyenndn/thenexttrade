@@ -68,6 +68,11 @@ export async function getTradingAccounts(page = 1, limit = 12) {
                 maxDailyTrades: true,
                 maxRiskPercent: true,
                 cooldownAfterLosses: true,
+                weeklyTarget: true,
+                weeklyTargetType: true,
+                monthlyTarget: true,
+                monthlyTargetType: true,
+                initialBalance: true,
                 _count: {
                     select: { journalEntries: true },
                 },

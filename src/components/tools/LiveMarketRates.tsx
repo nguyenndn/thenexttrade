@@ -215,17 +215,17 @@ export function LiveMarketRates() {
                         />
                         <input
                             type="text"
-                            placeholder="Search pairs..."
+                            aria-label="Search currency pairs"
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-white/5 border border-dashboard rounded-lg text-sm font-medium text-gray-700 dark:text-white outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                            className="w-full pl-10 pr-4 py-2.5 bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg text-sm font-medium text-gray-700 dark:text-white outline-none focus:border-gold focus:ring-2 focus:ring-gold/20 transition-all"
                         />
                     </div>
 
                     {/* Last updated + Refresh */}
                     <div className="flex items-center gap-3 shrink-0">
                         {lastUpdate && (
-                            <span className="text-xs text-gray-500 hidden sm:inline">
+                            <span className="text-xs font-mono tabular-nums text-gray-500 hidden sm:inline">
                                 {lastUpdate.toLocaleTimeString()}
                             </span>
                         )}
@@ -235,7 +235,7 @@ export function LiveMarketRates() {
                             size="sm"
                             onClick={fetchRates}
                             disabled={loading}
-                            className="px-3 py-2 bg-white dark:bg-white/5 text-sm font-bold text-gray-600 dark:text-gray-300 hover:border-primary/50 h-auto"
+                            className="px-3 py-2 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 text-sm font-bold text-gray-700 dark:text-gray-300 hover:border-gold/40 h-auto"
                         >
                             <RefreshCw
                                 size={14}
@@ -259,8 +259,8 @@ export function LiveMarketRates() {
                             className={cn(
                                 "relative px-4 py-2 rounded-lg text-xs font-bold border transition-colors z-10 h-auto",
                                 activeCategory === cat.id
-                                    ? "text-white border-transparent hover:text-white"
-                                    : "bg-white dark:bg-white/5 text-gray-600 dark:text-gray-500 border-dashboard hover:border-primary/50"
+                                    ? "!text-white border-transparent hover:!text-white"
+                                    : "bg-gray-50/80 dark:bg-[#151925] text-gray-600 dark:text-gray-400 border-gray-200 dark:border-white/10 hover:border-gold/40"
                             )}
                         >
                             {activeCategory === cat.id && (
@@ -292,13 +292,13 @@ export function LiveMarketRates() {
                         <div
                             key={pair.symbol}
                             className={cn(
-                                "relative rounded-lg border p-4 transition-all hover:scale-[1.02]",
-                                "bg-white dark:bg-white/5",
+                                "relative rounded-lg border p-4 transition-colors",
+                                "bg-gray-50/80 dark:bg-[#151925]",
                                 isUp
-                                    ? "border-green-500/30 hover:border-green-500/50"
+                                    ? "border-emerald-500/30 hover:border-emerald-500/50"
                                     : isDown
                                       ? "border-red-500/30 hover:border-red-500/50"
-                                      : "border-dashboard hover:border-gray-300 dark:hover:border-white/20"
+                                      : "border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20"
                             )}
                         >
                             {/* Pair Name */}
@@ -310,7 +310,7 @@ export function LiveMarketRates() {
                                     (isUp ? (
                                         <TrendingUp
                                             size={14}
-                                            className="text-green-500"
+                                            className="text-emerald-500"
                                         />
                                     ) : isDown ? (
                                         <TrendingDown
@@ -323,9 +323,9 @@ export function LiveMarketRates() {
                             {/* Price */}
                             <p
                                 className={cn(
-                                    "text-xl font-black font-mono mb-1",
+                                    "text-xl font-black font-mono tabular-nums mb-1",
                                     isUp
-                                        ? "text-green-600 dark:text-green-400"
+                                        ? "text-emerald-600 dark:text-emerald-400"
                                         : isDown
                                           ? "text-red-600 dark:text-red-400"
                                           : "text-gray-700 dark:text-white"
@@ -339,9 +339,9 @@ export function LiveMarketRates() {
                             {/* Change % */}
                             <p
                                 className={cn(
-                                    "text-xs font-bold",
+                                    "text-xs font-mono tabular-nums font-bold",
                                     isUp
-                                        ? "text-green-600 dark:text-green-400"
+                                        ? "text-emerald-600 dark:text-emerald-400"
                                         : isDown
                                           ? "text-red-600 dark:text-red-400"
                                           : "text-gray-500"
@@ -368,7 +368,7 @@ export function LiveMarketRates() {
 
             {/* Note */}
             <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-300">
-                <Info size={14} className="shrink-0 text-primary/60" />
+                <Info size={14} className="shrink-0 text-amber-600 dark:text-gold" />
                 <span>
                     Change % reflects{" "}
                     <span className="font-semibold text-gray-600 dark:text-gray-300">

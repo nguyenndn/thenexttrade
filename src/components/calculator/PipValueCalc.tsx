@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/Button";
-import { PIP_VALUES } from "@/lib/calculators";
+import { PIP_VALUES, calculatePipValue } from "@/lib/calculators";
 import { CurrencyPairSelect } from "./CurrencyPairSelect";
 import {
     AccountCurrencySelect,
@@ -17,10 +17,17 @@ export function PipValueCalc() {
     const [lotSize, setLotSize] = useState(1);
     const [accountCurrency, setAccountCurrency] = useState("USD");
 
-    const pipValuePerMicro = PIP_VALUES[pair.toUpperCase()] || 0.1;
-    const pipValuePerStandard = pipValuePerMicro * 100;
-    const safeLotSize = Math.max(0, isNaN(lotSize) ? 0 : lotSize);
-    const totalValue = pipValuePerStandard * safeLotSize;
+    const safeLotSize = Math.max(
+        0,
+        isNaN(lotSize) ? 0 : Number(lotSize.toFixed(4))
+    );
+    const totalValue = calculatePipValue({
+        pair,
+        lotSize: safeLotSize,
+        accountCurrency,
+    });
+
+    const isLotTypeActive = (val: number) => Math.abs(lotSize - val) < 0.0001;
 
     const currSymbol = getCurrencySymbol(accountCurrency);
 
@@ -40,7 +47,12 @@ export function PipValueCalc() {
                     <CalcInput
                         label="Lot Size"
                         value={lotSize}
-                        onChange={(v) => setLotSize(parseFloat(v) || 0)}
+                        onChange={(v) => {
+                            const parsed = parseFloat(v);
+                            setLotSize(
+                                isNaN(parsed) ? 0 : Number(parsed.toFixed(4))
+                            );
+                        }}
                     />
                     <div className="space-y-2">
                         <label className="text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
@@ -57,15 +69,15 @@ export function PipValueCalc() {
                                     type="button"
                                     variant="ghost"
                                     role="tab"
-                                    aria-selected={lotSize === lt.val}
+                                    aria-selected={isLotTypeActive(lt.val)}
                                     onClick={() => setLotSize(lt.val)}
                                     className={`relative flex-1 py-2.5 rounded-lg text-xs font-bold transition-colors z-10 h-auto border-0 ${
-                                        lotSize === lt.val
+                                        isLotTypeActive(lt.val)
                                             ? "text-white hover:text-white"
                                             : "text-gray-600 dark:text-gray-500 hover:text-gray-700 dark:hover:text-white"
                                     }`}
                                 >
-                                    {lotSize === lt.val && (
+                                    {isLotTypeActive(lt.val) && (
                                         <motion.div
                                             layoutId="activeLotType"
                                             className="absolute inset-0 bg-gradient-to-r from-gold to-amber-600 rounded-lg shadow-sm shadow-amber-500/20 -z-10"
@@ -102,7 +114,7 @@ export function PipValueCalc() {
                 <p className="text-center text-sm text-gray-600 dark:text-gray-300 -mt-1">
                     For{" "}
                     <span className="font-bold text-gray-700 dark:text-white">
-                        {safeLotSize}
+                        {Number(safeLotSize.toFixed(4))}
                     </span>{" "}
                     lot(s) of {pair}
                 </p>

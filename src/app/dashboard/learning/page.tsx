@@ -88,23 +88,22 @@ export default async function MyLearningPage() {
                 {courses.map((course) => (
                     <div
                         key={course.id}
-                        className="bg-white dark:bg-[#0B0E14] rounded-xl border border-dashboard shadow-sm overflow-hidden flex flex-col group hover:border-[#2F80ED]/30 transition-colors"
+                        className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm overflow-hidden flex flex-col group hover:border-gold/30 transition-colors"
                     >
                         {/* Course Header / Thumbnail Placeholder */}
-                        <div className="h-32 bg-gradient-to-br from-blue-500/10 to-violet-500/10 flex items-center justify-center relative">
-                            <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
+                        <div className="h-32 bg-gray-50/80 dark:bg-[#151925] border-b border-dashboard flex items-center justify-center relative">
                             <BookOpen
                                 size={40}
-                                className="text-[#2F80ED] opacity-50"
+                                className="text-amber-600 dark:text-gold opacity-60"
                             />
-                            <div className="absolute bottom-4 right-4 bg-white dark:bg-black/50 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-gray-700 dark:text-white flex items-center gap-1">
+                            <div className="absolute bottom-4 right-4 bg-white dark:bg-[#1E2028] border border-dashboard px-3 py-1 rounded-lg text-xs font-bold font-mono tabular-nums text-gray-700 dark:text-white flex items-center gap-1">
                                 <Clock size={12} />
                                 {course.totalLessons} Lessons
                             </div>
                         </div>
 
                         <div className="p-6 flex-1 flex flex-col">
-                            <h3 className="font-bold text-lg text-gray-700 dark:text-white mb-2 group-hover:text-[#2F80ED] transition-colors">
+                            <h3 className="font-bold text-lg text-gray-700 dark:text-white mb-2 group-hover:text-amber-600 dark:group-hover:text-gold transition-colors">
                                 {course.title}
                             </h3>
                             <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-2 mb-4 flex-1">
@@ -114,18 +113,18 @@ export default async function MyLearningPage() {
 
                             {/* Progress Bar */}
                             <div className="space-y-2 mb-4">
-                                <div className="flex justify-between text-xs font-medium">
+                                <div className="flex justify-between text-xs font-medium font-mono tabular-nums">
                                     <span className="text-gray-600 dark:text-gray-400">
                                         {course.completedCount} /{" "}
                                         {course.totalLessons} Completed
                                     </span>
-                                    <span className="text-[#2F80ED]">
+                                    <span className="font-bold text-amber-600 dark:text-gold">
                                         {course.progress}%
                                     </span>
                                 </div>
                                 <div className="h-2 w-full bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
                                     <div
-                                        className="h-full bg-[#2F80ED] transition-all duration-500"
+                                        className="h-full bg-gold transition-all duration-500"
                                         style={{ width: `${course.progress}%` }}
                                     ></div>
                                 </div>
@@ -135,7 +134,7 @@ export default async function MyLearningPage() {
                             {course.nextLesson ? (
                                 <Link
                                     href={`/dashboard/academy/lessons/${course.nextLesson.slug}`}
-                                    className="w-full py-2.5 bg-[#2F80ED] hover:bg-blue-600 text-white font-bold rounded-lg flex items-center justify-center gap-2 transition-all active:scale-95 shadow-lg shadow-blue-500/20"
+                                    className="w-full py-2.5 bg-gold hover:bg-amber-600 !text-white font-bold rounded-lg flex items-center justify-center gap-2 transition-all active:scale-95 shadow-sm shadow-amber-500/20"
                                 >
                                     <PlayCircle size={18} />
                                     {course.progress > 0
@@ -143,7 +142,7 @@ export default async function MyLearningPage() {
                                         : "Start Course"}
                                 </Link>
                             ) : (
-                                <div className="w-full py-2.5 bg-green-500/10 text-green-500 font-bold rounded-lg flex items-center justify-center gap-2 cursor-default">
+                                <div className="w-full py-2.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-bold rounded-lg flex items-center justify-center gap-2 cursor-default">
                                     <CheckCircle size={18} />
                                     Completed
                                 </div>
@@ -154,7 +153,7 @@ export default async function MyLearningPage() {
             </div>
 
             {courses.length === 0 && (
-                <div className="text-center py-20 bg-gray-50 dark:bg-white/5 rounded-xl border border-dashed border-dashboard">
+                <div className="text-center py-20 bg-white dark:bg-[#1E2028] rounded-xl border border-dashed border-dashboard">
                     <p className="text-gray-600 dark:text-gray-400">
                         No courses available at the moment.
                     </p>

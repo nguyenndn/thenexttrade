@@ -3,7 +3,6 @@ import { updateSession } from "@/lib/supabase/middleware";
 import {
     parseUserAgent,
     generateSessionId,
-    isTrackablePath,
     getGeoFromHeaders,
     shouldTrackPageviewRequest,
 } from "@/lib/analytics";
@@ -282,7 +281,9 @@ function logSecurityToAPI(
 export async function proxy(request: NextRequest) {
     const { pathname } = request.nextUrl;
     const ip =
-        request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
+        request.headers.get("x-real-ip")?.trim() ||
+        request.headers.get("x-vercel-forwarded-for")?.split(",")[0]?.trim() ||
+        request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
         "127.0.0.1";
     const userAgent = request.headers.get("user-agent");
     const isDev = process.env.NODE_ENV !== "production";

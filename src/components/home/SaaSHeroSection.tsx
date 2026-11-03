@@ -1,67 +1,17 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, ArrowDown, ShieldCheck } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { cn } from "@/lib/utils";
 import { DynamicFirefly } from "@/components/ui/DynamicFirefly";
+import { TypingHeadline, PHRASES } from "./TypingHeadline";
+
+export { PHRASES };
 
 interface SaaSHeroSectionProps {
     isLoggedIn: boolean;
 }
 
-/**
- * The rotating half of the headline. Every phrase names a *behavior* the
- * trader recognises in themselves — never an outcome we cannot deliver.
- * "Consistent Profit" used to live here and was the single most damaging
- * string on the page: an experienced trader reads it as a promise no tool
- * can keep and leaves. Do not put a profit claim back into this array.
- *
- * All phrases are kept under ~18 characters so the headline holds one line
- * at lg+ and the layout never reflows mid-type.
- */
-export const PHRASES = ["not doing it.", "moving the stop.", "revenge sizing.", "breaking your own rules."];
-
-const TYPE_SPEED_MS = 75;
-const DELETE_SPEED_MS = 40;
-const HOLD_MS = 2200;
-
 export function SaaSHeroSection({ isLoggedIn }: SaaSHeroSectionProps) {
-    const [phraseIndex, setPhraseIndex] = useState(0);
-    const [displayedText, setDisplayedText] = useState("");
-    const [isDeleting, setIsDeleting] = useState(false);
-
-    const currentPhrase = PHRASES[phraseIndex];
-
-    useEffect(() => {
-        const fullText = currentPhrase;
-        let timer: NodeJS.Timeout;
-
-        if (!isDeleting) {
-            if (displayedText.length < fullText.length) {
-                timer = setTimeout(() => {
-                    setDisplayedText(fullText.slice(0, displayedText.length + 1));
-                }, TYPE_SPEED_MS);
-            } else {
-                timer = setTimeout(() => {
-                    setIsDeleting(true);
-                }, HOLD_MS);
-            }
-        } else {
-            if (displayedText.length > 0) {
-                timer = setTimeout(() => {
-                    setDisplayedText(fullText.slice(0, displayedText.length - 1));
-                }, DELETE_SPEED_MS);
-            } else {
-                setIsDeleting(false);
-                setPhraseIndex((prev) => (prev + 1) % PHRASES.length);
-            }
-        }
-
-        return () => clearTimeout(timer);
-    }, [displayedText, isDeleting, phraseIndex, currentPhrase]);
-
     return (
         <div className="pt-24 sm:pt-32 md:pt-36 pb-6 sm:pb-8 bg-white dark:bg-transparent relative overflow-hidden text-center isolate">
             {/* Golden Glow Atmosphere Background */}
@@ -82,16 +32,7 @@ export function SaaSHeroSection({ isLoggedIn }: SaaSHeroSectionProps) {
                     <span className="block whitespace-normal sm:whitespace-nowrap">
                         You already know what to do.
                     </span>
-                    <span className="block mt-1 sm:mt-2 min-h-[1.15em] sm:whitespace-nowrap">
-                        You keep{" "}
-                        <span className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-amber-500 via-gold to-amber-600 dark:from-gold dark:via-yellow-300 dark:to-amber-400 drop-shadow-sm pb-[0.25em] -mb-[0.25em]">
-                            {displayedText || " "}
-                        </span>
-                        <span
-                            className="inline-block w-2 sm:w-2.5 md:w-3 h-7 sm:h-8 md:h-10 lg:h-11 xl:h-13 2xl:h-14 ml-1.5 align-middle rounded-full bg-gold shadow-[0_0_10px_rgba(245,158,11,0.6)]"
-                            style={{ animation: "terminalBlink 1s infinite" }}
-                        />
-                    </span>
+                    <TypingHeadline />
                 </h1>
 
                 {/* Supporting Copy */}
@@ -121,24 +62,24 @@ export function SaaSHeroSection({ isLoggedIn }: SaaSHeroSectionProps) {
                             {isLoggedIn ? "Open My Journal" : "Sync My MT5 — Free"}
                         </span>
                         <ArrowRight
-                            size={14}
+                            size={16}
                             className="group-hover:translate-x-1 transition-transform duration-300 shrink-0"
                         />
                     </Link>
 
-                    <a
+                    <Link
                         href="#how-it-works"
                         className={cn(
                             buttonVariants({ variant: "outline", size: "lg" }),
-                            "w-full sm:w-auto h-11 sm:h-12 px-5 sm:px-7 rounded-lg border-gray-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm text-slate-700 dark:text-slate-200 hover:border-gold hover:text-amber-600 dark:hover:text-gold font-extrabold shadow-sm transition-all duration-300 flex items-center justify-center gap-2 whitespace-normal sm:whitespace-nowrap group"
+                            "w-full sm:w-auto h-11 sm:h-12 px-5 sm:px-7 rounded-lg border-gray-200 dark:border-white/10 bg-white/80 dark:bg-white/[0.04] backdrop-blur-sm text-gray-800 dark:text-gray-200 hover:border-gold hover:text-amber-600 dark:hover:text-gold font-extrabold shadow-sm transition-all duration-300 flex items-center justify-center gap-2 whitespace-normal sm:whitespace-nowrap group"
                         )}
                     >
                         <span>See How It Works</span>
                         <ArrowDown
-                            size={14}
+                            size={16}
                             className="text-amber-500 dark:text-gold group-hover:translate-y-1 transition-transform duration-300 shrink-0"
                         />
-                    </a>
+                    </Link>
                 </div>
 
                 {/* Trust Strip — stating who pays us is the page's strongest
@@ -156,13 +97,6 @@ export function SaaSHeroSection({ isLoggedIn }: SaaSHeroSectionProps) {
                     </span>
                 </div>
             </section>
-
-            <style>{`
-                @keyframes terminalBlink {
-                    0%, 100% { opacity: 1; }
-                    50% { opacity: 0; }
-                }
-            `}</style>
         </div>
     );
 }

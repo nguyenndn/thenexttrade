@@ -49,17 +49,17 @@ export const Pagination = ({ totalPages }: PaginationProps) => {
 
     return (
         <div className="flex justify-end mt-8">
-            <div className="flex items-center gap-1.5 p-1.5 rounded-lg bg-white/40 dark:bg-white/5 backdrop-blur-md border border-white/20">
+            <div className="flex items-center gap-1.5 p-1.5 rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm">
                 {/* Previous Button */}
                 <Link
                     href={createPageURL(currentPage - 1)}
                     className={buttonVariants({
                         variant: "outline",
                         size: "icon",
-                        className: `h-9 w-9 rounded-lg border-white/20 ${
+                        className: `h-9 w-9 rounded-lg border-gray-200 dark:border-white/10 ${
                             currentPage <= 1
                                 ? "opacity-50 pointer-events-none"
-                                : "hover:bg-white/60 dark:hover:bg-white/10"
+                                : "hover:bg-gray-50 dark:hover:bg-white/10"
                         }`,
                     })}
                     aria-disabled={currentPage <= 1}
@@ -95,10 +95,10 @@ export const Pagination = ({ totalPages }: PaginationProps) => {
                                         page === currentPage
                                             ? "gold"
                                             : "outline",
-                                    className: `w-9 h-9 p-0 flex items-center justify-center rounded-lg font-bold text-xs transition-all border-white/20 ${
+                                    className: `w-9 h-9 p-0 flex items-center justify-center rounded-lg tabular-nums font-bold text-xs transition-all border-gray-200 dark:border-white/10 ${
                                         page === currentPage
-                                            ? "!bg-gold !text-white shadow-md shadow-amber-500/25 !border-gold"
-                                            : "text-gray-600 dark:text-gray-400 hover:bg-white/60 dark:hover:bg-white/10 hover:text-gold"
+                                            ? "!bg-gold !text-white shadow-sm !border-gold"
+                                            : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/10 hover:text-gold"
                                     }`,
                                 })}
                                 aria-label={`Page ${page}`}
@@ -118,10 +118,10 @@ export const Pagination = ({ totalPages }: PaginationProps) => {
                     className={buttonVariants({
                         variant: "outline",
                         size: "icon",
-                        className: `h-9 w-9 rounded-lg border-white/20 ${
+                        className: `h-9 w-9 rounded-lg border-gray-200 dark:border-white/10 ${
                             currentPage >= totalPages
                                 ? "opacity-50 pointer-events-none"
-                                : "hover:bg-white/60 dark:hover:bg-white/10"
+                                : "hover:bg-gray-50 dark:hover:bg-white/10"
                         }`,
                     })}
                     aria-disabled={currentPage >= totalPages}

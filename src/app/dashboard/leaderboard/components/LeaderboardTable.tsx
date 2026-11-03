@@ -63,7 +63,7 @@ export function LeaderboardTable({
     if (entries.length === 0 && !myEntry) {
         return (
             <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-12 text-center">
-                <div className="inline-flex items-center justify-center p-3 rounded-lg bg-cyan-500/10 text-cyan-500 mb-4 ring-4 ring-cyan-500/5">
+                <div className="inline-flex items-center justify-center p-3 rounded-lg bg-gold/10 text-amber-600 dark:text-gold mb-4 ring-4 ring-gold/5">
                     <svg
                         className="w-8 h-8"
                         fill="none"
@@ -93,7 +93,7 @@ export function LeaderboardTable({
         <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard dark:border-white/[0.08] shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
-                    <thead className="bg-gray-50 dark:bg-white/5 text-[11px] uppercase text-gray-500 font-bold tracking-wider">
+                    <thead className="bg-gray-50/80 dark:bg-[#151925] text-[11px] uppercase text-gray-500 font-bold tracking-wider">
                         <tr>
                             <th className="w-14 text-center py-3 px-3">Rank</th>
                             <th className="py-3 px-3">User</th>

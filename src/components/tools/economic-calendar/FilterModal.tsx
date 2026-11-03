@@ -34,14 +34,13 @@ const ALL_CURRENCIES = [
 ];
 const ALL_IMPACTS = [
     { label: "High", value: "HIGH", color: "bg-red-500" },
-    { label: "Medium", value: "MEDIUM", color: "bg-orange-500" }, // or blue/yellow depending on theme ref
-    { label: "Low", value: "LOW", color: "bg-gray-400" },
+    { label: "Medium", value: "MEDIUM", color: "bg-amber-500" },
+    { label: "Low", value: "LOW", color: "bg-emerald-500" },
 ];
-// Adjust Impact colors to match site style if needed (Site uses Red for High, Blue for Med, Gray for Low likely)
 const IMPACT_COLORS: Record<string, string> = {
     HIGH: "bg-red-500",
-    MEDIUM: "bg-cyan-500",
-    LOW: "bg-gray-400",
+    MEDIUM: "bg-amber-500",
+    LOW: "bg-emerald-500",
 };
 
 const ALL_SESSIONS = ["Sydney", "Tokyo", "London", "New York"];
@@ -144,14 +143,14 @@ export function FilterModal({
                     animate="animate"
                     exit="exit"
                     transition={SPRING_SOFT}
-                    className={`relative z-10 w-full max-w-md rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] cursor-default ${isDark ? "bg-slate-800 text-white" : "bg-white text-gray-700"}`}
+                    className={`relative z-10 w-full max-w-md rounded-2xl shadow-2xl border overflow-hidden flex flex-col max-h-[90vh] cursor-default ${isDark ? "bg-[#151925] border-white/10 text-white" : "bg-white border-gray-200 text-gray-700"}`}
                 >
                 {/* Header */}
                 <div
-                    className={`px-6 py-4 flex items-center justify-between border-b ${isDark ? "border-slate-700 bg-slate-900" : "border-dashboard bg-gray-50"}`}
+                    className={`px-6 py-4 flex items-center justify-between border-b ${isDark ? "border-white/10 bg-[#1E2028]" : "border-gray-200 bg-gray-50"}`}
                 >
                     <h3 className="text-lg font-bold flex items-center gap-2">
-                        <Filter size={20} className="text-cyan-500" />
+                        <Filter size={20} className="text-amber-600 dark:text-gold" />
                         Filters
                     </h3>
                     <Button
@@ -183,7 +182,7 @@ export function FilterModal({
                                     }))
                                 }
                             />
-                            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-cyan-500"></div>
+                            <div className="h-5 w-9 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-white/15 peer-checked:after:translate-x-4 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:shadow-md after:transition-all after:duration-200 peer-checked:bg-gold"></div>
                         </label>
                     </div>
 
@@ -373,13 +372,13 @@ export function FilterModal({
 
                 {/* Footer */}
                 <div
-                    className={`px-6 py-4 border-t flex justify-end gap-3 ${isDark ? "border-slate-700 bg-slate-900" : "border-dashboard bg-gray-50"}`}
+                    className={`px-6 py-4 border-t flex justify-end gap-3 ${isDark ? "border-white/10 bg-[#1E2028]" : "border-gray-200 bg-gray-50"}`}
                 >
                     <Button
                         onClick={onClose}
                         variant="outline"
                         size="smd"
-                        className={`font-bold transition-colors ${isDark ? "text-gray-500 hover:text-white hover:bg-slate-700" : "text-gray-600 hover:text-gray-700 hover:bg-gray-100"}`}
+                        className="font-bold transition-colors"
                     >
                         Cancel
                     </Button>
@@ -387,7 +386,7 @@ export function FilterModal({
                         onClick={() => onApply(filters)}
                         variant="primary"
                         size="smd"
-                        className="font-bold bg-gold hover:bg-amber-600 text-white shadow-md shadow-amber-500/20 hover:shadow-lg hover:shadow-amber-500/30 transition-all border-none"
+                        className="font-bold bg-gold hover:bg-amber-600 !text-white shadow-md shadow-amber-500/20 hover:shadow-lg hover:shadow-amber-500/30 transition-all border-none"
                     >
                         Apply Filters
                     </Button>

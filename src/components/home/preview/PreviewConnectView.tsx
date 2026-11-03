@@ -1,5 +1,3 @@
-"use client";
-
 import { CheckCircle2, Cpu, ShieldCheck, Zap } from "lucide-react";
 
 export function PreviewConnectView() {
@@ -19,17 +17,20 @@ export function PreviewConnectView() {
                             </span>
                         </div>
                         <span className="text-[10px] text-gray-500 dark:text-gray-400">
-                            Vantage Live Server · Latency 12ms
+                            Vantage Live Server · Latency{" "}
+                            <span className="font-mono tabular-nums font-semibold text-gray-700 dark:text-gray-300">
+                                12ms
+                            </span>
                         </span>
                     </div>
                 </div>
-                <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 text-[9px] font-black uppercase tracking-wider">
-                    Connected
+                <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 font-mono tabular-nums text-[9px] font-black uppercase tracking-wider">
+                    Synced 12s ago
                 </span>
             </div>
 
             {/* Live Auto-Synced Executions */}
-            <div className="p-2.5 rounded-lg bg-white dark:bg-white/[0.02] border border-gray-200 dark:border-white/10 shadow-sm flex-1 flex flex-col justify-center">
+            <div className="p-2.5 rounded-lg bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 shadow-sm flex-1 flex flex-col justify-center">
                 <div className="flex items-center justify-between mb-1.5 shrink-0">
                     <div className="flex items-center gap-1.5">
                         <Zap size={11} className="text-gold" />
@@ -44,7 +45,7 @@ export function PreviewConnectView() {
 
                 <div className="space-y-1.5">
                     {/* Execution 1 */}
-                    <div className="p-1.5 sm:p-2 rounded-lg bg-gray-50/80 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 flex items-center justify-between">
+                    <div className="p-1.5 sm:p-2 rounded-lg bg-gray-50/80 dark:bg-white/[0.02] border border-gray-100 dark:border-white/10 flex items-center justify-between">
                         <div className="flex items-center gap-2">
                             <span className="px-1.5 py-0.5 rounded-lg text-[8px] font-black uppercase bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400">
                                 BUY
@@ -54,7 +55,7 @@ export function PreviewConnectView() {
                                     <span className="font-extrabold text-xs text-gray-900 dark:text-white">
                                         XAUUSD
                                     </span>
-                                    <span className="text-[9px] font-mono text-gray-400">
+                                    <span className="text-[9px] font-mono tabular-nums text-gray-400">
                                         1.50 Lots
                                     </span>
                                 </div>
@@ -63,22 +64,22 @@ export function PreviewConnectView() {
                                         <ShieldCheck size={10} /> SL/TP Active
                                     </span>
                                     <span>·</span>
-                                    <span>R:R 1:2.8</span>
+                                    <span className="font-mono tabular-nums">R:R 1:2.8</span>
                                 </div>
                             </div>
                         </div>
                         <div className="text-right">
-                            <span className="text-xs sm:text-sm font-extrabold text-emerald-600 dark:text-emerald-400 block">
+                            <span className="text-xs sm:text-sm font-mono tabular-nums font-extrabold text-emerald-600 dark:text-emerald-400 block">
                                 +$420.50
                             </span>
-                            <span className="text-[8px] text-gray-400">
+                            <span className="text-[8px] font-mono tabular-nums text-gray-400">
                                 Just now
                             </span>
                         </div>
                     </div>
 
                     {/* Execution 2 */}
-                    <div className="p-1.5 sm:p-2 rounded-lg bg-gray-50/80 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 flex items-center justify-between">
+                    <div className="p-1.5 sm:p-2 rounded-lg bg-gray-50/80 dark:bg-white/[0.02] border border-gray-100 dark:border-white/10 flex items-center justify-between">
                         <div className="flex items-center gap-2">
                             <span className="px-1.5 py-0.5 rounded-lg text-[8px] font-black uppercase bg-red-100 dark:bg-red-500/20 text-red-700 dark:text-red-400">
                                 SELL
@@ -88,7 +89,7 @@ export function PreviewConnectView() {
                                     <span className="font-extrabold text-xs text-gray-900 dark:text-white">
                                         EURUSD
                                     </span>
-                                    <span className="text-[9px] font-mono text-gray-400">
+                                    <span className="text-[9px] font-mono tabular-nums text-gray-400">
                                         2.00 Lots
                                     </span>
                                 </div>
@@ -100,10 +101,10 @@ export function PreviewConnectView() {
                             </div>
                         </div>
                         <div className="text-right">
-                            <span className="text-xs sm:text-sm font-extrabold text-emerald-600 dark:text-emerald-400 block">
+                            <span className="text-xs sm:text-sm font-mono tabular-nums font-extrabold text-emerald-600 dark:text-emerald-400 block">
                                 +$180.00
                             </span>
-                            <span className="text-[8px] text-gray-400">
+                            <span className="text-[8px] font-mono tabular-nums text-gray-400">
                                 14m ago
                             </span>
                         </div>
@@ -116,7 +117,7 @@ export function PreviewConnectView() {
                 <span className="text-gray-600 dark:text-gray-300 font-medium">
                     MT5 Chart / VPS Auto Heartbeat
                 </span>
-                <span className="font-bold text-gold">100% Real-time</span>
+                <span className="font-mono tabular-nums font-bold text-gold">100% Real-time</span>
             </div>
         </div>
     );

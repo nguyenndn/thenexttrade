@@ -4,12 +4,14 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import { DateRangePicker } from "@/components/ui/DateRangePicker";
 import { AccountSelector } from "./AccountSelector";
-import { startOfMonth, endOfMonth, format, endOfDay } from "date-fns";
+import { startOfMonth, endOfMonth, format, endOfDay, startOfDay } from "date-fns";
 import { Button } from "@/components/ui/Button";
 import { RefreshCw, Filter, X } from "lucide-react";
 import { toast } from "sonner";
 import { requestAccountSync } from "@/actions/accounts";
 import { cn } from "@/lib/utils";
+import { useSampleMode } from "@/components/providers/SampleModeProvider";
+import { SAMPLE_DATE_RANGE } from "@/lib/sample-data/mock-sample-data";
 import {
     Popover,
     PopoverContent,
@@ -34,6 +36,8 @@ export function DashboardFilter({
 }: DashboardFilterProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
+    const { isSampleMode } = useSampleMode();
+    const prevSampleModeRef = useRef<boolean>(isSampleMode);
     const [isSyncing, setIsSyncing] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
 
@@ -99,7 +103,7 @@ export function DashboardFilter({
 
     const hasInitialized = useRef(false);
 
-    // Default to Start of Month -> Today on mount if URL is empty
+    // Default to Start of Month -> Today (or SAMPLE_DATE_RANGE in sample mode) on mount if URL is empty
     useEffect(() => {
         if (hideDateFilter || defaultToAllTime) return;
         if (hasInitialized.current) return;
@@ -124,13 +128,22 @@ export function DashboardFilter({
                 params.set("accountId", currentAccountId);
             }
 
-            const monthStart = startOfMonth(new Date());
-            const todayEnd = endOfDay(new Date());
-            const fromFormatted = format(monthStart, "yyyy-MM-dd");
-            const toFormatted = format(todayEnd, "yyyy-MM-dd");
+            if (isSampleMode) {
+                params.set("from", SAMPLE_DATE_RANGE.from);
+                params.set("to", SAMPLE_DATE_RANGE.to);
+                setDateRange({
+                    start: new Date(SAMPLE_DATE_RANGE.from),
+                    end: endOfDay(new Date(SAMPLE_DATE_RANGE.to)),
+                });
+            } else {
+                const monthStart = startOfMonth(new Date());
+                const todayEnd = endOfDay(new Date());
+                const fromFormatted = format(monthStart, "yyyy-MM-dd");
+                const toFormatted = format(todayEnd, "yyyy-MM-dd");
 
-            params.set("from", fromFormatted);
-            params.set("to", toFormatted);
+                params.set("from", fromFormatted);
+                params.set("to", toFormatted);
+            }
             router.replace(`?${params.toString()}`);
         } else if (
             !searchParams.has("accountId") &&
@@ -146,7 +159,41 @@ export function DashboardFilter({
             params.set("accountId", currentAccountId);
             router.replace(`?${params.toString()}`);
         }
-    }, [currentAccountId]);
+    }, [currentAccountId, isSampleMode, hideDateFilter, defaultToAllTime, searchParams, router]);
+
+    // Handle Sample Mode toggle transitions (P2a)
+    useEffect(() => {
+        if (hideDateFilter || defaultToAllTime) return;
+        if (prevSampleModeRef.current === isSampleMode) return;
+
+        const liveQuery =
+            typeof window !== "undefined"
+                ? window.location.search
+                : searchParams.toString();
+        const params = new URLSearchParams(liveQuery);
+
+        if (isSampleMode) {
+            // Toggled ON: Auto-switch date range to sample data range
+            params.set("from", SAMPLE_DATE_RANGE.from);
+            params.set("to", SAMPLE_DATE_RANGE.to);
+            setDateRange({
+                start: new Date(SAMPLE_DATE_RANGE.from),
+                end: endOfDay(new Date(SAMPLE_DATE_RANGE.to)),
+            });
+        } else {
+            // Toggled OFF: Revert date range to Today
+            const todayStr = format(new Date(), "yyyy-MM-dd");
+            params.set("from", todayStr);
+            params.set("to", todayStr);
+            setDateRange({
+                start: startOfDay(new Date()),
+                end: endOfDay(new Date()),
+            });
+        }
+
+        prevSampleModeRef.current = isSampleMode;
+        router.push(`?${params.toString()}`);
+    }, [isSampleMode, hideDateFilter, defaultToAllTime, searchParams, router]);
 
     const handleDateChange = (range: { start: Date; end: Date }) => {
         const liveQuery =
@@ -539,7 +586,7 @@ export function DashboardFilter({
                         className={
                             equalWidth ? "w-full md:flex-1" : "w-full md:w-auto"
                         }
-                        maxDate={new Date()}
+                        maxDate={isSampleMode ? undefined : new Date()}
                     />
                 </div>
             )}

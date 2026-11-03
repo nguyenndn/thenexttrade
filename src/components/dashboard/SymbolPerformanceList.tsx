@@ -26,7 +26,7 @@ export function SymbolPerformanceList({ data }: SymbolPerformanceListProps) {
             {/* Header */}
             <div className="px-5 py-4 border-b border-dashboard flex items-center justify-between shrink-0">
                 <div className="flex items-center gap-2.5">
-                    <div className="p-2 bg-cyan-500/10 rounded-lg text-cyan-500">
+                    <div className="p-2 bg-gold/10 rounded-lg text-amber-600 dark:text-gold">
                         <BarChart3 size={18} />
                     </div>
                     <div>
@@ -64,11 +64,11 @@ export function SymbolPerformanceList({ data }: SymbolPerformanceListProps) {
                                 <div className="col-span-5 font-bold text-sm text-gray-800 dark:text-gray-200">
                                     {item.symbol}
                                 </div>
-                                <div className="col-span-3 text-right text-xs text-gray-600 dark:text-gray-400 font-medium">
+                                <div className="col-span-3 text-right text-xs text-gray-600 dark:text-gray-400 font-medium font-mono tabular-nums">
                                     {item.trades}
                                 </div>
                                 <div
-                                    className={`col-span-4 text-right font-bold text-sm ${item.pnl >= 0 ? "text-primary" : "text-red-500"}`}
+                                    className={`col-span-4 text-right font-bold font-mono tabular-nums text-sm ${item.pnl >= 0 ? "text-primary" : "text-red-500"}`}
                                 >
                                     {item.pnl >= 0 ? "+" : "-"}
                                     {formatCurrency(item.pnl)}

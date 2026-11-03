@@ -5,6 +5,7 @@ import { getSystemBySlug, TRADING_SYSTEMS_DATA } from "@/config/trading-systems-
 import { TradingSystemsPageShell } from "@/components/trading-systems/TradingSystemsPageShell";
 import { TradingSystemsDetailTabs } from "@/components/trading-systems/TradingSystemsDetailTabs";
 import { TradingSystemMockPanel } from "@/components/trading-systems/TradingSystemMockPanel";
+import { FAQAccordion } from "@/components/tools/FAQAccordion";
 import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth-cache";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -13,11 +14,8 @@ import {
     Shield,
     HelpCircle,
     CheckCircle,
-    Lock,
     UserPlus,
     KeyRound,
-    Server,
-    ChevronDown,
 } from "lucide-react";
 import DOMPurify from "isomorphic-dompurify";
 import { buttonVariants } from "@/components/ui/button-variants";
@@ -91,24 +89,31 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
 
     const user = await getAuthUser();
     const isLoggedIn = !!user;
+    if (slug !== system.slug) {
+        redirect(`/trading-systems/${system.slug}`);
+    }
 
     const features = system.functions;
 
     // Query database product stats if available
-    const dbProduct = await prisma.eAProduct.findUnique({
-        where: { slug: system.slug },
+    const dbProduct = await prisma.eAProduct.findFirst({
+        where: {
+            slug:
+                system.slug === "gsn-shadown-matrix"
+                    ? { in: ["gsn-shadown-matrix", "gsn-phoenix-grid"] }
+                    : system.slug,
+        },
     });
 
     let displayVersion =
-        dbProduct?.version ||
         system.version ||
+        dbProduct?.version ||
         system.parameters.find((p) => p.name.toLowerCase() === "version")
             ?.defaultValue ||
-        "1.0.0";
+        "1.0";
     if (displayVersion.startsWith("v")) {
         displayVersion = displayVersion.substring(1);
     }
-    const heroHighlights = getSystemHeroHighlights(system.slug);
 
     return (
         <TradingSystemsPageShell maxWidth="max-w-7xl">
@@ -133,7 +138,7 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
                 <Link
                     href="/trading-systems"
-                    className="inline-flex items-center gap-2 text-xs font-bold text-gray-550 dark:text-gray-400 hover:text-primary transition-colors uppercase tracking-wider"
+                    className="inline-flex items-center gap-2 text-xs font-bold text-gray-550 dark:text-gray-400 hover:text-gold transition-colors uppercase tracking-wider"
                 >
                     <ArrowLeft size={14} />
                     Back to Systems
@@ -145,16 +150,16 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
             </div>
 
             {/* Header Panel */}
-            <div className="relative rounded-xl border border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#1E2028]/60 p-6 md:p-8 shadow-sm mb-8 overflow-hidden">
+            <div className="relative rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 md:p-8 shadow-sm mb-8 overflow-hidden">
                 {/* Ambient background glow inside header */}
                 <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/4 w-72 h-72 bg-gold/5 dark:bg-gold/[0.03] rounded-full blur-3xl pointer-events-none" />
 
-                <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_auto] lg:items-start lg:gap-6 xl:gap-8 relative z-10">
-                    <div className="min-w-0">
-                        <div className="mb-5 flex min-w-0 flex-wrap items-center gap-2">
+                <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_auto] lg:items-stretch lg:gap-6 xl:gap-8 relative z-10">
+                    <div className="min-w-0 flex flex-col h-full">
+                        <div className="mb-3.5 flex min-w-0 flex-wrap items-center gap-2 shrink-0">
                             {/* Platform & Type Badge */}
-                            <span className="inline-flex items-center gap-1.5 text-[9px] font-black uppercase tracking-wider px-3 py-1 rounded-full bg-gold/10 dark:bg-gold/15 text-gold border border-gold/25 shadow-[0_2px_10px_-3px_rgba(250,204,21,0.2)]">
-                                <span className="h-1 w-1 rounded-full bg-gold animate-pulse" />
+                            <span className="inline-flex items-center gap-1.5 text-[9px] font-black uppercase tracking-wider px-3 py-1 rounded-lg bg-gold/10 dark:bg-gold/15 text-gold border border-gold/25 shadow-[0_2px_10px_-3px_rgba(250,204,21,0.2)]">
+                                <span className="h-1.5 w-1.5 rounded-full bg-gold animate-pulse" />
                                 {system.platform}{" "}
                                 {system.type === "AUTO_TRADE"
                                     ? "EXPERT ADVISOR"
@@ -162,12 +167,12 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
                             </span>
 
                             {/* Version Badge */}
-                            <span className="inline-flex items-center text-[9px] font-black tracking-wider px-2.5 py-1 bg-gray-100 dark:bg-white/5 text-gray-505 dark:text-gray-400 rounded-full border border-gray-200 dark:border-white/10 uppercase">
+                            <span className="inline-flex items-center font-mono tabular-nums text-[9px] font-black tracking-wider px-2.5 py-1 bg-gray-50/70 dark:bg-[#151925] text-gray-600 dark:text-gray-300 rounded-lg border border-gray-200 dark:border-white/10 uppercase">
                                 v{displayVersion}
                             </span>
 
                             {/* Verified Badge with Pulse */}
-                            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 dark:bg-emerald-500/15 text-emerald-500 dark:text-emerald-400 rounded-full text-[9px] font-black uppercase tracking-wider border border-emerald-500/25 shadow-[0_2px_10px_-3px_rgba(16,185,129,0.2)]">
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 dark:bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 rounded-lg text-[9px] font-black uppercase tracking-wider border border-emerald-500/25 shadow-[0_2px_10px_-3px_rgba(16,185,129,0.2)]">
                                 <span className="relative flex h-1.5 w-1.5">
                                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                                     <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
@@ -175,11 +180,11 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
                                 <span>MT5 Verified</span>
                             </span>
                         </div>
-                        <h1 className="text-2xl md:text-3xl lg:text-4xl font-black font-heading text-gray-800 dark:text-white leading-tight">
+                        <h1 className="text-2xl md:text-3xl lg:text-4xl font-black font-heading tracking-tight text-gray-900 dark:text-white leading-tight shrink-0">
                             {system.title}
                         </h1>
                         <div
-                            className="mt-3.5 prose prose-sm dark:prose-invert max-w-none text-xs sm:text-[13px] leading-relaxed text-gray-600 dark:text-gray-300 prose-p:my-2 prose-p:text-xs sm:prose-p:text-[13px] prose-p:leading-relaxed prose-headings:font-black prose-strong:font-bold prose-a:text-primary prose-img:rounded-lg"
+                            className="mt-3 flex-1 flex flex-col text-xs sm:text-[13px] leading-relaxed text-gray-600 dark:text-gray-300 tabular-nums"
                             dangerouslySetInnerHTML={{
                                 __html: DOMPurify.sanitize(
                                     system.longDescription
@@ -191,38 +196,6 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
                     <div className="w-full shrink-0 flex justify-center lg:justify-end">
                         <TradingSystemMockPanel slug={system.slug} />
                     </div>
-                </div>
-            </div>
-
-            {/* Built for real MT5 workflow (Outside) */}
-            <div className="mb-8 rounded-xl border border-gold/15 bg-gold/[0.02] p-6 shadow-sm relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-gold/5 rounded-full blur-2xl pointer-events-none" />
-                <h3 className="text-xs font-black text-gold mb-5 uppercase tracking-[0.18em] flex items-center gap-2 relative z-10">
-                    <Server size={14} className="stroke-[2.5]" />
-                    Built for real MT5 workflow
-                </h3>
-                <div className="grid gap-6 md:grid-cols-3 relative z-10">
-                    {heroHighlights.map((item) => (
-                        <div
-                            key={item.title}
-                            className="rounded-lg border border-gray-200 bg-white/30 dark:border-white/10 dark:bg-[#151822]/20 p-4 space-y-2.5 hover:border-gold/30 transition-all duration-300"
-                        >
-                            <div className="flex items-center gap-2 text-emerald-500">
-                                <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-500/10 border border-emerald-500/20">
-                                    <CheckCircle
-                                        size={10}
-                                        className="stroke-[2.5]"
-                                    />
-                                </div>
-                                <h4 className="text-xs font-black uppercase tracking-wider leading-none">
-                                    {item.title}
-                                </h4>
-                            </div>
-                            <p className="text-[11px] font-semibold leading-relaxed text-gray-550 dark:text-gray-400">
-                                {item.description}
-                            </p>
-                        </div>
-                    ))}
                 </div>
             </div>
 
@@ -245,99 +218,41 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
                 />
             </div>
 
-            {/* Recommended VPS Block */}
-            {system.slug !== "trade-manager" && (
-                <div className="mb-8 rounded-xl border border-emerald-500/15 dark:border-emerald-500/10 bg-white/80 dark:bg-[#1E2028]/60 p-6 md:p-8 shadow-sm backdrop-blur-md relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 dark:bg-emerald-500/[0.02] rounded-full blur-2xl pointer-events-none" />
+            {/* Main vertical stack */}
+            <div className="space-y-8">
+                {/* Unlock License (CTA Widget Banner) */}
+                <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 md:p-8 shadow-sm relative overflow-hidden">
+                    <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/4 w-64 h-64 bg-gold/5 dark:bg-gold/[0.03] rounded-full blur-3xl pointer-events-none" />
 
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
                         <div className="max-w-2xl">
                             <div className="flex items-center gap-3">
-                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 border border-emerald-500/20">
-                                    <Server size={18} />
+                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gold/10 text-gold border border-gold/25">
+                                    <Shield size={18} />
                                 </div>
-                                <h3 className="text-sm font-black uppercase tracking-wider text-gray-800 dark:text-white">
-                                    Recommended VPS
-                                </h3>
+                                <div>
+                                    <div className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-gold">
+                                        <span>Partner Verified Access</span>
+                                    </div>
+                                    <h3 className="text-sm font-black uppercase tracking-wider text-gray-900 dark:text-white">
+                                        Unlock License
+                                    </h3>
+                                </div>
                             </div>
                             <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed font-semibold mt-4">
-                                To ensure your EA runs smoothly 24/7, we
-                                recommend using a VPS. It provides a stable
-                                connection, faster execution, and keeps your
-                                trades running even when your PC is offline.
-                            </p>
-                        </div>
-
-                        <div className="shrink-0 min-w-[200px]">
-                            <a
-                                href="https://www.fxvm.net"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className={buttonVariants({
-                                    variant: "primary",
-                                    size: "smd",
-                                    className:
-                                        "w-full bg-gold hover:bg-amber-600 text-white font-bold shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2",
-                                })}
-                            >
-                                <Server size={14} />
-                                Get a VPS
-                                <span className="font-bold">&rarr;</span>
-                            </a>
-                        </div>
-                    </div>
-
-                    <details className="group border-t border-gray-200 dark:border-white/5 pt-4 mt-5 relative z-10">
-                        <summary className="flex items-center justify-between cursor-pointer list-none text-[11px] font-black uppercase tracking-wider text-gray-500 dark:text-gray-400 select-none hover:text-gold transition-colors">
-                            <span>Don't know what a VPS is?</span>
-                            <ChevronDown
-                                size={14}
-                                className="transition-transform duration-200 group-open:rotate-180 text-gray-400"
-                            />
-                        </summary>
-                        <div className="mt-2.5 text-xs text-gray-500 dark:text-gray-400 leading-relaxed font-semibold">
-                            A VPS (Virtual Private Server) is a virtual machine
-                            running in the cloud 24/7. Running your Expert
-                            Advisor on a VPS ensures continuous execution, low
-                            latency to the broker's servers, and safeguards
-                            against power outages, system sleep modes, or home
-                            internet disruptions.
-                        </div>
-                    </details>
-                </div>
-            )}
-
-            {/* Main vertical stack */}
-            <div className="space-y-8">
-                {/* Unlock License (CTA Widget Banner) */}
-                <div className="rounded-xl border border-gold/25 dark:border-gold/15 bg-gold/[0.03] dark:bg-gold/[0.01] p-6 md:p-8 shadow-md relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-gold/5 rounded-full blur-2xl pointer-events-none" />
-
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
-                        <div className="max-w-2xl">
-                            <div className="flex items-center gap-2 mb-3">
-                                <Shield
-                                    className="text-gold animate-pulse"
-                                    size={16}
-                                />
-                                <h3 className="text-sm font-black uppercase tracking-wider text-gold">
-                                    Unlock License
-                                </h3>
-                            </div>
-                            <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed font-semibold">
                                 This system is fully compiled and ready to
                                 download. You can unlock your MT5 account
                                 license key by opening and maintaining an
                                 eligible account under our partner network.
-                                Access is free but subject to active partner
-                                verification.
+                                Access is free and activated automatically upon
+                                partner account verification.
                             </p>
                         </div>
 
                         <div className="shrink-0 min-w-[240px]">
                             {isLoggedIn ? (
-                                <div className="space-y-3">
-                                    <div className="flex items-center justify-center gap-2 p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[11px] font-bold">
+                                <div className="space-y-2.5">
+                                    <div className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/25 text-emerald-600 dark:text-emerald-400 text-[11px] font-black uppercase tracking-wider">
                                         <CheckCircle size={14} />
                                         <span>You are signed in</span>
                                     </div>
@@ -347,7 +262,7 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
                                             variant: "gold",
                                             size: "smd",
                                             className:
-                                                "w-full font-black shadow-md flex items-center justify-center gap-2",
+                                                "w-full font-black uppercase tracking-wider shadow-sm flex items-center justify-center gap-2",
                                         })}
                                     >
                                         <KeyRound size={14} />
@@ -355,14 +270,14 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
                                     </Link>
                                 </div>
                             ) : (
-                                <div className="flex flex-col gap-3">
+                                <div className="flex flex-col gap-2.5">
                                     <Link
                                         href="/auth/signup?next=/dashboard/accounts&source=trading_systems"
                                         className={buttonVariants({
                                             variant: "gold",
                                             size: "smd",
                                             className:
-                                                "w-full font-black shadow-md flex items-center justify-center gap-2",
+                                                "w-full font-black uppercase tracking-wider shadow-sm flex items-center justify-center gap-2",
                                         })}
                                     >
                                         <UserPlus size={14} />
@@ -374,7 +289,7 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
                                             variant: "outline",
                                             size: "smd",
                                             className:
-                                                "w-full bg-white/90 dark:bg-white/[0.03] border border-gold/30 dark:border-gold/20 text-gray-800 dark:text-gray-200 font-black flex items-center justify-center gap-2",
+                                                "w-full bg-gray-50 dark:bg-white/[0.04] border border-gray-200 dark:border-white/15 hover:border-gold/40 text-gray-800 dark:text-gray-200 font-black uppercase tracking-wider flex items-center justify-center gap-2",
                                         })}
                                     >
                                         Sign In
@@ -385,7 +300,7 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
                     </div>
 
                     {/* Product-specific disclaimer */}
-                    <div className="mt-6 pt-4 border-t border-dashed border-gold/20 dark:border-gold/10 text-[11px] font-semibold text-gray-400 dark:text-gray-500 flex items-start gap-2">
+                    <div className="mt-6 pt-4 border-t border-gray-200 dark:border-white/10 text-[11px] font-semibold text-gray-500 dark:text-gray-400 flex items-start gap-2 relative z-10">
                         <Shield
                             size={14}
                             className="text-gold shrink-0 mt-0.5"
@@ -409,9 +324,9 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
                                     the sole responsibility of the user.
                                 </p>
                             )}
-                            {system.slug === "gsn-phoenix-grid" && (
+                            {system.slug === "gsn-shadown-matrix" && (
                                 <p>
-                                    Risk Warning: GSN - Apex Gold Sentinel is an
+                                    Risk Warning: GSN Shadown Matrix is an
                                     advanced grid and hedging system designed
                                     for experienced traders only. It uses
                                     aggressive multipliers and hedging cycles
@@ -423,110 +338,19 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
                 </div>
 
                 {/* FAQ */}
-                <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#1E2028]/60 p-6 shadow-sm">
-                    <h3 className="text-base font-black text-gray-800 dark:text-white mb-4 uppercase tracking-wider flex items-center gap-2">
-                        <HelpCircle size={16} className="text-gold" />
-                        Frequently Asked Questions
-                    </h3>
-
-                    <div className="space-y-4">
-                        {system.faqs.map((faq, idx) => (
-                            <div
-                                key={idx}
-                                className="border-b border-gray-200 dark:border-white/5 last:border-0 pb-4 last:pb-0"
-                            >
-                                <h4 className="text-xs font-black text-gray-800 dark:text-gray-200 mb-1 flex items-start gap-2">
-                                    <span className="text-gold">Q:</span>
-                                    {faq.question}
-                                </h4>
-                                <p className="text-xs text-gray-600 dark:text-gray-400 font-semibold leading-relaxed pl-4">
-                                    {faq.answer}
-                                </p>
-                            </div>
-                        ))}
+                <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 md:p-8 shadow-sm">
+                    <div className="flex items-center gap-3 mb-5">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gold/10 text-gold border border-gold/25">
+                            <HelpCircle size={18} />
+                        </div>
+                        <h3 className="text-sm font-black uppercase tracking-wider text-gray-900 dark:text-white">
+                            FAQ
+                        </h3>
                     </div>
+
+                    <FAQAccordion items={system.faqs} />
                 </div>
             </div>
         </TradingSystemsPageShell>
     );
-}
-
-function getSystemHeroHighlights(slug: string) {
-    if (slug === "goldscalperninja") {
-        return [
-            {
-                title: "D1 Trend Master context",
-                description:
-                    "Reads daily market bias and control zones so grid decisions stay aligned with higher-timeframe structure.",
-            },
-            {
-                title: "Smart recovery management",
-                description:
-                    "Uses rolling recovery and sequence pruning to trim older negative positions instead of blindly stacking exposure.",
-            },
-            {
-                title: "Gold-specific execution setup",
-                description:
-                    "Built around XAUUSD behavior, wick zones, ATR movement, and session volatility rather than generic symbol assumptions.",
-            },
-        ];
-    }
-
-    if (slug === "trade-manager") {
-        return [
-            {
-                title: "Manual execution stays fast",
-                description:
-                    "One-click order actions, lot controls, SL/TP levels, and break-even tools stay directly on the MT5 chart.",
-            },
-            {
-                title: "Risk is visible before action",
-                description:
-                    "Lot size, max risk, zone distance, and loss estimate live in the same working surface before the trader commits.",
-            },
-            {
-                title: "Works beside your own strategy",
-                description:
-                    "Designed for manual traders who want faster control without handing every decision to a fully automated EA.",
-            },
-        ];
-    }
-
-    if (slug === "gsn-phoenix-grid") {
-        return [
-            {
-                title: "Grid recovery visibility",
-                description:
-                    "Shows bias, drawdown, recovery lots, and profit-bank status before aggressive recovery actions are taken.",
-            },
-            {
-                title: "Hedge and profit-bank controls",
-                description:
-                    "Separates hedge protection from harvesting and trim decisions so the trader understands the active mode.",
-            },
-            {
-                title: "Advanced trader workflow",
-                description:
-                    "Made for users who already understand grid exposure, margin pressure, and recovery-cycle risk.",
-            },
-        ];
-    }
-
-    return [
-        {
-            title: "Built for MT5 workflow",
-            description:
-                "Connect setup, execution, and review into one practical trading system.",
-        },
-        {
-            title: "Partner verified access",
-            description:
-                "Unlock workflow is tied to eligible partner accounts and MT5 license verification.",
-        },
-        {
-            title: "Designed for review",
-            description:
-                "The system feeds into account tracking, synced trades, analytics, and coach reports.",
-        },
-    ];
 }

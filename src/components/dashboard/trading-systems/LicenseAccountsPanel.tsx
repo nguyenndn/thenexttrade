@@ -214,10 +214,10 @@ export function LicenseAccountsPanel({
     };
 
     return (
-        <div className="bg-white dark:bg-[#14161E] rounded-xl border border-dashboard dark:border-white/[0.08] p-5 shadow-sm space-y-4">
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard dark:border-white/[0.08] p-5 shadow-sm space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500 shrink-0">
+                    <div className="w-10 h-10 rounded-lg bg-gold/10 border border-gold/20 flex items-center justify-center text-amber-600 dark:text-gold shrink-0">
                         <Key size={18} />
                     </div>
                     <div>
@@ -225,7 +225,7 @@ export function LicenseAccountsPanel({
                             <h3 className="text-sm sm:text-base font-bold text-gray-900 dark:text-white">
                                 EA License Keys
                             </h3>
-                            <span className="px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                            <span className="px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-gold/10 text-amber-600 dark:text-gold border border-gold/20">
                                 1 Account License = Unlocks All 3 EAs
                             </span>
                         </div>
@@ -243,7 +243,7 @@ export function LicenseAccountsPanel({
                             href="/dashboard/accounts?action=add&intent=unlock-pro"
                             className={cn(
                                 buttonVariants({ variant: "outline", size: "sm" }),
-                                "rounded-lg text-xs font-bold text-amber-600 dark:text-amber-400 border-amber-500/30 hover:bg-amber-500/10 inline-flex items-center gap-1.5"
+                                "rounded-lg text-xs font-bold text-amber-600 dark:text-gold border-gold/30 hover:bg-gold/10 inline-flex items-center gap-1.5"
                             )}
                         >
                             <Crown size={14} className="text-amber-500" />
@@ -257,7 +257,7 @@ export function LicenseAccountsPanel({
                             rel="noopener noreferrer"
                             className={cn(
                                 buttonVariants({ variant: "outline", size: "sm" }),
-                                "rounded-lg text-xs font-bold text-[#2AABEE] border-[#2AABEE]/30 hover:bg-[#2AABEE]/10 inline-flex items-center gap-1.5"
+                                "rounded-lg text-xs font-bold text-amber-600 dark:text-gold border-gold/30 hover:bg-gold/10 inline-flex items-center gap-1.5"
                             )}
                         >
                             <Send size={13} />
@@ -286,7 +286,7 @@ export function LicenseAccountsPanel({
                             variant="gold"
                             size="sm"
                             onClick={() => setShowAddForm(true)}
-                            className="rounded-lg font-bold shrink-0"
+                            className="rounded-lg font-bold !text-white shrink-0"
                         >
                             <Plus size={15} />
                             <span>Register Trading Account</span>
@@ -296,9 +296,9 @@ export function LicenseAccountsPanel({
             </div>
 
             {showWebRequestGuide && (
-                <div className="p-4 rounded-xl bg-amber-500/5 dark:bg-amber-500/[0.06] border border-amber-500/20 space-y-3">
+                <div className="p-4 rounded-lg bg-gold/5 dark:bg-gold/[0.06] border border-gold/20 space-y-3">
                     <div className="flex items-center justify-between gap-2">
-                        <h4 className="text-xs font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400">
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-amber-700 dark:text-gold">
                             30-Second MetaTrader 5 WebRequest Configuration
                             (Prevents Error 4014 / 4060)
                         </h4>
@@ -317,7 +317,7 @@ export function LicenseAccountsPanel({
                             In MetaTrader 5, open{" "}
                             <span className="font-bold">Tools → Options</span>{" "}
                             (or press{" "}
-                            <kbd className="px-1.5 py-0.5 rounded-lg bg-white dark:bg-black/40 border border-gray-200 dark:border-white/10 font-mono text-[11px]">
+                            <kbd className="px-1.5 py-0.5 rounded-lg bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 font-mono text-[11px]">
                                 Ctrl + O
                             </kbd>
                             ).
@@ -345,7 +345,7 @@ export function LicenseAccountsPanel({
                         ].map((url) => (
                             <div
                                 key={url}
-                                className="flex items-center justify-between gap-2 px-3 py-2 rounded-lg bg-white dark:bg-[#161922] border border-dashboard dark:border-white/10"
+                                className="flex items-center justify-between gap-2 px-3 py-2 rounded-lg bg-white dark:bg-[#151925] border border-dashboard dark:border-white/10"
                             >
                                 <span className="font-mono text-xs text-gray-800 dark:text-gray-200 truncate">
                                     {url}
@@ -371,10 +371,10 @@ export function LicenseAccountsPanel({
             )}
 
             {showAddForm && (
-                <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/[0.03] border border-dashboard dark:border-white/[0.08] space-y-4">
+                <div className="p-4 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-dashboard dark:border-white/[0.08] space-y-4">
                     {userTradingAccounts.length === 0 ? (
                         <div className="py-6 px-4 text-center space-y-3">
-                            <div className="w-11 h-11 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500 mx-auto">
+                            <div className="w-11 h-11 rounded-lg bg-gold/10 border border-gold/20 flex items-center justify-center text-amber-600 dark:text-gold mx-auto">
                                 <Wallet size={20} />
                             </div>
                             <div className="max-w-md mx-auto">
@@ -408,7 +408,7 @@ export function LicenseAccountsPanel({
                                     href="/dashboard/accounts"
                                     className={cn(
                                         buttonVariants({ variant: "gold", size: "sm" }),
-                                        "rounded-lg font-bold inline-flex items-center gap-1.5"
+                                        "rounded-lg font-bold !text-white inline-flex items-center gap-1.5"
                                     )}
                                 >
                                     <span>Go to Trading Accounts</span>
@@ -432,7 +432,7 @@ export function LicenseAccountsPanel({
                                         Need to add a new account?{" "}
                                         <Link
                                             href="/dashboard/accounts"
-                                            className="font-bold text-amber-600 dark:text-amber-400 hover:underline inline-flex items-center gap-1"
+                                            className="font-bold text-amber-600 dark:text-gold hover:underline inline-flex items-center gap-1"
                                         >
                                             <span>Manage Trading Accounts</span>
                                             <ArrowRight size={11} />
@@ -446,7 +446,7 @@ export function LicenseAccountsPanel({
                                         variant="outline"
                                         size="sm"
                                         onClick={handleSelectAllEligible}
-                                        className="rounded-lg h-8 text-xs font-bold shrink-0"
+                                        className="rounded-lg h-8 text-xs font-bold font-mono tabular-nums shrink-0"
                                     >
                                         {selectedAccountIds.length ===
                                         eligibleAccounts.length
@@ -478,11 +478,11 @@ export function LicenseAccountsPanel({
                                                     toggleSelectAccount(acc.id);
                                                 }
                                             }}
-                                            className={`p-3 rounded-xl border transition-all flex items-center justify-between gap-3 ${
+                                            className={`p-3 rounded-lg border transition-all flex items-center justify-between gap-3 ${
                                                 isSelectable
                                                     ? isSelected
-                                                        ? "cursor-pointer bg-amber-500/10 border-amber-500/50 dark:bg-amber-500/10"
-                                                        : "cursor-pointer bg-white dark:bg-[#1A1D27] border-dashboard dark:border-white/10 hover:border-amber-500/30"
+                                                        ? "cursor-pointer bg-gold/10 border-gold/50 dark:bg-gold/10"
+                                                        : "cursor-pointer bg-white dark:bg-[#1E2028] border-dashboard dark:border-white/10 hover:border-gold/30"
                                                     : "opacity-70 bg-gray-100/70 dark:bg-white/[0.02] border-gray-200 dark:border-white/5 cursor-not-allowed"
                                             }`}
                                         >
@@ -518,13 +518,13 @@ export function LicenseAccountsPanel({
                                                             {acc.name ||
                                                                 acc.broker}
                                                         </span>
-                                                        <span className="font-mono text-xs font-bold text-amber-600 dark:text-amber-400">
+                                                        <span className="font-mono tabular-nums text-xs font-bold text-amber-600 dark:text-gold">
                                                             {acc.accountNumber
                                                                 ? `#${acc.accountNumber}`
                                                                 : "No Login ID"}
                                                         </span>
                                                     </div>
-                                                    <p className="text-[11px] text-gray-500 dark:text-gray-400 truncate">
+                                                    <p className="text-[11px] font-mono tabular-nums text-gray-500 dark:text-gray-400 truncate">
                                                         {acc.broker || "Broker"}{" "}
                                                         • {acc.platform} •{" "}
                                                         {acc.currency}{" "}
@@ -558,7 +558,7 @@ export function LicenseAccountsPanel({
                                                                     )
                                                                 }
                                                                 aria-label="MT4 or MT5 Account Login Number"
-                                                                className="w-28 h-7 px-2 rounded-lg text-xs font-mono bg-white dark:bg-[#0B0E14] border border-amber-500/40 text-gray-900 dark:text-white focus:outline-none"
+                                                                className="w-28 h-7 px-2 rounded-lg text-xs font-mono tabular-nums bg-white dark:bg-[#151925] border border-gold/40 text-gray-900 dark:text-white focus:outline-none"
                                                             />
                                                             <Button
                                                                 type="button"
@@ -573,7 +573,7 @@ export function LicenseAccountsPanel({
                                                                         acc.id
                                                                     )
                                                                 }
-                                                                className="rounded-lg h-7 px-2 text-[10px] font-bold"
+                                                                className="rounded-lg h-7 px-2 text-[10px] font-bold !text-white"
                                                             >
                                                                 {savingAccountNumId ===
                                                                 acc.id
@@ -596,7 +596,7 @@ export function LicenseAccountsPanel({
                                                                     ""
                                                                 );
                                                             }}
-                                                            className="rounded-lg h-7 px-2.5 text-[10px] font-bold text-amber-600 dark:text-amber-400 border-amber-500/30"
+                                                            className="rounded-lg h-7 px-2.5 text-[10px] font-bold text-amber-600 dark:text-gold border-gold/30"
                                                         >
                                                             <Edit3 size={11} />
                                                             <span>
@@ -611,7 +611,7 @@ export function LicenseAccountsPanel({
                                                     </span>
                                                 ) : acc.licenseStatus ===
                                                   "PENDING" ? (
-                                                    <span className="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                                                    <span className="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-gold/10 text-amber-600 dark:text-gold border border-gold/20">
                                                         Pending
                                                     </span>
                                                 ) : (
@@ -662,7 +662,7 @@ export function LicenseAccountsPanel({
                                             submitting ||
                                             selectedAccountIds.length === 0
                                         }
-                                        className="rounded-lg font-bold"
+                                        className="rounded-lg font-bold !text-white"
                                     >
                                         {submitting
                                             ? "Submitting..."
@@ -684,7 +684,7 @@ export function LicenseAccountsPanel({
                         return (
                             <div
                                 key={item.id}
-                                className="p-3.5 sm:px-4 flex flex-col md:flex-row md:items-center justify-between gap-3 bg-white dark:bg-[#161922]"
+                                className="p-3.5 sm:px-4 flex flex-col md:flex-row md:items-center justify-between gap-3 bg-white dark:bg-[#1E2028]"
                             >
                                 <div className="flex items-center gap-3">
                                     <div className="px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-white/5 border border-dashboard dark:border-white/10 text-xs font-bold text-gray-700 dark:text-gray-300">
@@ -692,7 +692,7 @@ export function LicenseAccountsPanel({
                                     </div>
                                     <div>
                                         <div className="flex items-center gap-2 flex-wrap">
-                                            <span className="font-mono text-sm font-bold text-gray-900 dark:text-white">
+                                            <span className="font-mono tabular-nums text-sm font-bold text-gray-900 dark:text-white">
                                                 #{item.accountNumber}
                                             </span>
                                             {item.status === "APPROVED" ? (
@@ -703,13 +703,13 @@ export function LicenseAccountsPanel({
                                                         />
                                                         IB Verified • Lifetime
                                                     </span>
-                                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+                                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-bold bg-gold/10 text-amber-600 dark:text-gold border border-gold/20">
                                                         <Bot size={11} />
                                                         All 3 EAs Unlocked
                                                     </span>
                                                 </>
                                             ) : item.status === "PENDING" ? (
-                                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-bold bg-gold/10 text-amber-600 dark:text-gold border border-gold/20">
                                                     <Clock size={11} />
                                                     Pending IB Verification
                                                 </span>
@@ -732,7 +732,7 @@ export function LicenseAccountsPanel({
                                     {item.status === "APPROVED" &&
                                     item.licenseKey ? (
                                         <>
-                                            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-50 dark:bg-black/40 border border-dashboard dark:border-white/10 font-mono text-xs font-bold text-amber-600 dark:text-amber-400">
+                                            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-dashboard dark:border-white/10 font-mono tabular-nums text-xs font-bold text-amber-600 dark:text-gold">
                                                 <Shield size={12} />
                                                 <span>
                                                     {isRevealed
@@ -776,7 +776,7 @@ export function LicenseAccountsPanel({
                                                         item.licenseKey!
                                                     )
                                                 }
-                                                className="rounded-lg h-8 text-xs font-bold"
+                                                className="rounded-lg h-8 text-xs font-bold !text-white"
                                             >
                                                 {copiedId === item.id ? (
                                                     <>

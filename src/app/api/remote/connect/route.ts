@@ -169,6 +169,10 @@ export async function DELETE(request: NextRequest) {
         }
 
         await disconnectBridgeAccountById(owned.id, removeCredential);
+        const globalForOwnerCache = globalThis as unknown as {
+            __verifiedOwnerCache?: Map<string, unknown>;
+        };
+        globalForOwnerCache.__verifiedOwnerCache?.delete(owned.id);
         return NextResponse.json({ success: true });
     } catch (err: unknown) {
         const msg = err instanceof Error ? err.message : "Disconnect error";

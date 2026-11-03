@@ -230,7 +230,7 @@ export function PasswordStrengthPopover({
 
             {/* Dynamic Checklist Requirements */}
             <ul
-                className="space-y-1.5 sm:space-y-2 text-xs"
+                className="space-y-1.5 sm:space-y-2 text-xs tabular-nums"
                 aria-label="Password requirements checklist"
             >
                 {strength.criteria.map((item) => (

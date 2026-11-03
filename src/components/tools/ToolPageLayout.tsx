@@ -126,7 +126,7 @@ export async function ToolPageLayout({ tool, children }: ToolPageLayoutProps) {
                 <div className="absolute -inset-x-4 -top-6 h-px bg-gradient-to-r from-transparent via-gold/25 to-transparent pointer-events-none" />
                 <div className="text-left space-y-4 max-w-3xl relative z-10">
                     {/* Capsule Category Badge */}
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold/10 border border-gold/20 text-gold text-xs font-black uppercase tracking-widest">
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-gold/10 border border-gold/20 text-amber-600 dark:text-gold text-xs font-black uppercase tracking-widest">
                         <span className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse" />
                         <span>
                             {tool.category === "risk-management"
@@ -141,9 +141,7 @@ export async function ToolPageLayout({ tool, children }: ToolPageLayoutProps) {
 
                     {/* Extrabold Title with custom icons */}
                     <div className="flex items-center gap-2.5 sm:gap-3">
-                        <div
-                            className={`p-2.5 ${tool.iconBg} border border-white/10 rounded-lg shadow-sm shrink-0`}
-                        >
+                        <div className="p-2.5 bg-gold/10 text-amber-600 dark:text-gold border border-gold/20 rounded-lg shadow-sm shrink-0">
                             <tool.icon size={22} className="stroke-[2.5]" />
                         </div>
                         <h1 className="text-[20px] sm:text-3xl md:text-4xl lg:text-5xl font-black text-slate-850 dark:text-white tracking-tight leading-none font-heading">
@@ -160,13 +158,13 @@ export async function ToolPageLayout({ tool, children }: ToolPageLayoutProps) {
 
             {/* ── Section 2: Calculator Workbench ── */}
             <div className="mb-8">
-                <div className="relative overflow-hidden bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl p-6 md:p-8 shadow-sm">
+                <div className="relative overflow-hidden bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-6 md:p-8 shadow-sm tabular-nums">
                     <div className="relative z-10">{children}</div>
                 </div>
             </div>
 
             {/* Task 7: CTA Strip */}
-            <div className="mb-16 bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
+            <div className="mb-16 bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
                 <div className="text-center md:text-left space-y-1">
                     <h3 className="text-lg font-bold text-gray-900 dark:text-white">
                         Use this result in your trading workflow
@@ -179,7 +177,7 @@ export async function ToolPageLayout({ tool, children }: ToolPageLayoutProps) {
                     href={`/auth/signup?source=tool_detail&tool=${tool.slug}`}
                     className={buttonVariants({
                         className:
-                            "rounded-lg font-bold bg-gold hover:bg-gold/90 text-white shrink-0 shadow-sm",
+                            "rounded-lg font-bold bg-gold hover:bg-gold/90 !text-white shrink-0 shadow-sm",
                     })}
                 >
                     Start Free Journal
@@ -188,9 +186,9 @@ export async function ToolPageLayout({ tool, children }: ToolPageLayoutProps) {
 
             {/* ── Section 3: How to Use ── */}
             <div className="mb-16">
-                <div className="bg-gray-50/70 dark:bg-white/[0.02] border border-gray-200 dark:border-white/10 rounded-xl p-6 md:p-8">
+                <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-6 md:p-8 shadow-sm">
                     <div className="flex items-center gap-3 mb-6">
-                        <HelpCircle size={22} className="text-gold" />
+                        <HelpCircle size={22} className="text-amber-600 dark:text-gold" />
                         <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                             How to Use This Calculator
                         </h2>
@@ -198,14 +196,14 @@ export async function ToolPageLayout({ tool, children }: ToolPageLayoutProps) {
                     <div className="space-y-4">
                         {tool.howToUse.map((step, idx) => (
                             <div key={idx} className="flex gap-4">
-                                <div className="w-7 h-7 rounded-full bg-gold/10 text-gold font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
+                                <div className="w-7 h-7 rounded-lg bg-gold/10 border border-gold/20 text-amber-600 dark:text-gold font-mono tabular-nums font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
                                     {idx + 1}
                                 </div>
                                 <div>
-                                    <span className="font-bold text-gold text-sm">
+                                    <span className="font-bold text-amber-600 dark:text-gold text-sm">
                                         {step.step}
                                     </span>
-                                    <span className="text-gray-600 dark:text-gray-400 text-sm font-semibold">
+                                    <span className="text-gray-600 dark:text-gray-400 text-sm font-semibold tabular-nums">
                                         {" "}
                                         — {step.detail}
                                     </span>
@@ -264,9 +262,9 @@ export async function ToolPageLayout({ tool, children }: ToolPageLayoutProps) {
 
             {/* ── Section 5: Key Features ── */}
             <div className="mb-16">
-                <div className="bg-white/80 dark:bg-white/[0.02] border border-gold/15 rounded-xl p-6 md:p-8 backdrop-blur-sm">
+                <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-6 md:p-8 shadow-sm">
                     <div className="flex items-center gap-3 mb-6">
-                        <CheckCircle size={22} className="text-gold" />
+                        <CheckCircle size={22} className="text-amber-600 dark:text-gold" />
                         <h2 className="text-xl font-bold text-gray-800 dark:text-white">
                             Key Features
                         </h2>
@@ -275,7 +273,7 @@ export async function ToolPageLayout({ tool, children }: ToolPageLayoutProps) {
                         {tool.features.map((feature, idx) => (
                             <div key={idx} className="flex items-center gap-3">
                                 <div className="w-2 h-2 rounded-full bg-gold shrink-0" />
-                                <span className="text-sm text-gray-700 dark:text-gray-300 font-semibold">
+                                <span className="text-sm text-gray-700 dark:text-gray-300 font-semibold tabular-nums">
                                     {feature}
                                 </span>
                             </div>

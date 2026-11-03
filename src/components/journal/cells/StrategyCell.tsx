@@ -57,7 +57,7 @@ export function StrategyCell({
                 >
                     {entry.strategy ? (
                         <span
-                            className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase border whitespace-nowrap transition-colors inline-flex items-center gap-1"
+                            className="px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase border whitespace-nowrap transition-colors inline-flex items-center gap-1"
                             style={currentStyle}
                         >
                             {matchedStrategy?.isPlaybook && (
@@ -70,7 +70,7 @@ export function StrategyCell({
                             variant="outline"
                             size="icon"
                             aria-label="Add Strategy"
-                            className="w-6 h-6 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors hover:bg-gray-200 dark:hover:bg-white/10"
+                            className="w-6 h-6 rounded-lg bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors hover:bg-gray-200 dark:hover:bg-white/10"
                         >
                             <Plus size={12} />
                         </Button>
@@ -78,7 +78,7 @@ export function StrategyCell({
                 </div>
             </PopoverTrigger>
             <PopoverContent
-                className="w-80 p-0 overflow-hidden"
+                className="w-80 p-0 overflow-hidden rounded-xl bg-white dark:bg-[#1E2028] border border-dashboard"
                 align="center"
                 onClick={(e) => e.stopPropagation()}
             >
@@ -118,7 +118,7 @@ export function StrategyCell({
                         <div className="flex flex-wrap gap-2">
                             {entry.strategy ? (
                                 <span
-                                    className="px-3 py-1.5 rounded-full text-xs font-bold border inline-flex items-center gap-1.5"
+                                    className="px-3 py-1.5 rounded-lg text-xs font-bold border inline-flex items-center gap-1.5"
                                     style={currentStyle}
                                 >
                                     {matchedStrategy?.isPlaybook && (
@@ -157,9 +157,9 @@ export function StrategyCell({
                                             onClick={() =>
                                                 handleSelect(strategy.name)
                                             }
-                                            className={`h-auto px-3 py-1.5 rounded-full text-xs font-medium border transition-all inline-flex items-center gap-1.5 ${
+                                            className={`h-auto px-3 py-1.5 rounded-lg text-xs font-medium border transition-all inline-flex items-center gap-1.5 ${
                                                 isSelected
-                                                    ? "ring-2 ring-offset-1 ring-blue-500/20"
+                                                    ? "ring-2 ring-offset-1 ring-gold/30"
                                                     : "opacity-70 hover:opacity-100 hover:bg-gray-100 dark:hover:bg-white/5"
                                             }`}
                                             style={style}

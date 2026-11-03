@@ -89,16 +89,15 @@ function computeRadarData(data: IntelligenceData): RadarDimension[] {
 
 function getScoreColor(score: number): string {
     if (score >= 75) return "#10B981";
-    if (score >= 60) return "#3B82F6";
-    if (score >= 40) return "#F59E0B";
+    if (score >= 45) return "#F59E0B";
     return "#EF4444";
 }
 
 function getGradeLabel(avg: number): { label: string; color: string } {
     if (avg >= 80) return { label: "Elite", color: "text-emerald-500" };
-    if (avg >= 65) return { label: "Advanced", color: "text-blue-500" };
+    if (avg >= 65) return { label: "Advanced", color: "text-amber-600 dark:text-gold" };
     if (avg >= 50) return { label: "Intermediate", color: "text-amber-500" };
-    if (avg >= 35) return { label: "Developing", color: "text-orange-500" };
+    if (avg >= 35) return { label: "Developing", color: "text-rose-500" };
     return { label: "Beginner", color: "text-red-500" };
 }
 
@@ -112,8 +111,8 @@ function CustomTooltip({ active, payload }: any) {
         <div className="bg-white dark:bg-[#1E2028] border border-dashboard rounded-lg px-3 py-2 shadow-xl">
             <p className="text-sm font-bold text-gray-700 dark:text-white mb-0.5">
                 {d.dimension}:{" "}
-                <span style={{ color: getScoreColor(d.value) }}>{d.value}</span>
-                /100
+                <span className="font-mono tabular-nums" style={{ color: getScoreColor(d.value) }}>{d.value}</span>
+                <span className="font-mono tabular-nums">/100</span>
             </p>
             <p className="text-xs text-gray-500 dark:text-gray-400">
                 {d.description}
@@ -131,11 +130,11 @@ export function BehavioralRadarChart({ data }: BehavioralRadarChartProps) {
     const color = getScoreColor(avgScore);
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard shadow-sm p-5 min-h-[460px] lg:h-full flex flex-col justify-between">
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-5 min-h-[460px] lg:h-full flex flex-col justify-between">
             {/* Header */}
             <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2.5">
-                    <div className="p-2 rounded-lg bg-violet-500/10">
+                    <div className="p-2 rounded-lg bg-gold/10 border border-gold/20">
                         <svg
                             width="18"
                             height="18"
@@ -145,7 +144,7 @@ export function BehavioralRadarChart({ data }: BehavioralRadarChartProps) {
                             strokeWidth="2"
                             strokeLinecap="round"
                             strokeLinejoin="round"
-                            className="text-violet-500"
+                            className="text-amber-600 dark:text-gold"
                         >
                             <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2" />
                             <line x1="12" y1="22" x2="12" y2="15.5" />
@@ -165,7 +164,7 @@ export function BehavioralRadarChart({ data }: BehavioralRadarChartProps) {
                     <p className={`text-lg font-black ${grade.color}`}>
                         {grade.label}
                     </p>
-                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+                    <p className="text-[10px] font-bold font-mono tabular-nums text-gray-400 uppercase tracking-wider">
                         Avg: {avgScore}/100
                     </p>
                 </div>
@@ -225,10 +224,10 @@ export function BehavioralRadarChart({ data }: BehavioralRadarChartProps) {
                 {radarData.map((d) => (
                     <div
                         key={d.dimension}
-                        className="text-center px-1 py-2 rounded-lg bg-gray-50 dark:bg-white/[0.03]"
+                        className="text-center px-1 py-2 rounded-lg bg-gray-50/80 dark:bg-[#151925]"
                     >
                         <p
-                            className="text-lg font-black"
+                            className="text-lg font-black font-mono tabular-nums"
                             style={{ color: getScoreColor(d.value) }}
                         >
                             {d.value}

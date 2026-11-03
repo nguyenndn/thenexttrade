@@ -64,10 +64,10 @@ export default async function MasterCertificatePage({
     });
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-50 text-gray-900 flex flex-col font-sans selection:bg-amber-400/20 dark:from-[#0B0E14] dark:via-[#0F1117] dark:to-[#0B0E14]">
+        <div className="min-h-screen bg-white dark:bg-transparent text-gray-900 dark:text-white flex flex-col font-sans selection:bg-gold/20 tabular-nums">
             {/* Ambient background decoration */}
             <div className="fixed inset-0 pointer-events-none overflow-hidden">
-                <div className="absolute -top-40 -right-40 w-96 h-96 bg-amber-400/5 rounded-full blur-3xl"></div>
+                <div className="absolute -top-40 -right-40 w-96 h-96 bg-gold/5 rounded-full blur-3xl"></div>
                 <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-yellow-500/5 rounded-full blur-3xl"></div>
             </div>
 
@@ -78,9 +78,9 @@ export default async function MasterCertificatePage({
                     className="text-xl font-black tracking-tight text-gray-800 dark:text-white"
                 >
                     TheNext
-                    <span className="text-amber-500">Trade</span>
+                    <span className="text-amber-600 dark:text-gold">Trade</span>
                 </Link>
-                <span className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-amber-600 dark:text-amber-400 px-3 py-1.5 rounded-full bg-amber-50 dark:bg-amber-500/10 border border-amber-200/60 dark:border-amber-500/20 shadow-sm">
+                <span className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-amber-600 dark:text-gold px-3 py-1.5 rounded-lg bg-gold/10 border border-gold/20 shadow-sm">
                     <Star size={11} className="fill-amber-500 text-amber-500 shrink-0" aria-hidden="true" />
                     <span>Master Certificate</span>
                     <Star size={11} className="fill-amber-500 text-amber-500 shrink-0" aria-hidden="true" />
@@ -112,7 +112,7 @@ export default async function MasterCertificatePage({
                                     )}
                                 </div>
                                 <div
-                                    className="absolute -bottom-1 -right-1 bg-blue-500 text-white p-1.5 rounded-full border-[3px] border-amber-500 shadow-lg"
+                                    className="absolute -bottom-1 -right-1 bg-emerald-500 text-white p-1.5 rounded-full border-[3px] border-white shadow-lg"
                                     title="Verified Trader"
                                 >
                                     <CheckCircle2
@@ -125,10 +125,10 @@ export default async function MasterCertificatePage({
 
                             <div className="space-y-3">
                                 <div className="flex items-center justify-center gap-2.5 flex-wrap">
-                                    <h1 className="text-xl md:text-2xl font-black text-white drop-shadow-md">
+                                    <h1 className="text-xl md:text-2xl font-black text-white drop-shadow-md font-heading">
                                         {data.displayName || "Trader"}
                                     </h1>
-                                    <span className="px-2.5 py-1 rounded-full bg-white/20 text-white text-[10px] md:text-xs font-bold uppercase tracking-wider border border-white/30 flex items-center gap-1.5 backdrop-blur-md">
+                                    <span className="px-2.5 py-1 rounded-lg bg-white/20 text-white text-[10px] md:text-xs font-bold uppercase tracking-wider border border-white/30 flex items-center gap-1.5 backdrop-blur-md">
                                         <Crown size={11} />
                                         Master Certified
                                     </span>
@@ -156,10 +156,10 @@ export default async function MasterCertificatePage({
 
                 {/* Verify panel */}
                 <div className="w-full max-w-3xl animate-in fade-in slide-in-from-bottom-10 duration-700 delay-150">
-                    <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-5 md:p-6 shadow-xl">
+                    <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-5 md:p-6 shadow-sm">
                         <div className="flex items-center gap-2.5 mb-4">
-                            <div className="w-7 h-7 rounded-lg bg-amber-500/10 dark:bg-amber-500/20 flex items-center justify-center">
-                                <ShieldCheck size={14} className="text-amber-500" />
+                            <div className="w-7 h-7 rounded-lg bg-gold/10 border border-gold/20 flex items-center justify-center">
+                                <ShieldCheck size={14} className="text-amber-600 dark:text-gold" />
                             </div>
                             <h2 className="text-sm font-bold text-gray-700 dark:text-white">
                                 Master Certificate Details
@@ -179,7 +179,7 @@ export default async function MasterCertificatePage({
                                 <span className="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">
                                     Levels
                                 </span>
-                                <p className="text-sm font-bold text-gray-700 dark:text-white">
+                                <p className="text-sm font-mono tabular-nums font-bold text-gray-700 dark:text-white">
                                     {data.levelCount}
                                 </p>
                             </div>
@@ -187,7 +187,7 @@ export default async function MasterCertificatePage({
                                 <span className="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">
                                     Avg Score
                                 </span>
-                                <p className="text-sm font-bold text-amber-500">
+                                <p className="text-sm font-mono tabular-nums font-bold text-amber-600 dark:text-gold">
                                     {data.avgScore}%
                                 </p>
                             </div>
@@ -195,13 +195,13 @@ export default async function MasterCertificatePage({
                                 <span className="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">
                                     Issued
                                 </span>
-                                <p className="text-sm font-bold text-gray-700 dark:text-white">
+                                <p className="text-sm font-mono tabular-nums font-bold text-gray-700 dark:text-white">
                                     {dateStr}
                                 </p>
                             </div>
                         </div>
 
-                        <div className="mt-4 flex items-center gap-2 rounded-lg bg-amber-50 dark:bg-amber-500/5 border border-amber-200/60 dark:border-amber-500/20 px-4 py-3 text-xs font-bold text-amber-700 dark:text-amber-400">
+                        <div className="mt-4 flex items-center gap-2 rounded-lg bg-gold/10 border border-gold/20 px-4 py-3 text-xs font-bold text-amber-700 dark:text-gold">
                             <CheckCircle2 size={14} />
                             Verified — issued by TheNextTrade.com
                         </div>
@@ -210,14 +210,14 @@ export default async function MasterCertificatePage({
 
                 {/* CTA */}
                 <div className="w-full max-w-3xl animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-200">
-                    <div className="relative overflow-hidden rounded-xl bg-white border border-dashboard p-5 md:p-8 text-center group hover:border-amber-400/20 transition-all duration-500 shadow-xl shadow-gray-200/50 dark:shadow-black/20">
-                        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-[2px] bg-gradient-to-r from-transparent via-amber-400/60 to-transparent"></div>
+                    <div className="relative overflow-hidden rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 p-5 md:p-8 text-center group hover:border-gold/30 transition-all duration-500 shadow-sm">
+                        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-[2px] bg-gradient-to-r from-transparent via-gold/60 to-transparent"></div>
                         <div className="relative z-10 flex flex-col items-center gap-5 md:gap-7">
                             <div className="space-y-3 md:space-y-4">
-                                <p className="text-amber-500/80 text-xs font-bold uppercase tracking-[0.2em]">
+                                <p className="text-amber-600 dark:text-gold text-xs font-bold uppercase tracking-[0.2em]">
                                     Free Forever
                                 </p>
-                                <h2 className="text-2xl md:text-4xl font-black text-gray-800 dark:text-white tracking-tight">
+                                <h2 className="text-2xl md:text-4xl font-black text-gray-800 dark:text-white tracking-tight font-heading">
                                     Complete the Academy
                                 </h2>
                                 <p className="text-gray-500 dark:text-gray-400 text-sm md:text-base max-w-lg mx-auto leading-relaxed">
@@ -229,7 +229,7 @@ export default async function MasterCertificatePage({
                                 href="/auth/signup"
                                 className={cn(
                                     buttonVariants({ variant: "gold", size: "smd" }),
-                                    "rounded-lg font-bold bg-amber-500 hover:bg-amber-600 text-white shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
+                                    "rounded-lg font-bold bg-gold hover:bg-amber-600 !text-white shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 active:scale-[0.98] transition-all duration-200"
                                 )}
                             >
                                 Get Started Free
@@ -245,10 +245,10 @@ export default async function MasterCertificatePage({
                 <div className="flex items-center justify-center gap-1.5 text-xs text-gray-400">
                     <span className="font-black text-gray-500 tracking-tight">
                         <span>TheNext</span>
-                        <span className="text-amber-500">Trade</span>
+                        <span className="text-amber-600 dark:text-gold">Trade</span>
                     </span>
                     <span>&middot;</span>
-                    <span>&copy; {new Date().getFullYear()}</span>
+                    <span className="font-mono tabular-nums">&copy; {new Date().getFullYear()}</span>
                 </div>
             </footer>
         </div>

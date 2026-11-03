@@ -72,7 +72,7 @@ export function SetupProgressTrail({
                             <div
                                 className={`flex items-center gap-1 ${
                                     isActive
-                                        ? "text-primary"
+                                        ? "text-amber-600 dark:text-gold"
                                         : isCompleted
                                           ? "text-emerald-500"
                                           : "text-gray-400 dark:text-gray-600"
@@ -86,12 +86,12 @@ export function SetupProgressTrail({
                                 ) : (
                                     <Circle
                                         size={10}
-                                        className={`shrink-0 ${isActive ? "fill-primary/20" : ""}`}
+                                        className={`shrink-0 ${isActive ? "fill-gold/20" : ""}`}
                                     />
                                 )}
                                 <span
                                     className={`text-[9px] font-bold uppercase tracking-wider whitespace-nowrap ${
-                                        isActive ? "text-primary" : ""
+                                        isActive ? "text-amber-600 dark:text-gold" : ""
                                     }`}
                                 >
                                     {step.shortLabel}
@@ -121,11 +121,11 @@ export function SetupProgressTrail({
                         >
                             <div className="flex flex-col items-center gap-1 flex-1">
                                 <div
-                                    className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-black transition-all duration-300 ${
+                                    className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-black tabular-nums transition-all duration-300 ${
                                         isCompleted
                                             ? "bg-emerald-500 text-white"
                                             : isActive
-                                              ? "bg-gold text-white shadow-lg shadow-amber-500/30"
+                                              ? "bg-gold !text-white shadow-lg shadow-amber-500/30"
                                               : "bg-gray-100 dark:bg-white/5 text-gray-400 dark:text-gray-600"
                                     }`}
                                 >
@@ -138,7 +138,7 @@ export function SetupProgressTrail({
                                 <span
                                     className={`text-[8px] font-bold uppercase tracking-wider whitespace-nowrap ${
                                         isActive
-                                            ? "text-primary"
+                                            ? "text-amber-600 dark:text-gold"
                                             : isCompleted
                                               ? "text-emerald-500"
                                               : "text-gray-400 dark:text-gray-600"

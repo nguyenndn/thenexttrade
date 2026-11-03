@@ -1,4 +1,25 @@
 import type { Step } from "onborda";
+import {
+    Sparkles,
+    BarChart3,
+    TrendingUp,
+    Zap,
+    Compass,
+    CheckCircle2,
+    Briefcase,
+    PlusCircle,
+    ListChecks,
+    BookOpen,
+    Search,
+    FileText,
+    Target,
+    Layers,
+    GraduationCap,
+    Play,
+    Map,
+    Trophy,
+    Settings,
+} from "lucide-react";
 
 // ============================
 // DASHBOARD TOUR
@@ -7,7 +28,7 @@ export const dashboardTour: { tour: string; steps: Step[] } = {
     tour: "dashboard-tour",
     steps: [
         {
-            icon: <>👋</>,
+            icon: <Sparkles size={18} />,
             title: "Welcome to TheNextTrade!",
             content: (
                 <p>
@@ -22,12 +43,12 @@ export const dashboardTour: { tour: string; steps: Step[] } = {
             pointerRadius: 12,
         },
         {
-            icon: <>📊</>,
+            icon: <BarChart3 size={18} />,
             title: "Hero Stats",
             content: (
                 <p>
                     Your most important metrics: <strong>Balance</strong>,{" "}
-                    <strong>Period P&L</strong>, <strong>Win Rate</strong>, and{" "}
+                    <strong>Period P&amp;L</strong>, <strong>Win Rate</strong>, and{" "}
                     <strong>Trade Score</strong>.
                 </p>
             ),
@@ -38,7 +59,7 @@ export const dashboardTour: { tour: string; steps: Step[] } = {
             pointerRadius: 12,
         },
         {
-            icon: <>📈</>,
+            icon: <TrendingUp size={18} />,
             title: "Period Growth Chart",
             content: (
                 <p>
@@ -53,7 +74,7 @@ export const dashboardTour: { tour: string; steps: Step[] } = {
             pointerRadius: 12,
         },
         {
-            icon: <>⚡</>,
+            icon: <Zap size={18} />,
             title: "Quick Stats & Distribution",
             content: (
                 <p>
@@ -69,7 +90,7 @@ export const dashboardTour: { tour: string; steps: Step[] } = {
             pointerRadius: 12,
         },
         {
-            icon: <>🧭</>,
+            icon: <Compass size={18} />,
             title: "Sidebar Navigation",
             content: (
                 <p>
@@ -85,7 +106,7 @@ export const dashboardTour: { tour: string; steps: Step[] } = {
             pointerRadius: 12,
         },
         {
-            icon: <>🎉</>,
+            icon: <CheckCircle2 size={18} />,
             title: "You're All Set!",
             content: (
                 <p>
@@ -110,7 +131,7 @@ export const accountsTour: { tour: string; steps: Step[] } = {
     tour: "accounts-tour",
     steps: [
         {
-            icon: <>💼</>,
+            icon: <Briefcase size={18} />,
             title: "Trading Accounts",
             content: (
                 <p>
@@ -126,12 +147,12 @@ export const accountsTour: { tour: string; steps: Step[] } = {
             pointerRadius: 12,
         },
         {
-            icon: <>➕</>,
+            icon: <PlusCircle size={18} />,
             title: "Add an Account",
             content: (
                 <p>
                     Click <strong>Add Account</strong> to connect a new MT5
-                    account. You'll receive an API key to configure in your EA.
+                    account. You&apos;ll receive an API key to configure in your EA.
                 </p>
             ),
             selector: "#onborda-add-account",
@@ -141,7 +162,7 @@ export const accountsTour: { tour: string; steps: Step[] } = {
             pointerRadius: 12,
         },
         {
-            icon: <>⚡</>,
+            icon: <Zap size={18} />,
             title: "Set up Trade Sync",
             content: (
                 <p>
@@ -157,7 +178,7 @@ export const accountsTour: { tour: string; steps: Step[] } = {
             pointerRadius: 12,
         },
         {
-            icon: <>📋</>,
+            icon: <ListChecks size={18} />,
             title: "Account Cards",
             content: (
                 <p>
@@ -182,7 +203,7 @@ export const journalTour: { tour: string; steps: Step[] } = {
     tour: "journal-tour",
     steps: [
         {
-            icon: <>📖</>,
+            icon: <BookOpen size={18} />,
             title: "Trading Journal",
             content: (
                 <p>
@@ -197,7 +218,7 @@ export const journalTour: { tour: string; steps: Step[] } = {
             pointerRadius: 12,
         },
         {
-            icon: <>🔍</>,
+            icon: <Search size={18} />,
             title: "Filters & Search",
             content: (
                 <p>
@@ -214,13 +235,13 @@ export const journalTour: { tour: string; steps: Step[] } = {
             pointerRadius: 12,
         },
         {
-            icon: <>📊</>,
+            icon: <BarChart3 size={18} />,
             title: "Period Stats",
             content: (
                 <p>
                     Quick overview of the filtered period:{" "}
                     <strong>total trades</strong>, <strong>win rate</strong>,{" "}
-                    <strong>P&L</strong>, and more.
+                    <strong>P&amp;L</strong>, and more.
                 </p>
             ),
             selector: "#onborda-journal-stats",
@@ -230,7 +251,7 @@ export const journalTour: { tour: string; steps: Step[] } = {
             pointerRadius: 12,
         },
         {
-            icon: <>📝</>,
+            icon: <FileText size={18} />,
             title: "Trade List",
             content: (
                 <p>
@@ -255,7 +276,7 @@ export const strategiesTour: { tour: string; steps: Step[] } = {
     tour: "strategies-tour",
     steps: [
         {
-            icon: <>♟️</>,
+            icon: <Target size={18} />,
             title: "Strategies",
             content: (
                 <p>
@@ -270,11 +291,11 @@ export const strategiesTour: { tour: string; steps: Step[] } = {
             pointerRadius: 12,
         },
         {
-            icon: <>📊</>,
+            icon: <BarChart3 size={18} />,
             title: "Performance Tracking",
             content: (
                 <p>
-                    See <strong>win rate</strong>, <strong>P&L</strong>, and{" "}
+                    See <strong>win rate</strong>, <strong>P&amp;L</strong>, and{" "}
                     <strong>trade count</strong> per strategy. Double down on
                     what works!
                 </p>
@@ -295,7 +316,7 @@ export const analyticsTour: { tour: string; steps: Step[] } = {
     tour: "analytics-tour",
     steps: [
         {
-            icon: <>📈</>,
+            icon: <TrendingUp size={18} />,
             title: "Analytics Hub",
             content: (
                 <p>
@@ -312,7 +333,7 @@ export const analyticsTour: { tour: string; steps: Step[] } = {
             pointerRadius: 12,
         },
         {
-            icon: <>🔀</>,
+            icon: <Layers size={18} />,
             title: "Analytics Tabs",
             content: (
                 <p>
@@ -337,7 +358,7 @@ export const academyTour: { tour: string; steps: Step[] } = {
     tour: "academy-tour",
     steps: [
         {
-            icon: <>🎓</>,
+            icon: <GraduationCap size={18} />,
             title: "Trading Academy",
             content: (
                 <p>
@@ -353,7 +374,7 @@ export const academyTour: { tour: string; steps: Step[] } = {
             pointerRadius: 12,
         },
         {
-            icon: <>▶️</>,
+            icon: <Play size={18} />,
             title: "Continue Learning",
             content: (
                 <p>
@@ -368,7 +389,7 @@ export const academyTour: { tour: string; steps: Step[] } = {
             pointerRadius: 12,
         },
         {
-            icon: <>🗺️</>,
+            icon: <Map size={18} />,
             title: "Academy Tree",
             content: (
                 <p>
@@ -384,7 +405,7 @@ export const academyTour: { tour: string; steps: Step[] } = {
             pointerRadius: 12,
         },
         {
-            icon: <>🏆</>,
+            icon: <Trophy size={18} />,
             title: "Quizzes & Certificates",
             content: (
                 <p>
@@ -409,7 +430,7 @@ export const settingsTour: { tour: string; steps: Step[] } = {
     tour: "settings-tour",
     steps: [
         {
-            icon: <>⚙️</>,
+            icon: <Settings size={18} />,
             title: "Settings",
             content: (
                 <p>

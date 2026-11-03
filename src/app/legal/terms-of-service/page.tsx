@@ -1,213 +1,267 @@
 import { Metadata } from "next";
-import { Scale } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
+import {
+    LegalPageShell,
+    type LegalSectionItem,
+} from "@/components/legal/LegalPageShell";
+import { TELEGRAM_CHANNEL_URL } from "@/config/telegram";
 
 export const metadata: Metadata = {
-    title: "Terms of Service & Risk Disclaimer | TheNextTrade",
-    description: "Terms of Service, user agreement, and high-risk investment disclaimer for TheNextTrade.",
+    title: "Terms of Service — TheNextTrade",
+    description:
+        "Terms governing your use of TheNextTrade's MT5 expert advisors, indicators, trading journal, and community tools. Review your rights, responsibilities, and acceptable use.",
     alternates: {
         canonical: "/legal/terms-of-service",
     },
     openGraph: {
-        title: "Terms of Service & Risk Disclaimer | TheNextTrade",
-        description: "Terms of Service, user agreement, and high-risk investment disclaimer for TheNextTrade.",
+        title: "Terms of Service — TheNextTrade",
+        description:
+            "Terms governing your use of TheNextTrade's MT5 expert advisors, indicators, trading journal, and community tools.",
         url: "/legal/terms-of-service",
         siteName: "TheNextTrade",
         type: "website",
     },
 };
 
+const TERMS_SECTIONS: LegalSectionItem[] = [
+    { id: "agreement", label: "Agreement" },
+    { id: "services", label: "Services Provided" },
+    { id: "no-guarantees", label: "No Guarantees" },
+    { id: "account", label: "Your Account" },
+    { id: "license", label: "License Rules" },
+    { id: "ib-requirement", label: "IB Requirement" },
+    { id: "liability", label: "Limitation of Liability" },
+    { id: "changes", label: "Changes & Termination" },
+    { id: "contact", label: "Contact" },
+];
+
 export default function TermsOfServicePage() {
     return (
-        <>
-            <div className="max-w-3xl mx-auto text-center space-y-6 mb-20 mt-12">
-                <div className="inline-flex items-center justify-center p-3 rounded-lg bg-indigo-500/10 text-indigo-500 mb-2 ring-4 ring-indigo-500/5 animate-in fade-in zoom-in slide-in-from-bottom-4 duration-500">
-                    <Scale size={40} strokeWidth={1.5} />
+        <LegalPageShell
+            title="Terms of Service"
+            lead="Effective June 1, 2026 · Version 1.4"
+            sections={TERMS_SECTIONS}
+            numbered={true}
+            footerNote="By using TheNextTrade, you agree to these terms."
+            intro={
+                <div
+                    id="risk-warning"
+                    className="rounded-xl border border-amber-500/30 bg-amber-500/[0.06] dark:bg-amber-500/[0.08] p-5 sm:p-6 flex items-start gap-3.5 shadow-xs"
+                >
+                    <div className="w-9 h-9 rounded-lg bg-amber-500/15 border border-amber-500/25 flex items-center justify-center text-amber-600 dark:text-gold shrink-0 mt-0.5">
+                        <AlertTriangle size={18} aria-hidden="true" />
+                    </div>
+                    <p className="text-sm leading-relaxed text-gray-800 dark:text-gray-200">
+                        <strong className="font-black text-gray-900 dark:text-white">
+                            Risk Warning.
+                        </strong>{" "}
+                        Trading forex, gold (XAUUSD), and CFDs involves
+                        significant risk. You may lose more than your initial
+                        investment. Past performance does not guarantee future
+                        results. Only trade with money you can afford to lose.
+                    </p>
                 </div>
-                <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-gray-700 dark:text-white leading-tight animate-in fade-in slide-in-from-bottom-6 duration-700">
-                    Terms of Service
-                </h1>
-                <p className="text-xl text-gray-600 dark:text-gray-300 leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-1000">
-                    Last updated: October 2026
+            }
+        >
+            {/* 1. Agreement */}
+            <section id="agreement" className="pb-7 scroll-mt-28">
+                <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-2.5 flex items-center gap-2">
+                    <span className="tabular-nums text-amber-600 dark:text-gold">
+                        1.
+                    </span>
+                    <span>Agreement</span>
+                </h2>
+                <p className="text-sm sm:text-base leading-relaxed text-gray-600 dark:text-gray-300">
+                    By accessing TheNextTrade&apos;s website, trading journal,
+                    software, or community services, you agree to these terms.
+                    You must be at least <span className="tabular-nums font-semibold text-gray-800 dark:text-gray-200">18</span> years old and acknowledge the
+                    inherent risks of leveraged trading.
                 </p>
-            </div>
+            </section>
 
-            <div className="max-w-4xl mx-auto">
-                <div className="bg-white/95 dark:bg-white/[0.055] border border-dashboard dark:border-white/10 rounded-lg p-8 md:p-14 shadow-xl prose dark:prose-invert prose-headings:text-gray-700 dark:prose-headings:text-white prose-p:text-gray-600 dark:prose-p:text-gray-300 prose-li:text-gray-600 dark:prose-li:text-gray-300 prose-strong:text-gray-700 dark:prose-strong:text-white max-w-none transition-colors duration-300 backdrop-blur-md">
-                    <div className="bg-red-50 dark:bg-red-500/5 border border-red-500/20 p-6 sm:p-8 my-8 rounded-lg shadow-sm">
-                        <h3 className="text-red-700 dark:text-red-400 mt-0 font-bold uppercase tracking-wider text-sm flex items-center gap-2">
-                            High Risk Warning
-                        </h3>
-                        <p className="text-sm text-red-600 dark:text-red-400 mb-0 leading-relaxed">
-                            Trading CFDs, Gold (XAU/USD), Forex, and other
-                            financial products offers high potential returns but
-                            also involves significant risks. High leverage can
-                            work against you as well as for you. You must be
-                            aware of the risks of investing in financial markets
-                            and be willing to accept them. Trading involves
-                            substantial risk of loss and is not suitable for all
-                            investors. Please do not trade with borrowed money
-                            or money you cannot afford to lose.
-                        </p>
-                    </div>
+            {/* 2. Services Provided */}
+            <section id="services" className="py-7 scroll-mt-28">
+                <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-2.5 flex items-center gap-2">
+                    <span className="tabular-nums text-amber-600 dark:text-gold">
+                        2.
+                    </span>
+                    <span>Services Provided</span>
+                </h2>
+                <ul className="space-y-2 text-sm sm:text-base text-gray-600 dark:text-gray-300 list-disc pl-5">
+                    <li>
+                        Exclusive MT5 expert advisors, indicators, and risk
+                        management calculators.
+                    </li>
+                    <li>
+                        Cloud-synced trading journal, behavioral analytics, and
+                        verified performance leaderboards.
+                    </li>
+                    <li>
+                        Educational content (Academy) and daily XAUUSD analysis
+                        &amp; trading signals via Telegram.
+                    </li>
+                    <li>
+                        License management and partner broker verification for
+                        software and VIP access.
+                    </li>
+                </ul>
+            </section>
 
-                    <h2>1. Acceptance of Terms</h2>
-                    <p>
-                        By accessing or using the TheNextTrade website and
-                        services, you agree to be bound by these Terms of
-                        Service and all applicable laws and regulations. If you
-                        do not agree with any part of these Terms, you must not
-                        use our platform or services. Your continued use of the
-                        website following the posting of any changes constitutes
-                        acceptance of those changes.
-                    </p>
+            {/* 3. No Guarantees */}
+            <section id="no-guarantees" className="py-7 scroll-mt-28">
+                <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-2.5 flex items-center gap-2">
+                    <span className="tabular-nums text-amber-600 dark:text-gold">
+                        3.
+                    </span>
+                    <span>No Guarantees</span>
+                </h2>
+                <ul className="space-y-2 text-sm sm:text-base text-gray-600 dark:text-gray-300 list-disc pl-5">
+                    <li>
+                        TheNextTrade does not guarantee any trading profits or
+                        specific results.
+                    </li>
+                    <li>
+                        TheNextTrade is not a financial advisor; all signals,
+                        tools, and courses are strictly educational in nature.
+                    </li>
+                    <li>
+                        You retain full custody of your broker account and are
+                        solely responsible for your own trading decisions.
+                    </li>
+                </ul>
+            </section>
 
-                    <h2>2. Description of Services</h2>
-                    <p>
-                        TheNextTrade provides software tools, educational
-                        content, and services related to financial trading,
-                        including but not limited to:
-                    </p>
-                    <ul>
-                        <li>
-                            <strong>Trading Journaling:</strong> Tools to log,
-                            analyze, and review your trading history.
-                        </li>
-                        <li>
-                            <strong>Analytical Tools:</strong> Dashboards, KPIs,
-                            and reports to evaluate trading strategies.
-                        </li>
-                        <li>
-                            <strong>Educational Content:</strong> Market
-                            insights, Academy courses, and trading
-                            methodologies.
-                        </li>
-                        <li>
-                            <strong>Community Access:</strong> Membership to our
-                            trading community for discussions and networking.
-                        </li>
-                    </ul>
+            {/* 4. Your Account */}
+            <section id="account" className="py-7 scroll-mt-28">
+                <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-2.5 flex items-center gap-2">
+                    <span className="tabular-nums text-amber-600 dark:text-gold">
+                        4.
+                    </span>
+                    <span>Your Account</span>
+                </h2>
+                <ul className="space-y-2 text-sm sm:text-base text-gray-600 dark:text-gray-300 list-disc pl-5">
+                    <li>
+                        Provide accurate information when registering and
+                        submitting MT4/MT5 account verification.
+                    </li>
+                    <li>
+                        Keep your login credentials and EA Sync API keys secure.
+                    </li>
+                    <li>
+                        Do not share your dashboard account or VIP access with
+                        others.
+                    </li>
+                </ul>
+            </section>
 
-                    <h2>3. Trading Disclaimer</h2>
-                    <h3>Past Performance ? Future Results</h3>
-                    <p>
-                        Past performance of any trading system, methodology, or
-                        strategy is not indicative of future results. Historical
-                        data should not be relied upon as a predictor of future
-                        performance.
-                    </p>
+            {/* 5. License Rules */}
+            <section id="license" className="py-7 scroll-mt-28">
+                <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-2.5 flex items-center gap-2">
+                    <span className="tabular-nums text-amber-600 dark:text-gold">
+                        5.
+                    </span>
+                    <span>License Rules</span>
+                </h2>
+                <p className="text-sm sm:text-base leading-relaxed text-gray-600 dark:text-gray-300 mb-3">
+                    Your software license is personal and tied to your verified
+                    MT4/MT5 account. You may not:
+                </p>
+                <ul className="space-y-2 text-sm sm:text-base text-gray-600 dark:text-gray-300 list-disc pl-5 mb-3">
+                    <li>Share, rent, or sell your license key or EA files.</li>
+                    <li>
+                        Reverse engineer, decompile, or modify the software.
+                    </li>
+                    <li>
+                        Use unauthorized proxies or spoof account IDs to bypass
+                        security controls.
+                    </li>
+                </ul>
+                <p className="text-sm font-bold text-red-600 dark:text-red-400">
+                    Violations result in permanent license and VIP revocation.
+                </p>
+            </section>
 
-                    <h3>Not Financial Advice</h3>
-                    <p>
-                        Our services, including the Academy, tools, and market
-                        analysis, are not financial, investment, or trading
-                        advice. We are not licensed financial advisors. The
-                        content shared is intended solely for educational and
-                        informational purposes. Always consult with a qualified
-                        financial professional before making investment
-                        decisions.
-                    </p>
+            {/* 6. IB Requirement */}
+            <section id="ib-requirement" className="py-7 scroll-mt-28">
+                <div id="third-party-brokers" className="scroll-mt-28" />
+                <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-2.5 flex items-center gap-2">
+                    <span className="tabular-nums text-amber-600 dark:text-gold">
+                        6.
+                    </span>
+                    <span>IB Requirement</span>
+                </h2>
+                <p className="text-sm sm:text-base leading-relaxed text-gray-600 dark:text-gray-300">
+                    To access the exclusive MT5 EAs and VIP signals for free,
+                    your MT4/MT5 trading account must be registered under
+                    TheNextTrade&apos;s official Introducing Broker (IB) link
+                    with a supported partner broker (Exness, VantageMarkets,
+                    VTMarkets, or Ultima Markets). We may receive standard IB
+                    partner rebates from the broker at zero additional cost to
+                    you. Accounts not registered or active under our IB may have
+                    their software license and VIP access revoked.
+                </p>
+            </section>
 
-                    <h3>Your Responsibility</h3>
-                    <p>
-                        You are solely responsible for your own trading
-                        decisions and their outcomes. TheNextTrade does not
-                        manage accounts or execute trades on your behalf. All
-                        trading decisions are made at your own discretion and
-                        risk.
-                    </p>
+            {/* 7. Limitation of Liability */}
+            <section id="liability" className="py-7 scroll-mt-28">
+                <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-2.5 flex items-center gap-2">
+                    <span className="tabular-nums text-amber-600 dark:text-gold">
+                        7.
+                    </span>
+                    <span>Limitation of Liability</span>
+                </h2>
+                <p className="text-sm sm:text-base leading-relaxed text-gray-600 dark:text-gray-300">
+                    TheNextTrade is not liable for any trading losses, broker
+                    slippage, technical issues, or damages arising from the use
+                    of its software, signals, or services. All use is strictly
+                    at your own risk.
+                </p>
+            </section>
 
-                    <h2>4. User Eligibility and Registration</h2>
-                    <p>To use our services, you must:</p>
-                    <ul>
-                        <li>
-                            Be at least 18 years of age or the age of majority
-                            in your jurisdiction.
-                        </li>
-                        <li>
-                            Ensure that using our software and trading is legal
-                            in your country of residence.
-                        </li>
-                        <li>
-                            Provide accurate, current, and complete information
-                            during registration.
-                        </li>
-                        <li>
-                            Maintain the confidentiality of your account
-                            credentials and immediately notify us of any
-                            unauthorized use.
-                        </li>
-                    </ul>
+            {/* 8. Changes & Termination */}
+            <section id="changes" className="py-7 scroll-mt-28">
+                <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-2.5 flex items-center gap-2">
+                    <span className="tabular-nums text-amber-600 dark:text-gold">
+                        8.
+                    </span>
+                    <span>Changes &amp; Termination</span>
+                </h2>
+                <p className="text-sm sm:text-base leading-relaxed text-gray-600 dark:text-gray-300">
+                    TheNextTrade may update these terms or terminate access at
+                    any time. Continued use of the service constitutes
+                    acceptance of any updated terms.
+                </p>
+            </section>
 
-                    <h2>5. User Conduct</h2>
-                    <p>When using our platform, you agree NOT to:</p>
-                    <ul>
-                        <li>
-                            Redistribute, resell, or publicly share our premium
-                            tools or educational content without authorization.
-                        </li>
-                        <li>
-                            Use our platform for any illegal activities or to
-                            facilitate fraudulent trading schemes.
-                        </li>
-                        <li>
-                            Copy, reproduce, or modify our code, UI designs, or
-                            proprietary algorithms.
-                        </li>
-                        <li>
-                            Post spam, malicious content, or abuse other
-                            community members.
-                        </li>
-                    </ul>
-                    <p>
-                        Violation of these conduct rules may result in immediate
-                        termination of your account without a refund.
-                    </p>
-
-                    <h2>6. Intellectual Property</h2>
-                    <p>
-                        All content, features, and functionality on TheNextTrade
-                        (including text, graphics, logos, software, code, and UI
-                        design) are owned by TheNextTrade and are protected by
-                        copyright, trademark, and other intellectual property
-                        laws. You are granted a limited, personal,
-                        non-transferable license to use the platform for its
-                        intended purpose.
-                    </p>
-
-                    <h2>7. Limitation of Liability</h2>
-                    <p>
-                        TO THE MAXIMUM EXTENT PERMITTED BY LAW, TheNextTrade
-                        shall NOT be liable for any trading losses, lost
-                        profits, financial damages, or data loss resulting from
-                        your use of our software or services. We are not
-                        responsible for any indirect, incidental, special, or
-                        consequential damages.
-                    </p>
-
-                    <h2>8. Third-Party Links and Brokers</h2>
-                    <p>
-                        Our platform may contain links or connections to
-                        third-party brokers, exchanges, or services (e.g.,
-                        MT4/MT5 integrations). We are not affiliated with these
-                        entities unless explicitly stated, and your use of any
-                        third-party service is at your own risk and subject to
-                        their respective terms.
-                    </p>
-
-                    <h2>9. Contact Information</h2>
-                    <p>
-                        If you have any questions or concerns about these Terms
-                        of Service, please contact our support team at:
-                    </p>
-                    <p>
-                        <strong>Email:</strong> support@thenexttrade.com
-                    </p>
-
-                    <div className="mt-8 p-4 bg-gray-50 dark:bg-[#151925] rounded-lg text-sm text-gray-600 dark:text-gray-300 italic text-center border border-dashboard">
-                        Questions? Email support@thenexttrade.com.
-                    </div>
-                </div>
-            </div>
-        </>
+            {/* 9. Contact */}
+            <section id="contact" className="pt-7 scroll-mt-28">
+                <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-2.5 flex items-center gap-2">
+                    <span className="tabular-nums text-amber-600 dark:text-gold">
+                        9.
+                    </span>
+                    <span>Contact</span>
+                </h2>
+                <p className="text-sm sm:text-base leading-relaxed text-gray-600 dark:text-gray-300">
+                    For questions regarding these terms, contact us on Telegram
+                    at{" "}
+                    <a
+                        href={TELEGRAM_CHANNEL_URL}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-bold text-amber-600 dark:text-gold hover:underline"
+                    >
+                        @GoldScalperNinja
+                    </a>{" "}
+                    or by email at{" "}
+                    <a
+                        href="mailto:support@thenexttrade.com"
+                        className="font-bold text-amber-600 dark:text-gold hover:underline"
+                    >
+                        support@thenexttrade.com
+                    </a>
+                    .
+                </p>
+            </section>
+        </LegalPageShell>
     );
 }

@@ -1,5 +1,3 @@
-"use client";
-
 import { DisciplineCockpit } from "./discipline-os/DisciplineCockpit";
 
 /**

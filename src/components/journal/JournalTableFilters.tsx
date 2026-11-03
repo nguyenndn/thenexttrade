@@ -48,16 +48,15 @@ export function JournalTableFilters({
     onLogTrade,
 }: JournalTableFiltersProps) {
     return (
-        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 bg-white dark:bg-[#1E2028] p-4 rounded-lg shadow-sm border border-dashboard">
+        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 bg-white dark:bg-[#1E2028] p-4 rounded-xl shadow-sm border border-dashboard">
             <div className="flex flex-col md:flex-row items-center gap-4 flex-1">
                 {/* Search */}
-                <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-white/5 rounded-lg border border-transparent focus-within:border-gold focus-within:ring-2 focus-within:ring-amber-500/20 transition-all w-full md:w-56">
+                <div className="flex items-center gap-2 px-4 py-2 bg-gray-50/80 dark:bg-[#151925] rounded-lg border border-dashboard focus-within:border-gold focus-within:ring-2 focus-within:ring-amber-500/20 transition-all w-full md:w-56">
                     <Search size={18} className="text-gray-500" />
                     <input
                         type="text"
                         aria-label="Filter by Pair or Symbol"
-                        placeholder="Search pair or symbol..."
-                        className="bg-transparent text-sm focus:outline-none w-full text-gray-700 dark:text-white placeholder:text-gray-500"
+                        className="bg-transparent text-sm focus:outline-none w-full text-gray-700 dark:text-white"
                         value={searchTerm}
                         onChange={(e) => {
                             setSearchTerm(e.target.value);

@@ -52,7 +52,7 @@ export function EADownloadCard({ product }: EADownloadCardProps) {
     };
 
     return (
-        <div className="bg-white dark:bg-[#151925] border border-dashboard rounded-xl p-6 shadow-sm hover:shadow-md transition-all">
+        <div className="bg-white dark:bg-[#1E2028] border border-dashboard rounded-xl p-6 shadow-sm hover:shadow-md transition-all">
             <div className="flex items-start gap-4 mb-6">
                 {/* Icon/Thumbnail */}
                 <div className="w-16 h-16 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0">
@@ -73,7 +73,7 @@ export function EADownloadCard({ product }: EADownloadCardProps) {
                         <h3 className="text-lg font-bold text-gray-700 dark:text-white mb-1">
                             {product.name}
                         </h3>
-                        <span className="bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 px-2 py-1 rounded-lg text-xs font-bold font-mono">
+                        <span className="bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 px-2 py-1 rounded-lg text-xs font-bold font-mono tabular-nums">
                             v{product.version}
                         </span>
                     </div>
@@ -89,7 +89,7 @@ export function EADownloadCard({ product }: EADownloadCardProps) {
                 {(product.platform === "MT4" ||
                     product.platform === "BOTH") && (
                     <Button
-                        variant="ghost"
+                        variant="outline"
                         className="flex items-center justify-center gap-2 border border-dashboard hover:border-primary hover:bg-primary/5 bg-white dark:bg-white/5"
                         onClick={() => handleDownload("MT4")}
                         disabled={!!isDownloading}
@@ -106,15 +106,15 @@ export function EADownloadCard({ product }: EADownloadCardProps) {
                 {(product.platform === "MT5" ||
                     product.platform === "BOTH") && (
                     <Button
-                        variant="ghost"
-                        className="flex items-center justify-center gap-2 border border-dashboard hover:border-blue-500 hover:bg-blue-500/5 bg-white dark:bg-white/5"
+                        variant="outline"
+                        className="flex items-center justify-center gap-2 border border-dashboard hover:border-gold hover:bg-gold/5 bg-white dark:bg-white/5"
                         onClick={() => handleDownload("MT5")}
                         disabled={!!isDownloading}
                     >
                         {isDownloading === "MT5" ? (
-                            <span className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                            <span className="w-4 h-4 border-2 border-gold border-t-transparent rounded-full animate-spin" />
                         ) : (
-                            <Download size={18} className="text-blue-500" />
+                            <Download size={18} className="text-amber-600 dark:text-gold" />
                         )}
                         <span className="font-bold">MT5</span>
                     </Button>
@@ -123,7 +123,7 @@ export function EADownloadCard({ product }: EADownloadCardProps) {
 
             {/* Changelog */}
             {product.changelog && (
-                <div className="bg-gray-50 dark:bg-white/5 rounded-xl p-4 text-sm mt-4">
+                <div className="bg-gray-50/80 dark:bg-[#151925] rounded-lg p-4 text-sm mt-4">
                     <p className="font-bold text-gray-700 dark:text-gray-300 mb-2 text-xs uppercase tracking-wider">
                         Changelog
                     </p>

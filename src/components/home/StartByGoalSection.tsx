@@ -1,65 +1,66 @@
-"use client";
-
 import Link from "next/link";
 import {
-    BookOpen,
     Bot,
     Calculator,
     Building,
-    ArrowRight,
+    Target,
 } from "lucide-react";
 import { HomeSectionHeading } from "@/components/home/HomeSectionHeading";
 
 interface StartByGoalSectionProps {
-    isLoggedIn: boolean;
+    isLoggedIn?: boolean;
 }
 
-export function StartByGoalSection({ isLoggedIn }: StartByGoalSectionProps) {
+export function StartByGoalSection(_props: StartByGoalSectionProps) {
     const cards = [
         {
             title: "Pre-Trade Risk Math",
-            description: "Model lot size, pip values & ruin odds with 18 institutional calculators before pressing buy or sell.",
+            description: "Model lot size, pip values & ruin odds with 17 professional risk calculators before pressing buy or sell.",
             icon: <Calculator size={20} />,
+            href: "/tools",
             color: "text-slate-700 dark:text-slate-300",
-            chipBg: "bg-slate-100 dark:bg-white/5",
+            chipBg: "bg-slate-100 dark:bg-[#151925]",
             animClass: "group-hover:scale-110 group-hover:rotate-6",
             bgClass:
-                "bg-white dark:bg-white/[0.02] border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20 hover:bg-gray-50 dark:hover:bg-white/[0.04]",
+                "bg-white dark:bg-[#0D111C] border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20 hover:bg-gray-50 dark:hover:bg-white/[0.04]",
         },
         {
             title: "Automated Discipline",
-            description: "Deploy GoldScalperNinja, Trade Manager & Phoenix Grid to enforce hard-coded risk rules via MT5.",
+            description: "Deploy GoldScalperNinja, Trade Manager & GSN Shadown Matrix to enforce hard-coded risk rules via MT5.",
             icon: <Bot size={20} />,
+            href: "/trading-systems",
             color: "text-gold",
             chipBg: "bg-gold/10",
             animClass: "group-hover:scale-110 group-hover:translate-x-0.5",
             bgClass:
-                "bg-gradient-to-br from-gold/[0.05] to-amber-500/[0.02] border-gold/30 hover:border-gold/60 hover:shadow-[0_8px_30px_rgba(245,158,11,0.12)] dark:from-gold/[0.03] dark:to-transparent",
+                "bg-gradient-to-br from-gold/[0.05] to-amber-500/[0.02] border-gold/30 hover:border-gold/60 hover:shadow-[0_8px_30px_rgba(245,158,11,0.12)] dark:from-gold/[0.05] dark:to-[#0D111C]",
         },
         {
-            title: "Market Structure",
-            description: "Master 12-level curriculum on liquidity mechanics, session profiles, and institutional order flow.",
-            icon: <BookOpen size={20} />,
+            title: "Trading Style Audit",
+            description: "Identify your XAU/USD trading archetype, behavioral blind spots, and custom risk rules in 3 minutes.",
+            icon: <Target size={20} />,
+            href: "/trading-style",
             color: "text-slate-700 dark:text-slate-300",
-            chipBg: "bg-slate-100 dark:bg-white/5",
+            chipBg: "bg-slate-100 dark:bg-[#151925]",
             animClass: "group-hover:scale-110 group-hover:-rotate-6",
             bgClass:
-                "bg-white dark:bg-white/[0.02] border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20 hover:bg-gray-50 dark:hover:bg-white/[0.04]",
+                "bg-white dark:bg-[#0D111C] border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20 hover:bg-gray-50 dark:hover:bg-white/[0.04]",
         },
         {
             title: "Capital Sponsorship",
             description: "Preserve 100% of your deposit with verified partner brokers to unlock our full Pro stack at $0.",
             icon: <Building size={20} />,
+            href: "/brokers",
             color: "text-slate-700 dark:text-slate-300",
-            chipBg: "bg-slate-100 dark:bg-white/5",
+            chipBg: "bg-slate-100 dark:bg-[#151925]",
             animClass: "group-hover:scale-110",
             bgClass:
-                "bg-white dark:bg-white/[0.02] border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20 hover:bg-gray-50 dark:hover:bg-white/[0.04]",
+                "bg-white dark:bg-[#0D111C] border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20 hover:bg-gray-50 dark:hover:bg-white/[0.04]",
         },
     ];
 
     return (
-        <div className="relative overflow-hidden bg-white dark:bg-transparent border-t border-dashboard">
+        <div className="relative overflow-hidden bg-white dark:bg-transparent border-t border-gray-200 dark:border-white/10">
             {/* Grid Pattern Background */}
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)]" />
 
@@ -74,12 +75,13 @@ export function StartByGoalSection({ isLoggedIn }: StartByGoalSectionProps) {
 
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
                     {cards.map((card, idx) => (
-                        <div
+                        <Link
                             key={idx}
-                            className={`group relative flex flex-col justify-start items-center sm:items-start rounded-lg border p-5 sm:p-5 text-center sm:text-left transition-all duration-300 ${card.bgClass}`}
+                            href={card.href}
+                            className={`group relative flex flex-col justify-start items-center sm:items-start rounded-xl border p-5 sm:p-5 text-center sm:text-left transition-all duration-300 block h-full ${card.bgClass}`}
                         >
-                            {/* Subtle inner gradient - matches TrustMetrics style */}
-                            <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-transparent via-transparent to-gray-50/50 dark:to-white/[0.01] pointer-events-none" />
+                            {/* Subtle inner gradient */}
+                            <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-transparent via-transparent to-gray-50/50 dark:to-white/[0.01] pointer-events-none" />
 
                             <div className="relative z-10 w-full flex flex-col items-center sm:items-start">
                                 {/* Icon and Title: Stacked centered on mobile, inline on sm+ */}
@@ -104,22 +106,9 @@ export function StartByGoalSection({ isLoggedIn }: StartByGoalSectionProps) {
                                     {card.description}
                                 </p>
                             </div>
-                        </div>
+                        </Link>
                     ))}
                 </div>
-
-                {!isLoggedIn && (
-                    <div className="mt-6 sm:mt-8 p-4 sm:p-5 rounded-lg border border-gold/20 bg-gold/5 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
-                        <div className="text-xs sm:text-sm text-gray-700 dark:text-gray-200">
-                            <span className="font-bold text-amber-500 dark:text-gold">100% Free Ecosystem:</span> Every resource above is instantly unlocked when you register your free TheNextTrade account.
-                        </div>
-                        <Link href="/auth/signup" className="shrink-0">
-                            <span className="text-xs font-bold text-amber-600 dark:text-gold hover:underline flex items-center gap-1">
-                                Create Free Account <ArrowRight size={13} />
-                            </span>
-                        </Link>
-                    </div>
-                )}
             </section>
         </div>
     );

@@ -25,7 +25,7 @@ export function StrategyCard({
     return (
         <>
             <div
-                className={`bg-white dark:bg-[#1E2028] p-6 rounded-lg border shadow-sm group hover:border-primary/50 hover:shadow-md transition-shadow flex flex-col justify-between ${
+                className={`bg-white dark:bg-[#1E2028] p-6 rounded-xl border shadow-sm group hover:border-primary/50 hover:shadow-md transition-shadow flex flex-col justify-between ${
                     isGhost
                         ? "border-dashed border-gray-300 dark:border-white/20"
                         : "border-dashboard"
@@ -42,13 +42,13 @@ export function StrategyCard({
                             <h3 className="font-bold text-lg text-gray-700 dark:text-white flex items-center gap-2 flex-wrap">
                                 {strategy.name}
                                 {strategy.isPlaybook && (
-                                    <span className="inline-flex items-center gap-1 text-[10px] bg-amber-500/10 text-gold dark:text-amber-400 px-2 py-0.5 rounded-full font-bold">
+                                    <span className="inline-flex items-center gap-1 text-[10px] bg-amber-500/10 text-gold dark:text-amber-400 px-2 py-0.5 rounded-lg font-bold">
                                         <BookOpen size={10} />
                                         Playbook
                                     </span>
                                 )}
                                 {isGhost && (
-                                    <span className="text-[10px] bg-gray-100 dark:bg-white/10 px-2 py-0.5 rounded-full text-gray-600 font-medium">
+                                    <span className="text-[10px] bg-gray-100 dark:bg-white/10 px-2 py-0.5 rounded-lg text-gray-600 font-medium">
                                         Unsaved
                                     </span>
                                 )}
@@ -91,7 +91,7 @@ export function StrategyCard({
 
                     {/* Playbook Metadata */}
                     {strategy.isPlaybook && (
-                        <div className="mb-4 space-y-2.5 p-3 rounded-lg bg-gray-50/70 dark:bg-white/[0.03] border border-dashboard">
+                        <div className="mb-4 space-y-2.5 p-3 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-dashboard">
                             {/* Setup type + R:R */}
                             <div className="flex items-center justify-between text-xs text-gray-500">
                                 {strategy.setupType ? (
@@ -104,7 +104,7 @@ export function StrategyCard({
                                 )}
                                 {strategy.riskRewardMin != null && (
                                     <span>
-                                        Min R:R <strong className="text-primary">{strategy.riskRewardMin}:1</strong>
+                                        Min R:R <strong className="text-primary font-mono tabular-nums">{strategy.riskRewardMin}:1</strong>
                                     </span>
                                 )}
                             </div>
@@ -190,25 +190,25 @@ export function StrategyCard({
                     {/* Stats */}
                     {performance ? (
                         <div className="grid grid-cols-3 gap-3 pt-4 border-t border-gray-100 dark:border-white/5">
-                            <div className="text-center p-2 bg-gray-50 dark:bg-white/5 rounded-lg">
+                            <div className="text-center p-2 bg-gray-50/80 dark:bg-[#151925] rounded-lg">
                                 <Target
                                     size={16}
-                                    className="mx-auto mb-1 text-purple-500"
+                                    className="mx-auto mb-1 text-amber-600 dark:text-gold"
                                 />
-                                <p className="text-base font-bold text-gray-700 dark:text-white">
+                                <p className="text-base font-bold font-mono tabular-nums text-gray-700 dark:text-white">
                                     {(performance.winRate ?? 0).toFixed(0)}%
                                 </p>
                                 <p className="text-[10px] uppercase font-bold text-gray-500">
                                     Win Rate
                                 </p>
                             </div>
-                            <div className="text-center p-2 bg-gray-50 dark:bg-white/5 rounded-lg">
+                            <div className="text-center p-2 bg-gray-50/80 dark:bg-[#151925] rounded-lg">
                                 <TrendingUp
                                     size={16}
-                                    className={`mx-auto mb-1 ${performance.totalPnL >= 0 ? "text-green-500" : "text-red-500"}`}
+                                    className={`mx-auto mb-1 ${performance.totalPnL >= 0 ? "text-emerald-500" : "text-red-500"}`}
                                 />
                                 <p
-                                    className={`text-base font-bold ${performance.totalPnL >= 0 ? "text-green-500" : "text-red-500"}`}
+                                    className={`text-base font-bold font-mono tabular-nums ${performance.totalPnL >= 0 ? "text-emerald-500" : "text-red-500"}`}
                                 >
                                     ${Math.abs(performance.totalPnL ?? 0).toFixed(0)}
                                 </p>
@@ -216,12 +216,12 @@ export function StrategyCard({
                                     P&L
                                 </p>
                             </div>
-                            <div className="text-center p-2 bg-gray-50 dark:bg-white/5 rounded-lg">
+                            <div className="text-center p-2 bg-gray-50/80 dark:bg-[#151925] rounded-lg">
                                 <Percent
                                     size={16}
-                                    className="mx-auto mb-1 text-blue-500"
+                                    className="mx-auto mb-1 text-amber-600 dark:text-gold"
                                 />
-                                <p className="text-base font-bold text-gray-700 dark:text-white">
+                                <p className="text-base font-bold font-mono tabular-nums text-gray-700 dark:text-white">
                                     {performance.profitFactor === Infinity || performance.profitFactor >= 99
                                         ? "MAX"
                                         : (performance.profitFactor ?? 0).toFixed(1)}
@@ -232,14 +232,14 @@ export function StrategyCard({
                             </div>
                         </div>
                     ) : (
-                        <div className="py-4 text-center bg-gray-50 dark:bg-white/5 rounded-lg border border-dashed border-dashboard">
+                        <div className="py-4 text-center bg-gray-50/80 dark:bg-[#151925] rounded-lg border border-dashed border-dashboard">
                             <p className="text-xs text-gray-500">No trades recorded</p>
                         </div>
                     )}
 
                     {/* View in Journal Link */}
                     <div className="mt-3 pt-3 border-t border-dashboard flex items-center justify-between">
-                        <span className="text-[11px] text-gray-500 font-medium">
+                        <span className="text-[11px] text-gray-500 font-medium font-mono tabular-nums">
                             {performance?.totalTrades ? `${performance.totalTrades} logged trades` : "0 trades logged"}
                         </span>
                         <Link

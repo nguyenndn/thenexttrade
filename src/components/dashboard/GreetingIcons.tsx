@@ -96,7 +96,7 @@ export const AnimatedAfternoonIcon = ({ size = 32 }: { size?: number }) => {
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className="text-sky-400 dark:text-sky-300"
+                className="text-amber-400 dark:text-amber-300"
                 animate={{ x: [-2, 2, -2] }}
                 transition={{
                     duration: 4,
@@ -125,7 +125,7 @@ export const AnimatedEveningIcon = ({ size = 32 }: { size?: number }) => {
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className="text-blue-500"
+                className="text-amber-500 dark:text-gold"
                 animate={{ rotate: [-5, 5, -5] }}
                 transition={{
                     duration: 6,

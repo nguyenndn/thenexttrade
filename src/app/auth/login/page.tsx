@@ -54,18 +54,18 @@ function LoginSuccessOverlay({
 
     return createPortal(
         <div
-            className="fixed inset-0 z-[99999] flex flex-col items-center justify-center select-none bg-[#F7F4EC] dark:bg-[linear-gradient(135deg,#2b2344_0%,#193451_50%,#06454f_100%)] transition-colors"
+            className="fixed inset-0 z-[99999] flex flex-col items-center justify-center select-none bg-white dark:bg-[#0B0E14] transition-colors"
             style={{ margin: 0 }}
         >
-            {/* Light mode: warm amber radial glow */}
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(217,154,38,0.12)_0%,rgba(217,154,38,0.04)_40%,transparent_70%)] dark:bg-[radial-gradient(ellipse_at_center,rgba(245,158,11,0.08)_0%,rgba(245,158,11,0.02)_40%,transparent_70%)] pointer-events-none" />
+            {/* Warm gold radial glow */}
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(245,158,11,0.10)_0%,rgba(245,158,11,0.03)_40%,transparent_70%)] dark:bg-[radial-gradient(ellipse_at_center,rgba(245,158,11,0.08)_0%,rgba(245,158,11,0.02)_40%,transparent_70%)] pointer-events-none" />
             {/* Secondary glow */}
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_20%,rgba(245,158,11,0.06)_0%,transparent_50%)] dark:bg-[radial-gradient(ellipse_at_30%_20%,rgba(247,201,72,0.04)_0%,transparent_50%)] pointer-events-none" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_20%,rgba(245,158,11,0.05)_0%,transparent_50%)] dark:bg-[radial-gradient(ellipse_at_30%_20%,rgba(247,201,72,0.04)_0%,transparent_50%)] pointer-events-none" />
 
             <div className="flex flex-col items-center space-y-8 max-w-md px-6 text-center z-10 animate-in fade-in duration-500">
                 {/* Logo with glow */}
                 <div className="relative mb-2">
-                    <div className="absolute inset-0 scale-[2.5] rounded-full bg-gradient-to-r from-amber-400/20 via-amber-500/15 to-amber-400/20 dark:from-amber-500/20 dark:via-amber-400/10 dark:to-amber-500/20 blur-3xl animate-pulse" />
+                    <div className="absolute inset-0 scale-[2.5] rounded-full bg-gradient-to-r from-amber-400/20 via-amber-500/15 to-amber-400/20 dark:from-amber-500/20 dark:via-amber-400/10 dark:to-amber-500/20 blur-3xl" />
                     <div className="relative scale-[1.6]">
                         <Logo />
                     </div>
@@ -75,7 +75,7 @@ function LoginSuccessOverlay({
                 <div className="space-y-3 animate-in slide-in-from-bottom-3 duration-700 delay-200 fill-mode-both">
                     <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white">
                         Welcome back,{" "}
-                        <span className="text-gold">{name}</span>
+                        <span className="text-amber-600 dark:text-gold">{name}</span>
                     </h2>
                     <p className="text-sm sm:text-base text-slate-500 dark:text-gray-400 font-medium">
                         {redirectTo === "/onboarding"
@@ -86,9 +86,9 @@ function LoginSuccessOverlay({
 
                 {/* Glowing progress bar */}
                 <div className="w-full max-w-xs sm:w-64 animate-in fade-in duration-500 delay-400 fill-mode-both">
-                    <div className="h-1.5 bg-amber-900/10 dark:bg-white/[0.08] rounded-full overflow-hidden">
+                    <div className="h-1.5 bg-gray-200 dark:bg-white/[0.08] rounded-full overflow-hidden">
                         <div
-                            className="h-full rounded-full bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 dark:from-amber-500 dark:via-amber-400 dark:to-amber-500 shadow-[0_0_16px_rgba(245,158,11,0.45),0_0_4px_rgba(245,158,11,0.7)] transition-all duration-2200 ease-login"
+                            className="h-full rounded-full bg-gold shadow-[0_0_16px_rgba(245,158,11,0.45),0_0_4px_rgba(245,158,11,0.7)] transition-all duration-2200 ease-login"
                             style={{ width: `${progress}%` }}
                         />
                     </div>
@@ -116,10 +116,10 @@ export default function LoginPage() {
     const [rememberMe, setRememberMe] = useState(true);
 
     const inputClassName =
-        "h-12 bg-white/80 border-amber-900/10 text-slate-900 text-sm sm:text-base py-3 placeholder:text-slate-400 focus:bg-white focus:border-amber-400 focus:ring-amber-300/30 dark:bg-black/20 dark:text-white dark:placeholder:text-slate-500 dark:focus:bg-black/25 dark:focus:border-amber-300/60 dark:focus:ring-amber-300/20 transition-colors";
+        "h-12 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 text-slate-900 dark:text-white text-sm sm:text-base py-3 focus:bg-white dark:focus:bg-[#151925] focus:border-gold focus:ring-gold/20 transition-colors";
 
     const primaryButtonClassName =
-        "w-full h-12 sm:h-14 rounded-lg border-none bg-[linear-gradient(135deg,#F8D46B_0%,#D99A26_45%,#8A5A13_100%)] text-sm sm:text-base font-black text-white shadow-[0_18px_36px_rgba(217,154,38,0.32)] hover:shadow-[0_20px_44px_rgba(217,154,38,0.42)] active:scale-[0.99] transition-transform";
+        "w-full h-12 sm:h-14 rounded-lg border-none bg-gold hover:bg-amber-600 text-sm sm:text-base font-black !text-white shadow-md shadow-amber-500/20 active:scale-[0.99] transition-all";
 
     useEffect(() => {
         setIsHydrated(true);
@@ -181,7 +181,7 @@ export default function LoginPage() {
 
     return (
         <>
-            <div className="w-full max-w-[440px] sm:max-w-[480px] mx-auto rounded-xl border border-amber-900/10 bg-white/85 p-5 sm:p-7 md:p-8 shadow-[0_28px_90px_rgba(88,64,27,0.18)] backdrop-blur-xl transition-colors duration-300 dark:border-amber-300/15 dark:bg-[#11100C]/90 dark:shadow-[0_28px_90px_rgba(0,0,0,0.45)]">
+            <div className="w-full max-w-[440px] sm:max-w-[480px] mx-auto rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-5 sm:p-7 md:p-8 shadow-sm transition-colors duration-300">
                 <div className="flex justify-center mb-4 sm:mb-5">
                     <Logo />
                 </div>
@@ -194,14 +194,14 @@ export default function LoginPage() {
                     </h1>
                 </div>
 
-                <div className="flex rounded-lg border border-amber-900/10 bg-[#F8F1E3] p-1 mb-5 sm:mb-6 dark:bg-white/[0.06]">
+                <div className="flex rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] p-1 mb-5 sm:mb-6">
                     <Button
                         type="button"
                         variant="ghost"
                         onClick={() => switchMode("password")}
                         className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-xs sm:text-sm font-semibold transition-all min-h-[44px] h-auto border-0 ${
                             mode === "password"
-                                ? "bg-white text-slate-950 shadow-sm shadow-amber-900/10 dark:bg-white/[0.06] dark:text-amber-200 hover:bg-white hover:text-slate-950 dark:hover:bg-white/[0.06] dark:hover:text-amber-200"
+                                ? "bg-gold !text-white shadow-sm hover:bg-amber-600 hover:!text-white"
                                 : "text-slate-600 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white"
                         }`}
                     >
@@ -214,7 +214,7 @@ export default function LoginPage() {
                         onClick={() => switchMode("magic")}
                         className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-xs sm:text-sm font-semibold transition-all min-h-[44px] h-auto border-0 ${
                             mode === "magic"
-                                ? "bg-white text-slate-950 shadow-sm shadow-amber-900/10 dark:bg-white/[0.06] dark:text-amber-200 hover:bg-white hover:text-slate-950 dark:hover:bg-white/[0.06] dark:hover:text-amber-200"
+                                ? "bg-gold !text-white shadow-sm hover:bg-amber-600 hover:!text-white"
                                 : "text-slate-600 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white"
                         }`}
                     >
@@ -238,13 +238,13 @@ export default function LoginPage() {
                         <Input
                             name="email"
                             type="email"
-                            placeholder="trader@thenexttrade.com"
+                            autoComplete="email"
                             label="Email"
                             required
                             startIcon={
                                 <Mail
                                     size={20}
-                                    className="text-amber-600/80 dark:text-amber-300/80"
+                                    className="text-amber-600 dark:text-gold"
                                 />
                             }
                             className={inputClassName}
@@ -253,12 +253,13 @@ export default function LoginPage() {
                         <Input
                             name="password"
                             type={showPassword ? "text" : "password"}
+                            autoComplete="current-password"
                             label="Password"
                             required
                             startIcon={
                                 <Lock
                                     size={20}
-                                    className="text-amber-600/80 dark:text-amber-300/80"
+                                    className="text-amber-600 dark:text-gold"
                                 />
                             }
                             endIcon={
@@ -290,25 +291,26 @@ export default function LoginPage() {
                         />
 
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-4">
-                            <div className="flex items-center gap-2">
+                            <label
+                                htmlFor="remember"
+                                className="inline-flex items-center gap-2.5 cursor-pointer select-none"
+                            >
                                 <input
                                     type="checkbox"
                                     id="remember"
                                     name="remember"
                                     checked={rememberMe}
                                     onChange={(e) => setRememberMe(e.target.checked)}
-                                    className="appearance-none h-5 w-5 rounded-lg border border-amber-900/20 bg-white checked:bg-amber-500 checked:border-amber-500 dark:bg-black/20 dark:border-white/20 dark:checked:bg-amber-400 dark:checked:border-amber-400 checked:bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22white%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%2220%206%209%2017%204%2012%22%2F%3E%3C%2Fsvg%3E')] bg-[length:70%] bg-center bg-no-repeat transition-all cursor-pointer shrink-0"
+                                    className="sr-only peer"
                                 />
-                                <label
-                                    htmlFor="remember"
-                                    className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 cursor-pointer select-none"
-                                >
+                                <div className="relative h-5 w-9 rounded-full bg-gray-200 dark:bg-white/15 peer-checked:bg-gold transition-colors duration-200 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:h-4 after:w-4 after:rounded-full after:bg-white after:shadow-md after:transition-transform after:duration-200 peer-checked:after:translate-x-4 shrink-0" />
+                                <span className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
                                     Stay signed in
-                                </label>
-                            </div>
+                                </span>
+                            </label>
                             <Link
                                 href="/auth/forgot-password"
-                                className="text-xs sm:text-sm text-amber-700 hover:text-amber-800 hover:underline font-semibold dark:text-amber-300 dark:hover:text-amber-200 py-1 inline-block"
+                                className="text-xs sm:text-sm text-amber-600 hover:text-amber-700 hover:underline font-semibold dark:text-gold dark:hover:text-amber-300 py-1 inline-block"
                             >
                                 Forgot your password?
                             </Link>
@@ -348,13 +350,13 @@ export default function LoginPage() {
                         <Input
                             name="email"
                             type="email"
-                            placeholder="trader@thenexttrade.com"
+                            autoComplete="email"
                             label="Email"
                             required
                             startIcon={
                                 <Mail
                                     size={20}
-                                    className="text-amber-600/80 dark:text-amber-300/80"
+                                    className="text-amber-600 dark:text-gold"
                                 />
                             }
                             className={inputClassName}
@@ -381,9 +383,9 @@ export default function LoginPage() {
 
                 {mode === "magic" && magicLinkSent && (
                     <div className="text-center py-6 sm:py-8 space-y-3 sm:space-y-4">
-                        <div className="w-14 h-14 sm:w-16 sm:h-16 bg-amber-500/10 rounded-full flex items-center justify-center mx-auto border border-amber-500/25">
+                        <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gold/10 rounded-lg flex items-center justify-center mx-auto border border-gold/25">
                             <CheckCircle
-                                className="text-amber-600 dark:text-amber-300"
+                                className="text-amber-600 dark:text-gold"
                                 size={30}
                             />
                         </div>
@@ -397,9 +399,9 @@ export default function LoginPage() {
                         </p>
                         <Button
                             type="button"
-                            variant="ghost"
+                            variant="outline"
                             onClick={() => setMagicLinkSent(false)}
-                            className="text-xs sm:text-sm text-amber-700 hover:text-amber-800 hover:underline font-semibold mt-3 sm:mt-4 py-2 px-3 inline-flex items-center justify-center rounded-lg hover:bg-amber-500/10 min-h-[44px] dark:text-amber-300 dark:hover:text-amber-200 transition-colors h-auto"
+                            className="text-xs sm:text-sm text-amber-600 hover:text-amber-700 font-semibold mt-3 sm:mt-4 py-2 px-4 inline-flex items-center justify-center rounded-lg border-gray-200 dark:border-white/10 hover:bg-amber-500/10 min-h-[44px] dark:text-gold transition-colors h-auto"
                         >
                             Try again with a different email
                         </Button>
@@ -410,7 +412,7 @@ export default function LoginPage() {
                     Do not have an account?{" "}
                     <Link
                         href="/auth/signup"
-                        className="font-bold text-amber-700 hover:text-amber-800 hover:underline dark:text-amber-300 dark:hover:text-amber-200 py-1 inline-block"
+                        className="font-bold text-amber-600 hover:text-amber-700 hover:underline dark:text-gold dark:hover:text-amber-300 py-1 inline-block"
                     >
                         Sign up
                     </Link>

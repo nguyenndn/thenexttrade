@@ -65,23 +65,23 @@ export function EmailPreviewModal({
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-6 bg-black/75 backdrop-blur-md animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-6 bg-black/75 backdrop-blur-sm animate-in fade-in duration-200">
             <div
-                className="relative w-full max-w-6xl h-[95vh] max-h-[960px] flex flex-col bg-white dark:bg-[#121624] border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden"
+                className="relative w-full max-w-6xl h-[95vh] max-h-[960px] flex flex-col bg-white dark:bg-[#0D111C] border border-dashboard rounded-2xl shadow-2xl overflow-hidden"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* ── Modal Header ── */}
-                <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-white/10 bg-gray-50/75 dark:bg-[#181E32]/75">
+                <div className="flex items-center justify-between px-6 py-4 border-b border-dashboard bg-gray-50/90 dark:bg-[#151925]">
                     <div className="flex items-center gap-3">
-                        <div className="p-2.5 rounded-lg bg-amber-500/10 text-amber-500">
-                            <Mail size={22} />
+                        <div className="p-2.5 rounded-lg bg-amber-500/10 text-gold">
+                            <Mail size={20} />
                         </div>
                         <div>
                             <div className="flex items-center gap-2">
                                 <h3 className="text-base font-bold text-gray-900 dark:text-white">
                                     {title}
                                 </h3>
-                                <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                                <span className="px-2.5 py-0.5 rounded-lg text-[11px] font-bold bg-amber-500/10 text-gold dark:text-amber-400 border border-amber-500/20">
                                     HTML Preview
                                 </span>
                             </div>
@@ -94,14 +94,14 @@ export function EmailPreviewModal({
                     {/* Controls & Close */}
                     <div className="flex items-center gap-3">
                         {/* Device Viewport Toggle */}
-                        <div className="flex items-center p-1 bg-gray-200/70 dark:bg-white/5 rounded-lg border border-gray-300/60 dark:border-white/10">
+                        <div className="flex items-center p-1 bg-[#F1F3F5] dark:bg-[#1A1D27] rounded-lg border border-dashboard">
                             <Button
                                 type="button"
                                 variant="ghost"
                                 onClick={() => setViewMode("desktop")}
-                                className={`h-auto flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                                className={`h-auto flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors duration-150 ${
                                     viewMode === "desktop"
-                                        ? "bg-white dark:bg-[#0C0F1B] text-amber-500 shadow-sm hover:text-amber-500"
+                                        ? "bg-gold hover:bg-gold text-white shadow-sm"
                                         : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-transparent"
                                 }`}
                                 aria-label="Desktop Preview"
@@ -113,9 +113,9 @@ export function EmailPreviewModal({
                                 type="button"
                                 variant="ghost"
                                 onClick={() => setViewMode("mobile")}
-                                className={`h-auto flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                                className={`h-auto flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors duration-150 ${
                                     viewMode === "mobile"
-                                        ? "bg-white dark:bg-[#0C0F1B] text-amber-500 shadow-sm hover:text-amber-500"
+                                        ? "bg-gold hover:bg-gold text-white shadow-sm"
                                         : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-transparent"
                                 }`}
                                 aria-label="Mobile Preview"
@@ -138,9 +138,9 @@ export function EmailPreviewModal({
                 </div>
 
                 {/* ── Modal Body: Isolated iframe viewport (Expanded & Height Guaranteed) ── */}
-                <div className="flex-1 min-h-0 bg-gray-100 dark:bg-[#080B14] p-3 sm:p-5 flex items-stretch justify-center overflow-hidden">
+                <div className="flex-1 min-h-0 bg-gray-100 dark:bg-[#090D16] p-3 sm:p-5 flex items-stretch justify-center overflow-hidden">
                     <div
-                        className={`transition-all duration-300 bg-white rounded-lg shadow-xl border border-gray-200 dark:border-white/10 overflow-hidden h-full flex flex-col mx-auto ${
+                        className={`transition-all duration-200 bg-white rounded-xl shadow-xl border border-dashboard overflow-hidden h-full flex flex-col mx-auto ${
                             viewMode === "desktop"
                                 ? "w-full max-w-[740px]"
                                 : "w-[390px] max-w-full"
@@ -156,7 +156,7 @@ export function EmailPreviewModal({
                 </div>
 
                 {/* ── Modal Footer: Test Send Action ── */}
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-4 border-t border-gray-200 dark:border-white/10 bg-white dark:bg-[#121624]">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-4 border-t border-dashboard bg-white dark:bg-[#151925]">
                     <div className="flex items-center gap-3 w-full sm:w-auto">
                         {allowCustomRecipient ? (
                             <div className="w-full sm:w-72">
@@ -169,7 +169,7 @@ export function EmailPreviewModal({
                             </div>
                         ) : (
                             <div className="text-xs text-gray-500 dark:text-gray-400">
-                                Recipient: <span className="font-semibold text-gray-700 dark:text-gray-300">{recipient || "Default System Inbox"}</span>
+                                Recipient: <span className="font-mono tabular-nums font-semibold text-gray-700 dark:text-gray-300">{recipient || "Default System Inbox"}</span>
                             </div>
                         )}
                     </div>
@@ -177,15 +177,18 @@ export function EmailPreviewModal({
                     <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
                         <Button
                             variant="outline"
+                            size="smd"
                             onClick={onClose}
-                            className="rounded-lg h-9 text-xs font-semibold"
+                            className="rounded-lg font-bold"
                         >
-                            Close Preview
+                            Cancel
                         </Button>
                         <Button
+                            variant="primary"
+                            size="smd"
                             onClick={handleSendTest}
                             disabled={sending}
-                            className="rounded-lg h-9 text-xs font-semibold bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white flex items-center gap-2 shadow-sm shadow-amber-500/20"
+                            className="rounded-lg font-bold flex items-center gap-2"
                         >
                             {sending ? (
                                 <>

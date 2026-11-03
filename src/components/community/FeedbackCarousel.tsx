@@ -7,6 +7,7 @@ import {
     ChevronLeft,
     ChevronRight,
     MessageCircle,
+    CheckCircle2,
     X,
 } from "lucide-react";
 import { SPRING_SOFT, backdropVariants, panelVariants } from "@/lib/animations";
@@ -26,13 +27,12 @@ interface FeedbackCarouselProps {
 export function FeedbackCarousel({ images = [] }: FeedbackCarouselProps) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [imageErrors, setImageErrors] = useState<Record<number, boolean>>({});
-    const [isMobile, setIsMobile] = useState(true); // Default to mobile for SSR safety
+    const [isMobile, setIsMobile] = useState(true);
     const [activeLightboxImage, setActiveLightboxImage] = useState<
         string | null
     >(null);
     const [activeLightboxTitle, setActiveLightboxTitle] = useState<string>("");
 
-    // Detect screen width dynamic to toggle between 1-item and 3-item scrolling safely after mount
     useEffect(() => {
         const handleResize = () => {
             setIsMobile(window.innerWidth < 1024);
@@ -42,7 +42,6 @@ export function FeedbackCarousel({ images = [] }: FeedbackCarouselProps) {
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
-    // Do not render carousel if no real feedback images are provided
     if (images.length === 0) {
         return null;
     }
@@ -102,7 +101,7 @@ export function FeedbackCarousel({ images = [] }: FeedbackCarouselProps) {
                     variant="outline"
                     size="icon"
                     onClick={handlePrev}
-                    className="absolute left-1 sm:-left-12 z-40 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white dark:bg-slate-800 border border-dashboard flex items-center justify-center shadow-lg hover:bg-gray-50 dark:hover:bg-slate-700 hover:scale-105 active:scale-95 transition-all text-gray-700 dark:text-white"
+                    className="absolute left-1 sm:-left-12 z-40 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white dark:bg-[#1E2028] border border-dashboard flex items-center justify-center shadow-lg hover:bg-gray-50 dark:hover:bg-[#151925] hover:scale-105 active:scale-95 transition-all text-gray-700 dark:text-white"
                     aria-label="Previous slide"
                 >
                     <ChevronLeft size={20} />
@@ -132,7 +131,6 @@ export function FeedbackCarousel({ images = [] }: FeedbackCarouselProps) {
                                   ? 0.2
                                   : 0;
 
-                        // Calculate dynamic translate positions based on active index distance
                         let xOffset = 0;
                         let scale = 1;
 
@@ -181,21 +179,19 @@ export function FeedbackCarousel({ images = [] }: FeedbackCarouselProps) {
                                 }}
                             >
                                 <div
-                                    className={`w-full rounded-lg border bg-white dark:bg-[#131622] p-4 flex flex-col justify-between h-full group relative transition-all duration-500 ${
+                                    className={`w-full rounded-xl border bg-white dark:bg-[#1E2028] p-4 flex flex-col justify-between h-full group relative transition-all duration-500 ${
                                         isActive
                                             ? "border-gold/60 dark:border-gold/50 shadow-[0_0_35px_rgba(245,158,11,0.15)] dark:shadow-[0_0_40px_rgba(245,158,11,0.12)] scale-[1.02]"
                                             : "border-dashboard/80 shadow-md shadow-amber-500/[0.01]"
                                     }`}
                                 >
-                                    {/* Subtle active shadow */}
                                     {isActive && (
-                                        <div className="absolute inset-0 -m-1 rounded-lg bg-gold/10 opacity-60 blur-md -z-10 pointer-events-none" />
+                                        <div className="absolute inset-0 -m-1 rounded-xl bg-gold/10 opacity-60 blur-md -z-10 pointer-events-none" />
                                     )}
 
                                     {imageErrors[item.id] ? (
-                                        /* NEUTRAL PLACEHOLDER ON IMAGE LOAD ERROR */
-                                        <div className="w-full aspect-[1290/2796] rounded-lg bg-gray-100 dark:bg-[#0B0E14] border border-dashboard dark:border-white/[0.04] flex flex-col items-center justify-center p-6 text-center">
-                                            <div className="w-12 h-12 rounded-full bg-amber-500/10 border border-gold/20 flex items-center justify-center text-amber-500 mb-3">
+                                        <div className="w-full aspect-[1290/2796] rounded-lg bg-gray-100 dark:bg-[#151925] border border-dashboard dark:border-white/[0.04] flex flex-col items-center justify-center p-6 text-center">
+                                            <div className="w-12 h-12 rounded-lg bg-amber-500/10 border border-gold/20 flex items-center justify-center text-amber-500 mb-3">
                                                 <MessageCircle size={22} />
                                             </div>
                                             <span className="text-xs font-bold text-gray-700 dark:text-gray-300">
@@ -206,8 +202,7 @@ export function FeedbackCarousel({ images = [] }: FeedbackCarouselProps) {
                                             </span>
                                         </div>
                                     ) : (
-                                        /* ACTUAL IMAGE SCREENSHOT (Optimized for iPhone 15 Pro Max Aspect Ratio) */
-                                        <div className="relative w-full aspect-[1290/2796] rounded-lg overflow-hidden bg-slate-900/50 dark:bg-slate-950 border border-gray-150/80 dark:border-white/[0.06] flex items-center justify-center">
+                                        <div className="relative w-full aspect-[1290/2796] rounded-lg overflow-hidden bg-slate-900/50 dark:bg-slate-950 border border-gray-200/80 dark:border-white/[0.06] flex items-center justify-center">
                                             <img
                                                 src={item.imageSrc}
                                                 alt="Telegram feedback screenshot"
@@ -222,15 +217,16 @@ export function FeedbackCarousel({ images = [] }: FeedbackCarouselProps) {
                                     {/* Footer */}
                                     <div className="mt-4 text-left border-t border-dashboard dark:border-white/[0.04] pt-3 flex items-center justify-between shrink-0">
                                         <div>
-                                            <div className="text-xs font-black text-gray-800 dark:text-white leading-tight">
+                                            <div className="text-xs font-black tabular-nums text-gray-800 dark:text-white leading-tight">
                                                 {`Feedback Screenshot #${item.id}`}
                                             </div>
                                             <div className="text-[10px] text-gray-400 font-medium">
                                                 Verified Telegram Share
                                             </div>
                                         </div>
-                                        <div className="px-2 py-0.5 rounded-full bg-amber-500/10 border border-gold/20 text-[9px] font-bold text-gold uppercase tracking-wider">
-                                            ★ Community Share
+                                        <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-amber-500/10 border border-gold/20 text-[9px] font-bold text-gold uppercase tracking-wider">
+                                            <CheckCircle2 size={10} />
+                                            <span>Community Share</span>
                                         </div>
                                     </div>
                                 </div>
@@ -244,7 +240,7 @@ export function FeedbackCarousel({ images = [] }: FeedbackCarouselProps) {
                     variant="outline"
                     size="icon"
                     onClick={handleNext}
-                    className="absolute right-1 sm:-right-12 z-40 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white dark:bg-slate-800 border border-dashboard flex items-center justify-center shadow-lg hover:bg-gray-50 dark:hover:bg-slate-700 hover:scale-105 active:scale-95 transition-all text-gray-700 dark:text-white"
+                    className="absolute right-1 sm:-right-12 z-40 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white dark:bg-[#1E2028] border border-dashboard flex items-center justify-center shadow-lg hover:bg-gray-50 dark:hover:bg-[#151925] hover:scale-105 active:scale-95 transition-all text-gray-700 dark:text-white"
                     aria-label="Next slide"
                 >
                     <ChevronRight size={20} />
@@ -258,7 +254,7 @@ export function FeedbackCarousel({ images = [] }: FeedbackCarouselProps) {
                         <Button
                             key={index}
                             type="button"
-                            variant="ghost"
+                            variant="outline"
                             onClick={() => handleDotClick(index)}
                             className={cn(
                                 "p-0 min-h-0 border-0 rounded-full transition-all duration-300 cursor-pointer h-2.5",
@@ -302,10 +298,9 @@ function FeedbackLightboxModal({
         setMounted(true);
     }, []);
 
-    // Body scroll lock: lock while open, release on exit complete, safety net on unmount.
     useEffect(() => {
         if (isOpen) {
-            document.body.style.overflow = "hidden"; // Prevent background scrolling
+            document.body.style.overflow = "hidden";
         }
     }, [isOpen]);
 
@@ -319,7 +314,6 @@ function FeedbackLightboxModal({
         document.body.style.overflow = "unset";
     };
 
-    // Handle escape key to close
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === "Escape") onClose();
@@ -342,7 +336,6 @@ function FeedbackLightboxModal({
                     className="fixed inset-0 z-[9999] flex items-start justify-center overflow-y-auto bg-black/75 backdrop-blur-sm p-4 sm:p-6"
                     onClick={onClose}
                 >
-                    {/* Modal Card Wrapper - Expanded Size (At least twice the card width) */}
                     <motion.div
                         variants={panelVariants}
                         initial="initial"
@@ -350,9 +343,8 @@ function FeedbackLightboxModal({
                         exit="exit"
                         transition={SPRING_SOFT}
                         className="relative my-auto w-full max-w-[440px] sm:max-w-[520px] aspect-[1290/2796] rounded-2xl overflow-hidden bg-slate-950 border border-gold/30 shadow-[0_0_50px_rgba(245,158,11,0.2)] flex items-center justify-center"
-                        onClick={(e) => e.stopPropagation()} // Prevent closing when clicking the card
+                        onClick={(e) => e.stopPropagation()}
                     >
-                        {/* Close Button at top-right of the card */}
                         <Button
                             type="button"
                             variant="outline"

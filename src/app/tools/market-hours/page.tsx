@@ -2,7 +2,7 @@
 
 import { MarketHoursMonitor } from "@/components/tools/market-hours/MarketHoursMonitor";
 import { ToolsPageShell } from "@/components/tools/ToolsPageShell";
-import { Clock, Home, ChevronRight } from "lucide-react";
+import { Home, ChevronRight } from "lucide-react";
 import Link from "next/link";
 
 export default function MarketHoursPage() {
@@ -45,7 +45,7 @@ export default function MarketHoursPage() {
                     {/* Column Left: Staggered Content */}
                     <div className="md:col-span-7 lg:col-span-8 text-left space-y-4">
                         {/* Capsule Category Badge */}
-                        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold/10 border border-gold/20 text-gold text-xs font-black uppercase tracking-widest">
+                        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-gold/10 border border-gold/20 text-amber-600 dark:text-gold text-xs font-black uppercase tracking-widest">
                             <span className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse" />
                             <span>Market Info</span>
                         </div>
@@ -53,7 +53,7 @@ export default function MarketHoursPage() {
                         {/* Extrabold Lexend Title */}
                         <h1 className="text-[22px] sm:text-3xl md:text-5xl font-black text-slate-850 dark:text-white tracking-tight leading-none font-heading">
                             Forex{" "}
-                            <span className="text-gold">Market Hours</span>
+                            <span className="text-amber-600 dark:text-gold">Market Hours</span>
                         </h1>
 
                         {/* Sophisticated Description */}
@@ -66,7 +66,7 @@ export default function MarketHoursPage() {
 
                     {/* Column Right: Glassmorphic Micro HUD Panel */}
                     <div className="md:col-span-5 lg:col-span-4">
-                        <div className="bg-white/80 dark:bg-white/[0.02] border border-gold/15 rounded-lg p-5 shadow-lg relative backdrop-blur-md overflow-hidden group-hover:border-gold/35 transition-colors duration-300">
+                        <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-5 shadow-sm relative overflow-hidden group-hover:border-gold/35 transition-colors duration-300">
                             {/* Abstract digital line background */}
                             <div className="absolute top-0 right-0 w-32 h-32 bg-gold/[0.04] dark:bg-gold/[0.02] rounded-full blur-2xl pointer-events-none" />
 
@@ -75,7 +75,7 @@ export default function MarketHoursPage() {
                             </p>
 
                             <div className="space-y-3">
-                                <div className="flex items-center justify-between border-b border-dashboard pb-2">
+                                <div className="flex items-center justify-between border-b border-gray-200 dark:border-white/10 pb-2">
                                     <span className="text-xs font-extrabold text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
                                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                                         Live Sync
@@ -84,11 +84,11 @@ export default function MarketHoursPage() {
                                         Active
                                     </span>
                                 </div>
-                                <div className="flex items-center justify-between border-b border-dashboard pb-2">
+                                <div className="flex items-center justify-between border-b border-gray-200 dark:border-white/10 pb-2">
                                     <span className="text-xs font-extrabold text-slate-500 dark:text-slate-400">
                                         Timezone
                                     </span>
-                                    <span className="text-xs font-black text-gold">
+                                    <span className="text-xs font-black text-amber-600 dark:text-gold">
                                         Auto-Detect
                                     </span>
                                 </div>
@@ -96,7 +96,7 @@ export default function MarketHoursPage() {
                                     <span className="text-xs font-extrabold text-slate-500 dark:text-slate-400">
                                         Tracked Sessions
                                     </span>
-                                    <span className="text-xs font-black text-slate-800 dark:text-white">
+                                    <span className="text-xs font-mono tabular-nums font-black text-slate-800 dark:text-white">
                                         4 Global Centers
                                     </span>
                                 </div>

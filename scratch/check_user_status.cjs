@@ -2,7 +2,7 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 async function main() {
   const user = await prisma.user.findFirst({
-    where: { email: "keezimin@gmail.com" },
+    where: { email: process.env.USER_QA_EMAIL || "" },
     include: {
       tradingAccounts: true,
       vipRequests: true,

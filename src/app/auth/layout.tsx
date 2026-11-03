@@ -45,9 +45,9 @@ export default function AuthLayout({
             description:
                 "Scans your execution patterns to detect revenge lot sizing, session FOMO, and off-plan trades before a single bad afternoon destroys weeks of disciplined gains.",
             icon: ShieldAlert,
-            accentColor: "text-amber-500",
-            badgeBg: "bg-amber-500/10 border-amber-500/20 text-amber-700 dark:text-amber-300",
-            iconBg: "border-amber-500/30 bg-amber-500/10 dark:border-amber-500/25 dark:bg-amber-500/15",
+            accentColor: "text-amber-600 dark:text-gold",
+            badgeBg: "bg-amber-500/10 border-amber-500/20 text-amber-700 dark:text-gold",
+            iconBg: "border-amber-500/30 bg-amber-500/10 dark:border-gold/25 dark:bg-gold/15",
             stat: "Risk Telemetry",
             statLabel: "Loss spiral alerts",
         },
@@ -57,9 +57,9 @@ export default function AuthLayout({
             description:
                 "No motivational slogans. Receive one strict execution habit to fix across your next 10 trades, benchmarked directly against your historical data.",
             icon: Target,
-            accentColor: "text-cyan-500",
-            badgeBg: "bg-cyan-500/10 border-cyan-500/20 text-cyan-700 dark:text-cyan-300",
-            iconBg: "border-cyan-500/30 bg-cyan-500/10 dark:border-cyan-500/25 dark:bg-cyan-500/15",
+            accentColor: "text-amber-600 dark:text-gold",
+            badgeBg: "bg-amber-500/10 border-amber-500/20 text-amber-700 dark:text-gold",
+            iconBg: "border-amber-500/30 bg-amber-500/10 dark:border-gold/25 dark:bg-gold/15",
             stat: "1 Strict Goal",
             statLabel: "Weekly execution plan",
         },
@@ -76,19 +76,19 @@ export default function AuthLayout({
             icon: BookOpen,
             label: "12-Level Academy",
             desc: "Market structure & liquidity",
-            color: "text-amber-600 dark:text-amber-400",
+            color: "text-amber-600 dark:text-gold",
         },
         {
             icon: Crown,
             label: "VIP Partner EAs",
             desc: "GoldScalperNinja & Phoenix",
-            color: "text-cyan-600 dark:text-cyan-400",
+            color: "text-amber-600 dark:text-gold",
         },
     ];
 
     return (
-        <div className="min-h-[100dvh] w-full flex flex-col items-center justify-center bg-[#F7F4EC] text-slate-800 dark:bg-transparent dark:text-white px-4 py-6 sm:py-10 md:py-16 font-sans relative overflow-x-hidden transition-colors duration-300">
-            <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(245,158,11,0.16)_0%,rgba(255,255,255,0.72)_34%,rgba(16,185,129,0.10)_100%)] dark:bg-[linear-gradient(135deg,rgba(43,35,68,0.60)_0%,rgba(255,255,255,0.02)_40%,rgba(6,69,79,0.38)_100%)]" />
+        <div className="min-h-[100dvh] w-full flex flex-col items-center justify-center bg-white text-slate-800 dark:bg-[#0B0E14] dark:text-white px-4 py-6 sm:py-10 md:py-16 font-sans relative overflow-x-hidden transition-colors duration-300">
+            <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(245,158,11,0.08)_0%,rgba(255,255,255,0.85)_40%,rgba(16,185,129,0.06)_100%)] dark:bg-[linear-gradient(135deg,rgba(245,158,11,0.06)_0%,rgba(11,14,20,0.92)_45%,rgba(16,185,129,0.05)_100%)] pointer-events-none" />
 
             <div className="relative z-10 flex w-full max-w-7xl items-center justify-center gap-10 lg:justify-between lg:gap-14">
                 {/* LEFT: Form Section */}
@@ -99,7 +99,7 @@ export default function AuthLayout({
                             className={buttonVariants({
                                 variant: "outline",
                                 className:
-                                    "group rounded-full border-amber-900/10 bg-white/60 px-3.5 sm:px-4 py-2 min-h-[40px] sm:min-h-[44px] text-xs sm:text-sm font-semibold text-slate-600 shadow-sm shadow-amber-900/5 backdrop-blur hover:border-amber-500/35 hover:text-slate-950 dark:bg-white/[0.06] dark:text-slate-300 dark:hover:border-amber-300/35 dark:hover:text-white shrink-0 inline-flex items-center gap-2",
+                                    "group rounded-lg border-gray-200 bg-white px-3.5 sm:px-4 py-2 min-h-[40px] sm:min-h-[44px] text-xs sm:text-sm font-semibold text-slate-600 shadow-sm hover:border-gold/40 hover:text-slate-950 dark:border-white/10 dark:bg-[#1E2028] dark:text-slate-300 dark:hover:border-gold/40 dark:hover:text-white shrink-0 inline-flex items-center gap-2",
                             })}
                         >
                             <ArrowLeft
@@ -120,8 +120,8 @@ export default function AuthLayout({
                     {/* Header */}
                     <div className="mb-7">
                         <h2 className="text-[34px] xl:text-[40px] font-black leading-[1.12] tracking-tight text-slate-950 dark:text-white">
-                            Built for{" "}
-                            <span className="bg-[linear-gradient(90deg,#B7791F,#F7C948,#10B981)] bg-clip-text text-transparent">
+                            {"Built for "}
+                            <span className="inline-block bg-[linear-gradient(90deg,#B7791F,#F7C948,#10B981)] bg-clip-text text-transparent">
                                 Execution Edge
                             </span>
                         </h2>
@@ -137,7 +137,7 @@ export default function AuthLayout({
                             return (
                                 <div
                                     key={feature.title}
-                                    className="group relative rounded-xl border border-amber-900/10 bg-white/75 p-4.5 sm:p-5 shadow-[0_4px_20px_rgba(88,64,27,0.04)] backdrop-blur-md transition-all duration-300 hover:border-amber-500/30 hover:bg-white/90 hover:shadow-md dark:border-white/10 dark:bg-white/[0.03] dark:hover:border-white/20 dark:hover:bg-white/[0.06]"
+                                    className="group relative rounded-xl border border-gray-200 bg-white p-4.5 sm:p-5 shadow-sm transition-all duration-300 hover:border-gold/30 hover:shadow-md dark:border-white/10 dark:bg-[#1E2028] dark:hover:border-gold/30"
                                 >
                                     <div className="flex items-start gap-4">
                                         {/* Icon node */}
@@ -158,14 +158,14 @@ export default function AuthLayout({
                                                         {feature.title}
                                                     </h3>
                                                     <span
-                                                        className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider border ${feature.badgeBg}`}
+                                                        className={`inline-flex items-center px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-wider border ${feature.badgeBg}`}
                                                     >
                                                         {feature.tag}
                                                     </span>
                                                 </div>
                                                 <div className="text-right shrink-0">
                                                     <p
-                                                        className={`text-xs font-black ${feature.accentColor}`}
+                                                        className={`text-xs font-black tabular-nums ${feature.accentColor}`}
                                                     >
                                                         {feature.stat}
                                                     </p>
@@ -174,7 +174,7 @@ export default function AuthLayout({
                                                     </p>
                                                 </div>
                                             </div>
-                                            <p className="mt-1.5 text-xs sm:text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+                                            <p className="mt-1.5 text-xs sm:text-sm leading-relaxed text-slate-600 dark:text-slate-400 tabular-nums">
                                                 {feature.description}
                                             </p>
                                         </div>
@@ -185,12 +185,12 @@ export default function AuthLayout({
                     </div>
 
                     {/* Bottom: Also included */}
-                    <div className="mt-5 rounded-xl border border-amber-900/10 bg-white/60 p-4 backdrop-blur-md dark:border-white/10 dark:bg-white/[0.03]">
+                    <div className="mt-5 rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#1E2028]">
                         <div className="flex items-center justify-between mb-2.5">
                             <span className="text-[11px] font-black uppercase tracking-[0.16em] text-slate-400 dark:text-slate-500">
                                 Included with your workspace
                             </span>
-                            <span className="text-[11px] font-extrabold text-emerald-600 dark:text-emerald-400">
+                            <span className="text-[11px] font-extrabold tabular-nums text-emerald-600 dark:text-emerald-400">
                                 100% Free
                             </span>
                         </div>
@@ -200,14 +200,14 @@ export default function AuthLayout({
                                 return (
                                     <div
                                         key={item.label}
-                                        className="flex flex-col gap-0.5 rounded-lg bg-slate-900/[0.03] dark:bg-white/[0.03] p-2.5 transition-colors hover:bg-slate-900/[0.05] dark:hover:bg-white/[0.06]"
+                                        className="flex flex-col gap-0.5 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] p-2.5 transition-colors hover:border-gold/30"
                                     >
                                         <div className="flex items-center gap-1.5">
                                             <Icon
                                                 size={14}
                                                 className={item.color}
                                             />
-                                            <span className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">
+                                            <span className="text-xs font-bold tabular-nums text-slate-800 dark:text-slate-200 truncate">
                                                 {item.label}
                                             </span>
                                         </div>

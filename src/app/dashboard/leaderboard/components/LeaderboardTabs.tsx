@@ -18,34 +18,34 @@ const TABS: {
         type: "sprint",
         label: "Trading Sprints",
         icon: Trophy,
-        activeColor: "text-amber-600 dark:text-amber-400",
+        activeColor: "text-amber-600 dark:text-gold",
         activeBg:
-            "bg-amber-500/10 dark:bg-amber-400/10 border-amber-500/25 dark:border-amber-400/20",
+            "bg-gold/10 border-gold/25",
         badge: "LIVE",
     },
     {
         type: "trading",
         label: "All Performance",
         icon: BarChart3,
-        activeColor: "text-blue-600 dark:text-blue-400",
+        activeColor: "text-amber-600 dark:text-gold",
         activeBg:
-            "bg-blue-500/10 dark:bg-blue-400/10 border-blue-500/25 dark:border-blue-400/20",
+            "bg-gold/10 border-gold/25",
     },
     {
         type: "streak",
         label: "Discipline Streak",
         icon: Flame,
-        activeColor: "text-orange-600 dark:text-orange-400",
+        activeColor: "text-amber-600 dark:text-gold",
         activeBg:
-            "bg-orange-500/10 dark:bg-orange-400/10 border-orange-500/25 dark:border-orange-400/20",
+            "bg-gold/10 border-gold/25",
     },
     {
         type: "mystats",
         label: "My Telemetry",
         icon: User,
-        activeColor: "text-sky-600 dark:text-sky-400",
+        activeColor: "text-amber-600 dark:text-gold",
         activeBg:
-            "bg-sky-500/10 dark:bg-sky-400/10 border-sky-500/25 dark:border-sky-400/20",
+            "bg-gold/10 border-gold/25",
     },
 ];
 
@@ -99,7 +99,7 @@ export function LeaderboardTabs({
                         <Icon size={15} className="shrink-0" />
                         <span>{tab.label}</span>
                         {tab.badge && (
-                            <span className="text-[9px] font-extrabold px-1.5 py-0.2 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
+                            <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded-lg bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
                                 {tab.badge}
                             </span>
                         )}

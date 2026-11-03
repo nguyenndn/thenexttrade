@@ -2,17 +2,16 @@
 
 import { useState, useEffect } from "react";
 import { Clock, Info } from "lucide-react";
-import { format } from "date-fns";
 import {
     TimezoneSelector,
     ALL_TIMEZONES,
 } from "@/components/tools/economic-calendar/TimezoneSelector";
 
 const MARKETS = [
-    { name: "Sydney", openUtc: 21, closeUtc: 6, color: "bg-blue-500" },
-    { name: "Tokyo", openUtc: 0, closeUtc: 9, color: "bg-orange-500" },
+    { name: "Sydney", openUtc: 21, closeUtc: 6, color: "bg-amber-500" },
+    { name: "Tokyo", openUtc: 0, closeUtc: 9, color: "bg-amber-600" },
     { name: "London", openUtc: 8, closeUtc: 17, color: "bg-red-500" },
-    { name: "New York", openUtc: 13, closeUtc: 22, color: "bg-green-500" },
+    { name: "New York", openUtc: 13, closeUtc: 22, color: "bg-emerald-500" },
 ];
 
 export function MarketHoursMonitor() {
@@ -118,16 +117,16 @@ export function MarketHoursMonitor() {
         const closeTimeString = `${closeTime.h.toString().padStart(2, "0")}:${closeTime.m.toString().padStart(2, "0")}`;
 
         return (
-            <div className="relative h-14 mb-4 bg-gray-100 dark:bg-white/5 rounded-lg w-full overflow-hidden border border-dashboard group hover:border-primary/50 transition-colors">
+            <div className="relative h-14 mb-4 bg-gray-50/80 dark:bg-[#151925] rounded-lg w-full overflow-hidden border border-gray-200 dark:border-white/10 group hover:border-gold/40 transition-colors">
                 <div className="absolute left-4 top-0 bottom-0 flex items-center z-10 pointer-events-none">
                     <div className="flex flex-col">
                         <span className="font-bold text-sm text-gray-700 dark:text-white uppercase tracking-wider flex items-center gap-2">
                             <span
-                                className={`w-2 h-2 rounded-full ${isOpen ? "bg-green-500 animate-pulse shadow-[0_0_8px_limegreen]" : "bg-gray-400"}`}
+                                className={`w-2 h-2 rounded-full ${isOpen ? "bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.6)]" : "bg-gray-400"}`}
                             ></span>
                             {market.name}
                         </span>
-                        <span className="text-[10px] text-gray-600 font-mono mt-0.5">
+                        <span className="text-[10px] text-gray-600 dark:text-gray-400 font-mono tabular-nums mt-0.5">
                             {openTimeString} - {closeTimeString}
                         </span>
                     </div>
@@ -153,11 +152,11 @@ export function MarketHoursMonitor() {
     };
 
     return (
-        <div className="w-full bg-white/80 dark:bg-white/[0.02] border border-dashboard/80 rounded-lg p-5 sm:p-6 shadow-xl shadow-gray-200/10 dark:shadow-none backdrop-blur-md">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-6 border-b border-dashboard/60 pb-6">
+        <div className="w-full bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-5 sm:p-6 shadow-sm">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-6 border-b border-gray-200 dark:border-white/10 pb-6">
                 <div>
                     <h2 className="text-lg font-extrabold text-gray-800 dark:text-white flex items-center gap-2">
-                        <Clock className="text-amber-500 dark:text-amber-400" />
+                        <Clock className="text-amber-600 dark:text-gold" />
                         Forex Market Hours
                     </h2>
                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
@@ -172,7 +171,7 @@ export function MarketHoursMonitor() {
                 <div className="flex flex-col sm:flex-row items-center gap-4 w-full md:w-auto">
                     <div className="flex gap-3 text-xs font-medium">
                         <div className="flex items-center gap-1.5 text-gray-600 dark:text-gray-500">
-                            <div className="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse"></div>{" "}
+                            <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse"></div>{" "}
                             Open
                         </div>
                         <div className="flex items-center gap-1.5 text-gray-600 dark:text-gray-500">
@@ -192,8 +191,7 @@ export function MarketHoursMonitor() {
 
             <div className="relative">
                 {/* Time Scale */}
-                {/* Time Scale */}
-                <div className="flex justify-between text-[10px] text-gray-600 dark:text-gray-300 font-mono mb-2 px-[1px] select-none">
+                <div className="flex justify-between text-[10px] text-gray-600 dark:text-gray-300 font-mono tabular-nums mb-2 px-[1px] select-none">
                     {Array.from({ length: 25 }, (_, i) => i).map((h) => (
                         <div
                             key={h}
@@ -211,7 +209,7 @@ export function MarketHoursMonitor() {
                     {Array.from({ length: 25 }, (_, i) => i).map((h) => (
                         <div
                             key={h}
-                            className="h-full w-[1px] bg-gray-100 dark:bg-white/5 mx-auto border-r border-dashed border-dashboard"
+                            className="h-full w-[1px] bg-gray-100 dark:bg-white/5 mx-auto border-r border-dashed border-gray-200 dark:border-white/10"
                         ></div>
                     ))}
                 </div>
@@ -228,16 +226,16 @@ export function MarketHoursMonitor() {
                     className="absolute top-0 bottom-0 w-[2px] bg-red-500 z-20 pointer-events-none shadow-[0_0_12px_rgba(239,68,68,0.6)]"
                     style={{ left: `${currentPosition}%` }}
                 >
-                    <div className="absolute -top-6 -translate-x-1/2 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm whitespace-nowrap">
+                    <div className="absolute -top-6 -translate-x-1/2 bg-red-500 text-white text-[10px] font-mono tabular-nums font-bold px-2 py-0.5 rounded-lg shadow-sm whitespace-nowrap">
                         NOW
                     </div>
                 </div>
             </div>
 
             <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="p-5 bg-gray-50/50 dark:bg-white/[0.01] rounded-lg border border-dashboard/60 hover:border-orange-500/30 transition-all duration-300">
-                    <h3 className="font-bold text-orange-500 mb-2 flex items-center gap-2 text-sm">
-                        <span className="w-2 h-2 rounded-full bg-orange-500"></span>
+                <div className="p-5 bg-gray-50/80 dark:bg-[#151925] rounded-lg border border-gray-200 dark:border-white/10 hover:border-gold/30 transition-all duration-300">
+                    <h3 className="font-bold text-amber-600 dark:text-gold mb-2 flex items-center gap-2 text-sm">
+                        <span className="w-2 h-2 rounded-full bg-amber-600"></span>
                         Tokyo Session
                     </h3>
                     <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
@@ -254,7 +252,7 @@ export function MarketHoursMonitor() {
                     </p>
                 </div>
 
-                <div className="p-5 bg-gray-50/50 dark:bg-white/[0.01] rounded-lg border border-dashboard/60 hover:border-red-500/30 transition-all duration-300">
+                <div className="p-5 bg-gray-50/80 dark:bg-[#151925] rounded-lg border border-gray-200 dark:border-white/10 hover:border-red-500/30 transition-all duration-300">
                     <h3 className="font-bold text-red-500 mb-2 flex items-center gap-2 text-sm">
                         <span className="w-2 h-2 rounded-full bg-red-500"></span>
                         London Session
@@ -273,14 +271,14 @@ export function MarketHoursMonitor() {
                     </p>
                 </div>
 
-                <div className="p-5 bg-gray-50/50 dark:bg-white/[0.01] rounded-lg border border-dashboard/60 hover:border-green-500/30 transition-all duration-300">
-                    <h3 className="font-bold text-green-500 mb-2 flex items-center gap-2 text-sm">
-                        <span className="w-2 h-2 rounded-full bg-green-500"></span>
+                <div className="p-5 bg-gray-50/80 dark:bg-[#151925] rounded-lg border border-gray-200 dark:border-white/10 hover:border-emerald-500/30 transition-all duration-300">
+                    <h3 className="font-bold text-emerald-600 dark:text-emerald-400 mb-2 flex items-center gap-2 text-sm">
+                        <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
                         New York Session
                     </h3>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+                    <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed tabular-nums">
                         High liquidity at the open. The{" "}
-                        <span className="text-gold font-extrabold">
+                        <span className="text-amber-600 dark:text-gold font-extrabold">
                             Overlap
                         </span>{" "}
                         with London (approx. 4 hours) is the peak trading time

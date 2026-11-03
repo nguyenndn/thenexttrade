@@ -9,6 +9,7 @@ import { EquityCurve } from "./EquityCurve";
 import { ProfitCalendar } from "./ProfitCalendar";
 import { PairPerformance } from "./PairPerformance";
 import { DayPerformance } from "./DayPerformance";
+import { TargetProgressWidget } from "@/components/dashboard/targets/TargetProgressWidget";
 
 export interface AnalyticsData {
     summary: {
@@ -89,6 +90,7 @@ export function AnalyticsDashboard({
                 <>
                     {/* Charts Row 1 - Full Width */}
                     <div className="grid grid-cols-1 gap-4">
+                        <TargetProgressWidget accountId={accountId} />
                         <EquityCurve
                             data={data.equityCurve}
                             totalCommission={data.summary.totalCommission}

@@ -33,9 +33,9 @@ const BADGE_ICONS: Record<string, React.ElementType> = {
 const BADGE_COLORS: Record<string, { bg: string; ring: string; text: string }> =
     {
         EARLY_ADOPTER: {
-            bg: "bg-yellow-50 dark:bg-yellow-500/15",
-            ring: "ring-yellow-300 dark:ring-yellow-500/40",
-            text: "text-yellow-600 dark:text-yellow-400",
+            bg: "bg-amber-50 dark:bg-gold/15",
+            ring: "ring-amber-300 dark:ring-gold/40",
+            text: "text-amber-600 dark:text-gold",
         },
         STUDIOUS: {
             bg: "bg-emerald-50 dark:bg-emerald-500/15",
@@ -43,14 +43,14 @@ const BADGE_COLORS: Record<string, { bg: string; ring: string; text: string }> =
             text: "text-emerald-600 dark:text-emerald-400",
         },
         TRADER: {
-            bg: "bg-sky-50 dark:bg-sky-500/15",
-            ring: "ring-sky-300 dark:ring-sky-500/40",
-            text: "text-sky-600 dark:text-sky-400",
+            bg: "bg-amber-50 dark:bg-gold/15",
+            ring: "ring-amber-300 dark:ring-gold/40",
+            text: "text-amber-600 dark:text-gold",
         },
         WEEK_WARRIOR: {
-            bg: "bg-orange-50 dark:bg-orange-500/15",
-            ring: "ring-orange-300 dark:ring-orange-500/40",
-            text: "text-orange-600 dark:text-orange-400",
+            bg: "bg-amber-50 dark:bg-gold/15",
+            ring: "ring-amber-300 dark:ring-gold/40",
+            text: "text-amber-600 dark:text-gold",
         },
         MONTHLY_MASTER: {
             bg: "bg-rose-50 dark:bg-rose-500/15",
@@ -58,19 +58,19 @@ const BADGE_COLORS: Record<string, { bg: string; ring: string; text: string }> =
             text: "text-rose-600 dark:text-rose-400",
         },
         QUARTERLY_KING: {
-            bg: "bg-amber-50 dark:bg-amber-500/15",
-            ring: "ring-amber-300 dark:ring-amber-500/40",
-            text: "text-amber-600 dark:text-amber-400",
+            bg: "bg-amber-50 dark:bg-gold/15",
+            ring: "ring-amber-300 dark:ring-gold/40",
+            text: "text-amber-600 dark:text-gold",
         },
         CENTURY_CLUB: {
-            bg: "bg-teal-50 dark:bg-teal-500/15",
-            ring: "ring-teal-300 dark:ring-teal-500/40",
-            text: "text-teal-600 dark:text-teal-400",
+            bg: "bg-emerald-50 dark:bg-emerald-500/15",
+            ring: "ring-emerald-300 dark:ring-emerald-500/40",
+            text: "text-emerald-600 dark:text-emerald-400",
         },
         LEGENDARY: {
-            bg: "bg-yellow-50 dark:bg-yellow-500/15",
-            ring: "ring-yellow-400 dark:ring-yellow-500/50",
-            text: "text-yellow-600 dark:text-yellow-400",
+            bg: "bg-amber-50 dark:bg-gold/15",
+            ring: "ring-amber-400 dark:ring-gold/50",
+            text: "text-amber-600 dark:text-gold",
         },
     };
 
@@ -88,7 +88,7 @@ export function MyStatsView({
     if (!myRank) {
         return (
             <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-12 text-center max-w-3xl mx-auto">
-                <div className="inline-flex items-center justify-center p-4 rounded-lg bg-cyan-500/10 text-cyan-500 mb-5 ring-4 ring-cyan-500/5">
+                <div className="inline-flex items-center justify-center p-4 rounded-lg bg-gold/10 text-amber-600 dark:text-gold mb-5 ring-4 ring-gold/5">
                     <Target size={32} />
                 </div>
                 <h3 className="text-xl font-bold text-gray-700 dark:text-white mb-3">
@@ -121,13 +121,12 @@ export function MyStatsView({
                 {/* ═══════════════════════════════════════════════════════════ */}
                 {/* PROFILE HERO */}
                 {/* ═══════════════════════════════════════════════════════════ */}
-                <div className="px-6 py-8 bg-gradient-to-br from-primary/5 via-transparent to-cyan-500/5">
+                <div className="px-6 py-8 bg-gray-50/80 dark:bg-[#151925]">
                     <div className="flex items-center gap-6">
                         {/* Avatar */}
                         <div className="relative shrink-0">
                             <div className="w-20 h-20 rounded-lg flex items-center justify-center font-bold text-2xl text-white bg-gray-400 dark:bg-gray-600 overflow-hidden ring-4 ring-white dark:ring-[#1E2028] shadow-lg">
                                 {userAvatar ? (
-                                    // eslint-disable-next-line @next/next/no-img-element
                                     <img
                                         src={userAvatar}
                                         alt={userName || "You"}
@@ -138,7 +137,7 @@ export function MyStatsView({
                                 )}
                             </div>
                             {/* Level badge */}
-                            <div className="absolute -bottom-1.5 -right-1.5 w-7 h-7 rounded-lg bg-primary text-white text-xs font-black flex items-center justify-center shadow-md border-2 border-white dark:border-[#1E2028]">
+                            <div className="absolute -bottom-1.5 -right-1.5 w-7 h-7 rounded-lg bg-gold !text-white text-xs font-black font-mono tabular-nums flex items-center justify-center shadow-md border-2 border-white dark:border-[#1E2028]">
                                 {level}
                             </div>
                         </div>
@@ -156,15 +155,15 @@ export function MyStatsView({
                                     tierLabel={tierProgress.current.label}
                                     size="sm"
                                 />
-                                <span className="text-sm text-gray-500">
+                                <span className="text-sm font-mono tabular-nums text-gray-500">
                                     {earnedCount}/{badges.length} badges
                                 </span>
                             </div>
                         </div>
 
                         {/* Rank */}
-                        <div className="text-right shrink-0">
-                            <div className="text-5xl font-black text-primary tabular-nums leading-none">
+                        <div className="text-right shrink-0 font-mono tabular-nums">
+                            <div className="text-5xl font-black text-amber-600 dark:text-gold leading-none">
                                 #{rank}
                             </div>
                             <span className="text-sm font-bold text-gray-500 mt-1 block">
@@ -183,7 +182,7 @@ export function MyStatsView({
                             Edge Progress
                         </span>
                         {tierProgress.next && (
-                            <span className="text-xs text-gray-500 tabular-nums">
+                            <span className="text-xs text-gray-500 font-mono tabular-nums">
                                 {tierProgress.xpToNext.toLocaleString()} Edge to{" "}
                                 {tierProgress.next.label}
                             </span>
@@ -199,7 +198,7 @@ export function MyStatsView({
                         />
                         <div className="flex-1 h-2.5 rounded-full bg-gray-100 dark:bg-white/5 overflow-hidden">
                             <div
-                                className="h-full rounded-full bg-gradient-to-r from-primary to-cyan-400 transition-all duration-700 ease-out"
+                                className="h-full rounded-full bg-gold transition-all duration-700 ease-out"
                                 style={{ width: `${tierProgress.progress}%` }}
                             />
                         </div>
@@ -223,13 +222,13 @@ export function MyStatsView({
                         icon={Star}
                         label="Edge Score"
                         value={value.toLocaleString()}
-                        color="text-yellow-500"
+                        color="text-amber-600 dark:text-gold"
                     />
                     <QuickStat
                         icon={Flame}
                         label="Streak"
                         value={`${streak}d`}
-                        color="text-orange-500"
+                        color="text-amber-600 dark:text-gold"
                         border
                     />
                     <QuickStat
@@ -243,7 +242,7 @@ export function MyStatsView({
                         icon={TrendingUp}
                         label="Trades"
                         value={String(totalTrades)}
-                        color="text-sky-500"
+                        color="text-amber-600 dark:text-gold"
                         border
                     />
                 </div>
@@ -257,7 +256,7 @@ export function MyStatsView({
                             <h3 className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">
                                 <Award size={12} className="inline-block mr-1 align-[-1px]" /> Badges & Achievements
                             </h3>
-                            <span className="text-xs font-bold text-primary tabular-nums">
+                            <span className="text-xs font-bold text-amber-600 dark:text-gold font-mono tabular-nums">
                                 {earnedCount}/{badges.length}
                             </span>
                         </div>
@@ -296,7 +295,7 @@ function QuickStat({
             )}
         >
             <Icon size={18} className={cn("mx-auto mb-1.5", color)} />
-            <div className="text-lg font-black text-gray-700 dark:text-white tabular-nums">
+            <div className="text-lg font-black text-gray-700 dark:text-white font-mono tabular-nums">
                 {value}
             </div>
             <div className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">

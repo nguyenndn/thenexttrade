@@ -1,44 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SPRING_SOFT } from "@/lib/animations";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { menuItems } from "@/config/navigation";
-import {
-    ChevronDown,
-    LogIn,
-    UserPlus,
-    User as UserIcon,
-    LayoutDashboard,
-    Settings,
-    LogOut,
-    Compass,
-} from "lucide-react";
-import { Button } from "@/components/ui/Button";
-import { buttonVariants } from "@/components/ui/button-variants";
 import { AuthUser } from "@/lib/auth-types";
-import { signout } from "@/app/auth/actions";
+import { useDashboardUrl } from "@/hooks/useDashboardUrl";
+import { MobileUserAuthBlock } from "./mobile-nav/MobileUserAuthBlock";
 
 interface MobileNavigationProps {
     isOpen: boolean;
     onClose: () => void;
     user?: AuthUser | null;
-}
-
-/** Read last_account_id cookie and return a pre-built dashboard URL to skip the redirect hop. */
-function useDashboardUrl(): string {
-    return useMemo(() => {
-        if (typeof document === "undefined") return "/dashboard";
-        const match = document.cookie.match(
-            /(?:^|;\s*)last_account_id=([^;]+)/
-        );
-        const accountId = match?.[1];
-        if (!accountId) return "/dashboard";
-        return `/dashboard?accountId=${accountId}`;
-    }, []);
 }
 
 export function MobileNavigation({
@@ -47,189 +21,63 @@ export function MobileNavigation({
     user,
 }: MobileNavigationProps) {
     const pathname = usePathname();
-    const [openDropdown, setOpenDropdown] = useState<string | null>(null);
     const dashboardUrl = useDashboardUrl();
-
-    const handleMobileDropdownToggle = (
-        menu: string,
-        event: React.MouseEvent
-    ) => {
-        event.stopPropagation();
-        setOpenDropdown((prev) => (prev === menu ? null : menu));
-    };
 
     return (
         <AnimatePresence>
             {isOpen && (
-        <motion.div
-            id="mobile-navigation"
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={SPRING_SOFT}
-            className="lg:hidden px-2 pb-4 absolute top-full left-0 w-full z-40"
-        >
-            <div
-                className="max-w-7xl mx-auto rounded-xl border shadow-lg bg-white dark:bg-slate-900/95 border-dashboard dark:border-slate-700"
-            >
-                {/* Nav Links */}
-                <nav className="p-4 space-y-2">
-                    {menuItems.map((item) => {
-                        const isActive =
-                            pathname === item.href ||
-                            (item.href !== "/" &&
-                                pathname.startsWith(item.href));
+                <motion.div
+                    id="mobile-navigation"
+                    initial={{ opacity: 0, y: -8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={SPRING_SOFT}
+                    className="lg:hidden px-2 pb-4 absolute top-full left-0 w-full z-40"
+                >
+                    <div className="max-w-7xl mx-auto rounded-xl border shadow-lg bg-white dark:bg-card/95 border-gray-200 dark:border-white/10">
+                        {/* Nav Links */}
+                        <nav className="p-4 space-y-2">
+                            {menuItems.map((item) => {
+                                const isActive =
+                                    pathname === item.href ||
+                                    (item.href !== "/" &&
+                                        pathname.startsWith(item.href));
 
-                        return (
-                            <Link
-                                key={item.name}
-                                href={item.href}
-                                onClick={onClose}
-                                aria-current={isActive ? "page" : undefined}
-                                className={[
-                                    "relative block px-4 py-3 rounded-lg nav-menu-text transition-colors",
-                                    isActive
-                                        ? "bg-amber-50 text-amber-700 dark:bg-amber-400/10 dark:text-amber-300"
-                                        : "text-gray-700 hover:bg-amber-50 hover:text-amber-700 dark:text-white dark:hover:bg-amber-400/10 dark:hover:text-amber-300",
-                                ].join(" ")}
-                            >
-                                {item.name}
-                                <span
-                                    className={[
-                                        "absolute bottom-1.5 left-4 right-4 h-[2px] rounded-full bg-amber-500 transition-opacity",
-                                        isActive ? "opacity-100" : "opacity-0",
-                                    ].join(" ")}
-                                />
-                            </Link>
-                        );
-                    })}
-                </nav>
-
-                {/* Bottom section: user info OR auth buttons */}
-                <div className="border-t border-dashboard dark:border-slate-700">
-                    {user ? (
-                        /* ── Logged in: user card + key links ── */
-                        <div className="p-4 space-y-1">
-                            {/* Avatar + name */}
-                            <div className="flex items-center gap-3 px-3 py-3 rounded-lg mb-2 bg-gray-50 dark:bg-slate-800">
-                                <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-primary/30 shrink-0">
-                                    {user.image ? (
-                                        <Image
-                                            src={user.image}
-                                            alt={user.name || "User"}
-                                            width={40}
-                                            height={40}
-                                            className="object-cover w-full h-full"
+                                return (
+                                    <Link
+                                        key={item.name}
+                                        href={item.href}
+                                        onClick={onClose}
+                                        aria-current={isActive ? "page" : undefined}
+                                        className={[
+                                            "relative block px-4 py-3 rounded-lg nav-menu-text transition-colors",
+                                            isActive
+                                                ? "bg-amber-50 text-amber-700 dark:bg-amber-400/10 dark:text-amber-300"
+                                                : "text-gray-700 hover:bg-amber-50 hover:text-amber-700 dark:text-white dark:hover:bg-amber-400/10 dark:hover:text-amber-300",
+                                        ].join(" ")}
+                                    >
+                                        {item.name}
+                                        <span
+                                            className={[
+                                                "absolute bottom-1.5 left-4 right-4 h-[2px] rounded-full bg-amber-500 transition-opacity",
+                                                isActive ? "opacity-100" : "opacity-0",
+                                            ].join(" ")}
                                         />
-                                    ) : (
-                                        <div className="w-full h-full flex items-center justify-center bg-gray-200 dark:bg-slate-700">
-                                            <UserIcon
-                                                size={20}
-                                                className="text-gray-500"
-                                            />
-                                        </div>
-                                    )}
-                                </div>
-                                <div className="min-w-0">
-                                    <p className="font-semibold text-sm truncate text-gray-700 dark:text-white">
-                                        {user.name || "Trader"}
-                                    </p>
-                                    <p className="text-xs text-primary truncate">
-                                        @{user.profile?.username || "user"}
-                                    </p>
-                                </div>
-                            </div>
+                                    </Link>
+                                );
+                            })}
+                        </nav>
 
-                            <Link
-                                href="/get-started"
-                                onClick={onClose}
-                                className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm nav-menu-text transition-colors text-orange-700 hover:bg-orange-50 dark:text-orange-300 dark:hover:bg-orange-400/10"
-                            >
-                                <Compass
-                                    size={16}
-                                    className="text-orange-500"
-                                />
-                                Getting Started
-                            </Link>
-                            <Link
-                                href={dashboardUrl}
-                                onClick={onClose}
-                                className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm nav-menu-text transition-colors text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-slate-800 dark:hover:text-white"
-                            >
-                                <LayoutDashboard
-                                    size={16}
-                                    className="text-primary"
-                                />
-                                Dashboard
-                            </Link>
-                            <Link
-                                href="/dashboard/settings"
-                                onClick={onClose}
-                                className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm nav-menu-text transition-colors text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-slate-800 dark:hover:text-white"
-                            >
-                                <Settings size={16} className="text-gray-500" />
-                                Settings
-                            </Link>
-                            <Button
-                                type="button"
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => {
-                                    signout();
-                                    onClose();
-                                }}
-                                className="w-full flex items-center justify-start gap-3 px-3 py-2.5 rounded-lg text-sm nav-menu-text text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors h-auto"
-                            >
-                                <LogOut size={16} />
-                                Log Out
-                            </Button>
+                        {/* Bottom section: user info OR auth buttons */}
+                        <div className="border-t border-gray-200 dark:border-white/10">
+                            <MobileUserAuthBlock
+                                user={user}
+                                dashboardUrl={dashboardUrl}
+                                onClose={onClose}
+                            />
                         </div>
-                    ) : (
-                        /* ── Not logged in: Login + Sign Up ── */
-                        <div className="p-4 space-y-3">
-                            <Link
-                                href="/get-started"
-                                onClick={onClose}
-                                className={buttonVariants({
-                                    variant: "outline",
-                                    className:
-                                        "flex min-h-11 items-center justify-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-bold transition-colors border-orange-200 bg-orange-50 text-orange-700 hover:bg-orange-100 dark:border-orange-400/20 dark:bg-orange-400/10 dark:text-orange-300 dark:hover:bg-orange-400/15",
-                                })}
-                            >
-                                <Compass size={16} />
-                                Start Here
-                            </Link>
-                            <div className="grid grid-cols-2 gap-3">
-                                <Link
-                                    href="/auth/login"
-                                    onClick={onClose}
-                                    className={buttonVariants({
-                                        variant: "outline",
-                                        className:
-                                            "flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold border transition-colors border-dashboard text-gray-800 hover:bg-gray-50 dark:border-slate-600 dark:text-white dark:hover:bg-slate-800",
-                                    })}
-                                >
-                                    <LogIn size={16} />
-                                    Login
-                                </Link>
-                                <Link
-                                    href="/auth/signup"
-                                    onClick={onClose}
-                                    className={buttonVariants({
-                                        variant: "primary",
-                                        className:
-                                            "flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-bold bg-amber-500 hover:bg-amber-600 shadow-sm shadow-amber-500/20",
-                                    })}
-                                >
-                                    <UserPlus size={16} />
-                                    Sign Up
-                                </Link>
-                            </div>
-                        </div>
-                    )}
-                </div>
-            </div>
-        </motion.div>
+                    </div>
+                </motion.div>
             )}
         </AnimatePresence>
     );

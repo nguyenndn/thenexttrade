@@ -26,11 +26,11 @@ export function SecuritySettings() {
     return (
         <div className="w-full space-y-5">
             {/* ── Security Header Card ── */}
-            <div className="bg-white dark:bg-[#0B0E14] rounded-lg border border-dashboard shadow-sm p-5">
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-5">
                 <div className="flex items-center justify-between gap-4">
                     <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-lg bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center flex-shrink-0">
-                            <Shield size={24} className="text-blue-500" />
+                        <div className="w-12 h-12 rounded-lg bg-gold/10 border border-gold/20 flex items-center justify-center flex-shrink-0">
+                            <Shield size={24} className="text-amber-600 dark:text-gold" />
                         </div>
                         <div>
                             <h2 className="text-lg font-bold text-gray-700 dark:text-white">
@@ -42,10 +42,10 @@ export function SecuritySettings() {
                         </div>
                     </div>
                     <span
-                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold ${
+                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border ${
                             is2FAEnabled
-                                ? "bg-green-100 dark:bg-green-500/15 text-green-600 dark:text-green-400"
-                                : "bg-amber-100 dark:bg-amber-500/15 text-amber-600 dark:text-amber-400"
+                                ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
+                                : "bg-gold/10 text-amber-600 dark:text-gold border-gold/20"
                         }`}
                     >
                         <ShieldCheck size={14} />
@@ -55,10 +55,10 @@ export function SecuritySettings() {
             </div>
 
             {/* ── Change Password Card ── */}
-            <div className="bg-white dark:bg-[#0B0E14] rounded-lg border border-dashboard shadow-sm overflow-hidden">
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm overflow-hidden">
                 <div className="px-6 py-4 border-b border-dashboard flex items-center gap-2.5">
-                    <div className="w-7 h-7 rounded-lg bg-blue-500/10 dark:bg-blue-500/20 flex items-center justify-center">
-                        <Key size={14} className="text-blue-500" />
+                    <div className="w-7 h-7 rounded-lg bg-gold/10 border border-gold/20 flex items-center justify-center">
+                        <Key size={14} className="text-amber-600 dark:text-gold" />
                     </div>
                     <div>
                         <h2 className="text-sm font-bold text-gray-700 dark:text-white">
@@ -121,13 +121,13 @@ export function SecuritySettings() {
                                         name={field.name}
                                         type="password"
                                         required
+                                        aria-label={field.label}
                                         minLength={
                                             field.name !== "currentPassword"
                                                 ? 6
                                                 : undefined
                                         }
-                                        className="w-full pl-9 pr-4 py-2.5 bg-gray-50 dark:bg-[#151925] border border-dashboard rounded-lg text-sm text-gray-700 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
-                                        placeholder="••••••••"
+                                        className="w-full pl-9 pr-4 py-2.5 bg-gray-50/80 dark:bg-[#151925] border border-dashboard rounded-lg text-sm text-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-gold transition-all"
                                     />
                                 </div>
                             </div>
@@ -149,10 +149,10 @@ export function SecuritySettings() {
             </div>
 
             {/* ── Two-Factor Authentication Card ── */}
-            <div className="bg-white dark:bg-[#0B0E14] rounded-lg border border-dashboard shadow-sm overflow-hidden">
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm overflow-hidden">
                 <div className="px-6 py-4 border-b border-dashboard flex items-center gap-2.5">
-                    <div className="w-7 h-7 rounded-lg bg-orange-500/10 dark:bg-orange-500/20 flex items-center justify-center">
-                        <Shield size={14} className="text-orange-500" />
+                    <div className="w-7 h-7 rounded-lg bg-gold/10 border border-gold/20 flex items-center justify-center">
+                        <Shield size={14} className="text-amber-600 dark:text-gold" />
                     </div>
                     <div>
                         <h2 className="text-sm font-bold text-gray-700 dark:text-white">
@@ -172,10 +172,10 @@ export function SecuritySettings() {
             </div>
 
             {/* ── Active Sessions Card ── */}
-            <div className="bg-white dark:bg-[#0B0E14] rounded-lg border border-dashboard shadow-sm overflow-hidden">
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm overflow-hidden">
                 <div className="px-6 py-4 border-b border-dashboard flex items-center gap-2.5">
-                    <div className="w-7 h-7 rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
-                        <Monitor size={14} className="text-primary" />
+                    <div className="w-7 h-7 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
+                        <Monitor size={14} className="text-emerald-500" />
                     </div>
                     <div>
                         <h2 className="text-sm font-bold text-gray-700 dark:text-white">

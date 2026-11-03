@@ -7,11 +7,13 @@ import { useDebouncedCallback } from "use-debounce";
 interface SearchInputProps {
     className?: string;
     inputClassName?: string;
+    ariaLabel?: string;
 }
 
 export const SearchInput = ({
     className = "",
     inputClassName = "",
+    ariaLabel = "Search knowledge base articles",
 }: SearchInputProps = {}) => {
     const searchParams = useSearchParams();
     const { replace } = useRouter();
@@ -31,13 +33,13 @@ export const SearchInput = ({
 
     return (
         <div className={`relative w-full group ${className}`}>
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <Search className="h-5 w-5 text-gray-500 group-focus-within:text-gold transition-colors" />
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                <Search className="h-4 w-4 text-gray-400 group-focus-within:text-gold transition-colors" />
             </div>
             <input
                 type="text"
-                className={`block w-full pl-11 pr-4 py-3.5 rounded-lg bg-white/70 dark:bg-white/5 backdrop-blur-xl border border-gray-200 dark:border-white/10 text-gray-800 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gold/30 focus:border-gold transition-all shadow-sm text-sm sm:text-base ${inputClassName}`}
-                placeholder="Search for articles, guides..."
+                aria-label={ariaLabel}
+                className={`block w-full pl-10 pr-4 py-3 rounded-lg bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-gold/25 focus:border-gold transition-all shadow-sm text-sm font-medium ${inputClassName}`}
                 onChange={(e) => handleSearch(e.target.value)}
                 defaultValue={searchParams.get("q")?.toString()}
             />

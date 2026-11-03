@@ -3,8 +3,8 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-const userEmail = process.env.USER_QA_EMAIL || "keezimin@gmail.com";
-const userPassword = process.env.USER_QA_PASSWORD || "Password123!";
+const userEmail = process.env.USER_QA_EMAIL || "";
+const userPassword = process.env.USER_QA_PASSWORD || "";
 const runId = Date.now();
 const prefix = `QA-VERIFY-${runId}`;
 

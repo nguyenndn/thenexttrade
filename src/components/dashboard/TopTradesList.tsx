@@ -36,7 +36,7 @@ export function TopTradesList({ bestTrades, worstTrades }: TopTradesListProps) {
             {/* Container Header */}
             <div className="px-5 py-4 border-b border-dashboard flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
-                    <div className="p-2 bg-cyan-500/10 rounded-lg text-cyan-500">
+                    <div className="p-2 bg-gold/10 rounded-lg text-amber-600 dark:text-gold">
                         <TrendingUp size={18} />
                     </div>
                     <div>
@@ -84,16 +84,16 @@ export function TopTradesList({ bestTrades, worstTrades }: TopTradesListProps) {
                                             </span>
                                         </div>
                                         <div className="col-span-2 text-center">
-                                            <span className="text-xs text-gray-500/80 dark:text-gray-400/80 font-medium bg-gray-100/50 dark:bg-white/5 px-2 py-0.5 rounded-lg">
+                                            <span className="text-xs text-gray-500/80 dark:text-gray-400/80 font-medium font-mono tabular-nums bg-gray-100/50 dark:bg-white/5 px-2 py-0.5 rounded-lg">
                                                 {Number(trade.lotSize).toFixed(
                                                     2
                                                 )}
                                             </span>
                                         </div>
-                                        <div className="col-span-4 text-center text-xs text-gray-500 dark:text-gray-400 font-medium">
+                                        <div className="col-span-4 text-center text-xs text-gray-500 dark:text-gray-400 font-medium font-mono tabular-nums">
                                             {formatDate(trade.date)}
                                         </div>
-                                        <div className="col-span-3 text-right font-bold text-sm text-primary">
+                                        <div className="col-span-3 text-right font-bold font-mono tabular-nums text-sm text-primary">
                                             +{formatCurrency(trade.pnl)}
                                         </div>
                                     </div>
@@ -136,16 +136,16 @@ export function TopTradesList({ bestTrades, worstTrades }: TopTradesListProps) {
                                             </span>
                                         </div>
                                         <div className="col-span-2 text-center">
-                                            <span className="text-xs text-gray-500/80 dark:text-gray-400/80 font-medium bg-gray-100/50 dark:bg-white/5 px-2 py-0.5 rounded-lg">
+                                            <span className="text-xs text-gray-500/80 dark:text-gray-400/80 font-medium font-mono tabular-nums bg-gray-100/50 dark:bg-white/5 px-2 py-0.5 rounded-lg">
                                                 {Number(trade.lotSize).toFixed(
                                                     2
                                                 )}
                                             </span>
                                         </div>
-                                        <div className="col-span-4 text-center text-xs text-gray-500 dark:text-gray-400 font-medium">
+                                        <div className="col-span-4 text-center text-xs text-gray-500 dark:text-gray-400 font-medium font-mono tabular-nums">
                                             {formatDate(trade.date)}
                                         </div>
-                                        <div className="col-span-3 text-right font-bold text-sm text-red-500">
+                                        <div className="col-span-3 text-right font-bold font-mono tabular-nums text-sm text-red-500">
                                             {formatCurrency(trade.pnl)}
                                         </div>
                                     </div>

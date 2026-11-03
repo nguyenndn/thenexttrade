@@ -309,13 +309,13 @@ export function StrategyManager({
 
             {/* Toolbar */}
             {allStrategies.length > 0 && (
-                <div className="bg-white dark:bg-[#1E2028] border border-dashboard rounded-lg p-4 shadow-sm mt-6">
+                <div className="bg-white dark:bg-[#1E2028] border border-dashboard rounded-xl p-4 shadow-sm mt-6">
                     <div className="flex flex-col lg:flex-row gap-4 justify-between items-stretch lg:items-center">
                         <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center flex-1">
                             <div className="w-full sm:max-w-xs">
                                 <PremiumInput
                                     icon={Search}
-                                    placeholder="Search setups..."
+                                    aria-label="Search setups"
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                 />
@@ -330,7 +330,7 @@ export function StrategyManager({
                                     onClick={() => setFilterType("all")}
                                     className="h-auto px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap"
                                 >
-                                    All ({allStrategies.length})
+                                    All (<span className="font-mono tabular-nums">{allStrategies.length}</span>)
                                 </Button>
                                 <Button
                                     type="button"
@@ -340,7 +340,7 @@ export function StrategyManager({
                                     className="h-auto px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 whitespace-nowrap"
                                 >
                                     <BookOpen size={13} />
-                                    Playbooks ({playbookCount})
+                                    Playbooks (<span className="font-mono tabular-nums">{playbookCount}</span>)
                                 </Button>
                                 <Button
                                     type="button"
@@ -349,7 +349,7 @@ export function StrategyManager({
                                     onClick={() => setFilterType("standard")}
                                     className="h-auto px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap"
                                 >
-                                    Standard ({standardCount})
+                                    Standard (<span className="font-mono tabular-nums">{standardCount}</span>)
                                 </Button>
                             </div>
                         </div>

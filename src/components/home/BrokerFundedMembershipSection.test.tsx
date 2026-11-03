@@ -6,14 +6,15 @@ import { BrokerFundedMembershipSection } from "./BrokerFundedMembershipSection";
 describe("BrokerFundedMembershipSection", () => {
     it("renders the headline and core zero-fee message correctly", () => {
         const html = renderToString(<BrokerFundedMembershipSection isLoggedIn={false} />);
+        const text = html.replace(/<[^>]+>/g, "");
 
         // Verify key messaging
-        expect(html).toContain("You never pay us");
-        expect(html).toContain("Your $200 stays 100% yours");
-        expect(html).toContain("Typical Trading Course");
-        expect(html).toContain("TheNextTrade Ecosystem");
-        expect(html).toContain("You fund your own account");
-        expect(html).toContain("TheNextTrade receives $0");
+        expect(text).toContain("You never pay us");
+        expect(text).toContain("Your $200 stays 100% yours");
+        expect(text).toContain("Typical Signal / Course Group");
+        expect(text).toContain("TheNextTrade Ecosystem");
+        expect(text).toContain("You fund your own account");
+        expect(text).toContain("TheNextTrade receives $0");
     });
 
     it("renders trust pills and money flow indicators", () => {
@@ -27,7 +28,7 @@ describe("BrokerFundedMembershipSection", () => {
 
     it("renders CTA according to logged-in state", () => {
         const loggedOutHtml = renderToString(<BrokerFundedMembershipSection isLoggedIn={false} />);
-        expect(loggedOutHtml).toContain("Start Your Free 7-Day Trial");
+        expect(loggedOutHtml).toContain("Unlock VIP via Broker Deposit");
 
         const loggedInHtml = renderToString(<BrokerFundedMembershipSection isLoggedIn={true} />);
         expect(loggedInHtml).toContain("Connect Your Broker Account");

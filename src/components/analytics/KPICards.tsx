@@ -32,8 +32,14 @@ export function KPICards({ summary }: KPICardsProps) {
             title: "Win Rate",
             value: `${(summary.winRate || 0).toFixed(1)}%`,
             icon: Target,
-            color: "text-purple-500",
-            bg: "bg-purple-50 dark:bg-purple-500/10",
+            color:
+                (summary.winRate || 0) >= 50
+                    ? "text-emerald-500"
+                    : "text-amber-500",
+            bg:
+                (summary.winRate || 0) >= 50
+                    ? "bg-emerald-50 dark:bg-emerald-500/10"
+                    : "bg-amber-50 dark:bg-amber-500/10",
             description:
                 (summary.winRate || 0) >= 50
                     ? "Above average"
@@ -46,8 +52,8 @@ export function KPICards({ summary }: KPICardsProps) {
                     ? "MAX"
                     : (summary.profitFactor ?? 0).toFixed(2),
             icon: Scale,
-            color: "text-blue-500",
-            bg: "bg-blue-50 dark:bg-blue-500/10",
+            color: "text-amber-500",
+            bg: "bg-amber-50 dark:bg-amber-500/10",
             description:
                 (summary.profitFactor || 0) >= 1.5
                     ? "Healthy"
@@ -59,11 +65,11 @@ export function KPICards({ summary }: KPICardsProps) {
             icon: (summary.totalPnL || 0) >= 0 ? TrendingUp : TrendingDown,
             color:
                 (summary.totalPnL || 0) >= 0
-                    ? "text-green-500"
+                    ? "text-emerald-500"
                     : "text-red-500",
             bg:
                 (summary.totalPnL || 0) >= 0
-                    ? "bg-green-50 dark:bg-green-500/10"
+                    ? "bg-emerald-50 dark:bg-emerald-500/10"
                     : "bg-red-50 dark:bg-red-500/10",
             prefix: (summary.totalPnL || 0) >= 0 ? "+" : "-",
         },
@@ -71,8 +77,8 @@ export function KPICards({ summary }: KPICardsProps) {
             title: "Avg R:R",
             value: `1:${(summary.avgRRR || 0).toFixed(1)}`,
             icon: Percent,
-            color: "text-yellow-500",
-            bg: "bg-yellow-50 dark:bg-yellow-500/10",
+            color: "text-amber-500",
+            bg: "bg-amber-50 dark:bg-amber-500/10",
             description:
                 (summary.avgRRR || 0) >= 2 ? "Excellent" : "Review exits",
         },
@@ -93,14 +99,15 @@ export function KPICards({ summary }: KPICardsProps) {
 
                 // Set text color properly aligned with Journal style - clean and strong
                 let colorClass = "text-gray-700 dark:text-white";
-                if (card.color.includes("green")) colorClass = "text-[#00C888]";
+                if (card.title === "Total P&L" && card.color.includes("emerald"))
+                    colorClass = "text-[#00C888]";
                 else if (card.color.includes("red"))
                     colorClass = "text-red-500";
 
                 return (
                     <div
                         key={index}
-                        className={`bg-white dark:bg-[#1E2028] p-6 rounded-lg border border-dashboard shadow-sm hover:shadow-md transition-shadow duration-200 group border-t-4 ${card.color.replace("text-", "border-t-")}`}
+                        className={`bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-dashboard shadow-sm hover:shadow-md transition-shadow duration-200 group border-t-4 ${card.color.replace("text-", "border-t-")}`}
                     >
                         <div className="flex items-center gap-3 mb-4">
                             <div
@@ -117,7 +124,7 @@ export function KPICards({ summary }: KPICardsProps) {
                             {card.title}
                         </h3>
                         <p
-                            className={`text-[28px] font-bold tracking-tight ${colorClass} group-hover:scale-[1.02] transform origin-left transition-transform relative z-10`}
+                            className={`text-[28px] font-bold font-mono tabular-nums tracking-tight ${colorClass} relative z-10`}
                         >
                             {card.prefix && card.prefix}
                             {card.value}

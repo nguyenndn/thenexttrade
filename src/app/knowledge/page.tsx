@@ -1,15 +1,15 @@
+import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { getAuthUser } from "@/lib/auth-cache";
 import Link from "next/link";
-import Image from "next/image";
 import {
-    Clock,
     Search,
     BookOpen,
-    TrendingUp,
-    Filter,
     Flame,
     MessageCircle,
     CalendarDays,
+    X,
+    Layers,
 } from "lucide-react";
 import { PublicHeader } from "@/components/layout/PublicHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
@@ -20,7 +20,6 @@ import { Pagination } from "@/components/ui/Pagination";
 import { ArticleCard } from "@/components/knowledge/ArticleCard";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { cn } from "@/lib/utils";
-import { X } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -60,6 +59,7 @@ interface LibraryPageProps {
 }
 
 export default async function LibraryPage(props: LibraryPageProps) {
+    const user = await getAuthUser();
     const params = await props.searchParams;
     const query = params?.q || "";
     const categorySlug = params?.category;
@@ -68,15 +68,15 @@ export default async function LibraryPage(props: LibraryPageProps) {
     const sortBy = params?.sort || "newest";
     const ITEMS_PER_PAGE = 9;
 
-    // Dynamic orderBy based on sort param
-    const orderByMap: Record<string, any> = {
+    // Dynamic orderBy based on sort param (Explicit Prisma types — zero `any`)
+    const orderByMap: Record<string, Prisma.ArticleOrderByWithRelationInput> = {
         newest: { createdAt: "desc" },
         popular: { views: "desc" },
         discussed: { comments: { _count: "desc" } },
     };
     const orderBy = orderByMap[sortBy] || orderByMap.newest;
 
-    const whereCondition: any = {
+    const whereCondition: Prisma.ArticleWhereInput = {
         status: "PUBLISHED",
     };
 
@@ -124,97 +124,147 @@ export default async function LibraryPage(props: LibraryPageProps) {
             },
         }),
         prisma.article.count({ where: whereCondition }),
-        prisma.category.findMany({ orderBy: { name: "asc" } }), // Fetch all categories
+        prisma.category.findMany({ orderBy: { name: "asc" } }),
     ]);
 
     const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
+    const buildCategoryHref = (slug?: string) => {
+        const nextParams = new URLSearchParams();
+        if (query) nextParams.set("q", query);
+        if (slug) nextParams.set("category", slug);
+        if (tagSlug) nextParams.set("tag", tagSlug);
+        if (sortBy && sortBy !== "newest") nextParams.set("sort", sortBy);
+        const qs = nextParams.toString();
+        return `/knowledge${qs ? `?${qs}` : ""}`;
+    };
+
     return (
-        <main className="min-h-screen bg-slate-50 dark:bg-transparent">
-            {/* Wrapper for Content that needs Firefly Background */}
+        <main className="min-h-screen bg-white dark:bg-transparent">
             <div className="relative overflow-hidden">
-                {/* Background Effects */}
-                <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--gold)/0.15)_1px,transparent_1px)] [background-size:32px_32px] opacity-[0.25] dark:opacity-[0.15] pointer-events-none"></div>
+                {/* Ambient Background Atmosphere */}
+                <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_50%_15%,rgba(245,158,11,0.08),transparent_75%)] dark:bg-[radial-gradient(ellipse_70%_60%_at_50%_15%,rgba(245,158,11,0.12),transparent_75%)] pointer-events-none" />
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_70%_70%_at_50%_40%,#000_70%,transparent_100%)] pointer-events-none" />
                 <FireflyBackground />
 
-                <PublicHeader />
+                <PublicHeader user={user} />
 
-                {/* Hero Section - Glass Effect */}
-                <div className="pt-32 pb-10 sm:pb-6 relative z-10">
+                {/* Hero Section */}
+                <div className="pt-28 sm:pt-32 pb-8 relative z-10">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8 lg:gap-10">
-                            <div className="w-full lg:flex-1 text-left">
-                                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gold/10 border border-gold/20 text-gold font-black text-xs uppercase tracking-wider mb-6 shadow-sm">
-                                    <BookOpen size={15} />
+                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
+                            <div className="lg:col-span-7 text-left">
+                                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gold/10 border border-gold/20 text-amber-700 dark:text-gold font-black text-xs uppercase tracking-wider mb-5 shadow-xs">
+                                    <BookOpen size={14} />
                                     <span>Knowledge Base</span>
                                 </div>
-                                <h1 className="text-4xl md:text-5xl lg:text-6xl font-black font-heading text-gray-800 dark:text-white mb-6 leading-tight tracking-tight">
+                                <h1 className="text-4xl md:text-5xl lg:text-6xl font-black font-heading text-gray-900 dark:text-white mb-4 leading-tight tracking-tight">
                                     Trading{" "}
-                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-gold to-amber-500">
-                                        Library
-                                    </span>
+                                    <span className="text-gold">Library</span>
                                 </h1>
-                                <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 max-w-2xl leading-relaxed mb-6 lg:mb-8 font-semibold">
+                                <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 max-w-2xl leading-relaxed mb-6">
                                     Battle-tested documentation on execution models, risk management mathematics, session dynamics, and behavioral psychology.
                                 </p>
 
-                                {/* Search Component - fullwidth on tablet/mobile, max-w-md on desktop lg */}
-                                <div className="w-full max-w-none lg:max-w-md mb-2 lg:mb-0">
+                                {/* Search Input with Explicit Label & Helper Text (Zero Generic Placeholder) */}
+                                <div className="w-full max-w-none lg:max-w-md space-y-1.5">
+                                    <div className="flex items-center justify-between gap-2">
+                                        <span className="text-xs font-bold text-gray-800 dark:text-gray-200">
+                                            Search Knowledge Base
+                                        </span>
+                                        <span className="text-[11px] text-gray-500 dark:text-gray-400">
+                                            Filter by execution model, risk math, or strategy
+                                        </span>
+                                    </div>
                                     <SearchInput className="w-full" />
                                 </div>
                             </div>
 
-                            {/* Top Categories Pills - Glass */}
-                            <div className="flex flex-wrap justify-start lg:justify-end gap-2.5 w-full lg:max-w-lg">
-                                {categories.map((cat) => (
+                            {/* Topic Directory Panel */}
+                            <div className="lg:col-span-5 w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-4 sm:p-5 shadow-sm">
+                                <div className="flex items-center justify-between gap-2 mb-3 pb-2.5 border-b border-gray-100 dark:border-white/10">
+                                    <span className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-gray-800 dark:text-white">
+                                        <Layers size={14} className="text-gold" />
+                                        <span>Filter by Topic</span>
+                                    </span>
+                                    <span className="text-[11px] tabular-nums font-bold text-gray-500 dark:text-gray-400">
+                                        {categories.length} Topics
+                                    </span>
+                                </div>
+                                <div className="flex flex-wrap gap-2">
                                     <Link
-                                        key={cat.id}
-                                        href={`/knowledge?category=${cat.slug}`}
-                                        className={`px-4 py-2 rounded-lg backdrop-blur-md border cursor-pointer text-xs font-bold uppercase tracking-wider transition-all duration-300 shadow-sm hover:shadow-md ${categorySlug === cat.slug
-                                            ? "bg-gradient-to-r from-gold to-amber-600 border-gold/40 text-white shadow-md shadow-gold/20"
-                                            : "bg-white/60 dark:bg-white/5 border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 hover:bg-white dark:hover:bg-white/10 hover:border-gold/35 hover:text-gold hover:shadow-md hover:shadow-gold/[0.05]"
-                                            }`}
+                                        href={buildCategoryHref(undefined)}
+                                        className={`px-3 py-1.5 rounded-lg border text-xs font-bold transition-colors duration-150 ${
+                                            !categorySlug
+                                                ? "bg-gold border-gold !text-white shadow-xs"
+                                                : "bg-gray-50 dark:bg-[#151925] border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 hover:border-gold/40 hover:text-amber-600 dark:hover:text-gold"
+                                        }`}
                                     >
-                                        {cat.name}
+                                        All Topics
                                     </Link>
-                                ))}
+                                    {categories.map((cat) => {
+                                        const isSelected =
+                                            categorySlug === cat.slug;
+                                        return (
+                                            <Link
+                                                key={cat.id}
+                                                href={buildCategoryHref(
+                                                    isSelected
+                                                        ? undefined
+                                                        : cat.slug
+                                                )}
+                                                className={`px-3 py-1.5 rounded-lg border text-xs font-bold transition-colors duration-150 ${
+                                                    isSelected
+                                                        ? "bg-gold border-gold !text-white shadow-xs"
+                                                        : "bg-gray-50 dark:bg-[#151925] border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 hover:border-gold/40 hover:text-amber-600 dark:hover:text-gold"
+                                                }`}
+                                            >
+                                                {cat.name}
+                                            </Link>
+                                        );
+                                    })}
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 {/* Content Section */}
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-6 relative z-10">
-                    <div className="flex items-center justify-between">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 relative z-10">
+                    <div className="flex flex-wrap items-center justify-between gap-3">
                         <SectionHeader
                             title={
                                 query
                                     ? `Search: "${query}"`
                                     : categorySlug
-                                        ? `Category: ${categories.find((c) => c.slug === categorySlug)?.name || categorySlug}`
-                                        : tagSlug
-                                            ? `Tag: ${tagSlug}`
-                                            : "Latest Publications"
+                                      ? `Category: ${categories.find((c) => c.slug === categorySlug)?.name || categorySlug}`
+                                      : tagSlug
+                                        ? `Tag: ${tagSlug}`
+                                        : "Latest Publications"
                             }
                             align="left"
+                            className="!mb-4"
                         />
                         {(query || categorySlug || tagSlug) && (
                             <Link
                                 href="/knowledge"
                                 className={cn(
-                                    buttonVariants({ variant: "outline", size: "sm" }),
-                                    "flex items-center gap-2 text-red-500 border-red-500/20 hover:bg-red-500/10 hover:text-red-600 transition-all rounded-lg"
+                                    buttonVariants({
+                                        variant: "outline",
+                                        size: "sm",
+                                    }),
+                                    "flex items-center gap-1.5 text-red-500 border-red-500/20 hover:bg-red-500/10 hover:text-red-600 transition-colors rounded-lg mb-4"
                                 )}
                             >
-                                <X size={16} />
+                                <X size={15} />
                                 <span>Clear Filter</span>
                             </Link>
                         )}
                     </div>
 
-                    {/* Sort Chips + Count */}
+                    {/* Sort Segmented Bar + Tabular Article Count */}
                     <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
-                        <div className="flex items-center gap-2">
+                        <div className="inline-flex items-center gap-1 p-1 rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-xs">
                             {[
                                 {
                                     key: "newest",
@@ -233,7 +283,6 @@ export default async function LibraryPage(props: LibraryPageProps) {
                                 },
                             ].map((chip) => {
                                 const isActive = sortBy === chip.key;
-                                // Build URL preserving existing params
                                 const chipParams = new URLSearchParams();
                                 if (query) chipParams.set("q", query);
                                 if (categorySlug)
@@ -246,30 +295,35 @@ export default async function LibraryPage(props: LibraryPageProps) {
                                     <Link
                                         key={chip.key}
                                         href={chipHref}
-                                        className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] ${isActive
-                                            ? "bg-gradient-to-r from-gold to-amber-600 border border-gold/40 text-white shadow-md shadow-gold/20"
-                                            : "bg-white/80 dark:bg-white/5 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-white/10 hover:border-gold/40 hover:text-gold backdrop-blur-md shadow-sm"
-                                            }`}
+                                        className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-bold transition-colors duration-150 ${
+                                            isActive
+                                                ? "bg-gold !text-white shadow-xs"
+                                                : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white"
+                                        }`}
                                     >
                                         <chip.icon size={13} />
-                                        {chip.label}
+                                        <span>{chip.label}</span>
                                     </Link>
                                 );
                             })}
                         </div>
-                        <span className="text-sm text-gray-600 dark:text-gray-300">
-                            {totalCount}{" "}
-                            {totalCount === 1 ? "article" : "articles"}
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 text-xs font-semibold text-gray-600 dark:text-gray-300 shadow-xs">
+                            <span className="tabular-nums font-black text-gray-900 dark:text-white">
+                                {totalCount.toLocaleString()}
+                            </span>
+                            <span>
+                                {totalCount === 1 ? "article" : "articles"}
+                            </span>
                         </span>
                     </div>
 
                     {articles.length > 0 ? (
                         <>
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7">
                                 {articles.map((article) => (
                                     <ArticleCard
                                         key={article.id}
-                                        article={article as any}
+                                        article={article}
                                     />
                                 ))}
                             </div>
@@ -278,18 +332,30 @@ export default async function LibraryPage(props: LibraryPageProps) {
                             <Pagination totalPages={totalPages} />
                         </>
                     ) : (
-                        <div className="text-center py-32 rounded-lg bg-white/30 dark:bg-white/5 backdrop-blur-md border border-white/20 border-dashed">
-                            <div className="inline-flex p-6 rounded-full bg-gray-50/50 dark:bg-white/5 mb-6 animate-pulse">
-                                <Search size={48} className="text-gray-500" />
+                        <div className="text-center py-20 px-6 rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm">
+                            <div className="mx-auto w-12 h-12 rounded-xl bg-gold/10 border border-gold/20 flex items-center justify-center mb-4 text-gold">
+                                <Search size={22} />
                             </div>
-                            <h3 className="text-2xl font-bold text-gray-700 dark:text-white mb-2">
+                            <h3 className="text-xl font-black text-gray-900 dark:text-white mb-1.5">
                                 {query
                                     ? `No results for "${query}"`
-                                    : "Library is Empty"}
+                                    : "No matching publications"}
                             </h3>
-                            <p className="text-gray-600 dark:text-gray-300">
-                                Try adjusting your search or check back later.
+                            <p className="text-sm text-gray-600 dark:text-gray-400 max-w-md mx-auto mb-5">
+                                Adjust your search term or clear active topic filters to browse the full trading library.
                             </p>
+                            {(query || categorySlug || tagSlug) && (
+                                <Link
+                                    href="/knowledge"
+                                    className={buttonVariants({
+                                        variant: "gold",
+                                        size: "sm",
+                                        className: "font-bold",
+                                    })}
+                                >
+                                    <span>Reset All Filters</span>
+                                </Link>
+                            )}
                         </div>
                     )}
                 </div>

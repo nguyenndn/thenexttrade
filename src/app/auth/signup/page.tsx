@@ -44,16 +44,13 @@ export default function SignupPage() {
     const [referralCode, setReferralCode] = useState("");
 
     const inputClassName =
-        "h-12 bg-white/80 border-amber-900/10 text-slate-900 text-sm sm:text-base py-3 placeholder:text-slate-400 focus:bg-white focus:border-amber-400 focus:ring-amber-300/30 dark:bg-black/20 dark:text-white dark:placeholder:text-slate-500 dark:focus:bg-black/25 dark:focus:border-amber-300/60 dark:focus:ring-amber-300/20 transition-colors";
+        "h-12 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 text-slate-900 dark:text-white text-sm sm:text-base py-3 focus:bg-white dark:focus:bg-[#151925] focus:border-gold focus:ring-gold/20 transition-colors";
 
     const primaryButtonClassName =
-        "w-full h-12 sm:h-14 rounded-lg border-none bg-[linear-gradient(135deg,#F8D46B_0%,#D99A26_45%,#8A5A13_100%)] text-sm sm:text-base font-black text-white shadow-[0_18px_36px_rgba(217,154,38,0.32)] hover:shadow-[0_20px_44px_rgba(217,154,38,0.42)] active:scale-[0.99] transition-transform";
+        "w-full h-12 sm:h-14 rounded-lg border-none bg-gold hover:bg-amber-600 text-sm sm:text-base font-black !text-white shadow-md shadow-amber-500/20 active:scale-[0.99] transition-all";
 
     const secondaryButtonClassName =
-        "w-full h-12 sm:h-14 rounded-lg border-amber-900/10 bg-white/70 text-sm sm:text-base font-bold text-slate-700 hover:border-amber-400/50 hover:bg-white dark:bg-white/[0.06] dark:text-slate-200 dark:hover:border-amber-300/40 active:scale-[0.99] transition-transform";
-
-    const checkboxClassName =
-        "appearance-none h-5 w-5 rounded-lg border border-amber-900/20 bg-white checked:bg-amber-500 checked:border-amber-500 dark:bg-black/20 dark:border-white/20 dark:checked:bg-amber-400 dark:checked:border-amber-400 checked:bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22white%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%2220%206%209%2017%204%2012%22%2F%3E%3C%2Fsvg%3E')] bg-[length:70%] bg-center bg-no-repeat transition-all cursor-pointer shrink-0 mt-0.5";
+        "w-full h-12 sm:h-14 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] text-sm sm:text-base font-bold text-slate-700 hover:border-gold/40 hover:bg-gray-100 dark:text-slate-200 dark:hover:border-gold/40 dark:hover:bg-white/[0.06] active:scale-[0.99] transition-all";
 
     useEffect(() => {
         const search = new URLSearchParams(window.location.search);
@@ -206,7 +203,7 @@ export default function SignupPage() {
     };
 
     return (
-        <div className="w-full max-w-[440px] sm:max-w-[480px] mx-auto rounded-xl border border-amber-900/10 bg-white/85 p-5 sm:p-7 md:p-8 shadow-[0_28px_90px_rgba(88,64,27,0.18)] backdrop-blur-xl transition-colors duration-300 dark:border-amber-300/15 dark:bg-[#11100C]/90 dark:shadow-[0_28px_90px_rgba(0,0,0,0.45)]">
+        <div className="w-full max-w-[440px] sm:max-w-[480px] mx-auto rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-5 sm:p-7 md:p-8 shadow-sm transition-colors duration-300">
             <div className="flex justify-center mb-5 sm:mb-6">
                 <Logo />
             </div>
@@ -215,10 +212,10 @@ export default function SignupPage() {
                     Create your account
                 </h1>
                 <p className="mt-1.5 sm:mt-2 text-sm sm:text-base font-medium text-slate-600 dark:text-slate-300">
-                    Set up your premium trading workspace in minutes.
+                    Set up your trading workspace in minutes.
                 </p>
                 {referralCode && (
-                    <p className="mx-auto mt-2.5 sm:mt-3 inline-flex rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700 dark:border-emerald-400/20 dark:bg-emerald-400/10 dark:text-emerald-200">
+                    <p className="mx-auto mt-2.5 sm:mt-3 inline-flex rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700 dark:border-emerald-400/20 dark:bg-emerald-400/10 dark:text-emerald-200">
                         Referral applied
                     </p>
                 )}
@@ -233,12 +230,12 @@ export default function SignupPage() {
                         <div key={item.id} className="flex items-center gap-1 sm:gap-2 md:gap-3">
                             <div className="flex items-center gap-1 sm:gap-1.5 md:gap-2">
                                 <div
-                                    className={`flex h-7 w-7 sm:h-8 sm:w-8 md:h-9 md:w-9 items-center justify-center rounded-full border text-xs sm:text-sm font-black transition-colors shrink-0 ${
+                                    className={`flex h-7 w-7 sm:h-8 sm:w-8 md:h-9 md:w-9 items-center justify-center rounded-full border text-xs sm:text-sm font-black tabular-nums transition-colors shrink-0 ${
                                         isActive
-                                            ? "border-amber-500 bg-amber-500/10 text-amber-700 dark:text-amber-300"
+                                            ? "border-gold bg-gold/10 text-amber-700 dark:text-gold"
                                             : isDone
                                               ? "border-emerald-500 bg-emerald-500/10 text-emerald-600 dark:text-emerald-300"
-                                              : "border-dashboard bg-white/70 text-slate-500 dark:bg-white/[0.04] dark:text-slate-400"
+                                              : "border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] text-slate-500 dark:text-slate-400"
                                     }`}
                                 >
                                     {isDone ? <Check size={13} className="sm:w-3.5 sm:h-3.5" /> : item.id}
@@ -255,7 +252,7 @@ export default function SignupPage() {
                                 </span>
                             </div>
                             {index < steps.length - 1 && (
-                                <div className="h-px w-2.5 sm:w-6 md:w-8 bg-amber-900/15 dark:bg-white/15 shrink-0" />
+                                <div className="h-px w-2.5 sm:w-6 md:w-8 bg-gray-200 dark:bg-white/15 shrink-0" />
                             )}
                         </div>
                     );
@@ -283,7 +280,7 @@ export default function SignupPage() {
                             startIcon={
                                 <User
                                     size={20}
-                                    className="text-amber-600/80 dark:text-amber-300/80"
+                                    className="text-amber-600 dark:text-gold"
                                 />
                             }
                             className={inputClassName}
@@ -298,7 +295,7 @@ export default function SignupPage() {
                             <CountrySelect
                                 value={country}
                                 onChange={setCountry}
-                                className="bg-white/80 border-amber-900/10 text-slate-900 hover:bg-white hover:border-amber-400 focus:border-amber-400 focus:ring-amber-300/30 dark:bg-black/20 dark:text-white dark:hover:bg-black/25 dark:focus:border-amber-300/60 dark:focus:ring-amber-300/20"
+                                className="bg-gray-50/80 dark:bg-[#151925] border-gray-200 dark:border-white/10 text-slate-900 hover:bg-white hover:border-gold focus:border-gold focus:ring-gold/20 dark:text-white dark:hover:bg-[#151925] dark:focus:border-gold/60 dark:focus:ring-gold/20"
                             />
                         </div>
 
@@ -325,30 +322,33 @@ export default function SignupPage() {
                             startIcon={
                                 <Mail
                                     size={20}
-                                    className="text-amber-600/80 dark:text-amber-300/80"
+                                    className="text-amber-600 dark:text-gold"
                                 />
                             }
                             className={inputClassName}
                         />
 
-                        <div className="flex items-start gap-2.5 sm:gap-3 rounded-lg border border-amber-900/10 bg-[#FBF6EA] p-3.5 sm:p-4 dark:bg-white/[0.04]">
-                            <input
-                                type="checkbox"
-                                className={checkboxClassName}
-                                id="notify"
-                                name="notify"
-                                checked={notify}
-                                onChange={(event) =>
-                                    setNotify(event.target.checked)
-                                }
-                            />
-                            <label
-                                htmlFor="notify"
-                                className="text-xs sm:text-sm leading-snug sm:leading-6 text-slate-600 dark:text-slate-400 cursor-pointer select-none pt-0.5"
-                            >
+                        <label
+                            htmlFor="notify"
+                            className="flex items-center justify-between gap-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] p-3.5 sm:p-4 cursor-pointer select-none"
+                        >
+                            <span className="text-xs sm:text-sm leading-snug sm:leading-6 text-slate-600 dark:text-slate-400">
                                 Notify me about updates & perks (No spam)
-                            </label>
-                        </div>
+                            </span>
+                            <div className="relative inline-flex items-center shrink-0">
+                                <input
+                                    type="checkbox"
+                                    className="sr-only peer"
+                                    id="notify"
+                                    name="notify"
+                                    checked={notify}
+                                    onChange={(event) =>
+                                        setNotify(event.target.checked)
+                                    }
+                                />
+                                <div className="relative h-5 w-9 rounded-full bg-gray-200 dark:bg-white/15 peer-checked:bg-gold transition-colors duration-200 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:h-4 after:w-4 after:rounded-full after:bg-white after:shadow-md after:transition-transform after:duration-200 peer-checked:after:translate-x-4" />
+                            </div>
+                        </label>
 
                         <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
                             <Button
@@ -411,7 +411,7 @@ export default function SignupPage() {
                                 startIcon={
                                     <Lock
                                         size={20}
-                                        className="text-amber-600/80 dark:text-amber-300/80"
+                                        className="text-amber-600 dark:text-gold"
                                     />
                                 }
                                 endIcon={
@@ -469,7 +469,7 @@ export default function SignupPage() {
                             startIcon={
                                 <Lock
                                     size={20}
-                                    className="text-amber-600/80 dark:text-amber-300/80"
+                                    className="text-amber-600 dark:text-gold"
                                 />
                             }
                             endIcon={
@@ -498,33 +498,39 @@ export default function SignupPage() {
                             className={inputClassName}
                         />
 
-                        <div className="flex items-start gap-2.5 sm:gap-3">
-                            <input
-                                type="checkbox"
-                                className={checkboxClassName}
-                                id="terms"
-                                name="termsAccepted"
-                                required
-                                checked={termsAccepted}
-                                onChange={(event) =>
-                                    setTermsAccepted(event.target.checked)
-                                }
-                            />
+                        <div className="flex items-center gap-3">
                             <label
                                 htmlFor="terms"
-                                className="text-xs sm:text-sm leading-snug sm:leading-6 text-slate-600 dark:text-slate-400 cursor-pointer select-none pt-0.5"
+                                className="relative inline-flex items-center cursor-pointer select-none shrink-0"
+                            >
+                                <input
+                                    type="checkbox"
+                                    className="sr-only peer"
+                                    id="terms"
+                                    name="termsAccepted"
+                                    required
+                                    checked={termsAccepted}
+                                    onChange={(event) =>
+                                        setTermsAccepted(event.target.checked)
+                                    }
+                                />
+                                <div className="relative h-5 w-9 rounded-full bg-gray-200 dark:bg-white/15 peer-checked:bg-gold transition-colors duration-200 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:h-4 after:w-4 after:rounded-full after:bg-white after:shadow-md after:transition-transform after:duration-200 peer-checked:after:translate-x-4" />
+                            </label>
+                            <label
+                                htmlFor="terms"
+                                className="text-xs sm:text-sm leading-snug sm:leading-6 text-slate-600 dark:text-slate-400 cursor-pointer select-none"
                             >
                                 I accept the{" "}
                                 <Link
                                     href="/legal/terms-of-service"
-                                    className="font-semibold text-amber-700 hover:text-amber-800 hover:underline dark:text-amber-300 dark:hover:text-amber-200"
+                                    className="font-semibold text-amber-600 hover:text-amber-700 hover:underline dark:text-gold dark:hover:text-amber-300"
                                 >
                                     Terms & Conditions
                                 </Link>{" "}
                                 and{" "}
                                 <Link
                                     href="/legal/privacy-policy"
-                                    className="font-semibold text-amber-700 hover:text-amber-800 hover:underline dark:text-amber-300 dark:hover:text-amber-200"
+                                    className="font-semibold text-amber-600 hover:text-amber-700 hover:underline dark:text-gold dark:hover:text-amber-300"
                                 >
                                     Privacy Policy
                                 </Link>
@@ -565,7 +571,7 @@ export default function SignupPage() {
                     Already have an account?{" "}
                     <Link
                         href="/auth/login"
-                        className="font-bold text-amber-700 hover:text-amber-800 hover:underline dark:text-amber-300 dark:hover:text-amber-200 py-1 inline-block"
+                        className="font-bold text-amber-600 hover:text-amber-700 hover:underline dark:text-gold dark:hover:text-amber-300 py-1 inline-block"
                     >
                         Sign In
                     </Link>

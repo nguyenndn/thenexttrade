@@ -300,23 +300,23 @@ export default function OnboardingClient({
     const progressPercent = ((step - 1) / 3) * 100;
 
     return (
-        <div className="min-h-screen w-full flex flex-col items-center justify-center bg-[#F7F4EC] text-slate-800 dark:bg-transparent dark:text-white p-4 font-sans relative overflow-hidden transition-colors duration-300">
-            {/* Background gradient overlay to match auth pages exactly */}
-            <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(245,158,11,0.16)_0%,rgba(255,255,255,0.72)_34%,rgba(16,185,129,0.10)_100%)] dark:bg-[linear-gradient(135deg,rgba(43,35,68,0.60)_0%,rgba(25,52,81,0.46)_48%,rgba(6,69,79,0.38)_100%)] pointer-events-none" />
+        <div className="min-h-screen w-full flex flex-col items-center justify-center bg-white text-slate-800 dark:bg-[#0B0E14] dark:text-white p-4 font-sans relative overflow-hidden transition-colors duration-300">
+            {/* Background gradient overlay matching auth pages */}
+            <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(245,158,11,0.08)_0%,rgba(255,255,255,0.85)_40%,rgba(16,185,129,0.06)_100%)] dark:bg-[linear-gradient(135deg,rgba(245,158,11,0.06)_0%,rgba(11,14,20,0.92)_45%,rgba(16,185,129,0.05)_100%)] pointer-events-none" />
 
             {/* Floating theme switcher top-right for convenience */}
             <div className="absolute top-6 right-6 z-20">
                 <ThemeToggleSwitch />
             </div>
 
-            {/* Fullscreen premium loading overlay */}
+            {/* Fullscreen loading overlay */}
             {isLoading && (
-                <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#F7F4EC]/80 dark:bg-slate-950/85 backdrop-blur-md">
+                <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white/85 dark:bg-[#0B0E14]/90 backdrop-blur-md">
                     <Loader2
                         size={40}
                         className="animate-spin text-amber-500 mb-4"
                     />
-                    <p className="text-slate-900 dark:text-amber-100 font-extrabold text-lg">
+                    <p className="text-slate-900 dark:text-white font-extrabold text-lg">
                         Setting up your account...
                     </p>
                     <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
@@ -330,39 +330,44 @@ export default function OnboardingClient({
                 <Logo />
             </div>
 
-            {/* Premium glassmorphic card container */}
-            <div className="w-full max-w-lg bg-white/85 dark:bg-[#11100C]/95 border border-amber-900/10 dark:border-amber-300/15 rounded-lg shadow-[0_28px_90px_rgba(88,64,27,0.15)] dark:shadow-[0_28px_90px_rgba(0,0,0,0.45)] backdrop-blur-xl transition-all duration-300 overflow-hidden relative z-10">
+            {/* Level 1 Outer Card Container */}
+            <div className="w-full max-w-lg bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl shadow-sm transition-all duration-300 overflow-hidden relative z-10">
                 {/* Gold progress bar */}
-                <div className="h-1.5 bg-amber-900/10 dark:bg-white/[0.08]">
+                <div className="h-1.5 bg-gray-100 dark:bg-white/[0.08]">
                     <div
-                        className="h-full bg-gradient-to-r from-amber-500 via-amber-600 to-amber-500 transition-all duration-500 ease-out shadow-[0_0_12px_rgba(245,158,11,0.3)]"
+                        className="h-full bg-gold transition-all duration-500 ease-out shadow-[0_0_12px_rgba(245,158,11,0.3)]"
                         style={{ width: `${progressPercent}%` }}
                     />
                 </div>
 
                 {/* Step indicator */}
                 <div className="flex items-center justify-between px-8 pt-6 pb-2">
-                    <div className="flex items-center gap-2">
-                        {[1, 2, 3, 4].map((s) => (
-                            <div
-                                key={s}
-                                className={cn(
-                                    "h-2 rounded-full transition-all duration-300",
-                                    step === s
-                                        ? "w-8 bg-amber-500 shadow-sm shadow-amber-500/30"
-                                        : step > s
-                                          ? "w-2 bg-amber-500/50"
-                                          : "w-2 bg-slate-200 dark:bg-white/10"
-                                )}
-                            />
-                        ))}
+                    <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2">
+                            {[1, 2, 3, 4].map((s) => (
+                                <div
+                                    key={s}
+                                    className={cn(
+                                        "h-2 rounded-full transition-all duration-300",
+                                        step === s
+                                            ? "w-8 bg-gold shadow-sm shadow-amber-500/30"
+                                            : step > s
+                                              ? "w-2 bg-gold/50"
+                                              : "w-2 bg-gray-200 dark:bg-white/10"
+                                    )}
+                                />
+                            ))}
+                        </div>
+                        <span className="text-xs font-bold text-slate-400 dark:text-slate-500 tabular-nums">
+                            {step}/4
+                        </span>
                     </div>
                     <Button
                         type="button"
-                        variant="ghost"
+                        variant="outline"
                         size="sm"
                         onClick={handleSkip}
-                        className="flex items-center gap-1 text-xs text-slate-400 dark:text-slate-500 hover:text-amber-600 dark:hover:text-amber-400 font-extrabold transition-colors uppercase tracking-wider h-auto border-0"
+                        className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 hover:text-amber-600 dark:hover:text-gold border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] rounded-lg font-bold transition-colors uppercase tracking-wider h-8 px-3"
                     >
                         <SkipForward size={12} />
                         Skip
@@ -371,8 +376,8 @@ export default function OnboardingClient({
 
                 <div className="p-8 pt-4">
                     {/* ═══════════════════════════════════════════════════════
- STEP 1: IDENTITY
- ═══════════════════════════════════════════════════════ */}
+  STEP 1: IDENTITY
+  ═══════════════════════════════════════════════════════ */}
                     {step === 1 && (
                         <div className="animate-in fade-in duration-300">
                             <div className="text-center mb-6">
@@ -395,8 +400,8 @@ export default function OnboardingClient({
                                 )}
 
                                 {/* User Identity Row */}
-                                <div className="flex items-center gap-3 p-3.5 rounded-lg border border-amber-950/10 bg-slate-500/5 dark:bg-white/[0.02]">
-                                    <div className="w-9 h-9 rounded-full bg-amber-500/10 text-amber-500 flex items-center justify-center font-black text-sm shrink-0 border border-amber-500/20">
+                                <div className="flex items-center gap-3 p-3.5 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925]">
+                                    <div className="w-9 h-9 rounded-full bg-gold/10 text-amber-600 dark:text-gold flex items-center justify-center font-black text-sm shrink-0 border border-gold/20">
                                         {initialData.fullName
                                             ? initialData.fullName[0].toUpperCase()
                                             : initialData.email
@@ -420,10 +425,10 @@ export default function OnboardingClient({
                                     <div className="relative group cursor-pointer">
                                         <div
                                             className={cn(
-                                                "w-24 h-24 rounded-full bg-white/50 dark:bg-black/20 border-2 border-dashed flex items-center justify-center overflow-hidden transition-colors relative",
+                                                "w-24 h-24 rounded-full bg-gray-50/80 dark:bg-[#151925] border-2 border-dashed flex items-center justify-center overflow-hidden transition-colors relative",
                                                 error?.includes("Image size")
                                                     ? "border-red-400 dark:border-red-500/50"
-                                                    : "border-amber-500/30 group-hover:border-amber-500"
+                                                    : "border-gold/30 group-hover:border-gold"
                                             )}
                                         >
                                             {avatarPreview ? (
@@ -450,12 +455,13 @@ export default function OnboardingClient({
                                             type="file"
                                             name="avatar"
                                             accept="image/*"
+                                            aria-label="Upload avatar"
                                             className="absolute inset-0 opacity-0 cursor-pointer"
                                             onChange={handleImageChange}
                                         />
                                     </div>
                                     <p
-                                        className={`text-xs font-semibold ${error?.includes("Image size") ? "text-red-500" : "text-slate-400 dark:text-slate-500"}`}
+                                        className={`text-xs font-semibold tabular-nums ${error?.includes("Image size") ? "text-red-500" : "text-slate-400 dark:text-slate-500"}`}
                                     >
                                         {error?.includes("Image size")
                                             ? "File too large (>1MB)"
@@ -470,7 +476,7 @@ export default function OnboardingClient({
                                         className="text-sm font-black text-slate-700 dark:text-slate-300"
                                     >
                                         Username{" "}
-                                        <span className="text-red-400">*</span>
+                                        <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         type="text"
@@ -478,8 +484,7 @@ export default function OnboardingClient({
                                         id="username"
                                         required
                                         defaultValue={initialData.username}
-                                        placeholder="@username"
-                                        className="w-full h-11 px-4 bg-white/50 dark:bg-black/20 border border-amber-900/10 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:bg-white dark:focus:bg-black/25 focus:border-amber-400 dark:focus:border-amber-300/60 focus:ring-1 focus:ring-amber-300/30 dark:focus:ring-amber-300/20 transition-all rounded-lg focus:outline-none"
+                                        className="w-full h-11 px-4 bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 text-slate-900 dark:text-white focus:bg-white dark:focus:bg-[#151925] focus:border-gold focus:ring-1 focus:ring-gold/30 transition-all rounded-lg focus:outline-none"
                                     />
                                 </div>
 
@@ -490,12 +495,13 @@ export default function OnboardingClient({
                                         className="text-sm font-black text-slate-700 dark:text-slate-300"
                                     >
                                         Country{" "}
-                                        <span className="text-red-400">*</span>
+                                        <span className="text-red-500">*</span>
                                     </label>
                                     <CountrySelect
                                         value={country}
                                         onChange={(val) => setCountry(val)}
                                         required={true}
+                                        className="bg-gray-50/80 dark:bg-[#151925] border-gray-200 dark:border-white/10"
                                     />
                                 </div>
 
@@ -515,14 +521,14 @@ export default function OnboardingClient({
                                         id="bio"
                                         rows={2}
                                         defaultValue={initialData.bio}
-                                        className="w-full px-4 py-3 bg-white/50 dark:bg-black/20 border border-amber-900/10 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:bg-white dark:focus:bg-black/25 focus:border-amber-400 dark:focus:border-amber-300/60 focus:ring-1 focus:ring-amber-300/30 dark:focus:ring-amber-300/20 transition-all rounded-lg resize-none focus:outline-none"
+                                        className="w-full px-4 py-3 bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 text-slate-900 dark:text-white focus:bg-white dark:focus:bg-[#151925] focus:border-gold focus:ring-1 focus:ring-gold/30 transition-all rounded-lg resize-none focus:outline-none"
                                     />
                                 </div>
 
                                 <Button
                                     type="submit"
                                     disabled={isLoading}
-                                    className="w-full h-12 rounded-lg bg-gold hover:bg-amber-600 text-white font-extrabold shadow-md shadow-amber-500/20 hover:shadow-lg hover:shadow-amber-500/30 transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
+                                    className="w-full h-12 rounded-lg bg-gold hover:bg-amber-600 !text-white font-extrabold shadow-md shadow-amber-500/20 hover:shadow-lg hover:shadow-amber-500/30 transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
                                 >
                                     Continue
                                     <ArrowRight size={16} />
@@ -532,8 +538,8 @@ export default function OnboardingClient({
                     )}
 
                     {/* ═══════════════════════════════════════════════════════
- STEP 2: TRADING GOAL
- ═══════════════════════════════════════════════════════ */}
+  STEP 2: TRADING GOAL
+  ═══════════════════════════════════════════════════════ */}
                     {step === 2 && (
                         <div className="animate-in fade-in duration-300">
                             <div className="text-center mb-6">
@@ -557,16 +563,16 @@ export default function OnboardingClient({
                                             className={cn(
                                                 "w-full flex items-center gap-4 p-4 rounded-lg border-2 text-left transition-all duration-200 h-auto font-normal",
                                                 tradingGoal === g.id
-                                                    ? "border-amber-500 bg-amber-500/5 dark:bg-amber-500/10 shadow-sm shadow-amber-500/10 hover:bg-amber-500/5 dark:hover:bg-amber-500/10"
-                                                    : "border-amber-900/10 hover:border-amber-500/35 dark:hover:border-amber-500/25 bg-white/30 dark:bg-white/[0.01]"
+                                                    ? "border-gold bg-gold/5 dark:bg-gold/10 shadow-sm shadow-amber-500/10 hover:bg-gold/5 dark:hover:bg-gold/10"
+                                                    : "border-gray-200 dark:border-white/10 hover:border-gold/40 bg-gray-50/80 dark:bg-[#151925]"
                                             )}
                                         >
                                             <div
                                                 className={cn(
                                                     "p-2 rounded-lg shrink-0 transition-colors",
                                                     tradingGoal === g.id
-                                                        ? "bg-amber-500/10 text-amber-500"
-                                                        : "bg-slate-100 dark:bg-white/5 text-slate-400 dark:text-slate-500"
+                                                        ? "bg-gold/15 text-amber-600 dark:text-gold"
+                                                        : "bg-white dark:bg-white/5 text-slate-400 dark:text-slate-500"
                                                 )}
                                             >
                                                 <Icon size={20} />
@@ -582,7 +588,7 @@ export default function OnboardingClient({
                                             {tradingGoal === g.id && (
                                                 <Check
                                                     size={16}
-                                                    className="text-amber-500 shrink-0 animate-in fade-in zoom-in duration-200"
+                                                    className="text-amber-600 dark:text-gold shrink-0 animate-in fade-in zoom-in duration-200"
                                                 />
                                             )}
                                         </Button>
@@ -595,7 +601,7 @@ export default function OnboardingClient({
                                     variant="outline"
                                     type="button"
                                     onClick={() => setStep(1)}
-                                    className="flex items-center gap-1.5 border-amber-900/10 text-slate-600 dark:text-slate-300 hover:bg-amber-500/10 hover:text-slate-900 dark:hover:text-white rounded-lg font-extrabold"
+                                    className="flex items-center gap-1.5 border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] text-slate-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white rounded-lg font-extrabold"
                                 >
                                     <ArrowLeft size={14} />
                                     Back
@@ -604,7 +610,7 @@ export default function OnboardingClient({
                                     type="button"
                                     onClick={handleStep2Submit}
                                     disabled={!tradingGoal || isLoading}
-                                    className="flex-1 h-12 rounded-lg bg-gold hover:bg-amber-600 text-white font-extrabold shadow-md shadow-amber-500/20 hover:shadow-lg hover:shadow-amber-500/30 transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
+                                    className="flex-1 h-12 rounded-lg bg-gold hover:bg-amber-600 !text-white font-extrabold shadow-md shadow-amber-500/20 hover:shadow-lg hover:shadow-amber-500/30 transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
                                 >
                                     Continue
                                     <ArrowRight size={16} />
@@ -614,8 +620,8 @@ export default function OnboardingClient({
                     )}
 
                     {/* ═══════════════════════════════════════════════════════
- STEP 3: SYNC PREFERENCE
- ═══════════════════════════════════════════════════════ */}
+  STEP 3: SYNC PREFERENCE
+  ═══════════════════════════════════════════════════════ */}
                     {step === 3 && (
                         <div className="animate-in fade-in duration-300">
                             <div className="text-center mb-6">
@@ -636,17 +642,17 @@ export default function OnboardingClient({
                                     className={cn(
                                         "w-full rounded-lg border-2 p-4 text-left transition-all duration-200 relative block h-auto font-normal",
                                         syncMethod === "EA_SYNC"
-                                            ? "border-amber-500 bg-amber-500/5 dark:bg-amber-500/10 shadow-sm shadow-amber-500/10 hover:bg-amber-500/5 dark:hover:bg-amber-500/10"
-                                            : "border-amber-900/10 hover:border-amber-500/35 dark:hover:border-amber-500/25 bg-white/30 dark:bg-white/[0.01]"
+                                            ? "border-gold bg-gold/5 dark:bg-gold/10 shadow-sm shadow-amber-500/10 hover:bg-gold/5 dark:hover:bg-gold/10"
+                                            : "border-gray-200 dark:border-white/10 hover:border-gold/40 bg-gray-50/80 dark:bg-[#151925]"
                                     )}
                                 >
-                                    <span className="absolute -top-2 left-3 px-2 py-0.5 bg-amber-500 text-white text-[8px] font-black uppercase tracking-widest rounded-lg">
+                                    <span className="absolute -top-2 left-3 px-2 py-0.5 bg-gold !text-white text-[9px] font-black uppercase tracking-widest rounded-lg">
                                         Recommended
                                     </span>
                                     <div className="flex items-center gap-3">
                                         <Zap
                                             size={20}
-                                            className="text-amber-500 shrink-0"
+                                            className="text-amber-600 dark:text-gold shrink-0"
                                         />
                                         <div>
                                             <p className="text-sm font-black text-slate-800 dark:text-white">
@@ -668,8 +674,8 @@ export default function OnboardingClient({
                                     className={cn(
                                         "w-full rounded-lg border-2 p-4 text-left transition-all duration-200 relative block h-auto font-normal",
                                         syncMethod === "MANUAL"
-                                            ? "border-amber-500 bg-amber-500/5 dark:bg-amber-500/10 shadow-sm shadow-amber-500/10 hover:bg-amber-500/5 dark:hover:bg-amber-500/10"
-                                            : "border-amber-900/10 hover:border-amber-500/35 dark:hover:border-amber-500/25 bg-white/30 dark:bg-white/[0.01]"
+                                            ? "border-gold bg-gold/5 dark:bg-gold/10 shadow-sm shadow-amber-500/10 hover:bg-gold/5 dark:hover:bg-gold/10"
+                                            : "border-gray-200 dark:border-white/10 hover:border-gold/40 bg-gray-50/80 dark:bg-[#151925]"
                                     )}
                                 >
                                     <div className="flex items-center gap-3">
@@ -691,14 +697,14 @@ export default function OnboardingClient({
                             </div>
 
                             {isMobile && syncMethod === "EA_SYNC" && (
-                                <div className="mb-6 p-4 rounded-lg border border-amber-500/25 bg-amber-500/5 dark:bg-amber-500/10 space-y-3 animate-in slide-in-from-top duration-300">
+                                <div className="mb-6 p-4 rounded-lg border border-gold/25 bg-gold/5 dark:bg-gold/10 space-y-3 animate-in slide-in-from-top duration-300">
                                     <div className="flex gap-2.5 items-start">
                                         <Monitor
                                             size={18}
-                                            className="shrink-0 text-amber-500 dark:text-amber-400 mt-0.5"
+                                            className="shrink-0 text-amber-600 dark:text-gold mt-0.5"
                                         />
                                         <div>
-                                            <p className="text-xs font-black text-slate-800 dark:text-amber-300 uppercase tracking-wider">
+                                            <p className="text-xs font-black text-slate-800 dark:text-gold uppercase tracking-wider">
                                                 Desktop/VPS Required for
                                                 Auto-Sync
                                             </p>
@@ -743,20 +749,20 @@ export default function OnboardingClient({
                                                 }
                                             }}
                                             disabled={linkSent}
-                                            className="w-full text-xs font-extrabold h-9 border-amber-500/30 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10 shrink-0"
+                                            className="w-full text-xs font-extrabold h-9 rounded-lg border-gold/30 text-amber-600 dark:text-gold hover:bg-gold/10 shrink-0"
                                         >
                                             {linkSent
                                                 ? (<><Mail size={14} className="shrink-0" /> Setup Link Sent!</>)
                                                 : (<><Mail size={14} className="shrink-0" /> Send Setup Link to Desktop Email</>)}
                                         </Button>
                                         <Button
-                                            variant="ghost"
+                                            variant="outline"
                                             type="button"
                                             size="sm"
                                             onClick={() =>
                                                 setSyncMethod("MANUAL")
                                             }
-                                            className="w-full text-xs font-bold h-9 text-slate-500 hover:bg-slate-100 dark:hover:bg-white/5 shrink-0"
+                                            className="w-full text-xs font-bold h-9 rounded-lg border-gray-200 dark:border-white/10 text-slate-500 hover:bg-gray-100 dark:hover:bg-white/5 shrink-0"
                                         >
                                             <PenLine size={14} className="shrink-0" /> Log Manually for Now
                                         </Button>
@@ -769,7 +775,7 @@ export default function OnboardingClient({
                                     variant="outline"
                                     type="button"
                                     onClick={() => setStep(2)}
-                                    className="flex items-center gap-1.5 border-amber-900/10 text-slate-600 dark:text-slate-300 hover:bg-amber-500/10 hover:text-slate-900 dark:hover:text-white rounded-lg font-extrabold"
+                                    className="flex items-center gap-1.5 border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] text-slate-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white rounded-lg font-extrabold"
                                 >
                                     <ArrowLeft size={14} />
                                     Back
@@ -778,7 +784,7 @@ export default function OnboardingClient({
                                     type="button"
                                     onClick={handleStep3Submit}
                                     disabled={isLoading}
-                                    className="flex-1 h-12 rounded-lg bg-gold hover:bg-amber-600 text-white font-extrabold shadow-md shadow-amber-500/20 hover:shadow-lg hover:shadow-amber-500/30 transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
+                                    className="flex-1 h-12 rounded-lg bg-gold hover:bg-amber-600 !text-white font-extrabold shadow-md shadow-amber-500/20 hover:shadow-lg hover:shadow-amber-500/30 transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
                                 >
                                     Continue
                                     <ArrowRight size={16} />
@@ -788,15 +794,15 @@ export default function OnboardingClient({
                     )}
 
                     {/* ═══════════════════════════════════════════════════════
- STEP 4: NEXT ACTION
- ═══════════════════════════════════════════════════════ */}
+  STEP 4: NEXT ACTION
+  ═══════════════════════════════════════════════════════ */}
                     {step === 4 && (
                         <div className="animate-in fade-in duration-300">
                             <div className="text-center mb-6">
-                                <div className="inline-flex p-3 bg-amber-500/15 text-amber-500 rounded-full mb-3 shadow-[0_4px_12px_rgba(245,158,11,0.2)] animate-pulse">
+                                <div className="inline-flex p-3 bg-gold/15 text-amber-600 dark:text-gold rounded-lg border border-gold/25 mb-3">
                                     <Check
                                         size={28}
-                                        className="text-amber-500"
+                                        className="text-amber-600 dark:text-gold"
                                     />
                                 </div>
                                 <h1 className="text-2xl font-black text-slate-900 dark:text-white">
@@ -813,12 +819,12 @@ export default function OnboardingClient({
                                     {
                                         icon: BarChart3,
                                         label: "Performance Dashboard",
-                                        color: "text-amber-500",
+                                        color: "text-amber-600 dark:text-gold",
                                     },
                                     {
                                         icon: Target,
                                         label: "Trade Score & Intelligence",
-                                        color: "text-amber-600 dark:text-amber-400",
+                                        color: "text-amber-600 dark:text-gold",
                                     },
                                     {
                                         icon: FileText,
@@ -828,12 +834,12 @@ export default function OnboardingClient({
                                     {
                                         icon: Trophy,
                                         label: "Edge Missions",
-                                        color: "text-amber-500",
+                                        color: "text-amber-600 dark:text-gold",
                                     },
                                 ].map((f, i) => (
                                     <div
                                         key={i}
-                                        className="flex items-center gap-2.5 p-3 rounded-lg border border-amber-900/10 bg-white/60 dark:bg-white/[0.02]"
+                                        className="flex items-center gap-2.5 p-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925]"
                                     >
                                         <f.icon
                                             size={16}
@@ -851,7 +857,7 @@ export default function OnboardingClient({
                                 type="button"
                                 onClick={handleComplete}
                                 disabled={isLoading}
-                                className="w-full h-12 rounded-lg bg-gold hover:bg-amber-600 text-white font-extrabold shadow-md shadow-amber-500/20 hover:shadow-lg hover:shadow-amber-500/30 transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2 mb-3"
+                                className="w-full h-12 rounded-lg bg-gold hover:bg-amber-600 !text-white font-extrabold shadow-md shadow-amber-500/20 hover:shadow-lg hover:shadow-amber-500/30 transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2 mb-3"
                             >
                                 {isLoading ? (
                                     <Loader2
@@ -880,14 +886,14 @@ export default function OnboardingClient({
                             {syncMethod !== "MANUAL" && (
                                 <Button
                                     type="button"
-                                    variant="ghost"
+                                    variant="outline"
                                     onClick={async () => {
                                         await completeOnboardingAction();
                                         router.push("/dashboard");
                                     }}
-                                    className="w-full text-center text-xs text-slate-400 hover:text-amber-600 dark:hover:text-amber-400 font-black tracking-wide transition-colors py-2 uppercase h-auto border-0"
+                                    className="w-full text-center text-xs text-slate-500 dark:text-slate-400 hover:text-amber-600 dark:hover:text-gold border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] rounded-lg font-black tracking-wide transition-colors py-2.5 uppercase h-auto"
                                 >
-                                    Skip setup, go to Dashboard →
+                                    Skip setup, go to Dashboard
                                 </Button>
                             )}
                         </div>

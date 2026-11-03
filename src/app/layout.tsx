@@ -6,9 +6,16 @@ import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Lexend, Source_Sans_3 } from "next/font/google";
 import { Toaster } from "sonner";
-import { SystemAnnouncementBanner } from "@/components/layout/SystemAnnouncementBanner";
+import dynamic from "next/dynamic";
 import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
 import { getBaseUrl, absoluteUrl } from "@/lib/url";
+
+const SystemAnnouncementBanner = dynamic(
+    () =>
+        import("@/components/layout/SystemAnnouncementBanner").then(
+            (m) => m.SystemAnnouncementBanner
+        )
+);
 
 const sourceSans = Source_Sans_3({
     subsets: ["latin"],
@@ -131,11 +138,6 @@ export default function RootLayout({
                 <link
                     rel="apple-touch-icon"
                     href="/icons/apple-touch-icon.png"
-                />
-                <script
-                    dangerouslySetInnerHTML={{
-                        __html: `history.scrollRestoration = "manual"`,
-                    }}
                 />
                 <script
                     dangerouslySetInnerHTML={{

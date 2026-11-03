@@ -107,7 +107,7 @@ export function MobileProStatusBanner({ hideFreeNudge = false }: { hideFreeNudge
                 <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400">
                     VIP Active
                 </span>
-                <span className="ml-auto rounded-full bg-emerald-100 dark:bg-emerald-500/20 px-2 py-0.5 text-[10px] font-bold uppercase text-emerald-600 dark:text-emerald-400">
+                <span className="ml-auto rounded-lg bg-emerald-100 dark:bg-emerald-500/20 px-2 py-0.5 text-[10px] font-bold uppercase text-emerald-600 dark:text-emerald-400">
                     VIP
                 </span>
             </div>
@@ -116,14 +116,14 @@ export function MobileProStatusBanner({ hideFreeNudge = false }: { hideFreeNudge
 
     if (currentStatus === "GRACE") {
         return (
-            <div className="md:hidden mb-3 flex items-center gap-2 rounded-lg bg-purple-50 dark:bg-purple-500/10 border border-purple-200 dark:border-purple-500/20 px-3 py-2">
-                <Timer className="h-4 w-4 text-purple-600 dark:text-purple-400 shrink-0" />
+            <div className="md:hidden mb-3 flex items-center gap-2 rounded-lg bg-amber-50 dark:bg-gold/10 border border-amber-200 dark:border-gold/20 px-3 py-2">
+                <Timer className="h-4 w-4 text-amber-600 dark:text-gold shrink-0" />
                 <div className="flex-1 min-w-0">
-                    <span className="text-xs font-bold text-purple-700 dark:text-purple-400">
+                    <span className="text-xs font-bold text-amber-700 dark:text-gold">
                         Grace Period
                     </span>
                     {expiresAt && (
-                        <span className="ml-2 text-[10px] text-purple-600/70 dark:text-purple-400/70">
+                        <span className="ml-2 text-[10px] font-mono tabular-nums text-amber-600/70 dark:text-gold/70">
                             Expires{" "}
                             {new Date(expiresAt).toLocaleDateString("en-US", {
                                 month: "short",
@@ -134,7 +134,7 @@ export function MobileProStatusBanner({ hideFreeNudge = false }: { hideFreeNudge
                 </div>
                 <Link
                     href="/dashboard/accounts?action=add&intent=unlock-pro"
-                    className="shrink-0 text-[10px] font-bold text-purple-600 dark:text-purple-400 hover:underline"
+                    className="shrink-0 text-[10px] font-bold text-amber-600 dark:text-gold hover:underline"
                 >
                     Verify
                 </Link>

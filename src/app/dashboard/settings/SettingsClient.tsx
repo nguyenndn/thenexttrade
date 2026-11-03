@@ -14,7 +14,6 @@ import {
     Check,
     Mail,
     Wallet,
-    Coins,
     CheckCircle2,
     ChevronDown,
     Lock,
@@ -283,7 +282,7 @@ export default function SettingsClient() {
     if (isLoading) {
         return (
             <div className="flex h-64 items-center justify-center">
-                <Loader2 className="animate-spin text-primary" size={28} />
+                <Loader2 className="animate-spin text-gold" size={28} />
             </div>
         );
     }
@@ -292,14 +291,14 @@ export default function SettingsClient() {
         <div className="w-full space-y-5">
             {/* ── Unified Profile Card ── */}
             <form onSubmit={handleSubmit} className="space-y-5">
-            <div className="bg-white dark:bg-[#0B0E14] rounded-xl border border-dashboard overflow-hidden shadow-sm">
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard overflow-hidden shadow-sm">
                 {/* Gradient Banner + Avatar */}
-                <div className="h-28 bg-gradient-to-r from-primary/20 via-primary/10 to-transparent dark:from-primary/30 dark:via-primary/15 dark:to-transparent relative">
+                <div className="h-28 bg-gradient-to-r from-amber-500/20 via-amber-500/10 to-transparent dark:from-amber-500/25 dark:via-amber-500/10 dark:to-transparent relative">
                     <div
                         className="absolute inset-0 opacity-30"
                         style={{
                             backgroundImage:
-                                "radial-gradient(circle at 20% 50%, #00C888 0%, transparent 60%)",
+                                "radial-gradient(circle at 20% 50%, #F59E0B 0%, transparent 60%)",
                         }}
                     />
                 </div>
@@ -307,7 +306,7 @@ export default function SettingsClient() {
                 <div className="px-6 pb-5">
                     <div className="flex items-end gap-5 -mt-12 mb-3">
                         <div className="relative flex-shrink-0">
-                            <div className="w-[100px] h-[100px] rounded-lg overflow-hidden bg-gray-100 dark:bg-[#151925] border-4 border-white dark:border-[#0B0E14] shadow-lg">
+                            <div className="w-[100px] h-[100px] rounded-lg overflow-hidden bg-gray-100 dark:bg-[#151925] border-4 border-white dark:border-[#1E2028] shadow-lg">
                                 {formData.image ? (
                                     <img
                                         src={formData.image}
@@ -325,7 +324,10 @@ export default function SettingsClient() {
                                     </div>
                                 )}
                             </div>
-                            <label className="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-primary flex items-center justify-center shadow-md hover:bg-primary/90 transition-colors cursor-pointer">
+                            <label
+                                aria-label="Upload avatar image"
+                                className="absolute -bottom-1 -right-1 w-8 h-8 rounded-lg bg-gold flex items-center justify-center shadow-md hover:bg-amber-600 transition-colors cursor-pointer"
+                            >
                                 <Camera size={14} className="text-white" />
                                 <input
                                     type="file"
@@ -382,8 +384,8 @@ export default function SettingsClient() {
                 {/* Personal Information Section */}
                 <div className="border-t border-dashboard px-6 py-5 space-y-4">
                     <div className="flex items-center gap-2.5 mb-1">
-                        <div className="w-7 h-7 rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
-                            <User size={14} className="text-primary" />
+                        <div className="w-7 h-7 rounded-lg bg-gold/10 border border-gold/20 flex items-center justify-center">
+                            <User size={14} className="text-amber-600 dark:text-gold" />
                         </div>
                         <h2 className="text-sm font-bold text-gray-700 dark:text-white">
                             Personal Information
@@ -402,7 +404,7 @@ export default function SettingsClient() {
                                     name: e.target.value,
                                 }))
                             }
-                            className="w-full px-4 py-2.5 bg-gray-50 dark:bg-[#151925] border border-dashboard rounded-lg text-sm text-gray-700 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
+                            className="w-full px-4 py-2.5 bg-gray-50/80 dark:bg-[#151925] border border-dashboard rounded-lg text-sm text-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-gold transition-all"
                         />
                     </div>
                     <div>
@@ -424,7 +426,7 @@ export default function SettingsClient() {
                                             .replace(/[^a-z0-9_]/g, ""),
                                     }))
                                 }
-                                className="w-full pl-9 pr-4 py-2.5 bg-gray-50 dark:bg-[#151925] border border-dashboard rounded-lg text-sm text-gray-700 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all font-mono"
+                                className="w-full pl-9 pr-4 py-2.5 bg-gray-50/80 dark:bg-[#151925] border border-dashboard rounded-lg text-sm text-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-gold transition-all font-mono"
                             />
                         </div>
                         <p className="text-xs text-gray-400 mt-1">
@@ -444,7 +446,7 @@ export default function SettingsClient() {
                                     telegramId: e.target.value,
                                 }))
                             }
-                            className="w-full px-4 py-2.5 bg-gray-50 dark:bg-[#151925] border border-dashboard rounded-lg text-sm text-gray-700 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
+                            className="w-full px-4 py-2.5 bg-gray-50/80 dark:bg-[#151925] border border-dashboard rounded-lg text-sm text-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-gold transition-all"
                         />
                     </div>
                     <div>
@@ -457,7 +459,7 @@ export default function SettingsClient() {
                                 Fixed at registration
                             </span>
                         </div>
-                        <div className="flex items-center justify-between w-full h-[42px] px-3.5 py-2.5 rounded-lg border border-dashboard bg-gray-100/80 dark:bg-white/[0.04] text-gray-500 dark:text-gray-400 cursor-not-allowed select-none">
+                        <div className="flex items-center justify-between w-full h-[42px] px-3.5 py-2.5 rounded-lg border border-dashboard bg-gray-50/80 dark:bg-[#151925] text-gray-500 dark:text-gray-400 cursor-not-allowed select-none">
                             {formData.country ? (
                                 <div className="flex items-center gap-2.5 min-w-0">
                                     {normalizeCountryCode(formData.country) ? (
@@ -501,9 +503,9 @@ export default function SettingsClient() {
                             }
                             rows={3}
                             maxLength={200}
-                            className="w-full px-4 py-2.5 bg-gray-50 dark:bg-[#151925] border border-dashboard rounded-lg text-sm text-gray-700 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary resize-none transition-all"
+                            className="w-full px-4 py-2.5 bg-gray-50/80 dark:bg-[#151925] border border-dashboard rounded-lg text-sm text-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-gold resize-none transition-all"
                         />
-                        <p className="text-xs text-gray-400 mt-1">
+                        <p className="text-xs text-gray-400 mt-1 font-mono tabular-nums">
                             {formData.bio.length}/200 characters
                         </p>
                     </div>
@@ -595,13 +597,13 @@ export default function SettingsClient() {
             <form
                 id="payout-wallet"
                 onSubmit={handlePayoutWalletSubmit}
-                className="bg-white dark:bg-[#0B0E14] rounded-xl border border-dashboard shadow-sm overflow-hidden scroll-mt-24"
+                className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm overflow-hidden scroll-mt-24"
             >
                 <div className="px-6 py-5 space-y-4">
                     <div className="flex items-center justify-between gap-4">
                         <div className="flex items-center gap-2.5">
-                            <div className="w-7 h-7 rounded-lg bg-amber-500/10 dark:bg-amber-500/20 flex items-center justify-center">
-                                <Wallet size={14} className="text-amber-600 dark:text-amber-400" />
+                            <div className="w-7 h-7 rounded-lg bg-gold/10 border border-gold/20 flex items-center justify-center">
+                                <Wallet size={14} className="text-amber-600 dark:text-gold" />
                             </div>
                             <div>
                                 <h2 className="text-sm font-bold text-gray-700 dark:text-white">
@@ -614,12 +616,12 @@ export default function SettingsClient() {
                         </div>
 
                         {payoutWallet.address ? (
-                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                                 <CheckCircle2 size={12} />
                                 Destination Active
                             </span>
                         ) : (
-                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-gold/10 text-amber-600 dark:text-gold border border-gold/20">
                                 Not Configured
                             </span>
                         )}
@@ -636,7 +638,7 @@ export default function SettingsClient() {
                                     <Button
                                         variant="outline"
                                         type="button"
-                                        className="w-full h-10 px-3.5 rounded-lg border border-dashboard bg-gray-50/70 dark:bg-slate-900/60 text-sm font-medium text-gray-800 dark:text-gray-100 flex items-center justify-between hover:bg-gray-100/70 dark:hover:bg-slate-800/60 focus:outline-none focus:ring-2 focus:ring-amber-500/30 transition-all cursor-pointer"
+                                        className="w-full h-10 px-3.5 rounded-lg border border-dashboard bg-gray-50/80 dark:bg-[#151925] text-sm font-medium text-gray-800 dark:text-gray-100 flex items-center justify-between hover:bg-gray-100/70 dark:hover:bg-white/[0.04] focus:outline-none focus:ring-2 focus:ring-amber-500/30 transition-all cursor-pointer"
                                     >
                                         <span className="truncate">
                                             {USDT_NETWORKS.find((n) => n.value === payoutWallet.network)?.label || payoutWallet.network}
@@ -704,7 +706,7 @@ export default function SettingsClient() {
                                             address: e.target.value,
                                         }))
                                     }
-                                    className="w-full h-10 pl-3.5 pr-10 rounded-lg border border-dashboard bg-gray-50/70 dark:bg-slate-900/60 text-sm font-mono text-gray-800 dark:text-gray-100 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500/30 transition-all"
+                                    className="w-full h-10 pl-3.5 pr-10 rounded-lg border border-dashboard bg-gray-50/80 dark:bg-[#151925] text-sm font-mono tabular-nums text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-amber-500/30 transition-all"
                                     aria-label="USDT Receiving Address"
                                 />
                                 <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
@@ -719,7 +721,7 @@ export default function SettingsClient() {
                         </div>
                     </div>
 
-                    <div className="rounded-xl bg-amber-500/5 border border-amber-500/15 p-3.5 flex items-start gap-3">
+                    <div className="rounded-lg bg-amber-500/5 border border-amber-500/15 p-3.5 flex items-start gap-3">
                         <ShieldCheck size={18} className="text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
                         <div className="text-xs text-amber-800 dark:text-amber-300/90 leading-relaxed">
                             <span className="font-semibold">Automated Loyalty Claim Integration:</span> When you claim milestone rewards in the Loyalty Dashboard, Admin will verify and dispatch USDT directly to this saved wallet within 24 business hours.
@@ -750,12 +752,12 @@ export default function SettingsClient() {
             {/* ── Email Preferences Card ── */}
             <form
                 onSubmit={handleEmailPrefsSubmit}
-                className="bg-white dark:bg-[#0B0E14] rounded-xl border border-dashboard shadow-sm overflow-hidden"
+                className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm overflow-hidden"
             >
                 <div className="px-6 py-5 space-y-4">
                     <div className="flex items-center gap-2.5">
-                        <div className="w-7 h-7 rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
-                            <Mail size={14} className="text-primary" />
+                        <div className="w-7 h-7 rounded-lg bg-gold/10 border border-gold/20 flex items-center justify-center">
+                            <Mail size={14} className="text-amber-600 dark:text-gold" />
                         </div>
                         <div>
                             <h2 className="text-sm font-bold text-gray-700 dark:text-white">
@@ -823,7 +825,7 @@ export default function SettingsClient() {
                         })}
                     </div>
 
-                    <div className="rounded-xl bg-rose-50 dark:bg-rose-500/5 border border-rose-200/60 dark:border-rose-500/20 px-4 py-3 flex items-center justify-between gap-4">
+                    <div className="rounded-lg bg-rose-50 dark:bg-rose-500/5 border border-rose-200/60 dark:border-rose-500/20 px-4 py-3 flex items-center justify-between gap-4">
                         <div className="min-w-0">
                             <p className="text-sm font-bold text-rose-600 dark:text-rose-400">
                                 Unsubscribe from all emails

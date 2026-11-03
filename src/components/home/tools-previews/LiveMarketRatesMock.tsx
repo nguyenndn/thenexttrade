@@ -51,7 +51,7 @@ export function LiveMarketRatesMock() {
 
     return (
         <div
-            className="h-44 w-full bg-slate-50 dark:bg-slate-900/80 rounded-lg p-4 flex flex-col justify-between relative overflow-hidden border border-gray-200 dark:border-white/10 select-none cursor-pointer"
+            className="h-44 w-full bg-gray-50/80 dark:bg-[#151925] rounded-lg p-4 flex flex-col justify-between relative overflow-hidden border border-gray-200 dark:border-white/10 select-none cursor-pointer"
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
         >
@@ -59,10 +59,10 @@ export function LiveMarketRatesMock() {
             <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl pointer-events-none" />
 
             {/* Header */}
-            <div className="flex items-center justify-between z-10 font-mono text-[9px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest">
+            <div className="flex items-center justify-between z-10 font-mono tabular-nums text-[9px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest">
                 <span>Live Rates Ticker</span>
-                <div className="flex items-center gap-1 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-500/30 px-2 py-0.5 rounded-full">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <div className="flex items-center gap-1 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-500/30 px-2 py-0.5 rounded-lg">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                     <span className="text-[8px] text-emerald-600 dark:text-emerald-400 font-extrabold uppercase tracking-wider">
                         TICK FEED
                     </span>
@@ -70,7 +70,7 @@ export function LiveMarketRatesMock() {
             </div>
 
             {/* Rates Rows */}
-            <div className="flex-1 flex flex-col justify-center gap-1.5 z-10 my-1 font-mono text-[9.5px] font-bold">
+            <div className="flex-1 flex flex-col justify-center gap-1.5 z-10 my-1 font-mono tabular-nums text-[9.5px] font-bold">
                 {/* Row 1 */}
                 <div className="flex items-center justify-between border-b border-gray-200 dark:border-white/10 pb-1">
                     <span className="text-slate-600 dark:text-slate-300">EUR/USD</span>
@@ -101,7 +101,7 @@ export function LiveMarketRatesMock() {
             </div>
 
             {/* Footer */}
-            <div className="text-[8px] font-bold text-slate-400 dark:text-slate-400 flex justify-between items-center z-10 border-t border-gray-200 dark:border-white/10 pt-2 font-mono">
+            <div className="text-[8px] font-bold text-slate-400 dark:text-slate-400 flex justify-between items-center z-10 border-t border-gray-200 dark:border-white/10 pt-2 font-mono tabular-nums">
                 <span>Latency: ~12ms</span>
                 <span className={hovered ? "text-emerald-600 dark:text-emerald-400 font-bold" : ""}>
                     {hovered ? "Rates Fluctuation Active" : "Rates Frozen"}

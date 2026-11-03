@@ -57,8 +57,8 @@ function SignalPriceItem({
 
     const styles = {
         entry: {
-            border: "border-blue-500/20 bg-blue-500/5",
-            text: hasValue ? "text-blue-600 dark:text-blue-400 font-black" : "text-gray-400 dark:text-gray-600 font-semibold",
+            border: "border-gold/20 bg-gold/5",
+            text: hasValue ? "text-amber-600 dark:text-gold font-black" : "text-gray-400 dark:text-gray-600 font-semibold",
         },
         sl: {
             border: "border-red-500/20 bg-red-500/5",
@@ -75,7 +75,7 @@ function SignalPriceItem({
             <span className="text-xs font-bold text-gray-500 dark:text-gray-400">
                 {label}
             </span>
-            <span className={`text-sm tabular-nums ${styles.text}`}>
+            <span className={`text-sm font-mono tabular-nums ${styles.text}`}>
                 {displayValue}
             </span>
         </div>
@@ -88,8 +88,8 @@ export function AiResultPanel({
 }: AiResultPanelProps) {
     if (isLoading) {
         return (
-            <div className="space-y-4 animate-pulse">
-                <div className="flex items-center gap-2 text-gold">
+            <div className="space-y-4">
+                <div className="flex items-center gap-2 text-amber-600 dark:text-gold">
                     <Loader2 size={16} className="animate-spin" />
                     <span className="text-xs font-black uppercase tracking-wider">
                         Analyzing chart...
@@ -110,7 +110,7 @@ export function AiResultPanel({
     if (!result) {
         return (
             <div className="text-center py-8 space-y-2">
-                <div className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-gold/10 text-gold mb-1">
+                <div className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-gold/10 text-amber-600 dark:text-gold mb-1">
                     <Target size={20} />
                 </div>
                 <p className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-wider">
@@ -134,7 +134,7 @@ export function AiResultPanel({
                     {result.error || "Analysis failed."}
                 </p>
                 {result.quota && (
-                    <p className="text-[10px] text-gray-400">
+                    <p className="text-[10px] font-mono tabular-nums text-gray-400">
                         Quota: {result.quota.usedToday}/{result.quota.dailyLimit} used today
                     </p>
                 )}
@@ -166,7 +166,7 @@ export function AiResultPanel({
                     <span className="font-bold text-gray-500 dark:text-gray-400">
                         Signal Confidence
                     </span>
-                    <span className="font-black text-gold">
+                    <span className="font-black font-mono tabular-nums text-amber-600 dark:text-gold">
                         {d.confidence}%
                     </span>
                 </div>
@@ -179,12 +179,12 @@ export function AiResultPanel({
             </div>
 
             {/* Key Price Levels Card (ALWAYS DISPLAYED) */}
-            <div className="space-y-2 rounded-lg border border-gray-200 dark:border-white/10 p-3.5 bg-gray-50/50 dark:bg-white/[0.02]">
+            <div className="space-y-2 rounded-lg border border-gray-200 dark:border-white/10 p-3.5 bg-gray-50/80 dark:bg-[#151925]">
                 <div className="flex items-center justify-between border-b border-gray-200 dark:border-white/5 pb-2 mb-2">
                     <span className="text-[10px] font-black uppercase tracking-wider text-gray-400 dark:text-gray-500">
                         Key Price Levels
                     </span>
-                    <span className={`text-xs font-black ${d.rr > 0 ? "text-gold" : "text-gray-400 dark:text-gray-600"}`}>
+                    <span className={`text-xs font-black font-mono tabular-nums ${d.rr > 0 ? "text-amber-600 dark:text-gold" : "text-gray-400 dark:text-gray-600"}`}>
                         R:R = {d.rr > 0 ? `1:${d.rr.toFixed(1)}` : "--"}
                     </span>
                 </div>
@@ -203,7 +203,7 @@ export function AiResultPanel({
                         <p className="text-[10px] font-black uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1">
                             Market Analysis
                         </p>
-                        <p className="text-xs leading-relaxed text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-white/[0.02] p-3 rounded-lg border border-gray-200 dark:border-white/10">
+                        <p className="text-xs leading-relaxed text-gray-600 dark:text-gray-300 bg-gray-50/80 dark:bg-[#151925] p-3 rounded-lg border border-gray-200 dark:border-white/10">
                             {d.market_analysis}
                         </p>
                     </div>
@@ -214,7 +214,7 @@ export function AiResultPanel({
                         <p className="text-[10px] font-black uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1">
                             Trade Rationale
                         </p>
-                        <p className="text-xs leading-relaxed text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-white/[0.02] p-3 rounded-lg border border-gray-200 dark:border-white/10">
+                        <p className="text-xs leading-relaxed text-gray-600 dark:text-gray-300 bg-gray-50/80 dark:bg-[#151925] p-3 rounded-lg border border-gray-200 dark:border-white/10">
                             {d.reason}
                         </p>
                     </div>
@@ -225,7 +225,7 @@ export function AiResultPanel({
                         <p className="text-[10px] font-black uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1">
                             Risk Advisory
                         </p>
-                        <p className="text-xs leading-relaxed text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-white/[0.02] p-3 rounded-lg border border-gray-200 dark:border-white/10">
+                        <p className="text-xs leading-relaxed text-gray-600 dark:text-gray-300 bg-gray-50/80 dark:bg-[#151925] p-3 rounded-lg border border-gray-200 dark:border-white/10">
                             {d.risk_note}
                         </p>
                     </div>
@@ -242,7 +242,7 @@ export function AiResultPanel({
 
             {/* Quota Info */}
             {result.quota && (
-                <p className="text-[10px] text-gray-400 dark:text-gray-500 text-center">
+                <p className="text-[10px] font-mono tabular-nums text-gray-400 dark:text-gray-500 text-center">
                     {result.quota.remainingToday} analysis{result.quota.remainingToday !== 1 ? "es" : ""} remaining today
                 </p>
             )}

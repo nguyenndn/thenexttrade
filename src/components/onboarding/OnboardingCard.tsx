@@ -30,7 +30,7 @@ export function OnboardingCard({
 
     return (
         <div
-            className="relative bg-white dark:bg-[#1A1D27] rounded-xl border border-dashboard shadow-2xl w-[340px] max-w-[calc(100vw-2rem)] overflow-hidden pointer-events-auto"
+            className="relative bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 shadow-2xl w-[340px] max-w-[calc(100vw-2rem)] overflow-hidden pointer-events-auto"
             style={{ zIndex: 99999 }}
         >
             {/* Progress Bar */}
@@ -48,7 +48,7 @@ export function OnboardingCard({
                 <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-2.5">
                         {step.icon && (
-                            <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-primary/10 text-primary text-lg">
+                            <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-gold/10 text-amber-600 dark:text-gold text-lg">
                                 {step.icon}
                             </div>
                         )}
@@ -56,7 +56,7 @@ export function OnboardingCard({
                             <h3 className="text-sm font-bold text-gray-900 dark:text-white leading-tight">
                                 {step.title}
                             </h3>
-                            <p className="text-[11px] text-gray-400 font-medium mt-0.5">
+                            <p className="text-[11px] text-gray-400 font-medium tabular-nums mt-0.5">
                                 Step {currentStep + 1} of {totalSteps}
                             </p>
                         </div>
@@ -66,7 +66,7 @@ export function OnboardingCard({
                         variant="outline"
                         size="icon"
                         onClick={handleClose}
-                        className="h-7 w-7 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 pointer-events-auto"
+                        className="h-7 w-7 rounded-lg border-gray-200 dark:border-white/10 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 pointer-events-auto"
                         aria-label="Dismiss"
                     >
                         <X size={16} />
@@ -83,10 +83,10 @@ export function OnboardingCard({
                     {!isFirst ? (
                         <Button
                             type="button"
-                            variant="ghost"
+                            variant="outline"
                             size="sm"
                             onClick={prevStep}
-                            className="h-auto p-0 flex items-center gap-1.5 text-xs font-semibold text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white transition-colors pointer-events-auto hover:bg-transparent"
+                            className="h-8 px-3 rounded-lg border-gray-200 dark:border-white/10 flex items-center gap-1.5 text-xs font-semibold text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white transition-colors pointer-events-auto"
                         >
                             <ArrowLeft size={14} /> Back
                         </Button>
@@ -99,7 +99,7 @@ export function OnboardingCard({
                         variant="gold"
                         size="sm"
                         onClick={handleNext}
-                        className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-gold hover:bg-amber-600 rounded-lg transition-colors shadow-sm pointer-events-auto"
+                        className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold !text-white bg-gold hover:bg-amber-600 rounded-lg transition-colors shadow-sm pointer-events-auto"
                     >
                         {isLast ? (
                             <>

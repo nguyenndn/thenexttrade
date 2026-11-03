@@ -98,7 +98,8 @@ export function PublicSearchModal() {
                                 onKeyDown={(e) =>
                                     e.key === "Enter" && handleSearch()
                                 }
-                                placeholder="Search for anything..."
+                                placeholder="Search tools, EAs, guides..."
+                                aria-label="Search TheNextTrade"
                                 className="flex-1 bg-transparent text-base text-gray-700 dark:text-white placeholder:text-gray-500 outline-none py-2"
                             />
                             <Button

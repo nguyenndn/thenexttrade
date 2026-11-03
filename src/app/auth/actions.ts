@@ -30,6 +30,10 @@ import { isOnboardingDone } from "@/lib/onboarding/onboarding.server";
 
 async function getClientIP(): Promise<string> {
     const h = await headers();
+    const realIp = h.get("x-real-ip")?.trim();
+    if (realIp) return realIp;
+    const vercelIp = h.get("x-vercel-forwarded-for")?.split(",")[0]?.trim();
+    if (vercelIp) return vercelIp;
     return h.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "127.0.0.1";
 }
 

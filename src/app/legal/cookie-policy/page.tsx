@@ -1,166 +1,214 @@
 import { Metadata } from "next";
-import { Cookie } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
+import {
+    LegalPageShell,
+    type LegalSectionItem,
+} from "@/components/legal/LegalPageShell";
+import { TELEGRAM_CHANNEL_URL } from "@/config/telegram";
 
 export const metadata: Metadata = {
-    title: "Cookie Policy | TheNextTrade",
-    description: "Information about how TheNextTrade uses essential cookies and local storage.",
+    title: "Cookie Policy — TheNextTrade",
+    description:
+        "Information about how TheNextTrade uses essential cookies and local storage.",
     alternates: {
         canonical: "/legal/cookie-policy",
     },
     openGraph: {
-        title: "Cookie Policy | TheNextTrade",
-        description: "Information about how TheNextTrade uses essential cookies and local storage.",
+        title: "Cookie Policy — TheNextTrade",
+        description:
+            "Information about how TheNextTrade uses essential cookies and local storage.",
         url: "/legal/cookie-policy",
         siteName: "TheNextTrade",
         type: "website",
     },
 };
 
+const COOKIE_SECTIONS: LegalSectionItem[] = [
+    { id: "what-are-cookies", label: "What Are Cookies?" },
+    { id: "how-we-use-cookies", label: "How We Use Cookies" },
+    { id: "cookie-categories", label: "Cookie Categories" },
+    { id: "third-party-providers", label: "Essential Providers" },
+    { id: "your-choices", label: "Your Choices" },
+    { id: "contact", label: "Contact" },
+];
+
 export default function CookiePolicyPage() {
     return (
-        <>
-            <div className="max-w-3xl mx-auto text-center space-y-6 mb-20 mt-12">
-                <div className="inline-flex items-center justify-center p-3 rounded-lg bg-orange-500/10 text-orange-500 mb-2 ring-4 ring-orange-500/5 animate-in fade-in zoom-in slide-in-from-bottom-4 duration-500">
-                    <Cookie size={40} strokeWidth={1.5} />
+        <LegalPageShell
+            title="Cookie Policy"
+            lead="Effective June 1, 2026 · How we use strictly necessary cookies and local storage to keep your workspace secure."
+            sections={COOKIE_SECTIONS}
+            numbered={true}
+            footerNote="We may update this Cookie Policy as our infrastructure evolves. When we do, we will update the effective date at the top of this page."
+            intro={
+                <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-5 sm:p-6 shadow-sm">
+                    <div className="text-xs font-black uppercase tracking-[0.16em] text-amber-600 dark:text-gold mb-3">
+                        In short
+                    </div>
+                    <ul className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        {[
+                            "No third-party advertising or cross-site tracking cookies.",
+                            "Essential cookies keep your Supabase login session secure.",
+                            "Local storage remembers your Dark/Light theme & layout preferences.",
+                        ].map((point) => (
+                            <li
+                                key={point}
+                                className="flex items-start gap-2.5 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 p-3.5 text-xs sm:text-sm font-semibold text-gray-800 dark:text-gray-200"
+                            >
+                                <CheckCircle2
+                                    size={16}
+                                    className="text-emerald-500 shrink-0 mt-0.5"
+                                    aria-hidden="true"
+                                />
+                                <span>{point}</span>
+                            </li>
+                        ))}
+                    </ul>
                 </div>
-                <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-gray-700 dark:text-white leading-tight animate-in fade-in slide-in-from-bottom-6 duration-700">
-                    Cookie Policy
-                </h1>
-                <p className="text-xl text-gray-600 dark:text-gray-300 leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-1000">
-                    Last updated: October 2026
+            }
+        >
+            {/* 1. What Are Cookies? */}
+            <section id="what-are-cookies" className="pb-7 scroll-mt-28">
+                <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-2.5 flex items-center gap-2">
+                    <span className="tabular-nums text-amber-600 dark:text-gold">
+                        1.
+                    </span>
+                    <span>What Are Cookies?</span>
+                </h2>
+                <p className="text-sm sm:text-base leading-relaxed text-gray-600 dark:text-gray-300">
+                    Cookies are small text files placed on your device when you
+                    visit a website. We use first-party cookies and browser
+                    local storage to keep you signed in, protect your session
+                    against unauthorized access, and remember your interface
+                    settings.
                 </p>
-            </div>
+            </section>
 
-            <div className="max-w-4xl mx-auto">
-                <div className="bg-white/95 dark:bg-white/[0.055] border border-dashboard dark:border-white/10 rounded-lg p-8 md:p-14 shadow-xl prose dark:prose-invert prose-headings:text-gray-700 dark:prose-headings:text-white prose-p:text-gray-600 dark:prose-p:text-gray-300 prose-li:text-gray-600 dark:prose-li:text-gray-300 prose-strong:text-gray-700 dark:prose-strong:text-white max-w-none transition-colors duration-300 backdrop-blur-md">
-                    <h2>1. What Are Cookies?</h2>
-                    <p>
-                        Cookies are small data files placed on your computer or
-                        mobile device when you visit a website. They are widely
-                        used by online service providers to facilitate and help
-                        to make the interaction between users and websites
-                        faster and easier, as well as to provide reporting
-                        information.
-                    </p>
-                    <p>
-                        Cookies set by the website owner (in this case,
-                        TheNextTrade) are called &quot;first-party
-                        cookies.&quot; Cookies set by parties other than the
-                        website owner are called &quot;third-party
-                        cookies.&quot; We use both to provide you with a
-                        reliable and secure trading journal experience.
-                    </p>
+            {/* 2. How We Use Cookies */}
+            <section id="how-we-use-cookies" className="py-7 scroll-mt-28">
+                <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-2.5 flex items-center gap-2">
+                    <span className="tabular-nums text-amber-600 dark:text-gold">
+                        2.
+                    </span>
+                    <span>How We Use Cookies</span>
+                </h2>
+                <p className="text-sm sm:text-base leading-relaxed text-gray-600 dark:text-gray-300">
+                    TheNextTrade only places cookies that serve a direct
+                    functional or security purpose for your trading workspace.
+                    We do not use behavioral ad networks or sell browsing
+                    profiles to third parties.
+                </p>
+            </section>
 
-                    <h2>2. How We Use Cookies</h2>
-                    <p>
-                        When you access and use TheNextTrade platform, we may
-                        place persistent and session cookie files in your web
-                        browser. We use cookies for the following purposes:
-                    </p>
-                    <ul>
-                        <li>
-                            <strong>
-                                Essential / Strictly Necessary Cookies:
-                            </strong>{" "}
-                            These cookies are critical to the operation of our
-                            platform. They enable secure login, session
-                            management, and access to premium features (like
-                            your Trading Journal and Dashboards). Without these,
-                            our services cannot function properly.
-                        </li>
-                        <li>
-                            <strong>Performance and Analytics Cookies:</strong>{" "}
-                            We use these to understand how users interact with
-                            our site - for instance, which Academy pages are
-                            visited most often or how much time is spent
-                            analyzing trades. This helps us optimize performance
-                            and improve the user experience.
-                        </li>
-                        <li>
-                            <strong>Preference Cookies:</strong> These cookies
-                            allow us to remember your choices, such as your
-                            preferred theme (Dark or Light mode), layout
-                            settings, and language preferences, saving you the
-                            trouble of continually re-entering this information.
-                        </li>
-                        <li>
-                            <strong>Security Cookies:</strong> Used to
-                            authenticate users, prevent fraudulent use of login
-                            credentials, and protect user data from unauthorized
-                            parties.
-                        </li>
-                    </ul>
+            {/* 3. Cookie Categories */}
+            <section id="cookie-categories" className="py-7 scroll-mt-28">
+                <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-3.5 flex items-center gap-2">
+                    <span className="tabular-nums text-amber-600 dark:text-gold">
+                        3.
+                    </span>
+                    <span>Cookie Categories</span>
+                </h2>
+                <dl className="divide-y divide-gray-200 dark:divide-white/10 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/70 dark:bg-[#151925] overflow-hidden">
+                    {[
+                        [
+                            "Strictly necessary",
+                            "Required for secure authentication, session persistence, and access to your Trading Journal and Dashboard.",
+                        ],
+                        [
+                            "Preferences",
+                            "Stores your selected theme (Dark or Light mode), dashboard layout state, and calculator defaults.",
+                        ],
+                        [
+                            "Security",
+                            "Protects login endpoints against brute-force attempts, CSRF, and automated bot traffic.",
+                        ],
+                    ].map(([term, desc]) => (
+                        <div
+                            key={term}
+                            className="grid grid-cols-1 sm:grid-cols-12 gap-1.5 sm:gap-4 p-4 text-sm"
+                        >
+                            <dt className="sm:col-span-4 font-bold text-gray-900 dark:text-white">
+                                {term}
+                            </dt>
+                            <dd className="sm:col-span-8 text-gray-600 dark:text-gray-300 leading-relaxed">
+                                {desc}
+                            </dd>
+                        </div>
+                    ))}
+                </dl>
+            </section>
 
-                    <h2>3. Third-Party Cookies and Tracking</h2>
-                    <p>
-                        In addition to our own cookies, we may also utilize
-                        various third-party cookies from trusted partners to
-                        report usage statistics and improve site security.
-                        Specifically:
-                    </p>
-                    <ul>
-                        <li>
-                            <strong>Cloudflare:</strong> We use Cloudflare for
-                            DDoS protection and web performance. Cloudflare
-                            places a necessary cookie to identify trusted web
-                            traffic and ensure security.
-                        </li>
-                        <li>
-                            <strong>Supabase:</strong> Our backend provider,
-                            Supabase, utilizes secure cookies to manage
-                            authentication sessions and ensure your trading data
-                            remains private and securely linked to your account.
-                        </li>
-                        <li>
-                            <strong>Analytics Providers:</strong> We may use
-                            tools to collect anonymized telemetry data that
-                            helps us understand traffic and app performance.
-                        </li>
-                    </ul>
+            {/* 4. Essential Providers */}
+            <section id="third-party-providers" className="py-7 scroll-mt-28">
+                <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-2.5 flex items-center gap-2">
+                    <span className="tabular-nums text-amber-600 dark:text-gold">
+                        4.
+                    </span>
+                    <span>Essential Providers</span>
+                </h2>
+                <ul className="space-y-2 text-sm sm:text-base text-gray-600 dark:text-gray-300 list-disc pl-5">
+                    <li>
+                        <strong className="font-bold text-gray-900 dark:text-white">
+                            Supabase Auth:
+                        </strong>{" "}
+                        Places encrypted session tokens so your trading journal
+                        remains securely tied to your account.
+                    </li>
+                    <li>
+                        <strong className="font-bold text-gray-900 dark:text-white">
+                            Cloudflare:
+                        </strong>{" "}
+                        Uses security cookies to filter malicious bot traffic
+                        and protect the platform from DDoS attacks.
+                    </li>
+                </ul>
+            </section>
 
-                    <h2>4. Your Choices Regarding Cookies</h2>
-                    <p>
-                        You have the right to decide whether to accept or reject
-                        cookies. You can exercise your cookie rights by setting
-                        your preferences in your web browser controls.
-                    </p>
-                    <ul>
-                        <li>
-                            If you choose to reject cookies, you may still use
-                            our website to view public content, but{" "}
-                            <strong>
-                                your access to your account, dashboards, and
-                                personalized trading features will be severely
-                                degraded or completely non-functional
-                            </strong>{" "}
-                            (as login sessions require cookies).
-                        </li>
-                        <li>
-                            To learn how to manage cookies, please visit the
-                            help menus of your specific browser (Chrome,
-                            Firefox, Safari, Edge, etc.).
-                        </li>
-                    </ul>
+            {/* 5. Your Choices */}
+            <section id="your-choices" className="py-7 scroll-mt-28">
+                <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-2.5 flex items-center gap-2">
+                    <span className="tabular-nums text-amber-600 dark:text-gold">
+                        5.
+                    </span>
+                    <span>Your Choices</span>
+                </h2>
+                <p className="text-sm sm:text-base leading-relaxed text-gray-600 dark:text-gray-300">
+                    You can clear or block cookies at any time through your
+                    browser settings. Please note that blocking strictly
+                    necessary authentication cookies will prevent you from
+                    signing in to your dashboard.
+                </p>
+            </section>
 
-                    <h2>5. Updates to This Policy</h2>
-                    <p>
-                        We may update this Cookie Policy from time to time in
-                        order to reflect changes to the cookies we use or for
-                        other operational, legal, or regulatory reasons. Please
-                        revisit this page regularly to stay informed about our
-                        use of cookies and related technologies.
-                    </p>
-
-                    <h2>6. Contact Us</h2>
-                    <p>
-                        If you have any questions about our use of cookies or
-                        other technologies, please email us at:
-                    </p>
-                    <p>
-                        <strong>Email:</strong> support@thenexttrade.com
-                    </p>
-                </div>
-            </div>
-        </>
+            {/* 6. Contact */}
+            <section id="contact" className="pt-7 scroll-mt-28">
+                <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-2.5 flex items-center gap-2">
+                    <span className="tabular-nums text-amber-600 dark:text-gold">
+                        6.
+                    </span>
+                    <span>Contact</span>
+                </h2>
+                <p className="text-sm sm:text-base leading-relaxed text-gray-600 dark:text-gray-300">
+                    For questions about cookies or data storage, contact us on
+                    Telegram at{" "}
+                    <a
+                        href={TELEGRAM_CHANNEL_URL}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-bold text-amber-600 dark:text-gold hover:underline"
+                    >
+                        @GoldScalperNinja
+                    </a>{" "}
+                    or by email at{" "}
+                    <a
+                        href="mailto:support@thenexttrade.com"
+                        className="font-bold text-amber-600 dark:text-gold hover:underline"
+                    >
+                        support@thenexttrade.com
+                    </a>
+                    .
+                </p>
+            </section>
+        </LegalPageShell>
     );
 }

@@ -92,7 +92,7 @@ export function RecentTradesMini({ trades }: RecentTradesMiniProps) {
                                         {trade.symbol}
                                     </span>
                                     {trade.lotSize && (
-                                        <span className="text-[10px] text-gray-500 dark:text-gray-400 font-medium">
+                                        <span className="text-[10px] text-gray-500 dark:text-gray-400 font-medium font-mono tabular-nums">
                                             {Number(trade.lotSize).toFixed(2)}
                                         </span>
                                     )}
@@ -101,15 +101,15 @@ export function RecentTradesMini({ trades }: RecentTradesMiniProps) {
                                     <span
                                         className={`inline-block px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase ${
                                             trade.type?.toLowerCase() === "buy"
-                                                ? "bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400"
-                                                : "bg-red-100 dark:bg-red-500/20 text-red-600 dark:text-red-400"
+                                                ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                                                : "bg-rose-500/10 text-rose-600 dark:text-rose-400"
                                         }`}
                                     >
                                         {trade.type || "N/A"}
                                     </span>
                                 </div>
                                 <div
-                                    className={`col-span-3 text-right font-bold text-sm ${
+                                    className={`col-span-3 text-right font-bold font-mono tabular-nums text-sm ${
                                         (trade.pnl || 0) >= 0
                                             ? "text-primary"
                                             : "text-red-500"
@@ -122,7 +122,7 @@ export function RecentTradesMini({ trades }: RecentTradesMiniProps) {
                                 >
                                     {formatCurrency(trade.pnl || 0)}
                                 </div>
-                                <div className="col-span-3 text-right text-xs text-gray-500 dark:text-gray-400 font-medium">
+                                <div className="col-span-3 text-right text-xs text-gray-500 dark:text-gray-400 font-medium font-mono tabular-nums">
                                     {formatDate(trade.exitDate)}
                                 </div>
                             </div>

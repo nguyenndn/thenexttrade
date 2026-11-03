@@ -10,7 +10,6 @@ import {
     SlidersHorizontal,
 } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/Tabs";
-import { cn } from "@/lib/utils";
 
 interface SystemData {
     slug: string;
@@ -32,7 +31,6 @@ interface DetailTabsProps {
 
 export function TradingSystemsDetailTabs({ system }: DetailTabsProps) {
     const [activeTab, setActiveTab] = useState("overview");
-    const colorTheme = system.colorTheme;
 
     // Resolve the Lucide icon based on slug to avoid React Server-to-Client serialization issues
     const TabIcon =
@@ -59,17 +57,12 @@ export function TradingSystemsDetailTabs({ system }: DetailTabsProps) {
         { id: "risk", label: "Risk Controls", icon: ShieldAlert },
     ] as const;
 
-    const activeTabIndicator =
-        {
-            gold: "!bg-gold shadow-sm border-0",
-            blue: "!bg-blue-600 shadow-sm border-0",
-            emerald: "!bg-emerald-600 shadow-sm border-0",
-        }[colorTheme] || "!bg-gold shadow-sm border-0";
+    const activeTabIndicator = "!bg-gold shadow-sm border-0";
 
     return (
         <section
             id="system-technicals"
-            className="relative mx-auto w-full max-w-7xl overflow-hidden rounded-lg border border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#1E2028]/60 p-6 md:p-8 shadow-sm backdrop-blur"
+            className="relative mx-auto w-full max-w-7xl overflow-hidden rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 md:p-8 shadow-sm"
         >
             <div className="relative z-10">
                 <Tabs
@@ -79,9 +72,9 @@ export function TradingSystemsDetailTabs({ system }: DetailTabsProps) {
                 >
                     <div className="mb-8 flex flex-col gap-5 border-b border-gray-200 dark:border-white/10 pb-6 lg:flex-row lg:items-center lg:justify-between">
                         <div>
-                            <div className="mb-2.5 inline-flex items-center gap-2 rounded-full border border-gold/25 bg-gold/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.22em] text-gold">
+                            <div className="mb-2.5 inline-flex items-center gap-2 rounded-lg border border-gold/25 bg-gold/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.22em] text-gold">
                                 <Bot className="h-3 w-3" />
-                                Expert Advisor Technicals
+                                Built for Real MT5 Workflow
                             </div>
                             <h3 className="text-base font-black text-gray-900 dark:text-white uppercase tracking-wider flex items-center gap-2 mt-1">
                                 {activeTab === "overview" &&
@@ -94,7 +87,7 @@ export function TradingSystemsDetailTabs({ system }: DetailTabsProps) {
                         </div>
 
                         <div className="overflow-x-auto scrollbar-hide flex w-full lg:w-auto">
-                            <TabsList className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg p-1.5 gap-1 shrink-0 flex w-full sm:w-auto">
+                            <TabsList className="bg-gray-50/70 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg p-1.5 gap-1 shrink-0 flex w-full sm:w-auto">
                                 {tabs.map((tab) => {
                                     const Icon = tab.icon;
                                     return (
@@ -116,40 +109,26 @@ export function TradingSystemsDetailTabs({ system }: DetailTabsProps) {
                         </div>
                     </div>
 
-                    <div className="tab-panels min-h-[180px]">
+                    <div className="tab-panels min-h-[200px]">
                         <TabsContent value="overview" className="mt-0">
-                            <div className="grid gap-6 grid-cols-1 md:grid-cols-3">
+                            <div className="grid gap-5 grid-cols-1 md:grid-cols-3">
                                 {system.features.map((item, idx) => (
                                     <div
                                         key={idx}
-                                        className={cn(
-                                            "rounded-lg border border-gray-200 dark:border-white/10 bg-white/40 dark:bg-[#151822]/45 p-5 space-y-3 transition-all duration-300 relative overflow-hidden group",
-                                            colorTheme === "gold" &&
-                                                "hover:border-gold/30 hover:shadow-md",
-                                            colorTheme === "blue" &&
-                                                "hover:border-blue-500/30 hover:shadow-md",
-                                            colorTheme === "emerald" &&
-                                                "hover:border-emerald-500/30 hover:shadow-md"
-                                        )}
+                                        className="rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/70 dark:bg-[#151925] p-5 space-y-3 transition-colors duration-150 relative overflow-hidden group hover:border-gold/30"
                                     >
-                                        <div className="absolute top-0 right-0 w-24 h-24 bg-gold/5 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-                                        <div
-                                            className={cn(
-                                                "flex h-9 w-9 items-center justify-center rounded-lg relative z-10 border",
-                                                colorTheme === "gold" &&
-                                                    "bg-gold/10 text-gold border-gold/15",
-                                                colorTheme === "blue" &&
-                                                    "bg-blue-500/10 text-blue-500 border-blue-500/15",
-                                                colorTheme === "emerald" &&
-                                                    "bg-emerald-500/10 text-emerald-500 border-emerald-500/15"
-                                            )}
-                                        >
-                                            <TabIcon size={18} />
+                                        <div className="flex items-center justify-between gap-2 relative z-10">
+                                            <div className="flex h-9 w-9 items-center justify-center rounded-lg border bg-gold/10 text-gold border-gold/20">
+                                                <TabIcon size={18} />
+                                            </div>
+                                            <span className="text-[10px] font-mono tabular-nums font-black uppercase tracking-widest text-gray-400 dark:text-gray-500">
+                                                {String(idx + 1).padStart(2, "0")}
+                                            </span>
                                         </div>
                                         <h4 className="text-xs font-black text-gray-900 dark:text-white uppercase tracking-wider relative z-10">
                                             {item.title}
                                         </h4>
-                                        <p className="text-xs font-semibold leading-relaxed text-gray-500 dark:text-gray-400 relative z-10">
+                                        <p className="text-xs font-semibold leading-relaxed text-gray-600 dark:text-gray-400 tabular-nums relative z-10">
                                             {item.desc}
                                         </p>
                                     </div>
@@ -158,16 +137,32 @@ export function TradingSystemsDetailTabs({ system }: DetailTabsProps) {
                         </TabsContent>
 
                         <TabsContent value="specs" className="mt-0">
-                            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-                                {specItems.map((item) => (
+                            <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/70 dark:bg-[#151925] overflow-hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0">
+                                {specItems.map((item, idx) => (
                                     <div
                                         key={item.label}
-                                        className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925]/60 p-5 shadow-sm"
+                                        className={`p-5 ${
+                                            idx % 4 !== 3
+                                                ? "lg:border-r lg:border-gray-200 lg:dark:border-white/10"
+                                                : ""
+                                        } ${
+                                            idx % 2 === 0
+                                                ? "sm:max-lg:border-r sm:max-lg:border-gray-200 sm:max-lg:dark:border-white/10"
+                                                : ""
+                                        } ${
+                                            idx >= 4
+                                                ? "lg:border-t lg:border-gray-200 lg:dark:border-white/10"
+                                                : ""
+                                        } ${
+                                            idx >= 2
+                                                ? "sm:max-lg:border-t sm:max-lg:border-gray-200 sm:max-lg:dark:border-white/10"
+                                                : ""
+                                        }`}
                                     >
-                                        <p className="mb-4 text-[10px] font-black uppercase tracking-[0.18em] text-slate-400">
+                                        <p className="mb-2.5 text-[10px] font-black uppercase tracking-[0.18em] text-gray-500 dark:text-gray-400">
                                             {item.label}
                                         </p>
-                                        <p className="text-xs font-extrabold leading-relaxed text-slate-800 dark:text-white">
+                                        <p className="text-xs font-mono tabular-nums font-extrabold leading-relaxed text-gray-900 dark:text-white break-words">
                                             {item.value}
                                         </p>
                                     </div>
@@ -180,12 +175,12 @@ export function TradingSystemsDetailTabs({ system }: DetailTabsProps) {
                                 {system.logic.map((item, index) => (
                                     <div
                                         key={item}
-                                        className="flex gap-4 rounded-lg border border-emerald-200 dark:border-emerald-500/10 bg-emerald-50/70 dark:bg-emerald-500/5 p-5 animate-in fade-in slide-in-from-bottom-2 duration-300"
+                                        className="flex gap-4 rounded-lg border border-emerald-500/20 bg-emerald-500/[0.04] dark:bg-[#151925] p-5"
                                     >
-                                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-500 text-xs font-black text-white">
-                                            {index + 1}
+                                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-emerald-500 font-mono tabular-nums text-xs font-black text-white">
+                                            {String(index + 1).padStart(2, "0")}
                                         </span>
-                                        <p className="text-xs font-semibold leading-relaxed text-slate-700 dark:text-slate-300">
+                                        <p className="text-xs font-semibold leading-relaxed text-gray-700 dark:text-gray-300 tabular-nums">
                                             {item}
                                         </p>
                                     </div>
@@ -198,14 +193,14 @@ export function TradingSystemsDetailTabs({ system }: DetailTabsProps) {
                                 {system.riskControls.map((item) => (
                                     <div
                                         key={item.title}
-                                        className="flex gap-4 rounded-lg border border-amber-200 dark:border-amber-500/10 bg-amber-50/70 dark:bg-amber-500/5 p-5 animate-in fade-in slide-in-from-bottom-2 duration-300"
+                                        className="flex gap-4 rounded-lg border border-amber-500/20 bg-amber-500/[0.04] dark:bg-[#151925] p-5"
                                     >
-                                        <ShieldAlert className="mt-1 h-5 w-5 shrink-0 text-amber-500" />
+                                        <ShieldAlert className="mt-0.5 h-5 w-5 shrink-0 text-gold" />
                                         <div>
-                                            <p className="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-white">
+                                            <p className="text-xs font-black uppercase tracking-wider text-gray-900 dark:text-white">
                                                 {item.title}
                                             </p>
-                                            <p className="mt-1 text-xs font-semibold leading-relaxed text-slate-700 dark:text-slate-300">
+                                            <p className="mt-1.5 text-xs font-semibold leading-relaxed text-gray-600 dark:text-gray-400 tabular-nums">
                                                 {item.desc}
                                             </p>
                                         </div>

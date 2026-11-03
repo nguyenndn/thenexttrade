@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { Home, Search } from "lucide-react";
 import { BackButton } from "@/components/ui/BackButton";
+import { buttonVariants } from "@/components/ui/button-variants";
+import { cn } from "@/lib/utils";
 
 export const metadata = {
     title: "Page Not Found",
@@ -9,25 +11,22 @@ export const metadata = {
 
 export default function NotFound() {
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-transparent px-4">
+        <div className="min-h-screen flex items-center justify-center bg-white dark:bg-transparent px-4">
             <div className="text-center max-w-lg">
-                {/* Animated 404 */}
+                {/* 404 */}
                 <div className="relative mb-8">
-                    <p className="text-[120px] sm:text-[160px] font-black text-gray-100 dark:text-white/[0.03] leading-none select-none">
+                    <p className="text-[120px] sm:text-[160px] font-mono tabular-nums font-black text-gray-100 dark:text-white/[0.03] leading-none select-none">
                         404
                     </p>
                     <div className="absolute inset-0 flex items-center justify-center">
-                        <div
-                            className="w-20 h-20 rounded-lg bg-primary/10 flex items-center justify-center animate-bounce"
-                            style={{ animationDuration: "2s" }}
-                        >
-                            <Search size={40} className="text-primary" />
+                        <div className="w-20 h-20 rounded-xl bg-gold/10 border border-gold/20 flex items-center justify-center">
+                            <Search size={40} className="text-amber-600 dark:text-gold" />
                         </div>
                     </div>
                 </div>
 
                 {/* Title */}
-                <h1 className="text-3xl font-black text-gray-700 dark:text-white mb-4">
+                <h1 className="text-3xl font-black text-gray-700 dark:text-white mb-4 font-heading tracking-tight">
                     Page Not Found.
                 </h1>
 
@@ -41,7 +40,10 @@ export default function NotFound() {
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
                     <Link
                         href="/"
-                        className="flex items-center gap-2 px-6 py-2.5 bg-gold hover:bg-amber-600 text-white font-bold rounded-full transition-all hover:scale-105 shadow-md shadow-amber-500/20"
+                        className={cn(
+                            buttonVariants({ variant: "primary", size: "md" }),
+                            "flex items-center gap-2 px-6 py-2.5 bg-gold hover:bg-amber-600 !text-white font-bold rounded-lg shadow-sm shadow-amber-500/20 border-none"
+                        )}
                     >
                         <Home size={16} />
                         Go Home
@@ -54,7 +56,7 @@ export default function NotFound() {
                     Think this is a mistake?{" "}
                     <a
                         href="mailto:support@thenexttrade.com"
-                        className="text-primary font-semibold hover:underline"
+                        className="text-amber-600 dark:text-gold font-semibold hover:underline"
                     >
                         Let us know
                     </a>

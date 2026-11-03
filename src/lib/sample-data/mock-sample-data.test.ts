@@ -6,6 +6,7 @@ import {
     SAMPLE_TAGS,
     SAMPLE_MISTAKES,
     SAMPLE_JOURNAL_STATS,
+    SAMPLE_PROFIT_TARGETS,
 } from "./mock-sample-data";
 
 describe("mock-sample-data", () => {
@@ -80,5 +81,13 @@ describe("mock-sample-data", () => {
         expect(SAMPLE_JOURNAL_STATS.totalTrades).toBe(25);
         expect(SAMPLE_JOURNAL_STATS.winRate).toBe(68.0);
         expect(SAMPLE_JOURNAL_STATS.totalCommission).toBe(-108.50);
+    });
+
+    it("exports valid SAMPLE_PROFIT_TARGETS with expected pacing metrics", () => {
+        expect(SAMPLE_PROFIT_TARGETS.weeklyTarget).toBe(800);
+        expect(SAMPLE_PROFIT_TARGETS.weeklyPnL).toBe(574.0);
+        expect(SAMPLE_PROFIT_TARGETS.monthlyTarget).toBe(3500);
+        expect(SAMPLE_PROFIT_TARGETS.monthlyPnL).toBe(3420.0);
+        expect(SAMPLE_PROFIT_TARGETS.initialBalance).toBe(10000);
     });
 });

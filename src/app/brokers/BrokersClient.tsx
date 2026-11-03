@@ -6,7 +6,7 @@ import Image from "next/image";
 import {
     Building2,
     Star,
-    ChevronRight,
+    Check,
     ExternalLink,
     Bitcoin,
 } from "lucide-react";
@@ -14,24 +14,51 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/Tabs";
 import { Button } from "@/components/ui/Button";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { ReviewBadge } from "./ReviewModal";
+import { BrokerSpecsMatrix } from "@/components/home/broker-rankings/BrokerSpecsMatrix";
 import partnersData from "@/config/partners.json";
+
+interface PartnerReview {
+    summary: string;
+    pros: string[];
+    cons: string[];
+    bestFor: string;
+    verdict: string;
+}
+
+interface PartnerItem {
+    name: string;
+    desc?: string;
+    badge?: string | null;
+    badgeType?: string | null;
+    logo: string | null;
+    initials: string;
+    color: string;
+    url: string | null;
+    rating: number;
+    minDeposit?: string;
+    maxLeverage?: string;
+    regulation?: string;
+    features: string[];
+    active?: boolean;
+    review?: PartnerReview;
+}
 
 const CATEGORIES = [
     {
         key: "brokers",
         label: "CFD Brokers",
         icon: Building2,
-        data: partnersData.brokers,
+        data: partnersData.brokers as { items: PartnerItem[] },
         cta: "Open Account",
-        gridCols: "grid-cols-1 md:grid-cols-2 lg:grid-cols-3", // 9 brokers -> 3 rows x 3 columns (3x3 grid)
+        gridCols: "grid-cols-1 md:grid-cols-2 lg:grid-cols-3",
     },
     {
         key: "cryptoExchanges",
         label: "Crypto",
         icon: Bitcoin,
-        data: partnersData.cryptoExchanges,
+        data: partnersData.cryptoExchanges as { items: PartnerItem[] },
         cta: "Start Trading",
-        gridCols: "grid-cols-1 md:grid-cols-3 lg:grid-cols-3", // 3 crypto exchanges -> 1 row x 3 columns
+        gridCols: "grid-cols-1 md:grid-cols-3 lg:grid-cols-3",
     },
 ];
 
@@ -53,8 +80,8 @@ function StarRating({ rating }: { rating: number }) {
                     />
                 ))}
             </div>
-            <span className="text-sm font-bold text-gray-700 dark:text-white">
-                {rating}
+            <span className="text-sm font-bold font-mono tabular-nums text-gray-700 dark:text-white">
+                {rating.toFixed(1)}
             </span>
         </div>
     );
@@ -63,21 +90,37 @@ function StarRating({ rating }: { rating: number }) {
 function PartnerCard({
     item,
     ctaLabel,
+    categoryKey,
 }: {
-    item: (typeof CATEGORIES)[number]["data"]["items"][number];
+    item: PartnerItem;
     ctaLabel: string;
+    categoryKey: string;
 }) {
     const hasUrl = item.url && item.url !== "#";
+    const isCrypto = categoryKey === "cryptoExchanges";
+    const nameLower = item.name.toLowerCase();
+    const marketType = nameLower.includes("binance")
+        ? "Spot & Futures"
+        : nameLower.includes("bybit")
+            ? "Derivatives & Spot"
+            : nameLower.includes("okx")
+                ? "Spot, Futures & Options"
+                : "Spot & Derivatives";
+    const assets =
+        nameLower.includes("binance") || nameLower.includes("bybit")
+            ? "600+ Assets"
+            : "300+ Assets";
 
     return (
-        <div className="group bg-white/80 dark:bg-[#151925]/80 rounded-xl border border-gray-200 dark:border-white/10 hover:border-amber-500/40 dark:hover:border-gold/40 hover:shadow-[0_12px_32px_rgba(245,158,11,0.08)] dark:hover:shadow-[0_12px_32px_rgba(0,0,0,0.35)] transition-all duration-300 overflow-hidden flex flex-col backdrop-blur-sm relative h-full">
+        <div className="group bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 hover:border-amber-500/40 dark:hover:border-gold/40 hover:shadow-[0_12px_32px_rgba(245,158,11,0.08)] dark:hover:shadow-[0_12px_32px_rgba(0,0,0,0.35)] transition-all duration-300 overflow-hidden flex flex-col relative h-full">
             {/* Header: Logo + Info inline */}
             <div className="p-5 pb-4 flex items-center gap-4 border-b border-gray-200 dark:border-white/[0.06]">
                 <div
-                    className={`w-14 h-14 rounded-lg flex-shrink-0 flex items-center justify-center overflow-hidden p-1 ${item.logo
+                    className={`w-14 h-14 rounded-lg flex-shrink-0 flex items-center justify-center overflow-hidden p-1 ${
+                        item.logo
                             ? "bg-white border border-gray-200 dark:border-white/10 shadow-sm"
-                            : `bg-gradient-to-br ${item.color} text-white text-base font-black shadow-lg`
-                        }`}
+                            : "bg-gold/10 text-gold border border-gold/20 text-base font-black shadow-sm"
+                    }`}
                 >
                     {item.logo ? (
                         <Image
@@ -93,53 +136,62 @@ function PartnerCard({
                 </div>
                 <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                        <h3 className="text-lg font-bold text-gray-800 dark:text-white truncate tracking-tight">
+                        <h3 className="text-lg font-bold text-gray-800 dark:text-white group-hover:text-gold transition-colors truncate tracking-tight">
                             {item.name}
                         </h3>
-                        {(item as any).badge && (
-                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide uppercase bg-amber-500/10 dark:bg-gold/15 text-amber-600 dark:text-gold border border-amber-500/20 dark:border-gold/30 shrink-0">
-                                {(item as any).badge}
+                        {item.badge && (
+                            <span className="inline-flex items-center px-2 py-0.5 rounded-lg text-[10px] font-bold tracking-wide uppercase bg-amber-500/10 dark:bg-gold/15 text-amber-600 dark:text-gold border border-amber-500/20 dark:border-gold/30 shrink-0">
+                                {item.badge}
                             </span>
                         )}
                     </div>
                     <div className="flex items-center gap-2.5 flex-wrap">
                         {item.rating && <StarRating rating={item.rating} />}
-                        {(item as any).review && (
+                        {item.review && (
                             <ReviewBadge
-                                item={
-                                    {
-                                        ...item,
-                                        review: (item as any).review,
-                                    } as any
-                                }
+                                item={{
+                                    ...item,
+                                    review: item.review,
+                                }}
                             />
                         )}
                     </div>
                 </div>
             </div>
 
+            {/* 2x2 Specs Matrix + Features (Synced with Homepage BrokerRankingCard) */}
+            <div className="p-5 pt-4 flex-1 flex flex-col justify-between">
+                <div>
+                    {item.regulation && (
+                        <BrokerSpecsMatrix
+                            activeTab={isCrypto ? "crypto" : "brokers"}
+                            minDeposit={item.minDeposit}
+                            maxLeverage={item.maxLeverage}
+                            marketType={marketType}
+                            assets={assets}
+                            regulation={item.regulation}
+                            rating={item.rating}
+                        />
+                    )}
 
-            {/* Features */}
-            {item.features && item.features.length > 0 && (
-                <div className="p-5 pt-4 flex-1">
-                    <ul className="space-y-2.5">
-                        {item.features.map((feature, i) => (
-                            <li
-                                key={i}
-                                className="flex items-start gap-2.5 text-sm text-gray-600 dark:text-gray-300"
-                            >
-                                <span className="w-4 h-4 rounded-full bg-amber-500/10 dark:bg-gold/15 flex items-center justify-center shrink-0 mt-0.5">
-                                    <ChevronRight
-                                        size={12}
-                                        className="text-amber-600 dark:text-gold"
+                    {item.features && item.features.length > 0 && (
+                        <ul className="space-y-2">
+                            {item.features.map((feature, i) => (
+                                <li
+                                    key={i}
+                                    className="flex items-start gap-2 text-xs text-gray-600 dark:text-gray-300"
+                                >
+                                    <Check
+                                        size={14}
+                                        className="text-emerald-500 shrink-0 mt-0.5"
                                     />
-                                </span>
-                                <span className="leading-snug">{feature}</span>
-                            </li>
-                        ))}
-                    </ul>
+                                    <span className="leading-snug font-medium">{feature}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
                 </div>
-            )}
+            </div>
 
             {/* CTA */}
             <div className="px-5 pb-5 mt-auto">
@@ -196,14 +248,14 @@ export default function BrokersClient() {
                 </p>
             </div>
 
-            {/* Tabs - same style as /tools page */}
+            {/* Tabs */}
             <Tabs
                 value={activeTab}
                 onValueChange={setActiveTab}
                 tabsId="brokers-page"
             >
                 <div className="mb-8 overflow-x-auto scrollbar-hide flex sm:justify-center">
-                    <TabsList className="bg-gray-50/80 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg p-1.5 gap-1 shrink-0 backdrop-blur-sm">
+                    <TabsList className="bg-gray-100 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl p-1.5 gap-1 shrink-0">
                         {CATEGORIES.map((cat) => {
                             const Icon = cat.icon;
                             return (
@@ -227,14 +279,13 @@ export default function BrokersClient() {
                     <TabsContent key={cat.key} value={cat.key}>
                         <div className={`grid ${cat.gridCols} gap-6`}>
                             {cat.data.items
-                                .filter(
-                                    (item) => (item as any).active !== false
-                                )
+                                .filter((item) => item.active !== false)
                                 .map((item) => (
                                     <PartnerCard
                                         key={item.name}
                                         item={item}
                                         ctaLabel={cat.cta}
+                                        categoryKey={cat.key}
                                     />
                                 ))}
                         </div>

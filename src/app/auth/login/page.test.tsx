@@ -55,7 +55,11 @@ describe("LoginPage - Responsive Design and Interactivity", () => {
         render(<LoginPage />);
 
         // Default: Password mode
-        expect(screen.getByLabelText("Password")).toBeDefined();
+        const passwordInput = screen.getByLabelText("Password");
+        const emailInput = screen.getByLabelText("Email");
+        expect(passwordInput).toBeDefined();
+        expect(passwordInput.getAttribute("autocomplete")).toBe("current-password");
+        expect(emailInput.getAttribute("autocomplete")).toBe("email");
         expect(screen.getByRole("button", { name: /^login$/i })).toBeDefined();
 
         // Switch to Magic Link mode

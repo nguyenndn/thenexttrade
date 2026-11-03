@@ -46,9 +46,11 @@ export default function ToolsPage() {
 
                 {/* Description */}
                 <p className="text-base sm:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed mb-6 font-semibold">
-                    {ALL_TOOLS.length} free tools to manage risk, size
-                    positions, plan trades, and read market conditions before
-                    you execute.
+                    <span className="font-mono tabular-nums font-bold text-gray-800 dark:text-white">
+                        {ALL_TOOLS.length}
+                    </span>{" "}
+                    free tools to manage risk, size positions, plan trades, and
+                    read market conditions before you execute.
                 </p>
 
                 {/* Status chips */}
@@ -61,7 +63,7 @@ export default function ToolsPage() {
                     ].map((text, idx) => (
                         <span
                             key={idx}
-                            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-white/60 dark:bg-white/[0.02] border border-gray-200 dark:border-white/10 text-xs font-bold text-gray-600 dark:text-gray-400 shadow-sm"
+                            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 text-xs font-bold text-gray-600 dark:text-gray-400 shadow-sm"
                         >
                             <CheckCircle2
                                 size={12}
@@ -80,7 +82,7 @@ export default function ToolsPage() {
             <div className="mb-16">
                 <Suspense
                     fallback={
-                        <div className="h-64 flex items-center justify-center text-slate-500 font-semibold animate-pulse bg-white/40 dark:bg-white/[0.01] border border-dashed border-gray-200 dark:border-white/5 rounded-lg">
+                        <div className="h-64 flex items-center justify-center text-slate-500 font-semibold animate-pulse bg-white dark:bg-[#1E2028] border border-dashed border-gray-200 dark:border-white/10 rounded-xl">
                             Loading toolkit...
                         </div>
                     }
@@ -90,12 +92,11 @@ export default function ToolsPage() {
             </div>
 
             {/* CTA Strip */}
-            <div className="relative p-6 md:p-8 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028]/60 shadow-sm overflow-hidden group hover:border-gold/40 transition-all duration-300">
-
+            <div className="relative p-6 md:p-8 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] shadow-sm overflow-hidden group hover:border-gold/40 transition-all duration-300">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 relative z-10">
                     <div className="flex items-start gap-4">
-                        <div className="mt-1 p-2 rounded-lg bg-gold/10 dark:bg-gold/15 text-gold group-hover:rotate-45 transition-transform duration-500 shrink-0">
-                            <Compass size={20} className="animate-pulse" />
+                        <div className="mt-1 p-2 rounded-lg bg-gold/10 dark:bg-gold/15 border border-gold/20 text-gold group-hover:rotate-45 transition-transform duration-500 shrink-0">
+                            <Compass size={20} />
                         </div>
                         <div>
                             <h3 className="text-lg font-black text-gray-800 dark:text-white leading-tight">

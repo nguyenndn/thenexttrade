@@ -43,11 +43,11 @@ export function AddLicenseModal({ isOpen, onClose }: AddLicenseModalProps) {
             } else {
                 toast.error(res.error || "Failed to submit");
             }
-        } catch (error: any) {
+        } catch (error: unknown) {
             toast.error(
                 error instanceof Error
                     ? error.message
-                    : error?.message || "Something went wrong"
+                    : "Something went wrong"
             );
         } finally {
             setIsLoading(false);
@@ -56,13 +56,13 @@ export function AddLicenseModal({ isOpen, onClose }: AddLicenseModalProps) {
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="max-w-md">
+            <DialogContent className="max-w-md rounded-2xl bg-white dark:bg-[#0D111C] border border-dashboard">
                 <DialogHeader>
                     <DialogTitle>Add EA License</DialogTitle>
                 </DialogHeader>
 
                 <div className="space-y-6 py-4">
-                    <div className="p-4 bg-blue-50 dark:bg-blue-900/10 rounded-xl flex gap-3 text-sm text-blue-600 dark:text-blue-400">
+                    <div className="p-4 bg-amber-50 dark:bg-gold/10 border border-amber-200/60 dark:border-gold/20 rounded-lg flex gap-3 text-sm text-amber-700 dark:text-gold">
                         <Info className="shrink-0 mt-0.5" size={18} />
                         <p>
                             Register your trading account number to get access
@@ -79,14 +79,14 @@ export function AddLicenseModal({ isOpen, onClose }: AddLicenseModalProps) {
                             {["EXNESS", "VANTAGE", "VTMARKETS"].map((b) => (
                                 <label
                                     key={b}
-                                    className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all ${broker === b ? "border-primary bg-primary/5" : "border-dashboard hover:bg-gray-50 dark:hover:bg-white/5"}`}
+                                    className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all ${broker === b ? "border-gold bg-gold/10" : "border-dashboard hover:bg-gray-50 dark:hover:bg-white/5"}`}
                                 >
                                     <input
                                         type="radio"
                                         name="broker"
                                         checked={broker === b}
                                         onChange={() => setBroker(b)}
-                                        className="w-4 h-4 text-primary focus:ring-primary"
+                                        className="w-4 h-4 text-gold focus:ring-gold"
                                     />
                                     <span className="font-bold text-gray-700 dark:text-gray-200">
                                         {b}
@@ -110,7 +110,7 @@ export function AddLicenseModal({ isOpen, onClose }: AddLicenseModalProps) {
                         variant="outline"
                         size="smd"
                         onClick={onClose}
-                        className="font-bold text-gray-600 hover:text-gray-700 dark:text-gray-500 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5"
+                        className="rounded-lg font-bold text-gray-600 hover:text-gray-700 dark:text-gray-500 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5"
                     >
                         Cancel
                     </Button>
@@ -119,7 +119,7 @@ export function AddLicenseModal({ isOpen, onClose }: AddLicenseModalProps) {
                         size="smd"
                         onClick={handleSubmit}
                         disabled={isLoading}
-                        className="bg-gold hover:bg-amber-600 text-white font-bold shadow-md shadow-amber-500/20 hover:shadow-lg hover:shadow-amber-500/30 transition-all border-none"
+                        className="rounded-lg bg-gold hover:bg-amber-600 !text-white font-bold shadow-md shadow-amber-500/20 hover:shadow-lg hover:shadow-amber-500/30 transition-all border-none"
                     >
                         {isLoading ? "Submitting..." : "Submit Request"}
                     </Button>

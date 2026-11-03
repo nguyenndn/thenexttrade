@@ -29,7 +29,13 @@ import {
     PopoverContent,
 } from "@/components/ui/popover";
 import { updateTradingAccount } from "@/actions/accounts";
+import { updateAccountProfitTargets } from "@/actions/profit-targets";
 import { saveCloudSyncCredentials, getCloudSyncStatus } from "@/actions/cloud-sync";
+import {
+    AccountProfitTargetSettings,
+    AccountProfitTargetState,
+} from "./AccountProfitTargetSettings";
+import type { TargetType } from "@/components/dashboard/targets/TargetProgressTypes";
 import {
     BROKER_INFO,
     SupportedBroker,
@@ -94,6 +100,14 @@ export function AccountSettingsModal({
     const [investorPassword, setInvestorPassword] = useState("");
     const [hasCredentials, setHasCredentials] = useState(Boolean(account.credential));
     const [isSaving, setIsSaving] = useState(false);
+    const [targetState, setTargetState] = useState<AccountProfitTargetState>({
+        weeklyEnabled: Boolean(account.weeklyTarget && account.weeklyTarget > 0),
+        weeklyTarget: account.weeklyTarget ? String(account.weeklyTarget) : "",
+        weeklyTargetType: (account.weeklyTargetType as TargetType) || "USD",
+        monthlyEnabled: Boolean(account.monthlyTarget && account.monthlyTarget > 0),
+        monthlyTarget: account.monthlyTarget ? String(account.monthlyTarget) : "",
+        monthlyTargetType: (account.monthlyTargetType as TargetType) || "USD",
+    });
 
     // Fetch fresh cloud sync credential status on open
     useEffect(() => {
@@ -103,6 +117,14 @@ export function AccountSettingsModal({
         setServer(account.server || "");
         setColor(account.color || "hsl(var(--primary))");
         setInvestorPassword("");
+        setTargetState({
+            weeklyEnabled: Boolean(account.weeklyTarget && account.weeklyTarget > 0),
+            weeklyTarget: account.weeklyTarget ? String(account.weeklyTarget) : "",
+            weeklyTargetType: (account.weeklyTargetType as TargetType) || "USD",
+            monthlyEnabled: Boolean(account.monthlyTarget && account.monthlyTarget > 0),
+            monthlyTarget: account.monthlyTarget ? String(account.monthlyTarget) : "",
+            monthlyTargetType: (account.monthlyTargetType as TargetType) || "USD",
+        });
 
         getCloudSyncStatus(account.id)
             .then((res) => {
@@ -132,6 +154,34 @@ export function AccountSettingsModal({
             return;
         }
 
+        const weeklyTarget = !targetState.weeklyEnabled
+            ? null
+            : targetState.weeklyTarget.trim() === ""
+            ? null
+            : Number(targetState.weeklyTarget);
+        const monthlyTarget = !targetState.monthlyEnabled
+            ? null
+            : targetState.monthlyTarget.trim() === ""
+            ? null
+            : Number(targetState.monthlyTarget);
+
+        if (targetState.weeklyEnabled && (weeklyTarget === null || !Number.isFinite(weeklyTarget) || weeklyTarget <= 0)) {
+            toast.error("Please enter a valid weekly target or uncheck to disable.");
+            return;
+        }
+        if (targetState.monthlyEnabled && (monthlyTarget === null || !Number.isFinite(monthlyTarget) || monthlyTarget <= 0)) {
+            toast.error("Please enter a valid monthly target or uncheck to disable.");
+            return;
+        }
+        if (targetState.weeklyEnabled && targetState.weeklyTargetType === "PERCENT" && weeklyTarget !== null && weeklyTarget > 1000) {
+            toast.error("Weekly target percentage cannot exceed 1,000%.");
+            return;
+        }
+        if (targetState.monthlyEnabled && targetState.monthlyTargetType === "PERCENT" && monthlyTarget !== null && monthlyTarget > 1000) {
+            toast.error("Monthly target percentage cannot exceed 1,000%.");
+            return;
+        }
+
         setIsSaving(true);
         try {
             // 1. Update basic account fields
@@ -146,7 +196,19 @@ export function AccountSettingsModal({
 
             if (result.error) throw new Error(result.error);
 
-            // 2. Save Investor Password if provided
+            // 2. Update profit targets
+            const targetRes = await updateAccountProfitTargets(account.id, {
+                weeklyTarget,
+                weeklyTargetType: targetState.weeklyTargetType,
+                monthlyTarget,
+                monthlyTargetType: targetState.monthlyTargetType,
+            });
+            if (!targetRes.success) {
+                toast.error(targetRes.error || "Failed to update profit targets");
+                return;
+            }
+
+            // 3. Save Investor Password if provided
             if (investorPassword.trim()) {
                 const credResult = await saveCloudSyncCredentials(
                     account.id,
@@ -427,6 +489,12 @@ export function AccountSettingsModal({
                     </div>
                     */}
 
+
+                    {/* Profit Milestones & Targets */}
+                    <AccountProfitTargetSettings
+                        value={targetState}
+                        onChange={setTargetState}
+                    />
 
                     {/* API Configuration */}
                     <div className="space-y-3 pt-2 border-t border-dashboard">

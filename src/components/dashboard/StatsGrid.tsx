@@ -23,8 +23,8 @@ export function StatsGrid({ data, vertical = false }: StatsGridProps) {
                 />
             ),
             desc: "Gross Profit / Gross Loss",
-            color: "text-blue-500",
-            bg: "bg-blue-50 dark:bg-blue-500/10",
+            color: "text-amber-600 dark:text-gold",
+            bg: "bg-amber-50 dark:bg-gold/10",
             icon: TrendingUp,
         },
         {
@@ -37,8 +37,8 @@ export function StatsGrid({ data, vertical = false }: StatsGridProps) {
                 />
             ),
             desc: "Average profit per winning trade",
-            color: "text-green-500",
-            bg: "bg-green-50 dark:bg-green-500/10",
+            color: "text-emerald-500",
+            bg: "bg-emerald-50 dark:bg-emerald-500/10",
             icon: Target,
         },
         {
@@ -80,7 +80,7 @@ export function StatsGrid({ data, vertical = false }: StatsGridProps) {
                                 {stat.label}
                             </h3>
                         </div>
-                        <p className={`text-lg font-black ${stat.color}`}>
+                        <p className={`text-lg font-black font-mono tabular-nums ${stat.color}`}>
                             {stat.value}
                         </p>
                         <p className="text-xs text-gray-500 font-medium mt-1">

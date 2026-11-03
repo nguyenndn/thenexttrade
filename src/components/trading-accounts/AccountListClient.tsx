@@ -80,6 +80,11 @@ interface TradingAccount {
     maxDailyTrades?: number | null;
     maxRiskPercent?: number | null;
     cooldownAfterLosses?: number | null;
+    weeklyTarget?: number | null;
+    weeklyTargetType?: string;
+    monthlyTarget?: number | null;
+    monthlyTargetType?: string;
+    initialBalance?: number | null;
     hasCredentials?: boolean;
     latestJob?: any | null;
 }

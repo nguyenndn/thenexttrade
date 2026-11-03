@@ -1,7 +1,7 @@
 import { type Page, expect } from "@playwright/test";
 
-export const userEmail = process.env.USER_QA_EMAIL || "keezimin@gmail.com";
-export const userPassword = process.env.USER_QA_PASSWORD || "Password123!";
+export const userEmail = process.env.USER_QA_EMAIL || "";
+export const userPassword = process.env.USER_QA_PASSWORD || "";
 const authenticatedUrlPattern = /\/(dashboard|onboarding)/;
 
 export async function loginOnce(page: Page, email?: string, password?: string) {

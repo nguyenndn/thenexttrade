@@ -13,7 +13,6 @@ import {
   ExternalLink,
   Coins,
   ShieldCheck,
-  ArrowUpRight,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -46,15 +45,15 @@ export function LoyaltyClaimHistory({ claims = [] }: LoyaltyClaimHistoryProps) {
   };
 
   return (
-    <div className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-5 sm:p-7 shadow-sm space-y-6">
+    <div className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-5 sm:p-7 shadow-sm space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-gray-100 dark:border-white/10">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="p-1 rounded-lg bg-amber-500/10 text-amber-500 border border-amber-500/20">
+            <span className="p-1 rounded-lg bg-gold/10 text-amber-600 dark:text-gold border border-gold/20">
               <Receipt size={14} />
             </span>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-amber-600 dark:text-gold">
               Disbursement Ledger
             </span>
           </div>
@@ -67,7 +66,7 @@ export function LoyaltyClaimHistory({ claims = [] }: LoyaltyClaimHistoryProps) {
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="px-3 py-1 rounded-lg text-xs font-mono font-bold bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300">
+          <span className="px-3 py-1 rounded-lg text-xs font-mono tabular-nums font-bold bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300">
             {claims.length} {claims.length === 1 ? "Disbursement Record" : "Disbursement Records"}
           </span>
         </div>
@@ -75,8 +74,8 @@ export function LoyaltyClaimHistory({ claims = [] }: LoyaltyClaimHistoryProps) {
 
       {/* Main Content: Table or Zero-State */}
       {claims.length === 0 ? (
-        <div className="p-8 sm:p-12 text-center rounded-lg border border-dashed border-gray-200 dark:border-white/10 bg-gray-50/40 dark:bg-white/[0.01] space-y-4">
-          <div className="w-12 h-12 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-500 flex items-center justify-center mx-auto shadow-xs">
+        <div className="p-8 sm:p-12 text-center rounded-lg border border-dashed border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] space-y-4">
+          <div className="w-12 h-12 rounded-lg bg-gold/10 border border-gold/20 text-amber-600 dark:text-gold flex items-center justify-center mx-auto shadow-xs">
             <Receipt size={24} />
           </div>
           <div className="max-w-md mx-auto space-y-1.5">
@@ -87,8 +86,8 @@ export function LoyaltyClaimHistory({ claims = [] }: LoyaltyClaimHistoryProps) {
               Once your cumulative trading lots reach qualifying milestones, click &quot;Claim Reward&quot; in the roadmap ladder. Your USDT payouts, blockchain network records, and TxID confirmations will appear here.
             </p>
           </div>
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-[11px] text-gray-600 dark:text-gray-300">
-            <ShieldCheck size={14} className="text-amber-500 shrink-0" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 text-[11px] text-gray-600 dark:text-gray-300">
+            <ShieldCheck size={14} className="text-amber-600 dark:text-gold shrink-0" />
             <span>Funded 100% from institutional broker rebate allocations.</span>
           </div>
         </div>
@@ -96,7 +95,7 @@ export function LoyaltyClaimHistory({ claims = [] }: LoyaltyClaimHistoryProps) {
         <div className="overflow-x-auto rounded-lg border border-gray-100 dark:border-white/5">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-gray-100 dark:border-white/5 bg-gray-50/80 dark:bg-white/[0.02] text-[11px] font-bold uppercase tracking-wider text-gray-400">
+              <tr className="border-b border-gray-100 dark:border-white/5 bg-gray-50/80 dark:bg-[#151925] text-[11px] font-bold uppercase tracking-wider text-gray-400">
                 <th className="p-4">Milestone Tier</th>
                 <th className="p-4">Date Claimed</th>
                 <th className="p-4">Reward Amount</th>
@@ -124,14 +123,14 @@ export function LoyaltyClaimHistory({ claims = [] }: LoyaltyClaimHistoryProps) {
                     {/* Milestone Tier */}
                     <td className="p-4">
                       <div className="flex items-center gap-2.5">
-                        <span className="font-mono text-xs font-bold px-2 py-0.5 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 shrink-0">
+                        <span className="font-mono tabular-nums text-xs font-bold px-2 py-0.5 rounded-lg bg-gold/10 text-amber-600 dark:text-gold border border-gold/20 shrink-0">
                           L{claim.level}
                         </span>
                         <div>
                           <p className="font-bold text-gray-900 dark:text-white leading-tight">
                             {claim.tierName}
                           </p>
-                          <span className="text-[11px] font-mono text-gray-400">
+                          <span className="text-[11px] font-mono tabular-nums text-gray-400">
                             {claim.actualLots.toLocaleString()} Lots verified
                           </span>
                         </div>
@@ -140,7 +139,7 @@ export function LoyaltyClaimHistory({ claims = [] }: LoyaltyClaimHistoryProps) {
 
                     {/* Date Claimed */}
                     <td className="p-4">
-                      <span className="text-xs text-gray-600 dark:text-gray-300 font-medium">
+                      <span className="text-xs font-mono tabular-nums text-gray-600 dark:text-gray-300 font-medium">
                         {formattedDate}
                       </span>
                     </td>
@@ -148,8 +147,8 @@ export function LoyaltyClaimHistory({ claims = [] }: LoyaltyClaimHistoryProps) {
                     {/* Reward Amount */}
                     <td className="p-4">
                       {claim.cashAmount && claim.cashAmount > 0 ? (
-                        <span className="font-mono text-sm font-black text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
-                          <Coins size={14} className="shrink-0 text-amber-500" />
+                        <span className="font-mono tabular-nums text-sm font-black text-amber-600 dark:text-gold flex items-center gap-1.5">
+                          <Coins size={14} className="shrink-0 text-amber-600 dark:text-gold" />
                           ${claim.cashAmount.toLocaleString()} USDT
                         </span>
                       ) : (
@@ -163,16 +162,16 @@ export function LoyaltyClaimHistory({ claims = [] }: LoyaltyClaimHistoryProps) {
                     <td className="p-4">
                       {claim.usdtAddress ? (
                         <div className="flex items-center gap-2">
-                          <span className="px-1.5 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-white/10 uppercase">
+                          <span className="px-1.5 py-0.5 rounded-lg text-[10px] font-mono tabular-nums font-bold bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-white/10 uppercase">
                             {claim.network || "BEP20"}
                           </span>
-                          <span className="font-mono text-xs text-gray-600 dark:text-gray-300">
+                          <span className="font-mono tabular-nums text-xs text-gray-600 dark:text-gray-300">
                             {claim.usdtAddress.slice(0, 6)}...{claim.usdtAddress.slice(-4)}
                           </span>
                           <Button
                             variant="outline"
                             size="icon"
-                            className="h-6 w-6 text-gray-400 hover:text-gray-600 dark:hover:text-white"
+                            className="h-6 w-6 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-white"
                             onClick={() => handleCopy(claim.id, claim.usdtAddress || "")}
                             aria-label="Copy wallet address"
                           >
@@ -196,7 +195,7 @@ export function LoyaltyClaimHistory({ claims = [] }: LoyaltyClaimHistoryProps) {
                           Completed
                         </span>
                       ) : claim.status === "APPROVED" ? (
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold text-blue-600 dark:text-blue-400 bg-blue-500/10 border border-blue-500/20">
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20">
                           <CheckCircle2 size={13} />
                           Approved
                         </span>
@@ -206,7 +205,7 @@ export function LoyaltyClaimHistory({ claims = [] }: LoyaltyClaimHistoryProps) {
                           Rejected
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold text-amber-600 dark:text-amber-400 bg-amber-500/10 border border-amber-500/20">
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold text-amber-600 dark:text-gold bg-gold/10 border border-gold/20">
                           <Clock size={13} />
                           Pending Review
                         </span>
@@ -220,7 +219,7 @@ export function LoyaltyClaimHistory({ claims = [] }: LoyaltyClaimHistoryProps) {
                           href={getExplorerUrl(claim.network, claim.transactionRef)}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 font-mono text-xs font-bold text-amber-600 dark:text-amber-400 hover:underline"
+                          className="inline-flex items-center gap-1.5 font-mono tabular-nums text-xs font-bold text-amber-600 dark:text-gold hover:underline"
                         >
                           <span>
                             {claim.transactionRef.slice(0, 6)}...{claim.transactionRef.slice(-4)}

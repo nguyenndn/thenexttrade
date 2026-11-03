@@ -1,37 +1,23 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import {
-    Bell,
-    Check,
-    Inbox,
-    Lightbulb,
-    BarChart3,
-} from "lucide-react";
+import { Bell, Check } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { formatDistanceToNow } from "date-fns";
-import { enUS } from "date-fns/locale";
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/Button";
-import { cn } from "@/lib/utils";
 import { useNotifications } from "@/hooks/useNotifications";
+import { NotificationTabNav } from "./notification-bell/NotificationTabNav";
+import { NotificationItem } from "./notification-bell/NotificationItem";
 import {
-    getNotificationConfig,
-    cleanNotificationTitle,
-} from "@/lib/notifications/notification-config";
-
-type TabType = "All" | "Coach" | "Reports" | "System";
-
-const TAB_CONFIG: Record<TabType, { label: string; icon: any }> = {
-    All: { label: "All", icon: Inbox },
-    Coach: { label: "Coach", icon: Lightbulb },
-    Reports: { label: "Reports", icon: BarChart3 },
-    System: { label: "System", icon: Bell },
-};
+    categorizeNotification,
+    computeUnreadCounts,
+    type TabType,
+    type NormalizedNotification,
+} from "./notification-bell/types";
 
 export function NotificationBell() {
     const [isOpen, setIsOpen] = useState(false);
@@ -40,60 +26,17 @@ export function NotificationBell() {
     const { notifications, unreadCount, markAsRead, isLoading } =
         useNotifications(20);
 
-    // Map notifications to tabs without mutating their underlying type
-    const normalizedNotifications = useMemo(() => {
-        return notifications.map((n) => {
-            const meta = (n.metadata as Record<string, any>) || {};
-            let category: TabType = "System";
-
-            if (
-                [
-                    "WEEKLY_REPORT",
-                    "MONTHLY_REPORT",
-                    "REPORT_NUDGE",
-                ].includes(n.type)
-            ) {
-                category = "Reports";
-            } else if (
-                n.type === "COACH_NUDGE" ||
-                n.type === "SYNC_STALE" ||
-                (n.type === "FEATURE_UPDATE" &&
-                    (meta.actionType === "OPEN_COACH_PLAN" ||
-                        meta.signalType ||
-                        meta.insightId ||
-                        n.title.startsWith("Coach") ||
-                        n.title.includes("Pattern") ||
-                        n.title.includes("Leak Alert") ||
-                        n.title.includes("Loss Streak") ||
-                        n.title.includes("Experiment")))
-            ) {
-                category = "Coach";
-            } else {
-                category = "System";
-            }
-
-            return {
-                ...n,
-                category,
-            };
-        });
+    const normalizedNotifications = useMemo<NormalizedNotification[]>(() => {
+        return notifications.map((n) => ({
+            ...n,
+            category: categorizeNotification(n),
+        }));
     }, [notifications]);
 
-    // Compute unread counts per tab
-    const unreadCounts = useMemo(() => {
-        return {
-            All: normalizedNotifications.filter((n) => !n.isRead).length,
-            Coach: normalizedNotifications.filter(
-                (n) => !n.isRead && n.category === "Coach"
-            ).length,
-            Reports: normalizedNotifications.filter(
-                (n) => !n.isRead && n.category === "Reports"
-            ).length,
-            System: normalizedNotifications.filter(
-                (n) => !n.isRead && n.category === "System"
-            ).length,
-        };
-    }, [normalizedNotifications]);
+    const unreadCounts = useMemo(
+        () => computeUnreadCounts(normalizedNotifications),
+        [normalizedNotifications]
+    );
 
     const filteredNotifications = useMemo(() => {
         return normalizedNotifications.filter((n) => {
@@ -108,7 +51,8 @@ export function NotificationBell() {
                 <Button
                     variant="ghost"
                     size="icon"
-                    className="w-10 h-10 rounded-full border border-dashboard relative text-gray-600 hover:text-gray-700 dark:text-gray-500 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-100"
+                    aria-label="Notifications"
+                    className="w-10 h-10 rounded-full border border-gray-200 dark:border-white/10 relative text-gray-600 hover:text-gray-700 dark:text-gray-500 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-100"
                 >
                     <Bell size={20} />
                     {unreadCount > 0 && (
@@ -120,12 +64,12 @@ export function NotificationBell() {
             </PopoverTrigger>
 
             <PopoverContent
-                className="w-[calc(100vw-2rem)] sm:w-[480px] p-0 rounded-lg bg-white dark:bg-[#1E2028] border-dashboard shadow-2xl"
+                className="w-[calc(100vw-2rem)] sm:w-[480px] p-0 rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-2xl"
                 align="end"
                 sideOffset={8}
             >
                 {/* Header */}
-                <div className="flex items-center justify-between px-5 pt-4 pb-3 border-b border-dashboard">
+                <div className="flex items-center justify-between px-5 pt-4 pb-3 border-b border-gray-200 dark:border-white/10">
                     <div className="flex items-center gap-2">
                         <h3 className="text-sm font-bold text-gray-900 dark:text-white tracking-tight">
                             Notifications
@@ -149,52 +93,12 @@ export function NotificationBell() {
                     )}
                 </div>
 
-                {/* Tabs — Segmented Control */}
-                <div className="p-2 border-b border-dashboard bg-gray-50/50 dark:bg-white/[0.01]">
-                    <div role="tablist" aria-label="Notification Categories" className="grid grid-cols-4 gap-1 p-1 bg-gray-100 dark:bg-white/5 rounded-lg">
-                        {(Object.keys(TAB_CONFIG) as TabType[]).map((tabKey) => {
-                            const tab = TAB_CONFIG[tabKey];
-                            const isActive = activeTab === tabKey;
-                            const count = unreadCounts[tabKey];
-
-                            return (
-                                <Button
-                                    key={tabKey}
-                                    type="button"
-                                    variant="ghost"
-                                    role="tab"
-                                    aria-selected={isActive}
-                                    onClick={() => setActiveTab(tabKey)}
-                                    className={cn(
-                                        "h-auto border-0 py-1.5 px-2 flex items-center justify-center gap-1.5 text-xs font-semibold rounded-lg transition-all min-w-0 select-none",
-                                        isActive
-                                            ? "bg-white dark:bg-[#151925] text-gray-900 dark:text-white shadow-sm font-bold hover:bg-white hover:text-gray-900 dark:hover:bg-[#151925] dark:hover:text-white"
-                                            : "text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-white/40 dark:hover:bg-white/5"
-                                    )}
-                                >
-                                    <tab.icon
-                                        size={13}
-                                        strokeWidth={isActive ? 2.5 : 2}
-                                        className={cn(isActive ? "text-amber-500" : "text-gray-400")}
-                                    />
-                                    <span className="truncate">{tab.label}</span>
-                                    {count > 0 && (
-                                        <span
-                                            className={cn(
-                                                "flex items-center justify-center min-w-[16px] h-[16px] px-1 text-[10px] font-mono font-bold rounded-full",
-                                                isActive
-                                                    ? "bg-amber-500 text-white"
-                                                    : "bg-gray-200 dark:bg-white/10 text-gray-600 dark:text-gray-300"
-                                            )}
-                                        >
-                                            {count > 99 ? "99+" : count}
-                                        </span>
-                                    )}
-                                </Button>
-                            );
-                        })}
-                    </div>
-                </div>
+                {/* Tabs */}
+                <NotificationTabNav
+                    activeTab={activeTab}
+                    onSelectTab={setActiveTab}
+                    unreadCounts={unreadCounts}
+                />
 
                 {/* Notifications List */}
                 <div className="max-h-[252px] overflow-y-auto custom-scrollbar divide-y divide-dashboard/50">
@@ -209,125 +113,20 @@ export function NotificationBell() {
                         </div>
                     ) : (
                         <div>
-                            {filteredNotifications.map((n) => {
-                                const {
-                                    icon: Icon,
-                                    bg,
-                                    color,
-                                } = getNotificationConfig(n.type, n.title);
-                                return (
-                                    <div
-                                        key={n.id}
-                                        className={cn(
-                                            "group relative flex items-center gap-3.5 px-4 py-3.5 hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors cursor-pointer",
-                                            !n.isRead &&
-                                                "bg-amber-500/[0.025] dark:bg-amber-500/[0.03]"
-                                        )}
-                                        onClick={() => {
-                                            if (!n.isRead) markAsRead(n.id);
-                                            setIsOpen(false);
-                                            const meta =
-                                                (n.metadata as Record<
-                                                    string,
-                                                    any
-                                                >) || {};
-                                            if (
-                                                meta.actionType ===
-                                                    "OPEN_COACH_PLAN" ||
-                                                n.link === "#coach-plan" ||
-                                                n.link?.includes(
-                                                    "action=coach-plan"
-                                                )
-                                            ) {
-                                                window.dispatchEvent(
-                                                    new CustomEvent(
-                                                        "open-coach-action-plan",
-                                                        {
-                                                            detail: {
-                                                                notificationId:
-                                                                    n.id,
-                                                                metadata: meta,
-                                                            },
-                                                        }
-                                                    )
-                                                );
-                                                if (
-                                                    typeof window !==
-                                                        "undefined" &&
-                                                    !window.location.pathname.startsWith(
-                                                        "/dashboard"
-                                                    )
-                                                ) {
-                                                    router.push(
-                                                        "/dashboard?action=coach-plan"
-                                                    );
-                                                }
-                                            } else if (n.onClick) {
-                                                n.onClick();
-                                            } else if (
-                                                n.link &&
-                                                n.link !== "/dashboard"
-                                            ) {
-                                                router.push(n.link);
-                                            } else {
-                                                router.push(
-                                                    `/dashboard/notifications?id=${n.id}`
-                                                );
-                                            }
-                                        }}
-                                    >
-                                        {/* Unread vertical indicator bar */}
-                                        {!n.isRead && (
-                                            <span className="absolute left-0 top-3 bottom-3 w-1 bg-amber-500 rounded-r-full" />
-                                        )}
-
-                                        {/* Left Icon */}
-                                        <div
-                                            className={cn(
-                                                "w-8 h-8 rounded-lg flex items-center justify-center shrink-0 self-center transition-transform group-hover:scale-105",
-                                                bg,
-                                                color
-                                            )}
-                                        >
-                                            <Icon size={15} strokeWidth={2} />
-                                        </div>
-
-                                        {/* Content */}
-                                        <div className="flex-1 min-w-0 pr-1">
-                                            <div className="flex justify-between items-baseline mb-1 gap-2">
-                                                <h4
-                                                    className={cn(
-                                                        "text-xs truncate tracking-tight",
-                                                        !n.isRead
-                                                            ? "text-gray-900 dark:text-white font-bold"
-                                                            : "text-gray-700 dark:text-gray-300 font-medium"
-                                                    )}
-                                                >
-                                                    {cleanNotificationTitle(n.title)}
-                                                </h4>
-                                                <span className="text-[10px] font-mono text-gray-400 shrink-0 whitespace-nowrap">
-                                                    {formatDistanceToNow(
-                                                        new Date(n.createdAt),
-                                                        {
-                                                            addSuffix: true,
-                                                            locale: enUS,
-                                                        }
-                                                    )}
-                                                </span>
-                                            </div>
-                                            <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2 leading-relaxed">
-                                                {n.message}
-                                            </p>
-                                        </div>
-                                    </div>
-                                );
-                            })}
+                            {filteredNotifications.map((n) => (
+                                <NotificationItem
+                                    key={n.id}
+                                    notification={n}
+                                    onMarkAsRead={markAsRead}
+                                    onClose={() => setIsOpen(false)}
+                                />
+                            ))}
                         </div>
                     )}
                 </div>
 
                 {/* Footer */}
-                <div className="p-2.5 border-t border-dashboard bg-gray-50/50 dark:bg-white/[0.01] rounded-b-lg">
+                <div className="p-2.5 border-t border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/[0.01] rounded-b-xl">
                     <Button
                         variant="ghost"
                         size="smd"

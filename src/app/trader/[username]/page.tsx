@@ -61,7 +61,7 @@ export default async function TraderProfilePage({
 
     return (
         <div className="min-h-screen bg-white dark:bg-transparent">
-            <div className="max-w-4xl mx-auto px-4 py-10 md:py-16">
+            <div className="max-w-4xl mx-auto px-4 py-10 md:py-16 tabular-nums">
                 <PublicProfileCard profile={profile} />
             </div>
         </div>

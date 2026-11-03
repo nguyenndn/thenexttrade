@@ -90,48 +90,21 @@ export function WelcomeHero({
             <div className="relative rounded-xl border border-dashboard bg-white dark:bg-[#1E2028] overflow-hidden">
                 {/* Background glow */}
                 <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 dark:bg-primary/10 rounded-full blur-[100px] pointer-events-none" />
-                <div className="absolute bottom-0 left-0 w-48 h-48 bg-purple-500/5 dark:bg-purple-500/10 rounded-full blur-[80px] pointer-events-none" />
+                <div className="absolute bottom-0 left-0 w-48 h-48 bg-amber-500/5 dark:bg-amber-500/10 rounded-full blur-[80px] pointer-events-none" />
 
                 <div className="relative z-10 p-6 md:p-8">
                     {/* Greeting */}
                     <div className="flex items-center gap-2 mb-4">
-                        <div className="relative p-2 bg-primary/10 rounded-lg">
+                        <div className="relative p-2 bg-gold/10 rounded-lg">
                             <Rocket
                                 size={20}
-                                className="text-primary animate-[wiggle_2s_ease-in-out_infinite]"
+                                className="text-amber-600 dark:text-gold"
                             />
-                            <div className="absolute inset-0 rounded-lg bg-primary/20 animate-[icon-ping_2.5s_cubic-bezier(0,0,0.2,1)_infinite]" />
                         </div>
-                        <span className="text-xs font-bold text-primary uppercase tracking-wider">
+                        <span className="text-xs font-bold text-amber-600 dark:text-gold uppercase tracking-wider">
                             Welcome to your Command Center
                         </span>
                     </div>
-
-                    <style jsx>{`
-                        @keyframes wiggle {
-                            0%,
-                            100% {
-                                transform: rotate(0deg);
-                            }
-                            25% {
-                                transform: rotate(-8deg);
-                            }
-                            75% {
-                                transform: rotate(8deg);
-                            }
-                        }
-                        @keyframes icon-ping {
-                            0% {
-                                transform: scale(1);
-                                opacity: 0.4;
-                            }
-                            75%,
-                            100% {
-                                transform: scale(1.5);
-                                opacity: 0;
-                            }
-                        }
-                    `}</style>
 
                     <h2 className="text-2xl md:text-3xl font-black text-gray-900 dark:text-white tracking-tight mb-2">
                         {goal ? (
@@ -150,11 +123,11 @@ export function WelcomeHero({
                     <div className="flex items-center gap-3 mb-4">
                         <div className="flex-1 h-2 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden max-w-xs">
                             <div
-                                className="h-full bg-gradient-to-r from-primary to-teal-400 rounded-full transition-all duration-700"
+                                className="h-full bg-gold rounded-full transition-all duration-700"
                                 style={{ width: `${progress}%` }}
                             />
                         </div>
-                        <span className="text-xs font-bold text-gray-500 dark:text-gray-400 tabular-nums">
+                        <span className="text-xs font-bold text-gray-500 dark:text-gray-400 font-mono tabular-nums">
                             {activationState.completedCount}/
                             {activationState.totalCount} done
                         </span>
@@ -198,12 +171,12 @@ export function WelcomeHero({
                                         {step.id === "START_ACADEMY" ? (
                                             <GraduationCap
                                                 size={18}
-                                                className="text-purple-500"
+                                                className="text-amber-600 dark:text-gold"
                                             />
                                         ) : step.id === "CONNECT_ACCOUNT" ? (
                                             <Cable
                                                 size={18}
-                                                className="text-cyan-500"
+                                                className="text-amber-600 dark:text-gold"
                                             />
                                         ) : (
                                             <BarChart3

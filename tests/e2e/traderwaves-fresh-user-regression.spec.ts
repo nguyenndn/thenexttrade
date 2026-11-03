@@ -6,8 +6,8 @@ import { loginOnce, goto } from "./helpers/auth";
 test.setTimeout(3 * 60 * 1000);
 
 const prisma = new PrismaClient();
-const freshEmail = "fresh_e2e_user@thenexttrade.com";
-const freshPassword = "Password123!";
+const freshEmail = process.env.USER_QA_EMAIL || "fresh_e2e_user@thenexttrade.com";
+const freshPassword = process.env.USER_QA_PASSWORD || "";
 
 test.describe("TraderWaves - Fresh User Onboarding Flow E2E", () => {
   test.describe.configure({ mode: "serial" });

@@ -18,23 +18,23 @@ export function CorrelationMock() {
     ];
 
     return (
-        <div className="h-44 w-full bg-slate-50 dark:bg-slate-900/80 rounded-lg p-4 flex flex-col justify-between relative overflow-hidden border border-gray-200 dark:border-white/10 select-none cursor-pointer">
+        <div className="h-44 w-full bg-gray-50/80 dark:bg-[#151925] rounded-lg p-4 flex flex-col justify-between relative overflow-hidden border border-gray-200 dark:border-white/10 select-none cursor-pointer">
             {/* Decorative glow */}
-            <div className="absolute top-0 right-0 w-24 h-24 bg-cyan-500/5 rounded-full blur-2xl pointer-events-none" />
+            <div className="absolute top-0 right-0 w-24 h-24 bg-gold/5 rounded-full blur-2xl pointer-events-none" />
 
             {/* Header */}
-            <div className="flex items-center justify-between z-10 font-mono text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+            <div className="flex items-center justify-between z-10 font-mono tabular-nums text-[9px] font-bold text-slate-400 uppercase tracking-widest">
                 <span>Correlation Matrix</span>
-                <div className="flex items-center gap-1 bg-cyan-50 dark:bg-cyan-950/40 border border-cyan-200 dark:border-cyan-800/60 px-2 py-0.5 rounded-full">
-                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse" />
-                    <span className="text-[9px] text-cyan-600 dark:text-cyan-400 font-extrabold uppercase tracking-wider">
+                <div className="flex items-center gap-1 bg-gold/10 border border-gold/20 px-2 py-0.5 rounded-lg">
+                    <span className="w-1.5 h-1.5 rounded-full bg-gold" />
+                    <span className="text-[9px] text-amber-600 dark:text-gold font-extrabold uppercase tracking-wider">
                         DATA ANALYSIS
                     </span>
                 </div>
             </div>
 
             {/* Matrix Grid */}
-            <div className="flex-1 flex flex-col justify-center my-1 z-10 font-mono">
+            <div className="flex-1 flex flex-col justify-center my-1 z-10 font-mono tabular-nums">
                 {/* Currencies Headers */}
                 <div className="grid grid-cols-5 gap-1 text-[8px] font-black text-slate-400 dark:text-slate-500 text-center mb-1">
                     <div /> {/* Top-left empty cell */}
@@ -66,7 +66,7 @@ export function CorrelationMock() {
 
                                 // Color scaling based on value
                                 let cellBg =
-                                    "bg-slate-100 dark:bg-slate-800/60 border-gray-200 dark:border-slate-700/60 text-slate-500 dark:text-slate-400";
+                                    "bg-white dark:bg-white/[0.03] border-gray-200 dark:border-white/10 text-slate-500 dark:text-slate-400";
                                 if (!isOne) {
                                     if (isPositive) {
                                         cellBg =
@@ -81,7 +81,7 @@ export function CorrelationMock() {
                                     }
                                 } else {
                                     cellBg =
-                                        "bg-slate-200/50 dark:bg-slate-800/40 border-gray-200 dark:border-slate-700/40 text-slate-400 dark:text-slate-500 font-medium";
+                                        "bg-white dark:bg-white/[0.03] border-gray-200 dark:border-white/10 text-slate-400 dark:text-slate-500 font-medium";
                                 }
 
                                 return (
@@ -89,7 +89,7 @@ export function CorrelationMock() {
                                         key={cIdx}
                                         className={`text-[8.5px] p-1 border rounded-lg text-center transition-all duration-200 ${cellBg} ${
                                             isActive
-                                                ? "scale-105 border-cyan-500/50 shadow-sm bg-white dark:bg-slate-800"
+                                                ? "scale-105 border-gold/50 shadow-sm bg-white dark:bg-[#1E2028]"
                                                 : ""
                                         }`}
                                         onMouseEnter={() =>
@@ -111,7 +111,7 @@ export function CorrelationMock() {
             </div>
 
             {/* Footer */}
-            <div className="text-[8px] font-bold text-slate-400 dark:text-slate-500 flex justify-between items-center z-10 border-t border-gray-200 dark:border-slate-800/60 pt-2 font-mono">
+            <div className="text-[8px] font-bold text-slate-400 dark:text-slate-500 flex justify-between items-center z-10 border-t border-gray-200 dark:border-white/10 pt-2 font-mono tabular-nums">
                 <span>180-day correlation coefficient</span>
                 <span>Auto-sync active</span>
             </div>

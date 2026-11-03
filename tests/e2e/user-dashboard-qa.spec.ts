@@ -7,8 +7,8 @@ import path from "node:path";
 
 const prisma = new PrismaClient();
 
-const userEmail = process.env.USER_QA_EMAIL || "keezimin@gmail.com";
-const userPassword = process.env.USER_QA_PASSWORD || "Password123!";
+const userEmail = process.env.USER_QA_EMAIL || "";
+const userPassword = process.env.USER_QA_PASSWORD || "";
 const runId = Date.now();
 const prefix = `QA-USER-${runId}`;
 const reportPath = path.join(process.cwd(), "docs", "USER_DASHBOARD_QA_2026-05-09.md");

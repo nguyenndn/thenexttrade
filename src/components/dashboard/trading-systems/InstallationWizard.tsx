@@ -29,8 +29,8 @@ export function InstallationWizard({ type }: InstallationWizardProps) {
             description: `Download the ${type === "MT5_EA" ? "Expert Advisor" : "Indicator"} file (.ex5) from your dashboard.`,
             icon: Download,
             content: (
-                <div className="bg-amber-50 dark:bg-amber-500/10 border border-amber-100 dark:border-amber-500/20 rounded-xl p-6">
-                    <div className="flex items-center gap-3 mb-4 text-amber-700 dark:text-amber-400 font-bold">
+                <div className="bg-amber-50 dark:bg-gold/10 border border-amber-100 dark:border-gold/20 rounded-lg p-6">
+                    <div className="flex items-center gap-3 mb-4 text-amber-700 dark:text-gold font-bold">
                         <Download size={20} />
                         <span>Download from Dashboard</span>
                     </div>
@@ -39,7 +39,7 @@ export function InstallationWizard({ type }: InstallationWizardProps) {
                         location like your <strong>Desktop</strong> or{" "}
                         <strong>Downloads</strong> folder.
                     </p>
-                    <div className="flex items-center gap-2 text-xs text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 p-3 rounded-lg">
+                    <div className="flex items-center gap-2 text-xs text-amber-600 dark:text-gold bg-amber-50 dark:bg-gold/10 p-3 rounded-lg">
                         <Info size={14} />
                         <span>Do not rename the file after downloading.</span>
                     </div>
@@ -95,8 +95,8 @@ export function InstallationWizard({ type }: InstallationWizardProps) {
                 "Move the downloaded .ex5 file into the target folder.",
             icon: Copy,
             content: (
-                <div className="bg-blue-50 dark:bg-blue-500/10 border border-blue-100 dark:border-blue-500/20 rounded-xl p-6 text-center">
-                    <div className="w-12 h-12 bg-blue-100 dark:bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-4 text-blue-600 dark:text-blue-400">
+                <div className="bg-amber-50 dark:bg-gold/10 border border-amber-100 dark:border-gold/20 rounded-lg p-6 text-center">
+                    <div className="w-12 h-12 bg-amber-100 dark:bg-gold/20 rounded-lg flex items-center justify-center mx-auto mb-4 text-amber-600 dark:text-gold">
                         <Copy size={24} />
                     </div>
                     <p className="text-gray-700 dark:text-gray-300 font-medium mb-2">
@@ -153,10 +153,10 @@ export function InstallationWizard({ type }: InstallationWizardProps) {
             {/* Progress Header */}
             <div className="mb-8">
                 <div className="flex justify-between items-end mb-2">
-                    <span className="text-sm font-bold text-gray-600 dark:text-gray-300">
+                    <span className="text-sm font-bold font-mono tabular-nums text-gray-600 dark:text-gray-300">
                         Step {currentStep + 1} of {steps.length}
                     </span>
-                    <span className="text-xs font-bold text-gold dark:text-amber-400">
+                    <span className="text-xs font-bold font-mono tabular-nums text-amber-600 dark:text-gold">
                         {Math.round(progress)}% Complete
                     </span>
                 </div>
@@ -169,14 +169,14 @@ export function InstallationWizard({ type }: InstallationWizardProps) {
             </div>
 
             {/* Step Card */}
-            <div className="bg-white dark:bg-[#151925] border border-dashboard rounded-xl p-8 shadow-xl shadow-gray-200/50 dark:shadow-none min-h-[400px] flex flex-col relative overflow-hidden">
+            <div className="bg-white dark:bg-[#1E2028] border border-dashboard rounded-xl p-8 shadow-sm min-h-[400px] flex flex-col relative overflow-hidden">
                 {/* Background Decor */}
                 <div className="absolute top-0 right-0 p-8 opacity-5 dark:opacity-[0.02] pointer-events-none">
                     <CurrentIcon size={200} />
                 </div>
 
                 <div className="flex-1 relative z-10">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 rounded-lg text-xs font-bold uppercase tracking-wider mb-6">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-gold/10 text-amber-600 dark:text-gold border border-gold/20 rounded-lg text-xs font-bold font-mono tabular-nums uppercase tracking-wider mb-6">
                         STEP {currentStep + 1}
                     </div>
 
@@ -209,15 +209,15 @@ export function InstallationWizard({ type }: InstallationWizardProps) {
                         variant={
                             currentStep === steps.length - 1
                                 ? "secondary"
-                                : "primary"
+                                : "gold"
                         }
                         onClick={handleNext}
                         disabled={currentStep === steps.length - 1}
                         className={cn(
-                            "rounded-lg font-bold transition-all shadow-lg",
+                            "rounded-lg font-bold transition-all",
                             currentStep === steps.length - 1
-                                ? "bg-amber-100 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-500/20 shadow-none"
-                                : "shadow-amber-500/20 hover:scale-105 active:scale-95"
+                                ? "bg-gold/10 text-amber-600 dark:text-gold hover:bg-gold/20 shadow-none"
+                                : "bg-gold hover:bg-amber-600 !text-white shadow-sm active:scale-95"
                         )}
                     >
                         {currentStep === steps.length - 1 ? (

@@ -160,7 +160,14 @@ export default function JournalList({
     }, [initialEntries, initialStats]);
 
     const { isSampleMode } = useSampleMode();
-    const effectiveEntries = isSampleMode ? SAMPLE_TRADES : entries;
+    const [sampleEntries, setSampleEntries] = useState<any[]>(() =>
+        SAMPLE_TRADES.map((trade) => ({
+            ...trade,
+            tags: [...(trade.tags || [])],
+            mistakes: [...(trade.mistakes || [])],
+        }))
+    );
+    const effectiveEntries = isSampleMode ? sampleEntries : entries;
     const effectiveStats = isSampleMode ? SAMPLE_JOURNAL_STATS : stats;
     const strategies = isSampleMode
         ? [...(initialStrategies || []), ...SAMPLE_STRATEGIES]
@@ -366,6 +373,15 @@ export default function JournalList({
     };
 
     const handleEntryUpdate = async (id: string, data: any) => {
+        if (isSampleMode || id.startsWith("sample-")) {
+            setSampleEntries((prev) =>
+                prev.map((entry) =>
+                    entry.id === id ? { ...entry, ...data } : entry
+                )
+            );
+            return;
+        }
+
         // Optimistic Update
         const previousEntries = [...entries];
         setEntries((prev) =>
@@ -464,7 +480,7 @@ export default function JournalList({
                     />
 
                     {displayedEntries.length === 0 ? (
-                        <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-lg border-2 border-dashed border-dashboard mt-6 shadow-sm">
+                        <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-xl border-2 border-dashed border-dashboard mt-6 shadow-sm">
                             {/* Animated Folder Icon */}
                             <div className="relative w-20 h-20 mb-6 mx-auto">
                                 <div className="absolute inset-0 rounded-full bg-amber-500/10 dark:bg-amber-500/5 animate-[journal-ping_3s_cubic-bezier(0,0,0.2,1)_infinite]" />
@@ -503,32 +519,6 @@ export default function JournalList({
                             />
 
                             <style jsx>{`
-                                @keyframes slow-current {
-                                    0%,
-                                    100% {
-                                        opacity: 0.6;
-                                        filter: drop-shadow(
-                                            0 0 2px
-                                                theme("colors.primary.DEFAULT")
-                                        );
-                                        color: theme("colors.primary.DEFAULT");
-                                    }
-                                    50% {
-                                        opacity: 1;
-                                        filter: drop-shadow(
-                                                0 0 6px theme("colors.blue.400")
-                                            )
-                                            drop-shadow(
-                                                0 0 12px
-                                                    theme("colors.blue.400")
-                                            );
-                                        color: theme("colors.blue.300");
-                                    }
-                                }
-                                .animate-current {
-                                    animation: slow-current 3s ease-in-out
-                                        infinite;
-                                }
                                 @keyframes journal-float {
                                     0%,
                                     100% {
@@ -570,38 +560,12 @@ export default function JournalList({
                                         transform: scale(1);
                                     }
                                 }
-                                @keyframes slow-current {
-                                    0%,
-                                    100% {
-                                        opacity: 0.6;
-                                        filter: drop-shadow(
-                                            0 0 2px
-                                                theme("colors.primary.DEFAULT")
-                                        );
-                                        color: theme("colors.primary.DEFAULT");
-                                    }
-                                    50% {
-                                        opacity: 1;
-                                        filter: drop-shadow(
-                                                0 0 6px theme("colors.blue.400")
-                                            )
-                                            drop-shadow(
-                                                0 0 12px
-                                                    theme("colors.blue.400")
-                                            );
-                                        color: theme("colors.blue.300");
-                                    }
-                                }
-                                .animate-current {
-                                    animation: slow-current 3s ease-in-out
-                                        infinite;
-                                }
                             `}</style>
                         </div>
                     ) : (
                         <div
                             id="onborda-journal-list"
-                            className="bg-white dark:bg-[#1E2028] mt-6 rounded-lg shadow-sm border border-dashboard overflow-x-auto custom-scrollbar"
+                            className="bg-white dark:bg-[#1E2028] mt-6 rounded-xl shadow-sm border border-dashboard overflow-x-auto custom-scrollbar"
                         >
                             {/* Desktop View */}
                             <div className="hidden md:block overflow-x-auto w-full">
@@ -727,13 +691,13 @@ export default function JournalList({
                                                                                     true
                                                                                 );
                                                                             }}
-                                                                            className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/[0.03] border border-dashboard flex items-center justify-center text-gray-400 hover:text-gold dark:hover:text-amber-400 hover:border-amber-500/30 hover:bg-amber-500/5 dark:hover:bg-amber-500/10 transition-all group/detail"
+                                                                            className="w-8 h-8 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-dashboard flex items-center justify-center text-gray-400 hover:text-gold dark:hover:text-amber-400 hover:border-amber-500/30 hover:bg-amber-500/5 dark:hover:bg-amber-500/10 transition-all group/detail"
                                                                         >
                                                                             <Zap
                                                                                 size={
                                                                                     14
                                                                                 }
-                                                                                className="animate-current transition-all duration-300 group-hover/detail:scale-110"
+                                                                                className="text-amber-600 dark:text-gold transition-transform duration-150 group-hover/detail:scale-110"
                                                                             />
                                                                         </Button>
                                                                     </TooltipTrigger>
@@ -760,11 +724,14 @@ export default function JournalList({
                                                                         className={`w-full ${col.id === "pnl" || col.id === "commission" || col.id === "swap" || col.id === "tp" || col.id === "sl" ? "flex justify-end pr-2" : ""}`}
                                                                     >
                                                                         {col.id ===
-                                                                            "date" &&
-                                                                            utcTime(
-                                                                                entry.entryDate,
-                                                                                "dd MMM yyyy"
-                                                                            )}
+                                                                            "date" && (
+                                                                            <span className="font-mono tabular-nums text-gray-600 dark:text-gray-300">
+                                                                                {utcTime(
+                                                                                    entry.entryDate,
+                                                                                    "dd MMM yyyy"
+                                                                                )}
+                                                                            </span>
+                                                                        )}
                                                                         {col.id ===
                                                                             "symbol" && (
                                                                             <span className="font-bold text-gray-700 dark:text-white">
@@ -782,20 +749,26 @@ export default function JournalList({
                                                                             />
                                                                         )}
                                                                         {col.id ===
-                                                                            "openTime" &&
-                                                                            utcTime(
-                                                                                entry.entryDate
-                                                                            )}
+                                                                            "openTime" && (
+                                                                            <span className="font-mono tabular-nums text-gray-600 dark:text-gray-300">
+                                                                                {utcTime(
+                                                                                    entry.entryDate
+                                                                                )}
+                                                                            </span>
+                                                                        )}
                                                                         {col.id ===
-                                                                            "closeTime" &&
-                                                                            (entry.exitDate
-                                                                                ? utcTime(
-                                                                                      entry.exitDate
-                                                                                  )
-                                                                                : "-")}
+                                                                            "closeTime" && (
+                                                                            <span className="font-mono tabular-nums text-gray-600 dark:text-gray-300">
+                                                                                {entry.exitDate
+                                                                                    ? utcTime(
+                                                                                          entry.exitDate
+                                                                                      )
+                                                                                    : "-"}
+                                                                            </span>
+                                                                        )}
                                                                         {col.id ===
                                                                             "volume" && (
-                                                                            <span className="font-mono text-gray-600">
+                                                                            <span className="font-mono tabular-nums text-gray-600 dark:text-gray-300">
                                                                                 {(
                                                                                     entry as any
                                                                                 )
@@ -807,7 +780,7 @@ export default function JournalList({
                                                                             "commission" && (
                                                                             <span
                                                                                 className={cn(
-                                                                                    "font-mono font-medium",
+                                                                                    "font-mono tabular-nums font-medium",
                                                                                     (entry.commission || 0) < 0
                                                                                         ? "text-red-500/90 dark:text-red-400/90"
                                                                                         : "text-gray-500 dark:text-gray-400"
@@ -824,7 +797,7 @@ export default function JournalList({
                                                                             "swap" && (
                                                                             <span
                                                                                 className={cn(
-                                                                                    "font-mono font-medium",
+                                                                                    "font-mono tabular-nums font-medium",
                                                                                     (entry.swap || 0) > 0
                                                                                         ? "text-emerald-600 dark:text-primary"
                                                                                         : (entry.swap || 0) < 0
@@ -858,7 +831,7 @@ export default function JournalList({
                                                                         )}
                                                                         {col.id ===
                                                                             "tp" && (
-                                                                            <span className="font-mono text-primary font-medium">
+                                                                            <span className="font-mono tabular-nums text-primary font-medium">
                                                                                 {(
                                                                                     entry as any
                                                                                 )
@@ -868,7 +841,7 @@ export default function JournalList({
                                                                         )}
                                                                         {col.id ===
                                                                             "sl" && (
-                                                                            <span className="font-mono text-red-500 font-medium">
+                                                                            <span className="font-mono tabular-nums text-red-500 font-medium">
                                                                                 {(
                                                                                     entry as any
                                                                                 )
@@ -971,7 +944,7 @@ export default function JournalList({
                                     displayedEntries.map((entry) => (
                                         <div
                                             key={entry.id}
-                                            className="bg-gray-50 dark:bg-white/5 p-3 sm:p-4 rounded-lg border relative transition-all duration-200 hover:shadow-md active:scale-[0.98] border-dashboard"
+                                            className="bg-gray-50/80 dark:bg-[#151925] p-3 sm:p-4 rounded-lg border relative transition-colors duration-150 hover:shadow-md border-dashboard"
                                         >
                                             {/* Header Row */}
                                             <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
@@ -1003,11 +976,11 @@ export default function JournalList({
                                                                         true
                                                                     );
                                                                 }}
-                                                                className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/[0.03] border border-dashboard flex items-center justify-center text-gray-400 hover:text-gold dark:hover:text-amber-400 hover:border-amber-500/30 hover:bg-amber-500/5 dark:hover:bg-amber-500/10 transition-all"
+                                                                className="w-8 h-8 rounded-lg bg-white dark:bg-[#1E2028] border border-dashboard flex items-center justify-center text-gray-400 hover:text-gold dark:hover:text-amber-400 hover:border-amber-500/30 hover:bg-amber-500/5 dark:hover:bg-amber-500/10 transition-all"
                                                             >
                                                                 <Zap
                                                                     size={14}
-                                                                    className="animate-current transition-all duration-300 hover:scale-110"
+                                                                    className="text-amber-600 dark:text-gold transition-transform duration-150 hover:scale-110"
                                                                 />
                                                             </Button>
                                                         </TooltipTrigger>
@@ -1027,7 +1000,7 @@ export default function JournalList({
                                                     <p className="text-xs text-gray-500 mb-0.5">
                                                         Open Time
                                                     </p>
-                                                    <p className="font-medium text-gray-700 dark:text-gray-300">
+                                                    <p className="font-mono tabular-nums font-medium text-gray-700 dark:text-gray-300">
                                                         {utcTime(
                                                             entry.entryDate,
                                                             "dd MMM HH:mm"
@@ -1046,7 +1019,7 @@ export default function JournalList({
                                                     <p className="text-xs text-gray-500 mb-0.5">
                                                         Volume
                                                     </p>
-                                                    <p className="font-mono text-gray-700 dark:text-gray-300">
+                                                    <p className="font-mono tabular-nums text-gray-700 dark:text-gray-300">
                                                         {(entry as any)
                                                             .lotSize || "0.00"}
                                                     </p>
@@ -1055,7 +1028,7 @@ export default function JournalList({
                                                     <p className="text-xs text-gray-500 mb-0.5">
                                                         Close Time
                                                     </p>
-                                                    <p className="font-medium text-gray-700 dark:text-gray-300">
+                                                    <p className="font-mono tabular-nums font-medium text-gray-700 dark:text-gray-300">
                                                         {entry.exitDate
                                                             ? utcTime(
                                                                   entry.exitDate
@@ -1068,7 +1041,7 @@ export default function JournalList({
                                                         <p className="text-xs text-gray-500 mb-0.5">
                                                             Commission
                                                         </p>
-                                                        <p className="font-mono text-xs font-semibold text-red-500/90 dark:text-red-400/90">
+                                                        <p className="font-mono tabular-nums text-xs font-semibold text-red-500/90 dark:text-red-400/90">
                                                             {entry.commission < 0 ? "-" : ""}${Math.abs(entry.commission).toFixed(2)}
                                                         </p>
                                                     </div>
@@ -1080,7 +1053,7 @@ export default function JournalList({
                                                         </p>
                                                         <p
                                                             className={cn(
-                                                                "font-mono text-xs font-semibold",
+                                                                "font-mono tabular-nums text-xs font-semibold",
                                                                 entry.swap > 0
                                                                     ? "text-emerald-600 dark:text-primary"
                                                                     : "text-red-500/90 dark:text-red-400/90"
@@ -1095,7 +1068,7 @@ export default function JournalList({
                                             {/* Tags & Mistakes Summary (Simulated simple view) */}
                                             <div className="flex flex-wrap gap-1 mb-3">
                                                 {entry.strategy && (
-                                                    <span className="px-2 py-0.5 text-[10px] font-medium bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400 rounded-lg border border-blue-100 dark:border-blue-500/20">
+                                                    <span className="px-2 py-0.5 text-[10px] font-medium bg-gold/10 text-amber-600 dark:text-gold rounded-lg border border-gold/20">
                                                         {entry.strategy}
                                                     </span>
                                                 )}

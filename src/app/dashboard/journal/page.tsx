@@ -8,6 +8,7 @@ import { format, startOfMonth } from "date-fns";
 import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth-cache";
 import { getUserTradingDataState } from "@/lib/trading-data-state";
+import { SAMPLE_DATE_RANGE } from "@/lib/sample-data/mock-sample-data";
 
 export const dynamic = "force-dynamic";
 
@@ -51,6 +52,8 @@ export default async function JournalPage({
 
     // Resolve accountId from Main Account (/dashboard/accounts) -> cookie -> first account if missing from URL
     const cookieStore = await cookies();
+    const isSampleMode =
+        cookieStore.get("the_next_trade_sample_mode")?.value === "true";
     if (!accountId) {
         const savedAccountId = cookieStore.get("last_account_id")?.value;
         const { resolveDefaultAccountId } = await import(
@@ -113,13 +116,18 @@ export default async function JournalPage({
     let dateTo =
         typeof resolvedParams.to === "string" ? resolvedParams.to : undefined;
 
-    // Always default to Start of Month -> Today matching /dashboard
+    // Always default to Start of Month -> Today matching /dashboard, or SAMPLE_DATE_RANGE in sample mode
     if (!dateFrom || !dateTo) {
-        const now = new Date();
-        const startMonthStr = format(startOfMonth(now), "yyyy-MM-dd");
-        const todayStr = format(now, "yyyy-MM-dd");
-        dateFrom = dateFrom || startMonthStr;
-        dateTo = dateTo || todayStr;
+        if (isSampleMode) {
+            dateFrom = dateFrom || SAMPLE_DATE_RANGE.from;
+            dateTo = dateTo || SAMPLE_DATE_RANGE.to;
+        } else {
+            const now = new Date();
+            const startMonthStr = format(startOfMonth(now), "yyyy-MM-dd");
+            const todayStr = format(now, "yyyy-MM-dd");
+            dateFrom = dateFrom || startMonthStr;
+            dateTo = dateTo || todayStr;
+        }
     }
 
     const sortBy =

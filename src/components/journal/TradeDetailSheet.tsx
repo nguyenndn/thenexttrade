@@ -132,7 +132,7 @@ export function TradeDetailSheet({
             : entry.pnl && entry.pnl < 0
               ? "text-red-500"
               : "text-gray-600";
-    const typeColor = entry.type === "BUY" ? "bg-blue-500" : "bg-red-500";
+    const typeColor = entry.type === "BUY" ? "bg-emerald-500" : "bg-red-500";
     // const statusColor = entry.status === "OPEN" ? "bg-yellow-500/20 text-yellow-500" : "bg-gray-500/20 text-gray-600";
 
     const currentStrategy = entry.strategy
@@ -160,8 +160,8 @@ export function TradeDetailSheet({
 
     return (
         <Sheet open={isOpen} onOpenChange={onClose}>
-            {/* Main Sheet Container - Dark Mode BG #0F1117 */}
-            <SheetContent className="sm:max-w-4xl p-0 gap-0 bg-gray-50 dark:bg-[#0F1117] border-l border-dashboard overflow-y-auto scrollbar-hide">
+            {/* Main Sheet Container - Solid Dark Mode BG #0D111C */}
+            <SheetContent className="sm:max-w-4xl p-0 gap-0 bg-white dark:bg-[#0D111C] border-l border-dashboard dark:border-white/10 shadow-2xl overflow-y-auto scrollbar-hide">
                 {/* 
  A11y Requirement: Radix DialogContent requires a DialogTitle. 
  Since we build our own visual header below, we hide the official one for screen readers.
@@ -177,7 +177,7 @@ export function TradeDetailSheet({
                 </VisuallyHidden>
 
                 {/* Header Section */}
-                <div className="sticky top-0 z-10 bg-gray-50/80 dark:bg-[#0F1117]/80 backdrop-blur-md border-b border-dashboard px-6 py-4">
+                <div className="sticky top-0 z-10 bg-white/95 dark:bg-[#0D111C]/95 backdrop-blur-md border-b border-dashboard px-6 py-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
                             <h2 className="text-lg font-bold text-gray-700 dark:text-white">
@@ -188,7 +188,7 @@ export function TradeDetailSheet({
                             <Button
                                 size="smd"
                                 onClick={() => setShowShareModal(true)}
-                                className="bg-gold hover:bg-amber-600 text-white shadow-md shadow-amber-500/25 rounded-lg font-bold flex items-center gap-1.5 transition-all border-none"
+                                className="bg-gold hover:bg-amber-600 !text-white shadow-md shadow-amber-500/25 rounded-lg font-bold flex items-center gap-1.5 transition-all border-none"
                             >
                                 <Share2 size={15} strokeWidth={2.5} />
                                 Share
@@ -202,9 +202,9 @@ export function TradeDetailSheet({
 
                 <div className="p-6 space-y-5">
                     {/* Hero Card - Premium Glass/Glow Effect */}
-                    <div className="relative bg-white dark:bg-[#1E2028] rounded-lg p-6 md:p-8 shadow-xl border border-dashboard overflow-hidden group">
+                    <div className="relative bg-white dark:bg-[#1E2028] rounded-xl p-6 md:p-8 shadow-xl border border-dashboard overflow-hidden group">
                         {/* Decorative Glow */}
-                        <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-blue-500/10 rounded-full blur-[100px] pointer-events-none group-hover:bg-blue-500/20 transition-all duration-700"></div>
+                        <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-gold/10 rounded-full blur-[100px] pointer-events-none group-hover:bg-gold/20 transition-all duration-700"></div>
 
                         <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
                             {/* Left: Symbol & Type */}
@@ -227,14 +227,15 @@ export function TradeDetailSheet({
                                         </h1>
                                         <span
                                             className={cn(
-                                                "px-3 py-1.5 rounded-lg text-xs font-black text-white uppercase tracking-wider shadow-lg shadow-blue-500/20",
+                                                "px-3 py-1.5 rounded-lg text-xs font-black text-white uppercase tracking-wider shadow-lg",
+                                                isBuy ? "shadow-emerald-500/20" : "shadow-red-500/20",
                                                 typeColor
                                             )}
                                         >
                                             {entry.type}
                                         </span>
                                     </div>
-                                    <div className="flex items-center gap-3 text-gray-600 dark:text-gray-300 font-mono text-sm md:text-base font-bold">
+                                    <div className="flex items-center gap-3 text-gray-600 dark:text-gray-300 font-mono tabular-nums text-sm md:text-base font-bold">
                                         <span>{entry.entryPrice}</span>
                                         <span className="text-gray-300 dark:text-white/20">
                                             <ArrowRight size={16} />
@@ -259,7 +260,7 @@ export function TradeDetailSheet({
                                 <div className="text-right">
                                     <div
                                         className={cn(
-                                            "text-4xl md:text-5xl font-black tracking-tighter flex items-center justify-end gap-2",
+                                            "text-4xl md:text-5xl font-black font-mono tabular-nums tracking-tighter flex items-center justify-end gap-2",
                                             pnlColor
                                         )}
                                     >
@@ -270,7 +271,7 @@ export function TradeDetailSheet({
                                         )}
                                         {entry.pnl?.toFixed(2) || "0.00"}
                                     </div>
-                                    <div className="text-gray-500 text-xs font-black uppercase tracking-widest mt-2">
+                                    <div className="text-gray-500 font-mono tabular-nums text-xs font-black uppercase tracking-widest mt-2">
                                         {entry.pnl
                                             ? (
                                                   (entry.pnl / 10000) *
@@ -342,7 +343,7 @@ export function TradeDetailSheet({
                             className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 pt-2"
                         >
                             {activeCoachPlan ? (
-                                <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard p-6 shadow-xl pt-2">
+                                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-6 shadow-xl pt-2">
                                     <h3 className="text-xs font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-4 flex items-center gap-2">
                                         <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
                                         Trader's Current Focus
@@ -373,7 +374,7 @@ export function TradeDetailSheet({
                                     </div>
                                 </div>
                             ) : (
-                                <div className="p-8 text-center text-gray-500 bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard shadow-xl">
+                                <div className="p-8 text-center text-gray-500 bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-xl">
                                     <Brain
                                         size={48}
                                         className="mx-auto mb-4 opacity-20 text-gray-400"
@@ -401,7 +402,7 @@ export function TradeDetailSheet({
                                     Performance Summary
                                 </h3>
 
-                                <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard shadow-xl relative overflow-hidden group">
+                                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-xl relative overflow-hidden group">
                                     {/* Ambient Glow based on Result */}
                                     <div
                                         className={cn(
@@ -425,30 +426,30 @@ export function TradeDetailSheet({
                                                     Execution Timeline
                                                 </h4>
                                                 <div className="space-y-4">
-                                                    <div className="flex justify-between items-center bg-gray-50/50 dark:bg-white/[0.02] p-3 rounded-lg border border-dashboard">
+                                                    <div className="flex justify-between items-center bg-gray-50/80 dark:bg-[#151925] p-3 rounded-lg border border-dashboard">
                                                         <span className="text-xs text-gray-600 font-bold uppercase tracking-wider">
                                                             Volume
                                                         </span>
-                                                        <span className="text-sm font-black text-gray-700 dark:text-white font-mono">
+                                                        <span className="text-sm font-black text-gray-700 dark:text-white font-mono tabular-nums">
                                                             {entry.lotSize} Lots
                                                         </span>
                                                     </div>
-                                                    <div className="flex justify-between items-center bg-gray-50/50 dark:bg-white/[0.02] p-3 rounded-lg border border-dashboard">
+                                                    <div className="flex justify-between items-center bg-gray-50/80 dark:bg-[#151925] p-3 rounded-lg border border-dashboard">
                                                         <span className="text-xs text-gray-600 font-bold uppercase tracking-wider">
                                                             Open
                                                         </span>
-                                                        <span className="text-sm font-bold text-gray-700 dark:text-gray-300">
+                                                        <span className="text-sm font-bold font-mono tabular-nums text-gray-700 dark:text-gray-300">
                                                             {utcTime(
                                                                 entry.entryDate,
                                                                 "MMM dd, HH:mm"
                                                             )}
                                                         </span>
                                                     </div>
-                                                    <div className="flex justify-between items-center bg-gray-50/50 dark:bg-white/[0.02] p-3 rounded-lg border border-dashboard">
+                                                    <div className="flex justify-between items-center bg-gray-50/80 dark:bg-[#151925] p-3 rounded-lg border border-dashboard">
                                                         <span className="text-xs text-gray-600 font-bold uppercase tracking-wider">
                                                             Close
                                                         </span>
-                                                        <span className="text-sm font-bold text-gray-700 dark:text-gray-300">
+                                                        <span className="text-sm font-bold font-mono tabular-nums text-gray-700 dark:text-gray-300">
                                                             {entry.exitDate
                                                                 ? utcTime(
                                                                       entry.exitDate,
@@ -470,13 +471,13 @@ export function TradeDetailSheet({
                                                     Transaction Fees
                                                 </h4>
                                                 <div className="grid grid-cols-3 gap-3">
-                                                    <div className="bg-gray-50 dark:bg-black/20 p-3 rounded-lg border border-dashboard flex flex-col items-center justify-center text-center">
+                                                    <div className="bg-gray-50/80 dark:bg-[#151925] p-3 rounded-lg border border-dashboard flex flex-col items-center justify-center text-center">
                                                         <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1">
                                                             Commission
                                                         </span>
                                                         <span
                                                             className={cn(
-                                                                "text-xs font-black font-mono",
+                                                                "text-xs font-black font-mono tabular-nums",
                                                                 (entry.commission || 0) < 0
                                                                     ? "text-red-500"
                                                                     : "text-gray-700 dark:text-white"
@@ -487,13 +488,13 @@ export function TradeDetailSheet({
                                                                 : "$0.00"}
                                                         </span>
                                                     </div>
-                                                    <div className="bg-gray-50 dark:bg-black/20 p-3 rounded-lg border border-dashboard flex flex-col items-center justify-center text-center">
+                                                    <div className="bg-gray-50/80 dark:bg-[#151925] p-3 rounded-lg border border-dashboard flex flex-col items-center justify-center text-center">
                                                         <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1">
                                                             Swap
                                                         </span>
                                                         <span
                                                             className={cn(
-                                                                "text-xs font-black font-mono",
+                                                                "text-xs font-black font-mono tabular-nums",
                                                                 (entry.swap || 0) < 0
                                                                     ? "text-red-500"
                                                                     : "text-gray-700 dark:text-white"
@@ -504,13 +505,13 @@ export function TradeDetailSheet({
                                                                 : "$0.00"}
                                                         </span>
                                                     </div>
-                                                    <div className="bg-gray-50 dark:bg-black/20 p-3 rounded-lg border border-dashboard flex flex-col items-center justify-center text-center">
+                                                    <div className="bg-gray-50/80 dark:bg-[#151925] p-3 rounded-lg border border-dashboard flex flex-col items-center justify-center text-center">
                                                         <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1">
                                                             Total Fees
                                                         </span>
                                                         <span
                                                             className={cn(
-                                                                "text-xs font-black font-mono",
+                                                                "text-xs font-black font-mono tabular-nums",
                                                                 ((entry.commission || 0) + (entry.swap || 0)) < 0
                                                                     ? "text-red-500"
                                                                     : "text-gray-700 dark:text-white"
@@ -540,31 +541,31 @@ export function TradeDetailSheet({
                                                     Price Execution
                                                 </h4>
                                                 <div className="grid grid-cols-2 gap-4">
-                                                    <div className="bg-white dark:bg-[#1E2028] p-4 rounded-lg border border-dashboard shadow-sm">
+                                                    <div className="bg-gray-50/80 dark:bg-[#151925] p-4 rounded-lg border border-dashboard shadow-sm">
                                                         <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1 block">
                                                             Entry Price
                                                         </span>
-                                                        <span className="text-lg font-black text-gray-700 dark:text-white font-mono">
+                                                        <span className="text-lg font-black text-gray-700 dark:text-white font-mono tabular-nums">
                                                             {entry.entryPrice}
                                                         </span>
                                                     </div>
-                                                    <div className="relative bg-white dark:bg-[#1E2028] p-4 rounded-lg border border-dashboard shadow-sm">
+                                                    <div className="relative bg-gray-50/80 dark:bg-[#151925] p-4 rounded-lg border border-dashboard shadow-sm">
                                                         <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1 flex items-center justify-between">
                                                             Exit Price
                                                             {isTPHit && (
-                                                                <span className="text-[9px] bg-green-500 text-white px-1.5 py-0.5 rounded-lg animate-pulse tracking-widest font-black shadow-sm shadow-green-500/20">
+                                                                <span className="text-[9px] bg-green-500 text-white px-1.5 py-0.5 rounded-lg tracking-widest font-black shadow-sm shadow-green-500/20">
                                                                     <Target size={10} className="inline-block mr-1 align-[-1px]" /> TP HIT
                                                                 </span>
                                                             )}
                                                             {isSLHit && (
-                                                                <span className="text-[9px] bg-red-500 text-white px-1.5 py-0.5 rounded-lg animate-pulse tracking-widest font-black shadow-sm shadow-red-500/20">
+                                                                <span className="text-[9px] bg-red-500 text-white px-1.5 py-0.5 rounded-lg tracking-widest font-black shadow-sm shadow-red-500/20">
                                                                     <ShieldAlert size={10} className="inline-block mr-1 align-[-1px]" /> SL HIT
                                                                 </span>
                                                             )}
                                                         </span>
                                                         <span
                                                             className={cn(
-                                                                "text-lg font-black font-mono",
+                                                                "text-lg font-black font-mono tabular-nums",
                                                                 isTPHit
                                                                     ? "text-green-500"
                                                                     : isSLHit
@@ -576,20 +577,20 @@ export function TradeDetailSheet({
                                                                 "---"}
                                                         </span>
                                                     </div>
-                                                    <div className="bg-white dark:bg-[#1E2028] p-4 rounded-lg border border-dashboard shadow-sm opacity-80">
+                                                    <div className="bg-gray-50/80 dark:bg-[#151925] p-4 rounded-lg border border-dashboard shadow-sm opacity-80">
                                                         <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1 block">
                                                             Stop Loss
                                                         </span>
-                                                        <span className="text-sm font-bold text-gray-700 dark:text-gray-300 font-mono">
+                                                        <span className="text-sm font-bold text-gray-700 dark:text-gray-300 font-mono tabular-nums">
                                                             {entry.stopLoss ||
                                                                 "---"}
                                                         </span>
                                                     </div>
-                                                    <div className="bg-white dark:bg-[#1E2028] p-4 rounded-lg border border-dashboard shadow-sm opacity-80">
+                                                    <div className="bg-gray-50/80 dark:bg-[#151925] p-4 rounded-lg border border-dashboard shadow-sm opacity-80">
                                                         <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1 block">
                                                             Take Profit
                                                         </span>
-                                                        <span className="text-sm font-bold text-gray-700 dark:text-gray-300 font-mono">
+                                                        <span className="text-sm font-bold text-gray-700 dark:text-gray-300 font-mono tabular-nums">
                                                             {entry.takeProfit ||
                                                                 "---"}
                                                         </span>
@@ -598,7 +599,7 @@ export function TradeDetailSheet({
                                             </div>
 
                                             {/* Trade Results Hub */}
-                                            <div className="bg-white dark:bg-[#1E2028] p-6 rounded-lg border border-dashboard shadow-inner relative overflow-hidden">
+                                            <div className="bg-gray-50/80 dark:bg-[#151925] p-6 rounded-lg border border-dashboard shadow-inner relative overflow-hidden">
                                                 <div
                                                     className={cn(
                                                         "absolute inset-0 opacity-[0.03] pattern-diagonal-lines pattern-size-4 pattern-bg-white",
@@ -623,7 +624,7 @@ export function TradeDetailSheet({
                                                         </span>
                                                         <span
                                                             className={cn(
-                                                                "text-xl font-black font-mono",
+                                                                "text-xl font-black font-mono tabular-nums",
                                                                 (entry.grossProfit ?? (entry.pnl != null ? entry.pnl - (entry.commission || 0) - (entry.swap || 0) : 0)) >= 0
                                                                     ? "text-green-500"
                                                                     : "text-red-500"
@@ -646,7 +647,7 @@ export function TradeDetailSheet({
                                                         <div className="flex items-center gap-2">
                                                             <span
                                                                 className={cn(
-                                                                    "text-xl font-black font-mono",
+                                                                    "text-xl font-black font-mono tabular-nums",
                                                                     pnlColor
                                                                 )}
                                                             >
@@ -670,7 +671,7 @@ export function TradeDetailSheet({
                                                         <div className="flex items-center gap-3">
                                                             <span
                                                                 className={cn(
-                                                                    "text-4xl font-black font-mono tracking-tighter",
+                                                                    "text-4xl font-black font-mono tabular-nums tracking-tighter",
                                                                     pnlColor
                                                                 )}
                                                             >
@@ -682,7 +683,7 @@ export function TradeDetailSheet({
                                                                 ) || "0.00"}
                                                             </span>
                                                             {isWin && (
-                                                                <span className="bg-green-500/10 text-green-500 p-2 rounded-lg animate-bounce shadow-lg shadow-green-500/20">
+                                                                <span className="bg-green-500/10 text-green-500 p-2 rounded-lg shadow-lg shadow-green-500/20">
                                                                     <TrendingUp
                                                                         size={
                                                                             20
@@ -711,7 +712,7 @@ export function TradeDetailSheet({
                                     Trade Analysis
                                 </h3>
 
-                                <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard shadow-xl p-5 space-y-5">
+                                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-xl p-5 space-y-5">
                                     {/* Market Context - Economic Events */}
                                     <div className="bg-amber-50/50 dark:bg-amber-500/5 p-4 rounded-lg border border-amber-200/50 dark:border-amber-500/20">
                                         <h4 className="text-[10px] font-black text-amber-700 dark:text-amber-400 uppercase tracking-widest mb-3 flex items-center gap-2">
@@ -731,7 +732,7 @@ export function TradeDetailSheet({
                                                             </span>
                                                             <span className="font-semibold text-gray-800 dark:text-gray-200">{ev.title}</span>
                                                         </div>
-                                                        <span className="text-[11px] font-mono text-gray-500 dark:text-gray-400">
+                                                        <span className="text-[11px] font-mono tabular-nums text-gray-500 dark:text-gray-400">
                                                             {new Date(ev.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                                         </span>
                                                     </div>
@@ -745,13 +746,13 @@ export function TradeDetailSheet({
                                     </div>
 
                                     {/* Strategy / Playbook Benchmark Panel */}
-                                    <div className="bg-gray-50/50 dark:bg-white/[0.02] p-4 rounded-lg border border-dashboard space-y-3">
+                                    <div className="bg-gray-50/80 dark:bg-[#151925] p-4 rounded-lg border border-dashboard space-y-3">
                                         <div className="flex items-center justify-between flex-wrap gap-2">
                                             <div className="flex items-center gap-2">
                                                 {currentStrategy?.isPlaybook ? (
                                                     <BookOpen size={14} className="text-primary" />
                                                 ) : (
-                                                    <Target size={14} className="text-blue-500" />
+                                                    <Target size={14} className="text-amber-600 dark:text-gold" />
                                                 )}
                                                 <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest">
                                                     {currentStrategy?.isPlaybook ? "Playbook Setup" : "Strategy"}
@@ -760,11 +761,11 @@ export function TradeDetailSheet({
 
                                             {/* Grade badge */}
                                             {entry.playbookGrade && (
-                                                <span className={`px-2.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wider ${
+                                                <span className={`px-2.5 py-0.5 rounded-lg text-xs font-black uppercase tracking-wider ${
                                                     entry.playbookGrade === "A+"
                                                         ? "bg-emerald-500/15 text-emerald-500 border border-emerald-500/30"
                                                         : entry.playbookGrade === "A"
-                                                          ? "bg-blue-500/15 text-blue-500 border border-blue-500/30"
+                                                          ? "bg-gold/15 text-amber-600 dark:text-gold border border-gold/30"
                                                           : entry.playbookGrade === "B"
                                                             ? "bg-amber-500/15 text-amber-500 border border-amber-500/30"
                                                             : "bg-red-500/15 text-red-500 border border-red-500/30"
@@ -806,21 +807,21 @@ export function TradeDetailSheet({
                                                 {/* Ideal Specs */}
                                                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
                                                     {currentStrategy.idealEntry && (
-                                                        <div className="p-2 rounded-lg bg-white dark:bg-white/5 border border-dashboard">
+                                                        <div className="p-2 rounded-lg bg-white dark:bg-[#1E2028] border border-dashboard">
                                                             <span className="text-[10px] text-gray-400 font-bold block uppercase">Ideal Entry</span>
                                                             <span className="font-semibold text-gray-700 dark:text-gray-200">{currentStrategy.idealEntry}</span>
                                                         </div>
                                                     )}
                                                     {currentStrategy.idealStopLoss && (
-                                                        <div className="p-2 rounded-lg bg-white dark:bg-white/5 border border-dashboard">
+                                                        <div className="p-2 rounded-lg bg-white dark:bg-[#1E2028] border border-dashboard">
                                                             <span className="text-[10px] text-gray-400 font-bold block uppercase">Ideal SL</span>
                                                             <span className="font-semibold text-gray-700 dark:text-gray-200">{currentStrategy.idealStopLoss}</span>
                                                         </div>
                                                     )}
                                                     {currentStrategy.riskRewardMin != null && (
-                                                        <div className="p-2 rounded-lg bg-white dark:bg-white/5 border border-dashboard">
+                                                        <div className="p-2 rounded-lg bg-white dark:bg-[#1E2028] border border-dashboard">
                                                             <span className="text-[10px] text-gray-400 font-bold block uppercase">Min R:R</span>
-                                                            <span className="font-bold text-primary">{currentStrategy.riskRewardMin}:1</span>
+                                                            <span className="font-mono tabular-nums font-bold text-primary">{currentStrategy.riskRewardMin}:1</span>
                                                         </div>
                                                     )}
                                                 </div>
@@ -856,11 +857,11 @@ export function TradeDetailSheet({
                                         (entry as any).exitReason) && (
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             {(entry as any).entryReason && (
-                                                <div className="bg-gray-50/50 dark:bg-white/[0.02] p-4 rounded-lg border border-dashboard">
+                                                <div className="bg-gray-50/80 dark:bg-[#151925] p-4 rounded-lg border border-dashboard">
                                                     <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 flex items-center gap-2">
                                                         <MessageSquare
                                                             size={12}
-                                                            className="text-blue-500"
+                                                            className="text-amber-600 dark:text-gold"
                                                         />{" "}
                                                         Entry Reason
                                                     </h4>
@@ -873,11 +874,11 @@ export function TradeDetailSheet({
                                                 </div>
                                             )}
                                             {(entry as any).exitReason && (
-                                                <div className="bg-gray-50/50 dark:bg-white/[0.02] p-4 rounded-lg border border-dashboard">
+                                                <div className="bg-gray-50/80 dark:bg-[#151925] p-4 rounded-lg border border-dashboard">
                                                     <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 flex items-center gap-2">
                                                         <MessageSquare
                                                             size={12}
-                                                            className="text-orange-500"
+                                                            className="text-amber-600 dark:text-gold"
                                                         />{" "}
                                                         Exit Reason
                                                     </h4>
@@ -893,14 +894,14 @@ export function TradeDetailSheet({
                                     )}
 
                                     {/* Psychological State - Full Width */}
-                                    <div className="bg-gray-50/50 dark:bg-white/[0.02] p-4 rounded-lg border border-dashboard relative overflow-hidden">
-                                        <div className="absolute -bottom-6 -right-6 text-purple-500/5 -rotate-12 pointer-events-none">
+                                    <div className="bg-gray-50/80 dark:bg-[#151925] p-4 rounded-lg border border-dashboard relative overflow-hidden">
+                                        <div className="absolute -bottom-6 -right-6 text-gold/5 -rotate-12 pointer-events-none">
                                             <Brain size={120} strokeWidth={1} />
                                         </div>
                                         <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 flex items-center gap-2 relative z-10">
                                             <Brain
                                                 size={12}
-                                                className="text-purple-500"
+                                                className="text-amber-600 dark:text-gold"
                                             />{" "}
                                             Psychological State
                                         </h4>
@@ -912,7 +913,7 @@ export function TradeDetailSheet({
                                                     <div className="flex flex-wrap gap-2">
                                                         {(entry as any)
                                                             .emotionBefore && (
-                                                            <span className="px-4 py-2 bg-purple-500/10 text-purple-500 rounded-lg text-xs font-black uppercase tracking-wider border border-purple-500/20">
+                                                            <span className="px-4 py-2 bg-gold/10 text-amber-600 dark:text-gold rounded-lg text-xs font-black uppercase tracking-wider border border-gold/20">
                                                                 Before:{" "}
                                                                 {
                                                                     (
@@ -924,7 +925,7 @@ export function TradeDetailSheet({
                                                         )}
                                                         {(entry as any)
                                                             .emotionAfter && (
-                                                            <span className="px-4 py-2 bg-indigo-500/10 text-indigo-500 rounded-lg text-xs font-black uppercase tracking-wider border border-indigo-500/20">
+                                                            <span className="px-4 py-2 bg-gold/10 text-amber-600 dark:text-gold rounded-lg text-xs font-black uppercase tracking-wider border border-gold/20">
                                                                 After:{" "}
                                                                 {
                                                                     (
@@ -936,7 +937,7 @@ export function TradeDetailSheet({
                                                         )}
                                                         {(entry as any)
                                                             .confidenceLevel && (
-                                                            <span className="px-4 py-2 bg-amber-500/10 text-amber-600 rounded-lg text-xs font-black uppercase tracking-wider border border-amber-500/20">
+                                                            <span className="px-4 py-2 bg-amber-500/10 text-amber-600 dark:text-gold rounded-lg text-xs font-mono tabular-nums font-black uppercase tracking-wider border border-amber-500/20">
                                                                 Confidence:{" "}
                                                                 {
                                                                     (
@@ -974,7 +975,7 @@ export function TradeDetailSheet({
                                                     </div>
                                                     {(entry as any)
                                                         .notesPsychology && (
-                                                        <p className="text-sm text-gray-600 dark:text-gray-400 italic border-l-2 border-purple-500/30 pl-3">
+                                                        <p className="text-sm text-gray-600 dark:text-gray-400 italic border-l-2 border-gold/30 pl-3">
                                                             {
                                                                 (entry as any)
                                                                     .notesPsychology
@@ -1049,31 +1050,21 @@ export function TradeDetailSheet({
                                                                 key={
                                                                     mistakeCode
                                                                 }
-                                                                className="px-5 py-2.5 bg-red-500/10 text-red-500 rounded-lg text-xs font-black uppercase tracking-wider border border-red-500/20 flex items-center gap-2"
+                                                                className="px-4 py-2 bg-red-500/10 text-red-500 rounded-lg text-xs font-black uppercase tracking-wider border border-red-500/20 flex items-center gap-2"
                                                             >
-                                                                {mistake ? (
-                                                                    <>
-                                                                        <span className="text-base">
-                                                                            {
-                                                                                mistake.emoji
-                                                                            }
-                                                                        </span>
-                                                                        <span>
-                                                                            {
-                                                                                mistake.name
-                                                                            }
-                                                                        </span>
-                                                                    </>
-                                                                ) : (
-                                                                    mistakeCode
-                                                                )}
+                                                                <ShieldAlert size={14} className="shrink-0" />
+                                                                <span>
+                                                                    {mistake
+                                                                        ? mistake.name
+                                                                        : mistakeCode}
+                                                                </span>
                                                             </span>
                                                         );
                                                     }
                                                 )
                                             ) : (
                                                 <div className="w-full p-4 border border-primary/20 bg-primary/5 rounded-lg flex items-center justify-center gap-3">
-                                                    <div className="w-10 h-10 rounded-full bg-primary/20 text-primary flex items-center justify-center">
+                                                    <div className="w-10 h-10 rounded-lg bg-primary/20 text-primary flex items-center justify-center">
                                                         <Medal size={20} />
                                                     </div>
                                                     <div>
@@ -1110,9 +1101,9 @@ export function TradeDetailSheet({
 
                     {/* Screenshots - Always visible at bottom */}
                     {entry.images && entry.images.length > 0 && (
-                        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-lg border border-dashboard">
+                        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-dashboard">
                             <h4 className="text-xs font-bold text-gray-600 uppercase tracking-widest mb-4 flex items-center gap-2">
-                                <div className="w-1.5 h-3 bg-pink-500 rounded-full"></div>
+                                <div className="w-1.5 h-3 bg-gold rounded-full"></div>
                                 Trade Screenshots
                             </h4>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -1130,7 +1121,7 @@ export function TradeDetailSheet({
                                                 className="w-full h-full object-cover"
                                             />
                                             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
-                                                <div className="bg-white/90 text-gray-700 text-xs font-bold px-3 py-1.5 rounded-full opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all">
+                                                <div className="bg-white/90 text-gray-700 text-xs font-bold px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all">
                                                     View Full Size
                                                 </div>
                                             </div>

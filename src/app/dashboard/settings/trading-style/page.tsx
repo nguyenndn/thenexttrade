@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
     title: "My Trading Style — Know Your Style | TheNextTrade",
     description:
-        "Your saved trading archetype, dimension profile, and personalised next moves.",
+        "Your verified trading archetype, behavioral dimension telemetry, and risk execution profile.",
 };
 
 export interface TradingStyleSaved {
@@ -30,7 +30,7 @@ export default async function SettingsTradingStylePage() {
         where: { id: user.id },
         select: { settings: true },
     });
-    const settings = (dbUser?.settings as Record<string, any>) || {};
+    const settings = (dbUser?.settings as Record<string, unknown>) || {};
     const saved = (settings.tradingStyle as TradingStyleSaved | null) ?? null;
 
     return <TradingStyleDashboard initialResult={saved} userId={user.id} />;

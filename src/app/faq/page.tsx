@@ -2,7 +2,6 @@ import { Metadata } from "next";
 import {
     HelpCircle,
     Layers,
-    Link as LinkIcon,
     GraduationCap,
     Wrench,
     Shield,
@@ -16,6 +15,7 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { TELEGRAM_CHANNEL_URL } from "@/config/telegram";
+import { getAuthUser } from "@/lib/auth-cache";
 
 export const revalidate = 86400;
 
@@ -47,10 +47,10 @@ const FAQ_GROUPS = [
         id: "platform",
         title: "Platform & Security",
         icon: HelpCircle,
-        color: "text-amber-500",
-        bg: "bg-amber-500/10",
-        border: "border-amber-500/20",
-        hoverBorder: "hover:border-amber-500/35",
+        color: "text-amber-600 dark:text-gold",
+        bg: "bg-gold/10",
+        border: "border-gold/20",
+        hoverBorder: "hover:border-gold/35",
         items: [
             {
                 question: "What is TheNextTrade?",
@@ -74,7 +74,7 @@ const FAQ_GROUPS = [
         id: "journal",
         title: "Trading Journal & AI Coach",
         icon: Layers,
-        color: "text-emerald-500",
+        color: "text-emerald-600 dark:text-emerald-400",
         bg: "bg-emerald-500/10",
         border: "border-emerald-500/20",
         hoverBorder: "hover:border-emerald-500/35",
@@ -105,10 +105,10 @@ const FAQ_GROUPS = [
         id: "sync",
         title: "MT5 Sync & Trading Systems",
         icon: Bot,
-        color: "text-cyan-500",
-        bg: "bg-cyan-500/10",
-        border: "border-cyan-500/20",
-        hoverBorder: "hover:border-cyan-500/35",
+        color: "text-amber-600 dark:text-gold",
+        bg: "bg-gold/10",
+        border: "border-gold/20",
+        hoverBorder: "hover:border-gold/35",
         items: [
             {
                 question: "How do I sync MT5 trades automatically?",
@@ -144,10 +144,10 @@ const FAQ_GROUPS = [
         id: "academy",
         title: "Academy",
         icon: GraduationCap,
-        color: "text-blue-500",
-        bg: "bg-blue-500/10",
-        border: "border-blue-500/20",
-        hoverBorder: "hover:border-blue-500/35",
+        color: "text-emerald-600 dark:text-emerald-400",
+        bg: "bg-emerald-500/10",
+        border: "border-emerald-500/20",
+        hoverBorder: "hover:border-emerald-500/35",
         items: [
             {
                 question: "How is the Academy structured?",
@@ -163,14 +163,14 @@ const FAQ_GROUPS = [
         id: "tools",
         title: "Tools & Calculators",
         icon: Wrench,
-        color: "text-purple-500",
-        bg: "bg-purple-500/10",
-        border: "border-purple-500/20",
-        hoverBorder: "hover:border-purple-500/35",
+        color: "text-amber-600 dark:text-gold",
+        bg: "bg-gold/10",
+        border: "border-gold/20",
+        hoverBorder: "hover:border-gold/35",
         items: [
             {
                 question: "What calculators are free?",
-                answer: "All 14 calculators (including Position Size, Risk/Reward, Pip Value, Margin, Compounding, Fibonacci, Pivot Points, and Correlation Matrix) are 100% free and open to everyone with no signup required.",
+                answer: "All 18 calculators and utilities (including Position Size, Risk/Reward, Pip Value, Margin, Compounding, Fibonacci, Pivot Points, and Correlation Matrix) are 100% free and open to everyone with no signup required.",
             },
             {
                 question: "How do I calculate position size?",
@@ -199,11 +199,12 @@ const FAQ_GROUPS = [
     },
 ];
 
-export default function FAQPage() {
+export default async function FAQPage() {
+    const user = await getAuthUser();
     const allQuestions = FAQ_GROUPS.flatMap((group) => group.items);
 
     return (
-        <div className="min-h-screen bg-white dark:bg-transparent text-gray-700 dark:text-white overflow-hidden relative flex flex-col justify-between">
+        <div className="min-h-screen bg-white dark:bg-[#0B0E14] text-gray-700 dark:text-white overflow-x-hidden relative flex flex-col justify-between">
             {/* Ambient Background Atmosphere & Technical Grid */}
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_50%_15%,rgba(245,158,11,0.08),transparent_75%)] dark:bg-[radial-gradient(ellipse_70%_60%_at_50%_15%,rgba(245,158,11,0.12),transparent_75%)] pointer-events-none" />
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_70%_70%_at_50%_40%,#000_70%,transparent_100%)] pointer-events-none" />
@@ -223,15 +224,15 @@ export default function FAQPage() {
                 }}
             />
 
-            <PublicHeader />
+            <PublicHeader user={user} />
 
             <main className="flex-grow pt-28 pb-16 relative z-10">
-                <div className="max-w-4xl mx-auto px-4">
+                <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                     {/* Back link */}
                     <div className="mb-6">
                         <Link
                             href="/"
-                            className="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-gold dark:text-gray-400 dark:hover:text-gold transition-colors"
+                            className="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-amber-600 dark:text-gray-400 dark:hover:text-gold transition-colors"
                         >
                             <ArrowLeft size={14} /> Back to Homepage
                         </Link>
@@ -239,52 +240,128 @@ export default function FAQPage() {
 
                     {/* Page Header */}
                     <div className="text-center mb-12">
-                        <div className="inline-flex items-center justify-center p-3 rounded-lg bg-gold/10 text-gold mb-4 ring-4 ring-gold/5">
-                            <HelpCircle size={40} strokeWidth={1.5} />
+                        <div className="inline-flex items-center justify-center p-3 rounded-lg bg-gold/10 text-amber-600 dark:text-gold border border-gold/20 mb-4">
+                            <HelpCircle size={32} strokeWidth={1.75} />
                         </div>
-                        <h1 className="text-3xl md:text-5xl font-black tracking-tight text-gray-800 dark:text-white mb-4">
+                        <h1 className="text-3xl md:text-5xl font-black tracking-tight text-gray-900 dark:text-white mb-4 font-heading">
                             Frequently Asked{" "}
-                            <span className="text-gold">Questions</span>
+                            <span className="text-amber-600 dark:text-gold">Questions</span>
                         </h1>
-                        <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto font-medium">
-                            Answers about the platform, MT5 sync, trading systems, education, and risk management.
+                        <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto font-medium tabular-nums">
+                            Direct answers on MT5 trade telemetry, 10-Trade action sprints, 18 free risk calculators, and 24/7 execution discipline.
                         </p>
                     </div>
 
-                    {/* FAQ Accordion Grid grouped by category */}
-                    <div className="space-y-12">
-                        {FAQ_GROUPS.map((group) => (
-                            <div
-                                key={group.id}
-                                className="relative p-6 rounded-lg border border-gray-200 dark:border-white/10 bg-white/50 dark:bg-[#12172a]/30 backdrop-blur-md"
-                            >
-                                <div className="flex items-center gap-3 mb-6">
-                                    <div
-                                        className={`w-10 h-10 rounded-lg ${group.bg} ${group.color} flex items-center justify-center shrink-0`}
-                                    >
-                                        <group.icon size={20} />
+                    {/* 2-Column Sticky Category Navigation + FAQ Accordion Groups */}
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                        {/* Left Sidebar: Sticky Category Navigation */}
+                        <aside className="lg:col-span-3 lg:sticky lg:top-28 space-y-4">
+                            <div className="rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 p-4 shadow-sm">
+                                <p className="text-xs font-black uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3 px-2">
+                                    On This Page
+                                </p>
+                                <nav aria-label="FAQ categories" className="space-y-1">
+                                    {FAQ_GROUPS.map((group) => (
+                                        <a
+                                            key={group.id}
+                                            href={`#${group.id}`}
+                                            className="group flex items-center justify-between gap-2 px-2.5 py-2 rounded-lg text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#151925] hover:text-amber-600 dark:hover:text-gold transition-colors"
+                                        >
+                                            <span className="flex items-center gap-2 min-w-0 truncate">
+                                                <group.icon
+                                                    size={15}
+                                                    className={`shrink-0 ${group.color}`}
+                                                />
+                                                <span className="truncate">{group.title}</span>
+                                            </span>
+                                            <span className="px-2 py-0.5 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 text-[11px] font-mono tabular-nums text-gray-500 dark:text-gray-400 shrink-0">
+                                                {group.items.length}
+                                            </span>
+                                        </a>
+                                    ))}
+                                </nav>
+                            </div>
+
+                            {/* Quick Telemetry Specs Matrix */}
+                            <div className="rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 overflow-hidden shadow-sm">
+                                <div className="grid grid-cols-2 divide-x divide-y divide-gray-200 dark:divide-white/10 text-left">
+                                    <div className="p-3 bg-gray-50/80 dark:bg-[#151925]">
+                                        <div className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                                            Calculators
+                                        </div>
+                                        <div className="text-sm font-black font-mono tabular-nums text-gray-900 dark:text-white mt-0.5">
+                                            18 Free
+                                        </div>
                                     </div>
-                                    <div>
-                                        <h2 className="text-lg font-black text-gray-800 dark:text-white leading-tight">
-                                            {group.title}
-                                        </h2>
+                                    <div className="p-3 bg-gray-50/80 dark:bg-[#151925]">
+                                        <div className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                                            AI Sprint
+                                        </div>
+                                        <div className="text-sm font-black font-mono tabular-nums text-emerald-600 dark:text-emerald-400 mt-0.5">
+                                            10-Trade
+                                        </div>
+                                    </div>
+                                    <div className="p-3 bg-gray-50/80 dark:bg-[#151925]">
+                                        <div className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                                            Curriculum
+                                        </div>
+                                        <div className="text-sm font-black font-mono tabular-nums text-amber-600 dark:text-gold mt-0.5">
+                                            12 Levels
+                                        </div>
+                                    </div>
+                                    <div className="p-3 bg-gray-50/80 dark:bg-[#151925]">
+                                        <div className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                                            MT5 Sync
+                                        </div>
+                                        <div className="text-sm font-black font-mono tabular-nums text-gray-900 dark:text-white mt-0.5">
+                                            24/7 Live
+                                        </div>
                                     </div>
                                 </div>
-                                <FAQAccordion
-                                    items={group.items}
-                                    hoverClassName={group.hoverBorder}
-                                />
                             </div>
-                        ))}
+                        </aside>
+
+                        {/* Right Content: FAQ Accordion Groups */}
+                        <div className="lg:col-span-9 space-y-8">
+                            {FAQ_GROUPS.map((group) => (
+                                <section
+                                    key={group.id}
+                                    id={group.id}
+                                    className="scroll-mt-28 relative p-6 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] shadow-sm"
+                                >
+                                    <div className="flex items-center justify-between gap-3 mb-6">
+                                        <div className="flex items-center gap-3">
+                                            <div
+                                                className={`w-10 h-10 rounded-lg ${group.bg} ${group.color} border ${group.border} flex items-center justify-center shrink-0`}
+                                            >
+                                                <group.icon size={18} />
+                                            </div>
+                                            <div>
+                                                <h2 className="text-lg font-black text-gray-900 dark:text-white leading-tight">
+                                                    {group.title}
+                                                </h2>
+                                            </div>
+                                        </div>
+                                        <span className="px-2.5 py-1 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 text-xs font-mono tabular-nums font-bold text-gray-600 dark:text-gray-300">
+                                            {group.items.length} Q&amp;As
+                                        </span>
+                                    </div>
+                                    <FAQAccordion
+                                        items={group.items}
+                                        hoverClassName={group.hoverBorder}
+                                    />
+                                </section>
+                            ))}
+                        </div>
                     </div>
 
                     {/* Bottom CTA Block */}
-                    <div className="mt-16 text-center p-8 rounded-lg border border-gold/25 dark:border-gold/15 bg-gradient-to-r from-gold/[0.03] to-amber-500/[0.01] dark:from-gold/[0.02] dark:to-transparent backdrop-blur-md">
-                        <h3 className="text-lg font-black text-gray-800 dark:text-white">
+                    <div className="mt-16 text-center p-8 rounded-xl border border-gold/25 bg-white dark:bg-[#1E2028] shadow-sm">
+                        <h3 className="text-lg font-black text-gray-900 dark:text-white">
                             Still have questions?
                         </h3>
-                        <p className="mt-1 text-sm text-gray-600 dark:text-gray-400 font-medium">
-                            Join our Telegram channel or get in touch with support.
+                        <p className="mt-1 text-sm text-gray-600 dark:text-gray-400 font-medium tabular-nums">
+                            Join our 24/7 Telegram community or reach out to our support desk.
                         </p>
                         <div className="mt-6 flex flex-wrap gap-4 justify-center">
                             <Link
@@ -306,7 +383,7 @@ export default function FAQPage() {
                                     variant: "primary",
                                     size: "smd",
                                     className:
-                                        "rounded-lg font-bold bg-gold hover:bg-amber-600 text-white",
+                                        "rounded-lg font-bold bg-gold hover:bg-amber-600 !text-white",
                                 })}
                             >
                                 Join Telegram

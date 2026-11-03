@@ -1,5 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { calculatePositionSize } from "./calculators";
+import {
+    calculatePositionSize,
+    calculatePipValue,
+    calculateMargin,
+} from "./calculators";
 
 describe("calculatePositionSize", () => {
     it("should calculate correct lot size for EURUSD (Standard Pair)", () => {
@@ -96,5 +100,37 @@ describe("calculatePositionSize", () => {
         // If implementation doesn't guard, this expects logic check.
         // If it divides by pipAmount (0.1 * 10 = 1). 100 / 1 = 100 lots.
         expect(result.lotSize).toBe(100);
+    });
+});
+
+describe("calculatePipValue", () => {
+    it("should calculate correct pip value for standard, mini, and micro lots without float drift", () => {
+        expect(calculatePipValue({ pair: "EURUSD", lotSize: 1 })).toBe(10);
+        expect(calculatePipValue({ pair: "EURUSD", lotSize: 0.1 })).toBe(1);
+        expect(calculatePipValue({ pair: "EURUSD", lotSize: 0.01 })).toBe(0.1);
+    });
+
+    it("should sanitize noisy IEEE-754 floats", () => {
+        const noisyLot = 0.10000000149011612;
+        expect(calculatePipValue({ pair: "EURUSD", lotSize: noisyLot })).toBe(1);
+    });
+
+    it("should support string pair and lotSize parameters", () => {
+        expect(calculatePipValue("EURUSD", 0.5)).toBe(5);
+    });
+});
+
+describe("calculateMargin", () => {
+    it("should return clean rounded numbers without floating point noise", () => {
+        const result = calculateMargin({
+            lotSize: 0.10000000149011612,
+            pair: "EURUSD",
+            leverage: 100,
+            currentPrice: 1.0850000381469727,
+        });
+
+        // 0.1 * 100,000 * 1.085 / 100 = 108.5
+        expect(result.requiredMargin).toBe(108.5);
+        expect(result.positionValue).toBe(10850);
     });
 });

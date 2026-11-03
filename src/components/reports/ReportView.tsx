@@ -81,7 +81,7 @@ function DeltaBadge({
 
     return (
         <span
-            className={`inline-flex items-center gap-0.5 text-xs font-bold ${isPositive ? "text-emerald-500" : isZero ? "text-gray-400" : "text-red-500"}`}
+            className={`inline-flex items-center gap-0.5 text-xs font-bold font-mono tabular-nums ${isPositive ? "text-emerald-500" : isZero ? "text-gray-400" : "text-red-500"}`}
         >
             {isPositive ? (
                 <ArrowUpRight size={12} />
@@ -121,7 +121,7 @@ function StatCard({
 }) {
     return (
         <div
-            className={`bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard p-5 shadow-sm hover:shadow-md transition-shadow duration-200 border-t-4 ${borderColor || "border-t-transparent"}`}
+            className={`bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-5 shadow-sm hover:shadow-md transition-shadow duration-200 border-t-4 ${borderColor || "border-t-transparent"}`}
         >
             <div className="flex items-center gap-3 mb-3">
                 <div className={`p-2 rounded-lg ${iconBg}`}>
@@ -131,7 +131,7 @@ function StatCard({
                     {label}
                 </span>
             </div>
-            <p className="text-2xl font-black text-gray-800 dark:text-white">
+            <p className="text-2xl font-black font-mono tabular-nums text-gray-800 dark:text-white">
                 {value}
             </p>
             {previous !== undefined && (
@@ -164,7 +164,7 @@ function BreakdownTable({
     if (!data || data.length === 0) return null;
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden">
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden">
             {/* Header */}
             <div className="px-5 py-4 border-b border-dashboard flex items-center gap-2.5">
                 <div className={`p-2 ${iconColor} rounded-lg`}>
@@ -176,7 +176,7 @@ function BreakdownTable({
             </div>
 
             {/* Table header */}
-            <div className="grid grid-cols-12 gap-2 px-5 py-2.5 text-[10px] font-bold uppercase tracking-wider text-gray-500 bg-gray-50 dark:bg-white/[0.02]">
+            <div className="grid grid-cols-12 gap-2 px-5 py-2.5 text-[10px] font-bold uppercase tracking-wider text-gray-500 bg-gray-50/80 dark:bg-[#151925]">
                 <div className="col-span-5">Name</div>
                 <div className="col-span-2 text-right">Trades</div>
                 <div className="col-span-2 text-right">Win Rate</div>
@@ -188,24 +188,24 @@ function BreakdownTable({
                 {data.map((item, i) => (
                     <div
                         key={i}
-                        className="grid grid-cols-12 gap-2 items-center px-5 h-[52px] hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors border-b border-gray-50 last:border-0"
+                        className="grid grid-cols-12 gap-2 items-center px-5 h-[52px] hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors border-b border-gray-50 dark:border-white/[0.04] last:border-0"
                     >
                         <div className="col-span-5 flex items-center gap-2 min-w-0">
-                            <span className="text-xs font-mono bg-gray-100 dark:bg-white/5 px-2 py-0.5 rounded-lg shrink-0">
+                            <span className="text-xs font-mono tabular-nums bg-gray-100 dark:bg-white/5 px-2 py-0.5 rounded-lg shrink-0">
                                 {i + 1}
                             </span>
                             <span className="text-sm font-bold text-gray-800 dark:text-gray-200 truncate">
                                 {item.name}
                             </span>
                         </div>
-                        <div className="col-span-2 text-right text-xs text-gray-500 font-medium">
+                        <div className="col-span-2 text-right text-xs font-mono tabular-nums text-gray-500 font-medium">
                             {item.trades}
                         </div>
-                        <div className="col-span-2 text-right text-xs text-gray-500 font-medium">
+                        <div className="col-span-2 text-right text-xs font-mono tabular-nums text-gray-500 font-medium">
                             {item.winRate?.toFixed(0)}%
                         </div>
                         <div
-                            className={`col-span-3 text-right font-bold text-sm ${item.pnl >= 0 ? "text-emerald-500" : "text-red-500"}`}
+                            className={`col-span-3 text-right font-bold font-mono tabular-nums text-sm ${item.pnl >= 0 ? "text-emerald-500" : "text-red-500"}`}
                         >
                             {item.pnl >= 0 ? "+" : ""}${item.pnl?.toFixed(2)}
                         </div>
@@ -235,10 +235,10 @@ function PsychologySection({
     if (!hasData) return null;
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden">
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden">
             {/* Header */}
             <div className="px-5 py-4 border-b border-dashboard flex items-center gap-2.5">
-                <div className="p-2 rounded-lg bg-purple-500/10 text-purple-500">
+                <div className="p-2 rounded-lg bg-gold/10 border border-gold/20 text-amber-600 dark:text-gold">
                     <Brain size={18} />
                 </div>
                 <div>
@@ -259,15 +259,15 @@ function PsychologySection({
                                 Avg Confidence
                             </p>
                             <div className="flex items-center gap-2">
-                                <div className="flex-1 h-2.5 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
+                                <div className="flex-1 h-2.5 bg-gray-100 dark:bg-[#151925] rounded-full overflow-hidden">
                                     <div
-                                        className="h-full bg-purple-500 rounded-full transition-all"
+                                        className="h-full bg-gold rounded-full transition-all"
                                         style={{
                                             width: `${(confidence / 5) * 100}%`,
                                         }}
                                     />
                                 </div>
-                                <span className="text-sm font-bold text-gray-700 dark:text-white">
+                                <span className="text-sm font-bold font-mono tabular-nums text-gray-700 dark:text-white">
                                     {confidence.toFixed(1)}/5
                                 </span>
                             </div>
@@ -279,13 +279,13 @@ function PsychologySection({
                                 Plan Compliance
                             </p>
                             <div className="flex items-center gap-2">
-                                <div className="flex-1 h-2.5 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
+                                <div className="flex-1 h-2.5 bg-gray-100 dark:bg-[#151925] rounded-full overflow-hidden">
                                     <div
                                         className={`h-full rounded-full transition-all ${compliance >= 70 ? "bg-emerald-500" : compliance >= 40 ? "bg-amber-500" : "bg-red-500"}`}
                                         style={{ width: `${compliance}%` }}
                                     />
                                 </div>
-                                <span className="text-sm font-bold text-gray-700 dark:text-white">
+                                <span className="text-sm font-bold font-mono tabular-nums text-gray-700 dark:text-white">
                                     {compliance.toFixed(0)}%
                                 </span>
                             </div>
@@ -302,10 +302,10 @@ function PsychologySection({
                             {emotions.map((e: any, i: number) => (
                                 <span
                                     key={i}
-                                    className="px-2.5 py-1 bg-gray-100 dark:bg-white/5 rounded-lg text-xs font-medium text-gray-600 dark:text-gray-300"
+                                    className="px-2.5 py-1 bg-gray-50/80 dark:bg-[#151925] border border-dashboard rounded-lg text-xs font-medium text-gray-600 dark:text-gray-300"
                                 >
                                     {e.emotion}{" "}
-                                    <span className="text-gray-400">
+                                    <span className="font-mono tabular-nums text-gray-400">
                                         ×{e.count}
                                     </span>
                                 </span>
@@ -328,7 +328,7 @@ function PsychologySection({
                                     <span className="text-sm text-gray-600 dark:text-gray-300">
                                         {m.name}
                                     </span>
-                                    <span className="text-xs font-bold bg-red-50 dark:bg-red-500/10 text-red-500 px-2 py-0.5 rounded-lg">
+                                    <span className="text-xs font-bold font-mono tabular-nums bg-red-50 dark:bg-red-500/10 text-red-500 px-2 py-0.5 rounded-lg">
                                         {m.count}×
                                     </span>
                                 </div>
@@ -357,7 +357,7 @@ function TradesList({
     if (!trades || trades.length === 0) return null;
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden">
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden">
             {/* Header */}
             <div className="px-5 py-4 border-b border-dashboard flex items-center gap-2.5">
                 <div className={`p-2 rounded-lg ${iconColor}`}>
@@ -369,7 +369,7 @@ function TradesList({
             </div>
 
             {/* Table header */}
-            <div className="grid grid-cols-12 gap-2 px-5 py-2.5 text-[10px] font-bold uppercase tracking-wider text-gray-500 bg-gray-50 dark:bg-white/[0.02]">
+            <div className="grid grid-cols-12 gap-2 px-5 py-2.5 text-[10px] font-bold uppercase tracking-wider text-gray-500 bg-gray-50/80 dark:bg-[#151925]">
                 <div className="col-span-5">Symbol</div>
                 <div className="col-span-4 text-center">Date</div>
                 <div className="col-span-3 text-right">P&L</div>
@@ -380,20 +380,20 @@ function TradesList({
                 {trades.map((t: any, i: number) => (
                     <div
                         key={i}
-                        className="grid grid-cols-12 gap-2 items-center px-5 h-[52px] hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors border-b border-gray-50 last:border-0"
+                        className="grid grid-cols-12 gap-2 items-center px-5 h-[52px] hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors border-b border-gray-50 dark:border-white/[0.04] last:border-0"
                     >
                         <div className="col-span-5">
                             <span className="text-sm font-bold text-gray-800 dark:text-gray-200">
                                 {t.symbol}
                             </span>
                         </div>
-                        <div className="col-span-4 text-center text-xs text-gray-500 font-medium">
+                        <div className="col-span-4 text-center text-xs font-mono tabular-nums text-gray-500 font-medium">
                             {t.date
                                 ? new Date(t.date).toLocaleDateString()
                                 : ""}
                         </div>
                         <div
-                            className={`col-span-3 text-right font-bold text-sm ${pnlColor}`}
+                            className={`col-span-3 text-right font-bold font-mono tabular-nums text-sm ${pnlColor}`}
                         >
                             {t.pnl >= 0 ? "+" : ""}${t.pnl?.toFixed(2)}
                         </div>
@@ -409,21 +409,13 @@ export function ReportView({ reports, total, type }: ReportViewProps) {
 
     if (reports.length === 0) {
         return (
-            <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-lg border-2 border-dashed border-dashboard mt-8">
-                {/* Animated Calendar Icon */}
-                <div className="relative w-20 h-20 mb-6 mx-auto">
-                    <div className="absolute inset-0 rounded-full bg-blue-500/10 dark:bg-blue-500/5 animate-[report-ping_3s_cubic-bezier(0,0,0.2,1)_infinite]" />
-                    <div className="relative w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-full flex items-center justify-center animate-[report-float_3s_ease-in-out_infinite]">
-                        <Calendar
-                            size={32}
-                            className="text-gray-500 dark:text-gray-300"
-                            strokeWidth={1.5}
-                        />
-                        {/* Sparkle dots */}
-                        <div className="absolute -top-2 left-3 w-1.5 h-1.5 rounded-full bg-blue-400/40 animate-[report-sparkle_2.5s_ease-in-out_infinite_1.2s]" />
-                        <div className="absolute -bottom-1 -right-1 w-1 h-1 rounded-full bg-blue-400/30 animate-[report-sparkle_3s_ease-in-out_infinite_0.8s]" />
-                        <div className="absolute top-0 -right-2 w-1 h-1 rounded-full bg-blue-400/25 animate-[report-sparkle_2s_ease-in-out_infinite_1.5s]" />
-                    </div>
+            <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-xl border-2 border-dashed border-dashboard mt-8">
+                <div className="w-16 h-16 mb-6 mx-auto bg-gold/10 border border-gold/20 rounded-xl flex items-center justify-center">
+                    <Calendar
+                        size={28}
+                        className="text-amber-600 dark:text-gold"
+                        strokeWidth={1.75}
+                    />
                 </div>
 
                 <h3 className="text-xl font-bold text-gray-700 dark:text-white mb-2">
@@ -438,40 +430,6 @@ export function ReportView({ reports, total, type }: ReportViewProps) {
                 </p>
 
                 <EmptyStateCTAs />
-
-                <style jsx>{`
-                    @keyframes report-float {
-                        0%,
-                        100% {
-                            transform: translateY(0px);
-                        }
-                        50% {
-                            transform: translateY(-6px);
-                        }
-                    }
-                    @keyframes report-ping {
-                        0% {
-                            transform: scale(1);
-                            opacity: 0.3;
-                        }
-                        75%,
-                        100% {
-                            transform: scale(1.3);
-                            opacity: 0;
-                        }
-                    }
-                    @keyframes report-sparkle {
-                        0%,
-                        100% {
-                            opacity: 0;
-                            transform: scale(0);
-                        }
-                        50% {
-                            opacity: 1;
-                            transform: scale(1);
-                        }
-                    }
-                `}</style>
             </div>
         );
     }
@@ -485,7 +443,7 @@ export function ReportView({ reports, total, type }: ReportViewProps) {
     return (
         <div className="space-y-4">
             {/* Period Navigator */}
-            <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard px-5 py-4 shadow-sm hover:shadow-md transition-shadow duration-200 flex items-center justify-between">
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard px-5 py-4 shadow-sm hover:shadow-md transition-shadow duration-200 flex items-center justify-between">
                 <Button
                     variant="ghost"
                     size="sm"
@@ -501,7 +459,7 @@ export function ReportView({ reports, total, type }: ReportViewProps) {
                     <h2 className="text-base sm:text-lg font-black text-gray-800 dark:text-white">
                         {report.periodLabel}
                     </h2>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs font-mono tabular-nums text-gray-500">
                         {new Date(report.periodStart).toLocaleDateString()} —{" "}
                         {new Date(report.periodEnd).toLocaleDateString()}
                     </p>
@@ -548,9 +506,21 @@ export function ReportView({ reports, total, type }: ReportViewProps) {
                     label="Win Rate"
                     value={`${report.winRate.toFixed(1)}%`}
                     icon={Target}
-                    color="text-blue-500"
-                    iconBg="bg-blue-500/10"
-                    borderColor="border-t-blue-500"
+                    color={
+                        report.winRate >= 50
+                            ? "text-emerald-500"
+                            : "text-amber-500"
+                    }
+                    iconBg={
+                        report.winRate >= 50
+                            ? "bg-emerald-500/10"
+                            : "bg-amber-500/10"
+                    }
+                    borderColor={
+                        report.winRate >= 50
+                            ? "border-t-emerald-500"
+                            : "border-t-amber-500"
+                    }
                     delta={report.winRate}
                     previous={report.prevWinRate}
                     isPercent
@@ -559,9 +529,9 @@ export function ReportView({ reports, total, type }: ReportViewProps) {
                     label="Total Trades"
                     value={`${report.totalTrades}`}
                     icon={BarChart3}
-                    color="text-purple-500"
-                    iconBg="bg-purple-500/10"
-                    borderColor="border-t-purple-500"
+                    color="text-amber-600 dark:text-gold"
+                    iconBg="bg-gold/10"
+                    borderColor="border-t-amber-500"
                 />
                 <StatCard
                     label="Profit Factor"
@@ -579,35 +549,35 @@ export function ReportView({ reports, total, type }: ReportViewProps) {
 
             {/* Secondary Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard p-5 shadow-sm">
+                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-5 shadow-sm">
                     <p className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1.5">
                         Avg Win
                     </p>
-                    <p className="text-lg font-black text-emerald-500">
+                    <p className="text-lg font-black font-mono tabular-nums text-emerald-500">
                         +${report.avgWin.toFixed(2)}
                     </p>
                 </div>
-                <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard p-5 shadow-sm">
+                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-5 shadow-sm">
                     <p className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1.5">
                         Avg Loss
                     </p>
-                    <p className="text-lg font-black text-red-500">
+                    <p className="text-lg font-black font-mono tabular-nums text-red-500">
                         -${report.avgLoss.toFixed(2)}
                     </p>
                 </div>
-                <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard p-5 shadow-sm">
+                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-5 shadow-sm">
                     <p className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1.5">
                         Largest Win
                     </p>
-                    <p className="text-lg font-black text-emerald-500">
+                    <p className="text-lg font-black font-mono tabular-nums text-emerald-500">
                         +${report.largestWin.toFixed(2)}
                     </p>
                 </div>
-                <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard p-5 shadow-sm">
+                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-5 shadow-sm">
                     <p className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1.5">
                         Largest Loss
                     </p>
-                    <p className="text-lg font-black text-red-500">
+                    <p className="text-lg font-black font-mono tabular-nums text-red-500">
                         ${report.largestLoss.toFixed(2)}
                     </p>
                 </div>
@@ -619,25 +589,25 @@ export function ReportView({ reports, total, type }: ReportViewProps) {
                     data={report.bySymbol}
                     title="Performance by Symbol"
                     icon={BarChart3}
-                    iconColor="bg-cyan-500/10 text-cyan-500"
+                    iconColor="bg-gold/10 text-amber-600 dark:text-gold"
                 />
                 <BreakdownTable
                     data={report.byStrategy}
                     title="Performance by Strategy"
                     icon={Crosshair}
-                    iconColor="bg-amber-500/10 text-amber-500"
+                    iconColor="bg-gold/10 text-amber-600 dark:text-gold"
                 />
                 <BreakdownTable
                     data={report.bySession}
                     title="Performance by Session"
                     icon={Clock}
-                    iconColor="bg-indigo-500/10 text-indigo-500"
+                    iconColor="bg-gold/10 text-amber-600 dark:text-gold"
                 />
                 <BreakdownTable
                     data={report.byDirection}
                     title="Performance by Direction"
                     icon={Target}
-                    iconColor="bg-orange-500/10 text-orange-500"
+                    iconColor="bg-emerald-500/10 text-emerald-500"
                 />
                 <PsychologySection
                     confidence={report.avgConfidence}

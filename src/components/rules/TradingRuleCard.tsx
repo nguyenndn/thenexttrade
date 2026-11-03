@@ -97,13 +97,13 @@ export function TradingRuleCard({
             case "EXIT":
                 return <AlertTriangle size={14} className="text-amber-500" />;
             default:
-                return <HelpCircle size={14} className="text-indigo-500" />;
+                return <HelpCircle size={14} className="text-amber-600 dark:text-gold" />;
         }
     };
 
     return (
         <div
-            className="relative flex flex-col justify-between p-5 rounded-lg border transition-all duration-300 bg-white dark:bg-[#1E2028] border-dashboard/80 dark:border-white/[0.08] hover:shadow-md"
+            className="relative flex flex-col justify-between p-5 rounded-xl border transition-all duration-300 bg-white dark:bg-[#1E2028] border-dashboard/80 dark:border-white/[0.08] hover:shadow-md"
         >
             <div>
                 {/* Header Tags */}
@@ -146,7 +146,7 @@ export function TradingRuleCard({
                         </span>
                     )}
                     {rule.strategy && (
-                        <span className="bg-indigo-500/5 border border-indigo-500/15 text-indigo-500 px-2 py-0.5 rounded-lg">
+                        <span className="bg-gold/10 border border-gold/20 text-amber-600 dark:text-gold px-2 py-0.5 rounded-lg">
                             Strategy: {rule.strategy.name}
                         </span>
                     )}

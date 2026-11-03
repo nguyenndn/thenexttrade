@@ -37,14 +37,14 @@ export function ActivationChecklist({ state }: ActivationChecklistProps) {
                             </p>
                         </div>
                     </div>
-                    <span className="text-xs font-bold text-primary">
+                    <span className="text-xs font-bold font-mono tabular-nums text-amber-600 dark:text-gold">
                         {completedCount}/{totalCount}
                     </span>
                 </div>
                 {/* Progress bar */}
                 <div className="mt-3 h-1.5 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
                     <div
-                        className="h-full bg-gradient-to-r from-primary to-teal-400 rounded-full transition-all duration-500"
+                        className="h-full bg-gold rounded-full transition-all duration-500"
                         style={{ width: `${progress}%` }}
                     />
                 </div>

@@ -8,13 +8,13 @@ import {
     Send,
     Flame,
     Compass,
-    CheckCircle2,
     BookOpen,
     Brain,
     LineChart,
 } from "lucide-react";
 import { PublicHeader } from "@/components/layout/PublicHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
+import { getAuthUser } from "@/lib/auth-cache";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { cn } from "@/lib/utils";
@@ -49,6 +49,8 @@ export const metadata: Metadata = {
 };
 
 export default async function AboutPage() {
+    const user = await getAuthUser();
+
     return (
         <div className="min-h-screen bg-white dark:bg-transparent text-gray-900 dark:text-white overflow-hidden relative selection:bg-amber-500/20 selection:text-amber-500">
             {/* Ambient Background Atmosphere & Technical Grid */}
@@ -58,14 +60,13 @@ export default async function AboutPage() {
             {/* Golden Firefly Particles */}
             <DynamicFirefly color="gold" count={45} />
 
-            <PublicHeader />
+            <PublicHeader user={user} />
 
             <main className="pt-24 sm:pt-32 pb-16 sm:pb-24 relative z-10">
                 {/* 1. EDITORIAL HERO SECTION */}
                 <section className="px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto mb-14 sm:mb-20 text-center">
                     <ScrollReveal>
-                        {/* Punchy & Compact Headline */}
-                        <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight leading-[1.12] text-gray-900 dark:text-white mb-4 max-w-3xl mx-auto">
+                        <h1 className="text-3xl sm:text-4xl md:text-5xl font-black font-heading tracking-tight leading-[1.12] text-gray-900 dark:text-white mb-4 max-w-3xl mx-auto">
                             From Blown Accounts to{" "}
                             <span className="text-gold">
                                 Disciplined Execution
@@ -77,10 +78,10 @@ export default async function AboutPage() {
                         </p>
                     </ScrollReveal>
 
-                    {/* Pure & Elegant Quote Card (No Avatar, No Name Line) */}
+                    {/* Quote Card (Level 1 Surface, Single-Font Discipline) */}
                     <ScrollReveal delay={0.15}>
-                        <div className="mt-8 sm:mt-10 max-w-2xl mx-auto p-6 sm:p-7 rounded-xl bg-white/80 dark:bg-slate-900/60 border border-amber-500/20 backdrop-blur-xl shadow-lg shadow-amber-500/[0.02] text-center relative overflow-hidden">
-                            <p className="text-base sm:text-lg font-medium text-gray-800 dark:text-gray-200 italic leading-relaxed">
+                        <div className="mt-8 sm:mt-10 max-w-2xl mx-auto p-6 sm:p-7 rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm text-center relative overflow-hidden">
+                            <p className="text-base sm:text-lg font-medium text-gray-800 dark:text-gray-200 leading-relaxed">
                                 &ldquo;The market never defeats a trader on its own. It is unchecked emotion, oversized lots, and lack of honest journaling that wipe out accounts. When you audit your execution data, discipline becomes repeatable.&rdquo;
                             </p>
                         </div>
@@ -90,16 +91,16 @@ export default async function AboutPage() {
                 {/* 2. THE 4-PHASE STORYLINE TIMELINE */}
                 <AboutTimeline />
 
-                {/* 3. THE 5 UNBREAKABLE TRUTHS (Honest Trader-to-Trader Lessons) */}
+                {/* 3. THE 6 UNBREAKABLE TRUTHS (Honest Trader-to-Trader Lessons) */}
                 <section className="px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto mb-10 sm:mb-20">
                     <ScrollReveal>
                         <div className="text-center mb-12 sm:mb-16 space-y-2">
-                            <div className="inline-flex items-center gap-2 text-xs font-mono font-bold text-amber-600 dark:text-gold uppercase tracking-widest">
+                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-gold/10 border border-gold/20 text-xs font-black text-amber-700 dark:text-gold uppercase tracking-wider">
                                 <Compass size={14} />
                                 <span>Real Talk</span>
                             </div>
-                            <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-gray-900 dark:text-white tracking-tight">
-                                5 Hard Truths I Learned the Hard Way
+                            <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-gray-900 dark:text-white tracking-tight tabular-nums">
+                                6 Hard Truths I Learned the Hard Way
                             </h2>
                             <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
                                 The lessons that actually changed my results.
@@ -149,18 +150,20 @@ export default async function AboutPage() {
                             const Icon = truth.icon;
                             return (
                                 <ScrollReveal key={idx} delay={0.08 * idx}>
-                                    <div className="h-full p-6 sm:p-7 rounded-xl bg-white dark:bg-slate-900/50 border border-gray-200 dark:border-white/[0.08] hover:border-amber-500/40 transition-all duration-300 shadow-sm hover:shadow-md flex flex-col justify-between group">
+                                    <div className="h-full p-6 sm:p-7 rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 hover:border-amber-500/35 dark:hover:border-gold/30 transition-all duration-200 shadow-sm hover:shadow-md flex flex-col justify-between group">
                                         <div className="space-y-3.5">
                                             <div className="flex items-center justify-between">
-                                                <span className="font-mono text-2xl font-black text-amber-500/60 group-hover:text-amber-500 transition-colors">
+                                                <span className="tabular-nums text-2xl font-black text-amber-500/70 dark:text-gold/70 group-hover:text-gold transition-colors">
                                                     {truth.num}
                                                 </span>
-                                                <Icon size={18} className="text-slate-400 group-hover:text-amber-500 transition-colors" />
+                                                <div className="w-9 h-9 rounded-lg bg-gray-50 dark:bg-[#151925] border border-gray-200 dark:border-white/10 flex items-center justify-center">
+                                                    <Icon size={17} className="text-gray-500 dark:text-gray-400 group-hover:text-gold transition-colors" />
+                                                </div>
                                             </div>
                                             <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white leading-snug">
                                                 {truth.title}
                                             </h3>
-                                            <p className="text-sm leading-relaxed text-gray-600 dark:text-gray-400">
+                                            <p className="text-sm tabular-nums leading-relaxed text-gray-600 dark:text-gray-400">
                                                 {truth.desc}
                                             </p>
                                         </div>
@@ -171,21 +174,17 @@ export default async function AboutPage() {
                     </div>
                 </section>
 
-                {/* 4. MISSION & VISION BENTO */}
+                {/* 4. MISSION & VISION BENTO (Law 1 & Motion Gate Compliant) */}
                 <section className="px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto mb-10 sm:mb-20">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
                         {/* Mission */}
                         <ScrollReveal delay={0.1} direction="left">
-                            <div className="h-full rounded-xl p-8 sm:p-12 bg-white/90 dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden backdrop-blur-md">
-                                <Target size={180} className="absolute -bottom-8 -right-8 text-amber-500/[0.03] pointer-events-none" />
-                                <div className="relative z-10 space-y-5">
-                                    <div className="flex items-center gap-3.5 sm:gap-4">
-                                        <div className="h-12 w-12 rounded-lg bg-amber-500/10 border border-amber-500/25 flex items-center justify-center text-amber-600 dark:text-gold shrink-0 shadow-xs relative">
-                                            <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
-                                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
-                                                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500" />
-                                            </span>
-                                            <Target size={24} className="animate-pulse" />
+                            <div className="h-full rounded-xl p-8 sm:p-10 bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden">
+                                <Target size={160} className="absolute -bottom-8 -right-8 text-amber-500/[0.03] pointer-events-none" />
+                                <div className="relative z-10 space-y-4">
+                                    <div className="flex items-center gap-3.5">
+                                        <div className="h-11 w-11 rounded-lg bg-gold/10 border border-gold/25 flex items-center justify-center text-amber-600 dark:text-gold shrink-0 shadow-xs">
+                                            <Target size={22} />
                                         </div>
                                         <h2 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight">
                                             Our Mission
@@ -198,18 +197,14 @@ export default async function AboutPage() {
                             </div>
                         </ScrollReveal>
 
-                        {/* Vision */}
+                        {/* Vision (Locked to Emerald Semantic Accent — Zero Blue/Cyan) */}
                         <ScrollReveal delay={0.2} direction="right">
-                            <div className="h-full rounded-xl p-8 sm:p-12 bg-white/90 dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden backdrop-blur-md">
-                                <TrendingUp size={180} className="absolute -bottom-8 -right-8 text-sky-500/[0.03] pointer-events-none" />
-                                <div className="relative z-10 space-y-5">
-                                    <div className="flex items-center gap-3.5 sm:gap-4">
-                                        <div className="h-12 w-12 rounded-lg bg-blue-500/10 border border-blue-500/25 flex items-center justify-center text-blue-600 dark:text-cyan-400 shrink-0 shadow-xs relative">
-                                            <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
-                                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
-                                                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-cyan-500" />
-                                            </span>
-                                            <TrendingUp size={24} className="animate-bounce" style={{ animationDuration: "2.5s" }} />
+                            <div className="h-full rounded-xl p-8 sm:p-10 bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-md transition-all duration-200 relative overflow-hidden">
+                                <TrendingUp size={160} className="absolute -bottom-8 -right-8 text-emerald-500/[0.03] pointer-events-none" />
+                                <div className="relative z-10 space-y-4">
+                                    <div className="flex items-center gap-3.5">
+                                        <div className="h-11 w-11 rounded-lg bg-emerald-500/10 border border-emerald-500/25 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0 shadow-xs">
+                                            <TrendingUp size={22} />
                                         </div>
                                         <h2 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight">
                                             Our Vision
@@ -227,20 +222,20 @@ export default async function AboutPage() {
                 {/* 5. EDITORIAL CONVERSION CTA */}
                 <section className="px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
                     <ScrollReveal>
-                        <div className="rounded-xl p-8 sm:p-12 md:p-14 text-center border border-gray-200 dark:border-white/10 bg-white/90 dark:bg-white/[0.03] backdrop-blur-md shadow-sm relative overflow-hidden">
+                        <div className="rounded-xl p-8 sm:p-12 text-center border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] shadow-sm relative overflow-hidden">
                             <div className="relative z-10 space-y-6">
-                                <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-[40px] font-black text-gray-900 dark:text-white tracking-tight sm:whitespace-nowrap">
+                                <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-gray-900 dark:text-white tracking-tight">
                                     Start fixing your trading habits
                                 </h2>
-                                <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed">
+                                <p className="text-base sm:text-lg tabular-nums text-gray-600 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed">
                                     No credit card required. Connect your MT5 account in 30 seconds and uncover the behavioral leaks holding you back from consistent profitability.
                                 </p>
-                                <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+                                <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 pt-2">
                                     <Link
                                         href="/auth/signup?intent=TRADE_FIRST&source=about_page"
                                         className={cn(
                                             buttonVariants({ variant: "gold", size: "smd" }),
-                                            "w-full sm:w-auto rounded-lg bg-gold hover:bg-amber-600 text-white font-bold shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2"
+                                            "w-full sm:w-auto rounded-lg bg-gold hover:bg-amber-600 !text-white font-bold shadow-sm flex items-center justify-center gap-2"
                                         )}
                                     >
                                         <span>Get Started Free</span>
@@ -252,10 +247,10 @@ export default async function AboutPage() {
                                         rel="noopener noreferrer"
                                         className={cn(
                                             buttonVariants({ variant: "outline", size: "smd" }),
-                                            "w-full sm:w-auto rounded-lg border-gray-300 dark:border-white/10 bg-white/80 dark:bg-slate-900 text-gray-800 dark:text-gray-200 font-bold flex items-center justify-center gap-2"
+                                            "w-full sm:w-auto rounded-lg border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] text-gray-800 dark:text-gray-200 font-bold flex items-center justify-center gap-2"
                                         )}
                                     >
-                                        <Send size={14} className="text-amber-500" />
+                                        <Send size={14} className="text-amber-500 dark:text-gold" />
                                         <span>Join Trader Community</span>
                                     </a>
                                 </div>

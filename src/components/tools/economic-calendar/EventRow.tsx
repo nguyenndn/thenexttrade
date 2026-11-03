@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { EconomicEvent, ImpactLevel } from "@prisma/client";
 import { format } from "date-fns";
-import { Info, X, ShieldAlert, Lightbulb, Clock, Globe } from "lucide-react";
+import { Info, X, ShieldAlert, Lightbulb, Clock } from "lucide-react";
 import { getEventExplanation } from "@/lib/economic-event-explanations";
 import { Button } from "@/components/ui/Button";
 import { SPRING_SOFT, backdropVariants, panelVariants } from "@/lib/animations";
@@ -47,7 +47,7 @@ export function EventRow({ event, timezone = "Asia/Bangkok" }: EventRowProps) {
                 timeZone: timezone,
                 hour12: false,
             }).format(new Date(dateStr));
-        } catch (e) {
+        } catch {
             return format(new Date(dateStr), "HH:mm");
         }
     };
@@ -66,9 +66,9 @@ export function EventRow({ event, timezone = "Asia/Bangkok" }: EventRowProps) {
                         setIsDetailOpen(true);
                     }
                 }}
-                className="grid grid-cols-12 gap-1 md:gap-2 py-3 border-b border-dashboard hover:bg-gray-50 dark:hover:bg-white/5 transition-colors items-center px-4 group cursor-pointer focus:outline-none focus:ring-1 focus:ring-primary/40"
+                className="grid grid-cols-12 gap-1 md:gap-2 py-3 border-b border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors items-center px-4 group cursor-pointer focus:outline-none focus:ring-1 focus:ring-gold/40"
             >
-                <div className="col-span-2 md:col-span-1 text-sm font-bold text-gray-600 dark:text-gray-300 flex items-center gap-1">
+                <div className="col-span-2 md:col-span-1 text-sm font-mono tabular-nums font-bold text-gray-600 dark:text-gray-300 flex items-center gap-1">
                     <span>{formatTime(event.date)}</span>
                 </div>
 
@@ -88,7 +88,7 @@ export function EventRow({ event, timezone = "Asia/Bangkok" }: EventRowProps) {
 
                 <div className="col-span-6 md:col-span-5 flex items-center justify-between gap-2">
                     <p
-                        className="font-semibold text-gray-800 dark:text-white text-sm line-clamp-1 group-hover:text-gold transition-colors"
+                        className="font-semibold text-gray-800 dark:text-white text-sm line-clamp-1 group-hover:text-amber-600 dark:group-hover:text-gold transition-colors"
                         title={event.title}
                     >
                         {event.title}
@@ -97,7 +97,7 @@ export function EventRow({ event, timezone = "Asia/Bangkok" }: EventRowProps) {
                 </div>
 
                 <div className="hidden md:block col-span-4">
-                    <div className="grid grid-cols-3 gap-2 text-sm font-mono font-semibold">
+                    <div className="grid grid-cols-3 gap-2 text-sm font-mono tabular-nums font-semibold">
                         <div className="text-center text-gray-700 dark:text-gray-300">
                             {event.forecast || "--"}
                         </div>
@@ -129,7 +129,7 @@ export function EventRow({ event, timezone = "Asia/Bangkok" }: EventRowProps) {
                         animate="animate"
                         exit="exit"
                         transition={SPRING_SOFT}
-                        className="bg-white dark:bg-[#151925] border border-gold/20 rounded-2xl max-w-lg w-full p-6 shadow-2xl relative overflow-hidden"
+                        className="bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-2xl max-w-lg w-full p-6 shadow-2xl relative overflow-hidden"
                         onClick={(e) => e.stopPropagation()}
                     >
                         {/* Close Button */}
@@ -149,7 +149,7 @@ export function EventRow({ event, timezone = "Asia/Bangkok" }: EventRowProps) {
                             <span className={`px-2.5 py-1 rounded-lg text-xs font-black uppercase tracking-wider ${impactColors[event.impact]}`}>
                                 {event.currency} • {event.impact}
                             </span>
-                            <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
+                            <div className="text-xs font-mono tabular-nums text-gray-500 dark:text-gray-400 flex items-center gap-1">
                                 <Clock size={13} />
                                 <span>{formatTime(event.date)} ({timezone})</span>
                             </div>
@@ -160,7 +160,7 @@ export function EventRow({ event, timezone = "Asia/Bangkok" }: EventRowProps) {
                         </h3>
 
                         {/* Figures */}
-                        <div className="grid grid-cols-3 gap-3 p-3 bg-gray-50 dark:bg-white/[0.02] border border-dashboard rounded-lg mb-5 text-center font-mono">
+                        <div className="grid grid-cols-3 gap-3 p-3 bg-gray-50/80 dark:bg-white/[0.02] border border-gray-200 dark:border-white/10 rounded-lg mb-5 text-center font-mono tabular-nums">
                             <div>
                                 <span className="text-[10px] text-gray-400 uppercase tracking-wider block font-sans font-bold">Forecast</span>
                                 <span className="text-sm font-bold text-gray-900 dark:text-white">{event.forecast || "N/A"}</span>

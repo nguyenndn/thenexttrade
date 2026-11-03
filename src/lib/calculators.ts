@@ -63,6 +63,40 @@ export function getPairConfig(pair: string) {
     return { multiplier, contractSize };
 }
 
+// --- 0. Pip Value ---
+export interface PipValueInput {
+    pair: string;
+    lotSize: number;
+    accountCurrency?: string;
+}
+
+export function calculatePipValue(
+    inputOrPair: PipValueInput | string,
+    lotSizeParam?: number,
+    accountCurrencyParam?: string
+) {
+    let pair = "EURUSD";
+    let lotSize = 1;
+    let accountCurrency = "USD";
+
+    if (typeof inputOrPair === "string") {
+        pair = inputOrPair;
+        lotSize = lotSizeParam ?? 1;
+        accountCurrency = accountCurrencyParam || "USD";
+    } else if (typeof inputOrPair === "object" && inputOrPair !== null) {
+        pair = inputOrPair.pair || "EURUSD";
+        lotSize = inputOrPair.lotSize ?? 1;
+        accountCurrency = inputOrPair.accountCurrency || "USD";
+    }
+
+    const pipValuePerMicro = PIP_VALUES[pair.toUpperCase()] || 0.1;
+    const pipValuePerStandard = pipValuePerMicro * 100;
+    const safeLotSize = Math.max(0, isNaN(lotSize) ? 0 : Number(lotSize.toFixed(4)));
+    const totalValue = pipValuePerStandard * safeLotSize;
+
+    return Number(totalValue.toFixed(4));
+}
+
 // --- 1. Position Size ---
 export interface PositionSizeInput {
     accountBalance: number;
@@ -146,7 +180,17 @@ export interface MarginInput {
 }
 
 export function calculateMargin(input: MarginInput) {
-    const { lotSize, leverage, currentPrice, pair } = input;
+    const { leverage, pair } = input;
+    const lotSize = Math.max(
+        0,
+        isNaN(input.lotSize) ? 0 : Number(Number(input.lotSize).toFixed(4))
+    );
+    const currentPrice = Math.max(
+        0,
+        isNaN(input.currentPrice)
+            ? 0
+            : Number(Number(input.currentPrice).toFixed(5))
+    );
     const { contractSize } = getPairConfig(pair);
     const p = pair.toUpperCase();
 
@@ -192,8 +236,8 @@ export function calculateMargin(input: MarginInput) {
     }
 
     return {
-        requiredMargin,
-        positionValue,
+        requiredMargin: Number(requiredMargin.toFixed(4)),
+        positionValue: Number(positionValue.toFixed(4)),
     };
 }
 

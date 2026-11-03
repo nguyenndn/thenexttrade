@@ -25,6 +25,7 @@ if (assetHostname) {
 
 const nextConfig = {
   output: 'standalone',
+  poweredByHeader: false,
   reactStrictMode: true,
   allowedDevOrigins: ['192.168.1.14', '127.0.0.1'],
   experimental: {

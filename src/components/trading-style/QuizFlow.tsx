@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, ArrowRight, BarChart3 } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import { QUESTIONS } from "@/config/trading-style-data";
@@ -105,7 +105,7 @@ export function QuizFlow({ isLoggedIn, onSaveSuccess }: QuizFlowProps) {
                 {/* 3 Stats Row in clean columns */}
                 <div className="mt-9 flex items-center justify-center gap-10 sm:gap-16 text-center">
                     <div>
-                        <div className="text-2xl sm:text-3xl font-black text-gray-950 dark:text-white">
+                        <div className="text-2xl sm:text-3xl font-black font-mono tabular-nums text-gray-950 dark:text-white">
                             14
                         </div>
                         <div className="text-xs sm:text-sm font-medium text-gray-500 mt-0.5">
@@ -113,7 +113,7 @@ export function QuizFlow({ isLoggedIn, onSaveSuccess }: QuizFlowProps) {
                         </div>
                     </div>
                     <div>
-                        <div className="text-2xl sm:text-3xl font-black text-gray-950 dark:text-white">
+                        <div className="text-2xl sm:text-3xl font-black font-mono tabular-nums text-gray-950 dark:text-white">
                             ~3
                         </div>
                         <div className="text-xs sm:text-sm font-medium text-gray-500 mt-0.5">
@@ -121,7 +121,7 @@ export function QuizFlow({ isLoggedIn, onSaveSuccess }: QuizFlowProps) {
                         </div>
                     </div>
                     <div>
-                        <div className="text-2xl sm:text-3xl font-black text-gray-950 dark:text-white">
+                        <div className="text-2xl sm:text-3xl font-black font-mono tabular-nums text-gray-950 dark:text-white">
                             8
                         </div>
                         <div className="text-xs sm:text-sm font-medium text-gray-500 mt-0.5">
@@ -171,10 +171,10 @@ export function QuizFlow({ isLoggedIn, onSaveSuccess }: QuizFlowProps) {
         <div className="mx-auto max-w-2xl">
             <div className="mb-4">
                 <div className="mb-1.5 flex items-center justify-between text-xs font-semibold text-gray-500 dark:text-gray-400">
-                    <span>
+                    <span className="font-mono tabular-nums">
                         Question {index + 1} of {QUESTIONS.length}
                     </span>
-                    <span className="rounded-full bg-amber-500/10 px-2.5 py-0.5 font-black uppercase tracking-wider text-amber-700 dark:text-gold">
+                    <span className="rounded-lg bg-amber-500/10 border border-amber-500/20 px-2.5 py-0.5 font-black uppercase tracking-wider text-amber-700 dark:text-gold">
                         {question.theme}
                     </span>
                 </div>
@@ -193,7 +193,7 @@ export function QuizFlow({ isLoggedIn, onSaveSuccess }: QuizFlowProps) {
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -24 }}
                     transition={{ duration: 0.25 }}
-                    className="rounded-lg border border-gray-200 bg-white/80 p-5 shadow-sm backdrop-blur-sm sm:p-6 dark:border-white/10 dark:bg-[#151925]/85"
+                    className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6 dark:border-white/10 dark:bg-[#1E2028]"
                 >
                     <h3 className="text-lg font-black leading-snug text-gray-900 dark:text-white">
                         {question.text}
@@ -206,7 +206,7 @@ export function QuizFlow({ isLoggedIn, onSaveSuccess }: QuizFlowProps) {
                                 <Button
                                     key={option.id}
                                     type="button"
-                                    variant="ghost"
+                                    variant="outline"
                                     role="radio"
                                     aria-checked={isSelected}
                                     onClick={() => handleSelect(option.id)}
@@ -214,7 +214,7 @@ export function QuizFlow({ isLoggedIn, onSaveSuccess }: QuizFlowProps) {
                                         "group flex w-full items-center justify-between gap-3 rounded-lg border px-4 py-3 text-left transition-all h-auto font-normal",
                                         isSelected
                                             ? "border-amber-500/60 bg-amber-500/[0.08] shadow-sm hover:bg-amber-500/[0.08]"
-                                            : "border-gray-200 bg-white/60 hover:border-amber-500/40 hover:bg-amber-500/[0.03] dark:border-white/10 dark:bg-white/[0.02] backdrop-blur-sm",
+                                            : "border-gray-200 bg-gray-50/70 hover:border-amber-500/40 hover:bg-amber-500/[0.03] dark:border-white/10 dark:bg-[#151925]",
                                     )}
                                 >
                                     <span
@@ -247,7 +247,7 @@ export function QuizFlow({ isLoggedIn, onSaveSuccess }: QuizFlowProps) {
 
             <div className="mt-4 flex items-center justify-between">
                 <Button
-                    variant="ghost"
+                    variant="outline"
                     onClick={handleBack}
                     disabled={index === 0}
                     className="rounded-lg"
@@ -265,7 +265,7 @@ export function QuizFlow({ isLoggedIn, onSaveSuccess }: QuizFlowProps) {
                     </Button>
                 ) : (
                     <Button
-                        variant="ghost"
+                        variant="outline"
                         onClick={() => currentSelected && handleSelect(currentSelected)}
                         disabled={!currentSelected}
                         className="rounded-lg"

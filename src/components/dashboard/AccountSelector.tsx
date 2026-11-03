@@ -49,7 +49,7 @@ function AccountLabelDisplay({ account }: { account: TradingAccount }) {
             )}
             <span className={typeColor}>{displayType}</span>
             <span className="text-gray-600 dark:text-gray-300">
-                - {broker} <span className="text-gray-500">{accNumber}</span>
+                - {broker} <span className="text-gray-500 font-mono tabular-nums">{accNumber}</span>
             </span>
         </span>
     );
@@ -250,7 +250,7 @@ export function AccountSelector({
                 sideOffset={6}
             >
                 <Command>
-                    <CommandInput placeholder="Search account..." />
+                    <CommandInput aria-label="Search account" />
                     <CommandList>
                         <CommandEmpty>No account found.</CommandEmpty>
                         <CommandGroup heading="My Accounts">

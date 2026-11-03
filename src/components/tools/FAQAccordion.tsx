@@ -24,7 +24,7 @@ export function FAQAccordion({ items, hoverClassName }: FAQAccordionProps) {
                 <div
                     key={idx}
                     className={cn(
-                        "rounded-lg border border-dashboard/80 bg-white/80 dark:bg-white/[0.02] transition-all duration-300 overflow-hidden",
+                        "rounded-xl border border-gray-200 dark:border-white/10 bg-white/80 dark:bg-white/[0.02] transition-all duration-300 overflow-hidden",
                         hoverClassName ||
                             "hover:border-gold/30 dark:hover:border-gold/20 hover:shadow-md hover:shadow-amber-500/[0.03] dark:hover:shadow-amber-500/[0.02]"
                     )}
@@ -37,7 +37,7 @@ export function FAQAccordion({ items, hoverClassName }: FAQAccordionProps) {
                         onClick={() => setOpen(open === idx ? null : idx)}
                         className="w-full flex items-center justify-between px-5 py-4 text-left bg-white dark:bg-white/5 hover:bg-gray-50 dark:hover:bg-white/[0.07] transition-colors h-auto rounded-none font-normal"
                     >
-                        <span className="font-semibold text-gray-800 dark:text-gray-100 text-sm pr-4">
+                        <span className="font-semibold text-gray-800 dark:text-gray-100 text-sm pr-4 tabular-nums">
                             {item.question}
                         </span>
                         <ChevronDown
@@ -58,7 +58,7 @@ export function FAQAccordion({ items, hoverClassName }: FAQAccordionProps) {
                         )}
                     >
                         <div className="overflow-hidden">
-                            <p className="px-5 pb-4 pt-1 text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                            <p className="px-5 pb-4 pt-1 text-sm text-gray-600 dark:text-gray-400 leading-relaxed tabular-nums">
                                 {item.answer}
                             </p>
                         </div>

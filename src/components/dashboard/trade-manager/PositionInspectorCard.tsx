@@ -30,17 +30,17 @@ export function PositionInspectorCard({
         <div className="rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 p-4 space-y-3 shadow-lg">
             <div className="flex items-center justify-between">
                 <div>
-                    <span className="text-xs font-extrabold uppercase tracking-wider text-amber-400">
+                    <span className="text-xs font-extrabold font-mono tabular-nums uppercase tracking-wider text-amber-600 dark:text-gold">
                         Selected Position #{selectedPosition.ticket}
                     </span>
-                    <div className="text-sm font-black text-gray-900 dark:text-white mt-0.5">
+                    <div className="text-sm font-black font-mono tabular-nums text-gray-900 dark:text-white mt-0.5">
                         {selectedPosition.symbol} • {selectedPosition.type}{" "}
                         {selectedPosition.lots.toFixed(2)} Lots
                     </div>
                 </div>
                 <div className="flex items-center gap-2">
                     <span
-                        className={`text-base font-black ${
+                        className={`text-base font-black font-mono tabular-nums ${
                             selectedPosition.netProfit >= 0
                                 ? "text-emerald-400"
                                 : "text-red-400"
@@ -63,12 +63,12 @@ export function PositionInspectorCard({
             </div>
 
             {/* 2x2 Matrix Specs for selected position */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 divide-y sm:divide-y-0 divide-x divide-gray-100 dark:divide-white/5 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#151925]">
+            <div className="grid grid-cols-2 sm:grid-cols-4 divide-y sm:divide-y-0 divide-x divide-gray-100 dark:divide-white/5 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925]">
                 <div className="p-2.5">
                     <div className="text-[10px] font-bold uppercase text-gray-400">
                         Entry
                     </div>
-                    <div className="text-xs font-extrabold text-gray-900 dark:text-white">
+                    <div className="text-xs font-extrabold font-mono tabular-nums text-gray-900 dark:text-white">
                         {selectedPosition.openPrice.toFixed(2)}
                     </div>
                 </div>
@@ -76,7 +76,7 @@ export function PositionInspectorCard({
                     <div className="text-[10px] font-bold uppercase text-gray-400">
                         Now
                     </div>
-                    <div className="text-xs font-extrabold text-gray-900 dark:text-white">
+                    <div className="text-xs font-extrabold font-mono tabular-nums text-gray-900 dark:text-white">
                         {selectedPosition.currentPrice.toFixed(2)}
                     </div>
                 </div>
@@ -84,7 +84,7 @@ export function PositionInspectorCard({
                     <div className="text-[10px] font-bold uppercase text-gray-400">
                         Stop Loss
                     </div>
-                    <div className="text-xs font-extrabold text-amber-400">
+                    <div className="text-xs font-extrabold font-mono tabular-nums text-amber-600 dark:text-gold">
                         {selectedPosition.stopLoss > 0
                             ? selectedPosition.stopLoss.toFixed(2)
                             : "None"}
@@ -94,7 +94,7 @@ export function PositionInspectorCard({
                     <div className="text-[10px] font-bold uppercase text-gray-400">
                         Take Profit
                     </div>
-                    <div className="text-xs font-extrabold text-cyan-400">
+                    <div className="text-xs font-extrabold font-mono tabular-nums text-emerald-500 dark:text-emerald-400">
                         {selectedPosition.takeProfit > 0
                             ? selectedPosition.takeProfit.toFixed(2)
                             : "None"}

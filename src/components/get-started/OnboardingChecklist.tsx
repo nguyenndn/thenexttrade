@@ -15,7 +15,6 @@ import {
     NotebookPen,
     Settings,
     Compass,
-    Target,
     Trophy,
     User,
 } from "lucide-react";
@@ -108,73 +107,73 @@ export function OnboardingChecklist({ progress }: { progress: UserProgress }) {
     const nextStep = getNextStep(progress);
 
     return (
-        <div className="relative overflow-hidden bg-white px-4 pb-16 pt-28 text-slate-950 dark:bg-transparent dark:text-white sm:px-6 lg:px-8">
+        <div className="relative overflow-hidden bg-white px-4 pb-16 pt-28 text-gray-900 dark:bg-transparent dark:text-white sm:px-6 lg:px-8">
             {/* Ambient Background Atmosphere & Technical Grid */}
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_50%_15%,rgba(245,158,11,0.08),transparent_75%)] dark:bg-[radial-gradient(ellipse_70%_60%_at_50%_15%,rgba(245,158,11,0.12),transparent_75%)] pointer-events-none" />
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_70%_70%_at_50%_40%,#000_70%,transparent_100%)] pointer-events-none" />
 
             <div className="relative z-10 mx-auto max-w-[1180px]">
                 <div className="grid gap-5 lg:grid-cols-[0.8fr_1.2fr]">
-                    <section className="rounded-lg border border-gold/10 bg-white p-6 shadow-xl shadow-gold/5 dark:border-white/[0.06] dark:bg-white/[0.03]">
-                        <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-gold/10 px-3 py-1.5 text-xs font-black uppercase tracking-[0.16em] text-gold dark:bg-gold/10 dark:text-gold">
+                    <section className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 shadow-sm">
+                        <div className="mb-5 inline-flex items-center gap-2 rounded-lg bg-gold/10 border border-gold/20 px-3 py-1.5 text-xs font-black uppercase tracking-[0.16em] text-amber-700 dark:text-gold">
                             <Crown size={14} />
-                            Getting started
+                            <span>Getting started</span>
                         </div>
 
-                        <h1 className="text-3xl font-black tracking-tight sm:text-4xl">
+                        <h1 className="text-3xl font-black font-heading tracking-tight sm:text-4xl">
                             Welcome
                             {progress.userName ? `, ${progress.userName}` : ""}.
                             Build your edge from the first trade.
                         </h1>
-                        <p className="mt-4 text-sm leading-7 text-slate-600 dark:text-slate-300">
+                        <p className="mt-4 text-sm leading-7 text-gray-600 dark:text-gray-300">
                             This page shows the shortest path from account setup
                             to useful trading feedback. Keep moving until your
                             dashboard has real trade data.
                         </p>
 
-                        <div className="mt-6 rounded-lg border border-gold/10 bg-gold/[0.02] p-4 dark:border-gold/10 dark:bg-black/20">
+                        <div className="mt-6 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] p-4">
                             <div className="flex items-center justify-between">
-                                <span className="text-xs font-black uppercase tracking-[0.16em] text-slate-500 dark:text-slate-300">
+                                <span className="text-xs font-black uppercase tracking-[0.16em] text-gray-500 dark:text-gray-300">
                                     Launch progress
                                 </span>
-                                <span className="text-sm font-black text-gold">
+                                <span className="text-sm tabular-nums font-black text-amber-600 dark:text-gold">
                                     {percentage}%
                                 </span>
                             </div>
-                            <div className="mt-3 h-2 overflow-hidden rounded-full bg-white ring-1 ring-gold/10 dark:bg-white/10 dark:ring-gold/20">
+                            <div className="mt-3 h-2 overflow-hidden rounded-full bg-gray-200 dark:bg-white/10">
                                 <div
-                                    className="h-full rounded-full bg-gradient-to-r from-gold to-amber-500 transition-all duration-700"
+                                    className="h-full rounded-full bg-gold transition-all duration-300"
                                     style={{ width: `${percentage}%` }}
                                 />
                             </div>
-                            <div className="mt-3 text-sm font-bold text-slate-700 dark:text-slate-200">
+                            <div className="mt-3 text-sm tabular-nums font-bold text-gray-700 dark:text-gray-200">
                                 {completedCount} of {steps.length} steps
                                 complete
                             </div>
                         </div>
 
                         <div className="mt-5 grid grid-cols-3 gap-3">
-                            <div className="rounded-lg border border-dashboard bg-slate-50 p-3 dark:bg-white/[0.04]">
-                                <div className="text-2xl font-black text-gold">
+                            <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] p-3">
+                                <div className="text-2xl tabular-nums font-black text-amber-600 dark:text-gold">
                                     {progress.totalAccounts}
                                 </div>
-                                <div className="mt-1 text-[10px] font-black uppercase tracking-[0.12em] text-slate-500">
+                                <div className="mt-1 text-[10px] font-black uppercase tracking-[0.12em] text-gray-500 dark:text-gray-400">
                                     Accounts
                                 </div>
                             </div>
-                            <div className="rounded-lg border border-dashboard bg-slate-50 p-3 dark:bg-white/[0.04]">
-                                <div className="text-2xl font-black text-gold">
+                            <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] p-3">
+                                <div className="text-2xl tabular-nums font-black text-amber-600 dark:text-gold">
                                     {progress.totalTrades}
                                 </div>
-                                <div className="mt-1 text-[10px] font-black uppercase tracking-[0.12em] text-slate-500">
+                                <div className="mt-1 text-[10px] font-black uppercase tracking-[0.12em] text-gray-500 dark:text-gray-400">
                                     Trades
                                 </div>
                             </div>
-                            <div className="rounded-lg border border-dashboard bg-slate-50 p-3 dark:bg-white/[0.04]">
-                                <div className="text-2xl font-black text-gold">
+                            <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] p-3">
+                                <div className="text-2xl tabular-nums font-black text-amber-600 dark:text-gold">
                                     Lv.{progress.level}
                                 </div>
-                                <div className="mt-1 text-[10px] font-black uppercase tracking-[0.12em] text-slate-500">
+                                <div className="mt-1 text-[10px] tabular-nums font-black uppercase tracking-[0.12em] text-gray-500 dark:text-gray-400">
                                     {progress.xp} Edge
                                 </div>
                             </div>
@@ -185,13 +184,13 @@ export function OnboardingChecklist({ progress }: { progress: UserProgress }) {
                                 href={nextStep.href}
                                 className={cn(
                                     buttonVariants({
-                                        variant: "primary",
+                                        variant: "gold",
                                         size: "smd",
                                     }),
-                                    "mt-6 w-full rounded-lg bg-gradient-to-r from-gold to-amber-500 hover:from-amber-500 hover:to-amber-600 border-none"
+                                    "mt-6 w-full rounded-lg bg-gold hover:bg-amber-600 !text-white font-bold border-none"
                                 )}
                             >
-                                {nextStep.cta}
+                                <span>{nextStep.cta}</span>
                                 <ArrowRight size={16} className="ml-1" />
                             </Link>
                         ) : (
@@ -199,26 +198,26 @@ export function OnboardingChecklist({ progress }: { progress: UserProgress }) {
                                 href="/dashboard"
                                 className={cn(
                                     buttonVariants({
-                                        variant: "primary",
+                                        variant: "gold",
                                         size: "smd",
                                     }),
-                                    "mt-6 w-full rounded-lg bg-gradient-to-r from-gold to-amber-500 hover:from-amber-500 hover:to-amber-600 border-none"
+                                    "mt-6 w-full rounded-lg bg-gold hover:bg-amber-600 !text-white font-bold border-none"
                                 )}
                             >
-                                Go to dashboard
+                                <span>Go to dashboard</span>
                                 <ArrowRight size={16} className="ml-1" />
                             </Link>
                         )}
                     </section>
 
-                    <section className="rounded-lg border border-gold/10 bg-white p-5 shadow-xl shadow-gold/5 dark:border-white/[0.06] dark:bg-white/[0.06]">
-                        <div className="flex items-center justify-between gap-4 border-b border-dashboard pb-4">
+                    <section className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-5 sm:p-6 shadow-sm">
+                        <div className="flex items-center justify-between gap-4 border-b border-gray-100 dark:border-white/10 pb-4">
                             <div>
-                                <div className="flex items-center gap-2 text-sm font-black text-slate-950 dark:text-white">
+                                <div className="flex items-center gap-2 text-sm font-black text-gray-900 dark:text-white">
                                     <Compass size={17} className="text-gold" />
-                                    Your next actions
+                                    <span>Your next actions</span>
                                 </div>
-                                <p className="mt-1 text-xs text-slate-500 dark:text-slate-300">
+                                <p className="mt-1 text-xs text-gray-500 dark:text-gray-300">
                                     Complete these in order. The first
                                     unfinished step is the one that matters
                                     most.
@@ -231,11 +230,11 @@ export function OnboardingChecklist({ progress }: { progress: UserProgress }) {
                                         variant: "outline",
                                         size: "smd",
                                     }),
-                                    "hidden sm:inline-flex border-dashboard hover:border-gold hover:bg-gold/5 dark:hover:bg-white/10"
+                                    "hidden sm:inline-flex border-gray-200 dark:border-white/10 hover:border-gold"
                                 )}
                             >
                                 <Settings size={14} className="mr-1" />
-                                Settings
+                                <span>Settings</span>
                             </Link>
                         </div>
 
@@ -249,12 +248,12 @@ export function OnboardingChecklist({ progress }: { progress: UserProgress }) {
                                     <div
                                         key={step.id}
                                         className={[
-                                            "rounded-lg border p-4 transition",
+                                            "rounded-lg border p-4 transition-colors",
                                             done
-                                                ? "border-gold/10 bg-gold/5 dark:border-gold/10 dark:bg-gold/10"
+                                                ? "border-gold/20 bg-gold/5 dark:border-gold/20 dark:bg-gold/10"
                                                 : isNext
-                                                  ? "border-gold/30 bg-white shadow-md shadow-gold/5 dark:border-gold/20 dark:bg-white/[0.08]"
-                                                  : "border-dashboard bg-slate-50 dark:bg-white/[0.03]",
+                                                  ? "border-gold/35 bg-white dark:bg-[#151925] shadow-xs"
+                                                  : "border-gray-200 dark:border-white/10 bg-gray-50/70 dark:bg-[#151925]",
                                         ].join(" ")}
                                     >
                                         <div className="flex items-start gap-4">
@@ -263,7 +262,7 @@ export function OnboardingChecklist({ progress }: { progress: UserProgress }) {
                                                     "flex h-11 w-11 shrink-0 items-center justify-center rounded-lg",
                                                     done
                                                         ? "bg-gold text-white"
-                                                        : "bg-white text-gold ring-1 ring-gold/20 dark:bg-white/10 dark:ring-gold/20",
+                                                        : "bg-white dark:bg-[#1E2028] text-amber-600 dark:text-gold border border-gold/20",
                                                 ].join(" ")}
                                             >
                                                 {done ? (
@@ -275,16 +274,16 @@ export function OnboardingChecklist({ progress }: { progress: UserProgress }) {
 
                                             <div className="min-w-0 flex-1">
                                                 <div className="flex flex-wrap items-center gap-2">
-                                                    <h2 className="text-sm font-black text-slate-950 dark:text-white">
+                                                    <h2 className="text-sm font-black text-gray-900 dark:text-white">
                                                         {step.title}
                                                     </h2>
                                                     {isNext && !done && (
-                                                        <span className="rounded-full bg-gold px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.1em] text-white">
+                                                        <span className="rounded-lg bg-gold px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.1em] text-white">
                                                             Next
                                                         </span>
                                                     )}
                                                 </div>
-                                                <p className="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-300">
+                                                <p className="mt-1 text-sm tabular-nums leading-6 text-gray-600 dark:text-gray-300">
                                                     {step.description}
                                                 </p>
                                             </div>
@@ -304,7 +303,7 @@ export function OnboardingChecklist({ progress }: { progress: UserProgress }) {
                                                                     "outline",
                                                                 size: "smd",
                                                             }),
-                                                            "border-dashboard hover:border-gold hover:bg-gold/5 dark:hover:bg-white/10"
+                                                            "border-gray-200 dark:border-white/10 hover:border-gold"
                                                         )}
                                                     >
                                                         {step.cta}
@@ -321,10 +320,10 @@ export function OnboardingChecklist({ progress }: { progress: UserProgress }) {
                                                         variant: "outline",
                                                         size: "smd",
                                                     }),
-                                                    "mt-4 w-full sm:hidden border-gold/20 bg-gold/5 text-gold hover:bg-gold/10 dark:border-gold/20 dark:bg-gold/10 dark:text-gold"
+                                                    "mt-4 w-full sm:hidden border-gold/20 bg-gold/5 text-amber-700 dark:text-gold hover:bg-gold/10"
                                                 )}
                                             >
-                                                {step.cta}
+                                                <span>{step.cta}</span>
                                                 <ArrowRight
                                                     size={14}
                                                     className="ml-1"
@@ -336,18 +335,18 @@ export function OnboardingChecklist({ progress }: { progress: UserProgress }) {
                             })}
                         </div>
 
-                        <div className="mt-4 rounded-lg border border-gold/30 bg-gradient-to-br from-amber-500/[0.06] to-gold/[0.03] dark:from-gold/[0.04] dark:to-transparent dark:bg-[#0E1118] p-4 text-slate-950 dark:text-white shadow-md shadow-gold/5 dark:shadow-none">
+                        <div className="mt-4 rounded-lg border border-gold/25 bg-gray-50/80 dark:bg-[#151925] p-4 text-gray-900 dark:text-white">
                             <div className="flex items-start gap-3">
                                 <NotebookPen
-                                    className="mt-0.5 text-gold"
+                                    className="mt-0.5 text-amber-600 dark:text-gold shrink-0"
                                     size={20}
                                 />
                                 <div>
-                                    <h3 className="text-sm font-black text-slate-950 dark:text-white">
+                                    <h3 className="text-sm font-black text-gray-900 dark:text-white">
                                         The goal is not setup. The goal is
                                         feedback.
                                     </h3>
-                                    <p className="mt-1 text-xs leading-5 text-slate-600 dark:text-amber-50/80">
+                                    <p className="mt-1 text-xs leading-5 text-gray-600 dark:text-gray-300">
                                         Once the first trade is in, use the
                                         dashboard and reports to decide what to
                                         repeat, what to stop, and what to

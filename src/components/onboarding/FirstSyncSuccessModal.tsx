@@ -28,7 +28,6 @@ interface FirstSyncSuccessModalProps {
 export function FirstSyncSuccessModal({
     open,
     onClose,
-    hasReports,
     firstInsight,
 }: FirstSyncSuccessModalProps) {
     const hasTracked = useRef(false);
@@ -89,112 +88,112 @@ export function FirstSyncSuccessModal({
     return (
         <AnimatePresence onExitComplete={releaseLock}>
             {open && (
-            <motion.div
-                variants={backdropVariants}
-                initial="initial"
-                animate="animate"
-                exit="exit"
-                transition={{ type: "tween", duration: 0.2 }}
-                className="fixed inset-0 z-[100] flex items-center justify-center p-4"
-            >
-                <div
-                    className="fixed inset-0 bg-black/50 backdrop-blur-sm"
-                    onClick={handleDismiss}
-                />
                 <motion.div
-                    variants={panelVariants}
+                    variants={backdropVariants}
                     initial="initial"
                     animate="animate"
                     exit="exit"
-                    transition={SPRING_SOFT}
-                    className="relative z-10 bg-white dark:bg-[#1E2028] rounded-2xl w-full max-w-md overflow-hidden border border-dashboard shadow-2xl"
+                    transition={{ type: "tween", duration: 0.2 }}
+                    className="fixed inset-0 z-[100] flex items-center justify-center p-4"
                 >
-                {/* Close button */}
-                <Button
-                    type="button"
-                    variant="outline"
-                    size="icon"
-                    onClick={handleDismiss}
-                    className="absolute top-4 right-4 z-20 h-8 w-8 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
-                    aria-label="Close modal"
-                >
-                    <X size={18} />
-                </Button>
-
-                {/* Celebratory header */}
-                <div className="relative px-6 pt-8 pb-4 text-center overflow-hidden">
-                    {/* Background glow */}
-                    <div className="absolute inset-0 bg-gradient-to-b from-amber-500/5 via-amber-500/10 to-transparent dark:from-amber-500/10 dark:via-amber-500/5 pointer-events-none" />
-                    <div className="absolute top-4 left-1/2 -translate-x-1/2 w-40 h-40 bg-amber-500/20 rounded-full blur-[60px] pointer-events-none" />
-
-                    <div className="relative z-10">
-                        {/* Success icon */}
-                        <div className="mx-auto w-14 h-14 rounded-lg bg-gold flex items-center justify-center shadow-md mb-4 text-white">
-                            <CheckCircle2 size={28} className="text-white" />
-                        </div>
-
-                        <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight mb-2">
-                            Your First Insight is Ready
-                        </h2>
-                        <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed max-w-sm mx-auto">
-                            Your first trade data is synced. Here is what we
-                            found:
-                        </p>
-                    </div>
-                </div>
-
-                {/* Dynamic Facts List */}
-                <div className="px-6 py-4 space-y-3">
-                    {facts.map((fact, idx) => (
-                        <div
-                            key={idx}
-                            className="flex items-start gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-dashboard dark:border-slate-800"
-                        >
-                            <CheckCircle2
-                                size={18}
-                                className="text-gold dark:text-amber-400 shrink-0 mt-0.5"
-                            />
-                            <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 leading-relaxed">
-                                {fact}
-                            </span>
-                        </div>
-                    ))}
-                </div>
-
-                {/* Actions */}
-                <div className="px-6 pb-6 pt-2 space-y-2">
-                    <Button
-                        variant="primary"
-                        size="smd"
-                        onClick={handlePrimary}
-                        className="w-full font-bold shadow-md shadow-amber-500/20 gap-2"
-                    >
-                        View My First Insight
-                        <ArrowRight size={14} />
-                    </Button>
-
-                    <Button
-                        variant="outline"
-                        size="smd"
-                        onClick={handleSecondary}
-                        className="w-full gap-2 font-bold"
-                    >
-                        <FileText size={14} />
-                        Generate First Review
-                    </Button>
-
-                    <Button
-                        variant="ghost"
-                        size="smd"
+                    <div
+                        className="fixed inset-0 bg-black/50 backdrop-blur-sm"
                         onClick={handleDismiss}
-                        className="w-full gap-2 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                    />
+                    <motion.div
+                        variants={panelVariants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        transition={SPRING_SOFT}
+                        className="relative z-10 bg-white dark:bg-[#0D111C] rounded-2xl w-full max-w-md overflow-hidden border border-gray-200 dark:border-white/10 shadow-2xl"
                     >
-                        <Sun size={14} />
-                        Continue to Dashboard
-                    </Button>
-                </div>
+                        {/* Close button */}
+                        <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            onClick={handleDismiss}
+                            className="absolute top-4 right-4 z-20 h-8 w-8 rounded-lg border-gray-200 dark:border-white/10 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                            aria-label="Close modal"
+                        >
+                            <X size={18} />
+                        </Button>
+
+                        {/* Celebratory header */}
+                        <div className="relative px-6 pt-8 pb-4 text-center overflow-hidden">
+                            {/* Background glow */}
+                            <div className="absolute inset-0 bg-gradient-to-b from-amber-500/5 via-amber-500/10 to-transparent dark:from-amber-500/10 dark:via-amber-500/5 pointer-events-none" />
+                            <div className="absolute top-4 left-1/2 -translate-x-1/2 w-40 h-40 bg-amber-500/20 rounded-full blur-[60px] pointer-events-none" />
+
+                            <div className="relative z-10">
+                                {/* Success icon */}
+                                <div className="mx-auto w-14 h-14 rounded-lg bg-gold flex items-center justify-center shadow-md mb-4 !text-white">
+                                    <CheckCircle2 size={28} className="text-white" />
+                                </div>
+
+                                <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight mb-2">
+                                    Your First Insight is Ready
+                                </h2>
+                                <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed max-w-sm mx-auto">
+                                    Your first trade data is synced. Here is what we
+                                    found:
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Dynamic Facts List */}
+                        <div className="px-6 py-4 space-y-3">
+                            {facts.map((fact, idx) => (
+                                <div
+                                    key={idx}
+                                    className="flex items-start gap-3 p-3 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10"
+                                >
+                                    <CheckCircle2
+                                        size={18}
+                                        className="text-amber-600 dark:text-gold shrink-0 mt-0.5"
+                                    />
+                                    <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 leading-relaxed tabular-nums">
+                                        {fact}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Actions */}
+                        <div className="px-6 pb-6 pt-2 space-y-2">
+                            <Button
+                                variant="primary"
+                                size="smd"
+                                onClick={handlePrimary}
+                                className="w-full bg-gold hover:bg-amber-600 !text-white font-bold rounded-lg shadow-md shadow-amber-500/20 gap-2"
+                            >
+                                View My First Insight
+                                <ArrowRight size={14} />
+                            </Button>
+
+                            <Button
+                                variant="outline"
+                                size="smd"
+                                onClick={handleSecondary}
+                                className="w-full gap-2 font-bold rounded-lg border-gray-200 dark:border-white/10"
+                            >
+                                <FileText size={14} />
+                                Generate First Review
+                            </Button>
+
+                            <Button
+                                variant="outline"
+                                size="smd"
+                                onClick={handleDismiss}
+                                className="w-full gap-2 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 border-gray-200 dark:border-white/10 rounded-lg"
+                            >
+                                <Sun size={14} />
+                                Continue to Dashboard
+                            </Button>
+                        </div>
+                    </motion.div>
                 </motion.div>
-            </motion.div>
             )}
         </AnimatePresence>
     );

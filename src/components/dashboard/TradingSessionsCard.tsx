@@ -15,14 +15,14 @@ const SESSION_CONFIG: Record<
 > = {
     Sydney: {
         icon: Sunset,
-        color: "text-orange-500",
-        bgColor: "bg-orange-500/10",
+        color: "text-amber-600 dark:text-gold",
+        bgColor: "bg-gold/10",
         hours: "04:00–13:00",
     },
     Tokyo: {
         icon: Moon,
-        color: "text-cyan-500",
-        bgColor: "bg-cyan-500/10",
+        color: "text-amber-600 dark:text-gold",
+        bgColor: "bg-gold/10",
         hours: "07:00–16:00",
     },
     London: {
@@ -33,8 +33,8 @@ const SESSION_CONFIG: Record<
     },
     "New York": {
         icon: Globe,
-        color: "text-blue-500",
-        bgColor: "bg-blue-500/10",
+        color: "text-emerald-500",
+        bgColor: "bg-emerald-500/10",
         hours: "20:00–05:00",
     },
 };
@@ -100,7 +100,7 @@ export function TradingSessionsCard({ data }: TradingSessionsCardProps) {
                                     }`}
                                 >
                                     {isBest && (
-                                        <span className="absolute -top-1.5 right-3 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wider bg-primary text-white rounded-full">
+                                        <span className="absolute -top-1.5 right-3 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wider bg-primary text-white rounded-lg">
                                             Best
                                         </span>
                                     )}
@@ -116,12 +116,12 @@ export function TradingSessionsCard({ data }: TradingSessionsCardProps) {
                                                     <span className="text-xs font-bold text-gray-700 dark:text-white">
                                                         {session.session}
                                                     </span>
-                                                    <span className="text-[10px] text-gray-400">
+                                                    <span className="text-[10px] font-mono tabular-nums text-gray-400">
                                                         {config.hours}
                                                     </span>
                                                 </div>
                                                 <span
-                                                    className={`text-xs font-black ${session.pnl >= 0 ? "text-primary" : "text-red-500"}`}
+                                                    className={`text-xs font-black font-mono tabular-nums ${session.pnl >= 0 ? "text-primary" : "text-red-500"}`}
                                                 >
                                                     {session.pnl >= 0
                                                         ? "+"
@@ -139,7 +139,7 @@ export function TradingSessionsCard({ data }: TradingSessionsCardProps) {
                                                         }}
                                                     />
                                                 </div>
-                                                <span className="text-[11px] text-gray-500 font-semibold shrink-0">
+                                                <span className="text-[11px] text-gray-500 font-semibold font-mono tabular-nums shrink-0">
                                                     {session.trades} trades ·{" "}
                                                     {session.winRate.toFixed(1)}
                                                     %

@@ -15,7 +15,7 @@ interface SearchResult {
     description: string;
     image: string | null;
     date: string;
-    meta: any;
+    meta: Record<string, unknown>;
 }
 
 export default function SearchClient() {
@@ -75,7 +75,7 @@ export default function SearchClient() {
                     part.toLowerCase() === highlight.toLowerCase() ? (
                         <span
                             key={i}
-                            className="bg-yellow-200 dark:bg-yellow-500/30 text-gray-900 dark:text-yellow-100 px-1 rounded-lg font-medium"
+                            className="bg-gold/20 dark:bg-gold/30 text-gray-900 dark:text-white px-1 rounded-lg font-medium"
                         >
                             {part}
                         </span>
@@ -104,7 +104,7 @@ export default function SearchClient() {
                 {isLoading ? (
                     <div className="flex justify-center py-12">
                         <Loader2
-                            className="animate-spin text-primary"
+                            className="animate-spin text-amber-600 dark:text-gold"
                             size={32}
                         />
                     </div>
@@ -116,14 +116,14 @@ export default function SearchClient() {
                                     <Link
                                         key={`${result.type}-${result.id}`}
                                         href={result.slug}
-                                        className="block bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-gray-200 dark:border-white/10 hover:border-primary dark:hover:border-primary transition-shadow group shadow-sm hover:shadow-md"
+                                        className="block bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-gray-200 dark:border-white/10 hover:border-gold/40 dark:hover:border-gold/40 transition-shadow group shadow-sm hover:shadow-md"
                                     >
                                         <div className="flex items-start gap-4">
                                             <div
-                                                className={`p-3 rounded-lg shrink-0 ${
+                                                className={`p-3 rounded-lg border shrink-0 ${
                                                     result.type === "article"
-                                                        ? "bg-blue-50 text-blue-500 dark:bg-blue-500/10"
-                                                        : "bg-purple-50 text-purple-500 dark:bg-purple-500/10"
+                                                        ? "bg-gold/10 text-amber-600 dark:text-gold border-gold/20"
+                                                        : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
                                                 }`}
                                             >
                                                 {result.type === "article" ? (
@@ -135,16 +135,16 @@ export default function SearchClient() {
                                             <div className="flex-1 space-y-2">
                                                 <div className="flex items-center gap-2 mb-1">
                                                     <span
-                                                        className={`text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full ${
+                                                        className={`text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-lg border ${
                                                             result.type ===
                                                             "article"
-                                                                ? "bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300"
-                                                                : "bg-purple-100 text-purple-700 dark:bg-purple-500/20 dark:text-purple-300"
+                                                                ? "bg-gold/10 text-amber-600 dark:text-gold border-gold/20"
+                                                                : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
                                                         }`}
                                                     >
                                                         {result.type}
                                                     </span>
-                                                    <span className="text-xs text-gray-500 font-medium">
+                                                    <span className="text-xs font-mono tabular-nums text-gray-500 font-medium">
                                                         {result.date &&
                                                             formatDistanceToNow(
                                                                 new Date(
@@ -156,7 +156,7 @@ export default function SearchClient() {
                                                             )}
                                                     </span>
                                                 </div>
-                                                <h3 className="text-lg font-bold text-gray-700 dark:text-white group-hover:text-primary transition-colors line-clamp-1">
+                                                <h3 className="text-lg font-bold text-gray-700 dark:text-white group-hover:text-amber-600 dark:group-hover:text-gold transition-colors line-clamp-1">
                                                     <HighlightText
                                                         text={result.title}
                                                         highlight={query || ""}

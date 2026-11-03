@@ -1,114 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
-import {
-    Star,
-    Check,
-    ExternalLink,
-    Award,
-    Landmark,
-    TrendingUp,
-    ArrowRight,
-} from "lucide-react";
-import partnersData from "@/config/partners.json";
+import { Landmark, TrendingUp, ArrowRight } from "lucide-react";
 import { HomeSectionHeading } from "@/components/home/HomeSectionHeading";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/Tabs";
-import { buttonVariants } from "@/components/ui/button-variants";
-
-interface BrokerItem {
-    name: string;
-    desc: string;
-    badge: string | null;
-    badgeType: string | null;
-    logo: string | null;
-    initials: string;
-    url: string | null;
-    rating: number;
-    minDeposit: string;
-    maxLeverage: string;
-    regulation: string;
-    features: string[];
-}
-
-interface CryptoItem {
-    name: string;
-    desc: string;
-    badge: string | null;
-    badgeType: string | null;
-    logo: string | null;
-    initials: string;
-    url: string | null;
-    rating: number;
-    minDeposit: string;
-    maxLeverage: string;
-    regulation: string;
-    features: string[];
-}
-
-interface UnifiedItem {
-    name: string;
-    desc: string;
-    badge: string | null;
-    badgeType: string | null;
-    logo: string | null;
-    initials: string;
-    url: string | null;
-    rating: number;
-    regulation: string;
-    features: string[];
-    // Broker specific
-    minDeposit?: string;
-    maxLeverage?: string;
-    // Crypto specific
-    marketType?: string;
-    assets?: string;
-}
+import { BrokerRankingCard } from "./broker-rankings/BrokerRankingCard";
+import { getRankingsData } from "./broker-rankings/types";
 
 export function BrokerRankingsSection() {
     const [activeTab, setActiveTab] = useState<"brokers" | "crypto">("brokers");
-
-    const brokers: UnifiedItem[] = (partnersData.brokers.items as BrokerItem[])
-        .filter((item) => (item as any).active !== false)
-        .slice(0, 3)
-        .map((item) => ({
-            ...item,
-        }));
-
-    const totalActiveBrokers = (partnersData.brokers.items as any[]).filter(
-        (item) => item.active !== false
-    ).length;
-    const totalActiveCrypto = (partnersData.cryptoExchanges.items as any[]).filter(
-        (item) => item.active !== false
-    ).length;
-
-    const cryptoExchanges: UnifiedItem[] = (
-        partnersData.cryptoExchanges.items as CryptoItem[]
-    )
-        .filter((item) => (item as any).active !== false)
-        .slice(0, 3)
-        .map((item) => {
-            const nameLower = item.name.toLowerCase();
-            let marketType = "Spot & Derivatives";
-            let assets = "300+ Assets";
-            if (nameLower.includes("binance")) {
-                marketType = "Spot & Futures";
-                assets = "600+ Cryptos";
-            } else if (nameLower.includes("bybit")) {
-                marketType = "Derivatives & Spot";
-                assets = "600+ Assets";
-            } else if (nameLower.includes("okx")) {
-                marketType = "Spot, Futures & Options";
-                assets = "300+ Assets";
-            }
-            return {
-                ...item,
-                marketType,
-                assets,
-            };
-        });
-
+    const { brokers, cryptoExchanges, totalActiveBrokers, totalActiveCrypto } = getRankingsData();
     const activeItems = activeTab === "brokers" ? brokers : cryptoExchanges;
 
     return (
@@ -128,15 +30,15 @@ export function BrokerRankingsSection() {
                 {/* Tab Switcher */}
                 <Tabs
                     value={activeTab}
-                    onValueChange={(v) => setActiveTab(v as any)}
+                    onValueChange={(v) => setActiveTab(v as "brokers" | "crypto")}
                     tabsId="platforms-tabs"
                     className="w-full"
                 >
                     <div className="mb-6 overflow-x-auto scrollbar-hide flex justify-center">
-                        <TabsList className="bg-gray-50 dark:bg-white/5 border border-dashboard rounded-lg p-1.5 gap-1 shrink-0">
+                        <TabsList className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-1.5 gap-1 shrink-0">
                             <TabsTrigger
                                 value="brokers"
-                                className="px-4 py-2 rounded-lg text-xs sm:text-sm font-bold whitespace-nowrap border border-transparent hover:border-dashboard dark:hover:border-white/10"
+                                className="px-4 py-2 rounded-lg text-xs sm:text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:hover:border-white/10"
                                 activeIndicatorClassName="!bg-gradient-to-r from-gold to-amber-600 shadow-md border-0"
                                 activeTextClassName="!text-white"
                             >
@@ -145,7 +47,7 @@ export function BrokerRankingsSection() {
                             </TabsTrigger>
                             <TabsTrigger
                                 value="crypto"
-                                className="px-4 py-2 rounded-lg text-xs sm:text-sm font-bold whitespace-nowrap border border-transparent hover:border-dashboard dark:hover:border-white/10"
+                                className="px-4 py-2 rounded-lg text-xs sm:text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:hover:border-white/10"
                                 activeIndicatorClassName="!bg-gradient-to-r from-gold to-amber-600 shadow-md border-0"
                                 activeTextClassName="!text-white"
                             >
@@ -156,325 +58,15 @@ export function BrokerRankingsSection() {
                     </div>
                 </Tabs>
 
-                {/* Symmetrical 3-Column Cards Grid (1 col mobile, 1 horizontal row per item on tablet, 3 cols desktop) */}
+                {/* Symmetrical 3-Column Cards Grid: Single Unified Layout */}
                 <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-5 lg:gap-6 w-full">
                     {activeItems.map((item, idx) => (
                         <div key={item.name} className="h-full">
-                            {/* Desktop Card (PC: lg+) — 100% original design as in user screenshot */}
-                            <div className="hidden lg:flex relative flex-col justify-between p-5 rounded-lg bg-white dark:bg-card border border-gray-200 dark:border-white/10 hover:border-gold dark:hover:border-gold/60 shadow-sm hover:shadow-xl hover:shadow-gold/5 transition-all duration-300 group overflow-hidden h-full">
-                                {/* Top Badge for #1 */}
-                                {idx === 0 && (
-                                    <div className="absolute top-0 right-0 px-3 py-1 rounded-bl-lg bg-gradient-to-r from-amber-500 to-gold text-white text-[10px] font-black uppercase tracking-wider shadow-sm flex items-center gap-1 z-10">
-                                        <Award size={11} />{" "}
-                                        {activeTab === "brokers"
-                                            ? "Editor's Choice"
-                                            : "Top Volume"}
-                                    </div>
-                                )}
-
-                                {/* Brand Identity */}
-                                <div className="flex items-center gap-3 mb-4 pt-2">
-                                    <div className="w-11 h-11 rounded-lg bg-white border border-gray-200 dark:border-white/10 flex items-center justify-center shrink-0 overflow-hidden p-1.5 shadow-sm group-hover:scale-105 transition-transform duration-300">
-                                        {item.logo ? (
-                                            <Image
-                                                src={item.logo}
-                                                alt={item.name}
-                                                width={48}
-                                                height={48}
-                                                className="object-contain w-full h-full"
-                                            />
-                                        ) : (
-                                            <span className="text-gray-800 dark:text-white font-black text-sm">
-                                                {item.initials}
-                                            </span>
-                                        )}
-                                    </div>
-                                    <div className="min-w-0 flex-1">
-                                        <h3 className="text-sm font-extrabold text-gray-900 dark:text-white group-hover:text-gold transition-colors truncate">
-                                            {item.name}
-                                        </h3>
-                                        <div className="flex items-center gap-1.5 mt-0.5">
-                                            <div className="flex items-center gap-0.5 text-yellow-500">
-                                                <Star
-                                                    size={11}
-                                                    className="fill-yellow-400 text-yellow-400"
-                                                />
-                                                <span className="text-xs font-bold text-gray-800 dark:text-gray-200">
-                                                    {item.rating}
-                                                </span>
-                                            </div>
-                                            <span className="text-[10px] text-gray-400 font-medium truncate">
-                                                · {item.regulation}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Metrics & Features */}
-                                <div>
-                                    {/* Key Metrics Strip - Single Line */}
-                                    <div className="flex items-center justify-between gap-2 px-3 py-1.5 rounded-lg bg-gray-50/80 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 mb-3.5 text-xs">
-                                        {activeTab === "brokers" ? (
-                                            <>
-                                                <div className="flex items-center gap-1.5 min-w-0">
-                                                    <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider shrink-0">
-                                                        Min Deposit:
-                                                    </span>
-                                                    <span className="text-xs font-extrabold text-gray-800 dark:text-white truncate">
-                                                        {item.minDeposit}
-                                                    </span>
-                                                </div>
-                                                <span className="text-gray-300 dark:text-white/20">·</span>
-                                                <div className="flex items-center gap-1.5 min-w-0">
-                                                    <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider shrink-0">
-                                                        Max Leverage:
-                                                    </span>
-                                                    <span className="text-xs font-extrabold text-gray-800 dark:text-white truncate">
-                                                        {item.maxLeverage || "N/A"}
-                                                    </span>
-                                                </div>
-                                            </>
-                                        ) : (
-                                            <>
-                                                <div className="flex items-center gap-1.5 min-w-0">
-                                                    <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider shrink-0">
-                                                        Type:
-                                                    </span>
-                                                    <span className="text-xs font-extrabold text-gray-800 dark:text-white truncate">
-                                                        {item.marketType}
-                                                    </span>
-                                                </div>
-                                                <span className="text-gray-300 dark:text-white/20">·</span>
-                                                <div className="flex items-center gap-1.5 min-w-0">
-                                                    <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider shrink-0">
-                                                        Assets:
-                                                    </span>
-                                                    <span className="text-xs font-extrabold text-gray-800 dark:text-white truncate">
-                                                        {item.assets}
-                                                    </span>
-                                                </div>
-                                            </>
-                                        )}
-                                    </div>
-
-                                    {/* Features List */}
-                                    <ul className="space-y-1 mb-4 text-xs text-gray-600 dark:text-gray-300">
-                                        {item.features.slice(0, 2).map((feat, i) => (
-                                            <li
-                                                key={i}
-                                                className="flex items-center gap-1.5 text-[11px] font-medium"
-                                            >
-                                                <Check
-                                                    size={12}
-                                                    className="text-emerald-500 shrink-0"
-                                                />
-                                                <span className="truncate">{feat}</span>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-
-                                {/* CTA Action Buttons */}
-                                <div className="flex items-center gap-2 pt-3 border-t border-gray-100 dark:border-white/5">
-                                    <a
-                                        href={item.url || "#"}
-                                        target={
-                                            item.url && item.url !== "#"
-                                                ? "_blank"
-                                                : undefined
-                                        }
-                                        rel={
-                                            item.url && item.url !== "#"
-                                                ? "noopener noreferrer"
-                                                : undefined
-                                        }
-                                        className={buttonVariants({
-                                            variant: "gold",
-                                            size: "smd",
-                                            className:
-                                                "flex-1 font-black shadow-sm hover:shadow-md justify-center gap-1 whitespace-nowrap",
-                                        })}
-                                    >
-                                        {activeTab === "brokers"
-                                            ? "Trade Now"
-                                            : "Open Exchange"}
-                                        <ExternalLink size={11} />
-                                    </a>
-                                    <a
-                                        href={
-                                            activeTab === "brokers"
-                                                ? "/brokers?tab=brokers"
-                                                : "/brokers?tab=cryptoExchanges"
-                                        }
-                                        className={buttonVariants({
-                                            variant: "outline",
-                                            size: "smd",
-                                            className:
-                                                "font-bold text-gray-700 dark:text-gray-300 hover:text-gray-950 dark:hover:text-white justify-center whitespace-nowrap",
-                                        })}
-                                    >
-                                        Review
-                                    </a>
-                                </div>
-                            </div>
-
-                            {/* Tablet & Mobile Card (< lg) — Horizontal layout on tablet, vertical on mobile */}
-                            <div className="flex lg:hidden relative flex-col md:flex-row justify-between p-5 rounded-lg bg-white dark:bg-card border border-gray-200 dark:border-white/10 hover:border-gold dark:hover:border-gold/60 shadow-sm hover:shadow-xl hover:shadow-gold/5 transition-all duration-300 group overflow-hidden md:items-center md:gap-4 h-full">
-                                {/* Top Badge for #1 */}
-                                {idx === 0 && (
-                                    <div className="absolute top-0 right-0 md:left-0 md:right-auto px-3 py-1 rounded-bl-lg md:rounded-bl-none md:rounded-br-lg bg-gradient-to-r from-amber-500 to-gold text-white text-[10px] font-black uppercase tracking-wider shadow-sm flex items-center gap-1 z-10">
-                                        <Award size={11} />{" "}
-                                        {activeTab === "brokers"
-                                            ? "Editor's Choice"
-                                            : "Top Volume"}
-                                    </div>
-                                )}
-
-                                {/* Left: Brand Identity */}
-                                <div className="flex items-center gap-3 mb-4 md:mb-0 md:w-56 shrink-0 pt-2 md:pt-0">
-                                    <div className="w-11 h-11 md:w-12 md:h-12 rounded-lg bg-white border border-gray-200 dark:border-white/10 flex items-center justify-center shrink-0 overflow-hidden p-1.5 shadow-sm group-hover:scale-105 transition-transform duration-300">
-                                        {item.logo ? (
-                                            <Image
-                                                src={item.logo}
-                                                alt={item.name}
-                                                width={48}
-                                                height={48}
-                                                className="object-contain w-full h-full"
-                                            />
-                                        ) : (
-                                            <span className="text-gray-800 dark:text-white font-black text-sm">
-                                                {item.initials}
-                                            </span>
-                                        )}
-                                    </div>
-                                    <div className="min-w-0 flex-1">
-                                        <h3 className="text-sm md:text-base font-extrabold text-gray-900 dark:text-white group-hover:text-gold transition-colors truncate">
-                                            {item.name}
-                                        </h3>
-                                        <div className="flex items-center gap-1.5 mt-0.5">
-                                            <div className="flex items-center gap-0.5 text-yellow-500">
-                                                <Star
-                                                    size={11}
-                                                    className="fill-yellow-400 text-yellow-400"
-                                                />
-                                                <span className="text-xs font-bold text-gray-800 dark:text-gray-200">
-                                                    {item.rating}
-                                                </span>
-                                            </div>
-                                            <span className="text-[10px] text-gray-400 font-medium truncate">
-                                                · {item.regulation}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Middle: Metrics & Features */}
-                                <div className="flex-1 min-w-0 md:px-2 w-full md:w-auto">
-                                    {/* Key Metrics Strip */}
-                                    <div className="flex items-center justify-between gap-1.5 px-3 py-1.5 rounded-lg bg-gray-50/80 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 mb-2.5 text-xs">
-                                        {activeTab === "brokers" ? (
-                                            <>
-                                                <div className="flex items-center gap-1.5 shrink-0">
-                                                    <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider shrink-0">
-                                                        Min Deposit:
-                                                    </span>
-                                                    <span className="text-xs font-extrabold text-gray-800 dark:text-white whitespace-nowrap">
-                                                        {item.minDeposit}
-                                                    </span>
-                                                </div>
-                                                <span className="text-gray-300 dark:text-white/20">·</span>
-                                                <div className="flex items-center gap-1.5 shrink-0">
-                                                    <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider shrink-0">
-                                                        Max Leverage:
-                                                    </span>
-                                                    <span className="text-xs font-extrabold text-gray-800 dark:text-white whitespace-nowrap">
-                                                        {item.maxLeverage || "N/A"}
-                                                    </span>
-                                                </div>
-                                            </>
-                                        ) : (
-                                            <>
-                                                <div className="flex items-center gap-1.5 shrink-0">
-                                                    <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider shrink-0">
-                                                        Type:
-                                                    </span>
-                                                    <span className="text-xs font-extrabold text-gray-800 dark:text-white whitespace-nowrap">
-                                                        {item.marketType}
-                                                    </span>
-                                                </div>
-                                                <span className="text-gray-300 dark:text-white/20">·</span>
-                                                <div className="flex items-center gap-1.5 shrink-0">
-                                                    <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider shrink-0">
-                                                        Assets:
-                                                    </span>
-                                                    <span className="text-xs font-extrabold text-gray-800 dark:text-white whitespace-nowrap">
-                                                        {item.assets}
-                                                    </span>
-                                                </div>
-                                            </>
-                                        )}
-                                    </div>
-
-                                    {/* Features List */}
-                                    <ul className="space-y-1 mb-4 md:mb-0 text-xs text-gray-600 dark:text-gray-300">
-                                        {item.features.slice(0, 2).map((feat, i) => (
-                                            <li
-                                                key={i}
-                                                className="flex items-center gap-1.5 text-[11px] font-medium"
-                                            >
-                                                <Check
-                                                    size={12}
-                                                    className="text-emerald-500 shrink-0"
-                                                />
-                                                <span className="truncate">{feat}</span>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-
-                                {/* Right: CTA Action Buttons */}
-                                <div className="flex items-center gap-2 pt-3 md:pt-0 border-t md:border-t-0 md:border-l border-gray-100 dark:border-white/5 md:pl-4 w-full md:w-36 shrink-0 md:flex-col">
-                                    <a
-                                        href={item.url || "#"}
-                                        target={
-                                            item.url && item.url !== "#"
-                                                ? "_blank"
-                                                : undefined
-                                        }
-                                        rel={
-                                            item.url && item.url !== "#"
-                                                ? "noopener noreferrer"
-                                                : undefined
-                                        }
-                                        className={buttonVariants({
-                                            variant: "gold",
-                                            size: "smd",
-                                            className:
-                                                "flex-1 md:w-full font-black shadow-sm hover:shadow-md justify-center gap-1.5 whitespace-nowrap",
-                                        })}
-                                    >
-                                        {activeTab === "brokers"
-                                            ? "Trade Now"
-                                            : "Open Exchange"}
-                                        <ExternalLink size={12} />
-                                    </a>
-                                    <a
-                                        href={
-                                            activeTab === "brokers"
-                                                ? "/brokers?tab=brokers"
-                                                : "/brokers?tab=cryptoExchanges"
-                                        }
-                                        className={buttonVariants({
-                                            variant: "outline",
-                                            size: "smd",
-                                            className:
-                                                "w-auto shrink-0 md:w-full font-bold text-gray-700 dark:text-gray-300 hover:text-gray-950 dark:hover:text-white justify-center whitespace-nowrap",
-                                        })}
-                                    >
-                                        Review
-                                    </a>
-                                </div>
-                            </div>
+                            <BrokerRankingCard
+                                item={item}
+                                idx={idx}
+                                activeTab={activeTab}
+                            />
                         </div>
                     ))}
                 </div>

@@ -1,4 +1,5 @@
 import SearchClient from "./SearchClient";
+import { getAuthUser } from "@/lib/auth-cache";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -10,6 +11,7 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default function SearchPage() {
-    return <SearchClient />;
+export default async function SearchPage() {
+    const user = await getAuthUser();
+    return <SearchClient user={user} />;
 }

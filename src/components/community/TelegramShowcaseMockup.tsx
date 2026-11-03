@@ -9,6 +9,11 @@ import {
     Copy,
     Check,
     Brain,
+    Flame,
+    Rocket,
+    Heart,
+    Award,
+    ThumbsUp,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -255,7 +260,6 @@ export function TelegramShowcaseMockup({
 
     // Initialize Visitor ID, live reactions, & randomize posts on each page load/refresh
     useEffect(() => {
-        // Randomize on every page load/refresh
         setSelectedIndices({
             psych: Math.floor(Math.random() * PSYCH_POSTS.length),
             mindset: Math.floor(Math.random() * MINDSET_POSTS.length),
@@ -269,7 +273,6 @@ export function TelegramShowcaseMockup({
         }
         setVisitorId(storedId);
 
-        // Fetch live server reactions
         fetch(`/api/community/reactions?visitorId=${encodeURIComponent(storedId)}`)
             .then((res) => (res.ok ? res.json() : null))
             .then((data) => {
@@ -279,7 +282,6 @@ export function TelegramShowcaseMockup({
                 }
             })
             .catch(() => {
-                // Fallback to local storage if API is unreachable
                 const savedUserReacted = localStorage.getItem("gsn_user_reactions");
                 if (savedUserReacted) {
                     try {
@@ -298,8 +300,7 @@ export function TelegramShowcaseMockup({
 
     const handleReaction = async (key: keyof typeof reactions) => {
         const isReacted = userReacted[key];
-        
-        // Optimistic UI update for instant feedback
+
         setReactions((prev) => ({
             ...prev,
             [key]: isReacted ? Math.max(0, prev[key] - 1) : prev[key] + 1,
@@ -311,7 +312,6 @@ export function TelegramShowcaseMockup({
         setUserReacted(newReactedState);
         localStorage.setItem("gsn_user_reactions", JSON.stringify(newReactedState));
 
-        // Sync with Live API server
         try {
             const res = await fetch("/api/community/reactions", {
                 method: "POST",
@@ -331,9 +331,8 @@ export function TelegramShowcaseMockup({
     return (
         <div className="relative w-full">
             {/* Ambient Background Glow */}
-            <div className="absolute -inset-1 rounded-lg bg-gold/10 blur-xl opacity-40 pointer-events-none" />
+            <div className="absolute -inset-1 rounded-xl bg-gold/10 blur-xl opacity-40 pointer-events-none" />
 
-            {/* Flowing laser border — same implementation as the "Looking for Automated Execution?" block on the home page */}
             <style
                 dangerouslySetInnerHTML={{
                     __html: `
@@ -349,9 +348,9 @@ export function TelegramShowcaseMockup({
                 }}
             />
             {/* Console LED Neon Running Border */}
-            <div className="relative rounded-lg overflow-hidden shadow-[0_20px_50px_rgba(15,23,42,0.08)] dark:shadow-[0_25px_60px_rgba(15,23,42,0.4)]">
+            <div className="relative rounded-xl overflow-hidden shadow-[0_20px_50px_rgba(15,23,42,0.08)] dark:shadow-[0_25px_60px_rgba(15,23,42,0.4)]">
                 {/* Responsive flowing laser border */}
-                <svg className="absolute inset-0 w-full h-full pointer-events-none rounded-lg">
+                <svg className="absolute inset-0 w-full h-full pointer-events-none rounded-xl">
                     <defs>
                         <linearGradient
                             id="laser-grad-telegram-teaser"
@@ -382,224 +381,224 @@ export function TelegramShowcaseMockup({
                         y="0.5"
                         width="calc(100% - 1px)"
                         height="calc(100% - 1px)"
-                        rx="7"
+                        rx="11"
                         fill="none"
                         stroke="url(#laser-grad-telegram-teaser)"
                         strokeWidth="1.5"
                         className="animate-flow-teaser-new"
                     />
                 </svg>
-                <div className="relative rounded-lg border border-amber-200/50 dark:border-white/10 bg-white/95 dark:bg-[#0E1621] text-gray-800 dark:text-white backdrop-blur-xl overflow-hidden flex flex-col">
-                {/* Telegram Window Top Header */}
-                <div className="bg-slate-100/90 dark:bg-[#17212B] px-4 py-3 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <div className="relative shrink-0">
-                            <div className="w-10 h-10 rounded-full p-0.5 bg-gold shadow-sm">
-                                <Image
-                                    src="/images/logo_ninja.png"
-                                    alt="GoldScalperNinja Logo"
-                                    width={40}
-                                    height={40}
-                                    className="w-full h-full rounded-full object-cover"
-                                />
+                <div className="relative rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0E1621] text-gray-800 dark:text-white overflow-hidden flex flex-col">
+                    {/* Telegram Window Top Header */}
+                    <div className="bg-slate-100/90 dark:bg-[#17212B] px-4 py-3 border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                            <div className="relative shrink-0">
+                                <div className="w-10 h-10 rounded-full p-0.5 bg-gold shadow-sm">
+                                    <Image
+                                        src="/images/logo_ninja.png"
+                                        alt="GoldScalperNinja Logo"
+                                        width={40}
+                                        height={40}
+                                        className="w-full h-full rounded-full object-cover"
+                                    />
+                                </div>
+                                <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-[#17212B]" />
                             </div>
-                            <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-[#17212B]" />
-                        </div>
-                        <div>
-                            <div className="flex items-center gap-1.5">
-                                <span className="font-black text-sm text-gray-900 dark:text-white">
-                                    GoldScalperNinja Official
+                            <div>
+                                <div className="flex items-center gap-1.5">
+                                    <span className="font-black text-sm text-gray-900 dark:text-white">
+                                        GoldScalperNinja Official
+                                    </span>
+                                    <CheckCircle2 size={15} className="text-[#2AABEE] fill-[#2AABEE]" />
+                                </div>
+                                <span className="text-[11px] tabular-nums text-gray-500 dark:text-gray-400 font-semibold">
+                                    12,000+ subscribers - GoldScalperNinja
                                 </span>
-                                <CheckCircle2 size={15} className="text-[#2AABEE] fill-[#2AABEE]" />
                             </div>
-                            <span className="text-[11px] text-[#2AABEE] font-semibold">
-                                12,000+ subscribers - GoldScalperNinja
-                            </span>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                            <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={handleCopyLink}
+                                title="Copy Telegram Channel Link"
+                                aria-label="Copy Telegram channel invite link"
+                                className="flex items-center gap-1.5 px-3 h-7 rounded-lg bg-slate-200/80 dark:bg-white/10 text-gray-600 dark:text-gray-300 text-xs font-bold hover:bg-slate-300 dark:hover:bg-white/[0.16] transition-all"
+                            >
+                                {copied ? <Check size={12} className="text-emerald-500" /> : <Copy size={12} />}
+                                <span className="hidden sm:inline">Copy Link</span>
+                            </Button>
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-2">
-                        <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            onClick={handleCopyLink}
-                            title="Copy Telegram Channel Link"
-                            aria-label="Copy Telegram channel invite link"
-                            className="flex items-center gap-1.5 px-3 h-7 rounded-lg bg-slate-200/80 dark:bg-white/10 text-gray-600 dark:text-gray-300 text-xs font-bold hover:bg-slate-300 dark:hover:bg-white/[0.16] transition-all"
-                        >
-                            {copied ? <Check size={12} className="text-emerald-500" /> : <Copy size={12} />}
-                            <span className="hidden sm:inline">Copy Link</span>
-                        </Button>
-                    </div>
-                </div>
-
-                {/* 3 Interactive Showcase Tabs with Framer Motion Smooth Sliding Active Pill */}
-                <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as TabType)} tabsId="telegramShowcase">
-                    <TabsList className="w-full grid grid-cols-3 bg-slate-100 dark:bg-[#17212B] border-b border-gray-200 dark:border-white/10 p-1.5 gap-1.5 rounded-none border-t-0 border-x-0">
-                        <TabsTrigger
-                            value="psych"
-                            className="w-full justify-center py-2 text-xs font-black"
-                            activeIndicatorClassName="!bg-[#2AABEE] shadow-md shadow-[#2AABEE]/25 border-0 rounded-lg"
-                            activeTextClassName="!text-white"
-                        >
-                            <Brain size={14} className="shrink-0" />
-                            <span className="truncate">Psychology</span>
-                        </TabsTrigger>
-
-                        <TabsTrigger
-                            value="mindset"
-                            className="w-full justify-center py-2 text-xs font-black"
-                            activeIndicatorClassName="!bg-[#2AABEE] shadow-md shadow-[#2AABEE]/25 border-0 rounded-lg"
-                            activeTextClassName="!text-white"
-                        >
-                            <Shield size={14} className="shrink-0" />
-                            <span className="truncate">Risk Rules</span>
-                        </TabsTrigger>
-
-                        <TabsTrigger
-                            value="tips"
-                            className="w-full justify-center py-2 text-xs font-black"
-                            activeIndicatorClassName="!bg-[#2AABEE] shadow-md shadow-[#2AABEE]/25 border-0 rounded-lg"
-                            activeTextClassName="!text-white"
-                        >
-                            <BookOpen size={14} className="shrink-0" />
-                            <span className="truncate">S&D + PA Tips</span>
-                        </TabsTrigger>
-                    </TabsList>
-                </Tabs>
-
-                {/* Telegram Active Stream Content with AnimatePresence Smooth Fade/Slide */}
-                <div className="p-3.5 sm:p-4 space-y-3 bg-slate-50/70 dark:bg-[#0E1621] flex flex-col">
-                    <AnimatePresence mode="wait">
-                        {/* TAB 1: Trading Psychology Tip */}
-                        {activeTab === "psych" && (
-                            <motion.div
-                                key="psych"
-                                initial={{ opacity: 0, y: 8 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -8 }}
-                                transition={{ duration: 0.25, ease: "easeOut" }}
-                                className="min-h-[214px] bg-violet-500/5 dark:bg-violet-500/10 border border-violet-200 dark:border-violet-500/20 rounded-lg p-3.5 sm:p-4 shadow-sm space-y-3 flex flex-col justify-between"
+                    {/* 3 Interactive Showcase Tabs */}
+                    <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as TabType)} tabsId="telegramShowcase">
+                        <TabsList className="w-full grid grid-cols-3 bg-slate-100 dark:bg-[#17212B] border-b border-gray-200 dark:border-white/10 p-1.5 gap-1.5 rounded-none border-t-0 border-x-0">
+                            <TabsTrigger
+                                value="psych"
+                                className="w-full justify-center py-2 text-xs font-black"
+                                activeIndicatorClassName="!bg-gold shadow-md border-0 rounded-lg"
+                                activeTextClassName="!text-white"
                             >
-                                <div className="flex items-center justify-between text-[11px] font-bold text-violet-700 dark:text-violet-300">
-                                    <span className="flex items-center gap-1.5">
-                                        <Brain size={13} className="text-violet-500" /> TRADING PSYCHOLOGY
-                                    </span>
-                                    <span className="px-2 py-0.5 rounded-full bg-violet-500/15 text-violet-700 dark:text-violet-300 text-[10px] font-black">
-                                        Mindset Shift
-                                    </span>
-                                </div>
+                                <Brain size={14} className="shrink-0" />
+                                <span className="truncate">Psychology</span>
+                            </TabsTrigger>
 
-                                <p className="text-xs sm:text-sm leading-relaxed font-semibold text-gray-800 dark:text-gray-200">
-                                    <strong>{psychPost.title}</strong> {psychPost.body}
-                                </p>
-
-                                <div className="flex items-center justify-between text-[11px] font-medium text-gray-500 dark:text-gray-400 pt-2 border-t border-violet-200/60 dark:border-white/10">
-                                    <span>Core Insight: <strong className="text-violet-600 dark:text-violet-400 font-bold">{psychPost.footerLeft}</strong></span>
-                                    <span className="text-[10px] font-bold text-gray-400">{psychPost.footerRight}</span>
-                                </div>
-                            </motion.div>
-                        )}
-
-                        {/* TAB 2: Trader Discipline & Risk Management */}
-                        {activeTab === "mindset" && (
-                            <motion.div
-                                key="mindset"
-                                initial={{ opacity: 0, y: 8 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -8 }}
-                                transition={{ duration: 0.25, ease: "easeOut" }}
-                                className="min-h-[214px] bg-sky-500/5 dark:bg-sky-500/10 border border-sky-200 dark:border-sky-500/20 rounded-lg p-3.5 sm:p-4 shadow-sm space-y-3 flex flex-col justify-between"
+                            <TabsTrigger
+                                value="mindset"
+                                className="w-full justify-center py-2 text-xs font-black"
+                                activeIndicatorClassName="!bg-gold shadow-md border-0 rounded-lg"
+                                activeTextClassName="!text-white"
                             >
-                                <div className="flex items-center justify-between text-[11px] font-bold text-sky-700 dark:text-sky-300">
-                                    <span className="flex items-center gap-1.5">
-                                        <Shield size={13} className="text-[#2AABEE]" /> RISK MANAGEMENT RULE
-                                    </span>
-                                    <span className="text-xs font-bold text-[#2AABEE]">Capital Protection</span>
-                                </div>
+                                <Shield size={14} className="shrink-0" />
+                                <span className="truncate">Risk Rules</span>
+                            </TabsTrigger>
 
-                                <p className="text-xs sm:text-sm leading-relaxed font-semibold text-gray-800 dark:text-gray-200">
-                                    <strong>{mindsetPost.title}</strong> {mindsetPost.body}
-                                </p>
-
-                                <div className="flex items-center justify-between text-[11px] font-medium text-gray-500 dark:text-gray-400 pt-2 border-t border-sky-200/60 dark:border-white/10">
-                                    <span>Core Value: <strong className="text-sky-600 dark:text-sky-400 font-bold">{mindsetPost.footerLeft}</strong></span>
-                                    <span className="text-[10px] font-bold text-gray-400">{mindsetPost.footerRight}</span>
-                                </div>
-                            </motion.div>
-                        )}
-
-                        {/* TAB 3: Supply & Demand + Price Action Tip */}
-                        {activeTab === "tips" && (
-                            <motion.div
-                                key="tips"
-                                initial={{ opacity: 0, y: 8 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -8 }}
-                                transition={{ duration: 0.25, ease: "easeOut" }}
-                                className="min-h-[214px] bg-amber-500/5 dark:bg-gold/10 border border-amber-200 dark:border-gold/20 rounded-lg p-3.5 sm:p-4 shadow-sm space-y-3 flex flex-col justify-between"
+                            <TabsTrigger
+                                value="tips"
+                                className="w-full justify-center py-2 text-xs font-black"
+                                activeIndicatorClassName="!bg-gold shadow-md border-0 rounded-lg"
+                                activeTextClassName="!text-white"
                             >
-                                <div className="flex items-center justify-between text-[11px] font-bold text-amber-700 dark:text-gold">
-                                    <span className="flex items-center gap-1.5">
-                                        <BookOpen size={13} className="text-amber-500 dark:text-gold" /> S&D + PRICE ACTION TIP
-                                    </span>
-                                    <span className="text-xs font-bold text-amber-600 dark:text-gold">Execution Edge</span>
-                                </div>
+                                <BookOpen size={14} className="shrink-0" />
+                                <span className="truncate">S&amp;D + PA Tips</span>
+                            </TabsTrigger>
+                        </TabsList>
+                    </Tabs>
 
-                                <p className="text-xs sm:text-sm leading-relaxed font-semibold text-gray-800 dark:text-gray-200">
-                                    <strong>{tipsPost.title}</strong> {tipsPost.body}
-                                </p>
-
-                                <div className="flex items-center justify-between text-[11px] font-medium text-gray-500 dark:text-gray-400 pt-2 border-t border-amber-200/60 dark:border-white/10">
-                                    <span>Setup Type: <strong className="text-amber-600 dark:text-gold font-bold">{tipsPost.footerLeft}</strong></span>
-                                    <span className="text-[10px] font-bold text-gray-400">{tipsPost.footerRight}</span>
-                                </div>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-                </div>
-
-                {/* Live Community Reactions Bar */}
-                <div className="px-4 py-3 bg-white dark:bg-[#17212B] border-t border-gray-200 dark:border-white/10 flex flex-wrap items-center justify-between gap-2 text-xs">
-                    <div className="flex items-center gap-1.5 text-gray-500 dark:text-gray-400 font-bold text-[11px]">
-                        <span className="inline-block w-2 h-2 rounded-full bg-gold animate-pulse" />
-                        <span>LIVE REACTIONS</span>
-                    </div>
-
-                    <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
-                        {(
-                            [
-                                { key: "flame", emoji: "🔥", count: reactions.flame },
-                                { key: "rocket", emoji: "🚀", count: reactions.rocket },
-                                { key: "heart", emoji: "❤️", count: reactions.heart },
-                                { key: "hundred", emoji: "💯", count: reactions.hundred },
-                                { key: "handshake", emoji: "🤝", count: reactions.handshake },
-                            ] as const
-                        ).map((r) => {
-                            const isSelected = userReacted[r.key];
-                            return (
-                                <Button
-                                    key={r.key}
-                                    type="button"
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => handleReaction(r.key)}
-                                    aria-label={`React with ${r.emoji}`}
-                                    className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold transition-all transform active:scale-90 h-auto ${
-                                        isSelected
-                                            ? "bg-[#2AABEE]/20 border border-[#2AABEE] text-[#2AABEE] scale-105 shadow-xs hover:bg-[#2AABEE]/20 hover:text-[#2AABEE]"
-                                            : "bg-slate-100 dark:bg-white/5 border border-gray-200 dark:border-white/5 text-gray-700 dark:text-gray-300 hover:bg-slate-200 dark:hover:bg-white/10"
-                                    }`}
+                    {/* Telegram Active Stream Content */}
+                    <div className="p-3.5 sm:p-4 space-y-3 bg-gray-50/80 dark:bg-[#0E1621] flex flex-col">
+                        <AnimatePresence mode="wait">
+                            {/* TAB 1: Trading Psychology Tip (Emerald / Gold semantic — no violet) */}
+                            {activeTab === "psych" && (
+                                <motion.div
+                                    key="psych"
+                                    initial={{ opacity: 0, y: 8 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -8 }}
+                                    transition={{ duration: 0.25, ease: "easeOut" }}
+                                    className="min-h-[214px] bg-emerald-500/5 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 rounded-lg p-3.5 sm:p-4 shadow-sm space-y-3 flex flex-col justify-between"
                                 >
-                                    <span>{r.emoji}</span>
-                                    <span className="font-mono">{r.count}</span>
-                                </Button>
-                            );
-                        })}
-                    </div>
-                </div>
+                                    <div className="flex items-center justify-between text-[11px] font-bold text-emerald-700 dark:text-emerald-300">
+                                        <span className="flex items-center gap-1.5">
+                                            <Brain size={13} className="text-emerald-500" /> TRADING PSYCHOLOGY
+                                        </span>
+                                        <span className="px-2 py-0.5 rounded-lg bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 text-[10px] font-black">
+                                            Mindset Shift
+                                        </span>
+                                    </div>
 
+                                    <p className="text-xs sm:text-sm leading-relaxed font-semibold text-gray-800 dark:text-gray-200">
+                                        <strong>{psychPost.title}</strong> {psychPost.body}
+                                    </p>
+
+                                    <div className="flex items-center justify-between text-[11px] font-medium text-gray-500 dark:text-gray-400 pt-2 border-t border-emerald-200/60 dark:border-white/10">
+                                        <span>Core Insight: <strong className="text-emerald-600 dark:text-emerald-400 font-bold">{psychPost.footerLeft}</strong></span>
+                                        <span className="text-[10px] font-bold text-gray-400">{psychPost.footerRight}</span>
+                                    </div>
+                                </motion.div>
+                            )}
+
+                            {/* TAB 2: Trader Discipline & Risk Management */}
+                            {activeTab === "mindset" && (
+                                <motion.div
+                                    key="mindset"
+                                    initial={{ opacity: 0, y: 8 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -8 }}
+                                    transition={{ duration: 0.25, ease: "easeOut" }}
+                                    className="min-h-[214px] bg-amber-500/5 dark:bg-gold/10 border border-amber-200 dark:border-gold/20 rounded-lg p-3.5 sm:p-4 shadow-sm space-y-3 flex flex-col justify-between"
+                                >
+                                    <div className="flex items-center justify-between text-[11px] font-bold text-amber-700 dark:text-gold">
+                                        <span className="flex items-center gap-1.5">
+                                            <Shield size={13} className="text-amber-500 dark:text-gold" /> RISK MANAGEMENT RULE
+                                        </span>
+                                        <span className="text-xs font-bold text-amber-600 dark:text-gold">Capital Protection</span>
+                                    </div>
+
+                                    <p className="text-xs sm:text-sm leading-relaxed font-semibold text-gray-800 dark:text-gray-200">
+                                        <strong>{mindsetPost.title}</strong> {mindsetPost.body}
+                                    </p>
+
+                                    <div className="flex items-center justify-between text-[11px] font-medium text-gray-500 dark:text-gray-400 pt-2 border-t border-amber-200/60 dark:border-white/10">
+                                        <span>Core Value: <strong className="text-amber-600 dark:text-gold font-bold">{mindsetPost.footerLeft}</strong></span>
+                                        <span className="text-[10px] font-bold text-gray-400">{mindsetPost.footerRight}</span>
+                                    </div>
+                                </motion.div>
+                            )}
+
+                            {/* TAB 3: Supply & Demand + Price Action Tip */}
+                            {activeTab === "tips" && (
+                                <motion.div
+                                    key="tips"
+                                    initial={{ opacity: 0, y: 8 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -8 }}
+                                    transition={{ duration: 0.25, ease: "easeOut" }}
+                                    className="min-h-[214px] bg-amber-500/5 dark:bg-gold/10 border border-amber-200 dark:border-gold/20 rounded-lg p-3.5 sm:p-4 shadow-sm space-y-3 flex flex-col justify-between"
+                                >
+                                    <div className="flex items-center justify-between text-[11px] font-bold text-amber-700 dark:text-gold">
+                                        <span className="flex items-center gap-1.5">
+                                            <BookOpen size={13} className="text-amber-500 dark:text-gold" /> S&amp;D + PRICE ACTION TIP
+                                        </span>
+                                        <span className="text-xs font-bold text-amber-600 dark:text-gold">Execution Edge</span>
+                                    </div>
+
+                                    <p className="text-xs sm:text-sm leading-relaxed font-semibold text-gray-800 dark:text-gray-200">
+                                        <strong>{tipsPost.title}</strong> {tipsPost.body}
+                                    </p>
+
+                                    <div className="flex items-center justify-between text-[11px] font-medium text-gray-500 dark:text-gray-400 pt-2 border-t border-amber-200/60 dark:border-white/10">
+                                        <span>Setup Type: <strong className="text-amber-600 dark:text-gold font-bold">{tipsPost.footerLeft}</strong></span>
+                                        <span className="text-[10px] font-bold text-gray-400">{tipsPost.footerRight}</span>
+                                    </div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </div>
+
+                    {/* Live Community Reactions Bar (Zero Emoji — Lucide Icons) */}
+                    <div className="px-4 py-3 bg-white dark:bg-[#17212B] border-t border-gray-200 dark:border-white/10 flex flex-wrap items-center justify-between gap-2 text-xs">
+                        <div className="flex items-center gap-1.5 text-gray-500 dark:text-gray-400 font-bold text-[11px]">
+                            <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                            <span>LIVE REACTIONS</span>
+                        </div>
+
+                        <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                            {(
+                                [
+                                    { key: "flame", label: "Flame", Icon: Flame, color: "text-amber-500", count: reactions.flame },
+                                    { key: "rocket", label: "Rocket", Icon: Rocket, color: "text-gold", count: reactions.rocket },
+                                    { key: "heart", label: "Heart", Icon: Heart, color: "text-rose-500", count: reactions.heart },
+                                    { key: "hundred", label: "100", Icon: Award, color: "text-emerald-500", count: reactions.hundred },
+                                    { key: "handshake", label: "Agree", Icon: ThumbsUp, color: "text-amber-500 dark:text-gold", count: reactions.handshake },
+                                ] as const
+                            ).map((r) => {
+                                const isSelected = userReacted[r.key];
+                                const ReactionIcon = r.Icon;
+                                return (
+                                    <Button
+                                        key={r.key}
+                                        type="button"
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => handleReaction(r.key)}
+                                        aria-label={`React with ${r.label}`}
+                                        className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold transition-all transform active:scale-95 h-auto ${
+                                            isSelected
+                                                ? "bg-gold/15 border border-gold text-amber-700 dark:text-gold shadow-xs hover:bg-gold/20 hover:text-amber-700 dark:hover:text-gold"
+                                                : "bg-slate-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 hover:bg-slate-200 dark:hover:bg-white/10"
+                                        }`}
+                                    >
+                                        <ReactionIcon size={12} className={r.color} />
+                                        <span className="tabular-nums">{r.count}</span>
+                                    </Button>
+                                );
+                            })}
+                        </div>
+                    </div>
                 </div>
             </div>
 

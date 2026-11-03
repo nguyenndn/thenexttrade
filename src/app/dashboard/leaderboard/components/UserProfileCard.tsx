@@ -15,7 +15,6 @@ import { Button } from "@/components/ui/Button";
 import { UserTierBadge } from "./UserTierBadge";
 import { SPRING_SOFT, backdropVariants, panelVariants } from "@/lib/animations";
 import type { LeaderboardEntry } from "../actions";
-import { cn } from "@/lib/utils";
 
 interface UserProfileCardProps {
     entry: LeaderboardEntry | null;
@@ -46,37 +45,37 @@ export function UserProfileCard({ entry, onClose }: UserProfileCardProps) {
             icon: Star,
             label: "Edge",
             value: entry.value.toLocaleString(),
-            color: "text-yellow-500",
+            color: "text-amber-600 dark:text-gold",
         },
         {
             icon: Trophy,
             label: "Rank",
             value: `#${entry.rank}`,
-            color: "text-primary",
+            color: "text-emerald-500",
         },
         {
             icon: TrendingUp,
             label: "Level",
             value: entry.level.toString(),
-            color: "text-cyan-500",
+            color: "text-amber-600 dark:text-gold",
         },
         {
             icon: Clock,
             label: "Study Time",
             value: formatStudyTime(entry.studyTimeMinutes),
-            color: "text-blue-500",
+            color: "text-amber-600 dark:text-gold",
         },
         {
             icon: FileText,
             label: "Lessons",
             value: entry.lessonsCompleted.toString(),
-            color: "text-green-500",
+            color: "text-emerald-500",
         },
         {
             icon: Flame,
             label: "Percentile",
             value: `${entry.percentile.toFixed(1)}%`,
-            color: "text-orange-500",
+            color: "text-amber-600 dark:text-gold",
         },
     ];
 
@@ -102,7 +101,7 @@ export function UserProfileCard({ entry, onClose }: UserProfileCardProps) {
                 animate="animate"
                 exit="exit"
                 transition={SPRING_SOFT}
-                className="relative z-10 w-full max-w-sm bg-white dark:bg-[#1E2028] rounded-2xl shadow-2xl overflow-hidden border border-dashboard"
+                className="relative z-10 w-full max-w-sm bg-white dark:bg-[#0D111C] rounded-2xl shadow-2xl overflow-hidden border border-dashboard"
             >
                 {/* Glow */}
                 <div
@@ -126,7 +125,6 @@ export function UserProfileCard({ entry, onClose }: UserProfileCardProps) {
                     <div className="flex flex-col items-center text-center mb-6">
                         <div className="w-20 h-20 rounded-full flex items-center justify-center text-2xl font-bold text-white bg-gray-400 dark:bg-gray-600 mb-3 ring-4 ring-gray-200 dark:ring-white/10">
                             {entry.avatar ? (
-                                // eslint-disable-next-line @next/next/no-img-element
                                 <img
                                     src={entry.avatar}
                                     alt={entry.name}
@@ -157,10 +155,10 @@ export function UserProfileCard({ entry, onClose }: UserProfileCardProps) {
                         {stats.map((stat) => (
                             <div
                                 key={stat.label}
-                                className="flex flex-col items-center gap-1 p-3 rounded-lg bg-gray-50 dark:bg-white/5"
+                                className="flex flex-col items-center gap-1 p-3 rounded-lg bg-gray-50/80 dark:bg-[#151925]"
                             >
                                 <stat.icon size={16} className={stat.color} />
-                                <span className="text-sm font-black text-gray-700 dark:text-white tabular-nums">
+                                <span className="text-sm font-black text-gray-700 dark:text-white font-mono tabular-nums">
                                     {stat.value}
                                 </span>
                                 <span className="text-[10px] text-gray-500 uppercase tracking-wider font-bold">

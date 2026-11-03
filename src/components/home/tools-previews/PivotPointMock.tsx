@@ -9,32 +9,32 @@ export function PivotPointMock() {
         {
             label: "R2",
             price: "1.1100",
-            color: "text-red-500",
-            border: "border-red-200/50",
+            color: "text-rose-500",
+            border: "border-rose-200/50 dark:border-rose-500/30",
         },
         {
             label: "R1",
             price: "1.1050",
-            color: "text-red-400",
-            border: "border-red-100/30",
+            color: "text-rose-400",
+            border: "border-rose-100/30 dark:border-rose-500/20",
         },
         {
             label: "PP",
             price: "1.1000",
-            color: "text-blue-500",
-            border: "border-blue-200/50",
+            color: "text-amber-600 dark:text-gold",
+            border: "border-gold/40",
         },
         {
             label: "S1",
             price: "1.0950",
             color: "text-emerald-400",
-            border: "border-emerald-100/30",
+            border: "border-emerald-100/30 dark:border-emerald-500/20",
         },
         {
             label: "S2",
             price: "1.0900",
             color: "text-emerald-500",
-            border: "border-emerald-200/50",
+            border: "border-emerald-200/50 dark:border-emerald-500/30",
         },
     ];
 
@@ -42,32 +42,32 @@ export function PivotPointMock() {
         {
             label: "H4",
             price: "1.1085",
-            color: "text-red-500",
-            border: "border-red-200/50",
+            color: "text-rose-500",
+            border: "border-rose-200/50 dark:border-rose-500/30",
         },
         {
             label: "H3",
             price: "1.1030",
-            color: "text-red-400",
-            border: "border-red-100/30",
+            color: "text-rose-400",
+            border: "border-rose-100/30 dark:border-rose-500/20",
         },
         {
             label: "PP",
             price: "1.1000",
-            color: "text-blue-500",
-            border: "border-blue-200/50",
+            color: "text-amber-600 dark:text-gold",
+            border: "border-gold/40",
         },
         {
             label: "L3",
             price: "1.0970",
             color: "text-emerald-400",
-            border: "border-emerald-100/30",
+            border: "border-emerald-100/30 dark:border-emerald-500/20",
         },
         {
             label: "L4",
             price: "1.0915",
             color: "text-emerald-500",
-            border: "border-emerald-200/50",
+            border: "border-emerald-200/50 dark:border-emerald-500/30",
         },
     ];
 
@@ -75,23 +75,23 @@ export function PivotPointMock() {
 
     return (
         <div
-            className="h-44 w-full bg-slate-50 dark:bg-slate-900/80 rounded-lg p-4 flex flex-col justify-between relative overflow-hidden border border-gray-200 dark:border-white/10 select-none cursor-pointer"
+            className="h-44 w-full bg-gray-50/80 dark:bg-[#151925] rounded-lg p-4 flex flex-col justify-between relative overflow-hidden border border-gray-200 dark:border-white/10 select-none cursor-pointer"
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
         >
             {/* Decorative glow */}
-            <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/5 rounded-full blur-2xl pointer-events-none" />
+            <div className="absolute top-0 right-0 w-24 h-24 bg-gold/5 rounded-full blur-2xl pointer-events-none" />
 
             {/* Header */}
-            <div className="flex items-center justify-between z-10 font-mono text-[9px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest">
+            <div className="flex items-center justify-between z-10 font-mono tabular-nums text-[9px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest">
                 <span>Pivot Points</span>
-                <span className="text-blue-600/80 dark:text-blue-400 font-black">
+                <span className="text-amber-600 dark:text-gold font-black">
                     {hovered ? "CAMARILLA MODEL" : "STANDARD CLASSIC"}
                 </span>
             </div>
 
             {/* Grid lines layout */}
-            <div className="flex-1 flex flex-col justify-between py-2.5 z-10 font-mono text-[8px] font-bold relative">
+            <div className="flex-1 flex flex-col justify-between py-2.5 z-10 font-mono tabular-nums text-[8px] font-bold relative">
                 {currentLevels.map((lvl) => (
                     <div
                         key={lvl.label}
@@ -111,7 +111,7 @@ export function PivotPointMock() {
             </div>
 
             {/* Footer */}
-            <div className="text-[8px] font-bold text-slate-400 dark:text-slate-400 flex justify-between items-center z-10 border-t border-gray-200 dark:border-white/10 pt-2 font-mono">
+            <div className="text-[8px] font-bold text-slate-400 dark:text-slate-400 flex justify-between items-center z-10 border-t border-gray-200 dark:border-white/10 pt-2 font-mono tabular-nums">
                 <span>EURUSD 4H Anchor</span>
                 <span>Hover to toggle model</span>
             </div>

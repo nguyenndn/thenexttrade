@@ -40,7 +40,7 @@ export interface DynamicCompetition {
     startDate: Date | string;
     endDate: Date | string;
     prizePool: number;
-    prizes?: any;
+    prizes?: CompetitionPrize[] | unknown;
     minTrades?: number | null;
     maxDrawdown?: number | null;
     eligibleBrokers?: string[] | string | null;
@@ -116,7 +116,7 @@ export function TradingSprintBanner({
     // Parse prizes
     const prizes: CompetitionPrize[] =
         Array.isArray(competition.prizes) && competition.prizes.length > 0
-            ? competition.prizes
+            ? (competition.prizes as CompetitionPrize[])
             : [
                   {
                       place: 1,
@@ -158,16 +158,15 @@ export function TradingSprintBanner({
     };
 
     return (
-        <div className="relative overflow-hidden rounded-xl border border-amber-500/30 bg-gradient-to-b from-amber-500/10 via-white to-white dark:from-amber-500/10 dark:via-[#161922] dark:to-[#12141C] p-5 sm:p-7 shadow-lg shadow-amber-500/5">
+        <div className="relative overflow-hidden rounded-xl border border-gold/30 bg-white dark:bg-[#1E2028] p-5 sm:p-7 shadow-sm">
             {/* Ambient Background Accents */}
-            <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-amber-500/10 blur-3xl pointer-events-none" />
-            <div className="absolute -left-20 -bottom-20 h-64 w-64 rounded-full bg-orange-500/10 blur-3xl pointer-events-none" />
+            <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-gold/10 blur-3xl pointer-events-none" />
 
             <div className="relative z-10 space-y-6">
                 {/* Top Row: Meta Badge & Countdown */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div className="space-y-1.5">
-                        <div className="inline-flex items-center gap-2 rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1 text-xs font-bold text-amber-700 dark:text-amber-400">
+                        <div className="inline-flex items-center gap-2 rounded-lg border border-gold/30 bg-gold/10 px-3 py-1 text-xs font-bold text-amber-700 dark:text-gold">
                             <span className="relative flex h-2 w-2">
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
@@ -176,7 +175,7 @@ export function TradingSprintBanner({
                             {competition._count?.participants !== undefined && (
                                 <>
                                     <span className="text-gray-300 dark:text-white/20">•</span>
-                                    <span className="flex items-center gap-1 font-semibold">
+                                    <span className="flex items-center gap-1 font-semibold font-mono tabular-nums">
                                         <Users size={12} />
                                         {competition._count.participants} Contenders
                                     </span>
@@ -184,7 +183,7 @@ export function TradingSprintBanner({
                             )}
                         </div>
                         <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-gray-900 dark:text-white flex items-center gap-2.5">
-                            <Trophy className="text-amber-500 shrink-0" size={28} />
+                            <Trophy className="text-amber-600 dark:text-gold shrink-0" size={28} />
                             {competition.title}
                         </h2>
                         <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 max-w-2xl font-medium">
@@ -194,17 +193,17 @@ export function TradingSprintBanner({
                     </div>
 
                     {/* Countdown Card */}
-                    <div className="flex flex-col sm:items-end justify-center rounded-xl border border-dashboard bg-white/80 dark:bg-white/5 p-3.5 sm:px-5 backdrop-blur-xs min-w-[200px]">
+                    <div className="flex flex-col sm:items-end justify-center rounded-lg border border-dashboard bg-gray-50/80 dark:bg-[#151925] p-3.5 sm:px-5 min-w-[200px]">
                         <div className="flex items-center gap-1.5 text-xs font-bold text-gray-500 dark:text-gray-400">
-                            <Clock size={14} className="text-amber-500" />
+                            <Clock size={14} className="text-amber-600 dark:text-gold" />
                             <span>{isUpcoming ? "Sprint Begins In" : "Sprint Closes In"}</span>
                         </div>
-                        <div className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white mt-0.5">
+                        <div className="text-xl sm:text-2xl font-black font-mono tabular-nums text-gray-900 dark:text-white mt-0.5">
                             {daysRemaining} <span className="text-xs font-bold text-gray-500">Days</span>
                         </div>
                         <div className="w-full h-1.5 bg-gray-200 dark:bg-white/10 rounded-full mt-2 overflow-hidden">
                             <div
-                                className="h-full bg-gradient-to-r from-amber-500 to-orange-500 rounded-full transition-all duration-500"
+                                className="h-full bg-gold rounded-full transition-all duration-500"
                                 style={{ width: `${sprintProgress}%` }}
                             />
                         </div>
@@ -219,31 +218,27 @@ export function TradingSprintBanner({
                         return (
                             <div
                                 key={item.place || idx}
-                                className={`rounded-xl border p-4 relative overflow-hidden shadow-xs bg-white ${
+                                className={`rounded-lg border p-4 relative overflow-hidden shadow-xs bg-gray-50/80 dark:bg-[#151925] ${
                                     isFirst
-                                        ? "border-amber-500/40 dark:bg-amber-500/[0.04]"
-                                        : isSecond
-                                          ? "border-slate-300 dark:border-slate-700/60 dark:bg-slate-500/[0.03]"
-                                          : "border-orange-300 dark:border-orange-700/60 dark:bg-orange-500/[0.03]"
+                                        ? "border-gold/40"
+                                        : "border-dashboard"
                                 }`}
                             >
                                 <div
                                     className={`absolute top-0 left-0 right-0 h-1 ${
                                         isFirst
-                                            ? "bg-gradient-to-r from-amber-400 to-amber-600"
+                                            ? "bg-gold"
                                             : isSecond
-                                              ? "bg-slate-400"
-                                              : "bg-orange-500"
+                                              ? "bg-gray-400"
+                                              : "bg-amber-600/70"
                                     }`}
                                 />
                                 <div className="flex items-center justify-between">
                                     <span
                                         className={`text-[11px] font-black uppercase tracking-wider ${
                                             isFirst
-                                                ? "text-amber-600 dark:text-amber-400"
-                                                : isSecond
-                                                  ? "text-slate-600 dark:text-slate-300"
-                                                  : "text-orange-600 dark:text-orange-400"
+                                                ? "text-amber-600 dark:text-gold"
+                                                : "text-gray-600 dark:text-gray-300"
                                         }`}
                                     >
                                         {isFirst ? "1st Place" : isSecond ? "2nd Place" : "3rd Place"}
@@ -251,16 +246,14 @@ export function TradingSprintBanner({
                                     <span
                                         className={`rounded-lg px-2 py-0.5 text-[10px] font-extrabold border ${
                                             isFirst
-                                                ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20"
-                                                : isSecond
-                                                  ? "bg-slate-500/10 text-slate-600 dark:text-slate-300 border-slate-500/20"
-                                                  : "bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20"
+                                                ? "bg-gold/10 text-amber-600 dark:text-gold border-gold/20"
+                                                : "bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 border-dashboard"
                                         }`}
                                     >
                                         {isFirst ? "Champion" : isSecond ? "Runner-up" : "Podium"}
                                     </span>
                                 </div>
-                                <div className="text-2xl font-black text-gray-900 dark:text-white mt-2">
+                                <div className="text-2xl font-black font-mono tabular-nums text-gray-900 dark:text-white mt-2">
                                     ${item.prize.toLocaleString()}{" "}
                                     <span className="text-xs font-bold text-gray-500">USD</span>
                                 </div>
@@ -275,25 +268,25 @@ export function TradingSprintBanner({
                 {/* Enrollment Action Section */}
                 <div className="pt-1">
                     {!isLoggedIn ? (
-                        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-3.5 rounded-xl border border-amber-500/20 bg-amber-500/5">
+                        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-3.5 rounded-lg border border-gold/20 bg-gold/5">
                             <span className="text-xs text-gray-600 dark:text-gray-400 font-medium">
                                 Sign in with your trader profile to enroll your account and compete for the prize pool.
                             </span>
                             <Link href="/login?redirect=/dashboard/leaderboard?type=sprint">
-                                <Button size="sm" className="text-xs font-bold bg-amber-500 hover:bg-amber-600 text-black">
+                                <Button size="sm" className="text-xs font-bold rounded-lg bg-gold hover:bg-amber-600 !text-white">
                                     Sign In to Compete <ArrowRight size={13} className="ml-1" />
                                 </Button>
                             </Link>
                         </div>
                     ) : userEnrollment && !isSwitching ? (
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 backdrop-blur-xs">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10">
                             <div className="flex items-center gap-2.5">
                                 <CheckCircle2 size={18} className="text-emerald-500 shrink-0" />
                                 <div className="text-xs">
                                     <span className="font-bold text-gray-900 dark:text-white">
                                         You are registered for this sprint!
                                     </span>{" "}
-                                    <span className="text-gray-600 dark:text-gray-300">
+                                    <span className="font-mono tabular-nums text-gray-600 dark:text-gray-300">
                                         Active Account: #{userEnrollment.tradingAccount?.accountNumber || "N/A"}{" "}
                                         {userEnrollment.tradingAccount?.broker ? `(${userEnrollment.tradingAccount.broker})` : ""}
                                     </span>
@@ -304,28 +297,28 @@ export function TradingSprintBanner({
                                     variant="outline"
                                     size="sm"
                                     onClick={() => setIsSwitching(true)}
-                                    className="text-xs h-8"
+                                    className="text-xs h-8 rounded-lg"
                                 >
                                     Change Account
                                 </Button>
                             )}
                         </div>
                     ) : userAccounts.length === 0 ? (
-                        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-3.5 rounded-xl border border-dashboard bg-white/60 dark:bg-white/5">
+                        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-3.5 rounded-lg border border-dashboard bg-gray-50/80 dark:bg-[#151925]">
                             <span className="text-xs text-gray-600 dark:text-gray-400 font-medium">
                                 You don&apos;t have any MT5 accounts connected yet. Connect your account to enter the tournament.
                             </span>
                             <Link href="/dashboard/rules">
-                                <Button variant="outline" size="sm" className="text-xs font-bold">
+                                <Button variant="outline" size="sm" className="text-xs font-bold rounded-lg">
                                     Connect MT5 Account <ArrowRight size={13} className="ml-1" />
                                 </Button>
                             </Link>
                         </div>
                     ) : (
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl border border-dashboard bg-white/70 dark:bg-white/5 backdrop-blur-xs">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-lg border border-dashboard bg-gray-50/80 dark:bg-[#151925]">
                             <div className="space-y-0.5">
                                 <div className="text-xs font-bold text-gray-900 dark:text-white flex items-center gap-1.5">
-                                    <Sparkles size={14} className="text-amber-500" />
+                                    <Sparkles size={14} className="text-amber-600 dark:text-gold" />
                                     <span>{userEnrollment ? "Switch Tournament Account" : "Select MT5 Account to Compete"}</span>
                                 </div>
                                 <p className="text-[11px] text-gray-500 dark:text-gray-400">
@@ -334,12 +327,12 @@ export function TradingSprintBanner({
                             </div>
                             <div className="flex flex-wrap items-center gap-2">
                                 <Select value={selectedAccountId} onValueChange={setSelectedAccountId}>
-                                    <SelectTrigger className="h-9 w-[220px] text-xs font-semibold">
-                                        <SelectValue placeholder="Choose account" />
+                                    <SelectTrigger className="h-9 w-[220px] text-xs font-semibold font-mono tabular-nums rounded-lg">
+                                        <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent>
                                         {userAccounts.map((acc) => (
-                                            <SelectItem key={acc.id} value={acc.id} className="text-xs">
+                                            <SelectItem key={acc.id} value={acc.id} className="text-xs font-mono tabular-nums">
                                                 #{acc.accountNumber || "Acc"} - {acc.name} ({acc.broker || "MT5"})
                                             </SelectItem>
                                         ))}
@@ -349,7 +342,7 @@ export function TradingSprintBanner({
                                     size="sm"
                                     onClick={handleJoin}
                                     isLoading={isJoining}
-                                    className="h-9 text-xs font-bold bg-amber-500 hover:bg-amber-600 text-black shrink-0"
+                                    className="h-9 text-xs font-bold rounded-lg bg-gold hover:bg-amber-600 !text-white shrink-0"
                                 >
                                     {userEnrollment ? "Update Account" : "Enroll Account"}
                                 </Button>
@@ -358,7 +351,7 @@ export function TradingSprintBanner({
                                         variant="outline"
                                         size="sm"
                                         onClick={() => setIsSwitching(false)}
-                                        className="h-9 text-xs"
+                                        className="h-9 text-xs rounded-lg"
                                     >
                                         Cancel
                                     </Button>
@@ -370,17 +363,17 @@ export function TradingSprintBanner({
 
                 {/* Guardrails & Rules Footer */}
                 <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-dashboard">
-                    <div className="flex flex-wrap items-center gap-2 text-xs font-semibold text-gray-600 dark:text-gray-300">
-                        <span className="inline-flex items-center gap-1.5 rounded-lg bg-gray-100 dark:bg-white/5 px-2.5 py-1">
+                    <div className="flex flex-wrap items-center gap-2 text-xs font-semibold font-mono tabular-nums text-gray-600 dark:text-gray-300">
+                        <span className="inline-flex items-center gap-1.5 rounded-lg bg-gray-100 dark:bg-[#151925] px-2.5 py-1">
                             <ShieldCheck size={14} className="text-emerald-500" />
                             Min {minTrades} Closed Trades
                         </span>
-                        <span className="inline-flex items-center gap-1.5 rounded-lg bg-gray-100 dark:bg-white/5 px-2.5 py-1">
-                            <AlertCircle size={14} className="text-amber-500" />
+                        <span className="inline-flex items-center gap-1.5 rounded-lg bg-gray-100 dark:bg-[#151925] px-2.5 py-1">
+                            <AlertCircle size={14} className="text-amber-600 dark:text-gold" />
                             Max {maxDrawdown}% Drawdown
                         </span>
-                        <span className="inline-flex items-center gap-1.5 rounded-lg bg-gray-100 dark:bg-white/5 px-2.5 py-1">
-                            <Zap size={14} className="text-sky-500" />
+                        <span className="inline-flex items-center gap-1.5 rounded-lg bg-gray-100 dark:bg-[#151925] px-2.5 py-1">
+                            <Zap size={14} className="text-amber-600 dark:text-gold" />
                             Scoring: {scoringMetric === "win_rate" ? "Win Rate %" : "Net PnL ($)"}
                         </span>
                     </div>
@@ -389,7 +382,7 @@ export function TradingSprintBanner({
                         variant="outline"
                         size="sm"
                         onClick={() => setShowRules(!showRules)}
-                        className="text-xs font-bold"
+                        className="text-xs font-bold rounded-lg"
                     >
                         {showRules ? "Hide Sprint Rules" : "View Sprint Rules & Criteria"}
                     </Button>
@@ -397,9 +390,9 @@ export function TradingSprintBanner({
 
                 {/* Expandable Rules Detail */}
                 {showRules && (
-                    <div className="rounded-xl border border-dashboard bg-white/90 dark:bg-[#141720] p-4 text-xs space-y-3 animate-in fade-in duration-200">
+                    <div className="rounded-lg border border-dashboard bg-gray-50/80 dark:bg-[#151925] p-4 text-xs space-y-3 animate-in fade-in duration-200">
                         <h4 className="font-bold text-sm text-gray-900 dark:text-white flex items-center gap-2">
-                            <Award size={16} className="text-amber-500" />
+                            <Award size={16} className="text-amber-600 dark:text-gold" />
                             Competition Governance &amp; Fair Play Rules
                         </h4>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-gray-600 dark:text-gray-400">

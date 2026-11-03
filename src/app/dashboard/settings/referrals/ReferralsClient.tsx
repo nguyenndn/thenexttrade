@@ -31,34 +31,34 @@ export function ReferralsClient({ referralCode, data }: ReferralsClientProps) {
             label: "Qualified Referrals",
             value: data.totalReferrals.toLocaleString(),
             helper: "Verified signups from your referral link.",
-            color: "text-blue-500",
-            bgColor: "bg-blue-50 dark:bg-blue-500/10",
+            color: "text-amber-600 dark:text-gold",
+            bgColor: "bg-gold/10 border border-gold/20",
         },
         {
             icon: Gem,
             label: "Edge Earned",
             value: data.edgeEarned.toLocaleString(),
             helper: "Total Edge awarded from referrals.",
-            color: "text-primary",
-            bgColor: "bg-primary/10",
+            color: "text-emerald-500",
+            bgColor: "bg-emerald-500/10 border border-emerald-500/20",
         },
         {
             icon: Award,
             label: "Reward",
             value: `+${data.rewardPerReferral} Edge`,
             helper: "Awarded once per qualified referred user.",
-            color: "text-orange-500",
-            bgColor: "bg-orange-50 dark:bg-orange-500/10",
+            color: "text-amber-600 dark:text-gold",
+            bgColor: "bg-gold/10 border border-gold/20",
         },
     ];
 
     return (
         <div className="space-y-5">
-            <div className="overflow-hidden rounded-xl border border-dashboard bg-white shadow-sm border-dashboard dark:bg-[#0B0E14]">
+            <div className="overflow-hidden rounded-xl border border-dashboard bg-white dark:bg-[#1E2028] shadow-sm">
                 <div className="flex items-start justify-between gap-4 p-5">
                     <div className="flex items-start gap-4">
-                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-                            <Gift size={24} className="text-primary" />
+                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-gold/10 border border-gold/20">
+                            <Gift size={24} className="text-amber-600 dark:text-gold" />
                         </div>
                         <div>
                             <h2 className="text-lg font-bold text-gray-700 dark:text-white">
@@ -68,24 +68,24 @@ export function ReferralsClient({ referralCode, data }: ReferralsClientProps) {
                                 Invite traders and earn Edge when they verify
                                 their account.
                             </p>
-                            <div className="mt-3 inline-flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-800 dark:border-amber-400/20 dark:bg-amber-400/10 dark:text-amber-200">
+                            <div className="mt-3 inline-flex items-center gap-2 rounded-lg border border-gold/20 bg-gold/10 px-3 py-2 text-xs font-semibold text-amber-800 dark:text-gold">
                                 <Info size={14} />
                                 {data.qualifiedDefinition}
                             </div>
                         </div>
                     </div>
-                    <span className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-primary/10 px-3 py-1.5 text-xs font-bold text-primary">
+                    <span className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 text-xs font-bold font-mono tabular-nums text-emerald-600 dark:text-emerald-400">
                         <Users size={14} />
                         {data.totalReferrals.toLocaleString()} qualified
                     </span>
                 </div>
 
-                <div className="border-t border-dashboard px-5 py-4 border-dashboard">
+                <div className="border-t border-dashboard px-5 py-4">
                     <div className="grid gap-3 md:grid-cols-3">
                         {stats.map((stat) => (
                             <div
                                 key={stat.label}
-                                className="flex items-center gap-3 rounded-lg border border-dashboard bg-gray-50 p-3 border-dashboard dark:bg-white/[0.03]"
+                                className="flex items-center gap-3 rounded-lg border border-dashboard bg-gray-50/80 dark:bg-[#151925] p-3"
                             >
                                 <div
                                     className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${stat.bgColor}`}
@@ -99,7 +99,7 @@ export function ReferralsClient({ referralCode, data }: ReferralsClientProps) {
                                     <p className="text-xs text-gray-500">
                                         {stat.label}
                                     </p>
-                                    <p className="text-base font-black text-gray-700 dark:text-white">
+                                    <p className="text-base font-black font-mono tabular-nums text-gray-700 dark:text-white">
                                         {stat.value}
                                     </p>
                                     <p className="truncate text-[11px] text-gray-400">
@@ -111,19 +111,19 @@ export function ReferralsClient({ referralCode, data }: ReferralsClientProps) {
                     </div>
                 </div>
 
-                <div className="border-t border-dashboard px-5 py-4 border-dashboard">
+                <div className="border-t border-dashboard px-5 py-4">
                     <p className="mb-2 text-xs font-bold uppercase tracking-wide text-gray-600 dark:text-gray-300">
                         Your referral link
                     </p>
                     <div className="flex items-stretch gap-0">
-                        <div className="flex flex-1 items-center truncate rounded-l-lg border border-r-0 border-dashboard bg-gray-50 px-4 py-2.5 font-mono text-sm text-gray-500 border-dashboard dark:bg-[#151925]">
+                        <div className="flex flex-1 items-center truncate rounded-l-lg border border-r-0 border-dashboard bg-gray-50/80 dark:bg-[#151925] px-4 py-2.5 font-mono text-sm text-gray-600 dark:text-gray-300">
                             {referralLink}
                         </div>
                         <Button
                             type="button"
                             size="smd"
                             onClick={handleCopy}
-                            className="flex items-center gap-2 rounded-l-none rounded-r-lg border-none bg-[#2F80ED] px-5 font-bold text-white transition-all hover:bg-[#2563EB] active:scale-95"
+                            className="flex items-center gap-2 rounded-l-none rounded-r-lg border-none bg-gold px-5 font-bold !text-white transition-all hover:bg-amber-600 active:scale-95"
                         >
                             {copied ? (
                                 <>
@@ -139,8 +139,8 @@ export function ReferralsClient({ referralCode, data }: ReferralsClientProps) {
                 </div>
             </div>
 
-            <div className="overflow-hidden rounded-xl border border-dashboard bg-white shadow-sm border-dashboard dark:bg-[#0B0E14]">
-                <div className="border-b border-dashboard px-6 py-4 border-dashboard">
+            <div className="overflow-hidden rounded-xl border border-dashboard bg-white dark:bg-[#1E2028] shadow-sm">
+                <div className="border-b border-dashboard px-6 py-4">
                     <h3 className="text-sm font-bold text-gray-700 dark:text-white">
                         Recent Referrals
                     </h3>
@@ -149,7 +149,7 @@ export function ReferralsClient({ referralCode, data }: ReferralsClientProps) {
                 {data.referrals.length > 0 ? (
                     <div className="overflow-x-auto">
                         <table className="w-full text-left text-sm">
-                            <thead className="bg-gray-50 text-xs font-bold uppercase tracking-wider text-gray-500 dark:bg-white/5">
+                            <thead className="bg-gray-50/80 dark:bg-[#151925] text-xs font-bold uppercase tracking-wider text-gray-500">
                                 <tr>
                                     <th className="px-6 py-4">User</th>
                                     <th className="px-6 py-4">Qualified At</th>
@@ -167,7 +167,7 @@ export function ReferralsClient({ referralCode, data }: ReferralsClientProps) {
                                     >
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
-                                                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-primary to-emerald-500 text-xs font-bold text-white">
+                                                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gold/15 border border-gold/30 text-xs font-bold text-amber-600 dark:text-gold">
                                                     {referral.displayName
                                                         .charAt(0)
                                                         .toUpperCase()}
@@ -182,7 +182,7 @@ export function ReferralsClient({ referralCode, data }: ReferralsClientProps) {
                                                 </div>
                                             </div>
                                         </td>
-                                        <td className="px-6 py-4 text-gray-500">
+                                        <td className="px-6 py-4 font-mono tabular-nums text-gray-500">
                                             {new Date(
                                                 referral.qualifiedAt
                                             ).toLocaleDateString(undefined, {
@@ -192,11 +192,11 @@ export function ReferralsClient({ referralCode, data }: ReferralsClientProps) {
                                             })}
                                         </td>
                                         <td className="px-6 py-4">
-                                            <span className="rounded-lg bg-green-100 px-2.5 py-1 text-xs font-bold text-green-600 dark:bg-green-500/10 dark:text-green-400">
+                                            <span className="rounded-lg bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 text-xs font-bold text-emerald-600 dark:text-emerald-400">
                                                 {referral.status}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-4 text-right font-bold text-primary">
+                                        <td className="px-6 py-4 text-right font-bold font-mono tabular-nums text-emerald-600 dark:text-emerald-400">
                                             +
                                             {referral.edgeAwarded.toLocaleString()}{" "}
                                             Edge
@@ -208,7 +208,7 @@ export function ReferralsClient({ referralCode, data }: ReferralsClientProps) {
                     </div>
                 ) : (
                     <div className="flex flex-col items-center justify-center px-6 py-14 text-center">
-                        <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-gray-50 text-gray-400 dark:bg-white/[0.04]">
+                        <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-gold/10 border border-gold/20 text-amber-600 dark:text-gold">
                             <Users size={22} />
                         </div>
                         <h4 className="text-sm font-bold text-gray-700 dark:text-white">

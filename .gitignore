@@ -49,12 +49,14 @@ next-env.d.ts
 
 # prisma
 prisma/generate-articles.js
+prisma/schema.prod.prisma
 
 # Content files
 /content/
 
 # Credentials (never commit)
-.agent/workflows/login.md
+AccountUserLoginTest.txt
+.agents/workflows/login.md
 
 # Partner integration docs (contains API keys)
 README-Ninja-Integration.md

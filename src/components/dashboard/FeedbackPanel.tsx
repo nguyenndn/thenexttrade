@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { X, Bug, Lightbulb, Send, Loader2, CheckCircle } from "lucide-react";
+import { X, Bug, Lightbulb, Send, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 
@@ -13,7 +13,7 @@ interface FeedbackPanelProps {
     onClose: () => void;
 }
 
-export function FeedbackPanel({ isOpen, onClose }: FeedbackPanelProps) {
+export function FeedbackPanel({ isOpen: _isOpen, onClose }: FeedbackPanelProps) {
     const [activeType, setActiveType] = useState<FeedbackType>("BUG");
     const [message, setMessage] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -73,13 +73,13 @@ export function FeedbackPanel({ isOpen, onClose }: FeedbackPanelProps) {
             animate={{ opacity: 1, x: 0, scale: 1 }}
             exit={{ opacity: 0, x: 20, scale: 0.95 }}
             transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed bottom-24 right-6 z-[9998] w-[calc(100vw-2rem)] sm:w-[380px] max-h-[calc(100vh-140px)] bg-white dark:bg-[#1E2028] rounded-xl shadow-2xl shadow-black/20 border border-dashboard flex flex-col overflow-hidden"
+            className="fixed bottom-24 right-6 z-[9998] w-[calc(100vw-2rem)] sm:w-[380px] max-h-[calc(100vh-140px)] bg-white dark:bg-[#1E2028] rounded-2xl shadow-2xl shadow-black/20 border border-dashboard flex flex-col overflow-hidden"
         >
             {/* Header */}
             <div className="px-5 py-4 border-b border-dashboard flex items-center justify-between bg-gradient-to-r from-amber-500/10 to-transparent">
                 <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center">
-                        <Send size={16} className="text-gold dark:text-amber-400" />
+                    <div className="w-8 h-8 rounded-lg bg-gold/10 border border-gold/20 flex items-center justify-center">
+                        <Send size={16} className="text-amber-600 dark:text-gold" />
                     </div>
                     <div>
                         <h3 className="text-sm font-bold text-gray-700 dark:text-white">
@@ -112,9 +112,9 @@ export function FeedbackPanel({ isOpen, onClose }: FeedbackPanelProps) {
                             stiffness: 300,
                             damping: 20,
                         }}
-                        className="w-16 h-16 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mb-4 shadow-sm shadow-amber-500/10"
+                        className="w-16 h-16 rounded-xl bg-gold/10 border border-gold/20 flex items-center justify-center mb-4 shadow-sm shadow-amber-500/10"
                     >
-                        <CheckCircle size={32} className="text-gold dark:text-amber-400" />
+                        <CheckCircle size={32} className="text-amber-600 dark:text-gold" />
                     </motion.div>
                     <h4 className="text-base font-bold text-gray-700 dark:text-white">
                         Thank you!
@@ -141,7 +141,7 @@ export function FeedbackPanel({ isOpen, onClose }: FeedbackPanelProps) {
                                             "flex flex-col items-start gap-1.5 p-3.5 h-auto rounded-lg border-2 transition-all text-left font-normal",
                                             isActive
                                                 ? t.activeBg
-                                                : "border-dashboard hover:border-dashboard dark:hover:border-white/20 bg-gray-50/50 dark:bg-white/5"
+                                                : "border-dashboard hover:border-dashboard dark:hover:border-white/20 bg-gray-50/80 dark:bg-[#151925]"
                                         )}
                                     >
                                         <Icon
@@ -176,19 +176,24 @@ export function FeedbackPanel({ isOpen, onClose }: FeedbackPanelProps) {
 
                     {/* Message Input */}
                     <div className="px-5 pb-4 flex-1">
+                        <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide mb-1.5">
+                            {activeType === "BUG"
+                                ? "Bug Report Details"
+                                : "Feature Request Details"}
+                        </label>
                         <textarea
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
-                            placeholder={
+                            aria-label={
                                 activeType === "BUG"
-                                    ? "Describe the bug you encountered..."
-                                    : "Describe the feature you'd like to see..."
+                                    ? "Bug report details"
+                                    : "Feature request details"
                             }
                             rows={5}
                             maxLength={1000}
-                            className="w-full px-4 py-3 bg-gray-50 dark:bg-[#151925] border border-dashboard rounded-lg text-sm text-gray-700 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500/25 focus:border-gold resize-none transition-all"
+                            className="w-full px-4 py-3 bg-gray-50/80 dark:bg-[#151925] border border-dashboard rounded-lg text-sm text-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/25 focus:border-gold resize-none transition-all"
                         />
-                        <p className="text-[11px] text-gray-500 mt-1.5 pl-0.5">
+                        <p className="text-[11px] text-gray-500 mt-1.5 pl-0.5 font-mono tabular-nums">
                             {message.length}/1000 characters
                         </p>
                     </div>

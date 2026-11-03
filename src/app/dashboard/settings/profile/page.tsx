@@ -34,13 +34,23 @@ export default async function PublicProfilePage() {
         where: { id: user.id },
         select: { settings: true },
     });
-    const userSettings = (dbUser?.settings as Record<string, any>) || {};
-    const showTradingStyle =
-        (profile as any)?.showTradingStyle ??
-        userSettings?.profileSettings?.showTradingStyle ??
-        userSettings?.showTradingStyle ??
-        true;
-    const userTradingStyle = (userSettings?.tradingStyle as any) ?? null;
+    const userSettings = (dbUser?.settings as Record<string, unknown>) || {};
+    const profileSettings =
+        (userSettings?.profileSettings as Record<string, unknown> | undefined) ||
+        {};
+    const profileRecord = profile as Record<string, unknown> | null;
+    const showTradingStyle = Boolean(
+        profileRecord?.showTradingStyle ??
+            profileSettings?.showTradingStyle ??
+            userSettings?.showTradingStyle ??
+            true
+    );
+    const userTradingStyle =
+        (userSettings?.tradingStyle as {
+            archetype: string;
+            archetypeTitle: string;
+            dimensions?: Record<string, number>;
+        } | null) ?? null;
 
     const settings = {
         username: profile?.username ?? null,

@@ -32,7 +32,7 @@ export function StrategyComparisonTable({
     const maxPnL = Math.max(...data.map((d) => Math.abs(d.totalPnL)), 1);
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard overflow-hidden shadow-sm">
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard overflow-hidden shadow-sm">
             <div className="px-6 py-4 border-b border-dashboard">
                 <h3 className="font-bold text-gray-700 dark:text-white text-lg">
                     Strategy Comparison
@@ -62,7 +62,7 @@ export function StrategyComparisonTable({
                         {sortedData.map((item) => (
                             <tr
                                 key={item.strategy}
-                                className="group hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+                                className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
                             >
                                 <td className="px-6 py-4">
                                     <div className="flex items-center gap-3">
@@ -88,9 +88,9 @@ export function StrategyComparisonTable({
                                     <div className="flex flex-col items-center gap-1">
                                         <span
                                             className={cn(
-                                                "font-bold",
+                                                "font-bold font-mono tabular-nums",
                                                 (item.winRate ?? 0) >= 50
-                                                    ? "text-green-500"
+                                                    ? "text-emerald-500"
                                                     : "text-red-500"
                                             )}
                                         >
@@ -101,7 +101,7 @@ export function StrategyComparisonTable({
                                                 className={cn(
                                                     "h-full rounded-full",
                                                     item.winRate >= 50
-                                                        ? "bg-green-500"
+                                                        ? "bg-emerald-500"
                                                         : "bg-red-500"
                                                 )}
                                                 style={{
@@ -116,16 +116,13 @@ export function StrategyComparisonTable({
                                 <td className="px-6 py-4 text-center">
                                     <span
                                         className={cn(
-                                            "px-2.5 py-1 rounded-lg font-bold text-xs inline-flex items-center gap-1",
+                                            "px-2.5 py-1 rounded-lg font-bold font-mono tabular-nums text-xs inline-flex items-center gap-1",
                                             (item.profitFactor ?? 0) >= 2.0
-                                                ? "bg-purple-100 dark:bg-purple-500/20 text-purple-600 dark:text-purple-400"
+                                                ? "bg-gold/10 text-amber-600 dark:text-gold"
                                                 : (item.profitFactor ?? 0) >=
-                                                    1.5
-                                                  ? "bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400"
-                                                  : (item.profitFactor ?? 0) >=
-                                                      1.0
-                                                    ? "bg-green-100 dark:bg-green-500/20 text-green-600 dark:text-green-400"
-                                                    : "bg-red-100 dark:bg-red-500/20 text-red-600 dark:text-red-400"
+                                                    1.0
+                                                  ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                                                  : "bg-red-500/10 text-red-600 dark:text-red-400"
                                         )}
                                     >
                                         {item.profitFactor === Infinity
@@ -141,9 +138,9 @@ export function StrategyComparisonTable({
                                     <div className="flex flex-col items-end">
                                         <span
                                             className={cn(
-                                                "font-bold text-base",
+                                                "font-bold font-mono tabular-nums text-base",
                                                 item.totalPnL >= 0
-                                                    ? "text-green-500"
+                                                    ? "text-emerald-500"
                                                     : "text-red-500"
                                             )}
                                         >
@@ -158,7 +155,7 @@ export function StrategyComparisonTable({
                                                 className={cn(
                                                     "h-full rounded-full opacity-50",
                                                     item.totalPnL >= 0
-                                                        ? "bg-green-500"
+                                                        ? "bg-emerald-500"
                                                         : "bg-red-500"
                                                 )}
                                                 style={{
@@ -174,9 +171,9 @@ export function StrategyComparisonTable({
                                     <div className="flex items-center justify-end gap-1">
                                         <span
                                             className={cn(
-                                                "font-medium",
+                                                "font-medium font-mono tabular-nums",
                                                 (item.avgPnL ?? 0) >= 0
-                                                    ? "text-green-500"
+                                                    ? "text-emerald-500"
                                                     : "text-red-500"
                                             )}
                                         >
@@ -189,7 +186,7 @@ export function StrategyComparisonTable({
                                         {item.avgPnL > 0 && (
                                             <ArrowUp
                                                 size={12}
-                                                className="text-green-500"
+                                                className="text-emerald-500"
                                             />
                                         )}
                                         {item.avgPnL < 0 && (
@@ -209,12 +206,12 @@ export function StrategyComparisonTable({
 
                                 {/* Trades Count */}
                                 <td className="px-6 py-4 flex flex-col items-center">
-                                    <span className="font-bold text-gray-700 dark:text-white">
+                                    <span className="font-bold font-mono tabular-nums text-gray-700 dark:text-white">
                                         {item.totalTrades}
                                     </span>
                                     <div className="w-16 h-1 bg-gray-200 dark:bg-gray-700 rounded-full mt-1 overflow-hidden">
                                         <div
-                                            className="h-full bg-blue-500 rounded-full"
+                                            className="h-full bg-gold rounded-full"
                                             style={{
                                                 width: `${(item.totalTrades / maxTrades) * 100}%`,
                                             }}

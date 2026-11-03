@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { Cog, Star } from "lucide-react";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
@@ -24,7 +23,7 @@ export default async function MaintenancePage() {
         });
         const config = (record?.value as Record<string, unknown>) || {};
         isMaintenanceOn = config.maintenanceMode === true;
-    } catch (e) {
+    } catch {
         // If DB fails, assume we're in maintenance or just render the page to be safe
     }
 
@@ -33,13 +32,13 @@ export default async function MaintenancePage() {
     }
 
     return (
-        <div className="min-h-screen relative flex items-center justify-center bg-[#F8FAFC] overflow-hidden selection:bg-amber-500/20 font-sans">
-            {/* Premium Light Background Gradient */}
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-amber-500/10 via-white/50 to-[#F8FAFC] z-0"></div>
+        <div className="min-h-screen relative flex items-center justify-center bg-white dark:bg-transparent overflow-hidden selection:bg-gold/20 font-sans">
+            {/* Subtle Gold Background Gradient */}
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-amber-500/10 via-transparent to-transparent z-0 pointer-events-none"></div>
 
-            {/* Grid Pattern overlay - Light mode */}
+            {/* Grid Pattern overlay */}
             <div
-                className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.03)_1px,transparent_1px)] bg-[size:40px_40px] z-0 opacity-60"
+                className="absolute inset-0 bg-[linear-gradient(rgba(128,128,128,0.06)_1px,transparent_1px),linear-gradient(90deg,rgba(128,128,128,0.06)_1px,transparent_1px)] bg-[size:40px_40px] z-0 opacity-60 pointer-events-none"
                 style={{
                     WebkitMaskImage:
                         "radial-gradient(circle at center, black, transparent 80%)",
@@ -48,63 +47,55 @@ export default async function MaintenancePage() {
                 }}
             ></div>
 
-            {/* Main Content Container (Glassmorphism Light) */}
+            {/* Main Content Container */}
             <div className="relative z-10 max-w-lg w-full mx-4">
-                <div className="backdrop-blur-xl bg-white/70 border border-white rounded-lg p-8 sm:p-12 text-center shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05),0_0_60px_-15px_rgba(245,158,11,0.15)] relative overflow-hidden">
-                    {/* Inner glowing orbs */}
-                    <div
-                        className="absolute -top-32 -left-32 w-64 h-64 bg-amber-500 rounded-full mix-blend-multiply filter blur-[100px] opacity-10 animate-pulse"
-                        style={{ animationDuration: "4s" }}
-                    ></div>
-                    <div className="absolute -bottom-32 -right-32 w-64 h-64 bg-blue-400 rounded-full mix-blend-multiply filter blur-[100px] opacity-10"></div>
-
-                    {/* Animated Icon Group */}
+                <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-8 sm:p-12 text-center shadow-sm relative overflow-hidden">
+                    {/* Icon Group */}
                     <div className="relative mx-auto w-[100px] h-[100px] mb-8 group">
-                        <div className="absolute inset-0 bg-amber-500/20 rounded-lg animate-pulse blur-xl group-hover:bg-amber-500/30 transition-all duration-500"></div>
-                        <div className="relative w-full h-full bg-white border border-dashboard rounded-lg flex items-center justify-center shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-md">
+                        <div className="relative w-full h-full bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-xl flex items-center justify-center shadow-sm">
                             <Cog
                                 size={44}
                                 className="text-amber-500 animate-[spin_4s_linear_infinite]"
                                 strokeWidth={2}
                             />
-                            <div className="absolute bottom-2 right-2 bg-white rounded-full p-1 border border-dashboard shadow-md">
+                            <div className="absolute bottom-2 right-2 bg-white dark:bg-[#1E2028] rounded-lg p-1 border border-gray-200 dark:border-white/10 shadow-sm">
                                 <Star
                                     size={16}
-                                    className="text-amber-400 animate-pulse"
-                                    strokeWidth={2.5}
+                                    className="text-amber-500"
+                                    strokeWidth={2}
                                 />
                             </div>
                         </div>
                     </div>
 
                     {/* Status Badge */}
-                    <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 mb-6 backdrop-blur-sm shadow-sm">
+                    <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-gold/10 border border-gold/20 mb-6 shadow-sm">
                         <span className="relative flex h-2 w-2">
                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-500 opacity-75"></span>
                             <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
                         </span>
-                        <span className="text-xs font-bold text-amber-500 uppercase tracking-wider">
+                        <span className="text-xs font-bold text-amber-600 dark:text-gold uppercase tracking-wider">
                             System Upgrade
                         </span>
                     </div>
 
                     {/* Typography */}
-                    <h1 className="text-[36px] sm:text-[42px] font-black text-slate-900 mb-4 tracking-tight leading-tight">
-                        We're Upgrading
+                    <h1 className="text-[36px] sm:text-[42px] font-black text-slate-900 dark:text-white mb-4 tracking-tight leading-tight font-heading">
+                        We&apos;re Upgrading
                     </h1>
-                    <p className="text-slate-500 text-[15px] mb-10 leading-relaxed font-medium max-w-[90%] mx-auto">
-                        TheNextTrade platform is currently undergoing
-                        scheduled maintenance to bring you powerful new features
-                        and better performance.
+                    <p className="text-slate-500 dark:text-gray-400 text-[15px] mb-10 leading-relaxed font-medium max-w-[90%] mx-auto">
+                        TheNextTrade is currently undergoing scheduled
+                        maintenance to upgrade trade telemetry infrastructure
+                        and execution services.
                     </p>
 
                     {/* Footer */}
-                    <div className="pt-6 border-t border-dashboard">
-                        <p className="text-[13px] text-slate-500 font-medium">
+                    <div className="pt-6 border-t border-gray-200 dark:border-white/10">
+                        <p className="text-[13px] text-slate-500 dark:text-gray-400 font-medium">
                             Need immediate assistance?{" "}
                             <a
                                 href="mailto:support@thenexttrade.com"
-                                className="text-slate-900 font-bold hover:text-amber-500 transition-colors decoration-amber-500/40 underline underline-offset-4"
+                                className="text-amber-600 dark:text-gold font-bold hover:underline underline-offset-4"
                             >
                                 Contact Support
                             </a>

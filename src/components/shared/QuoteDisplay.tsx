@@ -3,8 +3,7 @@
 import { useState, useEffect, memo } from "react";
 import { Quote } from "lucide-react";
 
-// Fallback quotes in case DB is empty or API fails
-const fallbackQuotes = [
+export const fallbackQuotes = [
     {
         text: "The goal of a successful trader is to make the best trades. Money is secondary.",
         author: "Alexander Elder",
@@ -19,10 +18,17 @@ const fallbackQuotes = [
     },
 ];
 
-export default memo(function QuoteDisplay({ isDark }: { isDark: boolean }) {
-    const [quote, setQuote] = useState(fallbackQuotes[0]);
+interface QuoteDisplayProps {
+    isDark?: boolean;
+    quote?: { text: string; author: string };
+}
+
+export default memo(function QuoteDisplay({ isDark, quote: propQuote }: QuoteDisplayProps) {
+    const [quote, setQuote] = useState(propQuote || fallbackQuotes[0]);
 
     useEffect(() => {
+        if (propQuote) return; // Skip client-side fetch if server quote was passed
+
         fetch("/api/quotes?type=HOMEPAGE&active=true")
             .then((res) => res.json())
             .then((data: { text: string; author: string }[]) => {
@@ -48,7 +54,9 @@ export default memo(function QuoteDisplay({ isDark }: { isDark: boolean }) {
                     ];
                 setQuote(random);
             });
-    }, []);
+    }, [propQuote]);
+
+    const activeQuote = propQuote || quote;
 
     return (
         <div className="relative max-w-4xl mx-auto py-0.5">
@@ -64,7 +72,7 @@ export default memo(function QuoteDisplay({ isDark }: { isDark: boolean }) {
                     />
 
                     <p className="text-[12px] font-semibold font-heading text-slate-700 dark:text-slate-300 leading-normal tracking-wide">
-                        {quote.text}
+                        {activeQuote.text}
                     </p>
 
                     {/* Right Quote Icon */}
@@ -79,7 +87,7 @@ export default memo(function QuoteDisplay({ isDark }: { isDark: boolean }) {
                     <p
                         className={`text-[10px] font-bold uppercase tracking-widest ${isDark ? "text-gray-500 dark:text-gray-400" : "text-gray-500"}`}
                     >
-                        {quote.author}
+                        {activeQuote.author}
                     </p>
                     <span className="w-4 h-px bg-gradient-to-l from-transparent to-gray-300 dark:to-gray-700"></span>
                 </div>

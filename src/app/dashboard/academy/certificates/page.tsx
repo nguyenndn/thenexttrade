@@ -87,7 +87,7 @@ export default async function CertificatesPage() {
                 description="Earn certificates by passing all quizzes in each level."
             >
                 <div className="flex items-center gap-3 text-sm font-bold w-full sm:w-auto">
-                    <div className="flex items-center justify-center gap-1.5 text-white bg-primary px-3 py-1.5 rounded-full shadow-sm flex-1 sm:flex-none">
+                    <div className="flex items-center justify-center gap-1.5 !text-white bg-gold px-3 py-1.5 rounded-lg shadow-sm font-mono tabular-nums flex-1 sm:flex-none">
                         <Trophy size={14} />
                         <span>
                             {earnedCount}/{totalLevels} Earned
@@ -103,8 +103,8 @@ export default async function CertificatesPage() {
                     <div className="absolute -inset-2 bg-gradient-to-r from-amber-400/15 to-yellow-400/15 rounded-xl blur-xl pointer-events-none" />
                     <div className="relative">
                         <div className="flex items-center gap-2 mb-2">
-                            <Crown size={16} className="text-yellow-500" />
-                            <span className="text-xs font-bold text-yellow-600 dark:text-yellow-400 uppercase tracking-widest">
+                            <Crown size={16} className="text-amber-600 dark:text-gold" />
+                            <span className="text-xs font-bold text-amber-600 dark:text-gold uppercase tracking-widest">
                                 Master Certificate
                             </span>
                         </div>
@@ -127,22 +127,21 @@ export default async function CertificatesPage() {
 
             {/* Not yet completed — locked master card teaser */}
             {!allLevelsCompleted && (
-                <div className="relative rounded-xl border-2 border-dashed border-yellow-400/30 bg-gradient-to-r from-yellow-400/5 to-amber-400/5 p-6 flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full bg-yellow-400/10 flex items-center justify-center flex-shrink-0">
-                        <Lock size={20} className="text-yellow-500/50" />
+                <div className="relative rounded-xl border-2 border-dashed border-gold/30 bg-gold/5 p-6 flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-lg bg-gold/10 flex items-center justify-center flex-shrink-0">
+                        <Lock size={20} className="text-amber-600 dark:text-gold" />
                     </div>
                     <div>
                         <h3 className="text-sm font-bold text-gray-700 dark:text-gray-300">
                             Master Trader Certificate
                         </h3>
                         <p className="text-xs text-gray-500 mt-0.5">
-                            Complete all {totalLevels} levels to unlock the
-                            Master Trader Certificate. {earnedCount}/
-                            {totalLevels} completed.
+                            Complete all <span className="font-mono tabular-nums">{totalLevels}</span> levels to unlock the
+                            Master Trader Certificate. <span className="font-mono tabular-nums">{earnedCount}/{totalLevels}</span> completed.
                         </p>
                     </div>
                     <div className="ml-auto">
-                        <Trophy size={28} className="text-yellow-500/40" />
+                        <Trophy size={28} className="text-amber-600/40 dark:text-gold/40" />
                     </div>
                 </div>
             )}
@@ -183,7 +182,7 @@ export default async function CertificatesPage() {
             <div className="text-center pt-4">
                 <Link
                     href="/dashboard/academy"
-                    className="inline-flex items-center gap-2 px-6 py-3 text-sm font-bold text-gray-600 dark:text-gray-300 bg-white dark:bg-[#1E2028] border border-dashboard rounded-lg shadow-sm hover:border-primary hover:text-primary transition-colors"
+                    className="inline-flex items-center gap-2 px-6 py-3 text-sm font-bold text-gray-600 dark:text-gray-300 bg-white dark:bg-[#1E2028] border border-dashboard rounded-lg shadow-sm hover:border-gold/40 hover:text-amber-600 dark:hover:text-gold transition-colors"
                 >
                     <GraduationCap size={16} />
                     Back to Academy

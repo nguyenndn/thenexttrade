@@ -76,7 +76,7 @@ export function CurrencyHeatMap() {
                 strengthMap[c] = [];
             });
 
-            result.rates.forEach((rate: any) => {
+            result.rates.forEach((rate: { symbol: string; changePercent?: number }) => {
                 const symbol = rate.symbol.replace("=X", "");
                 const base = symbol.substring(0, 3);
                 const quote = symbol.substring(3, 6);
@@ -130,7 +130,7 @@ export function CurrencyHeatMap() {
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
-                <div className="text-sm text-gray-600 dark:text-gray-300">
+                <div className="text-sm font-mono tabular-nums text-gray-600 dark:text-gray-300">
                     {lastUpdate &&
                         `Updated: ${lastUpdate.toLocaleTimeString()}`}
                 </div>
@@ -140,7 +140,7 @@ export function CurrencyHeatMap() {
                     size="sm"
                     onClick={fetchStrength}
                     disabled={loading}
-                    className="px-3 py-1.5 bg-gray-100 dark:bg-white/5 text-sm font-bold text-gray-600 dark:text-gray-300 hover:border-primary/50 h-auto"
+                    className="px-3 py-1.5 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 text-sm font-bold text-gray-700 dark:text-gray-300 hover:border-gold/40 h-auto"
                 >
                     <RefreshCw
                         size={14}
@@ -165,13 +165,13 @@ export function CurrencyHeatMap() {
                             </span>
                         </div>
                         <div className="flex-1 relative h-8">
-                            <div className="absolute inset-0 bg-gray-100 dark:bg-white/5 rounded-lg" />
+                            <div className="absolute inset-0 bg-gray-50/80 dark:bg-[#151925] border border-gray-200/60 dark:border-white/5 rounded-lg" />
                             <div className="absolute top-0 bottom-0 left-1/2 w-px bg-gray-300 dark:bg-white/20 z-10" />
                             <div
                                 className={cn(
                                     "absolute top-0.5 bottom-0.5 rounded-lg transition-all z-20",
                                     item.strength >= 0
-                                        ? "bg-green-500"
+                                        ? "bg-emerald-500"
                                         : "bg-red-500"
                                 )}
                                 style={{
@@ -185,9 +185,9 @@ export function CurrencyHeatMap() {
                         </div>
                         <div
                             className={cn(
-                                "w-20 text-right font-bold text-sm",
+                                "w-20 text-right font-mono tabular-nums font-bold text-sm",
                                 item.strength > 0
-                                    ? "text-green-600 dark:text-green-400"
+                                    ? "text-emerald-600 dark:text-emerald-400"
                                     : item.strength < 0
                                       ? "text-red-600 dark:text-red-400"
                                       : "text-gray-500"
@@ -196,7 +196,7 @@ export function CurrencyHeatMap() {
                             {item.strength > 0 ? "+" : ""}
                             {item.strength.toFixed(3)}%
                         </div>
-                        <div className="hidden sm:block w-8 text-center text-xs font-bold text-gray-500">
+                        <div className="hidden sm:block w-8 text-center text-xs font-mono tabular-nums font-bold text-gray-500">
                             #{idx + 1}
                         </div>
                     </div>

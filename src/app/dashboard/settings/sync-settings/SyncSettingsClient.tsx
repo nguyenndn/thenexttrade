@@ -108,8 +108,10 @@ export default function SyncSettingsClient() {
                 createdAt: new Date().toISOString(),
             });
             toast.success("Sync API key generated!");
-        } catch (e: any) {
-            toast.error(e.message || "Failed to generate key");
+        } catch (e: unknown) {
+            toast.error(
+                e instanceof Error ? e.message : "Failed to generate key"
+            );
         } finally {
             setIsGenerating(false);
         }
@@ -154,7 +156,7 @@ export default function SyncSettingsClient() {
     if (isLoading) {
         return (
             <div className="flex h-64 items-center justify-center">
-                <Loader2 className="animate-spin text-primary" size={28} />
+                <Loader2 className="animate-spin text-gold" size={28} />
             </div>
         );
     }
@@ -165,21 +167,21 @@ export default function SyncSettingsClient() {
             label: "Auto Sync",
             desc: "Trades synced directly from MT5",
             color: "text-emerald-500",
-            bg: "bg-emerald-500/10",
+            bg: "bg-emerald-500/10 border border-emerald-500/20",
         },
         {
             icon: MonitorSmartphone,
             label: "EA Integrated",
             desc: "Runs directly on your charts",
-            color: "text-cyan-500",
-            bg: "bg-cyan-500/10",
+            color: "text-amber-600 dark:text-gold",
+            bg: "bg-gold/10 border border-gold/20",
         },
         {
             icon: Shield,
             label: "Unified Key",
             desc: "One key works for all accounts",
-            color: "text-violet-500",
-            bg: "bg-violet-500/10",
+            color: "text-amber-600 dark:text-gold",
+            bg: "bg-gold/10 border border-gold/20",
         },
     ];
 
@@ -244,8 +246,8 @@ export default function SyncSettingsClient() {
 
                 <div className="relative px-6 py-6">
                     <div className="flex items-start gap-4">
-                        <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-emerald-500/20 shrink-0">
-                            <Unplug size={22} className="text-white" />
+                        <div className="w-12 h-12 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
+                            <Unplug size={22} className="text-emerald-500" />
                         </div>
                         <div className="min-w-0">
                             <h2 className="text-lg font-black tracking-tight text-gray-800 dark:text-white">
@@ -265,18 +267,18 @@ export default function SyncSettingsClient() {
                             ({ icon: Icon, label, desc, color, bg }) => (
                                 <div
                                     key={label}
-                                    className="group flex items-center gap-3.5 px-4 py-3.5 rounded-xl bg-white dark:bg-[#252731] border border-gray-200 dark:border-white/10 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_20px_-8px_rgba(0,0,0,0.1)] dark:shadow-none transition-all duration-300 hover:border-gray-200 dark:hover:border-white/10"
+                                    className="group flex items-center gap-3.5 px-4 py-3.5 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-dashboard transition-all duration-200 hover:border-gold/30"
                                 >
                                     <div
                                         className={cn(
-                                            "w-10 h-10 rounded-lg flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110",
+                                            "w-10 h-10 rounded-lg flex items-center justify-center shrink-0 transition-transform duration-200",
                                             bg
                                         )}
                                     >
                                         <Icon size={18} className={color} />
                                     </div>
                                     <div className="min-w-0">
-                                        <p className="text-sm font-black tracking-tight text-gray-800 dark:text-white group-hover:text-primary transition-colors">
+                                        <p className="text-sm font-black tracking-tight text-gray-800 dark:text-white group-hover:text-amber-600 dark:group-hover:text-gold transition-colors">
                                             {label}
                                         </p>
                                         <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">
@@ -444,7 +446,7 @@ export default function SyncSettingsClient() {
 
                             {/* Key info */}
                             {keyData.createdAt && (
-                                <p className="text-xs text-gray-400 dark:text-gray-500">
+                                <p className="text-xs text-gray-400 dark:text-gray-500 font-mono tabular-nums">
                                     Generated on{" "}
                                     {new Date(
                                         keyData.createdAt
@@ -470,8 +472,8 @@ export default function SyncSettingsClient() {
                     {/* Header with Progress Indicator */}
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
                         <div className="flex items-center gap-2.5">
-                            <div className="w-8 h-8 rounded-lg bg-blue-500/10 dark:bg-blue-500/15 flex items-center justify-center ring-1 ring-blue-200/50 dark:ring-blue-500/20">
-                                <Download size={15} className="text-blue-500" />
+                            <div className="w-8 h-8 rounded-lg bg-gold/10 border border-gold/20 flex items-center justify-center">
+                                <Download size={15} className="text-amber-600 dark:text-gold" />
                             </div>
                             <div>
                                 <h2 className="text-sm font-black tracking-tight text-gray-800 dark:text-white">
@@ -492,17 +494,17 @@ export default function SyncSettingsClient() {
                                             "h-full rounded-full transition-all duration-500",
                                             completedCount === STEPS.length
                                                 ? "bg-emerald-500"
-                                                : "bg-primary"
+                                                : "bg-gold"
                                         )}
                                         style={{ width: `${progressPercent}%` }}
                                     />
                                 </div>
-                                <span className="text-xs font-bold text-gray-700 dark:text-gray-300 tabular-nums">
+                                <span className="text-xs font-bold text-gray-700 dark:text-gray-300 font-mono tabular-nums">
                                     {completedCount}/{STEPS.length} ({progressPercent}%)
                                 </span>
                             </div>
                             {completedCount === STEPS.length && (
-                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[11px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                                     <CheckCircle2 size={11} /> All Done!
                                 </span>
                             )}
@@ -518,10 +520,10 @@ export default function SyncSettingsClient() {
                                     key={stepItem.id}
                                     onClick={() => toggleStep(stepItem.id)}
                                     className={cn(
-                                        "group relative flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl border transition-all duration-200 cursor-pointer select-none",
+                                        "group relative flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-lg border transition-all duration-200 cursor-pointer select-none",
                                         isDone
                                             ? "bg-emerald-500/[0.03] border-emerald-500/30 dark:bg-emerald-500/[0.05] dark:border-emerald-500/20 shadow-sm"
-                                            : "bg-gray-50/60 dark:bg-white/[0.02] border-gray-200 dark:border-white/10 hover:border-primary/40 dark:hover:border-primary/40 hover:bg-gray-50 dark:hover:bg-white/[0.04]"
+                                            : "bg-gray-50/80 dark:bg-[#151925] border-dashboard hover:border-gold/40"
                                     )}
                                 >
                                     <div className="flex items-start sm:items-center gap-3.5 min-w-0">
@@ -531,10 +533,10 @@ export default function SyncSettingsClient() {
                                             type="button"
                                             aria-label={`Mark step ${stepItem.step} as ${isDone ? "incomplete" : "complete"}`}
                                             className={cn(
-                                                "w-7 h-7 rounded-lg flex items-center justify-center text-xs font-black shrink-0 transition-all duration-200 mt-0.5 sm:mt-0 p-0",
+                                                "w-7 h-7 rounded-lg flex items-center justify-center text-xs font-black font-mono tabular-nums shrink-0 transition-all duration-200 mt-0.5 sm:mt-0 p-0",
                                                 isDone
                                                     ? "bg-emerald-500 text-white shadow-sm shadow-emerald-500/25 ring-2 ring-emerald-500/20 hover:bg-emerald-600 hover:text-white"
-                                                    : "bg-white dark:bg-[#1E2028] text-gray-400 dark:text-gray-500 ring-1 ring-gray-200 dark:ring-white/10 group-hover:ring-primary/40 group-hover:text-primary"
+                                                    : "bg-white dark:bg-[#1E2028] text-gray-400 dark:text-gray-500 ring-1 ring-gray-200 dark:ring-white/10 group-hover:ring-gold/40 group-hover:text-amber-600 dark:group-hover:text-gold"
                                             )}
                                         >
                                             {isDone ? (

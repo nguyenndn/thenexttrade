@@ -5,13 +5,13 @@ import { TELEGRAM_CHANNEL_URL } from "@/config/telegram";
 
 export function AboutUsSection() {
     return (
-        <div className="relative overflow-hidden border-t border-dashboard bg-slate-50/50 dark:bg-transparent py-12 sm:py-16">
+        <div className="relative overflow-hidden border-t border-gray-200 dark:border-white/10 bg-slate-50/50 dark:bg-transparent py-12 sm:py-16">
             {/* Background decorative grids and gradients */}
             <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(to_right,rgba(128,128,128,0.06)_1px,transparent_1px),linear-gradient(to_bottom,rgba(128,128,128,0.06)_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)]" />
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-gold/10 dark:bg-gold/15 blur-[120px] rounded-full pointer-events-none -z-10" />
 
             <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="relative overflow-hidden rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0c0e14]/95 p-6 sm:p-8 lg:p-10 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.08)] dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)]">
+                <div className="relative overflow-hidden rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0D111C] p-6 sm:p-8 lg:p-10 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.08)] dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)]">
                     {/* Top highlight bar */}
                     <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-amber-500 via-gold to-amber-600/70" />
 
@@ -34,7 +34,7 @@ export function AboutUsSection() {
                         {/* Right Column: Quote panel and CTA Button */}
                         <div className="flex-shrink-0 flex flex-col gap-4 w-full lg:w-[460px]">
                             {/* Quote block */}
-                            <div className="relative rounded-lg border border-amber-200 dark:border-amber-500/20 bg-amber-50/70 dark:bg-amber-500/10 p-5">
+                            <div className="relative rounded-xl border border-amber-200 dark:border-amber-500/20 bg-amber-50/70 dark:bg-amber-500/10 p-5">
                                 <Quote
                                     size={18}
                                     className="absolute -top-2 left-4 text-amber-500 dark:text-gold"
@@ -49,14 +49,13 @@ export function AboutUsSection() {
                                 href="/about"
                                 className={buttonVariants({
                                     variant: "gold",
-                                    size: "smd",
                                     className:
-                                        "w-full rounded-lg bg-gold text-white font-extrabold hover:bg-amber-600 shadow-[0_8px_20px_rgba(245,158,11,0.22)] hover:shadow-[0_12px_28px_rgba(245,158,11,0.32)] flex items-center justify-center animate-btn-shine group",
+                                        "w-full min-h-12 px-6 rounded-lg bg-gold text-white font-extrabold text-sm hover:bg-amber-600 shadow-[0_8px_20px_rgba(245,158,11,0.22)] hover:shadow-[0_12px_28px_rgba(245,158,11,0.32)] flex items-center justify-center animate-btn-shine group",
                                 })}
                             >
                                 <span>Read My Story</span>
                                 <ArrowRight
-                                    size={14}
+                                    size={16}
                                     className="ml-1.5 group-hover:translate-x-1 transition-transform duration-300"
                                 />
                             </Link>
@@ -82,20 +81,34 @@ export function AboutUsSection() {
                             </div>
                         </div>
 
-                        <a
-                            href={TELEGRAM_CHANNEL_URL}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className={buttonVariants({
-                                variant: "outline",
-                                size: "smd",
-                                className:
-                                    "w-full sm:w-auto font-bold text-gray-800 dark:text-white hover:border-[#2AABEE]/40 hover:text-[#2AABEE] transition-all duration-300 flex items-center justify-center gap-2 shrink-0",
-                            })}
-                        >
-                            <MessageCircle size={14} className="text-[#2AABEE]" />
-                            <span>Join Telegram</span>
-                        </a>
+                        <div className="flex flex-col sm:flex-row items-center gap-2.5 w-full sm:w-auto shrink-0">
+                            <Link
+                                href="/auth/signup"
+                                className={buttonVariants({
+                                    variant: "gold",
+                                    size: "smd",
+                                    className: "w-full sm:w-auto font-extrabold text-white bg-gold hover:bg-amber-600 shadow-sm flex items-center justify-center gap-1.5",
+                                })}
+                            >
+                                <span>Create Free Account</span>
+                                <ArrowRight size={14} />
+                            </Link>
+
+                            <a
+                                href={TELEGRAM_CHANNEL_URL}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className={buttonVariants({
+                                    variant: "outline",
+                                    size: "smd",
+                                    className:
+                                        "w-full sm:w-auto font-bold text-gray-800 dark:text-white hover:border-gold/50 hover:text-gold transition-all duration-300 flex items-center justify-center gap-2",
+                                })}
+                            >
+                                <MessageCircle size={14} className="text-gold" />
+                                <span>Join Telegram</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </section>

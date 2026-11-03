@@ -31,7 +31,7 @@ export function CurrencyHeatMapMock() {
 
     return (
         <div
-            className="h-44 w-full bg-[#fdfbf7] dark:bg-slate-900/80 rounded-lg p-4 flex flex-col justify-between relative overflow-hidden border border-gray-200 dark:border-white/10 select-none cursor-pointer"
+            className="h-44 w-full bg-gray-50/80 dark:bg-[#151925] rounded-lg p-4 flex flex-col justify-between relative overflow-hidden border border-gray-200 dark:border-white/10 select-none cursor-pointer"
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
         >
@@ -39,7 +39,7 @@ export function CurrencyHeatMapMock() {
             <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl pointer-events-none" />
 
             {/* Header */}
-            <div className="flex items-center justify-between z-10 font-mono text-[9px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest">
+            <div className="flex items-center justify-between z-10 font-mono tabular-nums text-[9px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest">
                 <span>Currency Strength Map</span>
                 <span className="text-emerald-600/80 dark:text-emerald-400 font-black">
                     24H TIMEFRAME
@@ -47,7 +47,7 @@ export function CurrencyHeatMapMock() {
             </div>
 
             {/* Strength Bars */}
-            <div className="flex-1 flex flex-col justify-center gap-1.5 z-10 my-1 font-mono text-[8.5px] font-bold">
+            <div className="flex-1 flex flex-col justify-center gap-1.5 z-10 my-1 font-mono tabular-nums text-[8.5px] font-bold">
                 {currencies.map((curr, idx) => (
                     <div key={curr.name} className="flex items-center gap-2">
                         <span className="w-8 text-slate-600 dark:text-slate-300">{curr.name}</span>
@@ -75,7 +75,7 @@ export function CurrencyHeatMapMock() {
             </div>
 
             {/* Footer */}
-            <div className="text-[8px] font-bold text-slate-400 dark:text-slate-400 flex justify-between items-center z-10 border-t border-gray-200 dark:border-white/10 pt-2 font-mono">
+            <div className="text-[8px] font-bold text-slate-400 dark:text-slate-400 flex justify-between items-center z-10 border-t border-gray-200 dark:border-white/10 pt-2 font-mono tabular-nums">
                 <span>Currencies Tracked: 8</span>
                 <span>Auto-ranking sorted</span>
             </div>

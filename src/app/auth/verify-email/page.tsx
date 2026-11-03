@@ -88,21 +88,21 @@ function VerifyEmailForm() {
     if (!email) return null; // Prevent rendering if redirecting
 
     return (
-        <div className="w-full max-w-[480px] mx-auto bg-white dark:bg-[#1E2028] p-8 rounded-xl border border-dashboard shadow-xl transition-colors duration-300">
+        <div className="w-full max-w-[480px] mx-auto bg-white dark:bg-[#1E2028] p-8 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm transition-colors duration-300">
             <div className="flex justify-center mb-6">
                 <Logo />
             </div>
 
             <div className="text-center mb-8">
-                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-primary/20">
-                    <Mail className="text-primary" size={28} />
+                <div className="w-16 h-16 bg-gold/10 rounded-lg flex items-center justify-center mx-auto mb-4 border border-gold/20">
+                    <Mail className="text-amber-600 dark:text-gold" size={28} />
                 </div>
-                <h1 className="text-3xl font-bold text-gray-700 dark:text-white mb-2 tracking-tight">
+                <h1 className="text-2xl sm:text-3xl font-black text-slate-950 dark:text-white mb-2 tracking-tight">
                     Check your email
                 </h1>
-                <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
-                    We've sent an 8-digit verification code to <br />
-                    <span className="font-bold text-gray-700 dark:text-white">
+                <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed tabular-nums">
+                    We&apos;ve sent an 8-digit verification code to <br />
+                    <span className="font-bold text-slate-900 dark:text-white">
                         {email}
                     </span>
                 </p>
@@ -115,21 +115,27 @@ function VerifyEmailForm() {
                     </div>
                 )}
                 {successMessage && (
-                    <div className="p-4 rounded-lg bg-green-50 dark:bg-primary/10 border border-green-200 dark:border-primary/20 text-green-700 dark:text-primary text-sm text-center font-medium">
+                    <div className="p-4 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 text-emerald-700 dark:text-emerald-400 text-sm text-center font-medium">
                         {successMessage}
                     </div>
                 )}
 
                 <div>
+                    <label
+                        htmlFor="otp-code"
+                        className="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 text-center mb-2 tabular-nums"
+                    >
+                        8-Digit Verification Code
+                    </label>
                     <input
+                        id="otp-code"
                         type="text"
                         maxLength={8}
                         value={otp}
                         onChange={(e) =>
                             setOtp(e.target.value.replace(/[^0-9]/g, ""))
-                        } // Only allow numbers
-                        placeholder="••••••••"
-                        className="w-full text-center tracking-[0.5em] sm:tracking-[1em] font-mono text-2xl sm:text-3xl h-16 bg-gray-50 dark:bg-[#0B0E14] border-dashboard text-gray-700 dark:text-white focus:bg-white dark:focus:bg-[#0B0E14] focus:border-primary focus:ring-1 focus:ring-primary rounded-lg transition-all"
+                        }
+                        className="w-full text-center tracking-[0.5em] sm:tracking-[1em] font-mono tabular-nums text-2xl sm:text-3xl h-16 bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 text-slate-900 dark:text-white focus:bg-white dark:focus:bg-[#151925] focus:border-gold focus:ring-1 focus:ring-gold/30 rounded-lg transition-all outline-none"
                         required
                         autoComplete="one-time-code"
                     />
@@ -137,7 +143,7 @@ function VerifyEmailForm() {
 
                 <Button
                     type="submit"
-                    className="w-full h-14 bg-gold text-white hover:bg-amber-600 font-bold text-base border-none rounded-lg shadow-md transition-all shadow-amber-500/20 flex items-center justify-center gap-2"
+                    className="w-full h-14 bg-gold !text-white hover:bg-amber-600 font-bold text-base border-none rounded-lg shadow-md transition-all shadow-amber-500/20 flex items-center justify-center gap-2"
                     isLoading={loading}
                     disabled={otp.length !== 8 || loading}
                 >
@@ -147,18 +153,18 @@ function VerifyEmailForm() {
 
             <div className="mt-8 text-center space-y-4">
                 <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-sm">
-                    <span className="text-gray-600 dark:text-gray-300 mr-2">
-                        Didn't receive the code?
+                    <span className="text-slate-600 dark:text-slate-300 mr-2">
+                        Didn&apos;t receive the code?
                     </span>
                     <Button
                         type="button"
                         variant="link"
                         onClick={handleResend}
                         disabled={timer > 0 || resendLoading}
-                        className={`font-bold flex items-center gap-1 transition-colors p-0 h-auto ${
+                        className={`font-bold tabular-nums flex items-center gap-1 transition-colors p-0 h-auto ${
                             timer > 0
-                                ? "text-gray-500 cursor-not-allowed hover:no-underline"
-                                : "text-gold hover:text-amber-500 hover:no-underline"
+                                ? "text-slate-400 cursor-not-allowed hover:no-underline"
+                                : "text-amber-600 dark:text-gold hover:text-amber-500 hover:no-underline"
                         }`}
                     >
                         {resendLoading ? (
@@ -168,10 +174,10 @@ function VerifyEmailForm() {
                     </Button>
                 </div>
 
-                <div className="pt-4 border-t border-dashboard">
+                <div className="pt-4 border-t border-gray-200 dark:border-white/10">
                     <Link
                         href="/auth/signup"
-                        className="text-sm font-semibold text-gray-600 hover:text-gray-700 dark:text-gray-500 dark:hover:text-white flex items-center justify-center gap-1 transition-colors"
+                        className="text-sm font-semibold text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white flex items-center justify-center gap-1 transition-colors"
                     >
                         Use a different email <ArrowRight size={14} />
                     </Link>
@@ -186,7 +192,7 @@ export default function VerifyEmailPage() {
         <Suspense
             fallback={
                 <div className="flex h-screen items-center justify-center">
-                    <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+                    <div className="w-8 h-8 border-4 border-gold border-t-transparent rounded-full animate-spin"></div>
                 </div>
             }
         >

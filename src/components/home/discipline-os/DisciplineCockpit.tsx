@@ -1,20 +1,15 @@
-"use client";
-
-import { useState } from "react";
 import { Target, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { MissionManifestoHeader } from "./MissionManifestoHeader";
 
 export function DisciplineCockpit() {
-    const [activeBay, setActiveBay] = useState<number | null>(null);
-
     return (
-        <div className="relative isolate overflow-hidden rounded-lg border border-gray-200 dark:border-white/10 bg-slate-50/80 dark:bg-[#0c0e14]/95 backdrop-blur-2xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.08)] dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)]">
+        <div className="relative isolate overflow-hidden rounded-xl border border-gray-200 dark:border-white/10 bg-white/90 dark:bg-[#0D111C] backdrop-blur-2xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.08)] dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)]">
             {/* Ambient Subtle Warm Depth */}
             <div className="pointer-events-none absolute -left-20 -top-20 h-64 w-64 rounded-full bg-gold/[0.04] blur-[80px]" />
 
             {/* 1. TOP STATUS BAR */}
-            <div className="flex items-center border-b border-gray-200 dark:border-white/[0.08] px-5 py-3 sm:px-7 bg-white/70 dark:bg-white/[0.02]">
+            <div className="flex items-center border-b border-gray-200 dark:border-white/[0.08] px-5 py-3 sm:px-7 bg-gray-50/70 dark:bg-[#151925]">
                 <div className="flex flex-wrap items-center gap-3">
                     <div className="flex items-center gap-2 text-xs font-bold text-gray-800 dark:text-gray-100 tracking-wide">
                         <div className="w-5 h-5 rounded-lg bg-gold/10 text-gold flex items-center justify-center">
@@ -56,19 +51,13 @@ export function DisciplineCockpit() {
             <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 divide-gray-200 dark:divide-white/[0.08] md:divide-x">
                 {/* PILLAR 01: COGNITIVE FREEDOM */}
                 <div
-                    onMouseEnter={() => setActiveBay(1)}
-                    onMouseLeave={() => setActiveBay(null)}
-                    className={`group relative flex flex-col p-6 sm:p-7 md:px-4 md:py-6 lg:p-7 transition-all duration-300 ${
-                        activeBay === 1
-                            ? "bg-gold/[0.03] dark:bg-gold/[0.02]"
-                            : "hover:bg-slate-100/50 dark:hover:bg-white/[0.01]"
-                    }`}
+                    className="group relative flex flex-col p-6 sm:p-7 md:px-5 md:py-6 lg:p-7 transition-colors duration-200 hover:bg-gray-50/80 dark:hover:bg-white/[0.02]"
                 >
-                    <div className="text-[10px] xl:text-[11px] font-extrabold uppercase tracking-wide xl:tracking-wider text-gold mb-1.5 whitespace-nowrap">
+                    <div className="text-[10px] xl:text-[11px] font-mono tabular-nums font-extrabold uppercase tracking-wide xl:tracking-wider text-gold mb-1.5">
                         Pillar 01 · No More Manual Logging
                     </div>
 
-                    <h3 className="text-base md:text-[13.5px] lg:text-[15px] xl:text-lg font-bold text-gray-900 dark:text-white mb-2 whitespace-nowrap">
+                    <h3 className="text-base md:text-[14px] lg:text-base xl:text-lg font-bold text-gray-900 dark:text-white mb-2">
                         Every Trade, Logged Automatically
                     </h3>
 
@@ -79,19 +68,13 @@ export function DisciplineCockpit() {
 
                 {/* PILLAR 02: RADICAL TRANSPARENCY */}
                 <div
-                    onMouseEnter={() => setActiveBay(2)}
-                    onMouseLeave={() => setActiveBay(null)}
-                    className={`group relative flex flex-col p-6 sm:p-7 md:px-4 md:py-6 lg:p-7 transition-all duration-300 ${
-                        activeBay === 2
-                            ? "bg-gold/[0.03] dark:bg-gold/[0.02]"
-                            : "hover:bg-slate-100/50 dark:hover:bg-white/[0.01]"
-                    }`}
+                    className="group relative flex flex-col p-6 sm:p-7 md:px-5 md:py-6 lg:p-7 transition-colors duration-200 hover:bg-gray-50/80 dark:hover:bg-white/[0.02]"
                 >
-                    <div className="text-[10px] xl:text-[11px] font-extrabold uppercase tracking-wide xl:tracking-wider text-gold mb-1.5 whitespace-nowrap">
+                    <div className="text-[10px] xl:text-[11px] font-mono tabular-nums font-extrabold uppercase tracking-wide xl:tracking-wider text-gold mb-1.5">
                         Pillar 02 · It Names The Mistake
                     </div>
 
-                    <h3 className="text-base md:text-[13.5px] lg:text-[15px] xl:text-lg font-bold text-gray-900 dark:text-white mb-2 whitespace-nowrap">
+                    <h3 className="text-base md:text-[14px] lg:text-base xl:text-lg font-bold text-gray-900 dark:text-white mb-2">
                         Flags Revenge Sizing &amp; Moved Stops
                     </h3>
 
@@ -102,19 +85,13 @@ export function DisciplineCockpit() {
 
                 {/* PILLAR 03: BEHAVIORAL MASTERY */}
                 <div
-                    onMouseEnter={() => setActiveBay(3)}
-                    onMouseLeave={() => setActiveBay(null)}
-                    className={`group relative flex flex-col p-6 sm:p-7 md:px-4 md:py-6 lg:p-7 transition-all duration-300 ${
-                        activeBay === 3
-                            ? "bg-gold/[0.03] dark:bg-gold/[0.02]"
-                            : "hover:bg-slate-100/50 dark:hover:bg-white/[0.01]"
-                    }`}
+                    className="group relative flex flex-col p-6 sm:p-7 md:px-5 md:py-6 lg:p-7 transition-colors duration-200 hover:bg-gray-50/80 dark:hover:bg-white/[0.02]"
                 >
-                    <div className="text-[10px] xl:text-[11px] font-extrabold uppercase tracking-wide xl:tracking-wider text-gold mb-1.5 whitespace-nowrap">
+                    <div className="text-[10px] xl:text-[11px] font-mono tabular-nums font-extrabold uppercase tracking-wide xl:tracking-wider text-gold mb-1.5">
                         Pillar 03 · One Fix At A Time
                     </div>
 
-                    <h3 className="text-base md:text-[13.5px] lg:text-[15px] xl:text-lg font-bold text-gray-900 dark:text-white mb-2 whitespace-nowrap">
+                    <h3 className="text-base md:text-[14px] lg:text-base xl:text-lg font-bold text-gray-900 dark:text-white mb-2">
                         One Rule Per 10 Trades
                     </h3>
 
@@ -125,8 +102,8 @@ export function DisciplineCockpit() {
             </div>
 
             {/* 4. VALUE FLOW FOOTER */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-3.5 md:gap-4 border-t border-gray-200 dark:border-white/[0.08] px-4 py-3 sm:px-6 lg:px-7 bg-white/70 dark:bg-white/[0.02] text-xs text-gray-600 dark:text-gray-400">
-                <div className="flex flex-wrap items-center gap-2 sm:gap-3 lg:gap-6 font-semibold text-[11px] lg:text-xs">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-3.5 md:gap-4 border-t border-gray-200 dark:border-white/[0.08] px-4 py-3 sm:px-6 lg:px-7 bg-gray-50/70 dark:bg-[#151925] text-xs text-gray-600 dark:text-gray-400">
+                <div className="flex flex-wrap items-center gap-2 sm:gap-3 lg:gap-6 font-mono tabular-nums font-semibold text-[11px] lg:text-xs">
                     <span className="flex items-center gap-1.5 text-gray-800 dark:text-gray-200 whitespace-nowrap">
                         <span className="w-1.5 h-1.5 rounded-full bg-gold" />
                         1. Auto-log
@@ -145,24 +122,12 @@ export function DisciplineCockpit() {
 
                 <Link
                     href="/auth/signup"
-                    className="inline-flex items-center gap-1.5 font-bold text-gold hover:underline text-[11px] lg:text-xs whitespace-nowrap shrink-0 self-start md:self-auto"
+                    className="inline-flex items-center gap-1.5 font-sans font-bold text-gold hover:underline text-[11px] lg:text-xs whitespace-nowrap shrink-0 self-start md:self-auto"
                 >
                     <span>Sync My MT5 — Free</span>
                     <ArrowRight size={13} className="shrink-0" />
                 </Link>
             </div>
-
-            {/* Custom CSS Animation Keyframe for Energy Line */}
-            <style>{`
-                @keyframes laserFlow {
-                    0% {
-                        transform: translateX(-100%);
-                    }
-                    100% {
-                        transform: translateX(1000%);
-                    }
-                }
-            `}</style>
         </div>
     );
 }

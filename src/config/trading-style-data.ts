@@ -1139,12 +1139,12 @@ export const ARCHETYPES: Record<ArchetypeId, Archetype> = {
                 actionLabel: "Model Compounding Growth",
             },
             system: {
-                name: "GSN - Apex Gold Sentinel",
+                name: "GSN Shadown Matrix",
                 tagline: "5-Layer Adaptive Survival Grid",
                 why: "Mechanical survival architecture with Phoenix Profit Bank harvesting that thrives across diverse market regimes without strategy hopping.",
-                href: "/trading-systems/gsn-phoenix-grid",
+                href: "/trading-systems/gsn-shadown-matrix",
                 badge: "Multi-Regime System",
-                actionLabel: "Explore Sentinel",
+                actionLabel: "Explore Shadown Matrix",
             },
             lesson: {
                 name: "20-Trade Consistency Commitment",

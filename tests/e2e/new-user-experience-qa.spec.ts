@@ -13,8 +13,8 @@ import { test, expect, type Page } from "@playwright/test";
  * Uses a single login + shared auth state to avoid rate limiting.
  */
 
-const userEmail = process.env.USER_QA_EMAIL || "keezimin@gmail.com";
-const userPassword = process.env.USER_QA_PASSWORD || "Password123!";
+const userEmail = process.env.USER_QA_EMAIL || "";
+const userPassword = process.env.USER_QA_PASSWORD || "";
 
 test.setTimeout(3 * 60 * 1000);
 

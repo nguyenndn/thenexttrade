@@ -6,18 +6,27 @@ import { ReportView } from "@/components/reports/ReportView";
 import { TabBar } from "@/components/ui/TabBar";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { ANALYTICS_TABS } from "@/config/navigation";
+import { TargetProgressWidget } from "@/components/dashboard/targets/TargetProgressWidget";
+import { resolveDefaultAccountId } from "@/actions/main-account";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-    title: "Monthly Review | Trading Dashboard",
-    description:
-        "Review your monthly trading performance and long-term progress",
+    title: "Monthly Review | TheNextTrade",
+    description: "Review your monthly trading performance and long-term progress",
 };
 
-export default async function MonthlyReviewPage() {
+export default async function MonthlyReviewPage({
+    searchParams,
+}: {
+    searchParams?: Promise<{ accountId?: string }>;
+}) {
     const user = await getAuthUser();
     if (!user) redirect("/auth/login");
+
+    const resolved = searchParams ? await searchParams : undefined;
+    const defaultAccId = await resolveDefaultAccountId(user.id);
+    const accountId = resolved?.accountId || defaultAccId || "all";
 
     const { reports, total } = await getReports("MONTHLY", 1, 20);
 
@@ -30,6 +39,8 @@ export default async function MonthlyReviewPage() {
             <div className="mb-4">
                 <TabBar tabs={ANALYTICS_TABS} />
             </div>
+
+            <TargetProgressWidget accountId={accountId} highlightPeriod="MONTHLY" />
 
             <ReportView reports={reports as any} total={total} type="monthly" />
         </div>

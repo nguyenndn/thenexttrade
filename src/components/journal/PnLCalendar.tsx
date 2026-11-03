@@ -101,7 +101,7 @@ export function PnLCalendar({
     };
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-lg border border-dashboard shadow-sm hover:shadow-md transition-shadow duration-200 group mt-6">
+        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-dashboard shadow-sm hover:shadow-md transition-shadow duration-200 group mt-6">
             <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-2.5">
                     <div className="p-2 bg-primary/10 rounded-lg text-primary">
@@ -166,7 +166,7 @@ export function PnLCalendar({
                     </div>
 
                     <div className="grid grid-cols-7 gap-2">
-                        {daysInMonth.map((date, i) => {
+                        {daysInMonth.map((date) => {
                             const dateStr = format(date, "yyyy-MM-dd");
                             const dayData = data.get(dateStr);
                             const isCurrentMonth = isSameMonth(
@@ -175,7 +175,7 @@ export function PnLCalendar({
                             );
 
                             let bgClass =
-                                "bg-gray-50/50 dark:bg-[#1A1C23] border-transparent text-gray-500 dark:text-gray-400";
+                                "bg-gray-50/80 dark:bg-[#151925] border-transparent text-gray-500 dark:text-gray-400";
                             if (dayData && dayData.pnl > 0) {
                                 bgClass =
                                     "bg-emerald-50/80 dark:bg-primary/10 text-emerald-600 dark:text-primary border border-emerald-400 dark:border-primary/60";
@@ -184,7 +184,7 @@ export function PnLCalendar({
                                     "bg-red-50/80 dark:bg-red-500/10 text-red-600 dark:text-red-400 border border-red-400 dark:border-red-500/60";
                             } else if (isCurrentMonth) {
                                 bgClass =
-                                    "bg-white dark:bg-[#23252E] border border-dashboard text-gray-700 dark:text-gray-300";
+                                    "bg-gray-50/80 dark:bg-[#151925] border border-dashboard text-gray-700 dark:text-gray-300";
                             }
 
                             if (!isCurrentMonth)
@@ -202,7 +202,7 @@ export function PnLCalendar({
                                     <div className="flex items-start justify-between mb-2">
                                         <span
                                             className={cn(
-                                                "text-[11px] font-bold w-5 h-5 flex items-center justify-center rounded-lg",
+                                                "text-[11px] font-mono tabular-nums font-bold w-5 h-5 flex items-center justify-center rounded-lg",
                                                 isToday(date)
                                                     ? "bg-primary text-white"
                                                     : ""
@@ -213,7 +213,7 @@ export function PnLCalendar({
 
                                         {dayData?.note && (
                                             <div
-                                                className="text-blue-500"
+                                                className="text-amber-600 dark:text-gold"
                                                 title="Has Note"
                                             >
                                                 <FileText className="w-3.5 h-3.5" />
@@ -228,7 +228,7 @@ export function PnLCalendar({
                                                     value={dayData.pnl}
                                                 />
                                             </div>
-                                            <div className="text-[10px] text-gray-500 dark:text-gray-400 flex items-center gap-1.5 font-medium">
+                                            <div className="text-[10px] font-mono tabular-nums text-gray-500 dark:text-gray-400 flex items-center gap-1.5 font-medium">
                                                 <span className="text-green-600 dark:text-green-400">
                                                     {dayData.wins}W
                                                 </span>
@@ -241,7 +241,7 @@ export function PnLCalendar({
                                                     </span>
                                                 )}
                                             </div>
-                                            <div className="text-[10px] text-gray-400">
+                                            <div className="text-[10px] font-mono tabular-nums text-gray-400">
                                                 {dayData.tradesCount} trades
                                             </div>
                                         </div>

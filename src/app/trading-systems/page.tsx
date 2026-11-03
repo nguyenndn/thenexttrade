@@ -13,21 +13,19 @@ import { TradingSystemsPageShell } from "@/components/trading-systems/TradingSys
 import { FAQAccordion } from "@/components/tools/FAQAccordion";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { getAuthUser } from "@/lib/auth-cache";
-import { prisma } from "@/lib/prisma";
 import { buttonVariants } from "@/components/ui/button-variants";
-import { TRADING_SYSTEMS_DATA } from "@/config/trading-systems-data";
 
 export const metadata: Metadata = {
     title: "MT5 Trading Systems & Expert Advisors | TheNextTrade",
     description:
-        "Professional MetaTrader 5 Expert Advisors and trade management tools. Get GoldScalperNinja EA, GSN - Apex Gold Sentinel, and Trade Manager with an eligible partner account.",
+        "Professional MetaTrader 5 Expert Advisors and trade management tools. Get GoldScalperNinja EA, GSN Shadown Matrix, and Trade Manager with an eligible partner account.",
     alternates: {
         canonical: "/trading-systems",
     },
     openGraph: {
         title: "MT5 Trading Systems & Expert Advisors | TheNextTrade",
         description:
-            "Institutional MetaTrader 5 Expert Advisors: GoldScalperNinja, GSN - Apex Gold Sentinel, and Trade Manager.",
+            "Institutional MetaTrader 5 Expert Advisors: GoldScalperNinja, GSN Shadown Matrix, and Trade Manager.",
         url: "/trading-systems",
         siteName: "TheNextTrade",
         type: "website",
@@ -36,7 +34,7 @@ export const metadata: Metadata = {
         card: "summary_large_image",
         title: "MT5 Trading Systems & Expert Advisors | TheNextTrade",
         description:
-            "Institutional MetaTrader 5 Expert Advisors: GoldScalperNinja, GSN - Apex Gold Sentinel, and Trade Manager.",
+            "Institutional MetaTrader 5 Expert Advisors: GoldScalperNinja, GSN Shadown Matrix, and Trade Manager.",
     },
 };
 
@@ -48,12 +46,13 @@ const TOOL_CARDS = [
         title: "GoldScalperNinja EA",
         label: "Automated EA",
         positioning:
-            "Automated MT5 execution for XAUUSD with D1 Trend Master filtering and Smart Sequence Pruning.",
+            "Automated MT5 gold architecture with price-chasing stop entries, D1 Trend Master compass, and Lot–Price distance filtering.",
         bullets: [
-            "D1 Trend Master control zone",
-            "Smart Sequence Pruning recovery",
-            "News, daily limit, and safe-close controls",
-            "Remote ON/OFF from MT5 mobile",
+            "Price-chasing stop orders (no falling knife)",
+            "Two-phase sequence & cross-side pruning",
+            "Lot–Price distance & duplicate filter (v3.1)",
+            "D1 Trend Master daily compass & locks",
+            "Neon interactive HUD & mobile remote switch",
         ],
         ctaLabel: "Get GoldScalperNinja",
         accentClass:
@@ -66,12 +65,12 @@ const TOOL_CARDS = [
         title: "GSN Trade Manager",
         label: "Manual Control",
         positioning:
-            "An MT5 execution panel with built-in trading journal sync, faster entries, SL, TP, break-even, and semi-auto DCA grids.",
+            "5-Tab MT5 Command Deck for 1-click split-TP scalping, institutional Volume Profile (POC/VAH/VAL), 42-signal MTF trend matrix, and Smart DCA / BE Lot recovery.",
         bullets: [
-            "SL, TP, BE, and partial-close controls",
-            "Built-in trade journal sync (direct API)",
-            "Multi-timeframe trend scoring matrix",
-            "Semi-auto DCA with mobile trade adoption",
+            "3-Target Split-TP (TP1–TP3) & Smart Partial Trim",
+            "Institutional Volume Profile (POC, VAH, VAL) & OB",
+            "42-Signal MTF Confluence Matrix (6 engines × 7 TFs)",
+            "Smart DCA / BE Lot, Zone Box, Smart Shield & Cloud Sync",
         ],
         ctaLabel: "Get Trade Manager",
         accentClass:
@@ -80,18 +79,18 @@ const TOOL_CARDS = [
         icon: SlidersHorizontal,
     },
     {
-        slug: "gsn-phoenix-grid",
-        title: "GSN - Apex Gold Sentinel",
+        slug: "gsn-shadown-matrix",
+        title: "GSN Shadown Matrix",
         label: "Advanced Grid EA",
         positioning:
-            "Advanced XAUUSD grid and hedge recovery system for traders who understand exposure, multipliers, and drawdown.",
+            "Asymmetric Dual Grid & Counter-Hedge XAUUSD engine with 6 M5 seed filters, EMA-34 reversal lot braking, Dynamic ATR spacing, and Same-Side Smart Pruning.",
         bullets: [
-            "Adaptive Survival grid logic",
-            "Phoenix Profit Bank trimming",
-            "Hedge Protection and Recovery DCA",
-            "MLPS trend and volatility filters",
+            "6 selectable M5 seed filters & +90-pt fast scalp",
+            "250-pt counter-hedge & 150-pt M15 dual pairs",
+            "EMA-34 reversal brake (flat 0.02 counter-trend lots)",
+            "Same-Side Smart Pruning (Tier >= 5) & $50.00 Async Exit",
         ],
-        ctaLabel: "Get Apex Sentinel",
+        ctaLabel: "Get Shadown Matrix",
         accentClass:
             "from-emerald-500/10 via-teal-500/5 to-transparent border-emerald-500/20 hover:border-emerald-500/40",
         colorRgb: "16, 185, 129",
@@ -145,7 +144,7 @@ const LICENSING_RISK_FAQS = [
     },
     {
         question: "Do these EAs automatically filter high-impact economic news?",
-        answer: "Yes. Both GoldScalperNinja EA and GSN - Apex Gold Sentinel include a built-in Economic News Filter that automatically pauses opening new orders before and after major high-impact events like NFP, CPI, and FOMC rate decisions.",
+        answer: "Yes. Both GoldScalperNinja EA and GSN Shadown Matrix include a built-in Economic News Filter that automatically pauses opening new orders before and after major high-impact events like NFP, CPI, and FOMC rate decisions.",
     },
     {
         question: "What returns and drawdown levels should I expect?",
@@ -160,35 +159,6 @@ export default async function TradingSystemsIndexPage() {
     const primaryCtaUrl = isLoggedIn
         ? "/dashboard/accounts"
         : "/auth/signup?next=/dashboard/accounts&source=trading_systems";
-
-    // Query database to ensure stats/versions stay synced behind the scenes if needed
-    const dbProducts = await prisma.eAProduct.findMany({
-        where: { isActive: true },
-    });
-
-    const systems = TOOL_CARDS.map((card) => {
-        const dbMatch = dbProducts.find(
-            (dbProd) =>
-                dbProd.slug.toLowerCase().replace(/[^a-z0-9]/g, "") ===
-                card.slug.toLowerCase().replace(/[^a-z0-9]/g, "")
-        );
-
-        const configMatch = TRADING_SYSTEMS_DATA.find(
-            (s) =>
-                s.slug.toLowerCase().replace(/[^a-z0-9]/g, "") ===
-                card.slug.toLowerCase().replace(/[^a-z0-9]/g, "")
-        );
-
-        let rawVersion = dbMatch?.version || configMatch?.version || "1.0.0";
-        if (rawVersion.startsWith("v")) {
-            rawVersion = rawVersion.substring(1);
-        }
-
-        return {
-            ...card,
-            version: rawVersion,
-        };
-    });
 
     const allTradingFaqs = [...SETUP_OPERATION_FAQS, ...LICENSING_RISK_FAQS];
 
@@ -222,8 +192,6 @@ export default async function TradingSystemsIndexPage() {
                     </p>
                 </div>
 
-
-
                 <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 pt-2 text-xs font-bold text-gray-500 dark:text-gray-400">
                     {[
                         "Eligible partner account required",
@@ -249,67 +217,55 @@ export default async function TradingSystemsIndexPage() {
                 <h2 className="sr-only">Available MT5 Systems</h2>
 
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                    {systems.map((system) => (
+                    {TOOL_CARDS.map((system) => (
                         <article
                             key={system.slug}
                             className="group relative flex flex-col justify-between overflow-hidden rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028]/60 p-7 transition-all duration-300 hover:shadow-xl hover:border-gold/40"
                         >
                             <div className="space-y-5">
                                 <div>
-                                    <div className="flex items-start justify-between gap-2">
-                                        <h3 className="font-heading text-xl font-black text-gray-900 dark:text-white">
-                                            {system.title}
-                                        </h3>
-                                        <span
-                                            className="rounded-full border px-2 py-0.5 text-[8px] font-bold uppercase tracking-wide shrink-0 mt-0.5"
-                                            style={{
-                                                borderColor: `rgba(${system.colorRgb}, 0.3)`,
-                                                backgroundColor: `rgba(${system.colorRgb}, 0.1)`,
-                                                color: `rgb(${system.colorRgb})`,
-                                            }}
-                                        >
-                                            {system.label} · v{system.version}
-                                        </span>
-                                    </div>
+                                    <h3 className="font-heading text-xl font-black text-gray-900 dark:text-white">
+                                        {system.title}
+                                    </h3>
                                     <p className="mt-2.5 text-xs leading-relaxed text-gray-600 dark:text-gray-400 font-medium">
                                         {system.positioning}
                                     </p>
                                 </div>
 
-                                    <div className="space-y-2 border-t border-dashed border-gray-200 dark:border-white/10 pt-4">
-                                        {system.bullets.map((bullet, idx) => (
-                                            <div
-                                                key={idx}
-                                                className="flex items-start gap-2 text-xs text-gray-700 dark:text-gray-300 font-medium"
-                                            >
-                                                <span
-                                                    className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full"
-                                                    style={{
-                                                        backgroundColor: `rgb(${system.colorRgb})`,
-                                                    }}
-                                                />
-                                                <span>{bullet}</span>
-                                            </div>
-                                        ))}
-                                    </div>
+                                <div className="space-y-2 border-t border-dashed border-gray-200 dark:border-white/10 pt-4">
+                                    {system.bullets.map((bullet, idx) => (
+                                        <div
+                                            key={idx}
+                                            className="flex items-start gap-2 text-xs text-gray-700 dark:text-gray-300 font-medium"
+                                        >
+                                            <span
+                                                className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full"
+                                                style={{
+                                                    backgroundColor: `rgb(${system.colorRgb})`,
+                                                }}
+                                            />
+                                            <span>{bullet}</span>
+                                        </div>
+                                    ))}
                                 </div>
+                            </div>
 
-                                <div className="mt-7 pt-4 border-t border-gray-200 dark:border-white/10">
-                                    <Link
-                                        href={`/trading-systems/${system.slug}`}
-                                        className={buttonVariants({
-                                            variant: "gold",
-                                            size: "smd",
-                                            className:
-                                                "w-full items-center justify-center gap-1.5 font-black uppercase tracking-wider",
-                                        })}
-                                    >
-                                        View Details
-                                        <ArrowRight size={13} />
-                                    </Link>
-                                </div>
-                            </article>
-                        ))}
+                            <div className="mt-7 pt-4 border-t border-gray-200 dark:border-white/10">
+                                <Link
+                                    href={`/trading-systems/${system.slug}`}
+                                    className={buttonVariants({
+                                        variant: "gold",
+                                        size: "smd",
+                                        className:
+                                            "w-full items-center justify-center gap-1.5 font-black uppercase tracking-wider",
+                                    })}
+                                >
+                                    View Details
+                                    <ArrowRight size={13} />
+                                </Link>
+                            </div>
+                        </article>
+                    ))}
                 </div>
             </section>
 

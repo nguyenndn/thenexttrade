@@ -133,8 +133,8 @@ export function QuizResult({
             </div>
 
             {/* 6 Core Dimensions Spider / Bar Breakdown */}
-            <div className="rounded-xl border border-gray-200 bg-white/80 p-5 shadow-sm backdrop-blur-sm sm:p-6 dark:border-white/10 dark:bg-[#151925]/80">
-                <h3 className="mb-4 text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+            <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6 dark:border-white/10 dark:bg-[#1E2028]">
+                <h3 className="mb-4 text-xs font-bold font-mono tabular-nums uppercase tracking-wider text-gray-500 dark:text-gray-400">
                     Your profile across 6 core dimensions
                 </h3>
                 <DimensionBars scores={dimensions} />
@@ -144,12 +144,12 @@ export function QuizResult({
             <PrescriptionCard archetype={archetype} columns={3} />
 
             {/* Archetype Detailed Analysis Card (Strengths, Weaknesses, Mistakes, Focus, Moves) */}
-            <div className="rounded-xl border border-gray-200 bg-white/80 p-5 shadow-sm backdrop-blur-sm sm:p-6 dark:border-white/10 dark:bg-[#151925]/80">
+            <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6 dark:border-white/10 dark:bg-[#1E2028]">
                 <ArchetypeCard archetype={archetype} showMoves={true} />
             </div>
 
             {/* Full Report Markdown */}
-            <div className="rounded-xl border border-gray-200 bg-white/80 p-5 shadow-sm backdrop-blur-sm sm:p-6 dark:border-white/10 dark:bg-[#151925]/80">
+            <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6 dark:border-white/10 dark:bg-[#1E2028]">
                 <h3 className="mb-3 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
                     <BookMarked size={14} /> Your full report
                 </h3>
@@ -159,7 +159,7 @@ export function QuizResult({
             </div>
 
             {/* Conversion CTA Box (Prescription Model Activation) */}
-            <div className="rounded-xl border border-amber-500/30 bg-amber-500/[0.04] p-6 text-center shadow-sm dark:border-amber-500/25 dark:bg-amber-500/[0.05]">
+            <div className="rounded-xl border border-amber-500/30 bg-white p-6 text-center shadow-sm dark:border-amber-500/25 dark:bg-[#1E2028]">
                 {isLoggedIn ? (
                     saved ? (
                         <div className="flex flex-col items-center gap-3">
@@ -179,7 +179,7 @@ export function QuizResult({
                         </div>
                     ) : (
                         <div className="flex flex-col items-center gap-3">
-                            <div className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-amber-800 dark:text-gold">
+                            <div className="inline-flex items-center gap-1.5 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-1 text-xs font-bold font-mono tabular-nums uppercase tracking-wider text-amber-800 dark:text-gold">
                                 <Sparkles size={13} />
                                 1-Click Profile Save
                             </div>
@@ -200,7 +200,7 @@ export function QuizResult({
                     )
                 ) : (
                     <div className="flex flex-col items-center gap-3">
-                        <div className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-amber-800 dark:text-gold">
+                        <div className="inline-flex items-center gap-1.5 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-amber-800 dark:text-gold">
                             <Sparkles size={13} />
                             Tailored Solution Access
                         </div>

@@ -62,7 +62,7 @@ export function DayOfWeekCard({ data }: DayOfWeekCardProps) {
             <div className="px-5 pt-5 pb-3 shrink-0">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <div className="p-2 bg-violet-500/10 rounded-lg text-violet-500">
+                        <div className="p-2 bg-gold/10 rounded-lg text-amber-600 dark:text-gold">
                             <Calendar size={20} />
                         </div>
                         <div>
@@ -148,7 +148,7 @@ export function DayOfWeekCard({ data }: DayOfWeekCardProps) {
                                     </div>
 
                                     <span
-                                        className={`text-xs font-black min-w-[65px] text-right ${
+                                        className={`text-xs font-black font-mono tabular-nums min-w-[65px] text-right ${
                                             d.pnl >= 0
                                                 ? "text-primary"
                                                 : "text-red-500"
@@ -159,7 +159,7 @@ export function DayOfWeekCard({ data }: DayOfWeekCardProps) {
                                             : `${d.pnl >= 0 ? "+" : ""}${d.pnl.toFixed(0)}`}
                                     </span>
 
-                                    <span className="text-[11px] text-gray-500 font-semibold min-w-[70px] text-right shrink-0">
+                                    <span className="text-[11px] text-gray-500 font-semibold font-mono tabular-nums min-w-[70px] text-right shrink-0">
                                         {d.tradeCount > 0
                                             ? `${d.tradeCount}t · ${d.winRate.toFixed(0)}%`
                                             : "--"}

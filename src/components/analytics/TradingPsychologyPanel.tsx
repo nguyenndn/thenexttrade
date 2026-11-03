@@ -23,7 +23,7 @@ export function TradingPsychologyPanel({ data, confidence }: TradingPsychologyPa
         <div className="space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="flex items-center gap-2.5">
-                    <div className="p-2 rounded-lg bg-purple-500/10 border border-purple-500/20 text-purple-600 dark:text-purple-400">
+                    <div className="p-2 rounded-lg bg-gold/10 border border-gold/20 text-amber-600 dark:text-gold">
                         <Brain className="w-5 h-5" />
                     </div>
                     <div>
@@ -40,13 +40,13 @@ export function TradingPsychologyPanel({ data, confidence }: TradingPsychologyPa
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* 1. Disposition Effect Card */}
-                <div className="p-5 rounded-lg bg-white dark:bg-[#1E2028] border border-dashboard dark:border-white/[0.08] shadow-sm space-y-4">
+                <div className="p-5 rounded-xl bg-white dark:bg-[#1E2028] border border-dashboard dark:border-white/[0.08] shadow-sm space-y-4">
                     <div className="flex items-center justify-between">
                         <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-                            <Clock className="w-4 h-4 text-cyan-500" />
+                            <Clock className="w-4 h-4 text-amber-600 dark:text-gold" />
                             Holding Time Ratio
                         </span>
-                        <span className={`px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase ${
+                        <span className={`px-2 py-0.5 rounded-lg text-[10px] font-bold font-mono tabular-nums uppercase ${
                             isHighDisposition
                                 ? "bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20"
                                 : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
@@ -58,33 +58,33 @@ export function TradingPsychologyPanel({ data, confidence }: TradingPsychologyPa
                     <div className="space-y-2">
                         <div className="flex justify-between items-center text-xs">
                             <span className="text-emerald-600 dark:text-emerald-400 font-semibold">Avg Hold Win:</span>
-                            <span className="font-bold text-slate-900 dark:text-white">{disposition.avgHoldTimeWinMinutes} min</span>
+                            <span className="font-bold font-mono tabular-nums text-slate-900 dark:text-white">{disposition.avgHoldTimeWinMinutes} min</span>
                         </div>
                         <div className="flex justify-between items-center text-xs">
                             <span className="text-red-600 dark:text-red-400 font-semibold">Avg Hold Loss:</span>
-                            <span className="font-bold text-slate-900 dark:text-white">{disposition.avgHoldTimeLossMinutes} min</span>
+                            <span className="font-bold font-mono tabular-nums text-slate-900 dark:text-white">{disposition.avgHoldTimeLossMinutes} min</span>
                         </div>
 
                         {/* Ratio visual bar */}
-                        <div className="w-full h-2.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden flex">
+                        <div className="w-full h-2.5 bg-gray-100 dark:bg-[#151925] rounded-full overflow-hidden flex">
                             <div className="bg-emerald-500 h-full" style={{ width: `${Math.min(80, Math.max(20, 100 / (1 + disposition.dispositionRatio)))}%` }} />
                             <div className="bg-red-500 h-full flex-1" />
                         </div>
                     </div>
 
-                    <p className="text-xs text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-white/[0.04] p-2.5 rounded-lg border border-dashboard dark:border-white/[0.06]">
+                    <p className="text-xs text-slate-600 dark:text-slate-300 bg-gray-50/80 dark:bg-[#151925] p-2.5 rounded-lg border border-dashboard dark:border-white/[0.06]">
                         {disposition.insight}
                     </p>
                 </div>
 
                 {/* 2. Tilt & Revenge Trading Vulnerability Card */}
-                <div className="p-5 rounded-lg bg-white dark:bg-[#1E2028] border border-dashboard dark:border-white/[0.08] shadow-sm space-y-4">
+                <div className="p-5 rounded-xl bg-white dark:bg-[#1E2028] border border-dashboard dark:border-white/[0.08] shadow-sm space-y-4">
                     <div className="flex items-center justify-between">
                         <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-                            <Flame className="w-4 h-4 text-amber-500" />
+                            <Flame className="w-4 h-4 text-amber-600 dark:text-gold" />
                             Tilt & Revenge Index
                         </span>
-                        <span className={`px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase ${
+                        <span className={`px-2 py-0.5 rounded-lg text-[10px] font-bold font-mono tabular-nums uppercase ${
                             isHighTilt
                                 ? "bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20"
                                 : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
@@ -96,11 +96,11 @@ export function TradingPsychologyPanel({ data, confidence }: TradingPsychologyPa
                     <div className="space-y-2">
                         <div className="flex justify-between items-center text-xs">
                             <span className="text-slate-600 dark:text-slate-400">Revenge Re-entries:</span>
-                            <span className="font-bold text-slate-900 dark:text-white">{tilt.revengeTradesCount} trades</span>
+                            <span className="font-bold font-mono tabular-nums text-slate-900 dark:text-white">{tilt.revengeTradesCount} trades</span>
                         </div>
 
                         {/* Gauge bar */}
-                        <div className="w-full h-2.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+                        <div className="w-full h-2.5 bg-gray-100 dark:bg-[#151925] rounded-full overflow-hidden">
                             <div
                                 className={`h-full transition-all duration-500 ${
                                     tilt.tiltScore >= 50
@@ -114,19 +114,19 @@ export function TradingPsychologyPanel({ data, confidence }: TradingPsychologyPa
                         </div>
                     </div>
 
-                    <p className="text-xs text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-white/[0.04] p-2.5 rounded-lg border border-dashboard dark:border-white/[0.06]">
+                    <p className="text-xs text-slate-600 dark:text-slate-300 bg-gray-50/80 dark:bg-[#151925] p-2.5 rounded-lg border border-dashboard dark:border-white/[0.06]">
                         {tilt.insight}
                     </p>
                 </div>
 
                 {/* 3. Optimal Risk-Reward Simulator Card */}
-                <div className="p-5 rounded-lg bg-white dark:bg-[#1E2028] border border-dashboard dark:border-white/[0.08] shadow-sm space-y-4">
+                <div className="p-5 rounded-xl bg-white dark:bg-[#1E2028] border border-dashboard dark:border-white/[0.08] shadow-sm space-y-4">
                     <div className="flex items-center justify-between">
                         <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
                             <Target className="w-4 h-4 text-emerald-500" />
                             Optimal R:R Simulator
                         </span>
-                        <span className="px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                        <span className="px-2 py-0.5 rounded-lg text-[10px] font-bold font-mono tabular-nums uppercase bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                             Recommended: 1:{optimalRR?.targetRR || 1.5}
                         </span>
                     </div>
@@ -135,10 +135,10 @@ export function TradingPsychologyPanel({ data, confidence }: TradingPsychologyPa
                         {rrOptimizer.map((opt) => (
                             <div
                                 key={opt.targetRR}
-                                className={`flex justify-between items-center p-2 rounded-lg border ${
+                                className={`flex justify-between items-center p-2 rounded-lg border font-mono tabular-nums ${
                                     opt.isOptimal
                                         ? "bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-500/30 font-bold"
-                                        : "bg-slate-50 dark:bg-white/[0.04] border-dashboard dark:border-white/[0.06] text-slate-600 dark:text-slate-400"
+                                        : "bg-gray-50/80 dark:bg-[#151925] border-dashboard dark:border-white/[0.06] text-slate-600 dark:text-slate-400"
                                 }`}
                             >
                                 <span>Target 1:{opt.targetRR} R:R</span>

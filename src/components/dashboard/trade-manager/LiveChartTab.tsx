@@ -284,7 +284,7 @@ export function LiveChartTab({
         pinnedLines.forEach((pl) => {
             addLine({
                 price: pl.price,
-                color: "#A855F7",
+                color: "#F59E0B",
                 lineWidth: 2,
                 lineStyle: LineStyle.Solid,
                 axisLabelVisible: true,
@@ -366,7 +366,7 @@ export function LiveChartTab({
             tpGroups.forEach((g) => {
                 addLine({
                     price: g.price,
-                    color: "#06B6D4",
+                    color: "#00C888",
                     lineWidth: 1,
                     lineStyle: LineStyle.Dashed,
                     axisLabelVisible: true,
@@ -410,7 +410,7 @@ export function LiveChartTab({
                 if (target.takeProfit > 0) {
                     addLine({
                         price: target.takeProfit,
-                        color: "#06B6D4",
+                        color: "#00C888",
                         lineWidth: 2,
                         lineStyle: LineStyle.Dashed,
                         axisLabelVisible: true,
@@ -474,7 +474,7 @@ export function LiveChartTab({
                                 {activeSymbol}
                             </span>
                             {state.activeQuote && (
-                                <span className="text-xs font-extrabold text-emerald-400">
+                                <span className="text-xs font-extrabold font-mono tabular-nums text-emerald-400">
                                     Bid {state.activeQuote.bid.toFixed(2)} • Ask{" "}
                                     {state.activeQuote.ask.toFixed(2)}
                                 </span>
@@ -597,7 +597,7 @@ export function LiveChartTab({
                     ref={containerRef}
                     style={{ height: `${chartHeight}px` }}
                     className={`w-full rounded-xl overflow-hidden border border-gray-200 dark:border-white/10 bg-[#151925] transition-[height] duration-200 ${
-                        isPinMode ? "cursor-crosshair ring-1 ring-purple-500/60" : ""
+                        isPinMode ? "cursor-crosshair ring-1 ring-gold/60" : ""
                     }`}
                 />
 
@@ -613,7 +613,7 @@ export function LiveChartTab({
                                     variant={isSelected ? "primary" : "outline"}
                                     size="sm"
                                     onClick={() => setSelectedPosition(pos)}
-                                    className="h-8 px-2.5 text-[11px]"
+                                    className="h-8 px-2.5 text-[11px] font-mono tabular-nums"
                                 >
                                     <span>
                                         {pos.type} {pos.lots.toFixed(2)} @ {pos.openPrice.toFixed(2)}

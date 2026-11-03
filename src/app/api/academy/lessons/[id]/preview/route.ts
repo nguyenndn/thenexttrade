@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { getAuthUser } from "@/lib/auth-cache";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
@@ -21,7 +22,13 @@ export async function GET(
             module: {
                 select: {
                     title: true,
-                    level: { select: { title: true, order: true } },
+                    level: {
+                        select: {
+                            title: true,
+                            order: true,
+                            accessLevel: true,
+                        },
+                    },
                 },
             },
         },
@@ -34,14 +41,38 @@ export async function GET(
         );
     }
 
+    const isPremiumLevel = lesson.module.level.accessLevel !== "PUBLIC";
+    let content = lesson.content;
+    let isLocked = false;
+
+    if (isPremiumLevel) {
+        const user = await getAuthUser();
+        if (!user) {
+            isLocked = true;
+            const plainText = (lesson.content || "")
+                .replace(/<[^>]*>/g, " ")
+                .replace(/\s+/g, " ")
+                .trim();
+            const teaser =
+                plainText.length > 800
+                    ? plainText.slice(0, 800).trimEnd() + "…"
+                    : plainText;
+            content = `<p>${teaser
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")}</p>`;
+        }
+    }
+
     return NextResponse.json({
         id: lesson.id,
         title: lesson.title,
         slug: lesson.slug,
-        content: lesson.content,
+        content,
         duration: lesson.duration,
         moduleTitle: lesson.module.title,
         levelTitle: lesson.module.level.title,
         levelOrder: lesson.module.level.order,
+        isLocked,
     });
 }

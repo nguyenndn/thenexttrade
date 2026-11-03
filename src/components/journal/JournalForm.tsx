@@ -507,12 +507,12 @@ export default function JournalForm({
 
             {isSynced && (
                 <>
-                    <div className="hidden md:flex items-center gap-2 py-2 px-3 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-lg border border-blue-100 dark:border-blue-500/20 text-xs font-medium">
+                    <div className="hidden md:flex items-center gap-2 py-2 px-3 bg-gold/10 text-amber-600 dark:text-gold rounded-lg border border-gold/20 text-xs font-medium">
                         <AlertCircle size={14} className="shrink-0" />
                         This trade was synced from MT5. Core data is locked. You
                         can edit notes and psychology.
                     </div>
-                    <div className="md:hidden flex items-start gap-2 py-2 px-3 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-lg border border-blue-100 dark:border-blue-500/20 text-xs font-medium">
+                    <div className="md:hidden flex items-start gap-2 py-2 px-3 bg-gold/10 text-amber-600 dark:text-gold rounded-lg border border-gold/20 text-xs font-medium">
                         <AlertCircle size={14} className="shrink-0 mt-0.5" />
                         <div className="flex flex-col gap-0.5">
                             <span className="font-bold">Synced from MT5</span>
@@ -530,9 +530,9 @@ export default function JournalForm({
 
             <form onSubmit={handleSubmit} className="space-y-4">
                 {/* Main Info Card */}
-                <div className="bg-white dark:bg-[#1E2028] p-4 sm:p-5 rounded-lg border border-dashboard shadow-sm space-y-4">
+                <div className="bg-white dark:bg-[#1E2028] p-4 sm:p-5 rounded-xl border border-dashboard shadow-sm space-y-4">
                     <h3 className="text-base font-bold font-sans tracking-tight text-gray-700 dark:text-white flex items-center gap-2">
-                        <div className="w-1 h-4 bg-primary rounded-full"></div>
+                        <div className="w-1 h-4 bg-gold rounded-full"></div>
                         Trade Details
                     </h3>
 
@@ -553,9 +553,9 @@ export default function JournalForm({
                                 disabled={isSynced || isEditMode}
                             >
                                 <SelectTrigger
-                                    className={`w-full h-10 px-3 rounded-lg bg-gray-50 dark:bg-black/20 border border-dashboard focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none text-xs sm:text-sm font-medium transition-all ${isSynced || isEditMode ? "opacity-60 cursor-not-allowed" : ""}`}
+                                    className={`w-full h-10 px-3 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-dashboard focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none text-xs sm:text-sm font-medium transition-all ${isSynced || isEditMode ? "opacity-60 cursor-not-allowed" : ""}`}
                                 >
-                                    <SelectValue placeholder="Select Account (Optional)" />
+                                    <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="none">
@@ -580,9 +580,8 @@ export default function JournalForm({
                                 name="symbol"
                                 value={formData.symbol}
                                 onChange={handleChange}
-                                placeholder="EURUSD"
                                 disabled={isSynced}
-                                className={`w-full h-10 px-3 rounded-lg bg-gray-50 dark:bg-black/20 border border-dashboard focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none uppercase font-mono font-bold tracking-wider text-xs sm:text-sm transition-all ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
+                                className={`w-full h-10 px-3 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-dashboard focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none uppercase font-mono font-bold tracking-wider text-xs sm:text-sm transition-all ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
                                 required
                             />
                         </div>
@@ -597,7 +596,7 @@ export default function JournalForm({
                                 value={formData.entryDate}
                                 onChange={handleChange}
                                 disabled={isSynced}
-                                className={`w-full h-10 px-3 rounded-lg bg-gray-50 dark:bg-black/20 border border-dashboard focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none font-mono text-xs sm:text-sm transition-all ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
+                                className={`w-full h-10 px-3 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-dashboard focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none font-mono tabular-nums text-xs sm:text-sm transition-all ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
                                 required
                             />
                         </div>
@@ -607,7 +606,7 @@ export default function JournalForm({
                                 Type
                             </label>
                             <div
-                                className={`flex bg-gray-50 dark:bg-black/20 p-1 rounded-lg border border-dashboard h-10 ${isSynced ? "opacity-60 pointer-events-none" : ""}`}
+                                className={`flex bg-gray-50/80 dark:bg-[#151925] p-1 rounded-lg border border-dashboard h-10 ${isSynced ? "opacity-60 pointer-events-none" : ""}`}
                             >
                                 {["BUY", "SELL"].map((type) => (
                                     <Button
@@ -619,7 +618,7 @@ export default function JournalForm({
                                         className={`flex-1 h-full text-xs font-bold transition-all rounded-lg ${
                                             formData.type === type
                                                 ? type === "BUY"
-                                                    ? "bg-blue-500 text-white shadow-md shadow-blue-500/20"
+                                                    ? "bg-emerald-500 text-white shadow-md shadow-emerald-500/20"
                                                     : "bg-red-500 text-white shadow-md shadow-red-500/20"
                                                 : "bg-transparent text-gray-600 hover:bg-white dark:hover:bg-white/5"
                                         }`}
@@ -645,9 +644,9 @@ export default function JournalForm({
                                 disabled={isSynced}
                             >
                                 <SelectTrigger
-                                    className={`w-full h-10 px-3 rounded-lg bg-gray-50 dark:bg-black/20 border border-dashboard focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none text-xs sm:text-sm transition-all ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
+                                    className={`w-full h-10 px-3 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-dashboard focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none text-xs sm:text-sm transition-all ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
                                 >
-                                    <SelectValue placeholder="Select Status" />
+                                    <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="OPEN">
@@ -663,9 +662,9 @@ export default function JournalForm({
                 </div>
 
                 {/* Price & Risk */}
-                <div className="bg-white dark:bg-[#1E2028] p-4 sm:p-5 rounded-lg border border-dashboard shadow-sm space-y-4">
+                <div className="bg-white dark:bg-[#1E2028] p-4 sm:p-5 rounded-xl border border-dashboard shadow-sm space-y-4">
                     <h3 className="text-base font-bold font-sans tracking-tight text-gray-700 dark:text-white flex items-center gap-2">
-                        <div className="w-1 h-4 bg-blue-500 rounded-full"></div>
+                        <div className="w-1 h-4 bg-gold rounded-full"></div>
                         Pricing & Risk
                     </h3>
 
@@ -681,7 +680,7 @@ export default function JournalForm({
                                 value={formData.entryPrice}
                                 onChange={handleChange}
                                 disabled={isSynced}
-                                className={`w-full h-10 px-3 rounded-lg bg-gray-50 dark:bg-black/20 border border-dashboard focus:border-primary focus:outline-none font-mono text-xs sm:text-sm ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
+                                className={`w-full h-10 px-3 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-dashboard focus:border-primary focus:outline-none font-mono tabular-nums text-xs sm:text-sm ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
                                 required
                             />
                         </div>
@@ -697,7 +696,7 @@ export default function JournalForm({
                                 value={formData.lotSize}
                                 onChange={handleChange}
                                 disabled={isSynced}
-                                className={`w-full h-10 px-3 rounded-lg bg-gray-50 dark:bg-black/20 border border-dashboard focus:border-primary focus:outline-none font-mono text-xs sm:text-sm ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
+                                className={`w-full h-10 px-3 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-dashboard focus:border-primary focus:outline-none font-mono tabular-nums text-xs sm:text-sm ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
                                 required
                             />
                         </div>
@@ -713,7 +712,7 @@ export default function JournalForm({
                                 value={formData.exitPrice}
                                 onChange={handleChange}
                                 disabled={isSynced}
-                                className={`w-full h-10 px-3 rounded-lg bg-gray-50 dark:bg-black/20 border border-dashboard focus:border-primary focus:outline-none font-mono text-xs sm:text-sm ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
+                                className={`w-full h-10 px-3 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-dashboard focus:border-primary focus:outline-none font-mono tabular-nums text-xs sm:text-sm ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
                             />
                         </div>
 
@@ -728,7 +727,7 @@ export default function JournalForm({
                                 value={formData.stopLoss}
                                 onChange={handleChange}
                                 disabled={isSynced}
-                                className={`w-full h-10 px-3 rounded-lg bg-red-50 dark:bg-red-500/5 border border-red-100 dark:border-red-500/20 focus:border-red-500 focus:outline-none font-mono text-xs sm:text-sm ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
+                                className={`w-full h-10 px-3 rounded-lg bg-red-50 dark:bg-red-500/5 border border-red-100 dark:border-red-500/20 focus:border-red-500 focus:outline-none font-mono tabular-nums text-xs sm:text-sm ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
                             />
                         </div>
 
@@ -743,7 +742,7 @@ export default function JournalForm({
                                 value={formData.takeProfit}
                                 onChange={handleChange}
                                 disabled={isSynced}
-                                className={`w-full h-10 px-3 rounded-lg bg-green-50 dark:bg-green-500/5 border border-green-100 dark:border-green-500/20 focus:border-primary focus:outline-none font-mono text-xs sm:text-sm ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
+                                className={`w-full h-10 px-3 rounded-lg bg-green-50 dark:bg-green-500/5 border border-green-100 dark:border-green-500/20 focus:border-primary focus:outline-none font-mono tabular-nums text-xs sm:text-sm ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
                             />
                         </div>
 
@@ -758,7 +757,7 @@ export default function JournalForm({
                                 value={formData.pnl}
                                 onChange={handleChange}
                                 disabled={isSynced}
-                                className={`w-full h-10 px-3 rounded-lg bg-gray-50 dark:bg-black/20 border border-dashboard focus:border-primary focus:outline-none font-mono font-bold text-xs sm:text-sm ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
+                                className={`w-full h-10 px-3 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-dashboard focus:border-primary focus:outline-none font-mono tabular-nums font-bold text-xs sm:text-sm ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
                             />
                         </div>
 
@@ -773,7 +772,7 @@ export default function JournalForm({
                                 value={formData.commission}
                                 onChange={handleChange}
                                 disabled={isSynced}
-                                className={`w-full h-10 px-3 rounded-lg bg-gray-50 dark:bg-black/20 border border-dashboard focus:border-primary focus:outline-none font-mono text-xs sm:text-sm ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
+                                className={`w-full h-10 px-3 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-dashboard focus:border-primary focus:outline-none font-mono tabular-nums text-xs sm:text-sm ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
                             />
                         </div>
 
@@ -788,16 +787,16 @@ export default function JournalForm({
                                 value={formData.swap}
                                 onChange={handleChange}
                                 disabled={isSynced}
-                                className={`w-full h-10 px-3 rounded-lg bg-gray-50 dark:bg-black/20 border border-dashboard focus:border-primary focus:outline-none font-mono text-xs sm:text-sm ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
+                                className={`w-full h-10 px-3 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-dashboard focus:border-primary focus:outline-none font-mono tabular-nums text-xs sm:text-sm ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
                             />
                         </div>
                     </div>
                 </div>
 
                 {/* Analysis */}
-                <div className="bg-white dark:bg-[#1E2028] p-4 sm:p-5 rounded-lg border border-dashboard shadow-sm space-y-4">
+                <div className="bg-white dark:bg-[#1E2028] p-4 sm:p-5 rounded-xl border border-dashboard shadow-sm space-y-4">
                     <h3 className="text-base font-bold font-sans tracking-tight text-gray-700 dark:text-white flex items-center gap-2">
-                        <div className="w-1 h-4 bg-purple-500 rounded-full"></div>
+                        <div className="w-1 h-4 bg-gold rounded-full"></div>
                         Analysis & Result
                     </h3>
 
@@ -810,7 +809,7 @@ export default function JournalForm({
                                 </label>
                                 {strategies.length === 0 ? (
                                     /* Empty State — no strategies yet */
-                                    <div className="flex items-center gap-3 p-2.5 rounded-lg bg-gray-50 dark:bg-black/20 border border-dashboard">
+                                    <div className="flex items-center gap-3 p-2.5 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-dashboard">
                                         <span className="text-xs text-gray-500 flex-1">
                                             No strategies found
                                         </span>
@@ -831,7 +830,7 @@ export default function JournalForm({
                                                 <Button
                                                     type="button"
                                                     variant="outline"
-                                                    className="w-full justify-between px-3 h-10 rounded-lg bg-gray-50 dark:bg-black/20 border-dashboard hover:bg-gray-100 dark:hover:bg-white/5 text-xs sm:text-sm font-medium"
+                                                    className="w-full justify-between px-3 h-10 rounded-lg bg-gray-50/80 dark:bg-[#151925] border-dashboard hover:bg-gray-100 dark:hover:bg-white/5 text-xs sm:text-sm font-medium"
                                                 >
                                                     <span
                                                         className={`flex items-center gap-2 ${formData.strategy ? "text-gray-700 dark:text-white" : "text-gray-500"}`}
@@ -850,7 +849,7 @@ export default function JournalForm({
                                                                                     formData.strategy
                                                                             )
                                                                                 ?.color ||
-                                                                            "#6366F1",
+                                                                            "#F59E0B",
                                                                     }}
                                                                 />
                                                                 {
@@ -911,7 +910,7 @@ export default function JournalForm({
                                                                 style={{
                                                                     backgroundColor:
                                                                         s.color ||
-                                                                        "#6366F1",
+                                                                        "#F59E0B",
                                                                 }}
                                                             />
                                                             {s.name}
@@ -925,7 +924,7 @@ export default function JournalForm({
                                             variant="outline"
                                             onClick={fetchStrategies}
                                             aria-label="Refresh strategies"
-                                            className="p-2 w-10 h-10 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 rounded-lg transition-colors text-gray-600 hover:text-primary shrink-0"
+                                            className="p-2 w-10 h-10 bg-gray-50/80 dark:bg-[#151925] hover:bg-gray-200 dark:hover:bg-white/10 rounded-lg transition-colors text-gray-600 hover:text-primary shrink-0"
                                             title="Refresh strategies"
                                         >
                                             <RefreshCw size={16} />
@@ -1014,7 +1013,7 @@ export default function JournalForm({
                                                 {selectedStrategy.riskRewardMin != null && (
                                                     <div className="bg-white/60 dark:bg-white/5 p-2.5 rounded-lg border border-dashboard">
                                                         <span className="text-[10px] text-gray-500 font-bold block uppercase">Min R:R</span>
-                                                        <span className="font-bold text-gold">{selectedStrategy.riskRewardMin}:1</span>
+                                                        <span className="font-mono tabular-nums font-bold text-gold">{selectedStrategy.riskRewardMin}:1</span>
                                                     </div>
                                                 )}
                                             </div>
@@ -1030,7 +1029,7 @@ export default function JournalForm({
                                                             </span>
                                                         </div>
                                                         <div className="flex items-center gap-2">
-                                                            <span className="text-[11px] font-bold text-gold">
+                                                            <span className="text-[11px] font-mono tabular-nums font-bold text-gold">
                                                                 {checkedCount}/{totalRules} ({complianceScore}%)
                                                             </span>
                                                             <span
@@ -1057,7 +1056,7 @@ export default function JournalForm({
                                                                 className={`w-full text-left p-2 rounded-lg text-xs flex items-center gap-2.5 transition-all cursor-pointer border h-auto font-normal justify-start ${
                                                                     playbookChecks[idx]
                                                                         ? "bg-amber-500/10 border-amber-500/40 text-gray-800 dark:text-white hover:bg-amber-500/15"
-                                                                        : "bg-white/40 dark:bg-black/20 border-dashboard text-gray-600 dark:text-gray-400 hover:border-gray-300"
+                                                                        : "bg-gray-50/80 dark:bg-[#151925] border-dashboard text-gray-600 dark:text-gray-400 hover:border-gray-300"
                                                                 }`}
                                                             >
                                                                 {playbookChecks[idx] ? (
@@ -1112,7 +1111,7 @@ export default function JournalForm({
                                                 <div className="grid grid-cols-4 gap-1.5">
                                                     {[
                                                         { grade: "A+", label: "A+ Textbook", color: "text-emerald-600 bg-emerald-500/10 border-emerald-500/30" },
-                                                        { grade: "A", label: "A Standard", color: "text-blue-600 bg-blue-500/10 border-blue-500/30" },
+                                                        { grade: "A", label: "A Standard", color: "text-amber-600 dark:text-gold bg-gold/10 border-gold/30" },
                                                         { grade: "B", label: "B Acceptable", color: "text-amber-600 bg-amber-500/10 border-amber-500/30" },
                                                         { grade: "C", label: "C Impulsive", color: "text-red-600 bg-red-500/10 border-red-500/30" },
                                                     ].map((g) => (
@@ -1160,7 +1159,7 @@ export default function JournalForm({
                                         (tag: string, idx: number) => (
                                             <span
                                                 key={idx}
-                                                className="px-2 py-0.5 rounded-full bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 text-xs font-semibold border border-dashboard flex items-center gap-1"
+                                                className="px-2 py-0.5 rounded-lg bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 text-xs font-semibold border border-dashboard flex items-center gap-1"
                                             >
                                                 {tag}
                                                 <Button
@@ -1182,6 +1181,7 @@ export default function JournalForm({
                                 <div className="flex gap-2">
                                     <input
                                         type="text"
+                                        aria-label="Custom tag"
                                         value={customTagInput}
                                         onChange={(e) =>
                                             setCustomTagInput(e.target.value)
@@ -1192,14 +1192,13 @@ export default function JournalForm({
                                                 addCustomTag();
                                             }
                                         }}
-                                        placeholder="Add custom tag..."
-                                        className="flex-1 h-10 px-3 text-xs sm:text-sm rounded-lg bg-gray-50 dark:bg-black/20 border border-dashboard focus:border-primary focus:outline-none"
+                                        className="flex-1 h-10 px-3 text-xs sm:text-sm rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-dashboard focus:border-primary focus:outline-none"
                                     />
                                     <Button
                                         type="button"
                                         variant="outline"
                                         onClick={() => addCustomTag()}
-                                        className="h-10 px-4 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 rounded-lg transition-colors text-primary font-bold text-xs gap-1.5"
+                                        className="h-10 px-4 bg-gray-50/80 dark:bg-[#151925] hover:bg-gray-200 dark:hover:bg-white/10 rounded-lg transition-colors text-primary font-bold text-xs gap-1.5"
                                     >
                                         Add <Plus size={16} />
                                     </Button>
@@ -1214,7 +1213,7 @@ export default function JournalForm({
                                     name="entryReason"
                                     value={formData.entryReason}
                                     onChange={handleChange}
-                                    className="w-full p-2.5 text-xs sm:text-sm rounded-lg bg-gray-50 dark:bg-black/20 border border-dashboard focus:border-primary focus:outline-none resize-none"
+                                    className="w-full p-2.5 text-xs sm:text-sm rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-dashboard focus:border-primary focus:outline-none resize-none"
                                     rows={2}
                                 />
                             </div>
@@ -1258,7 +1257,7 @@ export default function JournalForm({
                                             return (
                                                 <div
                                                     key={rule.id}
-                                                    className="p-3 rounded-lg border border-dashboard bg-gray-50/50 dark:bg-black/10 space-y-2.5"
+                                                    className="p-3 rounded-lg border border-dashboard bg-gray-50/80 dark:bg-[#151925] space-y-2.5"
                                                 >
                                                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
                                                         <div className="min-w-0 flex-1">
@@ -1271,7 +1270,7 @@ export default function JournalForm({
                                                                             : rule.severity ===
                                                                                 "MEDIUM"
                                                                               ? "bg-amber-50 text-amber-500 border-amber-100 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20"
-                                                                              : "bg-blue-50 text-blue-500 border-blue-100 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20"
+                                                                              : "bg-gray-100 text-gray-600 border-gray-200 dark:bg-white/5 dark:text-gray-400 dark:border-white/10"
                                                                     }`}
                                                                 >
                                                                     {
@@ -1332,7 +1331,7 @@ export default function JournalForm({
                                                                                     "BROKEN"
                                                                                   ? "bg-red-500 border-red-500 text-white shadow-sm shadow-red-500/10 hover:bg-red-500 hover:text-white"
                                                                                   : "bg-gray-500 border-gray-500 text-white shadow-sm shadow-gray-500/10 hover:bg-gray-500 hover:text-white"
-                                                                            : "bg-white dark:bg-black/20 text-gray-500 border-dashboard hover:border-gray-400"
+                                                                            : "bg-white dark:bg-[#1E2028] text-gray-500 border-dashboard hover:border-gray-400"
                                                                     }`}
                                                                 >
                                                                     {status}
@@ -1348,6 +1347,7 @@ export default function JournalForm({
                                                         <div className="pt-2 border-t border-dashboard/50 dark:border-white/[0.04]">
                                                             <input
                                                                 type="text"
+                                                                aria-label="Rule violation or skip reason"
                                                                 value={
                                                                     currentCheck.note ||
                                                                     ""
@@ -1368,7 +1368,6 @@ export default function JournalForm({
                                                                         })
                                                                     )
                                                                 }
-                                                                placeholder={`Explain why this rule was ${currentCheck.status.toLowerCase()}...`}
                                                                 className="w-full text-xs p-2 rounded-lg bg-white dark:bg-[#1E2028] border border-dashboard focus:border-primary focus:outline-none"
                                                             />
                                                         </div>
@@ -1445,7 +1444,7 @@ export default function JournalForm({
                                         name="exitReason"
                                         value={formData.exitReason}
                                         onChange={handleChange}
-                                        className="w-full p-2.5 text-xs sm:text-sm rounded-lg bg-gray-50 dark:bg-black/20 border border-dashboard focus:border-primary focus:outline-none resize-none"
+                                        className="w-full p-2.5 text-xs sm:text-sm rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-dashboard focus:border-primary focus:outline-none resize-none"
                                         rows={2}
                                     />
                                 </div>
@@ -1455,13 +1454,13 @@ export default function JournalForm({
                 </div>
 
                 {/* Psychology Tracking (Phase 44) */}
-                <div className="bg-white dark:bg-[#1E2028] p-4 sm:p-5 rounded-lg border border-dashboard shadow-sm space-y-4">
+                <div className="bg-white dark:bg-[#1E2028] p-4 sm:p-5 rounded-xl border border-dashboard shadow-sm space-y-4">
                     <h3 className="text-base font-bold font-sans tracking-tight text-gray-700 dark:text-white flex items-center gap-2">
-                        <div className="p-1 bg-purple-500/10 text-purple-500 rounded-lg">
+                        <div className="p-1 bg-gold/10 text-amber-600 dark:text-gold rounded-lg">
                             <Brain size={16} />
                         </div>
                         Psychology Tracking
-                        <span className="text-[10px] font-medium text-gray-500 bg-gray-100 dark:bg-white/5 px-2 py-0.5 rounded-full ml-1">
+                        <span className="text-[10px] font-medium text-gray-500 bg-gray-100 dark:bg-white/5 px-2 py-0.5 rounded-lg ml-1">
                             Optional
                         </span>
                     </h3>
@@ -1518,11 +1517,11 @@ export default function JournalForm({
                                                 })
                                             }
                                             className={`
- w-9 h-9 rounded-lg font-bold text-sm transition-all border p-0
+ w-9 h-9 rounded-lg font-mono tabular-nums font-bold text-sm transition-all border p-0
  ${
      formData.confidenceLevel === level
-         ? "bg-purple-500 text-white border-purple-500 ring-2 ring-purple-300 ring-offset-2 dark:ring-offset-gray-900 shadow-sm shadow-purple-500/20 hover:bg-purple-600 hover:text-white"
-         : "bg-gray-50 dark:bg-black/20 text-gray-600 dark:text-gray-500 hover:bg-gray-200 dark:hover:bg-white/5 border-dashboard "
+         ? "bg-gold !text-white border-gold ring-2 ring-gold/30 ring-offset-2 dark:ring-offset-gray-900 shadow-sm shadow-amber-500/20 hover:bg-amber-600 hover:!text-white"
+         : "bg-gray-50/80 dark:bg-[#151925] text-gray-600 dark:text-gray-500 hover:bg-gray-200 dark:hover:bg-white/5 border-dashboard "
  }
  `}
                                         >
@@ -1559,7 +1558,7 @@ export default function JournalForm({
  ${
      formData.followedPlan === true
          ? "bg-green-500 text-white border-green-500 shadow-sm shadow-green-500/20 hover:bg-green-600"
-         : "bg-gray-50 dark:bg-black/20 text-gray-600 dark:text-gray-500 border-dashboard hover:bg-white dark:hover:bg-white/5"
+         : "bg-gray-50/80 dark:bg-[#151925] text-gray-600 dark:text-gray-500 border-dashboard hover:bg-white dark:hover:bg-white/5"
  }
  `}
                                     >
@@ -1584,7 +1583,7 @@ export default function JournalForm({
  ${
      formData.followedPlan === false
          ? "bg-red-500 text-white border-red-500 shadow-sm shadow-red-500/20 hover:bg-red-600"
-         : "bg-gray-50 dark:bg-black/20 text-gray-600 dark:text-gray-500 border-dashboard hover:bg-white dark:hover:bg-white/5"
+         : "bg-gray-50/80 dark:bg-[#151925] text-gray-600 dark:text-gray-500 border-dashboard hover:bg-white dark:hover:bg-white/5"
  }
  `}
                                     >
@@ -1604,7 +1603,7 @@ export default function JournalForm({
                                 name="notesPsychology"
                                 value={formData.notesPsychology}
                                 onChange={handleChange}
-                                className="w-full p-2.5 text-xs sm:text-sm rounded-lg bg-gray-50 dark:bg-black/20 border border-dashboard focus:border-primary focus:outline-none resize-none"
+                                className="w-full p-2.5 text-xs sm:text-sm rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-dashboard focus:border-primary focus:outline-none resize-none"
                                 rows={2}
                             />
                         </div>
@@ -1623,11 +1622,11 @@ export default function JournalForm({
                 )}
 
                 {/* Screenshots Section — R2 File Upload */}
-                <div className="bg-white dark:bg-[#1E2028] p-4 sm:p-5 rounded-lg border border-dashboard shadow-sm space-y-3.5">
+                <div className="bg-white dark:bg-[#1E2028] p-4 sm:p-5 rounded-xl border border-dashboard shadow-sm space-y-3.5">
                     <h3 className="text-base font-bold font-sans tracking-tight text-gray-700 dark:text-white flex items-center gap-2">
-                        <div className="w-1 h-4 bg-pink-500 rounded-full"></div>
+                        <div className="w-1 h-4 bg-gold rounded-full"></div>
                         Trade Screenshots
-                        <span className="text-xs font-medium text-gray-400 ml-auto">
+                        <span className="text-xs font-mono tabular-nums font-medium text-gray-400 ml-auto">
                             {(formData.images || []).length}/2
                         </span>
                     </h3>
@@ -1661,7 +1660,7 @@ export default function JournalForm({
                                                         images: newImages,
                                                     }));
                                                 }}
-                                                className="w-8 h-8 rounded-full hover:scale-110 transition-transform shadow-lg"
+                                                className="w-8 h-8 rounded-lg hover:scale-110 transition-transform shadow-lg"
                                             >
                                                 <X size={16} />
                                             </Button>
@@ -1686,7 +1685,7 @@ export default function JournalForm({
                         {/* Upload Drop Zone — hidden when 2 images reached */}
                         {(formData.images || []).length + uploadingImages < 2 && (
                             <label
-                                className="aspect-[16/9] rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-primary dark:hover:border-primary bg-gray-50 dark:bg-black/20 hover:bg-primary/5 dark:hover:bg-primary/10 transition-all cursor-pointer flex flex-col items-center justify-center gap-1.5 group p-3 text-center"
+                                className="aspect-[16/9] rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-primary dark:hover:border-primary bg-gray-50/80 dark:bg-[#151925] hover:bg-primary/5 dark:hover:bg-primary/10 transition-all cursor-pointer flex flex-col items-center justify-center gap-1.5 group p-3 text-center"
                                 onDragOver={(e) => { e.preventDefault(); e.currentTarget.classList.add('border-primary', 'bg-primary/5'); }}
                                 onDragLeave={(e) => { e.currentTarget.classList.remove('border-primary', 'bg-primary/5'); }}
                                 onDrop={async (e) => {

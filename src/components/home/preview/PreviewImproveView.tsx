@@ -1,5 +1,4 @@
-"use client";
-
+import Link from "next/link";
 import { Award, Bot, Sparkles, Target } from "lucide-react";
 
 export function PreviewImproveView() {
@@ -19,7 +18,7 @@ export function PreviewImproveView() {
                     </span>
                 </div>
 
-                <div className="p-2 rounded-lg bg-white/90 dark:bg-white/[0.03] border border-gold/20 mb-1">
+                <div className="p-2 rounded-lg bg-white/90 dark:bg-[#151925] border border-gold/20 mb-1">
                     <span className="text-[8px] text-gray-500 font-bold uppercase tracking-wider block mb-0.5">
                         High Priority Rule Fix
                     </span>
@@ -32,16 +31,16 @@ export function PreviewImproveView() {
                     <span className="text-gray-500 font-medium">
                         Target: Prevent tilt drawdown
                     </span>
-                    <span className="text-amber-600 dark:text-gold font-bold hover:underline cursor-pointer">
-                        → Risk Management L4
-                    </span>
+                    <Link href="/trading-style" className="text-amber-600 dark:text-gold font-bold hover:underline">
+                        → Audit Trading Style
+                    </Link>
                 </div>
             </div>
 
             {/* Middle: Trading Persona & Discipline Score */}
             <div className="grid grid-cols-2 gap-2 shrink-0">
                 {/* Persona */}
-                <div className="p-2 rounded-lg bg-white dark:bg-white/[0.02] border border-gray-200 dark:border-white/10 shadow-sm flex items-center gap-2">
+                <div className="p-2 rounded-lg bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 shadow-sm flex items-center gap-2">
                     <div className="w-7 h-7 rounded-lg bg-gold/10 text-gold flex items-center justify-center shrink-0">
                         <Award size={14} />
                     </div>
@@ -56,30 +55,34 @@ export function PreviewImproveView() {
                 </div>
 
                 {/* Discipline Score */}
-                <div className="p-2 rounded-lg bg-white dark:bg-white/[0.02] border border-gray-200 dark:border-white/10 shadow-sm flex items-center justify-between">
+                <div className="p-2 rounded-lg bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 shadow-sm flex items-center justify-between">
                     <div>
                         <span className="text-[8px] text-gray-400 font-bold uppercase block">
                             Discipline Score
                         </span>
-                        <span className="text-xs font-black text-emerald-600 dark:text-emerald-400 block">
+                        <span className="text-xs font-mono tabular-nums font-black text-emerald-600 dark:text-emerald-400 block">
                             94 / 100
                         </span>
                     </div>
-                    <span className="px-1.5 py-0.5 rounded-lg text-[8px] font-black uppercase bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300">
+                    <span className="px-1.5 py-0.5 rounded-lg font-mono tabular-nums text-[8px] font-black uppercase bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300">
                         Top 5%
                     </span>
                 </div>
             </div>
 
             {/* Bottom: Next action cycle bar */}
-            <div className="px-2.5 py-1.5 rounded-lg bg-gray-50/80 dark:bg-white/[0.02] border border-gray-200 dark:border-white/5 flex items-center justify-between text-[10px] shrink-0">
+            <div className="px-2.5 py-1.5 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 flex items-center justify-between text-[10px] shrink-0">
                 <div className="flex items-center gap-1.5">
                     <Target size={11} className="text-gold" />
                     <span className="text-gray-600 dark:text-gray-300 font-medium">
-                        Weekly Focus: 10/10 trades checked
+                        Weekly Focus:{" "}
+                        <span className="font-mono tabular-nums font-bold text-gray-900 dark:text-white">
+                            10/10
+                        </span>{" "}
+                        trades checked
                     </span>
                 </div>
-                <span className="text-emerald-600 dark:text-emerald-400 font-bold">
+                <span className="font-mono tabular-nums text-emerald-600 dark:text-emerald-400 font-bold">
                     Next Review in 3d
                 </span>
             </div>

@@ -40,20 +40,24 @@ const statusConfig: Record<
     string,
     { label: string; color: string; icon: typeof Clock }
 > = {
-    OPEN: { label: "Open", color: "text-blue-500 bg-blue-500/10", icon: Clock },
+    OPEN: {
+        label: "Open",
+        color: "text-amber-600 dark:text-gold bg-gold/10 border border-gold/20",
+        icon: Clock,
+    },
     IN_PROGRESS: {
         label: "In Progress",
-        color: "text-amber-500 bg-amber-500/10",
+        color: "text-amber-600 dark:text-gold bg-gold/10 border border-gold/20",
         icon: Loader2,
     },
     RESOLVED: {
         label: "Resolved",
-        color: "text-primary bg-primary/10",
+        color: "text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20",
         icon: CheckCircle2,
     },
     CLOSED: {
         label: "Closed",
-        color: "text-gray-600 dark:text-gray-400 bg-gray-500/10",
+        color: "text-gray-600 dark:text-gray-400 bg-gray-500/10 border border-gray-500/20",
         icon: AlertCircle,
     },
 };
@@ -145,9 +149,11 @@ export default function FeedbackPageClient({
 
     if (feedbacks.length === 0) {
         return (
-            <div className="bg-white dark:bg-[#151925] rounded-xl border border-dashboard shadow-sm">
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm">
                 <div className="text-center py-20 text-gray-500">
-                    <Bug size={48} className="mx-auto mb-4 opacity-50" />
+                    <div className="w-12 h-12 rounded-lg bg-gold/10 border border-gold/20 flex items-center justify-center mx-auto mb-4">
+                        <Bug size={24} className="text-amber-600 dark:text-gold" />
+                    </div>
                     <h3 className="text-base font-bold text-gray-700 dark:text-white">
                         No feedback yet
                     </h3>
@@ -163,24 +169,24 @@ export default function FeedbackPageClient({
     return (
         <div className="space-y-4">
             {/* Top Toolbar / Bulk Selection Bar */}
-            <div className="bg-white dark:bg-[#151925] rounded-xl border border-dashboard p-3 px-4 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-3 px-4 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
                     <Button
                         variant="ghost"
                         size="sm"
                         type="button"
                         onClick={toggleSelectAll}
-                        className="flex items-center gap-2 text-xs font-semibold text-gray-700 dark:text-gray-300 hover:text-primary transition-colors cursor-pointer h-auto p-1"
+                        className="flex items-center gap-2 text-xs font-semibold text-gray-700 dark:text-gray-300 hover:text-amber-600 dark:hover:text-gold transition-colors cursor-pointer h-auto p-1"
                     >
                         {isAllSelected ? (
-                            <CheckSquare size={18} className="text-primary" />
+                            <CheckSquare size={18} className="text-amber-600 dark:text-gold" />
                         ) : (
                             <Square
                                 size={18}
                                 className="text-gray-400 dark:text-gray-500"
                             />
                         )}
-                        <span>
+                        <span className="tabular-nums">
                             {selectedIds.size > 0
                                 ? `${selectedIds.size} of ${feedbacks.length} selected`
                                 : `Select All (${feedbacks.length})`}
@@ -213,7 +219,7 @@ export default function FeedbackPageClient({
                                     size="sm"
                                     onClick={() => setIsBulkConfirmOpen(true)}
                                     disabled={isPending}
-                                    className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 border-red-200 dark:border-red-500/20 text-xs font-bold gap-1.5 h-8"
+                                    className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 border-red-200 dark:border-red-500/20 text-xs font-bold tabular-nums gap-1.5 h-8"
                                 >
                                     {isPending ? (
                                         <Loader2
@@ -254,13 +260,13 @@ export default function FeedbackPageClient({
                         <div
                             key={fb.id}
                             className={cn(
-                                "bg-white dark:bg-[#151925] rounded-xl border border-dashboard p-5 shadow-sm transition-all",
+                                "bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-5 shadow-sm transition-all",
                                 "border-l-4",
                                 isBug
                                     ? "border-l-red-500"
                                     : "border-l-amber-500",
                                 isSelected &&
-                                    "ring-1 ring-primary/40 bg-primary/[0.02]"
+                                    "ring-1 ring-gold/40 bg-gold/[0.02]"
                             )}
                         >
                             <div className="flex items-start justify-between gap-4">
@@ -270,7 +276,7 @@ export default function FeedbackPageClient({
                                         size="icon"
                                         type="button"
                                         onClick={() => toggleSelectItem(fb.id)}
-                                        className="h-6 w-6 mt-0.5 text-gray-400 hover:text-primary transition-colors cursor-pointer hover:bg-transparent"
+                                        className="h-6 w-6 mt-0.5 text-gray-400 hover:text-amber-600 dark:hover:text-gold transition-colors cursor-pointer hover:bg-transparent"
                                         aria-label={
                                             isSelected
                                                 ? "Deselect item"
@@ -280,7 +286,7 @@ export default function FeedbackPageClient({
                                         {isSelected ? (
                                             <CheckSquare
                                                 size={18}
-                                                className="text-primary"
+                                                className="text-amber-600 dark:text-gold"
                                             />
                                         ) : (
                                             <Square size={18} />
@@ -294,7 +300,7 @@ export default function FeedbackPageClient({
                                                     "p-1.5 rounded-lg",
                                                     isBug
                                                         ? "bg-red-500/10 text-red-500"
-                                                        : "bg-amber-500/10 text-amber-500"
+                                                        : "bg-gold/10 text-amber-600 dark:text-gold"
                                                 )}
                                             >
                                                 {isBug ? (
@@ -314,7 +320,7 @@ export default function FeedbackPageClient({
                                             {fb.message}
                                         </p>
 
-                                        <p className="text-[11px] text-gray-500 mt-2">
+                                        <p className="text-[11px] text-gray-500 mt-2 font-mono tabular-nums">
                                             {formatDistanceToNow(
                                                 new Date(fb.createdAt)
                                             )}{" "}
@@ -326,7 +332,7 @@ export default function FeedbackPageClient({
                                 <div className="flex items-center gap-2 shrink-0">
                                     <div
                                         className={cn(
-                                            "flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold",
+                                            "flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-bold",
                                             status.color
                                         )}
                                     >

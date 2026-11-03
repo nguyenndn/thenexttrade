@@ -87,7 +87,7 @@ export function TradingCalendar({ data, selectedDates }: TradingCalendarProps) {
                 </h3>
                 <div className="flex items-center gap-1">
                     <Button
-                        variant="ghost"
+                        variant="outline"
                         size="icon"
                         onClick={handlePrevMonth}
                         className="h-7 w-7 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
@@ -96,7 +96,7 @@ export function TradingCalendar({ data, selectedDates }: TradingCalendarProps) {
                         <ChevronLeft size={16} />
                     </Button>
                     <Button
-                        variant="ghost"
+                        variant="outline"
                         size="icon"
                         onClick={handleNextMonth}
                         className="h-7 w-7 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
@@ -135,7 +135,7 @@ export function TradingCalendar({ data, selectedDates }: TradingCalendarProps) {
                                         className={`flex flex-col p-1 rounded-lg border min-h-[35px] justify-between transition-all select-none ${
                                             isCurrentMonth
                                                 ? "bg-white dark:bg-[#1E2028]/20 border-gray-200 dark:border-white/10 hover:shadow-md"
-                                                : "bg-gray-50/50 dark:bg-gray-900/10 border-gray-50 dark:border-transparent opacity-40"
+                                                : "bg-gray-50/50 dark:bg-[#151925]/40 border-gray-50 dark:border-transparent opacity-40"
                                         } ${
                                             isToday
                                                 ? "ring-1 ring-primary/50 border-primary/30 bg-primary/[0.02]"
@@ -145,7 +145,7 @@ export function TradingCalendar({ data, selectedDates }: TradingCalendarProps) {
                                         {/* Day Number */}
                                         <div className="flex items-center justify-between">
                                             <span
-                                                className={`text-[10px] font-black ${
+                                                className={`text-[10px] font-black font-mono tabular-nums ${
                                                     isToday
                                                         ? "text-primary bg-primary/10 px-1 rounded-lg"
                                                         : "text-gray-400 dark:text-gray-500"
@@ -168,7 +168,7 @@ export function TradingCalendar({ data, selectedDates }: TradingCalendarProps) {
                                         {isCurrentMonth && hasTrades ? (
                                             <div className="mt-1 text-right overflow-hidden">
                                                 <p
-                                                    className={`text-[10px] font-extrabold truncate ${
+                                                    className={`text-[10px] font-extrabold font-mono tabular-nums truncate ${
                                                         profit >= 0
                                                             ? "text-emerald-500"
                                                             : "text-red-500"
@@ -177,7 +177,7 @@ export function TradingCalendar({ data, selectedDates }: TradingCalendarProps) {
                                                     {profit >= 0 ? "+" : ""}$
                                                     {Math.round(profit)}
                                                 </p>
-                                                <p className="text-[8px] font-medium text-gray-400 dark:text-gray-600 truncate leading-none mt-0.5">
+                                                <p className="text-[8px] font-medium font-mono tabular-nums text-gray-400 dark:text-gray-600 truncate leading-none mt-0.5">
                                                     {perf?.tradeCount || 0}T •{" "}
                                                     {perf?.winRate
                                                         ? perf.winRate.toFixed(
@@ -200,12 +200,12 @@ export function TradingCalendar({ data, selectedDates }: TradingCalendarProps) {
                                         </p>
                                         <div className="space-y-0.5 mt-1">
                                             <p
-                                                className={`font-black text-sm ${profit >= 0 ? "text-emerald-500" : "text-red-500"}`}
+                                                className={`font-black font-mono tabular-nums text-sm ${profit >= 0 ? "text-emerald-500" : "text-red-500"}`}
                                             >
                                                 {profit >= 0 ? "+" : ""}$
                                                 {profit.toFixed(2)}
                                             </p>
-                                            <p className="text-[10px] text-gray-300 dark:text-gray-600">
+                                            <p className="text-[10px] font-mono tabular-nums text-gray-300 dark:text-gray-600">
                                                 {perf?.tradeCount || 0} trades •{" "}
                                                 {perf?.winRate
                                                     ? perf.winRate.toFixed(0)

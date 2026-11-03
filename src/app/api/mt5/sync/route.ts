@@ -14,6 +14,9 @@ const limiter = rateLimit({
     interval: 60000,
 });
 
+const MAX_TRADES_PER_REQUEST = 500;
+const MAX_BODY_BYTES = 5 * 1024 * 1024; // 5 MB
+
 interface EATrade {
     ticket: number;
     symbol: string;
@@ -53,7 +56,25 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        const body: SyncPayload = await request.json();
+        const contentLength = Number(
+            request.headers.get("content-length") || "0"
+        );
+        if (contentLength > MAX_BODY_BYTES) {
+            return NextResponse.json(
+                { error: "Payload too large" },
+                { status: 413 }
+            );
+        }
+
+        const rawBody = await request.text();
+        if (rawBody.length > MAX_BODY_BYTES) {
+            return NextResponse.json(
+                { error: "Payload too large" },
+                { status: 413 }
+            );
+        }
+
+        const body: SyncPayload = JSON.parse(rawBody);
         const { accountId, trades } = body;
 
         // 1. Validate Account — require the caller to authenticate and own
@@ -85,6 +106,15 @@ export async function POST(request: NextRequest) {
             return NextResponse.json(
                 { error: "Invalid trades data" },
                 { status: 400 }
+            );
+        }
+
+        if (trades.length > MAX_TRADES_PER_REQUEST) {
+            return NextResponse.json(
+                {
+                    error: `Batch size exceeds maximum of ${MAX_TRADES_PER_REQUEST} trades per request`,
+                },
+                { status: 413 }
             );
         }
 
@@ -237,10 +267,10 @@ export async function POST(request: NextRequest) {
             new: newCount,
             updated: updatedCount,
         });
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Sync Error:", error);
         return NextResponse.json(
-            { error: "Sync failed: " + error.message },
+            { error: "Sync failed" },
             { status: 500 }
         );
     }

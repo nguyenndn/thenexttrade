@@ -1,26 +1,25 @@
 import { PublicHeader } from "@/components/layout/PublicHeader";
-import { SiteFooter } from "@/components/layout/SiteFooter";
-import { AboutUsSection } from "@/components/home/AboutUsSection";
 import { FadeIn } from "@/components/ui/FadeIn";
-import { getAuthUser } from "@/lib/auth-cache";
 import { Suspense } from "react";
 import { HomeFeedSkeleton } from "@/components/ui/LoadingSkeleton";
 import { SaaSHeroSection } from "@/components/home/SaaSHeroSection";
 import { HomeTrustMetrics } from "@/components/home/HomeTrustMetrics";
+import { DynamicFirefly } from "@/components/ui/DynamicFirefly";
+import { prisma } from "@/lib/prisma";
 import dynamic from "next/dynamic";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
     title: "TheNextTrade - All-in-One Forex Trading OS, Playbook & Journal",
     description:
-        "Turn your trade history into consistent edge with TheNextTrade. Automated MT5 Trade Journal, Playbook Studio, 17 free forex calculators, and structured Academy.",
+        "Turn your trade history into consistent edge with TheNextTrade. Automated MT5 Trade Journal, Playbook Studio, 17 free forex calculators, and automated MT5 execution systems.",
     alternates: {
         canonical: "/",
     },
     openGraph: {
         title: "TheNextTrade - All-in-One Forex Trading OS, Playbook & Journal",
         description:
-            "Automated MT5 Trade Journal, Playbook Studio, 17 free forex calculators, and structured 3-level Academy.",
+            "Automated MT5 Trade Journal, Playbook Studio, 17 free forex calculators, and automated MT5 execution systems.",
         url: "https://thenexttrade.com",
         siteName: "TheNextTrade",
         images: [
@@ -38,7 +37,7 @@ export const metadata: Metadata = {
         card: "summary_large_image",
         title: "TheNextTrade - All-in-One Forex Trading OS",
         description:
-            "Automated MT5 Trade Journal, Playbook Studio, 17 free forex calculators, and structured 3-level Academy.",
+            "Automated MT5 Trade Journal, Playbook Studio, 17 free forex calculators, and automated MT5 execution systems.",
         images: ["/og-image.jpg"],
     },
 };
@@ -47,13 +46,6 @@ export const metadata: Metadata = {
 export const revalidate = 60;
 
 // Dynamic imports for below-fold sections — reduces initial JS bundle via code-splitting
-const DynamicFirefly = dynamic(
-    () =>
-        import("@/components/ui/DynamicFirefly").then((m) => ({
-            default: m.DynamicFirefly,
-        })),
-    { loading: () => null }
-);
 const HomeFAQSection = dynamic(
     () =>
         import("@/components/home/HomeFAQSection").then((m) => ({
@@ -82,13 +74,6 @@ const SpreadsheetComparisonSection = dynamic(
         })),
     { loading: () => <div className="h-96" /> }
 );
-const BrokerRankingsSection = dynamic(
-    () =>
-        import("@/components/home/BrokerRankingsSection").then((m) => ({
-            default: m.BrokerRankingsSection,
-        })),
-    { loading: () => <div className="h-96" /> }
-);
 const MT5TeaserCTA = dynamic(
     () =>
         import("@/components/home/MT5TeaserCTA").then((m) => ({
@@ -103,13 +88,6 @@ const BrokerFundedMembershipSection = dynamic(
         })),
     { loading: () => <div className="h-96" /> }
 );
-const ReviewsSection = dynamic(
-    () =>
-        import("@/components/home/ReviewsSection").then((m) => ({
-            default: m.ReviewsSection,
-        })),
-    { loading: () => <div className="h-96" /> }
-);
 const QuoteDisplay = dynamic(() => import("@/components/shared/QuoteDisplay"), {
     loading: () => null,
 });
@@ -120,16 +98,36 @@ const StartByGoalSection = dynamic(
         })),
     { loading: () => <div className="h-96" /> }
 );
+const AboutUsSection = dynamic(
+    () =>
+        import("@/components/home/AboutUsSection").then((m) => ({
+            default: m.AboutUsSection,
+        })),
+    { loading: () => <div className="h-96" /> }
+);
+const SiteFooter = dynamic(
+    () =>
+        import("@/components/layout/SiteFooter").then((m) => ({
+            default: m.SiteFooter,
+        })),
+    { loading: () => <div className="h-64" /> }
+);
 
 export default async function Home() {
-    const user = await getAuthUser();
-    const isLoggedIn = !!user;
+    // Decoupled from request cookies — preserves static Edge ISR caching
+    const quote = await prisma.quote
+        .findFirst({
+            where: { type: "HOMEPAGE", isActive: true },
+            orderBy: { createdAt: "desc" },
+            select: { text: true, author: true },
+        })
+        .catch(() => null);
 
     return (
         <main className="min-h-screen bg-white dark:bg-transparent overflow-x-clip">
-            <PublicHeader user={user} />
+            <PublicHeader />
             <Suspense fallback={<HomeFeedSkeleton />}>
-                <HomeFeed isLoggedIn={isLoggedIn} />
+                <HomeFeed isLoggedIn={false} quote={quote || undefined} />
             </Suspense>
         </main>
     );
@@ -137,20 +135,17 @@ export default async function Home() {
 
 interface HomeFeedProps {
     isLoggedIn: boolean;
+    quote?: { text: string; author: string };
 }
 
-async function HomeFeed({ isLoggedIn }: HomeFeedProps) {
+function HomeFeed({ isLoggedIn, quote }: HomeFeedProps) {
     return (
         <>
-            {/* 1. Hero Section */}
-            <FadeIn delay={0.1}>
-                <SaaSHeroSection isLoggedIn={isLoggedIn} />
-            </FadeIn>
+            {/* 1. Hero Section (Unwrapped for instant LCP paint) */}
+            <SaaSHeroSection isLoggedIn={isLoggedIn} />
 
-            {/* 2. Transparency Strip — what we charge and who pays us, stated early */}
-            <FadeIn delay={0.15}>
-                <HomeTrustMetrics />
-            </FadeIn>
+            {/* 2. Transparency Strip (Unwrapped for instant above-the-fold visibility) */}
+            <HomeTrustMetrics />
 
             {/* 3. Product Proof & Workflow (Connect -> Analyze -> Improve) */}
             <FadeIn delay={0.1} direction="up">
@@ -167,7 +162,7 @@ async function HomeFeed({ isLoggedIn }: HomeFeedProps) {
                 <StartByGoalSection isLoggedIn={isLoggedIn} />
             </FadeIn>
 
-            {/* STEP 01 / 04 · Pre-Trade Risk Math (18 Web Forex Tools) */}
+            {/* STEP 01 / 04 · Pre-Trade Risk Math (17 Web Forex Tools) */}
             <FadeIn delay={0.1} direction="up">
                 <WebForexTools />
             </FadeIn>
@@ -177,18 +172,9 @@ async function HomeFeed({ isLoggedIn }: HomeFeedProps) {
                 <MT5TeaserCTA isLoggedIn={isLoggedIn} />
             </FadeIn>
 
-            {/* STEP 03 / 03 · Zero-Fee Capital Preservation (Broker-Funded Sponsorship & Rankings) */}
+            {/* STEP 03 / 04 · Zero-Fee Capital Preservation (Broker-Funded Sponsorship) */}
             <FadeIn delay={0.1} direction="up">
                 <BrokerFundedMembershipSection isLoggedIn={isLoggedIn} />
-            </FadeIn>
-
-            <FadeIn delay={0.1} direction="up">
-                <BrokerRankingsSection />
-            </FadeIn>
-
-            {/* 8. Reviews Section */}
-            <FadeIn delay={0.1} direction="up">
-                <ReviewsSection />
             </FadeIn>
 
             {/* 8b. Short FAQ Accordion */}
@@ -203,20 +189,18 @@ async function HomeFeed({ isLoggedIn }: HomeFeedProps) {
 
             {/* 11. Daily Quote */}
             <FadeIn delay={0.2} direction="up">
-                <div className="relative overflow-hidden border-t border-dashboard bg-slate-50/50 dark:bg-[#0F1117] py-2 sm:py-3">
+                <div className="relative overflow-hidden border-t border-gray-200 dark:border-white/10 bg-slate-50/50 dark:bg-transparent py-2 sm:py-3">
                     {/* Background Effects */}
                     <div className="absolute inset-0 bg-[radial-gradient(hsl(var(--gold))_1.5px,transparent_1.5px)] [background-size:32px_32px] opacity-[0.3] dark:opacity-[0.2]"></div>
                     <DynamicFirefly count={15} color="gold" />
 
                     <section className="max-w-4xl mx-auto px-4 text-center relative z-10">
-                        <QuoteDisplay isDark={true} />
+                        <QuoteDisplay isDark={true} quote={quote} />
                     </section>
                 </div>
             </FadeIn>
 
-            {/* 12. Site Footer — every other public page renders this; the
-                homepage was importing it and never mounting it, so visitors
-                hit a dead end at the bottom of the highest-traffic page. */}
+            {/* 12. Site Footer */}
             <SiteFooter />
         </>
     );

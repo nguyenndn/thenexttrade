@@ -19,16 +19,16 @@ export default function JournalStats({ stats }: StatsProps) {
             title: "Total Trades",
             value: stats.totalTrades,
             icon: Layers,
-            color: "text-blue-500",
-            bg: "bg-blue-50 dark:bg-blue-500/10",
+            color: "text-amber-600 dark:text-gold",
+            bg: "bg-gold/10",
             desc: "Completed setups",
         },
         {
             title: "Win Rate",
             value: `${stats.winRate.toFixed(1)}%`,
             icon: Trophy,
-            color: "text-amber-500",
-            bg: "bg-amber-50 dark:bg-amber-500/10",
+            color: "text-amber-600 dark:text-gold",
+            bg: "bg-gold/10",
             desc: "Winning percentage",
         },
         {
@@ -90,8 +90,8 @@ export default function JournalStats({ stats }: StatsProps) {
             title: "W/L Ratio",
             value: `${stats.winCount} / ${stats.lossCount}`,
             icon: Target,
-            color: "text-purple-500",
-            bg: "bg-purple-50 dark:bg-purple-500/10",
+            color: "text-amber-600 dark:text-gold",
+            bg: "bg-gold/10",
             desc: "Wins vs Losses",
         },
         {
@@ -101,8 +101,8 @@ export default function JournalStats({ stats }: StatsProps) {
                 maximumFractionDigits: 2,
             }),
             icon: Scale,
-            color: "text-sky-500",
-            bg: "bg-sky-50 dark:bg-sky-500/10",
+            color: "text-amber-600 dark:text-gold",
+            bg: "bg-gold/10",
             desc: "Traded volume",
         },
     ];
@@ -114,7 +114,7 @@ export default function JournalStats({ stats }: StatsProps) {
                 return (
                     <div
                         key={index}
-                        className="rounded-lg border border-dashboard bg-white dark:bg-[#1E2028] p-3.5 sm:p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-default"
+                        className="rounded-xl border border-dashboard bg-white dark:bg-[#1E2028] p-3.5 sm:p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-default"
                     >
                         <div className="flex items-center gap-3">
                             <div
@@ -124,7 +124,7 @@ export default function JournalStats({ stats }: StatsProps) {
                             </div>
                             <div className="min-w-0 flex-1">
                                 <p
-                                    className={`text-lg sm:text-xl font-black tabular-nums leading-none truncate ${card.color}`}
+                                    className={`text-lg sm:text-xl font-black font-mono tabular-nums leading-none truncate ${card.color}`}
                                 >
                                     {card.value}
                                 </p>

@@ -4,7 +4,6 @@ import { useState, useTransition, useEffect } from "react";
 import {
     Plus,
     Shield,
-    Award,
     ClipboardCheck,
     AlertCircle,
     RefreshCw,
@@ -14,8 +13,6 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/Tabs";
 import { Button } from "@/components/ui/Button";
 import { TradingRuleCard } from "./TradingRuleCard";
 import { TradingRuleModal } from "./TradingRuleModal";
-import { GoalCard } from "./GoalCard";
-import { GoalModal } from "./GoalModal";
 import { addStarterRules, getRulesComplianceStats } from "@/actions/rulebook";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { toast } from "sonner";
@@ -23,14 +20,12 @@ import { useRouter } from "next/navigation";
 
 interface RulebookClientProps {
     initialRules: any[];
-    initialGoals: any[];
     strategies: any[];
     accounts: any[];
 }
 
 export function RulebookClient({
     initialRules,
-    initialGoals,
     strategies,
     accounts,
 }: RulebookClientProps) {
@@ -38,7 +33,6 @@ export function RulebookClient({
     const [activeTab, setActiveTab] = useState("rulebook");
     const [selectedCategory, setSelectedCategory] = useState("ALL");
     const [isRuleModalOpen, setIsRuleModalOpen] = useState(false);
-    const [isGoalModalOpen, setIsGoalModalOpen] = useState(false);
     const [ruleToEdit, setRuleToEdit] = useState<any>(null);
 
     const [complianceStats, setComplianceStats] = useState<any[]>([]);
@@ -100,8 +94,8 @@ export function RulebookClient({
     return (
         <>
             <PageHeader
-                title="Trading Rulebook & Behavior Goals"
-                description="Establish clear risk parameters, entry filters, and habit targets to build professional consistency."
+                title="Trading Rulebook & Compliance"
+                description="Establish clear risk parameters, entry filters, and audit your rule compliance."
             >
                 <div className="flex items-center gap-3">
                     {activeTab === "rulebook" && (
@@ -116,17 +110,6 @@ export function RulebookClient({
                         >
                             <Plus size={16} />
                             Add Rule
-                        </Button>
-                    )}
-                    {activeTab === "goals" && (
-                        <Button
-                            variant="primary"
-                            size="smd"
-                            onClick={() => setIsGoalModalOpen(true)}
-                            className="flex items-center gap-1.5 shadow-md"
-                        >
-                            <Plus size={16} />
-                            Add Goal
                         </Button>
                     )}
                 </div>
@@ -147,15 +130,6 @@ export function RulebookClient({
                         >
                             <Shield size={14} className="sm:w-4 sm:h-4" />
                             Rulebook
-                        </TabsTrigger>
-                        <TabsTrigger
-                            value="goals"
-                            className="rounded-lg px-3 sm:px-4 py-1.5 text-sm font-bold transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2 border whitespace-nowrap flex-1 text-center lg:flex-none border-transparent hover:border-transparent text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
-                            activeIndicatorClassName="!bg-gradient-to-r from-gold to-amber-600 shadow-md shadow-amber-500/20 border-0 !-inset-[1px]"
-                            activeTextClassName="!text-white"
-                        >
-                            <Award size={14} className="sm:w-4 sm:h-4" />
-                            Behavior Goals
                         </TabsTrigger>
                         <TabsTrigger
                             value="compliance"
@@ -195,8 +169,8 @@ export function RulebookClient({
                     </div>
 
                     {filteredRules.length === 0 ? (
-                        <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard shadow-sm max-w-xl mx-auto mt-6">
-                            <div className="w-12 h-12 rounded-lg bg-indigo-50 dark:bg-indigo-500/15 flex items-center justify-center mx-auto mb-4 text-indigo-500">
+                        <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm max-w-xl mx-auto mt-6">
+                            <div className="w-12 h-12 rounded-lg bg-amber-50 dark:bg-gold/15 flex items-center justify-center mx-auto mb-4 text-amber-600 dark:text-gold">
                                 <Shield size={24} />
                             </div>
                             <h3 className="text-base font-bold text-gray-800 dark:text-white">
@@ -212,7 +186,7 @@ export function RulebookClient({
                                     size="smd"
                                     onClick={handleAddStarterRules}
                                     disabled={isPending}
-                                    className="flex items-center gap-1.5 border-indigo-200 dark:border-indigo-500/20 text-indigo-600 dark:text-indigo-400 font-bold"
+                                    className="flex items-center gap-1.5 border-amber-500/30 text-amber-600 dark:text-gold hover:bg-gold/10 font-bold"
                                 >
                                     <Plus size={14} />
                                     Add Starter Rules
@@ -244,44 +218,6 @@ export function RulebookClient({
                     )}
                 </TabsContent>
 
-                {/* --- GOALS TAB --- */}
-                <TabsContent value="goals">
-                    {initialGoals.length === 0 ? (
-                        <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard shadow-sm max-w-xl mx-auto">
-                            <div className="w-12 h-12 rounded-lg bg-amber-50 dark:bg-amber-500/15 flex items-center justify-center mx-auto mb-4 text-amber-500">
-                                <Award size={24} />
-                            </div>
-                            <h3 className="text-base font-bold text-gray-800 dark:text-white">
-                                No Active Goals
-                            </h3>
-                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 max-w-xs mx-auto">
-                                Set behavior targets, such as logging a specific
-                                number of trades or reviewing losses.
-                            </p>
-                            <div className="mt-6">
-                                <Button
-                                    variant="primary"
-                                    size="smd"
-                                    onClick={() => setIsGoalModalOpen(true)}
-                                    className="font-bold"
-                                >
-                                    Set Behavior Goal
-                                </Button>
-                            </div>
-                        </div>
-                    ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {initialGoals.map((goal) => (
-                                <GoalCard
-                                    key={goal.id}
-                                    goal={goal}
-                                    onUpdate={() => router.refresh()}
-                                />
-                            ))}
-                        </div>
-                    )}
-                </TabsContent>
-
                 {/* --- COMPLIANCE TAB --- */}
                 <TabsContent value="compliance">
                     {loadingStats ? (
@@ -306,7 +242,7 @@ export function RulebookClient({
                             {/* Compliance Overview Grid */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 {/* Stats Table */}
-                                <div className="bg-white dark:bg-[#1E2028] border border-dashboard/80 dark:border-white/[0.08] p-5 rounded-lg">
+                                <div className="bg-white dark:bg-[#1E2028] border border-dashboard/80 dark:border-white/[0.08] p-5 rounded-xl">
                                     <h3 className="text-sm font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
                                         <BarChart2
                                             size={16}
@@ -337,7 +273,7 @@ export function RulebookClient({
                                                         <p className="text-xs font-bold text-gray-700 dark:text-gray-200 truncate">
                                                             {stat.ruleTitle}
                                                         </p>
-                                                        <p className="text-[10px] text-gray-400 dark:text-gray-500 font-semibold mt-0.5">
+                                                        <p className="text-[10px] text-gray-400 dark:text-gray-500 font-semibold font-mono tabular-nums mt-0.5">
                                                             Checked{" "}
                                                             {totalChecks} times
                                                             • {stat.followed}{" "}
@@ -347,7 +283,7 @@ export function RulebookClient({
                                                     </div>
                                                     <div className="flex items-center gap-2">
                                                         <span
-                                                            className={`text-sm font-black ${rate >= 75 ? "text-emerald-500" : rate >= 50 ? "text-amber-500" : "text-red-500"}`}
+                                                            className={`text-sm font-black font-mono tabular-nums ${rate >= 75 ? "text-emerald-500" : rate >= 50 ? "text-amber-500" : "text-red-500"}`}
                                                         >
                                                             {totalChecks > 0
                                                                 ? `${rate}%`
@@ -361,7 +297,7 @@ export function RulebookClient({
                                 </div>
 
                                 {/* Focus / Advice panel */}
-                                <div className="bg-white dark:bg-[#1E2028] border border-dashboard/80 dark:border-white/[0.08] p-5 rounded-lg flex flex-col justify-between">
+                                <div className="bg-white dark:bg-[#1E2028] border border-dashboard/80 dark:border-white/[0.08] p-5 rounded-xl flex flex-col justify-between">
                                     <div>
                                         <h3 className="text-sm font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
                                             <AlertCircle
@@ -416,7 +352,7 @@ export function RulebookClient({
                                                         </p>
                                                         <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
                                                             Broken{" "}
-                                                            <span className="font-bold text-red-500">
+                                                            <span className="font-bold font-mono tabular-nums text-red-500">
                                                                 {
                                                                     mostBroken.broken
                                                                 }{" "}
@@ -428,10 +364,9 @@ export function RulebookClient({
                                                     <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
                                                         Focus strictly on this
                                                         rule during the coming
-                                                        week. Consider setting
-                                                        up a behavior goal in
-                                                        the Goals tab to track
-                                                        this habit.
+                                                        week and verify it before
+                                                        every execution in your
+                                                        journal.
                                                     </p>
                                                 </div>
                                             );
@@ -455,12 +390,6 @@ export function RulebookClient({
                 ruleToEdit={ruleToEdit}
                 accounts={accounts}
                 strategies={strategies}
-            />
-
-            <GoalModal
-                isOpen={isGoalModalOpen}
-                onClose={() => setIsGoalModalOpen(false)}
-                onSuccess={() => router.refresh()}
             />
         </>
     );
