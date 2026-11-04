@@ -1,23 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo, useTransition } from "react";
 import {
     Trophy,
     Plus,
     Calendar,
     DollarSign,
     Users,
-    ShieldAlert,
     Clock,
-    MoreVertical,
     Play,
     Square,
     Edit2,
     Trash2,
-    CheckCircle,
+    CheckCircle2,
+    FileText,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import { cn } from "@/lib/utils";
+import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+import { AnimatedStatCard } from "@/components/admin/dashboard/AnimatedStatCard";
+import {
+    SyncFilterToolbar,
+    StatusFilterOption,
+} from "@/app/admin/ib/sync-requests/SyncFilterToolbar";
 import { toast } from "sonner";
 import { CompetitionModal } from "./CompetitionModal";
 import {
@@ -42,10 +46,14 @@ export function CompetitionListClient({
     stats,
 }: CompetitionListClientProps) {
     const router = useRouter();
+    const [isPending, startTransition] = useTransition();
     const [competitions, setCompetitions] = useState(initialCompetitions);
     const [selectedTab, setSelectedTab] = useState<string>("ALL");
+    const [search, setSearch] = useState<string>("");
     const [modalOpen, setModalOpen] = useState(false);
-    const [editingCompetition, setEditingCompetition] = useState<any | null>(null);
+    const [editingCompetition, setEditingCompetition] = useState<any | null>(
+        null
+    );
     const [processingId, setProcessingId] = useState<string | null>(null);
 
     const handleCreateClick = () => {
@@ -58,6 +66,12 @@ export function CompetitionListClient({
         setModalOpen(true);
     };
 
+    const handleRefresh = () => {
+        startTransition(() => {
+            router.refresh();
+        });
+    };
+
     const handleStatusToggle = async (id: string, newStatus: any) => {
         setProcessingId(id);
         try {
@@ -66,6 +80,11 @@ export function CompetitionListClient({
                 toast.error(res.error);
             } else {
                 toast.success(`Competition marked as ${newStatus}`);
+                setCompetitions((prev) =>
+                    prev.map((c) =>
+                        c.id === id ? { ...c, status: newStatus } : c
+                    )
+                );
                 router.refresh();
             }
         } catch (err: any) {
@@ -95,35 +114,95 @@ export function CompetitionListClient({
         }
     };
 
-    const filteredCompetitions = competitions.filter((comp) => {
-        if (selectedTab === "ALL") return true;
-        return comp.status === selectedTab;
-    });
+    const statusCounts = useMemo(() => {
+        return {
+            ALL: competitions.length,
+            ACTIVE: competitions.filter((c) => c.status === "ACTIVE").length,
+            UPCOMING: competitions.filter((c) => c.status === "UPCOMING")
+                .length,
+            DRAFT: competitions.filter((c) => c.status === "DRAFT").length,
+            ENDED: competitions.filter((c) => c.status === "ENDED").length,
+        };
+    }, [competitions]);
+
+    const statusTabs: StatusFilterOption[] = [
+        {
+            key: "ALL",
+            label: "All Tournaments",
+            count: statusCounts.ALL,
+            icon: Trophy,
+        },
+        {
+            key: "ACTIVE",
+            label: "Active Sprints",
+            count: statusCounts.ACTIVE,
+            icon: Play,
+        },
+        {
+            key: "UPCOMING",
+            label: "Upcoming",
+            count: statusCounts.UPCOMING,
+            icon: Clock,
+        },
+        {
+            key: "DRAFT",
+            label: "Drafts",
+            count: statusCounts.DRAFT,
+            icon: FileText,
+        },
+        {
+            key: "ENDED",
+            label: "Ended",
+            count: statusCounts.ENDED,
+            icon: CheckCircle2,
+        },
+    ];
+
+    const filteredCompetitions = useMemo(() => {
+        return competitions.filter((comp) => {
+            if (selectedTab !== "ALL" && comp.status !== selectedTab) {
+                return false;
+            }
+            if (search.trim()) {
+                const q = search.toLowerCase().trim();
+                const titleMatch = comp.title?.toLowerCase().includes(q);
+                const slugMatch = comp.slug?.toLowerCase().includes(q);
+                const brokerMatch = comp.eligibleBrokers
+                    ?.toLowerCase()
+                    .includes(q);
+                return Boolean(titleMatch || slugMatch || brokerMatch);
+            }
+            return true;
+        });
+    }, [competitions, selectedTab, search]);
 
     const getStatusBadge = (status: string) => {
         switch (status) {
             case "ACTIVE":
                 return (
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg text-xs font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="px-2.5 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-300 dark:border-emerald-500/20 inline-flex items-center gap-1.5">
+                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
                         ACTIVE
                     </span>
                 );
             case "UPCOMING":
                 return (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-xs font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
-                        <Clock size={11} /> UPCOMING
+                    <span className="px-2.5 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-500/10 dark:text-amber-300 dark:border-amber-500/20 inline-flex items-center gap-1">
+                        <Clock size={11} />
+                        UPCOMING
                     </span>
                 );
             case "ENDED":
                 return (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-xs font-bold bg-gray-500/10 text-gray-600 dark:text-gray-400 border border-gray-500/20">
-                        <CheckCircle size={11} /> ENDED
+                    <span className="px-2.5 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-wider bg-gray-100 text-gray-600 border border-gray-200 dark:bg-white/5 dark:text-gray-400 dark:border-white/10 inline-flex items-center gap-1">
+                        <CheckCircle2 size={11} />
+                        ENDED
                     </span>
                 );
             default:
                 return (
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-lg text-xs font-bold bg-slate-500/10 text-slate-600 dark:text-slate-400 border border-slate-500/20">
+                    <span className="px-2.5 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-wider bg-gray-100 text-gray-600 border border-gray-200 dark:bg-white/5 dark:text-gray-400 dark:border-white/10 inline-flex items-center gap-1">
+                        <FileText size={11} />
                         DRAFT
                     </span>
                 );
@@ -132,175 +211,261 @@ export function CompetitionListClient({
 
     return (
         <div className="space-y-6">
-            {/* Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                    <h1 className="text-2xl font-black tracking-tight text-gray-900 dark:text-white flex items-center gap-2.5">
-                        <Trophy className="text-amber-500" size={26} />
-                        Trading Competitions &amp; Sprints
-                    </h1>
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                        Configure verified MT5 trading tournaments, live season prize pools, and automated leaderboard rules.
-                    </p>
-                </div>
+            {/* Standardized Admin Page Header */}
+            <AdminPageHeader
+                title="Trading Competitions & Sprints"
+                description="Configure verified MT5 trading tournaments, live season prize pools, and automated leaderboard rules."
+            >
                 <Button
                     variant="primary"
                     onClick={handleCreateClick}
-                    className="flex items-center gap-2 shrink-0 font-bold bg-gold hover:bg-amber-600 text-white"
+                    className="shadow-lg shadow-amber-500/20 font-bold"
                 >
-                    <Plus size={16} /> Create Competition
+                    <Plus size={16} strokeWidth={2.5} />
+                    Create Competition
                 </Button>
+            </AdminPageHeader>
+
+            {/* Top Metric Cards with AnimatedStatCard (matching sync-requests & pipeline) */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <AnimatedStatCard
+                    title="Total Tournaments"
+                    value={stats.totalCompetitions}
+                    icon={Trophy}
+                    color="amber"
+                    index={0}
+                    trendPercent={null}
+                />
+                <AnimatedStatCard
+                    title="Active Live Sprints"
+                    value={stats.activeCount}
+                    icon={Play}
+                    color="emerald"
+                    index={1}
+                    trendPercent={null}
+                />
+                <AnimatedStatCard
+                    title="Total Prize Pool"
+                    value={stats.totalPrizePool}
+                    prefix="$"
+                    icon={DollarSign}
+                    color="amber"
+                    index={2}
+                    trendPercent={null}
+                />
+                <AnimatedStatCard
+                    title="Enrolled Traders"
+                    value={stats.totalParticipants}
+                    icon={Users}
+                    color="amber"
+                    index={3}
+                    trendPercent={null}
+                />
             </div>
 
-            {/* Stats Overview */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="rounded-xl border border-dashboard bg-white dark:bg-[#1E2028] p-4 space-y-1 shadow-xs">
-                    <p className="text-xs font-bold uppercase tracking-wider text-gray-500">Total Tournaments</p>
-                    <p className="text-2xl font-black font-mono tabular-nums text-gray-900 dark:text-white">{stats.totalCompetitions}</p>
-                </div>
-                <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/[0.03] p-4 space-y-1 shadow-xs">
-                    <p className="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Active Live Sprints</p>
-                    <p className="text-2xl font-black font-mono tabular-nums text-emerald-600 dark:text-emerald-400">{stats.activeCount}</p>
-                </div>
-                <div className="rounded-xl border border-amber-500/30 bg-amber-500/[0.03] p-4 space-y-1 shadow-xs">
-                    <p className="text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">Total Prize Pool</p>
-                    <p className="text-2xl font-black font-mono tabular-nums text-amber-600 dark:text-amber-400">${stats.totalPrizePool.toLocaleString()}</p>
-                </div>
-                <div className="rounded-xl border border-dashboard bg-white dark:bg-[#1E2028] p-4 space-y-1 shadow-xs">
-                    <p className="text-xs font-bold uppercase tracking-wider text-gray-500">Enrolled Traders</p>
-                    <p className="text-2xl font-black font-mono tabular-nums text-gray-900 dark:text-white">{stats.totalParticipants}</p>
-                </div>
-            </div>
+            {/* Standardized Status Tabs & Search Toolbar Card (matching sync-requests) */}
+            <SyncFilterToolbar
+                search={search}
+                onSearchChange={setSearch}
+                onClearSearch={() => setSearch("")}
+                statusTabs={statusTabs}
+                activeStatus={selectedTab}
+                onStatusChange={setSelectedTab}
+                onRefresh={handleRefresh}
+                isRefreshing={isPending}
+                tabsId="admin-competitions-status-tabs"
+            />
 
-            {/* Filter Tabs */}
-            <div role="tablist" aria-label="Competition Status Filter" className="flex items-center gap-1.5 border-b border-dashboard pb-3 overflow-x-auto">
-                {["ALL", "ACTIVE", "UPCOMING", "DRAFT", "ENDED"].map((tab) => (
-                    <Button
-                        key={tab}
-                        type="button"
-                        variant="ghost"
-                        role="tab"
-                        aria-selected={selectedTab === tab}
-                        onClick={() => setSelectedTab(tab)}
-                        className={cn(
-                            "h-auto px-3.5 py-1.5 rounded-lg text-xs font-bold transition-colors whitespace-nowrap",
-                            selectedTab === tab
-                                ? "bg-gold text-white shadow-xs hover:bg-gold hover:text-white"
-                                : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5"
-                        )}
-                    >
-                        {tab}
-                    </Button>
-                ))}
-            </div>
-
-            {/* Competitions Table */}
-            <div className="rounded-xl border border-dashboard bg-white dark:bg-[#1E2028] overflow-hidden shadow-xs">
+            {/* Unified Data Table Card */}
+            <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] overflow-hidden shadow-sm">
                 <div className="overflow-x-auto">
-                    <table className="w-full text-left text-sm">
-                        <thead className="border-b border-dashboard bg-gray-50 dark:bg-white/[0.02] text-xs font-bold uppercase tracking-wider text-gray-500">
+                    <table className="w-full text-left text-xs text-gray-600 dark:text-gray-300">
+                        <thead className="border-b border-gray-100 bg-gray-50/80 text-[11px] uppercase tracking-wider font-bold text-gray-500 dark:border-white/10 dark:bg-white/[0.03] dark:text-gray-400">
                             <tr>
-                                <th className="px-5 py-3.5">Tournament &amp; Slug</th>
+                                <th className="px-4 py-3.5">
+                                    Tournament &amp; Slug
+                                </th>
                                 <th className="px-4 py-3.5">Status</th>
                                 <th className="px-4 py-3.5">Dates</th>
                                 <th className="px-4 py-3.5">Prize Pool</th>
                                 <th className="px-4 py-3.5">Guardrails</th>
                                 <th className="px-4 py-3.5">Traders</th>
-                                <th className="px-5 py-3.5 text-right">Actions</th>
+                                <th className="px-4 py-3.5 text-right">
+                                    Actions
+                                </th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-dashboard">
+                        <tbody className="divide-y divide-gray-100 dark:divide-white/5">
                             {filteredCompetitions.length === 0 ? (
                                 <tr>
-                                    <td colSpan={7} className="px-5 py-12 text-center text-gray-500 text-sm">
-                                        No competitions found in this category. Click &quot;Create Competition&quot; to launch a sprint.
+                                    <td
+                                        colSpan={7}
+                                        className="py-16 text-center text-gray-400 dark:text-gray-500"
+                                    >
+                                        <Trophy className="h-10 w-10 mx-auto mb-2 opacity-30 text-primary" />
+                                        <p className="text-sm font-bold text-gray-700 dark:text-gray-300">
+                                            No competitions found
+                                        </p>
+                                        <p className="text-xs mt-1 text-gray-500 dark:text-gray-400">
+                                            No trading sprints match the active
+                                            filter. Click &ldquo;Create
+                                            Competition&rdquo; to launch a new
+                                            tournament.
+                                        </p>
                                     </td>
                                 </tr>
                             ) : (
                                 filteredCompetitions.map((comp) => {
-                                    const start = new Date(comp.startDate).toLocaleDateString("en-US", {
+                                    const start = new Date(
+                                        comp.startDate
+                                    ).toLocaleDateString("en-US", {
                                         month: "short",
                                         day: "numeric",
                                     });
-                                    const end = new Date(comp.endDate).toLocaleDateString("en-US", {
+                                    const end = new Date(
+                                        comp.endDate
+                                    ).toLocaleDateString("en-US", {
                                         month: "short",
                                         day: "numeric",
                                         year: "numeric",
                                     });
 
                                     return (
-                                        <tr key={comp.id} className="hover:bg-gray-50/50 dark:hover:bg-white/[0.01] transition-colors">
-                                            <td className="px-5 py-4">
-                                                <p className="font-bold text-gray-900 dark:text-white">{comp.title}</p>
-                                                <p className="text-xs text-gray-400 font-mono mt-0.5">/{comp.slug}</p>
+                                        <tr
+                                            key={comp.id}
+                                            className="hover:bg-gray-50/70 dark:hover:bg-white/[0.02] transition-colors"
+                                        >
+                                            <td className="px-4 py-3.5">
+                                                <p className="font-bold text-gray-900 dark:text-white text-xs">
+                                                    {comp.title}
+                                                </p>
+                                                <p className="text-[11px] text-gray-400 font-mono mt-0.5">
+                                                    /{comp.slug}
+                                                </p>
                                             </td>
-                                            <td className="px-4 py-4">{getStatusBadge(comp.status)}</td>
-                                            <td className="px-4 py-4 text-xs font-mono tabular-nums font-medium text-gray-600 dark:text-gray-300">
+                                            <td className="px-4 py-3.5">
+                                                {getStatusBadge(comp.status)}
+                                            </td>
+                                            <td className="px-4 py-3.5 text-xs font-mono tabular-nums font-medium text-gray-600 dark:text-gray-300">
                                                 <div className="flex items-center gap-1.5">
-                                                    <Calendar size={13} className="text-gray-400" />
-                                                    <span>{start} &rarr; {end}</span>
+                                                    <Calendar
+                                                        size={13}
+                                                        className="text-gray-400 shrink-0"
+                                                    />
+                                                    <span>
+                                                        {start} &rarr; {end}
+                                                    </span>
                                                 </div>
                                             </td>
-                                            <td className="px-4 py-4">
-                                                <span className="font-mono tabular-nums font-black text-amber-600 dark:text-amber-400 text-base">
-                                                    ${comp.prizePool?.toLocaleString()}
+                                            <td className="px-4 py-3.5">
+                                                <span className="font-mono tabular-nums font-black text-amber-600 dark:text-amber-400 text-sm">
+                                                    $
+                                                    {comp.prizePool?.toLocaleString()}
                                                 </span>
                                             </td>
-                                            <td className="px-4 py-4 text-xs font-mono tabular-nums space-y-0.5 text-gray-600 dark:text-gray-300">
-                                                <p>&bull; Min: <strong>{comp.minTrades}</strong> trades</p>
-                                                <p>&bull; Max DD: <strong className="text-red-500">{comp.maxDrawdown}%</strong></p>
+                                            <td className="px-4 py-3.5 text-xs font-mono tabular-nums space-y-0.5 text-gray-600 dark:text-gray-300">
+                                                <p>
+                                                    &bull; Min:{" "}
+                                                    <strong className="text-gray-900 dark:text-white">
+                                                        {comp.minTrades}
+                                                    </strong>{" "}
+                                                    trades
+                                                </p>
+                                                <p>
+                                                    &bull; Max DD:{" "}
+                                                    <strong className="text-rose-600 dark:text-rose-400">
+                                                        {comp.maxDrawdown}%
+                                                    </strong>
+                                                </p>
                                             </td>
-                                            <td className="px-4 py-4">
+                                            <td className="px-4 py-3.5">
                                                 <span className="inline-flex items-center gap-1.5 text-xs font-mono tabular-nums font-bold text-gray-700 dark:text-gray-300">
-                                                    <Users size={14} className="text-gray-400" />
-                                                    {comp._count?.participants ?? 0}
+                                                    <Users
+                                                        size={13}
+                                                        className="text-gray-400"
+                                                    />
+                                                    {comp._count
+                                                        ?.participants ?? 0}
                                                 </span>
                                             </td>
-                                            <td className="px-5 py-4 text-right space-x-2">
-                                                {/* Status switch shortcut */}
-                                                {comp.status === "DRAFT" && (
+                                            <td className="px-4 py-3.5 text-right">
+                                                <div className="flex items-center justify-end gap-1.5">
+                                                    {comp.status ===
+                                                        "DRAFT" && (
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
+                                                            disabled={
+                                                                processingId ===
+                                                                comp.id
+                                                            }
+                                                            onClick={() =>
+                                                                handleStatusToggle(
+                                                                    comp.id,
+                                                                    "ACTIVE"
+                                                                )
+                                                            }
+                                                            className="h-8 px-3 rounded-lg text-xs font-bold text-emerald-600 hover:text-emerald-700 border-emerald-500/30 hover:bg-emerald-50 dark:hover:bg-emerald-500/10 gap-1"
+                                                        >
+                                                            <Play size={12} />
+                                                            Launch
+                                                        </Button>
+                                                    )}
+                                                    {comp.status ===
+                                                        "ACTIVE" && (
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
+                                                            disabled={
+                                                                processingId ===
+                                                                comp.id
+                                                            }
+                                                            onClick={() =>
+                                                                handleStatusToggle(
+                                                                    comp.id,
+                                                                    "ENDED"
+                                                                )
+                                                            }
+                                                            className="h-8 px-3 rounded-lg text-xs font-bold text-amber-600 hover:text-amber-700 border-amber-500/30 hover:bg-amber-50 dark:hover:bg-amber-500/10 gap-1"
+                                                        >
+                                                            <Square size={12} />
+                                                            End
+                                                        </Button>
+                                                    )}
+
                                                     <Button
                                                         variant="outline"
-                                                        size="sm"
-                                                        disabled={processingId === comp.id}
-                                                        onClick={() => handleStatusToggle(comp.id, "ACTIVE")}
-                                                        className="text-xs h-8 text-emerald-600 hover:text-emerald-700"
+                                                        size="icon"
+                                                        onClick={() =>
+                                                            handleEditClick(
+                                                                comp
+                                                            )
+                                                        }
+                                                        className="h-8 w-8 min-w-8 aspect-square rounded-lg text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white shrink-0"
+                                                        aria-label="Edit competition"
                                                     >
-                                                        <Play size={12} className="mr-1" /> Launch
+                                                        <Edit2 size={13} />
                                                     </Button>
-                                                )}
-                                                {comp.status === "ACTIVE" && (
+
                                                     <Button
                                                         variant="outline"
-                                                        size="sm"
-                                                        disabled={processingId === comp.id}
-                                                        onClick={() => handleStatusToggle(comp.id, "ENDED")}
-                                                        className="text-xs h-8 text-amber-600"
+                                                        size="icon"
+                                                        disabled={
+                                                            processingId ===
+                                                            comp.id
+                                                        }
+                                                        onClick={() =>
+                                                            handleDelete(
+                                                                comp.id,
+                                                                comp.title
+                                                            )
+                                                        }
+                                                        className="h-8 w-8 min-w-8 aspect-square rounded-lg text-gray-400 hover:text-rose-600 hover:border-rose-500/30 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors shrink-0"
+                                                        aria-label="Delete competition"
                                                     >
-                                                        <Square size={12} className="mr-1" /> End
+                                                        <Trash2 size={13} />
                                                     </Button>
-                                                )}
-
-                                                <Button
-                                                    variant="outline"
-                                                    size="icon"
-                                                    onClick={() => handleEditClick(comp)}
-                                                    className="h-8 w-8 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
-                                                    aria-label="Edit competition"
-                                                >
-                                                    <Edit2 size={13} />
-                                                </Button>
-
-                                                <Button
-                                                    variant="outline"
-                                                    size="icon"
-                                                    disabled={processingId === comp.id}
-                                                    onClick={() => handleDelete(comp.id, comp.title)}
-                                                    className="h-8 w-8 text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-500/10"
-                                                    aria-label="Delete competition"
-                                                >
-                                                    <Trash2 size={13} />
-                                                </Button>
+                                                </div>
                                             </td>
                                         </tr>
                                     );

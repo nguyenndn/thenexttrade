@@ -3,12 +3,12 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createEABroker } from "../actions";
-import { Briefcase, ArrowLeft } from "lucide-react";
-import Link from "next/link";
+import { Briefcase } from "lucide-react";
 import { toast } from "sonner";
 import { FileUpload } from "@/components/ui/FileUpload";
 import { PremiumInput } from "@/components/ui/PremiumInput";
 import { Button } from "@/components/ui/Button";
+import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 
 export default function CreateEABrokerPage() {
     const router = useRouter();
@@ -64,20 +64,13 @@ export default function CreateEABrokerPage() {
 
     return (
         <div className="w-full space-y-4">
-            <Link
-                href="/admin/trading-systems/brokers"
-                className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-primary transition-colors"
-            >
-                <ArrowLeft size={16} />
-                Back to EA Brokers
-            </Link>
+            <AdminPageHeader
+                title="Add EA Broker"
+                description="Create a new supported EA broker configuration."
+                backHref="/admin/trading-systems/brokers"
+            />
 
             <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-gray-200 dark:border-white/10 p-6 shadow-sm max-w-2xl">
-                <h1 className="text-xl font-bold dark:text-white mb-6 flex items-center gap-2">
-                    <Briefcase className="text-primary" />
-                    Add EA Broker
-                </h1>
-
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <PremiumInput
                         label="Broker Name"

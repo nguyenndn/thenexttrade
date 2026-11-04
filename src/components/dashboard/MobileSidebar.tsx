@@ -29,6 +29,7 @@ const adminSectionNames: Record<string, string> = {
     Monitoring: "MONITORING",
     Content: "CONTENT",
     Academy: "EDUCATION",
+    "IB & VIP": "IB & VIP",
     System: "SYSTEM",
 };
 

@@ -14,6 +14,7 @@ import { ChevronDown, Loader2, Send, Calendar } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { PremiumInput } from "@/components/ui/PremiumInput";
+import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { createBroadcast } from "@/app/admin/notifications/actions";
 import { NotificationType, NotificationPriority } from "@prisma/client";
 import { z } from "zod";
@@ -76,14 +77,11 @@ export default function CreateBroadcastPage() {
 
     return (
         <div className="max-w-2xl mx-auto space-y-4">
-            <div>
-                <h1 className="text-3xl font-bold text-gray-700 dark:text-white">
-                    Create Broadcast
-                </h1>
-                <p className="text-gray-600 dark:text-gray-300 mt-1">
-                    Send a system-wide notification to all users.
-                </p>
-            </div>
+            <AdminPageHeader
+                title="Create Broadcast"
+                description="Send a system-wide notification to all users."
+                backHref="/admin/notifications"
+            />
 
             <div className="bg-white dark:bg-[#1E2028] rounded-xl p-8 border border-gray-200 dark:border-white/10 shadow-sm">
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">

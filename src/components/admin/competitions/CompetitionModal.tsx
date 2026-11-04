@@ -155,7 +155,7 @@ export function CompetitionModal({
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs overflow-y-auto">
-            <div className="relative w-full max-w-2xl bg-white dark:bg-[#0D111C] border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl p-6 sm:p-8 space-y-6 my-8">
+            <div className="relative w-full max-w-2xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl p-6 sm:p-8 space-y-6 my-8">
                 {/* Header */}
                 <div className="flex items-center justify-between border-b border-dashboard pb-4">
                     <div className="flex items-center gap-3">
@@ -258,7 +258,7 @@ export function CompetitionModal({
                                     step="50"
                                     value={prizePool}
                                     onChange={(e) => setPrizePool(Number(e.target.value))}
-                                    className="w-24 px-2.5 py-1 rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-[#0D111C] font-mono tabular-nums text-sm text-right font-black text-amber-600 dark:text-amber-400 focus:outline-none"
+                                    className="w-24 px-2.5 py-1 rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-[#1E2028] font-mono tabular-nums text-sm text-right font-black text-amber-600 dark:text-amber-400 focus:outline-none"
                                 />
                             </div>
                         </div>
@@ -272,7 +272,7 @@ export function CompetitionModal({
                                     type="text"
                                     value={rank1Reward}
                                     onChange={(e) => setRank1Reward(e.target.value)}
-                                    className="w-full px-3 py-1.5 rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-[#0D111C] font-mono tabular-nums text-xs text-gray-900 dark:text-white"
+                                    className="w-full px-3 py-1.5 rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-[#1E2028] font-mono tabular-nums text-xs text-gray-900 dark:text-white"
                                 />
                             </div>
                             <div className="space-y-1">
@@ -283,7 +283,7 @@ export function CompetitionModal({
                                     type="text"
                                     value={rank2Reward}
                                     onChange={(e) => setRank2Reward(e.target.value)}
-                                    className="w-full px-3 py-1.5 rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-[#0D111C] font-mono tabular-nums text-xs text-gray-900 dark:text-white"
+                                    className="w-full px-3 py-1.5 rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-[#1E2028] font-mono tabular-nums text-xs text-gray-900 dark:text-white"
                                 />
                             </div>
                             <div className="space-y-1">
@@ -294,7 +294,7 @@ export function CompetitionModal({
                                     type="text"
                                     value={rank3Reward}
                                     onChange={(e) => setRank3Reward(e.target.value)}
-                                    className="w-full px-3 py-1.5 rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-[#0D111C] font-mono tabular-nums text-xs text-gray-900 dark:text-white"
+                                    className="w-full px-3 py-1.5 rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-[#1E2028] font-mono tabular-nums text-xs text-gray-900 dark:text-white"
                                 />
                             </div>
                         </div>

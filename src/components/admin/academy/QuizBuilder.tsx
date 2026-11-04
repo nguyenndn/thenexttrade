@@ -136,6 +136,7 @@ export function QuizBuilder({ quiz, backLink }: QuizBuilderProps) {
                     >
                         <ArrowLeft size={20} />
                     </Link>
+                    <div className="w-1 self-stretch min-h-[40px] rounded-full bg-gradient-to-b from-amber-400 via-amber-500 to-amber-600 shadow-[0_0_8px_rgba(245,158,11,0.25)] shrink-0" />
                     <div>
                         <div className="flex items-center gap-3">
                             <h1 className="text-xl font-bold text-gray-700 dark:text-white">

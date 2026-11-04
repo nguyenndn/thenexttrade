@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/Button";
+import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import {
     getAdminMt5CloudMonitorData,
     adminReconnectMt5Account,
@@ -128,16 +129,10 @@ export function Mt5CloudAdminClient({ initialData }: Mt5CloudAdminClientProps) {
     return (
         <div className="space-y-6">
             {/* PAGE HEADER */}
-            <div className="flex flex-wrap items-center justify-between gap-4">
-                <div>
-                    <h1 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white">
-                        MT5 Cloud Direct Bridge Monitor
-                    </h1>
-                    <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
-                        Multi-account C# .NET Direct Socket telemetry, 24/5 armed rules, and IB access controls.
-                    </p>
-                </div>
-
+            <AdminPageHeader
+                title="MT5 Cloud Direct Bridge Monitor"
+                description="Multi-account C# .NET Direct Socket telemetry, 24/5 armed rules, and IB access controls."
+            >
                 <Button
                     type="button"
                     variant="outline"
@@ -149,7 +144,7 @@ export function Mt5CloudAdminClient({ initialData }: Mt5CloudAdminClientProps) {
                     <RefreshCw size={14} />
                     <span>Refresh Telemetry</span>
                 </Button>
-            </div>
+            </AdminPageHeader>
 
             {/* 4 KPI CARDS */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

@@ -368,10 +368,16 @@ export const adminMenuGroups = [
                 icon: UserCheck,
             },
             {
+                name: "Trader Behavior",
+                href: "/admin/users/behavior",
+                icon: Target,
+            },
+            {
                 name: "Sync Requests",
                 href: "/admin/ib/sync-requests",
                 icon: CloudSync,
             },
+            { name: "Competitions", href: "/admin/competitions", icon: Trophy },
             { name: "Loyalty & Rewards", href: "/admin/loyalty", icon: Award },
             { name: "Users", href: "/admin/users", icon: Users },
         ],
@@ -382,7 +388,9 @@ export const adminMenuGroups = [
         items: [
             { name: "Academy", href: "/admin/academy", icon: GraduationCap },
             { name: "Trading Systems", href: "/admin/trading-systems", icon: Bot },
+            { name: "Broadcasts", href: "/admin/notifications", icon: MessageCircle },
             { name: "Feedback", href: "/admin/feedback", icon: MessageSquare },
+            { name: "Messages", href: "/admin/messages", icon: Mail },
             { name: "Settings", href: "/admin/settings", icon: Settings },
             { name: "Email Lab", href: "/admin/email-lab", icon: Mail },
         ],

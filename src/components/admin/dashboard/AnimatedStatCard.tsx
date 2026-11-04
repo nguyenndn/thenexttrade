@@ -7,6 +7,7 @@ import { LucideIcon } from "lucide-react";
 interface AnimatedStatCardProps {
     title: string;
     value: number;
+    prefix?: string;
     suffix?: string;
     decimals?: number;
     sparklineData?: number[];
@@ -103,6 +104,7 @@ function useAnimatedCounter(target: number, duration = 1000, decimals = 0) {
 export function AnimatedStatCard({
     title,
     value,
+    prefix,
     suffix,
     decimals = 0,
     sparklineData,
@@ -135,6 +137,7 @@ export function AnimatedStatCard({
                 <div>
                     <div className="flex items-center gap-2">
                         <p className="text-xl font-black text-gray-800 dark:text-white font-mono tabular-nums leading-none">
+                            {prefix}
                             {displayValue}
                             {suffix && (
                                 <span className="text-sm font-medium text-gray-500 ml-0.5">

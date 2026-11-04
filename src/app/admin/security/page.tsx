@@ -308,7 +308,7 @@ export default function SecurityDashboard() {
                 {/* Admin Page Header — matching AdminPageHeader */}
                 <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6">
                     <div className="flex items-center gap-4">
-                        <div className="w-1 self-stretch min-h-[40px] rounded-full bg-gradient-to-b from-primary via-emerald-400 to-emerald-500 shrink-0" />
+                        <div className="w-1 self-stretch min-h-[40px] rounded-full bg-gradient-to-b from-amber-400 via-amber-500 to-amber-600 shadow-[0_0_8px_rgba(245,158,11,0.25)] shrink-0" />
                         <div>
                             <h1 className="text-xl font-bold text-gray-700 dark:text-white tracking-tight">
                                 Security
@@ -513,7 +513,7 @@ export default function SecurityDashboard() {
                                             }
                                             className={cn(
                                                 typeFilter === t.value &&
-                                                    "text-primary font-bold"
+                                                "text-primary font-bold"
                                             )}
                                         >
                                             {t.icon && (
@@ -728,8 +728,8 @@ export default function SecurityDashboard() {
                                                     <td className="px-6 py-4 font-mono tabular-nums text-gray-500 text-xs hidden md:table-cell">
                                                         {ip.expiresAt
                                                             ? new Date(
-                                                                  ip.expiresAt
-                                                              ).toLocaleString()
+                                                                ip.expiresAt
+                                                            ).toLocaleString()
                                                             : "Permanent"}
                                                     </td>
                                                     <td className="px-6 py-4 font-mono tabular-nums text-gray-400 text-xs hidden md:table-cell">
@@ -803,115 +803,115 @@ export default function SecurityDashboard() {
                 {/* Block IP Modal */}
                 <AnimatePresence>
                     {showBlockModal && (
-                    <motion.div
-                        variants={backdropVariants}
-                        initial="initial"
-                        animate="animate"
-                        exit="exit"
-                        transition={{ type: "tween", duration: 0.2 }}
-                        className="fixed inset-0 z-50 flex items-center justify-center p-4"
-                    >
-                        <div
-                            className="fixed inset-0 bg-black/50 backdrop-blur-sm"
-                            onClick={() => setShowBlockModal(false)}
-                        />
                         <motion.div
-                            variants={panelVariants}
+                            variants={backdropVariants}
                             initial="initial"
                             animate="animate"
                             exit="exit"
-                            transition={SPRING_SOFT}
-                            className="relative z-10 w-full max-w-md bg-white dark:bg-[#0D111C] rounded-2xl shadow-xl overflow-hidden border border-gray-200 dark:border-white/10"
+                            transition={{ type: "tween", duration: 0.2 }}
+                            className="fixed inset-0 z-50 flex items-center justify-center p-4"
                         >
-                            <div className="p-6 space-y-5">
-                                <div className="flex items-center gap-2">
-                                    <Ban size={18} className="text-red-500" />
-                                    <h3 className="text-base font-bold text-gray-700 dark:text-white">
-                                        Block IP Address
-                                    </h3>
-                                </div>
-                                <div className="space-y-4">
-                                    <div className="group">
-                                        <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">
-                                            IP Address{" "}
-                                            <span className="text-red-500">
-                                                *
-                                            </span>
-                                        </label>
-                                        <input
-                                            type="text"
-                                            aria-label="IP Address to block"
-                                            value={blockForm.ip}
-                                            onChange={(e) =>
-                                                setBlockForm((f) => ({
-                                                    ...f,
-                                                    ip: e.target.value,
-                                                }))
-                                            }
-                                            className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] font-mono tabular-nums px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
-                                        />
+                            <div
+                                className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+                                onClick={() => setShowBlockModal(false)}
+                            />
+                            <motion.div
+                                variants={panelVariants}
+                                initial="initial"
+                                animate="animate"
+                                exit="exit"
+                                transition={SPRING_SOFT}
+                                className="relative z-10 w-full max-w-md bg-white dark:bg-[#0D111C] rounded-2xl shadow-xl overflow-hidden border border-gray-200 dark:border-white/10"
+                            >
+                                <div className="p-6 space-y-5">
+                                    <div className="flex items-center gap-2">
+                                        <Ban size={18} className="text-red-500" />
+                                        <h3 className="text-base font-bold text-gray-700 dark:text-white">
+                                            Block IP Address
+                                        </h3>
                                     </div>
-                                    <div className="group">
-                                        <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">
-                                            Reason{" "}
-                                            <span className="font-normal text-gray-500">
-                                                (Optional)
-                                            </span>
-                                        </label>
-                                        <input
-                                            type="text"
-                                            aria-label="Reason for block"
-                                            value={blockForm.reason}
-                                            onChange={(e) =>
-                                                setBlockForm((f) => ({
-                                                    ...f,
-                                                    reason: e.target.value,
-                                                }))
-                                            }
-                                            className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
-                                        />
+                                    <div className="space-y-4">
+                                        <div className="group">
+                                            <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">
+                                                IP Address{" "}
+                                                <span className="text-red-500">
+                                                    *
+                                                </span>
+                                            </label>
+                                            <input
+                                                type="text"
+                                                aria-label="IP Address to block"
+                                                value={blockForm.ip}
+                                                onChange={(e) =>
+                                                    setBlockForm((f) => ({
+                                                        ...f,
+                                                        ip: e.target.value,
+                                                    }))
+                                                }
+                                                className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] font-mono tabular-nums px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                                            />
+                                        </div>
+                                        <div className="group">
+                                            <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">
+                                                Reason{" "}
+                                                <span className="font-normal text-gray-500">
+                                                    (Optional)
+                                                </span>
+                                            </label>
+                                            <input
+                                                type="text"
+                                                aria-label="Reason for block"
+                                                value={blockForm.reason}
+                                                onChange={(e) =>
+                                                    setBlockForm((f) => ({
+                                                        ...f,
+                                                        reason: e.target.value,
+                                                    }))
+                                                }
+                                                className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                                            />
+                                        </div>
+                                        <div className="group">
+                                            <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">
+                                                Duration (minutes){" "}
+                                                <span className="font-normal text-gray-500">
+                                                    (Empty = permanent)
+                                                </span>
+                                            </label>
+                                            <input
+                                                type="number"
+                                                aria-label="Duration in minutes"
+                                                value={blockForm.duration}
+                                                onChange={(e) =>
+                                                    setBlockForm((f) => ({
+                                                        ...f,
+                                                        duration: e.target.value,
+                                                    }))
+                                                }
+                                                className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] font-mono tabular-nums px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                                            />
+                                        </div>
                                     </div>
-                                    <div className="group">
-                                        <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">
-                                            Duration (minutes){" "}
-                                            <span className="font-normal text-gray-500">
-                                                (Empty = permanent)
-                                            </span>
-                                        </label>
-                                        <input
-                                            type="number"
-                                            aria-label="Duration in minutes"
-                                            value={blockForm.duration}
-                                            onChange={(e) =>
-                                                setBlockForm((f) => ({
-                                                    ...f,
-                                                    duration: e.target.value,
-                                                }))
-                                            }
-                                            className="w-full rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] font-mono tabular-nums px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
-                                        />
+                                    <div className="flex items-center justify-end gap-3 pt-2">
+                                        <Button
+                                            variant="outline"
+                                            onClick={() => setShowBlockModal(false)}
+                                        >
+                                            Cancel
+                                        </Button>
+                                        <Button
+                                            variant="primary"
+                                            onClick={handleBlockIP}
+                                            disabled={!blockForm.ip || blocking}
+                                            isLoading={blocking}
+                                            className="bg-red-600 hover:bg-red-700 text-white"
+                                        >
+                                            Block IP
+                                        </Button>
                                     </div>
                                 </div>
-                                <div className="flex items-center justify-end gap-3 pt-2">
-                                    <Button
-                                        variant="outline"
-                                        onClick={() => setShowBlockModal(false)}
-                                    >
-                                        Cancel
-                                    </Button>
-                                    <Button
-                                        variant="primary"
-                                        onClick={handleBlockIP}
-                                        disabled={!blockForm.ip || blocking}
-                                        isLoading={blocking}
-                                        className="bg-red-600 hover:bg-red-700 text-white"
-                                    >
-                                        Block IP
-                                    </Button>
-                                </div>
-                            </div>
+                            </motion.div>
                         </motion.div>
-                    </motion.div>
                     )}
                 </AnimatePresence>
             </div>

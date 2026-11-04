@@ -38,7 +38,7 @@ export default async function AdminLoyaltyPage() {
   };
 
   return (
-    <div className="w-full space-y-6">
+    <div className="space-y-6 pb-10">
       <AdminLoyaltyClient
         initialClaims={initialClaims}
         initialStats={initialStats}

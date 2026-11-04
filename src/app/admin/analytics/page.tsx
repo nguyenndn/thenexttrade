@@ -190,7 +190,7 @@ export default function AnalyticsDashboard() {
                 {/* Header with Title + Real-time badge + Elevated DateRangePicker */}
                 <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
                     <div className="flex items-center gap-4">
-                        <div className="w-1 self-stretch min-h-[40px] rounded-full bg-gradient-to-b from-primary to-emerald-500 shrink-0" />
+                        <div className="w-1 self-stretch min-h-[40px] rounded-full bg-gradient-to-b from-amber-400 via-amber-500 to-amber-600 shadow-[0_0_8px_rgba(245,158,11,0.25)] shrink-0" />
                         <div>
                             <div className="flex items-center gap-3">
                                 <h1 className="text-xl font-bold text-gray-700 dark:text-white tracking-tight">

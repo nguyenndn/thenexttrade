@@ -55,7 +55,7 @@ export function AdminDashboardClient(props: Props) {
             >
                 <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-3">
-                        <div className="w-1.5 h-8 bg-primary rounded-full" />
+                        <div className="w-1.5 h-8 bg-gradient-to-b from-amber-400 via-amber-500 to-amber-600 shadow-[0_0_8px_rgba(245,158,11,0.25)] rounded-full" />
                         <h1 className="text-xl font-black text-gray-700 dark:text-white tracking-tighter">
                             {greeting}
                         </h1>

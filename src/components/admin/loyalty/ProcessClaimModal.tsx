@@ -133,7 +133,7 @@ export function ProcessClaimModal({
             <span className="block text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-0.5">
               Network Protocol
             </span>
-            <span className="font-mono text-sm font-bold text-sky-600 dark:text-sky-400">
+            <span className="font-mono text-sm font-bold text-amber-600 dark:text-amber-400">
               {claim.network || "USDT BEP-20"}
             </span>
           </div>

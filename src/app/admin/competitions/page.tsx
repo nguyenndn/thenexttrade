@@ -28,7 +28,7 @@ export default async function AdminCompetitionsPage() {
     const { competitions, stats } = await fetchAdminCompetitions();
 
     return (
-        <div className="w-full space-y-6">
+        <div className="space-y-6 pb-10">
             <CompetitionListClient
                 initialCompetitions={competitions}
                 stats={stats}
