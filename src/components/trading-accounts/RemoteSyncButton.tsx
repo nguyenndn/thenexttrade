@@ -203,7 +203,7 @@ export function RemoteSyncButton({
                 <DialogHeader>
                     <DialogTitle>Remote Sync - {accountName}</DialogTitle>
                     <DialogDescription>
-                        Trigger sync from EA running on your MT4/MT5 terminal.
+                        Trigger sync from EA running on your MT5 terminal.
                         <br />
                         <span className="text-xs text-muted-foreground">
                             (EA must be running and connected)

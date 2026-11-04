@@ -213,7 +213,7 @@ export function EADashboardClient({
                                             EA Farm Capital & Live Telemetry
                                         </h3>
                                         <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                                            Real MT4/MT5 account capital directly running each EA vs total User Pool capital
+                                            Real MT5 account capital directly running each EA vs total User Pool capital
                                         </p>
                                     </div>
                                     <Link href="/admin/trading-systems/products">

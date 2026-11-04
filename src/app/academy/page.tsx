@@ -4,6 +4,9 @@ import { AcademyTree } from "@/components/academy/AcademyTree";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { AcademyPublicCTA } from "@/components/academy/AcademyPublicCTA";
 import { getAuthUser } from "@/lib/auth-cache";
+import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button-variants";
+import { PlayCircle, ArrowRight, Users } from "lucide-react";
 
 import type { Metadata } from "next";
 
@@ -245,6 +248,50 @@ export default async function AcademyPage() {
                 isGuest={!isLoggedIn}
                 completedLessonIds={completedLessonIds}
             />
+
+            {/* ── Bottom Banner CTA ── */}
+            <section className="px-4 sm:px-6 py-12 max-w-6xl mx-auto">
+                <div className="rounded-xl p-8 sm:p-10 border border-gold/15 bg-white dark:bg-[#1E2028] shadow-sm relative overflow-hidden">
+                    <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-6 text-center lg:text-left">
+                        <div className="space-y-2 max-w-xl">
+                            <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-gray-900 dark:text-white">
+                                Master Market Structure &amp; Risk Math
+                            </h2>
+                            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                                {isLoggedIn
+                                    ? "Continue through the curriculum at your pace or connect with 12,000+ traders in our official community."
+                                    : "Access structured levels from liquidity models to disciplined execution. Free to start, no paywalls."}
+                            </p>
+                        </div>
+
+                        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto shrink-0">
+                            <Link
+                                href={isLoggedIn ? "/dashboard/academy" : "/auth/login"}
+                                className={buttonVariants({
+                                    variant: "primary",
+                                    className:
+                                        "w-full sm:w-auto h-11 sm:h-12 px-6 sm:px-8 rounded-lg bg-gold hover:bg-amber-600 text-white text-sm font-extrabold shadow-md shadow-amber-500/20 hover:shadow-lg hover:shadow-amber-500/30 flex items-center justify-center gap-2 whitespace-normal sm:whitespace-nowrap animate-btn-shine group",
+                                })}
+                            >
+                                <PlayCircle size={16} className="shrink-0" />
+                                <span>{isLoggedIn ? "Continue Learning" : "Explore Curriculum"}</span>
+                                <ArrowRight size={16} className="shrink-0 group-hover:translate-x-0.5 transition-transform duration-300" />
+                            </Link>
+                            <Link
+                                href="/community"
+                                className={buttonVariants({
+                                    variant: "outline",
+                                    className:
+                                        "w-full sm:w-auto h-11 sm:h-12 px-6 sm:px-8 rounded-lg border-gray-300 dark:border-white/15 bg-transparent hover:border-gold hover:text-amber-600 dark:hover:text-gold text-gray-800 dark:text-white text-sm font-extrabold shadow-sm transition-all duration-300 flex items-center justify-center gap-2 whitespace-normal sm:whitespace-nowrap group",
+                                })}
+                            >
+                                <Users size={16} className="shrink-0 text-amber-500 dark:text-gold" />
+                                <span>Join Community Free</span>
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
             <SiteFooter />
         </div>

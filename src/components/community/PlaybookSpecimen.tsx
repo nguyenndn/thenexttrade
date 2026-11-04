@@ -125,27 +125,27 @@ export function PlaybookSpecimen({
         return (
             <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] p-4 space-y-2.5">
                 <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-wider text-gray-400 mb-1">
-                    <span>Core Mastery Path</span>
-                    <span className="tabular-nums text-amber-600 dark:text-gold">
-                        3 Modules
+                    <span>Journal Telemetry Specimen</span>
+                    <span className="tabular-nums text-emerald-600 dark:text-emerald-400">
+                        EA Auto-Synced
                     </span>
                 </div>
 
                 {[
                     {
                         num: "01",
-                        title: "Supply & Demand Zones",
-                        meta: "Structure",
+                        title: "MT5 Demo & Live EA Sync",
+                        meta: "Zero Password",
                     },
                     {
                         num: "02",
-                        title: "Liquidity Sweep & Retest",
-                        meta: "Trigger",
+                        title: "Behavioral Leak Radar",
+                        meta: "Tilt / Revenge",
                     },
                     {
                         num: "03",
-                        title: "Cold Risk Math & Psychology",
-                        meta: "Survival",
+                        title: "10-Trade Action Sprint",
+                        meta: "Weekly Coach",
                     },
                 ].map((m) => (
                     <div

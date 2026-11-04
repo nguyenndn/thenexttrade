@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { Loader2, ChevronDown } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/Button";
@@ -15,7 +15,6 @@ import {
     DropdownMenuContent,
     DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-import { ChevronDown } from "lucide-react";
 import {
     createEAProductSchema,
     updateEAProductSchema,
@@ -56,17 +55,16 @@ export function EAProductForm({ product }: EAProductFormProps) {
                   slug: product.slug,
                   description: product.description || "",
                   type: product.type,
-                  platform: product.platform,
+                  platform: PlatformType.MT5,
               }
             : {
                   type: EAType.AUTO_TRADE,
-                  platform: PlatformType.BOTH,
+                  platform: PlatformType.MT5,
               },
     });
 
     const name = watch("name");
     const typeValue = watch("type");
-    const platformValue = watch("platform");
 
     // Auto-slugify
     useEffect(() => {
@@ -94,7 +92,7 @@ export function EAProductForm({ product }: EAProductFormProps) {
                 const result = await createEAProduct(data);
                 if (result.success && result.data) {
                     toast.success("Product created successfully");
-                    router.push(`/admin/trading-systems/${result.data.id}`); // Redirect to edit/files
+                    router.push(`/admin/trading-systems/${result.data.id}`);
                 } else {
                     toast.error(result.error);
                 }
@@ -193,13 +191,7 @@ export function EAProductForm({ product }: EAProductFormProps) {
                                 variant="outline"
                                 className="w-full justify-between rounded-lg border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] p-2.5 h-auto text-sm outline-none hover:bg-gray-100 dark:hover:bg-white/5 transition-all text-gray-700 dark:text-white font-medium"
                             >
-                                <span>
-                                    {platformValue === PlatformType.BOTH
-                                        ? "Both (MT4 & MT5)"
-                                        : platformValue === PlatformType.MT4
-                                          ? "MT4 Only"
-                                          : "MT5 Only"}
-                                </span>
+                                <span>MT5 Only</span>
                                 <ChevronDown size={14} className="opacity-50" />
                             </Button>
                         </DropdownMenuTrigger>
@@ -207,20 +199,6 @@ export function EAProductForm({ product }: EAProductFormProps) {
                             align="end"
                             className="w-full min-w-[var(--radix-dropdown-menu-trigger-width)]"
                         >
-                            <DropdownMenuItem
-                                onClick={() =>
-                                    setValue("platform", PlatformType.BOTH)
-                                }
-                            >
-                                Both (MT4 & MT5)
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                                onClick={() =>
-                                    setValue("platform", PlatformType.MT4)
-                                }
-                            >
-                                MT4 Only
-                            </DropdownMenuItem>
                             <DropdownMenuItem
                                 onClick={() =>
                                     setValue("platform", PlatformType.MT5)

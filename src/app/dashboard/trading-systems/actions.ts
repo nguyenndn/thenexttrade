@@ -123,7 +123,7 @@ export async function submitMultipleAccountRequests(
 
         if (submittedCount === 0) {
             return {
-                error: "Selected accounts are either already submitted or missing an MT4/MT5 account number.",
+                error: "Selected accounts are either already submitted or missing an MT5 account number.",
             };
         }
 
@@ -483,7 +483,7 @@ export async function updateTradingAccountLoginNumber(
     const cleanNumber = (accountNumber || "").trim();
     if (!/^\d{4,20}$/.test(cleanNumber)) {
         return {
-            error: "Please enter a valid numeric MT4/MT5 Account Login ID (4-20 digits).",
+            error: "Please enter a valid numeric MT5 Account Login ID (4-20 digits).",
         };
     }
 
@@ -527,6 +527,6 @@ export async function updateTradingAccountLoginNumber(
         return { success: true, accountNumber: cleanNumber };
     } catch (error) {
         console.error("updateTradingAccountLoginNumber error:", error);
-        return { error: "Failed to update MT4/MT5 account number." };
+        return { error: "Failed to update MT5 account number." };
     }
 }

@@ -16,16 +16,16 @@ import {
 } from "@/components/ui/Dialog";
 import { Button } from "@/components/ui/Button";
 import { PremiumInput } from "@/components/ui/PremiumInput";
-import { updateEAProduct } from "@/app/admin/trading-systems/actions";
-import { uploadEAFile } from "@/app/admin/trading-systems/actions";
+import {
+    updateEAProduct,
+    uploadEAFile,
+} from "@/app/admin/trading-systems/actions";
 import { EAProduct } from "@/types/ea-license";
 import { z } from "zod";
 
-// Create local schema for version update which includes file handling client-side logic
 const versionSchema = z.object({
     version: z.string().min(1, "Required"),
     changelog: z.string().optional(),
-    // files are handled manually
 });
 
 interface UploadVersionModalProps {
@@ -40,7 +40,6 @@ export function UploadVersionModal({
     onClose,
 }: UploadVersionModalProps) {
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [fileMT4, setFileMT4] = useState<File | null>(null);
     const [fileMT5, setFileMT5] = useState<File | null>(null);
 
     const {
@@ -66,17 +65,7 @@ export function UploadVersionModal({
                 throw new Error(updateResult.error);
             }
 
-            // 2. Upload Files
-            if (fileMT4) {
-                const formData = new FormData();
-                formData.append("file", fileMT4);
-                const upRes = await uploadEAFile(product.id, "MT4", formData);
-                if (!upRes.success) {
-                    toast.error(upRes.error || "MT4 upload failed");
-                    return;
-                }
-            }
-
+            // 2. Upload MT5 File
             if (fileMT5) {
                 const formData = new FormData();
                 formData.append("file", fileMT5);
@@ -89,7 +78,6 @@ export function UploadVersionModal({
 
             toast.success("Version updated successfully");
             reset();
-            setFileMT4(null);
             setFileMT5(null);
             onClose();
         } catch (error: any) {
@@ -139,47 +127,23 @@ export function UploadVersionModal({
                     </div>
 
                     <div className="space-y-4">
-                        {(product.platform === "MT4" ||
-                            product.platform === "BOTH") && (
-                            <div className="space-y-2">
-                                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider">
-                                    MT4 File (.ex4)
-                                </label>
-                                <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] p-2">
-                                    <input
-                                        type="file"
-                                        accept=".ex4"
-                                        className="text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-gold file:!text-white hover:file:bg-amber-600 cursor-pointer"
-                                        onChange={(e) =>
-                                            setFileMT4(
-                                                e.target.files?.[0] || null
-                                            )
-                                        }
-                                    />
-                                </div>
+                        <div className="space-y-2">
+                            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider">
+                                MT5 File (.ex5)
+                            </label>
+                            <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] p-2">
+                                <input
+                                    type="file"
+                                    accept=".ex5"
+                                    className="text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-gold file:!text-white hover:file:bg-amber-600 cursor-pointer"
+                                    onChange={(e) =>
+                                        setFileMT5(
+                                            e.target.files?.[0] || null
+                                        )
+                                    }
+                                />
                             </div>
-                        )}
-
-                        {(product.platform === "MT5" ||
-                            product.platform === "BOTH") && (
-                            <div className="space-y-2">
-                                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider">
-                                    MT5 File (.ex5)
-                                </label>
-                                <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] p-2">
-                                    <input
-                                        type="file"
-                                        accept=".ex5"
-                                        className="text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-gold file:!text-white hover:file:bg-amber-600 cursor-pointer"
-                                        onChange={(e) =>
-                                            setFileMT5(
-                                                e.target.files?.[0] || null
-                                            )
-                                        }
-                                    />
-                                </div>
-                            </div>
-                        )}
+                        </div>
                     </div>
 
                     <DialogFooter className="gap-2 sm:gap-0">

@@ -381,7 +381,7 @@ export default function ContactPage() {
                             <span>Prefer live chat? Join our Telegram Community</span>
                         </Link>
                         <span>
-                            By dispatching, you agree to our{" "}
+                            Submitted details are used solely to reply to your inquiry ·{" "}
                             <Link href="/legal/privacy-policy" className="underline hover:text-gray-700 dark:hover:text-gray-200">
                                 Privacy Policy
                             </Link>

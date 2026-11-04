@@ -47,8 +47,9 @@ describe("SaaSHeroSection", () => {
         // Transparency is the strongest trust asset on the page and used to be
         // buried in the FAQ. It must stay visible without scrolling.
         expect(html).toContain("paid by the broker, not by you");
-        expect(html).toContain("Zero front-running");
-        expect(html).toContain("Your funds stay in your own name");
+        expect(html).toContain("Zero MT5 password required (Sync Key via EA)");
+        expect(html).toContain("Works on Demo &amp; Live accounts");
+        expect(html).toContain("Your funds stay 100% in your own name");
 
         // "Free forever" was dropped — full VIP access is tied to a $200
         // broker deposit (explained further down the page), so an unqualified
@@ -59,8 +60,8 @@ describe("SaaSHeroSection", () => {
     it("renders clean 2-line hero trust strip without clutter", () => {
         const html = renderToString(<SaaSHeroSection isLoggedIn={false} />);
 
-        expect(html).toContain("Zero front-running");
-        expect(html).toContain("Your funds stay in your own name");
+        expect(html).toContain("Zero MT5 password required (Sync Key via EA)");
+        expect(html).toContain("Your funds stay 100% in your own name");
     });
 
     it("renders dual CTAs according to auth state with refined 48px dimensions", () => {
@@ -88,7 +89,7 @@ describe("SaaSHeroSection", () => {
         // Line 1 names the cost of indiscipline; line 2 says what we do about
         // it. Anything longer and the hero stops being scannable.
         expect(html).toContain("The strategy was never the problem — the revenge size after a red");
-        expect(html).toContain("We sync every MT5 trade and show you the exact moment discipline broke.");
+        expect(html).toContain("We sync every Demo or Live MT5 trade via EA and show you the exact moment discipline broke.");
 
         // The old copy ran to three lines and re-explained the thesis twice.
         expect(html).not.toContain("The stop you moved at 2am was.");

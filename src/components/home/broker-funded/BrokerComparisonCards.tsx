@@ -87,7 +87,7 @@ export function BrokerComparisonCards() {
                                 <CheckCircle2 size={13} strokeWidth={2.5} />
                             </div>
                             <span>
-                                <strong>$0 ever paid</strong> to TheNextTrade — zero subscription or hidden fees
+                                <strong>Free Starter Account ($0):</strong> Instant access to Academy, 17 Calculators &amp; 7-day Demo/Live trial with no broker deposit required
                             </span>
                         </div>
                         <div className="flex items-start gap-2.5 text-gray-900 dark:text-white font-medium text-xs sm:text-sm">
@@ -95,7 +95,7 @@ export function BrokerComparisonCards() {
                                 <CheckCircle2 size={13} strokeWidth={2.5} />
                             </div>
                             <span>
-                                <strong>Your $200 stays 100% yours</strong> — sits in your personal regulated broker account
+                                <strong>Your $200 stays 100% yours</strong> — sits in your personal regulated broker account when you unlock permanent VIP
                             </span>
                         </div>
                         <div className="flex items-start gap-2.5 text-gray-900 dark:text-white font-medium text-xs sm:text-sm">
@@ -103,7 +103,7 @@ export function BrokerComparisonCards() {
                                 <CheckCircle2 size={13} strokeWidth={2.5} />
                             </div>
                             <span>
-                                <strong>Full VIP Suite unlocked:</strong> GSN Trade Manager, GoldScalperNinja EA, AI Coach &amp; Playbook Studio
+                                <strong>Full VIP Suite unlocked:</strong> GSN Trade Manager, GoldScalperNinja EA, GSN Shadow Matrix, AI Coach &amp; Playbook Studio
                             </span>
                         </div>
                         <div className="flex items-start gap-2.5 text-gray-900 dark:text-white font-medium text-xs sm:text-sm">

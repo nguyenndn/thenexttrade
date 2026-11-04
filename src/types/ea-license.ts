@@ -82,7 +82,6 @@ export interface EAProductBase {
 
 export interface EAProduct extends EAProductBase {
     id: string;
-    fileMT4: string | null;
     fileMT5: string | null;
     thumbnail: string | null;
     version: string;

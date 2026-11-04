@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { PlatformType } from "@prisma/client";
 
 export const submitAccountSchema = z.object({
     broker: z.string().min(1, {
@@ -44,7 +45,7 @@ export const createEAProductSchema = z.object({
     slug: z.string().min(1, "Slug is required"),
     description: z.string().optional(),
     type: z.enum(["AUTO_TRADE", "MANUAL_ASSIST", "INDICATOR"]),
-    platform: z.enum(["MT4", "MT5", "BOTH"]),
+    platform: z.nativeEnum(PlatformType),
     version: z.string().default("1.0.0"),
     changelog: z.string().optional(),
     isActive: z.boolean().default(true),

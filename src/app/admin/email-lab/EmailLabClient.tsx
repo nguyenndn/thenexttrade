@@ -301,7 +301,7 @@ export function EmailLabClient({
             id: "welcome_d1_preview",
             title: "Onboarding D1: MT5 Sync Guide (T+24h)",
             description:
-                "Sent 24 hours after registration only if trader has not connected an MT4/MT5 account yet.",
+                "Sent 24 hours after registration only if trader has not connected an MT5 account yet.",
             sourceFile: "src/lib/emails/welcome-sequence.ts",
             status: "active",
             statusLabel: "Active SMTP",

@@ -113,7 +113,7 @@ export async function POST(request: NextRequest) {
         const { name, platform, broker, accountNumber, color } = body;
 
         // Validate platform
-        const validPlatforms = ["MT4", "MT5", "CTRADER"];
+        const validPlatforms = ["MT5", "CTRADER"];
         if (!validPlatforms.includes(platform)) {
             return NextResponse.json(
                 { error: "Invalid platform" },

@@ -176,7 +176,7 @@ export async function POST(request: NextRequest) {
                 parsedTrades.push(
                     parseEATrade(
                         rawTrade,
-                        account.platform || "MT4",
+                        account.platform || "MT5",
                         gmtOffsetSeconds
                     )
                 );

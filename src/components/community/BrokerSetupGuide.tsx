@@ -95,7 +95,7 @@ export function BrokerSetupGuide({
                                 Platform
                             </span>
                             <span className="mt-0.5 block text-xs sm:text-sm font-black text-gray-900 dark:text-white truncate">
-                                MT4 / MT5 Real
+                                MT5 Real
                             </span>
                         </div>
                         <div className="p-3">
@@ -178,6 +178,9 @@ export function BrokerSetupGuide({
             </div>
 
             {/* Bottom Dual Action Bar */}
+            <p className="mt-3 text-center text-[11px] font-medium text-gray-400 dark:text-gray-500">
+                Partner Affiliate Link · Rebates fund free EA licenses at zero extra spread cost
+            </p>
             <div className="mt-4 pt-3.5 border-t border-gray-200 dark:border-white/10 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 <a
                     href={info.affiliateUrl}
@@ -185,25 +188,24 @@ export function BrokerSetupGuide({
                     rel="noopener noreferrer"
                     className={buttonVariants({
                         variant: "outline",
-                        size: "smd",
                         className:
-                            "w-full font-bold bg-white dark:bg-[#1E2028] text-xs",
+                            "w-full h-10 px-4 font-bold bg-white dark:bg-[#1E2028] text-xs sm:text-sm flex items-center justify-center gap-2",
                     })}
                 >
                     <span>Open {info.name} Account</span>
-                    <ExternalLink size={13} />
+                    <ExternalLink size={14} className="shrink-0" />
                 </a>
                 <Link
                     href={verifyHref}
                     className={buttonVariants({
                         variant: "gold",
-                        size: "smd",
-                        className: "w-full font-black text-xs",
+                        className:
+                            "w-full h-10 px-4 font-black text-xs sm:text-sm flex items-center justify-center gap-2",
                     })}
                 >
-                    <CheckCircle2 size={14} />
+                    <CheckCircle2 size={15} className="shrink-0" />
                     <span>Verify in Dashboard</span>
-                    <ArrowRight size={13} />
+                    <ArrowRight size={14} className="shrink-0" />
                 </Link>
             </div>
         </div>

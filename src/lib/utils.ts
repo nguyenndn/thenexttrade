@@ -191,7 +191,7 @@ export function buildDateRangeFilter(
 
 /**
  * DRY: Formats an account object into a standardized label: "[Platform] Type - Broker (AccountNum)"
- * e.g., "[MT4] REAL - Vantage (6000000212)"
+ * e.g., "[MT5] REAL - Vantage (6000000212)"
  */
 export function formatAccountLabel(account: any): string {
     if (!account) return "Unknown Account";

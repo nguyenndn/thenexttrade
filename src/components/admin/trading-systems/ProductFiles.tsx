@@ -116,7 +116,7 @@ export function ProductFiles({ product }: ProductFilesProps) {
             </div>
 
             <p className="text-xs text-gray-500 italic">
-                To update .ex4/.ex5 files, use the "Upload New Version" button
+                To update .ex5 files, use the "Upload New Version" button
                 at the top of the page.
             </p>
         </div>

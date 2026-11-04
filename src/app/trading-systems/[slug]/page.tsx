@@ -260,13 +260,12 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
                                         href="/dashboard/accounts"
                                         className={buttonVariants({
                                             variant: "gold",
-                                            size: "smd",
                                             className:
-                                                "w-full font-black uppercase tracking-wider shadow-sm flex items-center justify-center gap-2",
+                                                "w-full h-10 px-4 font-black text-xs sm:text-sm uppercase tracking-wider shadow-sm flex items-center justify-center gap-2",
                                         })}
                                     >
-                                        <KeyRound size={14} />
-                                        Verify Partner Eligibility
+                                        <KeyRound size={15} className="shrink-0" />
+                                        <span>Verify Partner Eligibility</span>
                                     </Link>
                                 </div>
                             ) : (
@@ -275,24 +274,22 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
                                         href="/auth/signup?next=/dashboard/accounts&source=trading_systems"
                                         className={buttonVariants({
                                             variant: "gold",
-                                            size: "smd",
                                             className:
-                                                "w-full font-black uppercase tracking-wider shadow-sm flex items-center justify-center gap-2",
+                                                "w-full h-10 px-4 font-black text-xs sm:text-sm uppercase tracking-wider shadow-sm flex items-center justify-center gap-2",
                                         })}
                                     >
-                                        <UserPlus size={14} />
-                                        Sign Up for Eligibility
+                                        <UserPlus size={15} className="shrink-0" />
+                                        <span>Sign Up for Eligibility</span>
                                     </Link>
                                     <Link
                                         href="/auth/login?next=/dashboard/accounts"
                                         className={buttonVariants({
                                             variant: "outline",
-                                            size: "smd",
                                             className:
-                                                "w-full bg-gray-50 dark:bg-white/[0.04] border border-gray-200 dark:border-white/15 hover:border-gold/40 text-gray-800 dark:text-gray-200 font-black uppercase tracking-wider flex items-center justify-center gap-2",
+                                                "w-full h-10 px-4 bg-gray-50 dark:bg-white/[0.04] border border-gray-200 dark:border-white/15 hover:border-gold/40 text-gray-800 dark:text-gray-200 font-black text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2",
                                         })}
                                     >
-                                        Sign In
+                                        <span>Sign In</span>
                                     </Link>
                                 </div>
                             )}
@@ -326,7 +323,7 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
                             )}
                             {system.slug === "gsn-shadown-matrix" && (
                                 <p>
-                                    Risk Warning: GSN Shadown Matrix is an
+                                    Risk Warning: GSN Shadow Matrix is an
                                     advanced grid and hedging system designed
                                     for experienced traders only. It uses
                                     aggressive multipliers and hedging cycles

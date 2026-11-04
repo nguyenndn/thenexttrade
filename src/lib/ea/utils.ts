@@ -20,7 +20,7 @@ export interface EATrade {
 export interface RawEATrade {
     ticket: string | number;
     symbol: string;
-    type: number | string; // 0=BUY, 1=SELL in MT4/MT5
+    type: number | string; // 0=BUY, 1=SELL in MT5
     volume?: number;
     lots?: number;
     initialVolume?: number;
@@ -227,7 +227,7 @@ export function parseEATime(
     time: string | number | null | undefined,
     gmtOffsetSeconds?: number
 ): Date {
-    // MT4/MT5 can send as Unix timestamp or datetime string
+    // MT5 can send as Unix timestamp or datetime string
     if (time === null || time === undefined) return new Date(NaN);
     const offsetMs =
         typeof gmtOffsetSeconds === "number" && Number.isFinite(gmtOffsetSeconds)
@@ -261,7 +261,7 @@ export function parseEATime(
             : isoDate;
     }
 
-    // MT4/MT5 style "2024.01.15 10:30:00", "2024-01-15 10:30:00", or timezone-less ISO "2024-01-15T10:30:00"
+    // MT5 style "2024.01.15 10:30:00", "2024-01-15 10:30:00", or timezone-less ISO "2024-01-15T10:30:00"
     // Anchor to UTC ("Z") so host TZ never affects parsing, then subtract gmtOffsetSeconds if provided.
     const normalized = t
         .replace(/^(\d{4})\.(\d{2})\.(\d{2})/, "$1-$2-$3")

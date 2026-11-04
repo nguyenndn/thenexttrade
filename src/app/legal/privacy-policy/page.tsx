@@ -10,14 +10,14 @@ import { TELEGRAM_CHANNEL_URL } from "@/config/telegram";
 export const metadata: Metadata = {
     title: "Privacy Policy — TheNextTrade",
     description:
-        "How TheNextTrade collects, uses, and protects your personal data. Minimal collection, transparent practices, and short retention windows.",
+        "How TheNextTrade collects, uses, and protects your personal and trading journal data. Transparent practices, lifetime journal retention while active, and full user control.",
     alternates: {
         canonical: "/legal/privacy-policy",
     },
     openGraph: {
         title: "Privacy Policy — TheNextTrade",
         description:
-            "How TheNextTrade collects, uses, and protects your personal data. Minimal collection, transparent practices, and short retention windows.",
+            "How TheNextTrade collects, uses, and protects your personal and trading journal data. Transparent practices, lifetime journal retention while active, and full user control.",
         url: "/legal/privacy-policy",
         siteName: "TheNextTrade",
         type: "website",
@@ -45,7 +45,7 @@ export default function PrivacyPolicyPage() {
     return (
         <LegalPageShell
             title="Privacy Policy"
-            lead="Effective June 1, 2026 · Plain-language summary of what we collect, why we collect it, and your full control over it."
+            lead="Effective June 1, 2026 · Plain-language summary of what we collect, why we collect it, and your full control over your Trading Journal data."
             sections={PRIVACY_SECTIONS}
             footerNote="This policy may change as the service evolves. When it does, we'll update the effective date at the top of this page."
             intro={
@@ -55,9 +55,9 @@ export default function PrivacyPolicyPage() {
                     </div>
                     <ul className="grid grid-cols-1 md:grid-cols-3 gap-3">
                         {[
-                            "TheNextTrade does not sell your data.",
-                            "Operational logs are automatically deleted after seven days.",
-                            "You can request full deletion at any time from your dashboard settings.",
+                            "TheNextTrade never sells or rents your personal or trading data.",
+                            "Your synced MT5 trade history is kept permanently while your account is active.",
+                            "You control cookie preferences and can export or delete your account at any time.",
                         ].map((point) => (
                             <li
                                 key={point}
@@ -81,13 +81,13 @@ export default function PrivacyPolicyPage() {
                     Overview
                 </h2>
                 <p className="text-sm sm:text-base leading-relaxed text-gray-600 dark:text-gray-300">
-                    TheNextTrade is a free service. We don&apos;t sell your
+                    TheNextTrade is a free Trading Journal, analytics workspace,
+                    and MT5 trading tool ecosystem. We don&apos;t sell your
                     personal information, we don&apos;t charge monthly
-                    subscription fees, and we don&apos;t run third-party ads.
-                    This page explains, in plain language, what we collect when
-                    you use the site and MT5 software, why we collect it, and
-                    what control you have over it. If anything here is unclear,
-                    message us and we&apos;ll explain.
+                    subscription fees, and we don&apos;t run third-party ad
+                    networks. This page explains, in plain language, what we
+                    collect when you use the website and MT5 software, why we
+                    collect it, and what control you have over it.
                 </p>
             </section>
 
@@ -97,30 +97,54 @@ export default function PrivacyPolicyPage() {
                     Data Controller
                 </h2>
                 <p className="text-sm sm:text-base leading-relaxed text-gray-600 dark:text-gray-300">
-                    The data controller responsible for your personal data is
-                    TheNextTrade. For privacy-related inquiries, contact us via
-                    the details in the Contact section below.
+                    The data controller responsible for processing and
+                    safeguarding your personal data is{" "}
+                    <strong className="font-bold text-gray-900 dark:text-white">
+                        TheNextTrade Operations Desk
+                    </strong>{" "}
+                    (contactable at{" "}
+                    <a
+                        href="mailto:support@thenexttrade.com"
+                        className="font-bold text-amber-600 dark:text-gold hover:underline"
+                    >
+                        support@thenexttrade.com
+                    </a>{" "}
+                    and via official Telegram{" "}
+                    <a
+                        href={TELEGRAM_CHANNEL_URL}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-bold text-amber-600 dark:text-gold hover:underline"
+                    >
+                        @GoldScalperNinja
+                    </a>
+                    ).
                 </p>
             </section>
 
-            {/* Information We Collect (2-Column Definition List matching GPM) */}
+            {/* Information We Collect */}
             <section id="information-we-collect" className="py-7 scroll-mt-28">
                 <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-3.5">
                     Information We Collect
                 </h2>
+                <p className="text-sm sm:text-base leading-relaxed text-gray-600 dark:text-gray-300 mb-3.5">
+                    In accordance with global privacy standards (including GDPR
+                    and applicable Personal Data Protection laws), we classify
+                    the data we process into basic and sensitive categories:
+                </p>
                 <dl className="divide-y divide-gray-200 dark:divide-white/10 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/70 dark:bg-[#151925] overflow-hidden">
                     {[
                         [
-                            "Account information",
-                            "Name, email address, Telegram username, and country.",
+                            "Basic account data",
+                            "Name, email address, optional Telegram username, country/timezone, and interface preferences.",
                         ],
                         [
-                            "MT4/MT5 account & trade telemetry",
-                            "Used to sync your Trading Journal analytics and verify that your trading account is registered under our Introducing Broker for exclusive EA & VIP access.",
+                            "Sensitive financial & trade telemetry",
+                            "Read-only MT5 account numbers, broker server names, balance/equity snapshots, and trade execution history synced via your EA Sync Key or imported by you. We never request or store your broker master trading password or withdrawal credentials.",
                         ],
                         [
-                            "Technical data",
-                            "IP address, browser type, device information, and session metadata.",
+                            "Technical & optional analytics data",
+                            "IP address, browser type, device metadata, security audit logs, and — only if you explicitly choose 'Accept All' on the Cookie Preferences banner — anonymized usage telemetry via Google Analytics 4.",
                         ],
                     ].map(([term, desc]) => (
                         <div
@@ -144,21 +168,28 @@ export default function PrivacyPolicyPage() {
                     How We Use Information
                 </h2>
                 <p className="text-sm sm:text-base leading-relaxed text-gray-600 dark:text-gray-300 mb-3">
-                    TheNextTrade uses the information described above to:
+                    TheNextTrade uses the information described above strictly
+                    to:
                 </p>
                 <ul className="space-y-2 text-sm sm:text-base text-gray-600 dark:text-gray-300 list-disc pl-5">
                     <li>
-                        Provide your Trading Journal analytics and manage your
-                        software licenses.
+                        Sync and compute your Trading Journal metrics, drawdown
+                        diagnostics, AI behavioral insights, and software
+                        license eligibility.
                     </li>
                     <li>
-                        Send transactional emails for verification, approvals,
-                        and product updates.
+                        Verify Introducing Broker (IB) partner affiliation when
+                        you apply to unlock complimentary Pro EAs and VIP access.
                     </li>
                     <li>
-                        Prevent fraud and protect the service from abuse.
+                        Send transactional emails for account verification,
+                        security alerts, and critical system updates (marketing
+                        notifications are sent only if you explicitly opt in).
                     </li>
-                    <li>Respond to your support requests.</li>
+                    <li>
+                        Prevent fraud, unauthorized license sharing, and DDoS or
+                        brute-force abuse.
+                    </li>
                 </ul>
             </section>
 
@@ -170,10 +201,8 @@ export default function PrivacyPolicyPage() {
                 <p className="text-sm sm:text-base leading-relaxed text-gray-600 dark:text-gray-300">
                     TheNextTrade uses industry-standard security measures,
                     including SSL/TLS encrypted connections, Cloudflare DDoS
-                    protection, secure password storage, and strict row-level
-                    access controls. Automated abuse, unauthorized proxies, and
-                    disposable email addresses are blocked at sign-up to reduce
-                    abuse.
+                    protection, hashed password storage, read-only EA sync
+                    tokens, and strict row-level access controls.
                 </p>
             </section>
 
@@ -183,19 +212,36 @@ export default function PrivacyPolicyPage() {
                     Data Retention
                 </h2>
                 <p className="text-sm sm:text-base leading-relaxed text-gray-600 dark:text-gray-300 mb-3">
-                    Operational logs — including license validation records,
-                    webhook heartbeat logs, session history, and read
-                    notifications — are automatically deleted after{" "}
                     <strong className="font-bold text-gray-900 dark:text-white">
-                        seven days
-                    </strong>
-                    .
+                        Trading Journal &amp; Account Data:
+                    </strong>{" "}
+                    Because TheNextTrade serves as your long-term trading
+                    ledger, your profile, connected MT5 accounts, synced
+                    trade history, journal notes, and software license keys are
+                    retained continuously for as long as your account remains
+                    active. We never auto-delete your trade history while your
+                    account is open.
+                </p>
+                <p className="text-sm sm:text-base leading-relaxed text-gray-600 dark:text-gray-300 mb-3">
+                    <strong className="font-bold text-gray-900 dark:text-white">
+                        User-Initiated Deletion:
+                    </strong>{" "}
+                    You can delete individual trades, disconnect MT5
+                    accounts, or permanently delete your entire account and all
+                    associated trade records at any time from your Dashboard
+                    Settings.
                 </p>
                 <p className="text-sm sm:text-base leading-relaxed text-gray-600 dark:text-gray-300">
-                    Core account data (profile, journaled trades, MT5 accounts,
-                    and license keys) is retained for as long as the account
-                    remains active. You can request full deletion at any time
-                    from your dashboard settings.
+                    <strong className="font-bold text-gray-900 dark:text-white">
+                        Security &amp; System Logs:
+                    </strong>{" "}
+                    Server security logs, authentication audit trails, and
+                    anti-abuse telemetry are retained for up to{" "}
+                    <span className="tabular-nums font-bold text-gray-900 dark:text-white">
+                        12 months
+                    </span>{" "}
+                    to fulfill cybersecurity and incident-response obligations
+                    before automatic purging.
                 </p>
             </section>
 
@@ -208,52 +254,69 @@ export default function PrivacyPolicyPage() {
                     <strong className="font-bold text-gray-900 dark:text-white">
                         TheNextTrade does not sell your data.
                     </strong>{" "}
-                    Information is shared only with essential service providers
-                    (Supabase for database/authentication, Cloudflare for
-                    security, and transactional email delivery) or where
-                    required by applicable law.
+                    Information is shared only with essential infrastructure
+                    providers (Supabase for database/authentication, Cloudflare
+                    for network security, transactional email delivery, and
+                    Google Analytics 4 only when you consent to analytics
+                    cookies) or where strictly required by applicable law.
                 </p>
             </section>
 
             {/* Your Rights */}
             <section id="your-rights" className="py-7 scroll-mt-28">
                 <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-2.5">
-                    Your Rights
+                    Your Rights &amp; Response Timelines
                 </h2>
+                <p className="text-sm sm:text-base leading-relaxed text-gray-600 dark:text-gray-300 mb-3">
+                    You have the right to be informed, access, rectify, export,
+                    restrict processing, withdraw consent, or permanently delete
+                    your personal data at any time via your Dashboard Settings
+                    or by contacting us.
+                </p>
                 <p className="text-sm sm:text-base leading-relaxed text-gray-600 dark:text-gray-300">
-                    You may request to view, update, export, or delete your
-                    personal data at any time, or close your account, from your
-                    dashboard settings. Requests are typically processed within
-                    a few business days.
+                    We acknowledge all formal privacy requests within{" "}
+                    <span className="tabular-nums font-bold text-gray-900 dark:text-white">
+                        2 business days
+                    </span>
+                    , fulfill data access or correction requests within{" "}
+                    <span className="tabular-nums font-bold text-gray-900 dark:text-white">
+                        10–15 days
+                    </span>
+                    , and complete consent withdrawal, processing restriction, or
+                    full account deletion within{" "}
+                    <span className="tabular-nums font-bold text-gray-900 dark:text-white">
+                        15–20 days
+                    </span>
+                    .
                 </p>
             </section>
 
-            {/* Legal Basis (GDPR) */}
+            {/* Legal Basis */}
             <section id="legal-basis" className="py-7 scroll-mt-28">
                 <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-2.5">
-                    Why We&apos;re Allowed to Process This Data (GDPR)
+                    Legal Basis for Processing
                 </h2>
                 <p className="text-sm sm:text-base leading-relaxed text-gray-600 dark:text-gray-300 mb-3">
-                    Because TheNextTrade is free and not a paid subscription
-                    contract, we rely on two GDPR legal bases:
+                    We rely on the following legal bases under GDPR and
+                    applicable international data protection frameworks:
                 </p>
                 <ul className="space-y-2 text-sm sm:text-base text-gray-600 dark:text-gray-300 list-disc pl-5">
                     <li>
                         <strong className="font-bold text-gray-900 dark:text-white">
-                            Consent
+                            Explicit Consent
                         </strong>{" "}
-                        — by creating an account you ask us to provide the
-                        service, and you can withdraw consent at any time by
-                        deleting your account.
+                        — when you register an account, connect an MT5
+                        account for journal synchronization, opt in to
+                        notifications, or click &ldquo;Accept All&rdquo; on our
+                        cookie banner. You may withdraw consent at any time.
                     </li>
                     <li>
                         <strong className="font-bold text-gray-900 dark:text-white">
-                            Legitimate interest
+                            Service Performance &amp; Security
                         </strong>{" "}
-                        — keeping the service secure (preventing abuse and
-                        fraud) and verifying that accounts belong to our
-                        Introducing Broker network so we can offer the software
-                        and VIP access for free.
+                        — protecting the platform against fraud/abuse and
+                        verifying Introducing Broker (IB) eligibility so we can
+                        provide software tools and community resources for free.
                     </li>
                 </ul>
             </section>
@@ -264,10 +327,12 @@ export default function PrivacyPolicyPage() {
                     Where Your Data Is Stored
                 </h2>
                 <p className="text-sm sm:text-base leading-relaxed text-gray-600 dark:text-gray-300">
-                    Our hosting and email providers operate servers outside the
-                    European Economic Area (EEA). Where data crosses borders, we
-                    rely on the European Commission&apos;s Standard Contractual
-                    Clauses (SCCs) as the safeguard required by GDPR.
+                    Our cloud database, hosting, and security providers operate
+                    globally distributed infrastructure (including outside the
+                    EEA and Asia-Pacific jurisdictions). Where personal data is
+                    transferred across borders, we apply encryption in transit
+                    and at rest alongside Standard Contractual Clauses (SCCs)
+                    and statutory cross-border data protection safeguards.
                 </p>
             </section>
 
@@ -278,10 +343,10 @@ export default function PrivacyPolicyPage() {
                 </h2>
                 <p className="text-sm sm:text-base leading-relaxed text-gray-600 dark:text-gray-300">
                     If you believe our processing of your personal data violates
-                    your rights under GDPR, you have the right to lodge a
-                    complaint with the supervisory authority in your EU member
-                    state of residence, place of work, or place of the alleged
-                    infringement.
+                    applicable data protection law, you have the right to contact
+                    us directly for immediate resolution or lodge a complaint
+                    with the competent data protection supervisory authority in
+                    your jurisdiction of residence.
                 </p>
             </section>
 
@@ -291,10 +356,15 @@ export default function PrivacyPolicyPage() {
                     Children&apos;s Privacy
                 </h2>
                 <p className="text-sm sm:text-base leading-relaxed text-gray-600 dark:text-gray-300">
-                    TheNextTrade does not knowingly collect personal data from
-                    anyone under the age of <span className="tabular-nums font-semibold text-gray-800 dark:text-gray-200">18</span>. If you believe we have
-                    inadvertently collected data from a minor, please contact us
-                    immediately and we will delete it promptly.
+                    TheNextTrade is intended strictly for adults aged{" "}
+                    <span className="tabular-nums font-semibold text-gray-800 dark:text-gray-200">
+                        18
+                    </span>{" "}
+                    and older due to the nature of financial markets. We do not
+                    knowingly collect personal data from anyone under 18. If you
+                    believe we have inadvertently collected data from a minor,
+                    please contact us immediately and we will delete it
+                    promptly.
                 </p>
             </section>
 
@@ -304,9 +374,15 @@ export default function PrivacyPolicyPage() {
                     Cookies
                 </h2>
                 <p className="text-sm sm:text-base leading-relaxed text-gray-600 dark:text-gray-300">
-                    TheNextTrade uses essential cookies to keep you signed in
-                    and remember your preferences. No third-party tracking or
-                    advertising cookies are used. Read our{" "}
+                    TheNextTrade uses strictly necessary cookies to keep you
+                    signed in and remember your interface settings, and optional
+                    analytics cookies (Google Analytics 4 with IP anonymization)
+                    only when you explicitly click &ldquo;Accept All&rdquo; on
+                    our Cookie Preferences banner. You can choose{" "}
+                    <strong className="font-bold text-gray-900 dark:text-white">
+                        Essential Only
+                    </strong>{" "}
+                    at any time. Read our{" "}
                     <Link
                         href="/legal/cookie-policy"
                         className="font-bold text-amber-600 dark:text-gold hover:underline"
@@ -323,7 +399,8 @@ export default function PrivacyPolicyPage() {
                     Contact
                 </h2>
                 <p className="text-sm sm:text-base leading-relaxed text-gray-600 dark:text-gray-300">
-                    For privacy questions, contact us on Telegram at{" "}
+                    For privacy questions or data requests, contact us on
+                    Telegram at{" "}
                     <a
                         href={TELEGRAM_CHANNEL_URL}
                         target="_blank"

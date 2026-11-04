@@ -219,7 +219,7 @@ export function UserAccountsList({
                         Trading Accounts & EA Telemetry
                     </h3>
                     <p className="text-xs text-gray-500 mt-0.5">
-                        Overview of all live and demo MT4/MT5 accounts, capital allocations, and active EAs.
+                        Overview of all live and demo MT5 accounts, capital allocations, and active EAs.
                     </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
@@ -447,7 +447,7 @@ export function UserAccountsList({
                         No trading accounts linked yet.
                     </p>
                     <p className="text-xs text-gray-500 mt-1">
-                        When the user connects MT4/MT5 accounts via the trading terminal or EA, they will show up here.
+                        When the user connects MT5 accounts via the trading terminal or EA, they will show up here.
                     </p>
                 </div>
             )}

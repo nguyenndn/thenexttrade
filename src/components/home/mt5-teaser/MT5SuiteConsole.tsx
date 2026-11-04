@@ -59,26 +59,9 @@ export function MT5SuiteConsole() {
                             </div>
 
                             {/* Description */}
-                            <p className="text-[11px] sm:text-xs leading-relaxed text-gray-600 dark:text-gray-400 mb-2.5">
+                            <p className="text-[11px] sm:text-xs leading-relaxed text-gray-600 dark:text-gray-400">
                                 {item.desc}
                             </p>
-
-                            {/* Telemetry Parameter Pills */}
-                            <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
-                                {item.badges.map((b, bIdx) => (
-                                    <div
-                                        key={bIdx}
-                                        className="inline-flex sm:flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 rounded-lg bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/[0.08] text-[9px] sm:text-[10px] font-mono tabular-nums shadow-xs text-center whitespace-nowrap"
-                                    >
-                                        <span className="text-gray-400 font-medium">
-                                            {b.label}:
-                                        </span>
-                                        <span className="font-bold text-gray-700 dark:text-gray-300">
-                                            {b.value}
-                                        </span>
-                                    </div>
-                                ))}
-                            </div>
                         </div>
                     );
                 })}

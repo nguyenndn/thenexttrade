@@ -137,7 +137,7 @@ export function ProductUsersModal({
                                 </span>
                             </div>
                             <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                                Live MT4/MT5 account capital, heartbeat telemetry, and trader allocations.
+                                Live MT5 account capital, heartbeat telemetry, and trader allocations.
                             </p>
                         </div>
                     </div>
@@ -278,7 +278,7 @@ export function ProductUsersModal({
                             <p className="text-xs text-gray-500 dark:text-gray-400 max-w-sm">
                                 {searchQuery
                                     ? `No traders match "${searchQuery}". Try searching with a different name or email.`
-                                    : `When traders connect their MT4/MT5 accounts and run ${product.name}, they will appear here.`}
+                                    : `When traders connect their MT5 accounts and run ${product.name}, they will appear here.`}
                             </p>
                         </div>
                     ) : (
@@ -286,7 +286,7 @@ export function ProductUsersModal({
                             <thead className="bg-gray-50 dark:bg-[#151925] sticky top-0 z-10 border-b border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold text-[10px]">
                                 <tr>
                                     <th className="px-6 py-3">Trader</th>
-                                    <th className="px-6 py-3">MT4/MT5 Account</th>
+                                    <th className="px-6 py-3">MT5 Account</th>
                                     <th className="px-6 py-3">Capital (Balance / Equity)</th>
                                     <th className="px-6 py-3">Telemetry Heartbeat</th>
                                     <th className="px-6 py-3 text-right">Actions</th>

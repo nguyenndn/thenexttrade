@@ -28,8 +28,8 @@ export function SaaSHeroSection({ isLoggedIn }: SaaSHeroSectionProps) {
                 {/* Headline — leads with the problem, not a promise of profit.
                     We never claim the tool makes money; we claim it shows the
                     trader what they keep doing wrong. */}
-                <h1 className="text-2xl min-[400px]:text-3xl sm:text-4xl md:text-5xl lg:text-[54px] xl:text-[68px] 2xl:text-[76px] font-black text-gray-900 dark:text-white tracking-tight leading-[1.15] sm:leading-[1.08] mb-7 sm:mb-6 max-w-5xl">
-                    <span className="block whitespace-normal sm:whitespace-nowrap">
+                <h1 className="text-[clamp(1rem,4.7vw,1.45rem)] sm:text-4xl md:text-5xl lg:text-[54px] xl:text-[68px] 2xl:text-[76px] font-black text-gray-900 dark:text-white tracking-tight leading-[1.2] sm:leading-[1.08] mb-7 sm:mb-6 max-w-5xl">
+                    <span className="block whitespace-nowrap">
                         You already know what to do.
                     </span>
                     <TypingHeadline />
@@ -41,7 +41,7 @@ export function SaaSHeroSection({ isLoggedIn }: SaaSHeroSectionProps) {
                     was.{" "}
                     <br className="hidden sm:inline" />
                     <span className="font-semibold text-gray-900 dark:text-white">
-                        We sync every MT5 trade and show you the exact moment discipline broke.
+                        We sync every Demo or Live MT5 trade via EA and show you the exact moment discipline broke.
                     </span>
                 </p>
 
@@ -87,13 +87,33 @@ export function SaaSHeroSection({ isLoggedIn }: SaaSHeroSectionProps) {
                     dropped: nothing here is forever-free-with-no-condition, and
                     the $200 broker deposit is explained in full further down.
                     Claiming more than we do costs more trust than it buys. */}
-                <div className="mt-6 sm:mt-7 flex flex-col items-center gap-1.5 text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 animate-in fade-in duration-1000">
-                    <span className="inline-flex items-center gap-1.5 text-gray-700 dark:text-gray-300">
-                        <ShieldCheck size={14} className="text-emerald-500 shrink-0" />
-                        We&apos;re paid by the broker, not by you
+                <div className="mt-6 sm:mt-7 flex flex-col items-center gap-2 text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 animate-in fade-in duration-1000">
+                    <span className="inline-flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-gray-700 dark:text-gray-300 font-semibold">
+                        <span className="inline-flex items-center gap-1.5">
+                            <ShieldCheck size={14} className="text-emerald-500 shrink-0" />
+                            Zero MT5 password required (Sync Key via EA)
+                        </span>
+                        <span className="hidden sm:inline text-gray-300 dark:text-white/20">·</span>
+                        <span>Works on Demo &amp; Live accounts</span>
                     </span>
                     <span className="text-center">
-                        Zero front-running · Your funds stay in your own name
+                        We&apos;re paid by the broker, not by you · Your funds stay 100% in your own name
+                    </span>
+                    <span className="text-center text-xs text-gray-500 dark:text-gray-400 pt-1">
+                        No MT5 account yet?{" "}
+                        <Link
+                            href="/trading-style"
+                            className="font-bold text-amber-600 dark:text-gold hover:underline"
+                        >
+                            Take the 3-Minute Trading Style Audit →
+                        </Link>{" "}
+                        or{" "}
+                        <Link
+                            href="/tools"
+                            className="font-bold text-amber-600 dark:text-gold hover:underline"
+                        >
+                            try 17 Risk Calculators →
+                        </Link>
                     </span>
                 </div>
             </section>

@@ -180,7 +180,7 @@ export function IssueLicenseModal({
 
                     <div className="space-y-1.5">
                         <PremiumInput
-                            label="MT4 / MT5 Account Login Number"
+                            label="MT5 Account Login Number"
                             {...register("accountNumber")}
                             error={errors.accountNumber?.message}
                         />

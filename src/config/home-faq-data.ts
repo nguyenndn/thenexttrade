@@ -24,8 +24,8 @@ export const MEMBERSHIP_FAQS: FAQItem[] = [
 
 export const PLATFORM_FAQS: FAQItem[] = [
     {
-        question: "How do I sync MT5 trades automatically?",
-        answer: "Automated sync is powered by our GSN Trade Manager EA, which runs on your MT5 terminal (PC or VPS) to stream executed trades, stop-losses, and exits to your web journal in real time. Zero manual typing.",
+        question: "How do I sync MT5 trades automatically? Do I need to share my MT5 password?",
+        answer: "Never — we never ask for your MT5 password. Automated sync is powered by our GSN Trade Manager EA, which you attach to your Demo or Live MT5 chart (PC or VPS) using a secure Sync Key. It streams your executed trades, stop-losses, and exits to your web journal in real time with zero manual typing.",
     },
     {
         question: "What is the Weekly Coach & 10-Trade Action Plan?",
@@ -33,7 +33,7 @@ export const PLATFORM_FAQS: FAQItem[] = [
     },
     {
         question: "How do I unlock the MT5 Expert Advisors for free?",
-        answer: "Our MT5 Expert Advisors (GoldScalperNinja, GSN Shadown Matrix, Trade Manager) are available for $0 upfront cost through our verified broker partner paths. Once your account qualifies, license keys and downloads appear inside your dashboard.",
+        answer: "Our MT5 Expert Advisors (GoldScalperNinja, GSN Shadow Matrix, Trade Manager) are available for $0 upfront cost through our verified broker partner paths. Once your account qualifies, license keys and downloads appear inside your dashboard.",
     },
     {
         question: "Can I connect multiple accounts or Prop Firms?",

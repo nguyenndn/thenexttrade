@@ -59,7 +59,7 @@
                 "features": [
                     "Raw ECN spreads from 0.0",
                     "Commission from $3/lot round-turn",
-                    "MT4, MT5 & ProTrader",
+                    "MT5 & ProTrader",
                     "Copy trading platform"
                 ],
                 "review": {
@@ -68,7 +68,7 @@
                         "True Raw ECN spreads from 0.0 pips",
                         "Low commission: $3/lot round-turn",
                         "Regulated by ASIC & FCA — highly trusted",
-                        "Supports MT4, MT5 & ProTrader",
+                        "Supports MT5 & ProTrader",
                         "Built-in copy trading platform"
                     ],
                     "cons": [
@@ -97,7 +97,7 @@
                 "features": [
                     "CySEC & FCA regulated",
                     "250+ CFD instruments",
-                    "MT4 & MT5 platforms",
+                    "MT5 platforms",
                     "Leverage up to 1:2000"
                 ],
                 "review": {
@@ -106,7 +106,7 @@
                         "CySEC & FCA regulated — strong trust",
                         "Leverage up to 1:2000 (global)",
                         "$50 minimum deposit",
-                        "MT4 & MT5 supported",
+                        "MT5 supported",
                         "Segregated client funds"
                     ],
                     "cons": [
@@ -135,7 +135,7 @@
                 "features": [
                     "Execution under 1ms",
                     "1000+ trading instruments",
-                    "MT4 & MT5 supported",
+                    "MT5 supported",
                     "Copy trading available"
                 ],
                 "review": {
@@ -143,7 +143,7 @@
                     "pros": [
                         "Ultra-fast execution under 1ms",
                         "1,000+ instruments: Forex, Stocks, Crypto, Commodities",
-                        "MT4 & MT5 supported",
+                        "MT5 supported",
                         "Copy trading for beginners"
                     ],
                     "cons": [
@@ -247,7 +247,7 @@
                 "regulation": "MISA, FSC, FinaCom",
                 "features": [
                     "Leverage up to 1:3000",
-                    "MT4 & MT5 supported",
+                    "MT5 supported",
                     "Copy trading service",
                     "FinaCom member (€20K protection)"
                 ],
@@ -257,7 +257,7 @@
                         "Up to 1:3000 leverage on FX/metals",
                         "FinaCom member — €20K per claim",
                         "Copy trading available",
-                        "MT4 & MT5 supported",
+                        "MT5 supported",
                         "Operating since 2007"
                     ],
                     "cons": [
@@ -287,7 +287,7 @@
                     "Cent account from $20",
                     "1000+ instruments",
                     "Up to 1:1000 leverage",
-                    "MT4, MT5 & PU WebTrader"
+                    "MT5 & PU WebTrader"
                 ],
                 "review": {
                     "summary": "PU Prime is a **versatile broker** regulated by ASIC and FSCA. Offers **1,000+ instruments** with leverage up to 1:1000 and a low $20 Cent account entry.",
@@ -362,7 +362,7 @@
                 "features": [
                     "FCA (UK) regulated entity",
                     "Cent account from $10",
-                    "MT4 & MT5 platforms",
+                    "MT5 platforms",
                     "Fast deposit & withdrawal"
                 ],
                 "review": {
@@ -370,7 +370,7 @@
                     "pros": [
                         "FCA-regulated entity available",
                         "Low $10 minimum on Cent account",
-                        "MT4 & MT5 supported",
+                        "MT5 supported",
                         "Fast deposit/withdrawal processing",
                         "IB program with unlimited sub-levels"
                     ],
@@ -444,7 +444,7 @@
                 "regulation": null,
                 "features": [
                     "15+ data centers worldwide (NY, London, Tokyo)",
-                    "Pre-installed MT4/MT5 & cTrader",
+                    "Pre-installed MT5 & cTrader",
                     "99.99% uptime SLA",
                     "$0.99 for 7-day trial"
                 ]
@@ -487,7 +487,7 @@
                 "features": [
                     "AMD EPYC CPUs + NVMe SSD storage",
                     "Data centers in NY, London, Amsterdam, HK",
-                    "Pre-installed MT4/MT5 & cTrader",
+                    "Pre-installed MT5 & cTrader",
                     "14-day money-back guarantee"
                 ]
             },
@@ -508,7 +508,7 @@
                 "features": [
                     "22+ global data center locations",
                     "Sub-1ms latency to major brokers",
-                    "Pre-installed MT4/MT5 — online in 60s",
+                    "Pre-installed MT5 — online in 60s",
                     "99.99% uptime guaranteed"
                 ]
             },

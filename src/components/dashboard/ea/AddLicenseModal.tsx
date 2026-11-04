@@ -98,7 +98,7 @@ export function AddLicenseModal({ isOpen, onClose }: AddLicenseModalProps) {
 
                     <PremiumInput
                         label="Account Number"
-                        helperText="Enter your MT5 or MT4 live account number"
+                        helperText="Enter your MT5 live account number"
                         value={accountNumber}
                         onChange={(e) => setAccountNumber(e.target.value)}
                         required

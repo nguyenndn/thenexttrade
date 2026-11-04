@@ -84,7 +84,7 @@ export function ProductUsersTable({
                             </span>
                         </div>
                         <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                            Live MT4/MT5 account capital and heartbeat telemetry for {productName}.
+                            Live MT5 account capital and heartbeat telemetry for {productName}.
                         </p>
                     </div>
                 </div>
@@ -196,7 +196,7 @@ export function ProductUsersTable({
                         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 max-w-sm">
                             {searchQuery
                                 ? `No traders match "${searchQuery}". Try a different keyword.`
-                                : `When traders connect their MT4/MT5 accounts and run ${productName}, they will be listed here.`}
+                                : `When traders connect their MT5 accounts and run ${productName}, they will be listed here.`}
                         </p>
                     </div>
                 ) : (
@@ -205,7 +205,7 @@ export function ProductUsersTable({
                             <thead>
                                 <tr className="border-b border-gray-200 dark:border-white/10 text-gray-400 uppercase tracking-wider font-semibold text-[10px]">
                                     <th className="pb-3 pr-4">Trader Name & Email</th>
-                                    <th className="pb-3 px-4">MT4/MT5 Account</th>
+                                    <th className="pb-3 px-4">MT5 Account</th>
                                     <th className="pb-3 px-4">Capital (Balance / Equity)</th>
                                     <th className="pb-3 px-4">Telemetry Heartbeat</th>
                                     <th className="pb-3 pl-4 text-right">Actions</th>

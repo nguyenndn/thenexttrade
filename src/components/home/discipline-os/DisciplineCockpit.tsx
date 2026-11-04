@@ -62,7 +62,7 @@ export function DisciplineCockpit() {
                     </h3>
 
                     <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 leading-relaxed font-normal">
-                        Manual trade logging fails because human willpower runs out after red days. Our Trade Manager EA streams every tick live from MT5 so you focus purely on market analysis.
+                        Manual spreadsheets fail after a red day. Attach our Trade Manager EA to your Demo or Live MT5 chart using a secure Sync Key — zero MT5 password sharing required — and every entry, SL/TP, and exit streams automatically.
                     </p>
                 </div>
 
@@ -79,7 +79,7 @@ export function DisciplineCockpit() {
                     </h3>
 
                     <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 leading-relaxed font-normal">
-                        You cannot fix what you refuse to see. Our early-warning risk radar catches revenge sizing, FOMO chases, and fear-based break-even exits before tilt destroys the week.
+                        You cannot fix what you refuse to see. E.g., instantly see that you win 68% in the London session, but wipe out your week after 21:00 by doubling your Gold lot size after a loss.
                     </p>
                 </div>
 
@@ -96,7 +96,7 @@ export function DisciplineCockpit() {
                     </h3>
 
                     <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 leading-relaxed font-normal">
-                        Discipline is a routine, not motivation. We turn each flaw into a 10-trade rule to practise.
+                        Instead of overwhelming you with 20 metrics, we turn your biggest leak into one concrete 10-trade rule to practise (e.g., max 2 trades/day, never widen your initial Stop-Loss).
                     </p>
                 </div>
             </div>

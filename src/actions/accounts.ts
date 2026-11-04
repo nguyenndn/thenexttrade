@@ -352,7 +352,7 @@ export async function createTradingAccount(
                 accountNumber: accountNumber || null,
                 balance,
                 currency,
-                platform: platform || "MT4",
+                platform: platform || "MT5",
                 isDefault: isDefault || false,
                 apiKey: legacyApiKey,
                 color: color || "hsl(var(--primary))",

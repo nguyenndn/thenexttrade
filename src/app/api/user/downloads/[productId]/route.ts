@@ -27,9 +27,9 @@ export async function GET(
         }
 
         const { searchParams } = new URL(request.url);
-        const platform = searchParams.get("platform") as "MT4" | "MT5";
+        const platform = (searchParams.get("platform") || "MT5") as "MT5";
 
-        if (!platform || !["MT4", "MT5"].includes(platform)) {
+        if (platform !== "MT5") {
             return NextResponse.json(
                 { success: false, error: "Invalid platform" },
                 { status: 400 }
@@ -48,8 +48,7 @@ export async function GET(
             );
         }
 
-        const filePath =
-            platform === "MT4" ? product.fileMT4 : product.fileMT5;
+        const filePath = product.fileMT5;
         if (!filePath) {
             return NextResponse.json(
                 createErrorResponse(ErrorCode.FILE_NOT_AVAILABLE),
@@ -139,10 +138,7 @@ export async function GET(
                 data: {
                     userId: user.id,
                     productId: product.id,
-                    platform:
-                        platform === "MT4"
-                            ? PlatformType.MT4
-                            : PlatformType.MT5,
+                    platform: PlatformType.MT5,
                     version: product.version,
                     ipAddress:
                         request.headers.get("x-forwarded-for") || "unknown",

@@ -347,7 +347,7 @@ export function buildProductFarmData(product: RawProductForFarm): {
                     image: user.image,
                     tradingAccountId: null,
                     accountNumber: "—",
-                    broker: "No MT4/MT5 Linked",
+                    broker: "No MT5 Linked",
                     server: null,
                     platform: "MT5",
                     accountType: null,

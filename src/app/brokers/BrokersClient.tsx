@@ -195,6 +195,11 @@ function PartnerCard({
 
             {/* CTA */}
             <div className="px-5 pb-5 mt-auto">
+                {hasUrl && (
+                    <p className="mb-2 text-center text-[11px] font-medium text-gray-400 dark:text-gray-500">
+                        Partner Affiliate Link · Zero extra spread markup
+                    </p>
+                )}
                 {hasUrl ? (
                     <a
                         href={item.url!}

@@ -12,7 +12,7 @@ export interface PlaybookChapter {
     highlights: string[];
     quote: string;
     cta: string;
-    hrefKey: "analysis" | "telegram" | "academy" | "systems";
+    hrefKey: "analysis" | "telegram" | "journal" | "systems";
     external: boolean;
     icon: React.ComponentType<{ size?: number; className?: string }>;
 }
@@ -67,21 +67,21 @@ export const PLAYBOOK_CHAPTERS: PlaybookChapter[] = [
         leftPageNum: "05",
         rightPageNum: "06",
         icon: BookOpen,
-        eyebrow: "LEARN THE WHY",
-        title: "Education & Experience",
-        subtitle: "Price Action, SMC & Execution Psychology",
+        eyebrow: "TRACK & AUDIT EVERY TRADE",
+        title: "Automated Trade Journal",
+        subtitle: "MT5 EA Sync, Equity Curve & Behavioral Leak Radar",
         teaserQuestion:
-            "Want to understand the Price Action & risk math behind every gold trade?",
+            "How do you track every XAUUSD trade and spot where your discipline breaks?",
         description:
-            "Real trading experience, not textbook theory. Price action, momentum trading, and the psychology behind every trade.",
+            "Sync your Demo or Live MT5 account via EA with zero password sharing. Every trade is logged automatically to expose revenge sizing, early exits, and session win rates.",
         highlights: [
-            "Supply & Demand + Liquidity Sweep setups",
-            "Behavioral leak & drawdown discipline",
-            "Real lessons from live market execution",
+            "Real-time MT5 sync via EA (Demo & Live)",
+            "Behavioral leak & revenge-trade detection",
+            "Session, strategy & R-multiple analytics",
         ],
-        quote: "Copying signals feeds you for a session; mastering structure and risk math feeds you for a career.",
-        cta: "Explore Academy",
-        hrefKey: "academy",
+        quote: "Signals give you setups; your trading journal shows you why you keep giving profits back.",
+        cta: "Start Free Journal",
+        hrefKey: "journal",
         external: false,
     },
     {

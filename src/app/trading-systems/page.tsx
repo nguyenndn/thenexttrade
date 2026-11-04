@@ -18,14 +18,14 @@ import { buttonVariants } from "@/components/ui/button-variants";
 export const metadata: Metadata = {
     title: "MT5 Trading Systems & Expert Advisors | TheNextTrade",
     description:
-        "Professional MetaTrader 5 Expert Advisors and trade management tools. Get GoldScalperNinja EA, GSN Shadown Matrix, and Trade Manager with an eligible partner account.",
+        "Professional MetaTrader 5 Expert Advisors and trade management tools. Get GoldScalperNinja EA, GSN Shadow Matrix, and Trade Manager with an eligible partner account.",
     alternates: {
         canonical: "/trading-systems",
     },
     openGraph: {
         title: "MT5 Trading Systems & Expert Advisors | TheNextTrade",
         description:
-            "Institutional MetaTrader 5 Expert Advisors: GoldScalperNinja, GSN Shadown Matrix, and Trade Manager.",
+            "Institutional MetaTrader 5 Expert Advisors: GoldScalperNinja, GSN Shadow Matrix, and Trade Manager.",
         url: "/trading-systems",
         siteName: "TheNextTrade",
         type: "website",
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
         card: "summary_large_image",
         title: "MT5 Trading Systems & Expert Advisors | TheNextTrade",
         description:
-            "Institutional MetaTrader 5 Expert Advisors: GoldScalperNinja, GSN Shadown Matrix, and Trade Manager.",
+            "Institutional MetaTrader 5 Expert Advisors: GoldScalperNinja, GSN Shadow Matrix, and Trade Manager.",
     },
 };
 
@@ -44,9 +44,9 @@ const TOOL_CARDS = [
     {
         slug: "goldscalperninja",
         title: "GoldScalperNinja EA",
-        label: "Automated EA",
+        label: "100% Auto-Trading EA",
         positioning:
-            "Automated MT5 gold architecture with price-chasing stop entries, D1 Trend Master compass, and Lot–Price distance filtering.",
+            "For hands-free XAU/USD execution: Automated MT5 gold architecture with price-chasing stop entries, D1 Trend Master compass, and Lot–Price distance filtering.",
         bullets: [
             "Price-chasing stop orders (no falling knife)",
             "Two-phase sequence & cross-side pruning",
@@ -63,14 +63,14 @@ const TOOL_CARDS = [
     {
         slug: "trade-manager",
         title: "GSN Trade Manager",
-        label: "Manual Control",
+        label: "Manual Co-Pilot & Journal Sync",
         positioning:
-            "5-Tab MT5 Command Deck for 1-click split-TP scalping, institutional Volume Profile (POC/VAH/VAL), 42-signal MTF trend matrix, and Smart DCA / BE Lot recovery.",
+            "For manual traders: 5-Tab MT5 Command Deck for 1-click split-TP scalping, automatic Web Journal sync via Sync Key, 42-signal MTF trend matrix, and Smart DCA / BE Lot recovery.",
         bullets: [
             "3-Target Split-TP (TP1–TP3) & Smart Partial Trim",
-            "Institutional Volume Profile (POC, VAH, VAL) & OB",
+            "Automatic Web Journal Sync (Zero MT5 password needed)",
             "42-Signal MTF Confluence Matrix (6 engines × 7 TFs)",
-            "Smart DCA / BE Lot, Zone Box, Smart Shield & Cloud Sync",
+            "Smart DCA / BE Lot, Zone Box & Daily Loss Lock",
         ],
         ctaLabel: "Get Trade Manager",
         accentClass:
@@ -80,17 +80,17 @@ const TOOL_CARDS = [
     },
     {
         slug: "gsn-shadown-matrix",
-        title: "GSN Shadown Matrix",
-        label: "Advanced Grid EA",
+        title: "GSN Shadow Matrix",
+        label: "Auto Grid & Hedge Recovery EA",
         positioning:
-            "Asymmetric Dual Grid & Counter-Hedge XAUUSD engine with 6 M5 seed filters, EMA-34 reversal lot braking, Dynamic ATR spacing, and Same-Side Smart Pruning.",
+            "For automated recovery: Asymmetric Dual Grid & Counter-Hedge XAUUSD engine with 6 M5 seed filters, EMA-34 reversal lot braking, Dynamic ATR spacing, and Same-Side Smart Pruning.",
         bullets: [
             "6 selectable M5 seed filters & +90-pt fast scalp",
             "250-pt counter-hedge & 150-pt M15 dual pairs",
             "EMA-34 reversal brake (flat 0.02 counter-trend lots)",
             "Same-Side Smart Pruning (Tier >= 5) & $50.00 Async Exit",
         ],
-        ctaLabel: "Get Shadown Matrix",
+        ctaLabel: "Get Shadow Matrix",
         accentClass:
             "from-emerald-500/10 via-teal-500/5 to-transparent border-emerald-500/20 hover:border-emerald-500/40",
         colorRgb: "16, 185, 129",
@@ -144,7 +144,7 @@ const LICENSING_RISK_FAQS = [
     },
     {
         question: "Do these EAs automatically filter high-impact economic news?",
-        answer: "Yes. Both GoldScalperNinja EA and GSN Shadown Matrix include a built-in Economic News Filter that automatically pauses opening new orders before and after major high-impact events like NFP, CPI, and FOMC rate decisions.",
+        answer: "Yes. Both GoldScalperNinja EA and GSN Shadow Matrix include a built-in Economic News Filter that automatically pauses opening new orders before and after major high-impact events like NFP, CPI, and FOMC rate decisions.",
     },
     {
         question: "What returns and drawdown levels should I expect?",
@@ -224,6 +224,9 @@ export default async function TradingSystemsIndexPage() {
                         >
                             <div className="space-y-5">
                                 <div>
+                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-lg bg-gold/10 text-amber-600 dark:text-gold border border-gold/25 text-[10px] font-black font-mono uppercase tracking-wider mb-2.5">
+                                        {system.label}
+                                    </span>
                                     <h3 className="font-heading text-xl font-black text-gray-900 dark:text-white">
                                         {system.title}
                                     </h3>
@@ -255,13 +258,12 @@ export default async function TradingSystemsIndexPage() {
                                     href={`/trading-systems/${system.slug}`}
                                     className={buttonVariants({
                                         variant: "gold",
-                                        size: "smd",
                                         className:
-                                            "w-full items-center justify-center gap-1.5 font-black uppercase tracking-wider",
+                                            "w-full h-10 px-4 items-center justify-center gap-2 text-xs sm:text-sm font-black uppercase tracking-wider",
                                     })}
                                 >
-                                    View Details
-                                    <ArrowRight size={13} />
+                                    <span>View Details</span>
+                                    <ArrowRight size={14} className="shrink-0" />
                                 </Link>
                             </div>
                         </article>
@@ -325,32 +327,38 @@ export default async function TradingSystemsIndexPage() {
                         Manager access.
                     </p>
 
-                    <div className="flex flex-col gap-3.5 sm:flex-row justify-center pt-2">
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 w-full sm:w-auto pt-2">
                         <Link
                             href={primaryCtaUrl}
                             className={buttonVariants({
                                 variant: "gold",
-                                size: "smd",
                                 className:
-                                    "font-black uppercase tracking-wider active:scale-[0.98]",
+                                    "w-full sm:w-auto h-11 sm:h-12 px-6 sm:px-8 rounded-lg bg-gold hover:bg-amber-600 text-white text-sm font-black uppercase tracking-wider shadow-md shadow-amber-500/20 hover:shadow-lg hover:shadow-amber-500/30 transition-all duration-300 flex items-center justify-center gap-2 whitespace-normal sm:whitespace-nowrap animate-btn-shine group",
                             })}
                         >
-                            {isLoggedIn
-                                ? "Check My Account"
-                                : "Create Account & Check"}
-                            <ArrowRight size={14} />
+                            <span>
+                                {isLoggedIn
+                                    ? "Check My Account"
+                                    : "Create Account & Check"}
+                            </span>
+                            <ArrowRight
+                                size={16}
+                                className="group-hover:translate-x-1 transition-transform duration-300 shrink-0"
+                            />
                         </Link>
                         <Link
                             href="/brokers"
                             className={buttonVariants({
                                 variant: "outline",
-                                size: "smd",
                                 className:
-                                    "border-gray-400 dark:border-white/15 bg-white/40 dark:bg-transparent font-black uppercase tracking-wider text-gray-800 dark:text-white hover:border-gold/30 hover:bg-gold/5 dark:hover:border-white/30 dark:hover:bg-white/[0.05] active:scale-[0.98]",
+                                    "w-full sm:w-auto h-11 sm:h-12 px-6 sm:px-8 rounded-lg border-gray-400 dark:border-white/15 bg-white/40 dark:bg-transparent hover:border-gold hover:text-amber-600 dark:hover:text-gold text-gray-800 dark:text-white text-sm font-black uppercase tracking-wider shadow-sm transition-all duration-300 flex items-center justify-center gap-2 whitespace-normal sm:whitespace-nowrap group",
                             })}
                         >
-                            View Supported Brokers
-                            <ArrowRight size={14} />
+                            <span>View Supported Brokers</span>
+                            <ArrowRight
+                                size={16}
+                                className="group-hover:translate-x-1 transition-transform duration-300 shrink-0 text-amber-500 dark:text-gold"
+                            />
                         </Link>
                     </div>
 

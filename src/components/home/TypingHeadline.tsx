@@ -53,13 +53,13 @@ export function TypingHeadline() {
     }, [displayedText, isDeleting, phraseIndex, currentPhrase]);
 
     return (
-        <span className="block mt-1 sm:mt-2 min-h-[1.15em] sm:whitespace-nowrap">
+        <span className="block mt-1 sm:mt-2 min-h-[1.15em] whitespace-nowrap">
             You keep{" "}
             <span className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-amber-500 via-gold to-amber-600 dark:from-gold dark:via-yellow-300 dark:to-amber-400 drop-shadow-sm pb-[0.25em] -mb-[0.25em]">
                 {displayedText || "\u00A0"}
             </span>
             <span
-                className="inline-block w-2 sm:w-2.5 md:w-3 h-7 sm:h-8 md:h-10 lg:h-11 xl:h-13 2xl:h-14 ml-1.5 align-middle rounded-full bg-gold shadow-[0_0_10px_rgba(245,158,11,0.6)]"
+                className="inline-block w-1.5 sm:w-2.5 md:w-3 h-5 sm:h-8 md:h-10 lg:h-11 xl:h-13 2xl:h-14 ml-1 sm:ml-1.5 align-middle rounded-full bg-gold shadow-[0_0_10px_rgba(245,158,11,0.6)]"
                 style={{ animation: "terminalBlink 1s infinite" }}
             />
         </span>

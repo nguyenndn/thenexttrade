@@ -183,7 +183,7 @@ export function LicenseAccountsPanel({
 
     const handleSaveAccountNumber = async (tradingAccountId: string) => {
         if (!accountNumberInput.trim()) {
-            toast.error("Please enter your MT4/MT5 Account Login ID.");
+            toast.error("Please enter your MT5 Account Login ID.");
             return;
         }
         setSavingAccountNumId(tradingAccountId);
@@ -196,7 +196,7 @@ export function LicenseAccountsPanel({
                 toast.error(res.error);
             } else {
                 toast.success(
-                    `Saved MT4/MT5 Account #${res.accountNumber}. You can now request a license.`
+                    `Saved MT5 Account #${res.accountNumber}. You can now request a license.`
                 );
                 setEditingAccountId(null);
                 setAccountNumberInput("");
@@ -207,7 +207,7 @@ export function LicenseAccountsPanel({
                 );
             }
         } catch {
-            toast.error("Failed to update MT4/MT5 account number.");
+            toast.error("Failed to update MT5 account number.");
         } finally {
             setSavingAccountNumId(null);
         }
@@ -230,7 +230,7 @@ export function LicenseAccountsPanel({
                             </span>
                         </div>
                         <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                            Each MT5/MT4 trading account verified under our IB
+                            Each MT5 trading account verified under our IB
                             network receives 1 unified License Key that unlocks
                             all 3 Expert Advisors (Trade Manager,
                             GoldScalperNinja, and Apex Gold Sentinel).
@@ -382,7 +382,7 @@ export function LicenseAccountsPanel({
                                     No Trading Accounts Found
                                 </h4>
                                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                    You have not added any MT4/MT5 trading
+                                    You have not added any MT5 trading
                                     accounts yet. Please add your trading
                                     account in{" "}
                                     <span className="font-semibold text-gray-700 dark:text-gray-200">
@@ -557,7 +557,7 @@ export function LicenseAccountsPanel({
                                                                         )
                                                                     )
                                                                 }
-                                                                aria-label="MT4 or MT5 Account Login Number"
+                                                                aria-label="MT5 Account Login Number"
                                                                 className="w-28 h-7 px-2 rounded-lg text-xs font-mono tabular-nums bg-white dark:bg-[#151925] border border-gold/40 text-gray-900 dark:text-white focus:outline-none"
                                                             />
                                                             <Button
@@ -586,7 +586,7 @@ export function LicenseAccountsPanel({
                                                             type="button"
                                                             variant="outline"
                                                             size="sm"
-                                                            title="Click to enter your MT4/MT5 Account Login ID so you can request a license"
+                                                            title="Click to enter your MT5 Account Login ID so you can request a license"
                                                             onClick={(e) => {
                                                                 e.stopPropagation();
                                                                 setEditingAccountId(
@@ -600,7 +600,7 @@ export function LicenseAccountsPanel({
                                                         >
                                                             <Edit3 size={11} />
                                                             <span>
-                                                                Set MT4/MT5 #
+                                                                Set MT5 #
                                                             </span>
                                                         </Button>
                                                     )

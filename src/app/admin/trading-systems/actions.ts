@@ -162,7 +162,7 @@ export async function toggleProductStatus(productId: string) {
 // Helper for file upload path generation
 export async function uploadEAFile(
     productId: string,
-    platform: "MT4" | "MT5" | "THUMBNAIL",
+    platform: "MT5" | "THUMBNAIL",
     formData: FormData
 ) {
     try {
@@ -193,7 +193,7 @@ export async function uploadEAFile(
         const buffer = Buffer.from(arrayBuffer);
 
         const folder =
-            platform === "MT4" ? "mt4" : platform === "MT5" ? "mt5" : "";
+            platform === "MT5" ? "mt5" : "";
         const name = folder
             ? `${folder}/${safeFileName}`
             : `thumbnail_${safeFileName}`;
@@ -216,8 +216,7 @@ export async function uploadEAFile(
         }
 
         const updateData: any = {};
-        if (platform === "MT4") updateData.fileMT4 = path;
-        else if (platform === "MT5") updateData.fileMT5 = path;
+        if (platform === "MT5") updateData.fileMT5 = path;
         else if (platform === "THUMBNAIL") updateData.thumbnail = finalUrl;
 
         await prisma.eAProduct.update({

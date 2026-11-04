@@ -127,7 +127,7 @@ export default async function EAProductsPage() {
         <div className="space-y-4 pb-10">
             <AdminPageHeader
                 title="Trading Systems Catalog"
-                description="Manage EA products, live MT4/MT5 account telemetry, and EA Farm capital."
+                description="Manage EA products, live MT5 account telemetry, and EA Farm capital."
                 backHref="/admin/trading-systems"
             >
                 <Link href="/admin/trading-systems/create">

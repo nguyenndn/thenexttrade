@@ -69,12 +69,11 @@ export function LessonLockedView({
                             href="/auth/signup"
                             className={buttonVariants({
                                 variant: "primary",
-                                size: "smd",
                                 className:
-                                    "gap-2 font-bold shadow-md shadow-amber-500/25",
+                                    "w-full sm:w-auto h-11 sm:h-12 px-6 sm:px-8 rounded-lg bg-gold hover:bg-amber-600 !text-white text-sm font-extrabold shadow-md shadow-amber-500/25 hover:shadow-amber-500/40 flex items-center justify-center gap-2 whitespace-normal sm:whitespace-nowrap animate-btn-shine group",
                             })}
                         >
-                            <GraduationCap size={15} />
+                            <GraduationCap size={16} className="shrink-0" />
                             <span>Sign Up Free to Unlock</span>
                         </Link>
                         <p className="text-xs text-gray-500">

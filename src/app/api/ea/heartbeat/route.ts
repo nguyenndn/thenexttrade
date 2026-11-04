@@ -15,7 +15,7 @@ import {
 } from "@/lib/trading-account-classification";
 /**
  * Maps a GMT hour offset from the EA to the most appropriate IANA timezone.
- * Covers all common MT4/MT5 broker server timezones.
+ * Covers all common MT5 broker server timezones.
  */
 function mapGmtOffsetToTimezone(offsetHours: number): string {
     const map: Record<number, string> = {

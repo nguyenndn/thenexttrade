@@ -15,13 +15,12 @@ export function AcademyPublicCTA({
                 href="/dashboard/academy"
                 className={buttonVariants({
                     variant: "primary",
-                    size: "smd",
                     className:
-                        "rounded-lg bg-gold hover:bg-amber-600 !text-white font-bold shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 active:scale-95 transition-all duration-200",
+                        "w-full sm:w-auto h-11 sm:h-12 px-5 sm:px-7 rounded-lg bg-gold hover:bg-amber-600 !text-white text-sm font-extrabold shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 active:scale-95 transition-all duration-200 flex items-center justify-center gap-2 whitespace-normal sm:whitespace-nowrap animate-btn-shine group",
                 })}
             >
-                <PlayCircle size={15} />
-                Continue Learning
+                <PlayCircle size={16} className="shrink-0" />
+                <span>Continue Learning</span>
             </Link>
         );
     }
@@ -31,13 +30,12 @@ export function AcademyPublicCTA({
             href="/auth/login"
             className={buttonVariants({
                 variant: "primary",
-                size: "smd",
                 className:
-                    "rounded-lg bg-gold hover:bg-amber-600 !text-white font-bold shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 active:scale-95 transition-all duration-200",
+                    "w-full sm:w-auto h-11 sm:h-12 px-5 sm:px-7 rounded-lg bg-gold hover:bg-amber-600 !text-white text-sm font-extrabold shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 active:scale-95 transition-all duration-200 flex items-center justify-center gap-2 whitespace-normal sm:whitespace-nowrap animate-btn-shine group",
             })}
         >
-            <PlayCircle size={15} />
-            Explore the Curriculum
+            <PlayCircle size={16} className="shrink-0" />
+            <span>Explore the Curriculum</span>
         </Link>
     );
 }

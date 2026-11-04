@@ -14,30 +14,9 @@ interface StartByGoalSectionProps {
 export function StartByGoalSection(_props: StartByGoalSectionProps) {
     const cards = [
         {
-            title: "Pre-Trade Risk Math",
-            description: "Model lot size, pip values & ruin odds with 17 professional risk calculators before pressing buy or sell.",
-            icon: <Calculator size={20} />,
-            href: "/tools",
-            color: "text-slate-700 dark:text-slate-300",
-            chipBg: "bg-slate-100 dark:bg-[#151925]",
-            animClass: "group-hover:scale-110 group-hover:rotate-6",
-            bgClass:
-                "bg-white dark:bg-[#0D111C] border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20 hover:bg-gray-50 dark:hover:bg-white/[0.04]",
-        },
-        {
-            title: "Automated Discipline",
-            description: "Deploy GoldScalperNinja, Trade Manager & GSN Shadown Matrix to enforce hard-coded risk rules via MT5.",
-            icon: <Bot size={20} />,
-            href: "/trading-systems",
-            color: "text-gold",
-            chipBg: "bg-gold/10",
-            animClass: "group-hover:scale-110 group-hover:translate-x-0.5",
-            bgClass:
-                "bg-gradient-to-br from-gold/[0.05] to-amber-500/[0.02] border-gold/30 hover:border-gold/60 hover:shadow-[0_8px_30px_rgba(245,158,11,0.12)] dark:from-gold/[0.05] dark:to-[#0D111C]",
-        },
-        {
+            stepBadge: "STEP 01 · KNOW YOUR BLIND SPOTS",
             title: "Trading Style Audit",
-            description: "Identify your XAU/USD trading archetype, behavioral blind spots, and custom risk rules in 3 minutes.",
+            description: "New or inconsistent? Identify your XAU/USD trading archetype, behavioral blind spots, and custom risk rules in 3 minutes.",
             icon: <Target size={20} />,
             href: "/trading-style",
             color: "text-slate-700 dark:text-slate-300",
@@ -47,8 +26,33 @@ export function StartByGoalSection(_props: StartByGoalSectionProps) {
                 "bg-white dark:bg-[#0D111C] border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20 hover:bg-gray-50 dark:hover:bg-white/[0.04]",
         },
         {
+            stepBadge: "STEP 02 · BEFORE EVERY TRADE",
+            title: "Pre-Trade Risk Math",
+            description: "Model exact lot size, pip values & ruin odds with 17 free risk calculators before pressing buy or sell — no login required.",
+            icon: <Calculator size={20} />,
+            href: "/tools",
+            color: "text-slate-700 dark:text-slate-300",
+            chipBg: "bg-slate-100 dark:bg-[#151925]",
+            animClass: "group-hover:scale-110 group-hover:rotate-6",
+            bgClass:
+                "bg-white dark:bg-[#0D111C] border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20 hover:bg-gray-50 dark:hover:bg-white/[0.04]",
+        },
+        {
+            stepBadge: "STEP 03 · MANUAL CO-PILOT & AUTO EAs",
+            title: "Automated Discipline",
+            description: "Use GSN Trade Manager for 1-click manual lot sizing & journal sync, or run GoldScalperNinja & GSN Shadow Matrix for automated MT5 execution.",
+            icon: <Bot size={20} />,
+            href: "/trading-systems",
+            color: "text-gold",
+            chipBg: "bg-gold/10",
+            animClass: "group-hover:scale-110 group-hover:translate-x-0.5",
+            bgClass:
+                "bg-gradient-to-br from-gold/[0.05] to-amber-500/[0.02] border-gold/30 hover:border-gold/60 hover:shadow-[0_8px_30px_rgba(245,158,11,0.12)] dark:from-gold/[0.05] dark:to-[#0D111C]",
+        },
+        {
+            stepBadge: "STEP 04 · $0 VIP SPONSORSHIP",
             title: "Capital Sponsorship",
-            description: "Preserve 100% of your deposit with verified partner brokers to unlock our full Pro stack at $0.",
+            description: "Start free at $0. When ready for live trading, fund your own regulated broker account with $200 to unlock all VIP EAs & AI Coach permanently.",
             icon: <Building size={20} />,
             href: "/brokers",
             color: "text-slate-700 dark:text-slate-300",
@@ -84,6 +88,9 @@ export function StartByGoalSection(_props: StartByGoalSectionProps) {
                             <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-transparent via-transparent to-gray-50/50 dark:to-white/[0.01] pointer-events-none" />
 
                             <div className="relative z-10 w-full flex flex-col items-center sm:items-start">
+                                <div className="mb-2 text-[10px] font-mono tabular-nums font-extrabold uppercase tracking-wider text-amber-600 dark:text-gold">
+                                    {card.stepBadge}
+                                </div>
                                 {/* Icon and Title: Stacked centered on mobile, inline on sm+ */}
                                 <div className="mb-3 flex flex-col sm:flex-row items-center sm:items-center justify-center sm:justify-start gap-2.5 sm:gap-3 w-full">
                                     <div

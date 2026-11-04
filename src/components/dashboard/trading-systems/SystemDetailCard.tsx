@@ -62,7 +62,7 @@ export function SystemDetailCard({
         if (isLocked || downloading) return;
         setDownloading(true);
         try {
-            const platform = product.platform === "MT4" ? "MT4" : "MT5";
+            const platform = "MT5";
             const res = await fetch(
                 `/api/user/downloads/${product.id}?platform=${platform}`
             );
@@ -247,7 +247,7 @@ export function SystemDetailCard({
                                 </div>
                                 <div className="flex items-center justify-between text-[9px] font-mono text-gray-400 pt-1 border-t border-white/[0.06]">
                                     <span>SPREAD: 12 pts</span>
-                                    <span className="text-amber-400 font-semibold">{product.platform === "MT4" ? "MT4" : "MT5"} CORE</span>
+                                    <span className="text-amber-400 font-semibold">MT5 CORE</span>
                                 </div>
                             </div>
                         </div>
@@ -305,7 +305,7 @@ export function SystemDetailCard({
                         <div className="text-[11px] text-gray-500 dark:text-gray-400 font-mono tracking-wide mt-0.5 mb-2 flex items-center gap-1.5">
                             <span>v{product.version}</span>
                             <span>•</span>
-                            <span>{product.platform === "MT4" ? "MT4" : "MT5"}</span>
+                            <span>MT5</span>
                             <span>•</span>
                             <span
                                 className={

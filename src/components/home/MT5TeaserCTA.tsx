@@ -68,20 +68,20 @@ export function MT5TeaserCTA({ isLoggedIn = false }: MT5TeaserCTAProps) {
                                 </div>
 
                                 <h2 className="text-2xl sm:text-3xl font-black text-gray-800 dark:text-white leading-tight tracking-tight">
-                                    Automate Execution &amp; Eliminate Emotional Errors
+                                    Manual Trader Co-Pilot &amp; Automated MT5 EAs
                                 </h2>
 
                                 <p className="mt-3 text-sm text-gray-600 dark:text-gray-400 font-semibold leading-relaxed">
-                                    Most trading leaks happen during trade management. Deploy GoldScalperNinja, GSN Trade Manager, and GSN Shadown Matrix to enforce hard-coded stop-loss rules, automated break-even, and trailing defense directly on MT5.
+                                    Trade manually? Use GSN Trade Manager for 1-click lot sizing, auto SL/TP, and live journal sync. Prefer hands-free execution? Deploy GoldScalperNinja EA and GSN Shadow Matrix to trade XAU/USD automatically with hard-coded stop-loss rules.
                                 </p>
                             </div>
 
                             {/* Trust Bullets */}
                             <div className="space-y-2.5 border-t border-dashed border-gray-200 dark:border-white/10 pt-5">
                                 {[
-                                    "100% automated MT5 live execution with strict hard stop-losses",
+                                    "Manual Co-Pilot (Trade Manager) + 2 Automated EAs (GoldScalperNinja & Shadow Matrix)",
+                                    "Zero MT5 password required — syncs & verifies securely via EA on Demo or Live",
                                     "Capital stays in your regulated account — we never touch your funds",
-                                    "Includes Trade Manager EA, GoldScalperNinja & GSN Shadown Matrix licenses",
                                 ].map((text, idx) => (
                                     <div
                                         key={idx}

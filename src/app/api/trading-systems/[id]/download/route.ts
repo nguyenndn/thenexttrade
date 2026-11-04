@@ -13,7 +13,7 @@ export async function GET(
         const searchParams = request.nextUrl.searchParams;
         const platformParam = searchParams.get("platform");
 
-        if (!platformParam || (platformParam !== "MT4" && platformParam !== "MT5")) {
+        if (!platformParam || platformParam !== "MT5") {
             return new NextResponse("Invalid platform", { status: 400 });
         }
         const platform: PlatformType = platformParam as PlatformType;
@@ -38,7 +38,7 @@ export async function GET(
             });
         }
 
-        const filePath = platform === "MT4" ? product.fileMT4 : product.fileMT5;
+        const filePath = product.fileMT5;
 
         if (!filePath) {
             return new NextResponse("File not found for the requested platform", {

@@ -1,11 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Download, Monitor, Bot } from "lucide-react";
+import { Download, Bot } from "lucide-react";
 import { toast } from "sonner";
 import { EAProduct } from "@/types/ea-license";
 import { Button } from "@/components/ui/Button";
-import { cn } from "@/lib/utils";
 
 interface EADownloadCardProps {
     product: EAProduct;
@@ -14,7 +13,7 @@ interface EADownloadCardProps {
 export function EADownloadCard({ product }: EADownloadCardProps) {
     const [isDownloading, setIsDownloading] = useState<string | null>(null);
 
-    const handleDownload = async (platform: "MT4" | "MT5") => {
+    const handleDownload = async (platform: "MT5") => {
         setIsDownloading(platform);
         try {
             const response = await fetch(
@@ -23,13 +22,11 @@ export function EADownloadCard({ product }: EADownloadCardProps) {
             const data = await response.json();
 
             if (data.success && data.data?.url) {
-                // Create formatted filename
-                const filename = `${product.slug}_${platform}_v${product.version}.${platform === "MT4" ? "ex4" : "ex5"}`;
+                const filename = `${product.slug}_${platform}_v${product.version}.ex5`;
 
-                // Trigger download
                 const link = document.createElement("a");
                 link.href = data.data.url;
-                link.download = filename; // This might not work with signed URLs depending on headers, but worth trying
+                link.download = filename;
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
@@ -84,41 +81,24 @@ export function EADownloadCard({ product }: EADownloadCardProps) {
                 </div>
             </div>
 
-            {/* Download Buttons */}
-            <div className="grid grid-cols-2 gap-3 mb-6">
-                {(product.platform === "MT4" ||
-                    product.platform === "BOTH") && (
-                    <Button
-                        variant="outline"
-                        className="flex items-center justify-center gap-2 border border-dashboard hover:border-primary hover:bg-primary/5 bg-white dark:bg-white/5"
-                        onClick={() => handleDownload("MT4")}
-                        disabled={!!isDownloading}
-                    >
-                        {isDownloading === "MT4" ? (
-                            <span className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-                        ) : (
-                            <Download size={18} className="text-primary" />
-                        )}
-                        <span className="font-bold">MT4</span>
-                    </Button>
-                )}
-
-                {(product.platform === "MT5" ||
-                    product.platform === "BOTH") && (
-                    <Button
-                        variant="outline"
-                        className="flex items-center justify-center gap-2 border border-dashboard hover:border-gold hover:bg-gold/5 bg-white dark:bg-white/5"
-                        onClick={() => handleDownload("MT5")}
-                        disabled={!!isDownloading}
-                    >
-                        {isDownloading === "MT5" ? (
-                            <span className="w-4 h-4 border-2 border-gold border-t-transparent rounded-full animate-spin" />
-                        ) : (
-                            <Download size={18} className="text-amber-600 dark:text-gold" />
-                        )}
-                        <span className="font-bold">MT5</span>
-                    </Button>
-                )}
+            {/* Download Button (MT5) */}
+            <div className="mb-6">
+                <Button
+                    variant="outline"
+                    className="w-full flex items-center justify-center gap-2 border border-dashboard hover:border-gold hover:bg-gold/5 bg-white dark:bg-white/5"
+                    onClick={() => handleDownload("MT5")}
+                    disabled={!!isDownloading}
+                >
+                    {isDownloading === "MT5" ? (
+                        <span className="w-4 h-4 border-2 border-gold border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                        <Download
+                            size={18}
+                            className="text-amber-600 dark:text-gold"
+                        />
+                    )}
+                    <span className="font-bold">Download MT5 (.ex5)</span>
+                </Button>
             </div>
 
             {/* Changelog */}

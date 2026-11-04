@@ -29,7 +29,8 @@ const TERMS_SECTIONS: LegalSectionItem[] = [
     { id: "no-guarantees", label: "No Guarantees" },
     { id: "account", label: "Your Account" },
     { id: "license", label: "License Rules" },
-    { id: "ib-requirement", label: "IB Requirement" },
+    { id: "ib-requirement", label: "IB & Affiliate Disclosure" },
+    { id: "restricted-jurisdictions", label: "Restricted Jurisdictions" },
     { id: "liability", label: "Limitation of Liability" },
     { id: "changes", label: "Changes & Termination" },
     { id: "contact", label: "Contact" },
@@ -39,10 +40,10 @@ export default function TermsOfServicePage() {
     return (
         <LegalPageShell
             title="Terms of Service"
-            lead="Effective June 1, 2026 · Version 1.4"
+            lead="Effective June 1, 2026 · Version 1.5"
             sections={TERMS_SECTIONS}
             numbered={true}
-            footerNote="By using TheNextTrade, you agree to these terms."
+            footerNote="By registering an account on TheNextTrade, you explicitly confirm your acceptance of these terms."
             intro={
                 <div
                     id="risk-warning"
@@ -55,10 +56,11 @@ export default function TermsOfServicePage() {
                         <strong className="font-black text-gray-900 dark:text-white">
                             Risk Warning.
                         </strong>{" "}
-                        Trading forex, gold (XAUUSD), and CFDs involves
-                        significant risk. You may lose more than your initial
-                        investment. Past performance does not guarantee future
-                        results. Only trade with money you can afford to lose.
+                        Trading forex, gold (XAUUSD), cryptocurrencies, and CFDs
+                        involves significant risk. You may lose more than your
+                        initial investment. Past performance does not guarantee
+                        future results. Only trade with money you can afford to
+                        lose.
                     </p>
                 </div>
             }
@@ -72,10 +74,14 @@ export default function TermsOfServicePage() {
                     <span>Agreement</span>
                 </h2>
                 <p className="text-sm sm:text-base leading-relaxed text-gray-600 dark:text-gray-300">
-                    By accessing TheNextTrade&apos;s website, trading journal,
-                    software, or community services, you agree to these terms.
-                    You must be at least <span className="tabular-nums font-semibold text-gray-800 dark:text-gray-200">18</span> years old and acknowledge the
-                    inherent risks of leveraged trading.
+                    By registering for or accessing TheNextTrade&apos;s website,
+                    trading journal, MT5 software, or community services, you
+                    agree to these terms. You must be at least{" "}
+                    <span className="tabular-nums font-semibold text-gray-800 dark:text-gray-200">
+                        18
+                    </span>{" "}
+                    years old and acknowledge the inherent risks of leveraged
+                    trading.
                 </p>
             </section>
 
@@ -89,16 +95,17 @@ export default function TermsOfServicePage() {
                 </h2>
                 <ul className="space-y-2 text-sm sm:text-base text-gray-600 dark:text-gray-300 list-disc pl-5">
                     <li>
-                        Exclusive MT5 expert advisors, indicators, and risk
-                        management calculators.
+                        Cloud-synced MT5 Trading Journal, AI behavioral
+                        analytics, drawdown diagnostics, and verified
+                        performance leaderboards.
                     </li>
                     <li>
-                        Cloud-synced trading journal, behavioral analytics, and
-                        verified performance leaderboards.
+                        Exclusive MT5 expert advisors, trade management
+                        utilities, and risk management calculators.
                     </li>
                     <li>
-                        Educational content (Academy) and daily XAUUSD analysis
-                        &amp; trading signals via Telegram.
+                        Daily XAUUSD market analysis and community trade
+                        discussions via Telegram.
                     </li>
                     <li>
                         License management and partner broker verification for
@@ -118,11 +125,13 @@ export default function TermsOfServicePage() {
                 <ul className="space-y-2 text-sm sm:text-base text-gray-600 dark:text-gray-300 list-disc pl-5">
                     <li>
                         TheNextTrade does not guarantee any trading profits or
-                        specific results.
+                        specific financial outcomes.
                     </li>
                     <li>
-                        TheNextTrade is not a financial advisor; all signals,
-                        tools, and courses are strictly educational in nature.
+                        TheNextTrade is a software and analytics provider, not a
+                        licensed financial advisor or broker; all market
+                        commentary, AI insights, and tools are strictly
+                        informational and educational in nature.
                     </li>
                     <li>
                         You retain full custody of your broker account and are
@@ -142,7 +151,7 @@ export default function TermsOfServicePage() {
                 <ul className="space-y-2 text-sm sm:text-base text-gray-600 dark:text-gray-300 list-disc pl-5">
                     <li>
                         Provide accurate information when registering and
-                        submitting MT4/MT5 account verification.
+                        submitting MT5 account verification.
                     </li>
                     <li>
                         Keep your login credentials and EA Sync API keys secure.
@@ -164,7 +173,7 @@ export default function TermsOfServicePage() {
                 </h2>
                 <p className="text-sm sm:text-base leading-relaxed text-gray-600 dark:text-gray-300 mb-3">
                     Your software license is personal and tied to your verified
-                    MT4/MT5 account. You may not:
+                    MT5 account. You may not:
                 </p>
                 <ul className="space-y-2 text-sm sm:text-base text-gray-600 dark:text-gray-300 list-disc pl-5 mb-3">
                     <li>Share, rent, or sell your license key or EA files.</li>
@@ -181,63 +190,96 @@ export default function TermsOfServicePage() {
                 </p>
             </section>
 
-            {/* 6. IB Requirement */}
+            {/* 6. IB & Affiliate Disclosure */}
             <section id="ib-requirement" className="py-7 scroll-mt-28">
                 <div id="third-party-brokers" className="scroll-mt-28" />
                 <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-2.5 flex items-center gap-2">
                     <span className="tabular-nums text-amber-600 dark:text-gold">
                         6.
                     </span>
-                    <span>IB Requirement</span>
+                    <span>IB &amp; Affiliate Disclosure</span>
                 </h2>
                 <p className="text-sm sm:text-base leading-relaxed text-gray-600 dark:text-gray-300">
-                    To access the exclusive MT5 EAs and VIP signals for free,
-                    your MT4/MT5 trading account must be registered under
-                    TheNextTrade&apos;s official Introducing Broker (IB) link
-                    with a supported partner broker (Exness, VantageMarkets,
-                    VTMarkets, or Ultima Markets). We may receive standard IB
-                    partner rebates from the broker at zero additional cost to
-                    you. Accounts not registered or active under our IB may have
-                    their software license and VIP access revoked.
+                    TheNextTrade operates on a transparent Introducing Broker
+                    (IB) and partner affiliate model. To unlock complimentary Pro
+                    MT5 EAs and VIP community signals, your MT5 trading
+                    account must be registered under TheNextTrade&apos;s
+                    official partner link with a supported partner broker
+                    (such as Exness, Vantage, IC Markets, or Tickmill). When you
+                    trade through a partner link, we may receive standard IB
+                    volume rebates directly from the broker at{" "}
+                    <strong className="font-bold text-gray-900 dark:text-white">
+                        zero additional spread or commission markup to you
+                    </strong>
+                    . Partner brokers are independent third-party institutions;
+                    you should verify their regulatory status in your own
+                    jurisdiction before opening an account.
                 </p>
             </section>
 
-            {/* 7. Limitation of Liability */}
-            <section id="liability" className="py-7 scroll-mt-28">
+            {/* 7. Restricted Jurisdictions */}
+            <section id="restricted-jurisdictions" className="py-7 scroll-mt-28">
                 <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-2.5 flex items-center gap-2">
                     <span className="tabular-nums text-amber-600 dark:text-gold">
                         7.
+                    </span>
+                    <span>Restricted Jurisdictions</span>
+                </h2>
+                <p className="text-sm sm:text-base leading-relaxed text-gray-600 dark:text-gray-300">
+                    The information, software tools, and partner broker links on
+                    TheNextTrade are intended for global retail traders and are{" "}
+                    <strong className="font-bold text-gray-900 dark:text-white">
+                        not directed at or intended for distribution to, or use
+                        by, any person in any country or jurisdiction where such
+                        distribution, offshore brokerage solicitation, or
+                        leveraged FX/CFD trading would be contrary to local law
+                        or regulation
+                    </strong>{" "}
+                    (including the United States, Vietnam, and other restricted
+                    territories). Visitors accessing this website are solely
+                    responsible for complying with the laws and foreign-exchange
+                    regulations applicable in their country of residence.
+                </p>
+            </section>
+
+            {/* 8. Limitation of Liability */}
+            <section id="liability" className="py-7 scroll-mt-28">
+                <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-2.5 flex items-center gap-2">
+                    <span className="tabular-nums text-amber-600 dark:text-gold">
+                        8.
                     </span>
                     <span>Limitation of Liability</span>
                 </h2>
                 <p className="text-sm sm:text-base leading-relaxed text-gray-600 dark:text-gray-300">
                     TheNextTrade is not liable for any trading losses, broker
-                    slippage, technical issues, or damages arising from the use
-                    of its software, signals, or services. All use is strictly
-                    at your own risk.
+                    slippage, third-party broker insolvency, technical outages,
+                    or damages arising from the use of its software, analytics,
+                    or community content. All use is strictly at your own risk.
                 </p>
             </section>
 
-            {/* 8. Changes & Termination */}
+            {/* 9. Changes & Termination */}
             <section id="changes" className="py-7 scroll-mt-28">
                 <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-2.5 flex items-center gap-2">
                     <span className="tabular-nums text-amber-600 dark:text-gold">
-                        8.
+                        9.
                     </span>
                     <span>Changes &amp; Termination</span>
                 </h2>
                 <p className="text-sm sm:text-base leading-relaxed text-gray-600 dark:text-gray-300">
-                    TheNextTrade may update these terms or terminate access at
-                    any time. Continued use of the service constitutes
-                    acceptance of any updated terms.
+                    When we make material changes to these terms, we will update
+                    the effective date at the top of this page and notify
+                    registered users via dashboard notice or email in advance so
+                    you may review the updated terms or close your account if
+                    you disagree.
                 </p>
             </section>
 
-            {/* 9. Contact */}
+            {/* 10. Contact */}
             <section id="contact" className="pt-7 scroll-mt-28">
                 <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-2.5 flex items-center gap-2">
                     <span className="tabular-nums text-amber-600 dark:text-gold">
-                        9.
+                        10.
                     </span>
                     <span>Contact</span>
                 </h2>

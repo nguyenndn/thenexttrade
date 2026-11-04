@@ -3,6 +3,10 @@
 import Script from "next/script";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import {
+    COOKIE_CONSENT_EVENT,
+    getCookieConsent,
+} from "@/components/layout/CookieConsentBanner";
 
 declare global {
     interface Window {
@@ -25,7 +29,22 @@ function isAnalyticsEnabled(measurementId?: string) {
 export function GoogleAnalytics({ measurementId }: GoogleAnalyticsProps) {
     const pathname = usePathname();
     const [ready, setReady] = useState(false);
-    const enabled = isAnalyticsEnabled(measurementId);
+    const [consentGranted, setConsentGranted] = useState(false);
+    const enabled = isAnalyticsEnabled(measurementId) && consentGranted;
+
+    useEffect(() => {
+        const syncConsent = () => {
+            setConsentGranted(getCookieConsent() === "all");
+        };
+
+        syncConsent();
+        window.addEventListener(COOKIE_CONSENT_EVENT, syncConsent);
+        window.addEventListener("storage", syncConsent);
+        return () => {
+            window.removeEventListener(COOKIE_CONSENT_EVENT, syncConsent);
+            window.removeEventListener("storage", syncConsent);
+        };
+    }, []);
 
     useEffect(() => {
         if (

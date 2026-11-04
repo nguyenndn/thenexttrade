@@ -43,7 +43,7 @@ async function handleVerifyLicense(
                 valid: false,
                 state: "UNKNOWN",
                 code: "MISSING_ACCOUNT_NUMBER",
-                message: "Missing MT5/MT4 accountNumber in request.",
+                message: "Missing MT5 accountNumber in request.",
             },
             { status: 400 }
         );

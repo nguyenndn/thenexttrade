@@ -566,7 +566,10 @@ export default function SignupPage() {
                 )}
             </form>
 
-            <div className="mt-6 sm:mt-8 text-center">
+            <div className="mt-6 sm:mt-8 pt-4 border-t border-gray-200 dark:border-white/10 text-center space-y-2">
+                <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
+                    Free starter account · No credit card or MT5 password required · Instant access to Academy &amp; 17 Risk Tools
+                </p>
                 <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
                     Already have an account?{" "}
                     <Link

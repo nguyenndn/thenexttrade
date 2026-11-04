@@ -31,7 +31,7 @@ export function BrokerFundedMembershipSection({
                             <span className="text-gold">Your $200 stays 100% yours</span>
                         </>
                     }
-                    description="Why pay $100/mo for VIP signals? Simply fund your own broker account with $200 to unlock rule-based MT5 EAs, AI Coach, and Pro Analytics at $0 cost."
+                    description="Start with a Free Account ($0, no broker deposit required) to access our Academy, 17 Risk Calculators, and 7-day Demo/Live trial. When you're ready for permanent VIP access, simply fund your own broker account with $200 at $0 software cost."
                     className="mb-6 sm:mb-8"
                 />
 

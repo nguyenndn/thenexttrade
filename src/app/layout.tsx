@@ -8,6 +8,7 @@ import { Lexend, Source_Sans_3 } from "next/font/google";
 import { Toaster } from "sonner";
 import dynamic from "next/dynamic";
 import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
+import { CookieConsentBanner } from "@/components/layout/CookieConsentBanner";
 import { getBaseUrl, absoluteUrl } from "@/lib/url";
 
 const SystemAnnouncementBanner = dynamic(
@@ -223,6 +224,7 @@ for (var r of registrations) { r.unregister(); }
                     />
                     <SystemAnnouncementBanner />
                     {children}
+                    <CookieConsentBanner />
                     <Toaster richColors position="top-right" closeButton />
                 </ThemeProvider>
                 <GoogleAnalytics measurementId={gaMeasurementId} />

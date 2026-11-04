@@ -50,7 +50,7 @@ describe("HomeSections SSR Suite (Modular Sections Verification)", () => {
             expect(loggedOutHtml).toContain("Zero manual journaling. Connect your MT5 account");
 
             // Workflow Step items
-            expect(loggedOutHtml).toContain("1. Live MT5 Sync");
+            expect(loggedOutHtml).toContain("1. Live MT5 EA Sync");
             expect(loggedOutHtml).toContain("2. Expose The Leaks");
             expect(loggedOutHtml).toContain("3. Execute The Fix");
 

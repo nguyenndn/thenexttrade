@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
         if (!isConnected) {
             return NextResponse.json(
                 {
-                    error: "EA is not connected. Please ensure EA is running on your MT4/MT5 terminal.",
+                    error: "EA is not connected. Please ensure EA is running on your MT5 terminal.",
                     code: "EA_OFFLINE",
                 },
                 { status: 400 }

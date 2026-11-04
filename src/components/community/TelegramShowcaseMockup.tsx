@@ -425,9 +425,9 @@ export function TelegramShowcaseMockup({
                                 onClick={handleCopyLink}
                                 title="Copy Telegram Channel Link"
                                 aria-label="Copy Telegram channel invite link"
-                                className="flex items-center gap-1.5 px-3 h-7 rounded-lg bg-slate-200/80 dark:bg-white/10 text-gray-600 dark:text-gray-300 text-xs font-bold hover:bg-slate-300 dark:hover:bg-white/[0.16] transition-all"
+                                className="flex items-center gap-1.5 px-3 h-8 rounded-lg bg-slate-200/80 dark:bg-white/10 text-gray-600 dark:text-gray-300 text-xs font-bold hover:bg-slate-300 dark:hover:bg-white/[0.16] transition-all"
                             >
-                                {copied ? <Check size={12} className="text-emerald-500" /> : <Copy size={12} />}
+                                {copied ? <Check size={13} className="text-emerald-500" /> : <Copy size={13} />}
                                 <span className="hidden sm:inline">Copy Link</span>
                             </Button>
                         </div>

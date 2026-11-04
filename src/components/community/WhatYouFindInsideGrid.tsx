@@ -39,7 +39,7 @@ export function WhatYouFindInsideGrid({
     const resolveHref = (chapter: PlaybookChapter) => {
         if (chapter.hrefKey === "analysis") return analysisUrl;
         if (chapter.hrefKey === "telegram") return telegramUrl;
-        if (chapter.hrefKey === "academy") return "/academy";
+        if (chapter.hrefKey === "journal") return "/auth/signup?intent=TRADE_FIRST&source=community_playbook";
         return "/trading-systems";
     };
 

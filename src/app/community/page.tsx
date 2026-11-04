@@ -87,12 +87,12 @@ const vipBenefits = [
 
 const platformLinks = [
     {
-        title: "Academy",
+        title: "Automated Trading Journal",
         description:
-            "Learn trading from scratch with structured courses — from basics to advanced strategies.",
-        icon: GraduationCap,
-        href: "/academy",
-        ctaText: "Explore Courses",
+            "Sync your Demo or Live MT5 via EA to track win rate, drawdown, and behavioral leaks automatically.",
+        icon: BarChart3,
+        href: "/auth/signup?intent=TRADE_FIRST&source=community_ecosystem",
+        ctaText: "Start Free Journal",
         color: "text-amber-600 dark:text-gold",
         bg: "bg-amber-500/10 dark:bg-gold/15",
     },
@@ -120,8 +120,8 @@ const platformLinks = [
 
 const COMMUNITY_FAQ = [
     {
-        question: "What is Gold Scalper Ninja?",
-        answer: "A Telegram community of 12,000+ traders sharing daily XAUUSD analysis, live setups, and real execution experience powered by TheNextTrade.",
+        question: "How do GoldScalperNinja and TheNextTrade work together?",
+        answer: "GoldScalperNinja is our official XAUUSD Telegram community and MT5 EA suite, while TheNextTrade is the web platform where you sync your MT5 account via EA, audit your Trading Journal, and eliminate behavioral leaks.",
     },
     {
         question: "Is the public channel really 100% free?",
@@ -136,15 +136,15 @@ const COMMUNITY_FAQ = [
 const VIP_FAQ = [
     {
         question: "How does free VIP verification work?",
-        answer: "Open a trading account under our official partner broker link with a $200+ balance, then submit your account number in the Dashboard. No monthly fee is ever charged.",
+        answer: "Open a trading account under our official partner broker link with a $200+ balance, then submit your MT5 account ID in the Dashboard. No monthly fee is ever charged.",
+    },
+    {
+        question: "What if I already have an account with the partner broker?",
+        answer: "You do not need a new identity. Simply enter our Official Partner IB Code inside your broker portal to request a partner transfer, or open a new MT5 sub-account under our partner link.",
     },
     {
         question: "Do I keep full custody of my trading funds?",
         answer: "100%. Your capital stays in your own regulated broker account (Exness, Vantage, VTMarkets, or Ultima Markets). We never touch or manage your funds.",
-    },
-    {
-        question: "How fast is VIP access approved?",
-        answer: "Verification requests submitted through your Dashboard are typically reviewed and approved within a few hours (always under 24 hours).",
     },
 ];
 
@@ -206,21 +206,18 @@ export default async function CommunityPage() {
                                 </h1>
 
                                 <p className="text-base sm:text-lg lg:text-xl text-gray-600 dark:text-gray-300 leading-relaxed max-w-xl">
-                                    Join the official <a href={TELEGRAM_URL} target="_blank" rel="noopener noreferrer" className="text-[#2AABEE] hover:underline font-bold">Public Telegram channel</a> community — <span className="tabular-nums font-bold text-gray-900 dark:text-white">12,000+</span> traders sharing daily XAUUSD analysis, clear signals &amp; real trading experience. Powered by <strong className="text-gray-900 dark:text-white font-black">TheNextTrade</strong>, with Price Action insights, Chart Analysis &amp; automated MT5 EA systems.
+                                    Join the official <a href={TELEGRAM_URL} target="_blank" rel="noopener noreferrer" className="text-[#2AABEE] hover:underline font-bold">GoldScalperNinja Public Telegram</a> — <span className="tabular-nums font-bold text-gray-900 dark:text-white">12,000+</span> traders sharing daily XAUUSD morning bias, pre-defined Entry/SL/TP setups &amp; real execution feedback. Powered by <strong className="text-gray-900 dark:text-white font-black">TheNextTrade</strong> so you can sync every MT5 trade into your automated Web Journal and eliminate behavioral leaks.
                                 </p>
 
                                 {/* Live Metrics Ticker Pill */}
                                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3 p-3.5 rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 shadow-sm">
                                     <div className="text-left px-2">
-                                        <span className="block text-[10px] font-black uppercase tracking-wider text-gray-400">Win Rate</span>
-                                        <a
-                                            href="/auth/login?next=/dashboard/leaderboard"
-                                            className="text-sm sm:text-base font-black tabular-nums text-emerald-600 dark:text-emerald-400 flex items-center gap-1 hover:underline"
-                                        >
-                                            <TrendingUp size={14} /> 87.4%
-                                        </a>
+                                        <span className="block text-[10px] font-black uppercase tracking-wider text-gray-400">Risk Discipline</span>
+                                        <span className="text-sm sm:text-base font-black tabular-nums text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                                            <Shield size={14} /> Hard SL &amp; TP
+                                        </span>
                                         <span className="mt-0.5 block text-[9px] font-semibold text-gray-400 uppercase tracking-wider">
-                                            Verified live results
+                                            1–2% risk cap per setup
                                         </span>
                                     </div>
                                     <div className="text-left px-2 sm:border-x sm:border-gray-200 dark:border-white/10">
@@ -251,12 +248,11 @@ export default async function CommunityPage() {
                                         rel="noopener noreferrer"
                                         className={buttonVariants({
                                             variant: "secondary",
-                                            size: "smd",
                                             className:
-                                                "w-full font-black shadow-md shadow-[#2AABEE]/20 hover:shadow-lg hover:shadow-[#2AABEE]/30 bg-[#2AABEE] hover:bg-[#2299d6] active:scale-[0.98] hover:scale-[1.01] text-white whitespace-nowrap",
+                                                "w-full h-11 sm:h-12 px-3.5 xl:px-5 rounded-lg text-sm font-black shadow-md shadow-[#2AABEE]/20 hover:shadow-lg hover:shadow-[#2AABEE]/30 bg-[#2AABEE] hover:bg-[#2299d6] active:scale-[0.98] hover:scale-[1.01] text-white flex items-center justify-center gap-2 whitespace-normal sm:whitespace-nowrap animate-btn-shine group",
                                         })}
                                     >
-                                        <Send size={14} className="shrink-0" />
+                                        <Send size={16} className="shrink-0" />
                                         <span>Join Telegram Channel Free</span>
                                     </a>
                                     <a
@@ -265,14 +261,13 @@ export default async function CommunityPage() {
                                         rel="noopener noreferrer"
                                         className={buttonVariants({
                                             variant: "gold",
-                                            size: "smd",
                                             className:
-                                                "w-full font-black whitespace-nowrap",
+                                                "w-full h-11 sm:h-12 px-3.5 xl:px-5 rounded-lg text-sm font-black shadow-md shadow-amber-500/20 hover:shadow-lg hover:shadow-amber-500/30 active:scale-[0.98] flex items-center justify-center gap-2 whitespace-normal sm:whitespace-nowrap group",
                                         })}
                                     >
-                                        <BarChart3 size={14} className="shrink-0" />
+                                        <BarChart3 size={16} className="shrink-0" />
                                         <span>See Today&apos;s Analysis</span>
-                                        <ArrowRight size={13} className="shrink-0" />
+                                        <ArrowRight size={16} className="shrink-0 group-hover:translate-x-0.5 transition-transform duration-300" />
                                     </a>
                                 </div>
 
@@ -456,11 +451,10 @@ export default async function CommunityPage() {
                                             {vipBenefits.map((b) => (
                                                 <div
                                                     key={b.text}
-                                                    className={`flex items-center gap-2.5 bg-gray-50/80 dark:bg-[#151925] rounded-lg border border-gray-200 dark:border-white/10 px-3 py-2.5 ${
-                                                        b.fullWidth
+                                                    className={`flex items-center gap-2.5 bg-gray-50/80 dark:bg-[#151925] rounded-lg border border-gray-200 dark:border-white/10 px-3 py-2.5 ${b.fullWidth
                                                             ? "sm:col-span-2"
                                                             : ""
-                                                    }`}
+                                                        }`}
                                                 >
                                                     <div className="w-7 h-7 rounded-lg bg-gold/10 border border-gold/20 flex items-center justify-center shrink-0">
                                                         <b.icon size={14} className="text-gold" />
@@ -490,7 +484,7 @@ export default async function CommunityPage() {
                                                 {
                                                     num: "02",
                                                     title: "Submit Account in Dashboard",
-                                                    desc: "Enter your MT4/MT5 account ID for instant IB check.",
+                                                    desc: "Enter your MT5 account ID for instant IB check.",
                                                 },
                                                 {
                                                     num: "03",
@@ -710,26 +704,24 @@ export default async function CommunityPage() {
                                         rel="noopener noreferrer"
                                         className={buttonVariants({
                                             variant: "secondary",
-                                            size: "smd",
                                             className:
-                                                "font-bold shadow-sm bg-[#2AABEE] hover:bg-[#2299d6] text-white whitespace-nowrap",
+                                                "w-full sm:w-auto h-11 sm:h-12 px-5 sm:px-7 rounded-lg text-sm font-black shadow-md shadow-[#2AABEE]/20 hover:shadow-lg hover:shadow-[#2AABEE]/30 bg-[#2AABEE] hover:bg-[#2299d6] text-white flex items-center justify-center gap-2 whitespace-normal sm:whitespace-nowrap animate-btn-shine group",
                                         })}
                                     >
-                                        <Send size={14} />
+                                        <Send size={16} className="shrink-0" />
                                         <span>Join Telegram Free</span>
                                     </a>
                                     <a
                                         href="#vip-access"
                                         className={buttonVariants({
                                             variant: "gold",
-                                            size: "smd",
                                             className:
-                                                "font-bold whitespace-nowrap",
+                                                "w-full sm:w-auto h-11 sm:h-12 px-5 sm:px-7 rounded-lg text-sm font-black shadow-md shadow-amber-500/20 hover:shadow-lg hover:shadow-amber-500/30 text-white flex items-center justify-center gap-2 whitespace-normal sm:whitespace-nowrap group",
                                         })}
                                     >
-                                        <Crown size={14} />
+                                        <Crown size={16} className="shrink-0" />
                                         <span>Get VIP Access</span>
-                                        <ArrowRight size={13} />
+                                        <ArrowRight size={16} className="shrink-0 group-hover:translate-x-0.5 transition-transform duration-300" />
                                     </a>
                                 </div>
                             </div>

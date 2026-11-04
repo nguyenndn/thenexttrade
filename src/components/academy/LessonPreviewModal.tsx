@@ -182,13 +182,12 @@ export function LessonPreviewModal({
                                     href="/auth/signup"
                                     className={buttonVariants({
                                         variant: "primary",
-                                        size: "smd",
                                         className:
-                                            "flex items-center justify-center gap-2 w-full font-bold shadow-md shadow-amber-500/25",
+                                            "w-full h-10 px-5 rounded-lg bg-gold hover:bg-amber-600 !text-white text-xs sm:text-sm font-bold shadow-md shadow-amber-500/25 hover:shadow-amber-500/40 flex items-center justify-center gap-2",
                                     })}
                                 >
-                                    <PlayCircle size={15} />
-                                    Sign Up to Continue
+                                    <PlayCircle size={16} className="shrink-0" />
+                                    <span>Sign Up to Continue</span>
                                 </Link>
                                 <Link
                                     href="/auth/login"

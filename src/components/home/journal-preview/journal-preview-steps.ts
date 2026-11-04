@@ -13,10 +13,10 @@ export const WORKFLOW_STEPS: readonly WorkflowStepItem[] = [
     {
         id: 0,
         number: "01",
-        title: "1. Live MT5 Sync",
+        title: "1. Live MT5 EA Sync",
         icon: PlugZap,
-        description: "Trade Manager EA streams every tick, entry, and stop-loss directly to your dashboard.",
-        tag: "Real-Time",
+        description: "Attach Trade Manager EA with your Sync Key (no MT5 password needed). Streams Demo & Live trades automatically.",
+        tag: "Zero-Password Sync",
     },
     {
         id: 1,

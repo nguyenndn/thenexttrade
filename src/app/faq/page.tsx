@@ -2,7 +2,6 @@ import { Metadata } from "next";
 import {
     HelpCircle,
     Layers,
-    GraduationCap,
     Wrench,
     Shield,
     ArrowLeft,
@@ -22,14 +21,14 @@ export const revalidate = 86400;
 export const metadata: Metadata = {
     title: "Frequently Asked Questions (FAQ) | TheNextTrade",
     description:
-        "Find answers to all your questions about TheNextTrade platform, MT5 sync, Trading Playbooks, AI coach, Academy, 18 free calculators, and risk management.",
+        "Find answers to all your questions about TheNextTrade platform, MT5 EA sync, Trading Journal, AI coach, 17 free calculators, and risk management.",
     alternates: {
         canonical: "/faq",
     },
     openGraph: {
         title: "Frequently Asked Questions (FAQ) | TheNextTrade",
         description:
-            "Find answers about TheNextTrade platform, MT5 sync, Trading Playbooks, AI coach, Academy, and free tools.",
+            "Find answers about TheNextTrade platform, MT5 EA sync, Trading Journal, AI coach, and free tools.",
         url: "/faq",
         siteName: "TheNextTrade",
         type: "website",
@@ -38,7 +37,7 @@ export const metadata: Metadata = {
         card: "summary_large_image",
         title: "Frequently Asked Questions | TheNextTrade",
         description:
-            "Questions and answers on MT5 sync, Playbooks, Journal analytics, and free Forex tools.",
+            "Questions and answers on MT5 EA sync, Journal analytics, and free Forex tools.",
     },
 };
 
@@ -54,19 +53,19 @@ const FAQ_GROUPS = [
         items: [
             {
                 question: "What is TheNextTrade?",
-                answer: "TheNextTrade is a trading journal and tools platform. It helps you follow your own rules by showing you where you break them. We provide automated MT5 trade telemetry, an AI Behavioral Leak Radar, targeted risk calculators, and structured education to protect your capital and build consistent discipline.",
+                answer: "TheNextTrade is a trading journal and execution discipline platform. It helps you follow your own rules by showing you where you break them. We provide automated MT5 trade telemetry via EA, an AI Behavioral Leak Radar, and 17 targeted risk calculators to protect your capital and build consistent discipline.",
             },
             {
                 question: "Is the platform free to use?",
-                answer: "Yes! Our core Academy courses, live trading tools (Market Hours, Economic Calendar), manual journal, and basic analytics are 100% free. Premium features like our GoldScalperNinja MT5 EAs, indicators, or advanced Pro/Intelligence analytics have flexible licensing and broker eligibility paths.",
+                answer: "Yes! Our live trading tools (Market Hours, Economic Calendar, 17 calculators), manual journal, and core analytics are 100% free. Premium features like our GoldScalperNinja MT5 EAs, Trade Manager, and VIP analytics are unlocked for $0 subscription cost via our verified broker partner paths.",
             },
             {
                 question: "Is my trading data secure and private?",
-                answer: "Yes. Your trading credentials, API tokens, and journal history are protected with enterprise-grade encryption. We never have access to your broker funds or withdrawal permissions—your money stays 100% with your regulated broker.",
+                answer: "Yes. Your Sync Keys, API tokens, and journal history are protected with enterprise-grade encryption. We never ask for your MT5 password and never have access to your broker funds or withdrawal permissions—your money stays 100% with your regulated broker.",
             },
             {
                 question: "What is Edge?",
-                answer: "Edge is our gamified tracking language for progress and trader discipline. You earn Edge by completing Academy lessons, maintaining your trading habit loop, finishing Edge Missions, and claiming your Daily Check-In once per day inside the dashboard.",
+                answer: "Edge is our tracking language for progress and trader discipline. You earn Edge by maintaining your trading journal habit loop, following your pre-trade risk rules, finishing Edge Missions, and claiming your Daily Check-In once per day inside the dashboard.",
             },
         ],
     },
@@ -111,20 +110,20 @@ const FAQ_GROUPS = [
         hoverBorder: "hover:border-gold/35",
         items: [
             {
-                question: "How do I sync MT5 trades automatically?",
-                answer: "We offer automated MT5 trade synchronization via the GSN Trade Manager Expert Advisor, which runs directly in your MT5 terminal on a chart or VPS to stream executions to your journal in real time.",
+                question: "How do I sync MT5 trades automatically? Is my MT5 password required?",
+                answer: "No MT5 password is ever required on our website. Automated MT5 trade synchronization runs via the GSN Trade Manager Expert Advisor on your MT5 chart or VPS using a unique Sync Key, streaming Demo and Live executions to your journal in real time.",
             },
             {
                 question: "Can I connect multiple MT5 accounts?",
                 answer: "Yes! You can connect and manage multiple MT5 trading accounts under a single TheNextTrade workspace, allowing you to track prop firm accounts, personal accounts, and different strategies separately or aggregated.",
             },
             {
-                question: "How do I get GoldScalperNinja EA, GSN Trade Manager, and GSN - Apex Gold Sentinel for free?",
+                question: "How do I get GoldScalperNinja EA, GSN Trade Manager, and GSN Shadow Matrix for free?",
                 answer: "All MT5 trading systems are available with zero upfront cost through our verified broker partner path. Once your account is active and verified, license keys and downloads become accessible directly inside your dashboard.",
             },
             {
                 question: "Do I need a VPS for MT5 automation?",
-                answer: "For automated execution systems like GoldScalperNinja EA and GSN - Apex Gold Sentinel, a Windows VPS is recommended to ensure 24/5 continuous connectivity. For GSN Trade Manager, it can be run locally during your active manual trading hours.",
+                answer: "For automated execution systems like GoldScalperNinja EA and GSN Shadow Matrix, a Windows VPS is recommended to ensure 24/5 continuous connectivity. For GSN Trade Manager, it can be run locally during your active manual trading hours.",
             },
             {
                 question: "What is the recommended minimum balance to run the EAs?",
@@ -136,26 +135,7 @@ const FAQ_GROUPS = [
             },
             {
                 question: "Do these EAs pause during high-impact news?",
-                answer: "Yes, both GoldScalperNinja EA and GSN - Apex Gold Sentinel include a built-in Economic News Filter that automatically pauses opening new orders around major events like NFP, CPI, and FOMC rate releases.",
-            },
-        ],
-    },
-    {
-        id: "academy",
-        title: "Academy",
-        icon: GraduationCap,
-        color: "text-emerald-600 dark:text-emerald-400",
-        bg: "bg-emerald-500/10",
-        border: "border-emerald-500/20",
-        hoverBorder: "hover:border-emerald-500/35",
-        items: [
-            {
-                question: "How is the Academy structured?",
-                answer: "The Academy features 12 progressive Levels grouped into 5 strategic Phases — from basic market structures (First Steps) to advanced automated trading systems (The Master). Each level includes modules with bite-sized lessons, interactive quizzes, and certificates of completion.",
-            },
-            {
-                question: "Do I need experience to start?",
-                answer: "No. Our Academy is structured for all skill levels. It starts from the absolute basics (first steps, understanding pips, spreads) and progresses to advanced risk modeling and automated systems. No prior trading experience is required.",
+                answer: "Yes, both GoldScalperNinja EA and GSN Shadow Matrix include a built-in Economic News Filter that automatically pauses opening new orders around major events like NFP, CPI, and FOMC rate releases.",
             },
         ],
     },
@@ -303,10 +283,10 @@ export default async function FAQPage() {
                                     </div>
                                     <div className="p-3 bg-gray-50/80 dark:bg-[#151925]">
                                         <div className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                                            Curriculum
+                                            EA Sync
                                         </div>
                                         <div className="text-sm font-black font-mono tabular-nums text-amber-600 dark:text-gold mt-0.5">
-                                            12 Levels
+                                            Zero Pass
                                         </div>
                                     </div>
                                     <div className="p-3 bg-gray-50/80 dark:bg-[#151925]">
