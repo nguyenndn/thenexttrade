@@ -1,6 +1,7 @@
 "use client";
 
 import { AlertCircle, ShieldCheck, Zap } from "lucide-react";
+import { formatDashboardCurrency } from "@/lib/utils/cent-account";
 
 export interface PlaybookSummary {
     playbook: {
@@ -17,7 +18,13 @@ export interface PlaybookSummary {
     };
 }
 
-export function PlaybookComparisonCard({ summary }: { summary?: PlaybookSummary }) {
+export function PlaybookComparisonCard({
+    summary,
+    currency = "USD",
+}: {
+    summary?: PlaybookSummary;
+    currency?: string;
+}) {
     if (!summary || (summary.playbook.totalTrades === 0 && summary.discretionary.totalTrades === 0)) {
         return null;
     }
@@ -25,13 +32,8 @@ export function PlaybookComparisonCard({ summary }: { summary?: PlaybookSummary 
     const { playbook, discretionary } = summary;
     const winRateDiff = playbook.winRate - discretionary.winRate;
 
-    const formatCurrency = (amount: number) => {
-        const isNegative = amount < 0;
-        const absVal = Math.abs(amount).toLocaleString("en-US", {
-            maximumFractionDigits: 0,
-        });
-        return isNegative ? `-$${absVal}` : `$${absVal}`;
-    };
+    const formatCurrency = (amount: number) =>
+        formatDashboardCurrency(amount, currency, { fractionDigits: 0 });
 
     return (
         <div className="bg-white dark:bg-[#1E2028] border border-dashboard rounded-lg p-3.5 sm:p-4 shadow-sm overflow-hidden relative">

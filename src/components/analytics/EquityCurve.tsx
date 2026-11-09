@@ -18,13 +18,16 @@ interface EquityCurveProps {
     data: Array<{ date: string; balance: number; pnl: number }>;
     totalCommission?: number;
     totalSwap?: number;
+    currency?: string;
 }
 import { processEquityCurveData } from "./utils/chartHelpers";
+import { formatDashboardCurrency } from "@/lib/utils/cent-account";
 
 export function EquityCurve({
     data,
     totalCommission,
     totalSwap,
+    currency = "USD",
 }: EquityCurveProps) {
     const { theme } = useTheme();
     const isDark = theme === "dark";
@@ -66,14 +69,7 @@ export function EquityCurve({
                                         : "text-gray-700 dark:text-gray-300"
                                 }`}
                             >
-                                {totalCommission < 0 ? "-" : ""}$
-                                {Math.abs(totalCommission).toLocaleString(
-                                    "en-US",
-                                    {
-                                        minimumFractionDigits: 2,
-                                        maximumFractionDigits: 2,
-                                    }
-                                )}
+                                {formatDashboardCurrency(totalCommission, currency)}
                             </p>
                         </div>
                     )}
@@ -91,10 +87,8 @@ export function EquityCurve({
                                           : "text-gray-700 dark:text-gray-300"
                                 }`}
                             >
-                                {totalSwap > 0 ? "+" : totalSwap < 0 ? "-" : ""}$
-                                {Math.abs(totalSwap).toLocaleString("en-US", {
-                                    minimumFractionDigits: 2,
-                                    maximumFractionDigits: 2,
+                                {formatDashboardCurrency(totalSwap, currency, {
+                                    signDisplay: totalSwap !== 0 ? "always" : "auto",
                                 })}
                             </p>
                         </div>
@@ -106,10 +100,8 @@ export function EquityCurve({
                         <p
                             className={`text-lg font-black ${totalNetProfit >= 0 ? "text-primary" : "text-red-500"}`}
                         >
-                            {totalNetProfit >= 0 ? "+" : ""}$
-                            {Math.abs(totalNetProfit).toLocaleString("en-US", {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 2,
+                            {formatDashboardCurrency(totalNetProfit, currency, {
+                                signDisplay: "always",
                             })}
                         </p>
                     </div>
@@ -228,7 +220,9 @@ export function EquityCurve({
                                     fontWeight: 500,
                                 }}
                                 tickFormatter={(value) =>
-                                    `${value >= 0 ? "" : "-"}$${Math.abs(value).toLocaleString("en-US", { maximumFractionDigits: 0 })}`
+                                    formatDashboardCurrency(Number(value), currency, {
+                                        fractionDigits: 0,
+                                    })
                                 }
                                 domain={["auto", "auto"]}
                                 width={80}
@@ -245,29 +239,16 @@ export function EquityCurve({
                                                     {label}
                                                 </p>
                                                 <p className="text-sm font-black text-gray-700 dark:text-white mb-1">
-                                                    Balance: $
-                                                    {val.toLocaleString(
-                                                        undefined,
-                                                        {
-                                                            minimumFractionDigits: 2,
-                                                            maximumFractionDigits: 2,
-                                                        }
-                                                    )}
+                                                    Balance:{" "}
+                                                    {formatDashboardCurrency(val, currency)}
                                                 </p>
                                                 <p
                                                     className={`text-xs font-bold ${pnlVal >= 0 ? "text-primary" : "text-red-500"}`}
                                                 >
                                                     PnL:{" "}
-                                                    {pnlVal >= 0 ? "+" : "-"}$
-                                                    {Math.abs(
-                                                        pnlVal
-                                                    ).toLocaleString(
-                                                        undefined,
-                                                        {
-                                                            minimumFractionDigits: 2,
-                                                            maximumFractionDigits: 2,
-                                                        }
-                                                    )}
+                                                    {formatDashboardCurrency(pnlVal, currency, {
+                                                        signDisplay: "always",
+                                                    })}
                                                 </p>
                                             </div>
                                         );

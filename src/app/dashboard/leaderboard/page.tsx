@@ -20,6 +20,7 @@ import { TradingSprintBanner } from "./components/TradingSprintBanner";
 
 import { getTier } from "@/lib/gamification";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { isRealTradingAccount } from "@/lib/loyalty/loyalty.server";
 
 const VALID_TYPES: LeaderboardType[] = [
     "sprint",
@@ -56,8 +57,11 @@ export default async function LeaderboardPage({ searchParams }: PageProps) {
         ? (rawPeriod as PeriodFilter)
         : "30D";
 
-    // Fetch active competition status from DB
-    const activeCompetition = await getActiveCompetition();
+    // Fetch active competition status and current user in parallel
+    const [activeCompetition, user] = await Promise.all([
+        getActiveCompetition(),
+        getAuthUser(),
+    ]);
     const hasActiveCompetition = Boolean(activeCompetition);
 
     // If user asked for sprint but no active competition exists, redirect to trading
@@ -70,31 +74,32 @@ export default async function LeaderboardPage({ searchParams }: PageProps) {
     }
 
     const type = rawType as LeaderboardType;
-    const user = await getAuthUser();
-
-    // Fetch user enrollment and trading accounts if active competition exists
-    let userEnrollment = null;
-    let userAccounts: Array<{
-        id: string;
-        name: string;
-        accountNumber?: string | null;
-        broker?: string | null;
-        balance?: number;
-    }> = [];
-
-    if (activeCompetition && user) {
-        const [enrollment, accountsRes] = await Promise.all([
-            getUserCompetitionEnrollment(activeCompetition.id),
-            getTradingAccounts(1, 50),
-        ]);
-        userEnrollment = enrollment;
-        userAccounts = accountsRes.accounts;
-    }
-
-    // For mystats, fetch XP leaderboard data to get rank info; for sprint, fetch trading data
     const fetchType = type === "mystats" ? "xp" : type;
-    const leaderboard = await getLeaderboard(fetchType, 50, sortBy, period);
-    const sidebarData = await getLeaderboardSidebarData();
+
+    // Fetch enrollment, trading accounts, leaderboard, and sidebar data in a single parallel batch
+    const [enrollment, accountsRes, leaderboard, sidebarData] =
+        await Promise.all([
+            activeCompetition && user
+                ? getUserCompetitionEnrollment(activeCompetition.id)
+                : Promise.resolve(null),
+            activeCompetition && user
+                ? getTradingAccounts(1, 50)
+                : Promise.resolve({ accounts: [] }),
+            getLeaderboard(
+                fetchType,
+                50,
+                sortBy,
+                period,
+                activeCompetition,
+                user?.id ?? null
+            ),
+            getLeaderboardSidebarData(user?.id ?? null),
+        ]);
+
+    const userEnrollment = enrollment;
+    const userAccounts = accountsRes.accounts.filter((acc) =>
+        isRealTradingAccount(acc)
+    );
 
     // Build myEntry for table display when user is not in top list
     const myEntry =
@@ -117,12 +122,12 @@ export default async function LeaderboardPage({ searchParams }: PageProps) {
                             : sortBy === "percentage"
                               ? "%"
                               : "$",
-                  level: 0,
-                  lessonsCompleted: 0,
-                  studyTimeMinutes: 0,
+                  level: leaderboard.myRank.level ?? 0,
+                  lessonsCompleted: leaderboard.myRank.lessonsCompleted ?? 0,
+                  studyTimeMinutes: leaderboard.myRank.studyTimeMinutes ?? 0,
                   percentile: leaderboard.myRank.percentile,
-                  totalTrades: 0,
-                  pnl: 0,
+                  totalTrades: leaderboard.myRank.totalTrades ?? 0,
+                  pnl: leaderboard.myRank.pnl ?? 0,
               }
             : null;
 

@@ -12,15 +12,20 @@ import {
 import { TrendingUp } from "lucide-react";
 import { ChartContainer } from "@/components/ui/ChartContainer";
 import { format } from "date-fns";
+import { formatDashboardCurrency } from "@/lib/utils/cent-account";
 
 interface BalanceGrowthChartProps {
     data: {
         date: string;
         balance: number;
     }[];
+    currency?: string;
 }
 
-export function BalanceGrowthChart({ data }: BalanceGrowthChartProps) {
+export function BalanceGrowthChart({
+    data,
+    currency = "USD",
+}: BalanceGrowthChartProps) {
     const header = (
         <div className="px-5 py-3.5 border-b border-dashboard flex items-center justify-between shrink-0">
             <div className="flex items-center gap-2.5">
@@ -163,7 +168,12 @@ export function BalanceGrowthChart({ data }: BalanceGrowthChartProps) {
                                 fill: "var(--text-secondary)",
                                 fontSize: 12,
                             }}
-                            tickFormatter={(value) => `$${value}`}
+                            tickFormatter={(value) =>
+                                formatDashboardCurrency(value, currency, {
+                                    fractionDigits: 0,
+                                    useGrouping: false,
+                                })
+                            }
                             domain={["auto", "auto"]}
                         />
                         <Tooltip
@@ -180,10 +190,10 @@ export function BalanceGrowthChart({ data }: BalanceGrowthChartProps) {
                                             <p className="text-base font-bold text-gray-700 dark:text-white">
                                                 Balance:{" "}
                                                 <span className="text-primary">
-                                                    $
-                                                    {Number(
-                                                        payload[0].value
-                                                    ).toFixed(2)}
+                                                    {formatDashboardCurrency(
+                                                        Number(payload[0].value),
+                                                        currency
+                                                    )}
                                                 </span>
                                             </p>
                                         </div>

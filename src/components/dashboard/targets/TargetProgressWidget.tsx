@@ -20,12 +20,13 @@ const SAMPLE_CFG = {
     baseBalance: SAMPLE_PROFIT_TARGETS.initialBalance,
 };
 
-export function TargetProgressWidget({ accountId, accountName, className }: TargetProgressWidgetProps) {
+export function TargetProgressWidget({ accountId, accountName, currency: propCurrency, className }: TargetProgressWidgetProps) {
     const { isSampleMode } = useSampleMode();
     const searchParams = useSearchParams();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [sampleTargets, setSampleTargets] = useState(SAMPLE_CFG);
     const [userAccounts, setUserAccounts] = useState<AccountTargetOption[]>([]);
+    const [resolvedCurrency, setResolvedCurrency] = useState<string>(propCurrency || "USD");
 
     const activeAccountId = accountId || searchParams?.get("accountId") || undefined;
     const isAll = !activeAccountId || activeAccountId === "all";
@@ -48,18 +49,22 @@ export function TargetProgressWidget({ accountId, accountName, className }: Targ
 
         if (isAggregate && targetsRes.success && "weeklyTargetUsd" in targetsRes.data) {
             const { weeklyTargetUsd, monthlyTargetUsd, accounts } = targetsRes.data;
+            const aggCurrency = accounts[0]?.currency || propCurrency || "USD";
+            setResolvedCurrency(aggCurrency);
             setUserAccounts(accounts);
-            setWeeklyData({ ...calculateTargetProgress(wPnl, weeklyTargetUsd, weeklyTargetUsd > 0 ? weeklyTargetUsd : null, "USD"), period: "WEEKLY", label: "Weekly Target (All Accounts)" });
-            setMonthlyData({ ...calculateTargetProgress(mPnl, monthlyTargetUsd, monthlyTargetUsd > 0 ? monthlyTargetUsd : null, "USD"), period: "MONTHLY", label: "Monthly Target (All Accounts)" });
+            setWeeklyData({ ...calculateTargetProgress(wPnl, weeklyTargetUsd, weeklyTargetUsd > 0 ? weeklyTargetUsd : null, "USD"), period: "WEEKLY", label: "Weekly Target (All Accounts)", currency: aggCurrency });
+            setMonthlyData({ ...calculateTargetProgress(mPnl, monthlyTargetUsd, monthlyTargetUsd > 0 ? monthlyTargetUsd : null, "USD"), period: "MONTHLY", label: "Monthly Target (All Accounts)", currency: aggCurrency });
         } else if (!isAggregate && targetsRes.success && "weeklyTarget" in targetsRes.data) {
-            const { weeklyTarget, weeklyTargetType, monthlyTarget, monthlyTargetType, initialBalance, balance } = targetsRes.data;
+            const { weeklyTarget, weeklyTargetType, monthlyTarget, monthlyTargetType, initialBalance, balance, currency: accCurrency } = targetsRes.data;
+            const activeCurr = accCurrency || propCurrency || "USD";
+            setResolvedCurrency(activeCurr);
             const base = initialBalance || balance || 0;
             const wAmt = calculateTargetAmount(weeklyTarget, weeklyTargetType, base);
             const mAmt = calculateTargetAmount(monthlyTarget, monthlyTargetType, base);
-            setWeeklyData({ ...calculateTargetProgress(wPnl, wAmt, weeklyTarget, weeklyTargetType), period: "WEEKLY", label: "Weekly Target", baseBalance: base });
-            setMonthlyData({ ...calculateTargetProgress(mPnl, mAmt, monthlyTarget, monthlyTargetType), period: "MONTHLY", label: "Monthly Target", baseBalance: base });
+            setWeeklyData({ ...calculateTargetProgress(wPnl, wAmt, weeklyTarget, weeklyTargetType), period: "WEEKLY", label: "Weekly Target", baseBalance: base, currency: activeCurr });
+            setMonthlyData({ ...calculateTargetProgress(mPnl, mAmt, monthlyTarget, monthlyTargetType), period: "MONTHLY", label: "Monthly Target", baseBalance: base, currency: activeCurr });
         }
-    }, []);
+    }, [propCurrency]);
 
     useEffect(() => {
         if (isSampleMode) {
@@ -111,7 +116,7 @@ export function TargetProgressWidget({ accountId, accountName, className }: Targ
                 {monthlyActive && <TargetProgressBar data={monthlyData} onSetTarget={() => setIsModalOpen(true)} />}
             </div>
 
-            <SetTargetModal open={isModalOpen} onClose={() => setIsModalOpen(false)} accountId={activeAccountId} accountName={accountName} availableAccounts={userAccounts} initialWeeklyTarget={weeklyData.rawTargetValue} initialWeeklyTargetType={weeklyData.targetType} initialMonthlyTarget={monthlyData.rawTargetValue} initialMonthlyTargetType={monthlyData.targetType} onTargetSaved={handleSaved} />
+            <SetTargetModal open={isModalOpen} onClose={() => setIsModalOpen(false)} accountId={activeAccountId} accountName={accountName} currency={resolvedCurrency} availableAccounts={userAccounts} initialWeeklyTarget={weeklyData.rawTargetValue} initialWeeklyTargetType={weeklyData.targetType} initialMonthlyTarget={monthlyData.rawTargetValue} initialMonthlyTargetType={monthlyData.targetType} onTargetSaved={handleSaved} />
         </div>
     );
 }

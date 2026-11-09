@@ -131,7 +131,10 @@ export function LoyaltyClaimHistory({ claims = [] }: LoyaltyClaimHistoryProps) {
                             {claim.tierName}
                           </p>
                           <span className="text-[11px] font-mono tabular-nums text-gray-400">
-                            {claim.actualLots.toLocaleString()} Lots verified
+                            {claim.actualLots.toLocaleString()} XAUUSD Lots
+                            {claim.accountNumber
+                              ? ` · #${claim.accountNumber} (${claim.broker || "IB"})`
+                              : ""}
                           </span>
                         </div>
                       </div>

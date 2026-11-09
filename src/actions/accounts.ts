@@ -11,6 +11,21 @@ import { POPULAR_MT5_SERVERS } from "@/lib/constants/mt5-servers";
 import { detectBroker } from "@/lib/ea/broker-detection";
 import { notifyAdminsOfNewAccount } from "@/lib/admin/admin-notification.server";
 import { filterAccountsByBroker } from "@/lib/trading-account-identity";
+import { decryptPassword } from "@/lib/crypto";
+
+function resolveSavedPassword(
+    cred?: { encryptedPassword?: string | null; keyVersion?: string | null } | null
+): string {
+    if (!cred?.encryptedPassword) return "";
+    if (cred.keyVersion === "v1") {
+        try {
+            return decryptPassword(cred.encryptedPassword);
+        } catch {
+            return "";
+        }
+    }
+    return cred.encryptedPassword;
+}
 
 const accountSchema = z.object({
     name: z.string().min(1).max(50),
@@ -77,7 +92,11 @@ export async function getTradingAccounts(page = 1, limit = 12) {
                     select: { journalEntries: true },
                 },
                 credential: {
-                    select: { accountId: true },
+                    select: {
+                        accountId: true,
+                        encryptedPassword: true,
+                        keyVersion: true,
+                    },
                 },
                 mt5ImportJobs: {
                     orderBy: { createdAt: "desc" as const },
@@ -217,6 +236,7 @@ export async function getTradingAccounts(page = 1, limit = 12) {
                   10 * 60 * 1000
                 : false,
             hasCredentials: Boolean(acc.credential?.accountId),
+            savedPassword: resolveSavedPassword(acc.credential),
             latestJob,
             // Pro/VIP/EA enrichment
             proStatus,

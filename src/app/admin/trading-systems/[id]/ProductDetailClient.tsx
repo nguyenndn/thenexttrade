@@ -20,6 +20,11 @@ const TYPE_LABELS: Record<string, { label: string; color: string; icon: any }> =
             color: "text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
             icon: Zap,
         },
+        SEMI_AUTO: {
+            label: "Semi Auto",
+            color: "text-amber-600 dark:text-gold bg-gold/10 border-gold/20",
+            icon: Zap,
+        },
         MANUAL_ASSIST: {
             label: "Manual Assist",
             color: "text-amber-600 dark:text-gold bg-gold/10 border-gold/20",

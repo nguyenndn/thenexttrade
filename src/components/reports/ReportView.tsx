@@ -19,6 +19,7 @@ import {
 import { Button } from "@/components/ui/Button";
 import { WeeklyCoachPlan } from "@/components/coach/WeeklyCoachPlan";
 import { EmptyStateCTAs } from "@/components/ui/EmptyStateCTAs";
+import { formatDashboardCurrency } from "@/lib/utils/cent-account";
 
 interface ReportData {
     id: string;
@@ -60,6 +61,7 @@ interface ReportViewProps {
     reports: ReportData[];
     total: number;
     type: "weekly" | "monthly";
+    currency?: string;
 }
 
 function DeltaBadge({
@@ -67,11 +69,13 @@ function DeltaBadge({
     previous,
     suffix = "",
     isPercent = false,
+    currency = "USD",
 }: {
     current: number;
     previous: number | null;
     suffix?: string;
     isPercent?: boolean;
+    currency?: string;
 }) {
     if (previous === null || previous === undefined)
         return <span className="text-xs text-gray-400">—</span>;
@@ -92,7 +96,10 @@ function DeltaBadge({
             )}
             {isPercent
                 ? `${Math.abs(delta).toFixed(1)}%`
-                : `$${Math.abs(delta).toFixed(0)}`}
+                : formatDashboardCurrency(Math.abs(delta), currency, {
+                      fractionDigits: 0,
+                      signDisplay: "never",
+                  })}
             {suffix}
         </span>
     );
@@ -108,6 +115,7 @@ function StatCard({
     previous,
     isPercent,
     borderColor,
+    currency = "USD",
 }: {
     label: string;
     value: string;
@@ -118,6 +126,7 @@ function StatCard({
     previous?: number | null;
     isPercent?: boolean;
     borderColor?: string;
+    currency?: string;
 }) {
     return (
         <div
@@ -140,6 +149,7 @@ function StatCard({
                         current={delta ?? 0}
                         previous={previous}
                         isPercent={isPercent}
+                        currency={currency}
                     />
                     <span className="text-xs text-gray-400 dark:text-gray-500">
                         vs prev
@@ -155,11 +165,13 @@ function BreakdownTable({
     title,
     icon: Icon,
     iconColor,
+    currency = "USD",
 }: {
     data: any[] | null;
     title: string;
     icon: any;
     iconColor: string;
+    currency?: string;
 }) {
     if (!data || data.length === 0) return null;
 
@@ -207,7 +219,11 @@ function BreakdownTable({
                         <div
                             className={`col-span-3 text-right font-bold font-mono tabular-nums text-sm ${item.pnl >= 0 ? "text-emerald-500" : "text-red-500"}`}
                         >
-                            {item.pnl >= 0 ? "+" : ""}${item.pnl?.toFixed(2)}
+                            {formatDashboardCurrency(
+                                item.pnl ?? 0,
+                                currency,
+                                { signDisplay: "always" }
+                            )}
                         </div>
                     </div>
                 ))}
@@ -347,12 +363,14 @@ function TradesList({
     icon: Icon,
     iconColor,
     pnlColor,
+    currency = "USD",
 }: {
     trades: any[] | null;
     title: string;
     icon: any;
     iconColor: string;
     pnlColor: string;
+    currency?: string;
 }) {
     if (!trades || trades.length === 0) return null;
 
@@ -395,7 +413,9 @@ function TradesList({
                         <div
                             className={`col-span-3 text-right font-bold font-mono tabular-nums text-sm ${pnlColor}`}
                         >
-                            {t.pnl >= 0 ? "+" : ""}${t.pnl?.toFixed(2)}
+                            {formatDashboardCurrency(t.pnl ?? 0, currency, {
+                                signDisplay: "always",
+                            })}
                         </div>
                     </div>
                 ))}
@@ -404,7 +424,12 @@ function TradesList({
     );
 }
 
-export function ReportView({ reports, total, type }: ReportViewProps) {
+export function ReportView({
+    reports,
+    total,
+    type,
+    currency = "USD",
+}: ReportViewProps) {
     const [currentIndex, setCurrentIndex] = useState(0);
 
     if (reports.length === 0) {
@@ -484,7 +509,9 @@ export function ReportView({ reports, total, type }: ReportViewProps) {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <StatCard
                     label="Net P/L"
-                    value={`${report.netPnL >= 0 ? "+" : ""}$${report.netPnL.toFixed(2)}`}
+                    value={formatDashboardCurrency(report.netPnL, currency, {
+                        signDisplay: "always",
+                    })}
                     icon={report.netPnL >= 0 ? TrendingUp : TrendingDown}
                     color={
                         report.netPnL >= 0 ? "text-emerald-500" : "text-red-500"
@@ -501,6 +528,7 @@ export function ReportView({ reports, total, type }: ReportViewProps) {
                     }
                     delta={report.netPnL}
                     previous={report.prevPnL}
+                    currency={currency}
                 />
                 <StatCard
                     label="Win Rate"
@@ -554,7 +582,9 @@ export function ReportView({ reports, total, type }: ReportViewProps) {
                         Avg Win
                     </p>
                     <p className="text-lg font-black font-mono tabular-nums text-emerald-500">
-                        +${report.avgWin.toFixed(2)}
+                        {formatDashboardCurrency(report.avgWin, currency, {
+                            signDisplay: "always",
+                        })}
                     </p>
                 </div>
                 <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-5 shadow-sm">
@@ -562,7 +592,11 @@ export function ReportView({ reports, total, type }: ReportViewProps) {
                         Avg Loss
                     </p>
                     <p className="text-lg font-black font-mono tabular-nums text-red-500">
-                        -${report.avgLoss.toFixed(2)}
+                        {formatDashboardCurrency(
+                            -Math.abs(report.avgLoss),
+                            currency,
+                            { signDisplay: "always" }
+                        )}
                     </p>
                 </div>
                 <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-5 shadow-sm">
@@ -570,7 +604,9 @@ export function ReportView({ reports, total, type }: ReportViewProps) {
                         Largest Win
                     </p>
                     <p className="text-lg font-black font-mono tabular-nums text-emerald-500">
-                        +${report.largestWin.toFixed(2)}
+                        {formatDashboardCurrency(report.largestWin, currency, {
+                            signDisplay: "always",
+                        })}
                     </p>
                 </div>
                 <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-5 shadow-sm">
@@ -578,7 +614,7 @@ export function ReportView({ reports, total, type }: ReportViewProps) {
                         Largest Loss
                     </p>
                     <p className="text-lg font-black font-mono tabular-nums text-red-500">
-                        ${report.largestLoss.toFixed(2)}
+                        {formatDashboardCurrency(report.largestLoss, currency)}
                     </p>
                 </div>
             </div>
@@ -590,24 +626,28 @@ export function ReportView({ reports, total, type }: ReportViewProps) {
                     title="Performance by Symbol"
                     icon={BarChart3}
                     iconColor="bg-gold/10 text-amber-600 dark:text-gold"
+                    currency={currency}
                 />
                 <BreakdownTable
                     data={report.byStrategy}
                     title="Performance by Strategy"
                     icon={Crosshair}
                     iconColor="bg-gold/10 text-amber-600 dark:text-gold"
+                    currency={currency}
                 />
                 <BreakdownTable
                     data={report.bySession}
                     title="Performance by Session"
                     icon={Clock}
                     iconColor="bg-gold/10 text-amber-600 dark:text-gold"
+                    currency={currency}
                 />
                 <BreakdownTable
                     data={report.byDirection}
                     title="Performance by Direction"
                     icon={Target}
                     iconColor="bg-emerald-500/10 text-emerald-500"
+                    currency={currency}
                 />
                 <PsychologySection
                     confidence={report.avgConfidence}
@@ -625,6 +665,7 @@ export function ReportView({ reports, total, type }: ReportViewProps) {
                     icon={TrendingUp}
                     iconColor="bg-emerald-500/10 text-emerald-500"
                     pnlColor="text-emerald-500"
+                    currency={currency}
                 />
                 <TradesList
                     trades={report.worstTrades}
@@ -632,6 +673,7 @@ export function ReportView({ reports, total, type }: ReportViewProps) {
                     icon={TrendingDown}
                     iconColor="bg-red-500/10 text-red-500"
                     pnlColor="text-red-500"
+                    currency={currency}
                 />
             </div>
         </div>

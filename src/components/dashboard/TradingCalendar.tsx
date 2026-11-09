@@ -22,6 +22,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { formatDashboardCurrency } from "@/lib/utils/cent-account";
 
 interface DailyPerfItem {
     date: string;
@@ -33,9 +34,14 @@ interface DailyPerfItem {
 interface TradingCalendarProps {
     data: DailyPerfItem[];
     selectedDates?: { from?: string; to?: string };
+    currency?: string;
 }
 
-export function TradingCalendar({ data, selectedDates }: TradingCalendarProps) {
+export function TradingCalendar({
+    data,
+    selectedDates,
+    currency = "USD",
+}: TradingCalendarProps) {
     // Initialize to the start date of the selected range, or today
     const initialMonth = useMemo(() => {
         if (selectedDates?.from) {
@@ -174,8 +180,16 @@ export function TradingCalendar({ data, selectedDates }: TradingCalendarProps) {
                                                             : "text-red-500"
                                                     }`}
                                                 >
-                                                    {profit >= 0 ? "+" : ""}$
-                                                    {Math.round(profit)}
+                                                    {formatDashboardCurrency(
+                                                        Math.round(profit),
+                                                        currency,
+                                                        {
+                                                            signDisplay:
+                                                                "always",
+                                                            fractionDigits: 0,
+                                                            useGrouping: false,
+                                                        }
+                                                    )}
                                                 </p>
                                                 <p className="text-[8px] font-medium font-mono tabular-nums text-gray-400 dark:text-gray-600 truncate leading-none mt-0.5">
                                                     {perf?.tradeCount || 0}T •{" "}
@@ -202,8 +216,11 @@ export function TradingCalendar({ data, selectedDates }: TradingCalendarProps) {
                                             <p
                                                 className={`font-black font-mono tabular-nums text-sm ${profit >= 0 ? "text-emerald-500" : "text-red-500"}`}
                                             >
-                                                {profit >= 0 ? "+" : ""}$
-                                                {profit.toFixed(2)}
+                                                {formatDashboardCurrency(
+                                                    profit,
+                                                    currency,
+                                                    { signDisplay: "always" }
+                                                )}
                                             </p>
                                             <p className="text-[10px] font-mono tabular-nums text-gray-300 dark:text-gray-600">
                                                 {perf?.tradeCount || 0} trades •{" "}

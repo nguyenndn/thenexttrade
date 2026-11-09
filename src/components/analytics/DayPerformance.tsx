@@ -21,10 +21,12 @@ interface DayPerformanceProps {
         pnl: number;
         tradeCount: number;
     }>;
+    currency?: string;
 }
 import { processDayPerformanceData } from "./utils/chartHelpers";
+import { formatDashboardCurrency } from "@/lib/utils/cent-account";
 
-export function DayPerformance({ data }: DayPerformanceProps) {
+export function DayPerformance({ data, currency = "USD" }: DayPerformanceProps) {
     const { theme } = useTheme();
     const isDark = theme === "dark";
 
@@ -89,7 +91,7 @@ export function DayPerformance({ data }: DayPerformanceProps) {
                                 }}
                                 itemStyle={{ color: isDark ? "#fff" : "#000" }}
                                 formatter={(value: any) => [
-                                    `$${Number(value).toLocaleString()}`,
+                                    formatDashboardCurrency(Number(value), currency),
                                     "PnL",
                                 ]}
                             />
@@ -119,10 +121,8 @@ export function DayPerformance({ data }: DayPerformanceProps) {
                 <div className="mt-4 flex justify-between items-center text-[10px] text-gray-500 font-bold uppercase tracking-wider">
                     <span>Strongest Day: {bestDay.name}</span>
                     <span className="text-primary">
-                        +
-                        {bestDay.pnl.toLocaleString("en-US", {
-                            style: "currency",
-                            currency: "USD",
+                        {formatDashboardCurrency(bestDay.pnl, currency, {
+                            signDisplay: "always",
                         })}
                     </span>
                 </div>

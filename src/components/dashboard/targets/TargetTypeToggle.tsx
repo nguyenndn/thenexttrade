@@ -9,10 +9,11 @@ import type { TargetType } from "./TargetProgressTypes";
 export interface TargetTypeToggleProps {
     value: TargetType;
     onChange: (type: TargetType) => void;
+    currency?: string;
     className?: string;
 }
 
-export function TargetTypeToggle({ value, onChange, className }: TargetTypeToggleProps) {
+export function TargetTypeToggle({ value, onChange, currency = "USD", className }: TargetTypeToggleProps) {
     const activeStyle = "bg-white dark:bg-slate-800 text-amber-500 shadow-sm";
     const inactiveStyle = "text-gray-500 hover:text-gray-700 dark:text-gray-400";
     return (
@@ -21,7 +22,7 @@ export function TargetTypeToggle({ value, onChange, className }: TargetTypeToggl
                 type="button" variant="ghost" size="sm" onClick={() => onChange("USD")}
                 className={cn("h-6 px-2 text-xs font-semibold rounded-lg flex items-center gap-0.5 transition-colors", value === "USD" ? activeStyle : inactiveStyle)}
             >
-                <DollarSign size={12} /> USD
+                <DollarSign size={12} /> {currency}
             </Button>
             <Button
                 type="button" variant="ghost" size="sm" onClick={() => onChange("PERCENT")}

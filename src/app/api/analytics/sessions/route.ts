@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getAuthUser } from "@/lib/auth-cache";
 import { prisma } from "@/lib/prisma";
 import { startOfMonth, endOfMonth, parseISO, endOfDay } from "date-fns";
+import { normalizeCurrencyCode } from "@/lib/utils/cent-account";
 
 interface SessionStats {
     session: string;
@@ -86,6 +87,18 @@ export async function GET(request: NextRequest) {
         };
 
         if (accountId && accountId !== "all") whereClause.accountId = accountId;
+
+        const targetAcc = await prisma.tradingAccount.findFirst({
+            where: {
+                userId: user.id,
+                ...(accountId && accountId !== "all" ? { id: accountId } : {}),
+            },
+            select: { currency: true, server: true },
+        });
+        const currency = normalizeCurrencyCode(
+            targetAcc?.currency,
+            targetAcc?.server
+        );
 
         // Fetch trades
         const trades = await prisma.journalEntry.findMany({
@@ -342,6 +355,7 @@ export async function GET(request: NextRequest) {
             bestHour,
             worstHour,
             recommendations,
+            currency,
         });
     } catch (error) {
         console.error("Session analytics error:", error);

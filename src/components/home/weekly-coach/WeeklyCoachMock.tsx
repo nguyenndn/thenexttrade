@@ -26,7 +26,7 @@ export function WeeklyCoachMock() {
                     </span>
                 </div>
                 <span className="text-[10px] font-mono text-gray-400 dark:text-gray-500">
-                    audit.thenexttrade.com
+                    audit.thenexttrade.io
                 </span>
             </div>
 

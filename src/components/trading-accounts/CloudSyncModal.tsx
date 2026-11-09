@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useMemo } from "react";
+import { motion } from "framer-motion";
 import {
     Dialog,
     DialogContent,
@@ -19,6 +20,7 @@ import {
 } from "@/components/ui/select";
 import {
     CloudSync,
+    CloudUpload,
     Lock,
     Eye,
     EyeOff,
@@ -42,6 +44,7 @@ import {
 } from "@/actions/cloud-sync";
 import { ServerCombobox } from "@/components/trading-accounts/ServerCombobox";
 import { detectBroker } from "@/lib/ea/broker-detection";
+import { getCurrencyInfo } from "@/lib/utils/cent-account";
 import { formatSyncErrorMessage } from "@/lib/sync/sync-source";
 import {
     BROKER_INFO,
@@ -63,11 +66,11 @@ interface CloudSyncModalProps {
         syncSource?: string | null;
         lastSync?: string | Date | null;
         hasCredentials?: boolean;
+        savedPassword?: string;
         latestJob?: any | null;
     };
     onUpdated?: () => void;
     onSyncStarted?: (accountId: string, jobId?: string) => void;
-    onRequestSupport?: (accountId: string) => void;
 }
 
 export function CloudSyncModal({
@@ -76,7 +79,6 @@ export function CloudSyncModal({
     account,
     onUpdated,
     onSyncStarted,
-    onRequestSupport,
 }: CloudSyncModalProps) {
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
@@ -99,6 +101,7 @@ export function CloudSyncModal({
     const [_jobWaitSeconds, setJobWaitSeconds] = useState(0);
     const [server, setServer] = useState(account.server || "");
     const [broker, setBroker] = useState<string | null>(account.broker || null);
+    const [accountCurrency, setAccountCurrency] = useState<string>(account.currency || "USD");
     const [isEditingServer, setIsEditingServer] = useState(!account.server);
 
     const effectiveBroker = useMemo(() => {
@@ -157,9 +160,10 @@ export function CloudSyncModal({
         setLatestJob(account.latestJob || null);
         setLoadingStatus(false);
 
-        setPassword("");
+        setPassword(account.savedPassword || "");
         setServer(account.server || "");
         setBroker(account.broker || null);
+        setAccountCurrency(account.currency || "USD");
         setIsEditingServer(!account.server);
         setJobWaitSeconds(0);
 
@@ -169,8 +173,14 @@ export function CloudSyncModal({
                 if (res.success) {
                     const credsConfigured = Boolean(res.hasCredentials);
                     setHasCredentials(credsConfigured);
+                    if (res.savedPassword) {
+                        setPassword((prev: string) => prev || res.savedPassword || "");
+                    }
                     if (account.hasCredentials === undefined) {
                         setIsEditingPassword(!credsConfigured);
+                    }
+                    if (res.currency) {
+                        setAccountCurrency(res.currency);
                     }
                     if (res.latestJob) {
                         setLatestJob(res.latestJob);
@@ -185,11 +195,19 @@ export function CloudSyncModal({
         return () => {
             isMounted = false;
         };
-    }, [isOpen, account.id, account.hasCredentials, account.server, account.broker, account.latestJob]);
+    }, [isOpen, account.id, account.hasCredentials, account.server, account.broker, account.currency, account.latestJob]);
 
-    // Timer to track seconds waiting for worker when job is PENDING
+    // Timer to track elapsed seconds while syncing / waiting for worker
     useEffect(() => {
-        if (!isOpen || !latestJob || latestJob.status !== "PENDING") {
+        const active =
+            isSyncing ||
+            isSaving ||
+            Boolean(
+                latestJob &&
+                    (latestJob.status === "PENDING" ||
+                        latestJob.status === "PROCESSING")
+            );
+        if (!isOpen || !active) {
             setJobWaitSeconds(0);
             if (waitTimerRef.current) clearInterval(waitTimerRef.current);
             return;
@@ -202,7 +220,7 @@ export function CloudSyncModal({
         return () => {
             if (waitTimerRef.current) clearInterval(waitTimerRef.current);
         };
-    }, [isOpen, latestJob?.status]);
+    }, [isOpen, isSyncing, isSaving, latestJob?.status]);
 
     // Poll active job status if job is PENDING or PROCESSING
     useEffect(() => {
@@ -212,20 +230,26 @@ export function CloudSyncModal({
 
         const interval = setInterval(async () => {
             const res = await getCloudSyncStatus(account.id);
-            if (res.success && res.latestJob) {
-                setLatestJob(res.latestJob);
-                if (
-                    res.latestJob.status === "COMPLETED" ||
-                    res.latestJob.status === "FAILED"
-                ) {
-                    setIsSyncing(false);
-                    if (res.latestJob.status === "COMPLETED") {
-                        toast.success(
-                            `Cloud sync completed: ${res.latestJob.dealsReceived || 0} deals synced.`
-                        );
-                        onUpdated?.();
-                    } else {
-                        toast.error(formatSyncErrorMessage(res.latestJob));
+            if (res.success) {
+                if (res.currency) {
+                    setAccountCurrency(res.currency);
+                }
+                if (res.latestJob) {
+                    setLatestJob(res.latestJob);
+                    if (
+                        res.latestJob.status === "COMPLETED" ||
+                        res.latestJob.status === "FAILED"
+                    ) {
+                        setIsSyncing(false);
+                        if (res.latestJob.status === "COMPLETED") {
+                            toast.success(
+                                `Cloud sync completed: ${res.latestJob.dealsReceived || 0} deals synced.`
+                            );
+                            onUpdated?.();
+                            onClose();
+                        } else {
+                            toast.error(formatSyncErrorMessage(res.latestJob));
+                        }
                     }
                 }
             }
@@ -248,7 +272,7 @@ export function CloudSyncModal({
 
         if (needSavePassword || needSaveServer) {
             if (needSavePassword && !password.trim()) {
-                toast.error("Please enter your investor password (passview).");
+                toast.error("Please enter your PASS INVESTOR ( Password also accept ).");
                 return;
             }
 
@@ -296,23 +320,49 @@ export function CloudSyncModal({
         // Trigger Sync Job
         setIsSyncing(true);
         setJobWaitSeconds(0);
+        const startedAtMs = Date.now();
         try {
             const customRange =
                 syncPeriod === "custom"
                     ? { from: customFromDate, to: customToDate }
                     : undefined;
-            const syncRes = await triggerCloudSync(account.id, syncPeriod, customRange);
+            const syncRes: any = await triggerCloudSync(account.id, syncPeriod, customRange);
             if (syncRes.success) {
-                toast.info("Sync started in background. Monitoring progress...");
-                setLatestJob({
-                    id: syncRes.jobId,
-                    status: "PENDING",
-                    createdAt: new Date().toISOString(),
-                    message: "Queued for worker pickup...",
-                });
-                onSyncStarted?.(account.id, syncRes.jobId);
-                onUpdated?.();
-                onClose();
+                if (syncRes.status === "COMPLETED") {
+                    // Ensure the animated Importing view is visible for at least 1.2s if cached/instant
+                    const elapsed = Date.now() - startedAtMs;
+                    if (elapsed < 1200) {
+                        await new Promise((r) => setTimeout(r, 1200 - elapsed));
+                    }
+                    toast.success(
+                        `Cloud Sync Completed: #${account.accountNumber || account.name}`,
+                        {
+                            description:
+                                syncRes.message ||
+                                `Imported ${syncRes.dealsReceived ?? 0} deals.`,
+                        }
+                    );
+                    setLatestJob({
+                        id: syncRes.jobId,
+                        status: "COMPLETED",
+                        dealsReceived: syncRes.dealsReceived ?? 0,
+                        createdAt: new Date().toISOString(),
+                        completedAt: new Date().toISOString(),
+                        message: syncRes.message || "Cloud sync completed successfully.",
+                    });
+                    setIsSyncing(false);
+                    onUpdated?.();
+                    onClose();
+                } else {
+                    setLatestJob({
+                        id: syncRes.jobId,
+                        status: syncRes.status || "PENDING",
+                        createdAt: new Date().toISOString(),
+                        message: syncRes.message || "Queued for worker pickup...",
+                    });
+                    onSyncStarted?.(account.id, syncRes.jobId);
+                    onUpdated?.();
+                }
             } else {
                 toast.error(syncRes.error || "Failed to trigger sync.");
                 setIsSyncing(false);
@@ -325,6 +375,7 @@ export function CloudSyncModal({
 
     const isJobActive =
         isSyncing ||
+        isSaving ||
         Boolean(
             latestJob &&
                 (latestJob.status === "PENDING" ||
@@ -334,9 +385,97 @@ export function CloudSyncModal({
                     (latestJob.status === "PENDING" ? 60000 : 120000)
         );
 
+    const importStageTitle = isSaving
+        ? "Saving credentials"
+        : _jobWaitSeconds < 2
+        ? "Preparing your import"
+        : _jobWaitSeconds < 6
+        ? "Connecting to MT5 server"
+        : "Importing trade history";
+
+    const importStageSubtitle = isSaving
+        ? "Storing account credentials securely"
+        : latestJob?.message && latestJob.status === "PROCESSING"
+        ? latestJob.message
+        : _jobWaitSeconds < 2
+        ? "Waiting to start securely"
+        : _jobWaitSeconds < 6
+        ? `Authenticating #${account.accountNumber || account.name} on ${server || account.server || "MT5"}`
+        : "Synchronizing closed positions and account balance...";
+
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContent className="max-w-md rounded-2xl p-5 sm:p-6">
+                {isJobActive ? (
+                    <div className="py-6 px-2 flex flex-col items-center text-center space-y-4">
+                        <DialogHeader className="sr-only">
+                            <DialogTitle>
+                                Importing {account.name || brokerDisplayName}
+                            </DialogTitle>
+                            <DialogDescription>
+                                {importStageSubtitle}
+                            </DialogDescription>
+                        </DialogHeader>
+
+                        {/* Animated Cloud Upload Icon */}
+                        <div className="relative flex items-center justify-center h-14 w-14 rounded-2xl border border-amber-500/20 bg-amber-500/10 dark:bg-amber-500/15 text-amber-500">
+                            <span className="animate-ping absolute inline-flex h-10 w-10 rounded-full bg-amber-500/20" />
+                            <CloudUpload className="relative h-8 w-8 text-amber-500 animate-bounce" />
+                        </div>
+
+                        {/* Title & Step Status */}
+                        <div className="space-y-1.5">
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                                Importing {account.name || brokerDisplayName}
+                            </h3>
+                            <p className="text-xs font-bold text-gray-700 dark:text-gray-200">
+                                {importStageTitle}
+                            </p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                                {importStageSubtitle}
+                            </p>
+                        </div>
+
+                        {/* Animated Indeterminate / Running Progress Bar (Gold) */}
+                        <div className="w-full max-w-xs pt-2">
+                            <div className="relative h-2.5 w-full overflow-hidden rounded-full bg-amber-500/20 dark:bg-amber-500/15">
+                                <motion.div
+                                    className="absolute top-0 bottom-0 w-2/5 rounded-full bg-amber-500"
+                                    initial={{ left: "0%" }}
+                                    animate={{ left: ["0%", "60%"] }}
+                                    transition={{
+                                        repeat: Infinity,
+                                        repeatType: "reverse",
+                                        duration: 1.1,
+                                        ease: "easeInOut",
+                                    }}
+                                />
+                            </div>
+                        </div>
+
+                        {/* Background execution note */}
+                        <p className="text-xs text-gray-500 dark:text-gray-400 max-w-xs leading-relaxed pt-1">
+                            You can continue using TheNextTrade. This will finish
+                            in the background.
+                        </p>
+
+                        {latestJob &&
+                            (latestJob.status === "PENDING" ||
+                                latestJob.status === "PROCESSING") && (
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={handleCancelSync}
+                                    disabled={isCancelling}
+                                    className="mt-1 rounded-lg h-8 px-3 text-xs font-semibold text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400"
+                                >
+                                    {isCancelling ? "Cancelling..." : "Cancel Sync"}
+                                </Button>
+                            )}
+                    </div>
+                ) : (
+                    <>
                 <DialogHeader>
                     <div className="flex items-center gap-3">
                         <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-amber-500/20 bg-amber-500/10 text-gold dark:text-amber-400">
@@ -424,7 +563,7 @@ export function CloudSyncModal({
                                 Platform & Base
                             </span>
                             <span className="font-semibold text-gray-800 dark:text-gray-200 block truncate">
-                                {account.platform || "MT5"} ({account.currency || "USD"})
+                                {account.platform || "MT5"} ({getCurrencyInfo(accountCurrency, server || account.server).label})
                             </span>
                         </div>
                     </div>
@@ -492,7 +631,10 @@ export function CloudSyncModal({
                             <div className="space-y-2">
                                 <div className="flex items-center justify-between">
                                     <label className="text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
-                                        MT5 Investor Password (Passview)
+                                        PASS INVESTOR{" "}
+                                        <span className="normal-case">
+                                            ( Password also accept )
+                                        </span>
                                     </label>
                                     {hasCredentials && (
                                         <Button
@@ -513,7 +655,6 @@ export function CloudSyncModal({
                                 <div className="relative">
                                     <Input
                                         type={showPassword ? "text" : "password"}
-                                        placeholder="Investor password (passview)"
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                         className="pr-10 rounded-lg h-9 text-xs"
@@ -539,7 +680,7 @@ export function CloudSyncModal({
                                     <div className="flex items-start gap-2">
                                         <Lock className="h-3.5 w-3.5 mt-0.5 shrink-0 text-gray-400" />
                                         <span>
-                                            Provide your read-only <strong>passview</strong> to enable automated Cloud Sync.
+                                            Provide your <strong>PASS INVESTOR ( Password also accept )</strong> to enable automated Cloud Sync.
                                         </span>
                                     </div>
                                 </div>
@@ -604,39 +745,8 @@ export function CloudSyncModal({
                     )}
                 </div>
 
-
-                {/* Manual Sync Support Request Trigger */}
-                <div className="mt-2.5 flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50/60 px-3 py-2 text-xs dark:border-white/5 dark:bg-white/[0.02]">
-                    <span className="text-[11px] text-gray-500 dark:text-gray-400">
-                        Sync failing or need assistance?
-                    </span>
-                    <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => {
-                            onClose();
-                            onRequestSupport?.(account.id);
-                        }}
-                        className="h-auto p-0 text-[11px] font-bold text-amber-600 hover:text-amber-700 dark:text-amber-400 dark:hover:text-amber-300 underline underline-offset-2 transition-colors cursor-pointer hover:bg-transparent"
-                    >
-                        Request Manual Sync Support
-                    </Button>
-                </div>
-
                 {/* Primary Action Buttons */}
                 <div className="mt-3 flex gap-2">
-                    {isJobActive && (
-                        <Button
-                            type="button"
-                            variant="outline"
-                            onClick={handleCancelSync}
-                            disabled={isCancelling}
-                            className="rounded-lg h-10 px-3.5 text-xs font-semibold border-red-500/30 text-red-600 hover:bg-red-50 hover:text-red-700 dark:text-red-400 dark:hover:bg-red-500/10"
-                        >
-                            {isCancelling ? "Cancelling..." : "Cancel Sync"}
-                        </Button>
-                    )}
                     <Button
                         onClick={handleAction}
                         disabled={
@@ -650,15 +760,13 @@ export function CloudSyncModal({
                         <RefreshCw
                             className={`h-4 w-4 ${isJobActive ? "animate-spin" : ""}`}
                         />
-                        {isJobActive
-                            ? "Syncing via Worker..."
-                            : isSaving
-                              ? "Saving Password..."
-                              : !hasCredentials || (isEditingPassword && password.trim())
-                                ? "Save & Sync Trade History"
-                                : "Sync Trade History Now"}
+                        {!hasCredentials || (isEditingPassword && password.trim())
+                            ? "Save & Sync Trade History"
+                            : "Sync Trade History Now"}
                     </Button>
                 </div>
+                    </>
+                )}
             </DialogContent>
         </Dialog>
     );

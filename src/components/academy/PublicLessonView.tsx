@@ -53,7 +53,7 @@ export function PublicLessonView({
     isPremiumLocked,
 }: PublicLessonViewProps) {
     const baseUrl =
-        process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.com";
+        process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.io";
     const currentIndex = courseLessons.findIndex((l) => l.id === lesson.id);
     const wordCount =
         lesson.content

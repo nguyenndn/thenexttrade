@@ -52,9 +52,8 @@ export default async function AllAccountsPage() {
                 : [
                       { name: "Exness", slug: "EXNESS" },
                       { name: "Vantage", slug: "VANTAGE" },
-                      { name: "WeTrade", slug: "WETRADE" },
-                      { name: "Tickmill", slug: "TICKMILL" },
-                      { name: "IC Markets", slug: "ICMARKETS" },
+                      { name: "VTMarkets", slug: "VTMARKETS" },
+                      { name: "Ultimamarkets", slug: "ULTIMAMARKETS" },
                   ];
 
         // 3. Fetch TradingAccounts for these logins to attach License Key &

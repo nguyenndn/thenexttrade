@@ -43,17 +43,60 @@ export interface CreateCompetitionInput {
     scoringMetric?: "currency" | "percentage";
 }
 
+export async function isCompetitionsEnabled(): Promise<boolean> {
+    try {
+        const setting = await prisma.systemSetting.findUnique({
+            where: { key: "feature_competitions" },
+        });
+        if (!setting) return true;
+        const val = setting.value as { enabled?: boolean } | null;
+        return val?.enabled ?? true;
+    } catch {
+        return true;
+    }
+}
+
+export async function toggleCompetitionsFeature(enabled: boolean): Promise<{
+    success: boolean;
+    enabled?: boolean;
+    error?: string;
+}> {
+    try {
+        await verifyAdmin();
+
+        await prisma.systemSetting.upsert({
+            where: { key: "feature_competitions" },
+            create: { key: "feature_competitions", value: { enabled } },
+            update: { value: { enabled } },
+        });
+
+        revalidatePath("/admin/competitions");
+        revalidatePath("/dashboard/leaderboard");
+
+        return { success: true, enabled };
+    } catch (error: any) {
+        console.error("toggleCompetitionsFeature error:", error);
+        return {
+            success: false,
+            error: error.message || "Failed to toggle competitions feature.",
+        };
+    }
+}
+
 export async function fetchAdminCompetitions() {
     await verifyAdmin();
 
-    const competitions = await prisma.competition.findMany({
-        orderBy: { createdAt: "desc" },
-        include: {
-            _count: {
-                select: { participants: true },
+    const [competitions, competitionsEnabled] = await Promise.all([
+        prisma.competition.findMany({
+            orderBy: { createdAt: "desc" },
+            include: {
+                _count: {
+                    select: { participants: true },
+                },
             },
-        },
-    });
+        }),
+        isCompetitionsEnabled(),
+    ]);
 
     const totalCompetitions = competitions.length;
     const activeCount = competitions.filter((c) => c.status === "ACTIVE").length;
@@ -66,6 +109,7 @@ export async function fetchAdminCompetitions() {
 
     return {
         competitions,
+        competitionsEnabled,
         stats: {
             totalCompetitions,
             activeCount,
@@ -114,7 +158,7 @@ export async function createCompetition(input: CreateCompetitionInput) {
                 slug,
                 description: input.description || null,
                 rules: input.rules || null,
-                status: input.status || "DRAFT",
+                status: input.status || "ACTIVE",
                 startDate: start,
                 endDate: end,
                 prizePool: Number(input.prizePool) || 0,

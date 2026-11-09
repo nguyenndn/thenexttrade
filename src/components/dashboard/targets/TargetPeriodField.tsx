@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/Button";
 import { PremiumInput } from "@/components/ui/PremiumInput";
 import { TargetTypeToggle } from "./TargetTypeToggle";
 import type { TargetType } from "./TargetProgressTypes";
+import { formatDashboardCurrency } from "@/lib/utils/cent-account";
 
 export interface TargetPeriodFieldProps {
     id: string;
@@ -15,6 +16,7 @@ export interface TargetPeriodFieldProps {
     onValueChange: (val: string) => void;
     helperText: string;
     presets: number[];
+    currency?: string;
     enabled?: boolean;
     onToggleEnabled?: (enabled: boolean) => void;
 }
@@ -28,6 +30,7 @@ export function TargetPeriodField({
     onValueChange,
     helperText,
     presets,
+    currency = "USD",
     enabled = true,
     onToggleEnabled,
 }: TargetPeriodFieldProps) {
@@ -72,7 +75,7 @@ export function TargetPeriodField({
                         {label}
                     </label>
                 )}
-                <TargetTypeToggle value={targetType} onChange={onTypeChange} />
+                <TargetTypeToggle value={targetType} onChange={onTypeChange} currency={currency} />
             </div>
             <PremiumInput
                 id={id}
@@ -93,7 +96,7 @@ export function TargetPeriodField({
                         onClick={() => onValueChange(String(preset))}
                         className="h-6 px-2 text-xs font-mono rounded-lg"
                     >
-                        {targetType === "USD" ? `$${preset.toLocaleString()}` : `${preset}%`}
+                        {targetType === "USD" ? formatDashboardCurrency(preset, currency, { fractionDigits: 0 }) : `${preset}%`}
                     </Button>
                 ))}
             </div>

@@ -4,7 +4,12 @@ import { generateTradeHash } from "@/lib/importers";
 import { classifyTradeResult } from "@/lib/utils/trade-classification";
 import { revalidatePath } from "next/cache";
 import { detectBroker } from "@/lib/ea/broker-detection";
-import { isCentAccount, isCentSymbol, normalizeLotSize } from "@/lib/utils/cent-account";
+import {
+    isCentAccount,
+    isCentSymbol,
+    normalizeCurrencyCode,
+    normalizeLotSize,
+} from "@/lib/utils/cent-account";
 import {
     getSupportTicketIdFromJobId,
     SUPPORT_SYNC_MODE,
@@ -140,10 +145,28 @@ export async function POST(request: NextRequest) {
                     },
                 });
 
+                const resolvedAccountCurrency = normalizeCurrencyCode(
+                    currency || job.account.currency,
+                    job.account.server,
+                    deals.map((d) => d.symbol)
+                );
+                const isCent =
+                    isCentAccount(job.account) ||
+                    isCentAccount({
+                        currency: resolvedAccountCurrency,
+                        server: job.account.server,
+                    });
+                const isTradeCent = isCent || isCentSymbol(deal.symbol);
+                const normalizedLot = normalizeLotSize(
+                    Number(deal.lots) || 0.01,
+                    isTradeCent
+                );
+
                 if (existing) {
                     await prisma.journalEntry.update({
                         where: { id: existing.id },
                         data: {
+                            lotSize: normalizedLot,
                             exitDate: isClosed ? exitDate : null,
                             exitPrice: deal.closePrice || existing.exitPrice,
                             stopLoss: typeof deal.sl === "number" ? deal.sl : existing.stopLoss,
@@ -165,12 +188,6 @@ export async function POST(request: NextRequest) {
                         entryDate,
                         entryPrice: deal.openPrice,
                     });
-
-                    const isCent =
-                        isCentAccount(job.account) ||
-                        (currency ? isCentAccount({ currency }) : false);
-                    const isTradeCent = isCent || isCentSymbol(deal.symbol);
-                    const normalizedLot = normalizeLotSize(Number(deal.lots) || 0.01, isTradeCent);
 
                     await prisma.journalEntry.create({
                         data: {
@@ -218,8 +235,21 @@ export async function POST(request: NextRequest) {
         if (typeof equity === "number" && !isNaN(equity)) {
             accountUpdate.equity = equity;
         }
-        if (typeof currency === "string" && currency.trim().length > 0) {
-            accountUpdate.currency = currency.trim().toUpperCase();
+        const detectedCurrency = normalizeCurrencyCode(
+            typeof currency === "string" && currency.trim().length > 0
+                ? currency
+                : job.account.currency,
+            job.account.server,
+            deals.map((d) => d.symbol)
+        );
+        if (
+            (typeof currency === "string" && currency.trim().length > 0) ||
+            detectedCurrency !== (job.account.currency || "USD")
+        ) {
+            accountUpdate.currency = detectedCurrency;
+        }
+        if (imported > 0) {
+            accountUpdate.totalTrades = { increment: imported };
         }
         if (typeof leverage === "number" && leverage > 0) {
             accountUpdate.leverage = `1:${leverage}`;

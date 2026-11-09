@@ -63,6 +63,7 @@ interface StrategyManagerProps {
     initialStrategies: Strategy[];
     initialPerformance?: StrategyPerformance[];
     initialSummary?: PlaybookSummary;
+    currency?: string;
     meta: {
         total: number;
         page: number;
@@ -76,6 +77,7 @@ export function StrategyManager({
     meta,
     initialPerformance = [],
     initialSummary,
+    currency = "USD",
 }: StrategyManagerProps) {
     const router = useRouter();
     const page = meta.page;
@@ -292,14 +294,21 @@ export function StrategyManager({
                         <StrategiesLoadingSkeleton />
                     ) : (
                         <>
-                            {summary && <PlaybookComparisonCard summary={summary} />}
+                            {summary && (
+                                <PlaybookComparisonCard
+                                    summary={summary}
+                                    currency={currency}
+                                />
+                            )}
                             {enrichedPerformance.length > 0 && (
                                 <>
                                     <StrategyPerformanceChart
                                         data={enrichedPerformance}
+                                        currency={currency}
                                     />
                                     <StrategyComparisonTable
                                         data={enrichedPerformance}
+                                        currency={currency}
                                     />
                                 </>
                             )}
@@ -419,6 +428,7 @@ export function StrategyManager({
                                 strategy={strategy}
                                 performance={perf}
                                 isGhost={isGhost}
+                                currency={currency}
                                 onEdit={() => {
                                     setEditingStrategy(strategy);
                                     setShowModal(true);

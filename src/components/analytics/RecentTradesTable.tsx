@@ -3,6 +3,7 @@
 import { format, parseISO } from "date-fns";
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 import Link from "next/link";
+import { formatDashboardCurrency } from "@/lib/utils/cent-account";
 
 interface RecentTradesTableProps {
     trades: Array<{
@@ -15,9 +16,10 @@ interface RecentTradesTableProps {
         entryDate: string;
         result: string;
     }>;
+    currency?: string;
 }
 
-export function RecentTradesTable({ trades }: RecentTradesTableProps) {
+export function RecentTradesTable({ trades, currency = "USD" }: RecentTradesTableProps) {
     if (!trades) return null;
 
     const getResultIcon = (result: string) => {
@@ -118,8 +120,7 @@ export function RecentTradesTable({ trades }: RecentTradesTableProps) {
                                                 : "text-gray-500 dark:text-gray-400"
                                         }`}
                                     >
-                                        {(trade.commission || 0) < 0 ? "-" : ""}$
-                                        {Math.abs(trade.commission || 0).toFixed(2)}
+                                        {formatDashboardCurrency(trade.commission || 0, currency)}
                                     </td>
                                     <td
                                         className={`px-4 py-3.5 text-right font-mono font-medium whitespace-nowrap ${
@@ -130,12 +131,9 @@ export function RecentTradesTable({ trades }: RecentTradesTableProps) {
                                                   : "text-gray-500 dark:text-gray-400"
                                         }`}
                                     >
-                                        {(trade.swap || 0) > 0
-                                            ? "+"
-                                            : (trade.swap || 0) < 0
-                                              ? "-"
-                                              : ""}
-                                        ${Math.abs(trade.swap || 0).toFixed(2)}
+                                        {formatDashboardCurrency(trade.swap || 0, currency, {
+                                            signDisplay: (trade.swap || 0) !== 0 ? "always" : "auto",
+                                        })}
                                     </td>
                                     <td
                                         className={`px-4 py-3.5 text-right font-bold whitespace-nowrap ${
@@ -144,10 +142,8 @@ export function RecentTradesTable({ trades }: RecentTradesTableProps) {
                                                 : "text-red-500"
                                         }`}
                                     >
-                                        {trade.pnl >= 0 ? "+" : ""}$
-                                        {trade.pnl.toLocaleString(undefined, {
-                                            minimumFractionDigits: 2,
-                                            maximumFractionDigits: 2,
+                                        {formatDashboardCurrency(trade.pnl, currency, {
+                                            signDisplay: "always",
                                         })}
                                     </td>
                                 </tr>

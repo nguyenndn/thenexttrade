@@ -21,7 +21,7 @@ export function getSyncServerUrl(fallbackOrigin?: string): string {
     if (envUrl) return envUrl;
     if (fallbackOrigin) return fallbackOrigin.replace(/\/+$/, "");
     if (typeof window !== "undefined") return window.location.origin;
-    return "https://thenexttrade.com";
+    return "https://thenexttrade.io";
 }
 
 /**

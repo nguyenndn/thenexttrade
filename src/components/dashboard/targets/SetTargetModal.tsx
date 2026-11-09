@@ -12,7 +12,7 @@ import { toast } from "sonner";
 const EMPTY_ACCOUNTS: AccountTargetOption[] = [];
 
 export function SetTargetModal({
-    open, onClose, accountId, accountName, availableAccounts = EMPTY_ACCOUNTS,
+    open, onClose, accountId, accountName, currency = "USD", availableAccounts = EMPTY_ACCOUNTS,
     initialWeeklyTarget, initialWeeklyTargetType = "USD",
     initialMonthlyTarget, initialMonthlyTargetType = "USD", onTargetSaved,
 }: SetTargetModalProps) {
@@ -80,7 +80,9 @@ export function SetTargetModal({
         }
     };
 
-    const activeName = availableAccounts.find((a) => a.id === selectedAccId)?.name || accountName || "active account";
+    const activeAcc = availableAccounts.find((a) => a.id === selectedAccId);
+    const activeName = activeAcc?.name || accountName || "active account";
+    const activeCurrency = activeAcc?.currency || currency || "USD";
 
     return (
         <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
@@ -102,8 +104,8 @@ export function SetTargetModal({
                 )}
 
                 <div className="space-y-4 py-2">
-                    <TargetPeriodField id="weekly-target-val" label="Weekly Target" targetType={wType} onTypeChange={setWType} value={wVal} onValueChange={setWVal} enabled={wEnabled} onToggleEnabled={setWEnabled} helperText={wType === "USD" ? "Absolute dollar target for Monday to Sunday UTC" : "Percentage of starting capital base for the week"} presets={wType === "USD" ? WEEKLY_PRESETS.usd : WEEKLY_PRESETS.pct} />
-                    <TargetPeriodField id="monthly-target-val" label="Monthly Target" targetType={mType} onTypeChange={setMType} value={mVal} onValueChange={setMVal} enabled={mEnabled} onToggleEnabled={setMEnabled} helperText={mType === "USD" ? "Absolute dollar target for calendar month" : "Percentage of starting capital base for the month"} presets={mType === "USD" ? MONTHLY_PRESETS.usd : MONTHLY_PRESETS.pct} />
+                    <TargetPeriodField id="weekly-target-val" label="Weekly Target" targetType={wType} onTypeChange={setWType} value={wVal} onValueChange={setWVal} enabled={wEnabled} onToggleEnabled={setWEnabled} currency={activeCurrency} helperText={wType === "USD" ? `Absolute ${activeCurrency} target for Monday to Sunday UTC` : "Percentage of starting capital base for the week"} presets={wType === "USD" ? WEEKLY_PRESETS.usd : WEEKLY_PRESETS.pct} />
+                    <TargetPeriodField id="monthly-target-val" label="Monthly Target" targetType={mType} onTypeChange={setMType} value={mVal} onValueChange={setMVal} enabled={mEnabled} onToggleEnabled={setMEnabled} currency={activeCurrency} helperText={mType === "USD" ? `Absolute ${activeCurrency} target for calendar month` : "Percentage of starting capital base for the month"} presets={mType === "USD" ? MONTHLY_PRESETS.usd : MONTHLY_PRESETS.pct} />
                 </div>
 
                 <DialogFooter className="gap-2 sm:gap-0 pt-2">

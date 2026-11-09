@@ -10,14 +10,230 @@ export const CENT_LOT_DIVISOR = 100;
 
 const CENT_CURRENCIES = new Set([
     "USC",
+    "USCENT",
+    "USDCENT",
     "CENT",
     "EU_CENT",
     "GB_CENT",
     "US_CENT",
     "USDT_CENT",
+    "EUC",
     "EURC",
+    "EURCENT",
+    "GBC",
     "GBPC",
+    "GBPCENT",
 ]);
+
+export interface CurrencyDisplayInfo {
+    code: string;
+    symbol: string;
+    label: string;
+    isCent: boolean;
+    usdRate: number;
+}
+
+const CURRENCY_METADATA: Record<string, CurrencyDisplayInfo> = {
+    USD: { code: "USD", symbol: "$", label: "USD ($)", isCent: false, usdRate: 1.0 },
+    USC: { code: "USC", symbol: "USC", label: "USC (Cent)", isCent: true, usdRate: 0.01 },
+    EUR: { code: "EUR", symbol: "€", label: "EUR (€)", isCent: false, usdRate: 1.08 },
+    EUC: { code: "EUC", symbol: "EUC", label: "EUC (EUR Cent)", isCent: true, usdRate: 0.0108 },
+    GBP: { code: "GBP", symbol: "£", label: "GBP (£)", isCent: false, usdRate: 1.28 },
+    GBC: { code: "GBC", symbol: "GBC", label: "GBC (GBP Cent)", isCent: true, usdRate: 0.0128 },
+    JPY: { code: "JPY", symbol: "¥", label: "JPY (¥)", isCent: false, usdRate: 0.0067 },
+    AUD: { code: "AUD", symbol: "A$", label: "AUD (A$)", isCent: false, usdRate: 0.65 },
+    CAD: { code: "CAD", symbol: "C$", label: "CAD (C$)", isCent: false, usdRate: 0.73 },
+    CHF: { code: "CHF", symbol: "CHF", label: "CHF", isCent: false, usdRate: 1.13 },
+    NZD: { code: "NZD", symbol: "NZ$", label: "NZD (NZ$)", isCent: false, usdRate: 0.60 },
+    SGD: { code: "SGD", symbol: "S$", label: "SGD (S$)", isCent: false, usdRate: 0.76 },
+};
+
+/**
+ * Normalizes raw broker currency strings (e.g. "USC", "USCent", "USDc", "EUR", "EUC", "GBP", "GBC")
+ * and detects Cent currency when server name or traded symbols indicate a Cent account.
+ */
+export function normalizeCurrencyCode(
+    rawCurrency?: string | null,
+    server?: string | null,
+    sampleSymbols?: Array<string | null | undefined>
+): string {
+    const cleaned = (rawCurrency || "").trim().toUpperCase().replace(/[\s-]+/g, "_");
+
+    let baseCode = "USD";
+    if (
+        cleaned === "USC" ||
+        cleaned === "USCENT" ||
+        cleaned === "USDCENT" ||
+        cleaned === "US_CENT" ||
+        cleaned === "USDC" && server?.toLowerCase().includes("cent") ||
+        cleaned === "CENT" ||
+        cleaned === "USDT_CENT"
+    ) {
+        return "USC";
+    }
+    if (
+        cleaned === "EUC" ||
+        cleaned === "EURC" ||
+        cleaned === "EURCENT" ||
+        cleaned === "EU_CENT" ||
+        cleaned === "EUR_CENT"
+    ) {
+        return "EUC";
+    }
+    if (
+        cleaned === "GBC" ||
+        cleaned === "GBPC" ||
+        cleaned === "GBPCENT" ||
+        cleaned === "GB_CENT" ||
+        cleaned === "GBP_CENT"
+    ) {
+        return "GBC";
+    }
+
+    if (cleaned.length >= 3) {
+        baseCode = cleaned.slice(0, 3);
+    }
+
+    // Check if server or traded symbols indicate a Cent account while currency was reported as standard USD/EUR/GBP
+    const serverIndicatesCent = Boolean(server && server.toLowerCase().includes("cent"));
+    const validSymbols = (sampleSymbols || []).filter((s): s is string => Boolean(s && s.trim()));
+    const symbolsIndicateCent =
+        validSymbols.length > 0 && validSymbols.every((s) => isCentSymbol(s));
+
+    if (serverIndicatesCent || symbolsIndicateCent) {
+        if (baseCode === "EUR") return "EUC";
+        if (baseCode === "GBP") return "GBC";
+        if (baseCode === "USD" || !rawCurrency) return "USC";
+    }
+
+    return baseCode || "USD";
+}
+
+/**
+ * Returns structured display metadata for an account currency.
+ */
+export function getCurrencyInfo(
+    currency?: string | null,
+    server?: string | null
+): CurrencyDisplayInfo {
+    const code = normalizeCurrencyCode(currency, server);
+    if (CURRENCY_METADATA[code]) {
+        return CURRENCY_METADATA[code];
+    }
+    const isCent = isCentAccount({ currency: code, server });
+    return {
+        code,
+        symbol: code,
+        label: isCent ? `${code} (Cent)` : code,
+        isCent,
+        usdRate: isCent ? 0.01 : 1.0,
+    };
+}
+
+/**
+ * Formats an account balance/equity with its native currency symbol or suffix (e.g. "$1,000.00", "€1,000.00", "£1,000.00", "10,000.00 USC").
+ */
+export function formatAccountBalance(
+    amount: number | null | undefined,
+    currency?: string | null,
+    server?: string | null,
+    fractionDigits = 2
+): string {
+    const num = typeof amount === "number" && Number.isFinite(amount) ? amount : 0;
+    const info = getCurrencyInfo(currency, server);
+    const digits = info.code === "JPY" ? 0 : fractionDigits;
+    const formatted = num.toLocaleString("en-US", {
+        minimumFractionDigits: digits,
+        maximumFractionDigits: digits,
+    });
+
+    if (info.isCent || info.symbol === info.code) {
+        return `${formatted} ${info.code}`;
+    }
+    return `${info.symbol}${formatted}`;
+}
+
+/**
+ * Returns prefix and suffix props for <NumberTicker> based on account currency.
+ * Standard symbol currencies ($ / £ / €) use prefix; Cent / code currencies (USC / EUC / GBC / CHF) use suffix.
+ */
+export function getCurrencyTickerProps(
+    currency?: string | null,
+    signPrefix: "+" | "-" | "" = ""
+): { prefix: string; suffix: string; symbol: string; code: string; isCent: boolean } {
+    const info = getCurrencyInfo(currency);
+    if (info.isCent || info.symbol === info.code) {
+        return {
+            prefix: signPrefix,
+            suffix: ` ${info.code}`,
+            symbol: info.symbol,
+            code: info.code,
+            isCent: info.isCent,
+        };
+    }
+    return {
+        prefix: `${signPrefix}${info.symbol}`,
+        suffix: "",
+        symbol: info.symbol,
+        code: info.code,
+        isCent: info.isCent,
+    };
+}
+
+/**
+ * Formats a P&L, chart axis tick, or trade amount with the account's native currency symbol or suffix.
+ * Examples:
+ * - USD: "+$6,201.16", "-$250.00", "$7,500"
+ * - GBP: "+£6,201.16", "-£250.00", "£7,500"
+ * - EUR: "+€6,201.16", "-€250.00", "€7,500"
+ * - USC: "+6,201.16 USC", "-250.00 USC", "7,500 USC"
+ */
+export function formatDashboardCurrency(
+    amount: number | null | undefined,
+    currency?: string | null,
+    options?: {
+        signDisplay?: "auto" | "always" | "never";
+        fractionDigits?: number;
+        useGrouping?: boolean;
+    }
+): string {
+    const num = typeof amount === "number" && Number.isFinite(amount) ? amount : 0;
+    const info = getCurrencyInfo(currency);
+    const signDisplay = options?.signDisplay ?? "auto";
+    const digits = options?.fractionDigits ?? (info.code === "JPY" ? 0 : 2);
+    const useGrouping = options?.useGrouping ?? true;
+
+    let sign = "";
+    if (signDisplay === "always") {
+        sign = num >= 0 ? "+" : "-";
+    } else if (signDisplay === "auto") {
+        sign = num < 0 ? "-" : "";
+    }
+
+    const absFormatted = Math.abs(num).toLocaleString("en-US", {
+        minimumFractionDigits: digits,
+        maximumFractionDigits: digits,
+        useGrouping,
+    });
+
+    if (info.isCent || info.symbol === info.code) {
+        return `${sign}${absFormatted} ${info.code}`;
+    }
+    return `${sign}${info.symbol}${absFormatted}`;
+}
+
+/**
+ * Converts an amount in any supported account currency (USC, EUR, GBP, etc.) to approximate USD equivalent.
+ */
+export function convertToUsdEquivalent(
+    amount: number | null | undefined,
+    currency?: string | null,
+    server?: string | null
+): number {
+    const num = typeof amount === "number" && Number.isFinite(amount) ? amount : 0;
+    const info = getCurrencyInfo(currency, server);
+    return Number((num * info.usdRate).toFixed(2));
+}
 
 /**
  * Checks whether an account is a Cent account based on currency, server, or accountType.

@@ -204,7 +204,7 @@ export async function sendDesktopSetupLinkAction(method: "EA_SYNC") {
         return { error: "User email not found" };
 
     const baseUrl =
-        process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.com";
+        process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.io";
     const pathMethod = method === "EA_SYNC" ? "ea" : "tnt";
     const link = `${baseUrl}/dashboard/accounts?setup=sync&method=${pathMethod}&source=desktop-link`;
 

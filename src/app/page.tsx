@@ -20,7 +20,7 @@ export const metadata: Metadata = {
         title: "TheNextTrade - All-in-One Forex Trading OS, Playbook & Journal",
         description:
             "Automated MT5 Trade Journal, Playbook Studio, 17 free forex calculators, and automated MT5 execution systems.",
-        url: "https://thenexttrade.com",
+        url: "https://thenexttrade.io",
         siteName: "TheNextTrade",
         images: [
             {

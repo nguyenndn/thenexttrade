@@ -16,15 +16,20 @@ import { CalendarRange } from "lucide-react";
 import { ChartContainer } from "@/components/ui/ChartContainer";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
+import { formatDashboardCurrency } from "@/lib/utils/cent-account";
 
 interface MonthlyAnalyticsChartProps {
     data: {
         date: string;
         value: number;
     }[];
+    currency?: string;
 }
 
-export function MonthlyAnalyticsChart({ data }: MonthlyAnalyticsChartProps) {
+export function MonthlyAnalyticsChart({
+    data,
+    currency = "USD",
+}: MonthlyAnalyticsChartProps) {
     const yearGroups = useMemo(() => {
         const groups: Record<number, any[]> = {};
         (data || []).forEach((item) => {
@@ -154,7 +159,9 @@ export function MonthlyAnalyticsChart({ data }: MonthlyAnalyticsChartProps) {
                     <p
                         className={`text-sm font-black ${d.value >= 0 ? "text-primary" : "text-red-500"}`}
                     >
-                        {d.value >= 0 ? "+" : ""}${Number(d.value).toFixed(2)}
+                        {formatDashboardCurrency(Number(d.value), currency, {
+                            signDisplay: "always",
+                        })}
                     </p>
                 </div>
             </div>
@@ -240,7 +247,12 @@ export function MonthlyAnalyticsChart({ data }: MonthlyAnalyticsChartProps) {
                                     fill: "var(--text-secondary)",
                                     fontSize: 11,
                                 }}
-                                tickFormatter={(value) => `$${value}`}
+                                tickFormatter={(value) =>
+                                    formatDashboardCurrency(value, currency, {
+                                        fractionDigits: 0,
+                                        useGrouping: false,
+                                    })
+                                }
                             />
                             <Tooltip
                                 content={<CustomTooltip />}

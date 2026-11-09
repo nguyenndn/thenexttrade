@@ -11,6 +11,7 @@ import {
     endOfDay,
 } from "date-fns";
 import { utcTime } from "@/lib/utils";
+import { normalizeCurrencyCode } from "@/lib/utils/cent-account";
 
 export async function GET(request: NextRequest) {
     try {
@@ -54,6 +55,20 @@ export async function GET(request: NextRequest) {
                 { status: 400 }
             );
         }
+
+        const targetAcc = await prisma.tradingAccount.findFirst({
+            where: {
+                userId: user.id,
+                ...(accountIdParam && accountIdParam !== "all"
+                    ? { id: accountIdParam }
+                    : {}),
+            },
+            select: { currency: true, server: true },
+        });
+        const currency = normalizeCurrencyCode(
+            targetAcc?.currency,
+            targetAcc?.server
+        );
 
         // Fetch trades
         const trades = await prisma.journalEntry.findMany({
@@ -195,6 +210,7 @@ export async function GET(request: NextRequest) {
             endDate: format(endDate, "yyyy-MM-dd"),
             generatedAt: format(new Date(), "yyyy-MM-dd HH:mm"),
             userName: user.name || user.email || "Trader",
+            currency,
             summary: {
                 totalTrades: trades.length,
                 winningTrades: wins.length,

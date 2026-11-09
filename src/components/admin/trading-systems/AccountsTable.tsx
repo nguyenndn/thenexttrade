@@ -87,9 +87,8 @@ interface AccountsTableProps {
 const DEFAULT_BROKERS = [
     { name: "Exness", slug: "EXNESS" },
     { name: "Vantage", slug: "VANTAGE" },
-    { name: "WeTrade", slug: "WETRADE" },
-    { name: "Tickmill", slug: "TICKMILL" },
-    { name: "IC Markets", slug: "ICMARKETS" },
+    { name: "VTMarkets", slug: "VTMARKETS" },
+    { name: "Ultimamarkets", slug: "ULTIMAMARKETS" },
 ];
 
 export function AccountsTable({

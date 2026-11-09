@@ -101,13 +101,6 @@ export const dashboardMenuItems = [
         icon: Wallet,
         requiresTradeData: false,
     },
-    // Temporarily hidden: Trade Manager (will be reopened later per user request)
-    // {
-    //     name: "Trade Manager",
-    //     href: "/dashboard/trade-manager",
-    //     icon: Zap,
-    //     requiresTradeData: false,
-    // },
 
     // --- PLAYBOOK & EXECUTION ---
     {
@@ -162,6 +155,7 @@ export const dashboardMenuItems = [
         href: "/dashboard/loyalty",
         icon: Award,
         requiresTradeData: false,
+        featureFlag: "feature_loyalty",
     },
 ];
 
@@ -170,11 +164,6 @@ export const adminMenuItems = [
     { name: "Overview", href: "/admin", icon: LayoutDashboard },
 
     // --- MONITORING & AI ---
-    {
-        name: "MT5 Cloud",
-        href: "/admin/mt5-cloud",
-        icon: CloudSync,
-    },
     {
         name: "AI Gateway",
         href: "/admin/ai",
@@ -256,12 +245,6 @@ export const dashboardMenuGroups = [
                 href: "/dashboard/accounts",
                 icon: Wallet,
             },
-            // Temporarily hidden: Trade Manager (will be reopened later per user request)
-            // {
-            //     name: "Trade Manager",
-            //     href: "/dashboard/trade-manager",
-            //     icon: Zap,
-            // },
         ],
     },
     {
@@ -312,6 +295,7 @@ export const dashboardMenuGroups = [
                 name: "Loyalty & Rewards",
                 href: "/dashboard/loyalty",
                 icon: Award,
+                featureFlag: "feature_loyalty",
             },
         ],
     },
@@ -324,7 +308,6 @@ export const adminMenuGroups = [
         icon: LayoutDashboard,
         items: [
             { name: "Overview", href: "/admin", icon: LayoutDashboard },
-            { name: "MT5 Cloud", href: "/admin/mt5-cloud", icon: CloudSync },
             { name: "AI Gateway", href: "/admin/ai", icon: Bot },
             {
                 name: "Release Health",

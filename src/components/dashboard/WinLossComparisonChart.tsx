@@ -12,15 +12,18 @@ import {
 } from "recharts";
 import { Scale } from "lucide-react";
 import { ChartContainer } from "@/components/ui/ChartContainer";
+import { formatDashboardCurrency } from "@/lib/utils/cent-account";
 
 interface WinLossComparisonChartProps {
     avgWin: number;
     avgLoss: number;
+    currency?: string;
 }
 
 export function WinLossComparisonChart({
     avgWin,
     avgLoss,
+    currency = "USD",
 }: WinLossComparisonChartProps) {
     const hasData = avgWin > 0 || avgLoss > 0;
 
@@ -102,7 +105,12 @@ export function WinLossComparisonChart({
                                     fill: "var(--text-secondary)",
                                     fontSize: 11,
                                 }}
-                                tickFormatter={(v) => `$${v}`}
+                                tickFormatter={(v) =>
+                                    formatDashboardCurrency(v, currency, {
+                                        fractionDigits: 0,
+                                        useGrouping: false,
+                                    })
+                                }
                             />
                             <Tooltip
                                 cursor={{ fill: "rgba(156,163,175,0.06)" }}
@@ -115,8 +123,10 @@ export function WinLossComparisonChart({
                                                     {entry.name}
                                                 </p>
                                                 <p className="text-sm font-black font-mono tabular-nums text-gray-900 dark:text-white">
-                                                    $
-                                                    {Number(entry.value).toFixed(2)}
+                                                    {formatDashboardCurrency(
+                                                        Number(entry.value),
+                                                        currency
+                                                    )}
                                                 </p>
                                             </div>
                                         );
@@ -158,13 +168,13 @@ export function WinLossComparisonChart({
                     <div className="text-center">
                         <p className="text-gray-400">Avg Win</p>
                         <p className="font-extrabold font-mono tabular-nums text-emerald-500">
-                            ${avgWin.toFixed(2)}
+                            {formatDashboardCurrency(avgWin, currency)}
                         </p>
                     </div>
                     <div className="text-center">
                         <p className="text-gray-400">Avg Loss</p>
                         <p className="font-extrabold font-mono tabular-nums text-red-500">
-                            ${avgLoss.toFixed(2)}
+                            {formatDashboardCurrency(avgLoss, currency)}
                         </p>
                     </div>
                 </div>

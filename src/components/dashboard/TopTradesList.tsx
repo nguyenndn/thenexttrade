@@ -3,6 +3,7 @@
 import { TrendingUp, TrendingDown } from "lucide-react";
 import { utcTime } from "@/lib/utils";
 import { cn } from "@/lib/utils";
+import { formatDashboardCurrency } from "@/lib/utils/cent-account";
 
 interface Trade {
     id: string;
@@ -15,20 +16,23 @@ interface Trade {
 interface TopTradesListProps {
     bestTrades: Trade[];
     worstTrades: Trade[];
+    currency?: string;
 }
 
-export function TopTradesList({ bestTrades, worstTrades }: TopTradesListProps) {
+export function TopTradesList({
+    bestTrades,
+    worstTrades,
+    currency = "USD",
+}: TopTradesListProps) {
     const formatDate = (date: Date | null) => {
         if (!date) return "";
         return utcTime(date, "MMM dd");
     };
 
     const formatCurrency = (value: number | null) => {
-        return new Intl.NumberFormat("en-US", {
-            style: "currency",
-            currency: "USD",
-            signDisplay: "never", // We handle color separately
-        }).format(value || 0);
+        return formatDashboardCurrency(value || 0, currency, {
+            signDisplay: "never",
+        });
     };
 
     return (
@@ -146,7 +150,7 @@ export function TopTradesList({ bestTrades, worstTrades }: TopTradesListProps) {
                                             {formatDate(trade.date)}
                                         </div>
                                         <div className="col-span-3 text-right font-bold font-mono tabular-nums text-sm text-red-500">
-                                            {formatCurrency(trade.pnl)}
+                                            -{formatCurrency(trade.pnl)}
                                         </div>
                                     </div>
                                 ))

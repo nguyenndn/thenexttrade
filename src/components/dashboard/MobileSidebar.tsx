@@ -192,7 +192,7 @@ function MobileSidebarItem({
 
 export function MobileSidebar({ isOpen, onClose, items }: MobileSidebarProps) {
     const pathname = usePathname();
-    const { disabledFlags, loaded: flagsLoaded } = useFeatureFlags();
+    const { disabledFlags } = useFeatureFlags();
 
     const rawItems = items ?? dashboardMenuItems;
 
@@ -200,10 +200,9 @@ export function MobileSidebar({ isOpen, onClose, items }: MobileSidebarProps) {
         () =>
             rawItems.filter((item: any) => {
                 if (!item.featureFlag) return true;
-                if (!flagsLoaded) return false;
                 return !disabledFlags.has(item.featureFlag);
             }),
-        [rawItems, disabledFlags, flagsLoaded]
+        [rawItems, disabledFlags]
     );
 
     // Body scroll lock while the drawer is open.

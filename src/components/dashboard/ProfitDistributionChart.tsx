@@ -3,12 +3,14 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import { PieChart as PieChartIcon } from "lucide-react";
 import { ChartContainer } from "@/components/ui/ChartContainer";
+import { formatDashboardCurrency } from "@/lib/utils/cent-account";
 
 interface ProfitDistributionChartProps {
     data: {
         name: string;
         value: number;
     }[];
+    currency?: string;
     height?: number | string;
     innerRadius?: number | string;
     outerRadius?: number | string;
@@ -25,6 +27,7 @@ const COLORS = [
 
 export function ProfitDistributionChart({
     data,
+    currency = "USD",
     innerRadius = "60%",
     outerRadius = "80%",
 }: ProfitDistributionChartProps) {
@@ -141,8 +144,10 @@ export function ProfitDistributionChart({
                                                         {d.name}
                                                     </p>
                                                     <p className="text-sm font-black font-mono tabular-nums text-gray-700 dark:text-white">
-                                                        $
-                                                        {Number(d.value).toFixed(2)}
+                                                        {formatDashboardCurrency(
+                                                            Number(d.value),
+                                                            currency
+                                                        )}
                                                     </p>
                                                 </div>
                                             </div>
@@ -168,7 +173,14 @@ export function ProfitDistributionChart({
                                 dominantBaseline="central"
                                 className={`text-[10px] font-black font-mono tabular-nums ${totalProfit >= 0 ? "fill-emerald-600 dark:fill-emerald-400" : "fill-red-500"}`}
                             >
-                                ${Math.abs(totalProfit).toFixed(0)}
+                                {formatDashboardCurrency(
+                                    Math.abs(totalProfit),
+                                    currency,
+                                    {
+                                        fractionDigits: 0,
+                                        signDisplay: "never",
+                                    }
+                                )}
                             </text>
                         </PieChart>
                     </ResponsiveContainer>

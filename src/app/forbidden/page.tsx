@@ -71,7 +71,7 @@ export default function ForbiddenPage() {
                 <p className="mt-10 text-sm text-gray-500">
                     Need access?{" "}
                     <a
-                        href="mailto:support@thenexttrade.com"
+                        href="mailto:support@thenexttrade.io"
                         className="text-amber-600 dark:text-gold font-semibold hover:underline"
                     >
                         Contact Support

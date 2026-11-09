@@ -5,6 +5,7 @@ import { Edit2, ArrowUpDown, Activity, Zap } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
 import { utcTime, cn } from "@/lib/utils";
+import { formatDashboardCurrency, normalizeCurrencyCode } from "@/lib/utils/cent-account";
 import JournalStats from "@/components/journal/JournalStats";
 import { Modal } from "@/components/ui/Modal";
 import { StrategyCell } from "@/components/journal/cells/StrategyCell";
@@ -123,6 +124,7 @@ interface JournalListProps {
     userTags?: string[];
     hasTradeData?: boolean;
     currentAccountId?: string;
+    currency?: string;
 }
 
 export default function JournalList({
@@ -133,6 +135,7 @@ export default function JournalList({
     userTags = [],
     hasTradeData = true,
     currentAccountId,
+    currency = "USD",
 }: JournalListProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -169,6 +172,7 @@ export default function JournalList({
     );
     const effectiveEntries = isSampleMode ? sampleEntries : entries;
     const effectiveStats = isSampleMode ? SAMPLE_JOURNAL_STATS : stats;
+    const effectiveCurrency = isSampleMode ? "USD" : currency;
     const strategies = isSampleMode
         ? [...(initialStrategies || []), ...SAMPLE_STRATEGIES]
         : (initialStrategies || []);
@@ -455,7 +459,7 @@ export default function JournalList({
 
             {effectiveStats && (
                 <div id="onborda-journal-stats">
-                    <JournalStats stats={effectiveStats} />
+                    <JournalStats stats={effectiveStats} currency={effectiveCurrency} />
                 </div>
             )}
 
@@ -786,11 +790,13 @@ export default function JournalList({
                                                                                         : "text-gray-500 dark:text-gray-400"
                                                                                 )}
                                                                             >
-                                                                                {entry.commission != null
-                                                                                    ? (entry.commission < 0 ? "-" : "") +
-                                                                                      "$" +
-                                                                                      Math.abs(entry.commission).toFixed(2)
-                                                                                    : "$0.00"}
+                                                                                {formatDashboardCurrency(
+                                                                                    entry.commission || 0,
+                                                                                    normalizeCurrencyCode(
+                                                                                        entry.account?.currency || effectiveCurrency,
+                                                                                        entry.account?.server
+                                                                                    )
+                                                                                )}
                                                                             </span>
                                                                         )}
                                                                         {col.id ===
@@ -805,11 +811,19 @@ export default function JournalList({
                                                                                           : "text-gray-500 dark:text-gray-400"
                                                                                 )}
                                                                             >
-                                                                                {entry.swap != null
-                                                                                    ? (entry.swap > 0 ? "+" : entry.swap < 0 ? "-" : "") +
-                                                                                      "$" +
-                                                                                      Math.abs(entry.swap).toFixed(2)
-                                                                                    : "$0.00"}
+                                                                                {formatDashboardCurrency(
+                                                                                    entry.swap || 0,
+                                                                                    normalizeCurrencyCode(
+                                                                                        entry.account?.currency || effectiveCurrency,
+                                                                                        entry.account?.server
+                                                                                    ),
+                                                                                    {
+                                                                                        signDisplay:
+                                                                                            (entry.swap || 0) !== 0
+                                                                                                ? "always"
+                                                                                                : "auto",
+                                                                                    }
+                                                                                )}
                                                                             </span>
                                                                         )}
                                                                         {col.id ===
@@ -818,7 +832,7 @@ export default function JournalList({
                                                                                 title={
                                                                                     (entry.commission || 0) !== 0 ||
                                                                                     (entry.swap || 0) !== 0
-                                                                                        ? `Gross: $${Number(entry.grossProfit ?? entry.pnl ?? 0).toFixed(2)} | Comm: $${Number(entry.commission || 0).toFixed(2)} | Swap: $${Number(entry.swap || 0).toFixed(2)}`
+                                                                                        ? `Gross: ${formatDashboardCurrency(Number(entry.grossProfit ?? entry.pnl ?? 0), normalizeCurrencyCode(entry.account?.currency || effectiveCurrency, entry.account?.server))} | Comm: ${formatDashboardCurrency(Number(entry.commission || 0), normalizeCurrencyCode(entry.account?.currency || effectiveCurrency, entry.account?.server))} | Swap: ${formatDashboardCurrency(Number(entry.swap || 0), normalizeCurrencyCode(entry.account?.currency || effectiveCurrency, entry.account?.server))}`
                                                                                         : undefined
                                                                                 }
                                                                             >
@@ -826,6 +840,10 @@ export default function JournalList({
                                                                                     value={
                                                                                         entry.pnl
                                                                                     }
+                                                                                    currency={normalizeCurrencyCode(
+                                                                                        entry.account?.currency || effectiveCurrency,
+                                                                                        entry.account?.server
+                                                                                    )}
                                                                                 />
                                                                             </span>
                                                                         )}
@@ -1013,6 +1031,10 @@ export default function JournalList({
                                                     </p>
                                                     <PnLDisplay
                                                         value={entry.pnl}
+                                                        currency={normalizeCurrencyCode(
+                                                            entry.account?.currency || effectiveCurrency,
+                                                            entry.account?.server
+                                                        )}
                                                     />
                                                 </div>
                                                 <div>
@@ -1042,7 +1064,13 @@ export default function JournalList({
                                                             Commission
                                                         </p>
                                                         <p className="font-mono tabular-nums text-xs font-semibold text-red-500/90 dark:text-red-400/90">
-                                                            {entry.commission < 0 ? "-" : ""}${Math.abs(entry.commission).toFixed(2)}
+                                                            {formatDashboardCurrency(
+                                                                entry.commission,
+                                                                normalizeCurrencyCode(
+                                                                    entry.account?.currency || effectiveCurrency,
+                                                                    entry.account?.server
+                                                                )
+                                                            )}
                                                         </p>
                                                     </div>
                                                 ) : null}
@@ -1059,7 +1087,14 @@ export default function JournalList({
                                                                     : "text-red-500/90 dark:text-red-400/90"
                                                             )}
                                                         >
-                                                            {entry.swap > 0 ? "+" : entry.swap < 0 ? "-" : ""}${Math.abs(entry.swap).toFixed(2)}
+                                                            {formatDashboardCurrency(
+                                                                entry.swap,
+                                                                normalizeCurrencyCode(
+                                                                    entry.account?.currency || effectiveCurrency,
+                                                                    entry.account?.server
+                                                                ),
+                                                                { signDisplay: "always" }
+                                                            )}
                                                         </p>
                                                     </div>
                                                 ) : null}
@@ -1165,6 +1200,7 @@ export default function JournalList({
                         onPrev={handlePrevEntry}
                         hasNext={hasNext}
                         hasPrev={hasPrev}
+                        currency={effectiveCurrency}
                     />
                 );
             })()}

@@ -8,6 +8,7 @@ interface HourlyHeatmapProps {
         winRate: number;
         totalPnL: number;
     }>;
+    currency?: string;
 }
 
 import {
@@ -16,8 +17,12 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { formatDashboardCurrency } from "@/lib/utils/cent-account";
 
-export function HourlyHeatmap({ data }: HourlyHeatmapProps) {
+export function HourlyHeatmap({
+    data,
+    currency = "USD",
+}: HourlyHeatmapProps) {
     // Create full 24-hour array
     const fullHours = Array.from({ length: 24 }, (_, i) => {
         const hourData = data.find((d) => d.hour === i);
@@ -32,7 +37,7 @@ export function HourlyHeatmap({ data }: HourlyHeatmapProps) {
             totalTrades,
             winRate,
             totalPnL,
-            title: `${hourLabel} UTC\nTrades: ${totalTrades}\nWin Rate: ${winRate.toFixed(0)}%\nP&L: $${totalPnL.toFixed(2)}`,
+            title: `${hourLabel} UTC\nTrades: ${totalTrades}\nWin Rate: ${winRate.toFixed(0)}%\nP&L: ${formatDashboardCurrency(totalPnL, currency)}`,
         };
     });
 
@@ -136,8 +141,11 @@ export function HourlyHeatmap({ data }: HourlyHeatmapProps) {
                                     <span
                                         className={`font-medium font-mono tabular-nums ${hour.totalPnL > 0 ? "text-primary dark:text-[#00C888]" : hour.totalPnL < 0 ? "text-red-500" : "text-gray-400"}`}
                                     >
-                                        {hour.totalPnL > 0 ? "+" : ""}
-                                        {hour.totalPnL.toFixed(2)}
+                                        {formatDashboardCurrency(
+                                            hour.totalPnL,
+                                            currency,
+                                            { signDisplay: "always" }
+                                        )}
                                     </span>
                                 </div>
                             </div>

@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth-cache";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import { normalizeCurrencyCode } from "@/lib/utils/cent-account";
 
 const strategySchema = z.object({
     name: z.string().min(1).max(100),
@@ -368,7 +369,23 @@ export async function getStrategyPerformance() {
             }
         };
 
-        return { performance, summary };
+        const { resolveDefaultAccountId } = await import(
+            "@/actions/main-account"
+        );
+        const defaultAccId = await resolveDefaultAccountId(user.id);
+        const targetAcc = await prisma.tradingAccount.findFirst({
+            where: {
+                userId: user.id,
+                ...(defaultAccId ? { id: defaultAccId } : {}),
+            },
+            select: { currency: true, server: true },
+        });
+        const currency = normalizeCurrencyCode(
+            targetAcc?.currency,
+            targetAcc?.server
+        );
+
+        return { performance, summary, currency };
     } catch {
         return { error: "Failed to fetch performance" };
     }

@@ -202,7 +202,7 @@ export default function ContactPage() {
                                         <Mail size={14} className="text-amber-500 dark:text-gold shrink-0" />
                                         <span className="text-gray-500 dark:text-gray-400 font-medium">To:</span>
                                         <span className="font-bold text-gray-900 dark:text-white">
-                                            support@thenexttrade.com
+                                            support@thenexttrade.io
                                         </span>
                                     </div>
                                 </div>

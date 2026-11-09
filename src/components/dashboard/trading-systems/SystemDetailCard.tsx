@@ -120,7 +120,9 @@ export function SystemDetailCard({
             ? "INDICATOR"
             : product.type === "MANUAL_ASSIST"
               ? "MANUAL ASSIST"
-              : "EXPERT ADVISOR";
+              : product.type === "SEMI_AUTO"
+                ? "SEMI AUTO"
+                : "EXPERT ADVISOR";
 
     const tierLabel = Boolean((product as any).isFree) ? "Free" : "Premium";
 

@@ -15,7 +15,7 @@ export const MONTHLY_PRESETS = {
 export interface TargetPeriodData {
     period: "WEEKLY" | "MONTHLY";
     label: string;
-    targetAmount: number; // in USD
+    targetAmount: number;
     rawTargetValue: number | null;
     targetType: TargetType;
     netClosedPnl: number;
@@ -24,6 +24,7 @@ export interface TargetPeriodData {
     remainingAmount: number;
     status: TargetStatus;
     baseBalance?: number;
+    currency?: string;
 }
 
 export const createInitialPeriodData = (
@@ -62,6 +63,7 @@ export interface AccountTargetOption {
     monthlyTargetType?: TargetType;
     initialBalance?: number | null;
     balance?: number;
+    currency?: string;
 }
 
 export interface SetTargetModalProps {
@@ -69,6 +71,7 @@ export interface SetTargetModalProps {
     onClose: () => void;
     accountId?: string;
     accountName?: string;
+    currency?: string;
     availableAccounts?: AccountTargetOption[];
     initialWeeklyTarget?: number | null;
     initialWeeklyTargetType?: TargetType;
@@ -87,6 +90,7 @@ export interface SetTargetModalProps {
 export interface TargetProgressWidgetProps {
     accountId?: string;
     accountName?: string;
+    currency?: string;
     className?: string;
     compact?: boolean;
     highlightPeriod?: "WEEKLY" | "MONTHLY";

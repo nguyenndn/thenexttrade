@@ -1,7 +1,95 @@
 import { describe, it, expect } from "vitest";
-import { DEFAULT_LOYALTY_TIERS } from "./loyalty.server";
+import {
+  DEFAULT_LOYALTY_TIERS,
+  isGoldSymbol,
+  isRealTradingAccount,
+  isIbVerifiedTradingAccount,
+} from "./loyalty.server";
 
 describe("Loyalty & Rewards Program Unit Tests", () => {
+  describe("XAUUSD / GOLD Symbol Filter & IB Real Account Qualification", () => {
+    it("accepts only XAUUSD and GOLD symbol variants and rejects currency pairs", () => {
+      expect(isGoldSymbol("XAUUSD")).toBe(true);
+      expect(isGoldSymbol("XAUUSDm")).toBe(true);
+      expect(isGoldSymbol("XAUUSD.a")).toBe(true);
+      expect(isGoldSymbol("XAU/USD")).toBe(true);
+      expect(isGoldSymbol("GOLD")).toBe(true);
+      expect(isGoldSymbol("GOLDm")).toBe(true);
+      expect(isGoldSymbol("GOLD.pro")).toBe(true);
+
+      expect(isGoldSymbol("EURUSD")).toBe(false);
+      expect(isGoldSymbol("GBPUSD")).toBe(false);
+      expect(isGoldSymbol("USDJPY")).toBe(false);
+      expect(isGoldSymbol("XAUEUR")).toBe(false);
+      expect(isGoldSymbol("BTCUSD")).toBe(false);
+      expect(isGoldSymbol("")).toBe(false);
+    });
+
+    it("excludes Demo, Contest, Evaluation, and Trial accounts", () => {
+      expect(
+        isRealTradingAccount({
+          accountType: "REAL",
+          server: "VantageMarkets-Live",
+          broker: "Vantage",
+        })
+      ).toBe(true);
+
+      expect(
+        isRealTradingAccount({
+          accountType: "DEMO",
+          server: "UltimaMarkets-Demo",
+          broker: "UltimaMarkets",
+        })
+      ).toBe(false);
+
+      expect(
+        isRealTradingAccount({
+          accountType: "PERSONAL",
+          server: "STARTRADERFinancial-Demo",
+          broker: "StarTrader",
+        })
+      ).toBe(false);
+    });
+
+    it("qualifies only IB-verified accounts and rejects unverified Free accounts", () => {
+      const licenses = new Set(["600001145"]);
+      const vipIds = new Set(["acc-vip"]);
+      const vipNums = new Set(["888999"]);
+
+      expect(
+        isIbVerifiedTradingAccount(
+          { id: "acc-1", accountNumber: "111", ibAttribution: "CONFIRMED" },
+          licenses,
+          vipIds,
+          vipNums
+        )
+      ).toBe(true);
+
+      expect(
+        isIbVerifiedTradingAccount(
+          { id: "acc-2", accountNumber: "600001145", ibAttribution: "UNKNOWN" },
+          licenses,
+          vipIds,
+          vipNums
+        )
+      ).toBe(true);
+
+      expect(
+        isIbVerifiedTradingAccount(
+          {
+            id: "acc-free",
+            accountNumber: "1610076507",
+            ibAttribution: "UNKNOWN",
+            proEntitlement: { status: "ACTIVE", source: "MANUAL_ADMIN" },
+          },
+          licenses,
+          vipIds,
+          vipNums
+        )
+      ).toBe(false);
+    });
+  });
+
   describe("Tier Definitions", () => {
     it("should have exactly 10 standard loyalty tiers", () => {
       expect(DEFAULT_LOYALTY_TIERS).toHaveLength(10);

@@ -43,6 +43,7 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 import { PlanVsActualPanel } from "./PlanVsActualPanel";
+import { formatDashboardCurrency, normalizeCurrencyCode } from "@/lib/utils/cent-account";
 
 interface JournalEntry {
     id: string;
@@ -86,6 +87,7 @@ interface TradeDetailSheetProps {
     onPrev?: () => void;
     hasNext?: boolean;
     hasPrev?: boolean;
+    currency?: string;
 }
 
 export function TradeDetailSheet({
@@ -97,6 +99,7 @@ export function TradeDetailSheet({
     onPrev,
     hasNext,
     hasPrev,
+    currency = "USD",
 }: TradeDetailSheetProps) {
     const [showShareModal, setShowShareModal] = useState(false);
     const [sheetLightboxIndex, setSheetLightboxIndex] = useState<number | null>(null);
@@ -124,6 +127,11 @@ export function TradeDetailSheet({
     }, [isOpen, entry?.id]);
 
     if (!entry) return null;
+
+    const entryCurrency = normalizeCurrencyCode(
+        (entry as any).account?.currency || currency,
+        (entry as any).account?.server
+    );
 
     const isWin = entry.pnl && entry.pnl > 0;
     const pnlColor =
@@ -269,7 +277,9 @@ export function TradeDetailSheet({
                                         ) : (
                                             <TrendingDown size={32} />
                                         )}
-                                        {entry.pnl?.toFixed(2) || "0.00"}
+                                        {formatDashboardCurrency(entry.pnl || 0, entryCurrency, {
+                                            signDisplay: "always",
+                                        })}
                                     </div>
                                     <div className="text-gray-500 font-mono tabular-nums text-xs font-black uppercase tracking-widest mt-2">
                                         {entry.pnl
@@ -483,9 +493,10 @@ export function TradeDetailSheet({
                                                                     : "text-gray-700 dark:text-white"
                                                             )}
                                                         >
-                                                            {entry.commission != null
-                                                                ? `${entry.commission < 0 ? "-" : ""}$${Math.abs(entry.commission).toFixed(2)}`
-                                                                : "$0.00"}
+                                                            {formatDashboardCurrency(
+                                                                entry.commission || 0,
+                                                                entryCurrency
+                                                            )}
                                                         </span>
                                                     </div>
                                                     <div className="bg-gray-50/80 dark:bg-[#151925] p-3 rounded-lg border border-dashboard flex flex-col items-center justify-center text-center">
@@ -500,9 +511,10 @@ export function TradeDetailSheet({
                                                                     : "text-gray-700 dark:text-white"
                                                             )}
                                                         >
-                                                            {entry.swap != null
-                                                                ? `${entry.swap < 0 ? "-" : ""}$${Math.abs(entry.swap).toFixed(2)}`
-                                                                : "$0.00"}
+                                                            {formatDashboardCurrency(
+                                                                entry.swap || 0,
+                                                                entryCurrency
+                                                            )}
                                                         </span>
                                                     </div>
                                                     <div className="bg-gray-50/80 dark:bg-[#151925] p-3 rounded-lg border border-dashboard flex flex-col items-center justify-center text-center">
@@ -517,8 +529,10 @@ export function TradeDetailSheet({
                                                                     : "text-gray-700 dark:text-white"
                                                             )}
                                                         >
-                                                            {((entry.commission || 0) + (entry.swap || 0)) < 0 ? "-" : ""}
-                                                            ${Math.abs((entry.commission || 0) + (entry.swap || 0)).toFixed(2)}
+                                                            {formatDashboardCurrency(
+                                                                (entry.commission || 0) + (entry.swap || 0),
+                                                                entryCurrency
+                                                            )}
                                                         </span>
                                                     </div>
                                                 </div>
@@ -1093,6 +1107,7 @@ export function TradeDetailSheet({
                                     <PlanVsActualPanel
                                         plan={entry.tradePlan}
                                         entry={entry}
+                                        currency={entryCurrency}
                                     />
                                 </div>
                             </TabsContent>

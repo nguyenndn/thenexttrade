@@ -18,6 +18,10 @@ import {
 import { executeAiGateway } from "@/lib/ai-gateway/provider-router";
 import { reserveAiRequest } from "@/lib/ai-gateway/quota-service";
 import { randomUUID } from "node:crypto";
+import {
+    formatDashboardCurrency,
+    normalizeCurrencyCode,
+} from "@/lib/utils/cent-account";
 
 // Remove direct DEEPSEEK_API_KEY dependency - routed via central AI Gateway
 
@@ -56,7 +60,10 @@ function parseCoachResponse(content: string): RawCoachResponse | null {
     }
 }
 
-function buildEvidenceCatalog(data: IntelligenceData): CoachEvidence[] {
+function buildEvidenceCatalog(
+    data: IntelligenceData,
+    currency: string = "USD"
+): CoachEvidence[] {
     const metrics: CoachEvidence[] = [
         {
             id: "metric:sample-size",
@@ -73,7 +80,7 @@ function buildEvidenceCatalog(data: IntelligenceData): CoachEvidence[] {
         {
             id: "metric:net-pnl",
             label: "Net PnL",
-            value: `$${data.quickStats.netPnL.toFixed(2)}`,
+            value: formatDashboardCurrency(data.quickStats.netPnL, currency),
             detail: "Realized net PnL for the selected analysis period.",
         },
         {
@@ -163,7 +170,8 @@ function fallbackAction(primaryIssue: CoachEvidence | null): string {
 
 function buildFallbackInsight(
     data: IntelligenceData,
-    catalog: CoachEvidence[]
+    catalog: CoachEvidence[],
+    currency: string = "USD"
 ): DeepSeekInsight {
     const primaryIssue = data.issues[0]
         ? findEvidence(catalog, `issue:${data.issues[0].id}`)
@@ -178,7 +186,7 @@ function buildFallbackInsight(
         )
         .slice(0, 2);
     return {
-        summary: `You have ${data.totalAnalyzed} closed trades in this analysis. Win Rate is ${data.quickStats.winRate.toFixed(1)}% and Net PnL is $${data.quickStats.netPnL.toFixed(2)}.`,
+        summary: `You have ${data.totalAnalyzed} closed trades in this analysis. Win Rate is ${data.quickStats.winRate.toFixed(1)}% and Net PnL is ${formatDashboardCurrency(data.quickStats.netPnL, currency)}.`,
         primaryIssue,
         evidence,
         actionPlan: fallbackAction(primaryIssue),
@@ -198,9 +206,10 @@ function containsTradeInstruction(value: string): boolean {
 function resolveCoachInsight(
     raw: RawCoachResponse | null,
     data: IntelligenceData,
-    catalog: CoachEvidence[]
+    catalog: CoachEvidence[],
+    currency: string = "USD"
 ): DeepSeekInsight {
-    const fallback = buildFallbackInsight(data, catalog);
+    const fallback = buildFallbackInsight(data, catalog, currency);
     const primaryIssue =
         findEvidence(catalog, raw?.primaryEvidenceId) || fallback.primaryIssue;
     const supportingIds = Array.isArray(raw?.supportingEvidenceIds)
@@ -355,8 +364,20 @@ export async function generateAiCoachInsights(
             };
         }
 
+        const targetAcc = await prisma.tradingAccount.findFirst({
+            where: {
+                userId: user.id,
+                ...(accountId && accountId !== "all" ? { id: accountId } : {}),
+            },
+            select: { currency: true, server: true },
+        });
+        const accountCurrency = normalizeCurrencyCode(
+            targetAcc?.currency,
+            targetAcc?.server
+        );
+
         // Format data for prompt
-        const catalog = buildEvidenceCatalog(data);
+        const catalog = buildEvidenceCatalog(data, accountCurrency);
         const tradingGoal =
             existingSettings.tradingGoal ||
             existingSettings.onboarding?.tradingGoal ||
@@ -394,7 +415,10 @@ export async function generateAiCoachInsights(
                 data.quickStats.planComplianceRate >= 0
                     ? data.quickStats.planComplianceRate.toFixed(1) + "%"
                     : "N/A",
-            netPnL: "$" + data.quickStats.netPnL.toFixed(2),
+            netPnL: formatDashboardCurrency(
+                data.quickStats.netPnL,
+                accountCurrency
+            ),
             avgHoldTime: data.quickStats.avgHoldMinutes.toFixed(1) + " minutes",
             mainTradingGoal: existingSettings.tradingGoal || "Not specified",
             verifiedEvidence: catalog,
@@ -463,7 +487,8 @@ END_VERIFIED_DATA`;
         const finalInsight = resolveCoachInsight(
             parseCoachResponse(content),
             data,
-            catalog
+            catalog,
+            accountCurrency
         );
 
         const finalCachedInsights = JSON.parse(

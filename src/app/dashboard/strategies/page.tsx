@@ -41,6 +41,7 @@ export default async function StrategiesPage({
             meta={meta}
             initialPerformance={perfResult.performance || []}
             initialSummary={perfResult.summary}
+            currency={perfResult.currency || "USD"}
         />
     );
 }

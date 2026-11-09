@@ -7,7 +7,7 @@
 #define __GSN_EA_LICENSE_MQH__
 
 #property copyright "Copyright 2026, GoldScalperNinja"
-#property link      "https://thenexttrade.com"
+#property link      "https://thenexttrade.io"
 #property version   "2.00"
 
 //+------------------------------------------------------------------+

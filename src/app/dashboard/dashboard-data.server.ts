@@ -38,11 +38,13 @@ import type { WeeklyReviewEligibility } from "@/lib/reports/weekly-review-eligib
 import { getTraderGrowthViewModel } from "@/lib/trader-growth/orchestrator.server";
 import type { TraderGrowthViewModel } from "@/lib/trader-growth/types";
 import { triggerCoachNotifications } from "@/lib/coach/coach-notifications.server";
+import { normalizeCurrencyCode } from "@/lib/utils/cent-account";
 
 // ─── Types ──────────────────────────────────────────────────────────────
 
 export interface DashboardData {
     totalBalance: number;
+    currency?: string;
     winRate: number;
     winRateChange: number;
     streak: number;
@@ -136,6 +138,7 @@ export interface ResolvedParams {
     toParam: string;
     accountFilter: { userId: string; id?: string };
     accountTimezone?: string;
+    accountCurrency?: string;
     startDate: Date;
     endDate: Date;
     filters?: AdvancedFilters;
@@ -215,14 +218,16 @@ export async function resolveAccountAndDates(
 
     const accountFilter = accountId ? { userId, id: accountId } : { userId };
 
-    // Fetch account timezone
+    // Fetch account timezone & currency
     let accountTimezone: string | undefined;
+    let accountCurrency = "USD";
     if (accountId) {
         const acc = await prisma.tradingAccount.findFirst({
             where: { id: accountId, userId },
-            select: { timezone: true },
+            select: { timezone: true, currency: true, server: true },
         });
         accountTimezone = acc?.timezone || undefined;
+        accountCurrency = normalizeCurrencyCode(acc?.currency, acc?.server);
     }
 
     const startDate = parseLocalStartOfDay(fromParam, accountTimezone);
@@ -279,6 +284,7 @@ export async function resolveAccountAndDates(
         toParam: toParam!,
         accountFilter,
         accountTimezone,
+        accountCurrency,
         startDate: startDate!,
         endDate: endDate!,
         filters,
@@ -291,7 +297,8 @@ export async function getEmptyDashboardData(
     userId: string,
     accountId: string | undefined,
     fromParam: string,
-    toParam: string
+    toParam: string,
+    accountCurrency?: string
 ): Promise<DashboardPageData> {
     const [
         userData,
@@ -299,6 +306,7 @@ export async function getEmptyDashboardData(
         firstSessionState,
         weeklyReviewEligibility,
         initialDashboards,
+        selectedAccount,
     ] = await Promise.all([
         prisma.user.findUnique({
             where: { id: userId },
@@ -320,6 +328,12 @@ export async function getEmptyDashboardData(
                 isDefault: true,
             },
         }),
+        accountId
+            ? prisma.tradingAccount.findFirst({
+                  where: { id: accountId, userId },
+                  select: { balance: true, currency: true, server: true },
+              })
+            : Promise.resolve(null),
     ]);
 
     const settings = (userData?.settings as Record<string, any>) || {};
@@ -332,12 +346,22 @@ export async function getEmptyDashboardData(
         /* silent */
     });
 
+    const resolvedCurrency =
+        accountCurrency ||
+        (selectedAccount
+            ? normalizeCurrencyCode(
+                  selectedAccount.currency,
+                  selectedAccount.server
+              )
+            : "USD");
+
     return {
         userName: userData?.name || "Trader",
         hasGlobalTrades: false,
         initialDashboards,
         dashboardData: {
-            totalBalance: 0,
+            totalBalance: selectedAccount?.balance || 0,
+            currency: resolvedCurrency,
             winRate: 0,
             winRateChange: 0,
             streak: userData?.streak || 0,
@@ -468,7 +492,7 @@ export async function getFullDashboardData(
             }),
             prisma.tradingAccount.findMany({
                 where: accountFilter,
-                select: { balance: true },
+                select: { balance: true, currency: true, server: true },
             }),
             prisma.journalEntry.findMany({
                 where: {
@@ -563,11 +587,16 @@ export async function getFullDashboardData(
         : null;
     const insightData = buildInsightData(intelligenceData);
 
-    // Balances
+    // Balances & Currency
     const totalBalance = accounts.reduce(
         (sum, acc) => sum + (acc.balance || 0),
         0
     );
+    const resolvedCurrency =
+        params.accountCurrency ||
+        (accounts.length > 0
+            ? normalizeCurrencyCode(accounts[0].currency, accounts[0].server)
+            : "USD");
 
     // Chart data
     const chartData = await buildChartData(
@@ -599,6 +628,7 @@ export async function getFullDashboardData(
     // Dashboard data object
     const dashboardData: DashboardData = {
         totalBalance,
+        currency: resolvedCurrency,
         winRate: stats.winRate ?? 0,
         winRateChange: 0,
         streak: userData?.streak || 0,
@@ -624,24 +654,33 @@ export async function getFullDashboardData(
     const userSettings = (userData?.settings as Record<string, any>) || {};
     const tradingGoal = (userSettings.onboarding as any)?.tradingGoal || null;
 
-    const growthViewModel = await getTraderGrowthViewModel(userId, accountId);
-    const nextBestAction = growthViewModel.nextAction;
-
-    // Coach & recommendations
-    const [signals, firstSessionState, activeCoachPlan] =
-        await Promise.all([
-            computeTraderSignals(userId, { persist: true }),
-            getFirstSessionState(userId),
-            prisma.coachActionPlan.findFirst({
-                where: { userId, status: "ACTIVE" },
-                orderBy: { createdAt: "desc" },
-                include: {
-                    items: {
-                        orderBy: { position: "asc" },
-                    },
+    // Coach, growth loop, and weekly review eligibility in parallel
+    const [
+        growthViewModel,
+        signals,
+        firstSessionState,
+        activeCoachPlan,
+        weeklyReviewEligibility,
+    ] = await Promise.all([
+        getTraderGrowthViewModel(userId, accountId),
+        computeTraderSignals(userId, { persist: true }),
+        getFirstSessionState(userId),
+        prisma.coachActionPlan.findFirst({
+            where: { userId, status: "ACTIVE" },
+            orderBy: { createdAt: "desc" },
+            include: {
+                items: {
+                    orderBy: { position: "asc" },
                 },
-            }),
-        ]);
+            },
+        }),
+        getWeeklyReviewEligibility({
+            userId,
+            accountId: accountId || undefined,
+        }),
+    ]);
+
+    const nextBestAction = growthViewModel.nextAction;
 
     const learningRecommendations = await getLearningRecommendations(
         userId,
@@ -660,12 +699,6 @@ export async function getFullDashboardData(
     // Fire-and-forget coach notification trigger
     triggerCoachNotifications(userId).catch(() => {
         /* silent */
-    });
-
-    // Calculate Weekly Review Eligibility
-    const weeklyReviewEligibility = await getWeeklyReviewEligibility({
-        userId,
-        accountId: accountId || undefined,
     });
 
     const showFirstWeeklyReview =

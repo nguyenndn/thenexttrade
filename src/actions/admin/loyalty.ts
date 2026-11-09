@@ -6,10 +6,15 @@ import { revalidatePath } from "next/cache";
 import type {
   LoyaltyClaimRecord,
   LoyaltyClaimStatus,
+  LoyaltyRewardType,
   ProcessClaimInput,
   LoyaltyTierItem,
 } from "@/lib/loyalty/loyalty.types";
-import { DEFAULT_LOYALTY_TIERS } from "@/lib/loyalty/loyalty.server";
+import {
+  DEFAULT_LOYALTY_TIERS,
+  ensureDefaultLoyaltyTiersSeeded,
+  isLoyaltyEnabled,
+} from "@/lib/loyalty/loyalty.server";
 
 async function requireAdmin() {
   const user = await getAuthUser();
@@ -50,11 +55,13 @@ export async function fetchAdminLoyaltyData(filters?: {
     stats: AdminLoyaltyStats;
     total: number;
     tiers: LoyaltyTierItem[];
+    loyaltyEnabled: boolean;
   };
   error?: string;
 }> {
   try {
     await requireAdmin();
+    await ensureDefaultLoyaltyTiersSeeded();
 
     const statusFilter =
       filters?.status && filters.status !== "ALL" ? filters.status : undefined;
@@ -62,12 +69,12 @@ export async function fetchAdminLoyaltyData(filters?: {
     const page = filters?.page || 1;
     const pageSize = filters?.pageSize || 20;
 
-    const whereClause: any = {};
+    const whereClause: Record<string, unknown> = {};
     if (statusFilter) whereClause.status = statusFilter;
     if (levelFilter) whereClause.level = levelFilter;
 
     // Fetch claims with user profile, aggregates, and tiers
-    const [claims, total, pendingAgg, completedAgg, topTraders, dbTiers] = await Promise.all([
+    const [claims, total, pendingAgg, completedAgg, topTraders, dbTiers, loyaltyEnabled] = await Promise.all([
       prisma.loyaltyClaim.findMany({
         where: whereClause,
         include: {
@@ -100,32 +107,40 @@ export async function fetchAdminLoyaltyData(filters?: {
         where: { level: { gte: 5 } },
       }),
       prisma.loyaltyTier.findMany({
-        orderBy: { level: "asc" },
+        orderBy: [{ level: "asc" }],
       }),
+      isLoyaltyEnabled(),
     ]);
 
-    const formattedClaims: LoyaltyClaimRecord[] = claims.map((c) => ({
-      id: c.id,
-      userId: c.userId,
-      tierId: c.tierId,
-      level: c.level,
-      tierName: c.tierName,
-      requiredLots: c.requiredLots,
-      actualLots: c.actualLots,
-      rewardType: c.rewardType,
-      rewardTitle: c.rewardTitle,
-      cashAmount: c.cashAmount,
-      payoutMethod: c.payoutMethod,
-      network: c.network,
-      usdtAddress: c.usdtAddress,
-      status: c.status,
-      adminNotes: c.adminNotes,
-      transactionRef: c.transactionRef,
-      claimedAt: c.claimedAt.toISOString(),
-      processedAt: c.processedAt ? c.processedAt.toISOString() : null,
-      processedBy: c.processedBy,
-      user: c.user,
-    }));
+    const formattedClaims: LoyaltyClaimRecord[] = claims.map((c) => {
+      const details = (c.payoutDetails as Record<string, unknown> | null) || {};
+      return {
+        id: c.id,
+        userId: c.userId,
+        tierId: c.tierId,
+        level: c.level,
+        tierName: c.tierName,
+        requiredLots: c.requiredLots,
+        actualLots: c.actualLots,
+        rewardType: c.rewardType,
+        rewardTitle: c.rewardTitle,
+        cashAmount: c.cashAmount,
+        payoutMethod: c.payoutMethod,
+        network: c.network,
+        usdtAddress: c.usdtAddress,
+        accountId: typeof details.accountId === "string" ? details.accountId : null,
+        accountNumber: typeof details.accountNumber === "string" ? details.accountNumber : null,
+        broker: typeof details.broker === "string" ? details.broker : null,
+        accountName: typeof details.accountName === "string" ? details.accountName : null,
+        status: c.status,
+        adminNotes: c.adminNotes,
+        transactionRef: c.transactionRef,
+        claimedAt: c.claimedAt.toISOString(),
+        processedAt: c.processedAt ? c.processedAt.toISOString() : null,
+        processedBy: c.processedBy,
+        user: c.user,
+      };
+    });
 
     const stats: AdminLoyaltyStats = {
       pendingCount: pendingAgg._count.id || 0,
@@ -161,6 +176,7 @@ export async function fetchAdminLoyaltyData(filters?: {
         stats,
         total,
         tiers,
+        loyaltyEnabled,
       },
     };
   } catch (error) {
@@ -241,5 +257,283 @@ export async function processAdminClaim(input: ProcessClaimInput): Promise<{
   } catch (error) {
     console.error("[Admin Loyalty] processAdminClaim error:", error);
     return { success: false, error: (error as Error).message || "Failed to process claim" };
+  }
+}
+
+/**
+ * Toggle Loyalty & Rewards Program ON/OFF (shows/hides sidebar menu + guards /dashboard/loyalty)
+ */
+export async function toggleLoyaltyFeature(enabled: boolean): Promise<{
+  success: boolean;
+  enabled?: boolean;
+  error?: string;
+}> {
+  try {
+    await requireAdmin();
+
+    await prisma.systemSetting.upsert({
+      where: { key: "feature_loyalty" },
+      create: { key: "feature_loyalty", value: { enabled } },
+      update: { value: { enabled } },
+    });
+
+    revalidatePath("/dashboard", "layout");
+    revalidatePath("/dashboard/loyalty");
+    revalidatePath("/admin/loyalty");
+
+    return { success: true, enabled };
+  } catch (error) {
+    console.error("[Admin Loyalty] toggleLoyaltyFeature error:", error);
+    return {
+      success: false,
+      error: (error as Error).message || "Failed to toggle Loyalty feature",
+    };
+  }
+}
+
+export interface UpsertLoyaltyTierInput {
+  id?: string;
+  level: number;
+  name: string;
+  requiredLots: number;
+  rewardType: LoyaltyRewardType;
+  rewardTitle: string;
+  cashAmount: number;
+  perkDescription: string;
+  icon: string;
+  badgeColor: string;
+  order?: number;
+  isActive: boolean;
+}
+
+/**
+ * Create or Update a Loyalty Milestone Tier (Level)
+ */
+export async function upsertLoyaltyTier(input: UpsertLoyaltyTierInput): Promise<{
+  success: boolean;
+  tiers?: LoyaltyTierItem[];
+  error?: string;
+}> {
+  try {
+    await requireAdmin();
+    await ensureDefaultLoyaltyTiersSeeded();
+
+    const level = Math.floor(Number(input.level));
+    const name = input.name?.trim();
+    const requiredLots = Number(input.requiredLots);
+    const rewardTitle = input.rewardTitle?.trim();
+    const cashAmount = Math.max(0, Number(input.cashAmount) || 0);
+    const perkDescription = input.perkDescription?.trim() || "";
+    const icon = input.icon?.trim() || "Shield";
+    const badgeColor = input.badgeColor?.trim() || "#EAB308";
+    const order = input.order ? Math.floor(Number(input.order)) : level;
+    const isActive = Boolean(input.isActive);
+
+    if (!level || level < 1) {
+      return { success: false, error: "Level must be a positive integer (1 or higher)." };
+    }
+    if (!name) {
+      return { success: false, error: "Level name is required." };
+    }
+    if (isNaN(requiredLots) || requiredLots <= 0) {
+      return { success: false, error: "Required XAUUSD/GOLD lots must be greater than 0." };
+    }
+    if (!rewardTitle) {
+      return { success: false, error: "Reward headline is required." };
+    }
+
+    // Check duplicate level if creating or changing level
+    const existingByLevel = await prisma.loyaltyTier.findUnique({
+      where: { level },
+    });
+
+    if (input.id) {
+      if (existingByLevel && existingByLevel.id !== input.id) {
+        return {
+          success: false,
+          error: `Level ${level} already exists (${existingByLevel.name}). Choose another level number.`,
+        };
+      }
+      await prisma.loyaltyTier.update({
+        where: { id: input.id },
+        data: {
+          level,
+          name,
+          requiredLots,
+          rewardType: input.rewardType,
+          rewardTitle,
+          cashAmount,
+          perkDescription,
+          icon,
+          badgeColor,
+          order,
+          isActive,
+        },
+      });
+    } else if (existingByLevel) {
+      return {
+        success: false,
+        error: `Level ${level} already exists (${existingByLevel.name}). Edit that level or choose a new level number.`,
+      };
+    } else {
+      await prisma.loyaltyTier.create({
+        data: {
+          level,
+          name,
+          requiredLots,
+          rewardType: input.rewardType,
+          rewardTitle,
+          cashAmount,
+          perkDescription,
+          icon,
+          badgeColor,
+          order,
+          isActive,
+        },
+      });
+    }
+
+    const dbTiers = await prisma.loyaltyTier.findMany({
+      orderBy: [{ level: "asc" }],
+    });
+
+    const tiers: LoyaltyTierItem[] = dbTiers.map((t) => ({
+      id: t.id,
+      level: t.level,
+      name: t.name,
+      requiredLots: t.requiredLots,
+      rewardType: t.rewardType,
+      rewardTitle: t.rewardTitle,
+      cashAmount: t.cashAmount ?? 0,
+      perkDescription: t.perkDescription ?? "",
+      icon: t.icon,
+      badgeColor: t.badgeColor,
+      order: t.order,
+      isActive: t.isActive,
+    }));
+
+    revalidatePath("/admin/loyalty");
+    revalidatePath("/dashboard/loyalty");
+
+    return { success: true, tiers };
+  } catch (error) {
+    console.error("[Admin Loyalty] upsertLoyaltyTier error:", error);
+    return {
+      success: false,
+      error: (error as Error).message || "Failed to save loyalty tier",
+    };
+  }
+}
+
+/**
+ * Toggle an individual Loyalty Tier ON/OFF (isActive)
+ */
+export async function toggleLoyaltyTierActive(
+  level: number,
+  isActive: boolean,
+  id?: string
+): Promise<{
+  success: boolean;
+  tiers?: LoyaltyTierItem[];
+  error?: string;
+}> {
+  try {
+    await requireAdmin();
+    await ensureDefaultLoyaltyTiersSeeded();
+
+    if (id) {
+      await prisma.loyaltyTier.update({
+        where: { id },
+        data: { isActive },
+      });
+    } else {
+      await prisma.loyaltyTier.update({
+        where: { level },
+        data: { isActive },
+      });
+    }
+
+    const dbTiers = await prisma.loyaltyTier.findMany({
+      orderBy: [{ level: "asc" }],
+    });
+
+    const tiers: LoyaltyTierItem[] = dbTiers.map((t) => ({
+      id: t.id,
+      level: t.level,
+      name: t.name,
+      requiredLots: t.requiredLots,
+      rewardType: t.rewardType,
+      rewardTitle: t.rewardTitle,
+      cashAmount: t.cashAmount ?? 0,
+      perkDescription: t.perkDescription ?? "",
+      icon: t.icon,
+      badgeColor: t.badgeColor,
+      order: t.order,
+      isActive: t.isActive,
+    }));
+
+    revalidatePath("/admin/loyalty");
+    revalidatePath("/dashboard/loyalty");
+
+    return { success: true, tiers };
+  } catch (error) {
+    console.error("[Admin Loyalty] toggleLoyaltyTierActive error:", error);
+    return {
+      success: false,
+      error: (error as Error).message || "Failed to toggle tier status",
+    };
+  }
+}
+
+/**
+ * Delete a Loyalty Milestone Tier
+ */
+export async function deleteLoyaltyTier(
+  level: number,
+  id?: string
+): Promise<{
+  success: boolean;
+  tiers?: LoyaltyTierItem[];
+  error?: string;
+}> {
+  try {
+    await requireAdmin();
+    await ensureDefaultLoyaltyTiersSeeded();
+
+    if (id) {
+      await prisma.loyaltyTier.delete({ where: { id } });
+    } else {
+      await prisma.loyaltyTier.delete({ where: { level } });
+    }
+
+    const dbTiers = await prisma.loyaltyTier.findMany({
+      orderBy: [{ level: "asc" }],
+    });
+
+    const tiers: LoyaltyTierItem[] = dbTiers.map((t) => ({
+      id: t.id,
+      level: t.level,
+      name: t.name,
+      requiredLots: t.requiredLots,
+      rewardType: t.rewardType,
+      rewardTitle: t.rewardTitle,
+      cashAmount: t.cashAmount ?? 0,
+      perkDescription: t.perkDescription ?? "",
+      icon: t.icon,
+      badgeColor: t.badgeColor,
+      order: t.order,
+      isActive: t.isActive,
+    }));
+
+    revalidatePath("/admin/loyalty");
+    revalidatePath("/dashboard/loyalty");
+
+    return { success: true, tiers };
+  } catch (error) {
+    console.error("[Admin Loyalty] deleteLoyaltyTier error:", error);
+    return {
+      success: false,
+      error: (error as Error).message || "Failed to delete loyalty tier",
+    };
   }
 }

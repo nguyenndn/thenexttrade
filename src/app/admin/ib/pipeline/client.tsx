@@ -427,11 +427,14 @@ export function VipPipelineClient({
                                 <DropdownMenuItem onClick={() => updateFilterParams({ broker: "Exness" })}>
                                     Exness
                                 </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => updateFilterParams({ broker: "XM" })}>
-                                    XM
+                                <DropdownMenuItem onClick={() => updateFilterParams({ broker: "Vantage" })}>
+                                    Vantage
                                 </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => updateFilterParams({ broker: "IC Markets" })}>
-                                    IC Markets
+                                <DropdownMenuItem onClick={() => updateFilterParams({ broker: "VTMarkets" })}>
+                                    VTMarkets
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => updateFilterParams({ broker: "Ultimamarkets" })}>
+                                    Ultimamarkets
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>

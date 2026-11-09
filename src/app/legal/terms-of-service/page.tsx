@@ -205,7 +205,7 @@ export default function TermsOfServicePage() {
                     MT5 EAs and VIP community signals, your MT5 trading
                     account must be registered under TheNextTrade&apos;s
                     official partner link with a supported partner broker
-                    (such as Exness, Vantage, IC Markets, or Tickmill). When you
+                    (such as Exness, Vantage, VTMarkets or Ultimamarkets). When you
                     trade through a partner link, we may receive standard IB
                     volume rebates directly from the broker at{" "}
                     <strong className="font-bold text-gray-900 dark:text-white">
@@ -296,10 +296,10 @@ export default function TermsOfServicePage() {
                     </a>{" "}
                     or by email at{" "}
                     <a
-                        href="mailto:support@thenexttrade.com"
+                        href="mailto:support@thenexttrade.io"
                         className="font-bold text-amber-600 dark:text-gold hover:underline"
                     >
-                        support@thenexttrade.com
+                        support@thenexttrade.io
                     </a>
                     .
                 </p>

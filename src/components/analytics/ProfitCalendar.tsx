@@ -20,6 +20,7 @@ import { DayTradeList } from "./DayTradeList";
 import { toast } from "sonner";
 import { getDayDetails } from "@/actions/journal";
 import { Button } from "@/components/ui/Button";
+import { formatDashboardCurrency } from "@/lib/utils/cent-account";
 
 interface ProfitCalendarProps {
     data: Array<{
@@ -31,12 +32,14 @@ interface ProfitCalendarProps {
     }>;
     equityCurve?: Array<{ date: string; balance: number; pnl: number }>;
     accountId?: string;
+    currency?: string;
 }
 
 export function ProfitCalendar({
     data,
     equityCurve,
     accountId,
+    currency = "USD",
 }: ProfitCalendarProps) {
     const [currentMonth, setCurrentMonth] = useState(new Date());
     const [selectedDay, setSelectedDay] = useState<{
@@ -216,11 +219,7 @@ export function ProfitCalendar({
                             monthlyPnL >= 0 ? "text-primary" : "text-red-500"
                         }
                     >
-                        {monthlyPnL >= 0 ? "" : "-"}$
-                        {Math.abs(monthlyPnL).toLocaleString("en-US", {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                        })}
+                        {formatDashboardCurrency(monthlyPnL, currency)}
                     </span>
                 </p>
                 <div className="flex items-center gap-3">
@@ -357,7 +356,7 @@ export function ProfitCalendar({
  `}
                                                 title={
                                                     hasTrades
-                                                        ? `$${pnl.toFixed(2)} (${dayData?.tradeCount} trades)`
+                                                        ? `${formatDashboardCurrency(pnl, currency)} (${dayData?.tradeCount} trades)`
                                                         : "No trades"
                                                 }
                                             >
@@ -412,7 +411,7 @@ export function ProfitCalendar({
                                         <div className="flex flex-col items-center mt-2.5 w-full">
                                             <span
                                                 className={`w-full text-center px-0.5 text-base sm:text-lg tracking-tighter whitespace-nowrap font-bold leading-none mb-0.5 ${weeklyPnL >= 0 ? "text-primary" : "text-red-500"}`}
-                                                title={`$${Math.abs(weeklyPnL).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+                                                title={formatDashboardCurrency(weeklyPnL, currency)}
                                             >
                                                 {weeklyPnL >= 0 ? "" : "-"}
                                                 {Math.abs(
@@ -465,6 +464,7 @@ export function ProfitCalendar({
                         stats={selectedDay.stats}
                         startBalance={selectedDay.startBalance}
                         endBalance={selectedDay.endBalance}
+                        currency={currency}
                         onClose={() => setSelectedDay(null)}
                     />
                 )}

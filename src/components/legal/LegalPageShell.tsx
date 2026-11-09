@@ -1,9 +1,11 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { motion } from "framer-motion";
 import { Scale, Shield, Cookie, ChevronRight } from "lucide-react";
+import { SPRING_SOFT } from "@/lib/animations";
 
 export interface LegalSectionItem {
     id: string;
@@ -38,6 +40,13 @@ const LEGAL_NAV_LINKS = [
     },
 ];
 
+const SCROLL_OFFSET_PX = 112; // Matches scroll-mt-28 (7rem)
+const SCROLL_DURATION_MS = 560;
+
+function easeInOutCubic(t: number): number {
+    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+}
+
 export function LegalPageShell({
     title,
     lead,
@@ -49,18 +58,131 @@ export function LegalPageShell({
 }: LegalPageShellProps) {
     const pathname = usePathname();
     const [activeId, setActiveId] = useState<string>(sections[0]?.id || "");
+    const isProgrammaticScrollRef = useRef(false);
+    const rafIdRef = useRef<number | null>(null);
+
+    const cancelActiveAnimation = useCallback(() => {
+        if (rafIdRef.current !== null) {
+            window.cancelAnimationFrame(rafIdRef.current);
+            rafIdRef.current = null;
+        }
+        isProgrammaticScrollRef.current = false;
+    }, []);
+
+    const animateScrollTo = useCallback(
+        (targetY: number) => {
+            cancelActiveAnimation();
+
+            const startY = window.scrollY;
+            const distance = targetY - startY;
+
+            if (Math.abs(distance) < 2) {
+                window.scrollTo(0, targetY);
+                return;
+            }
+
+            isProgrammaticScrollRef.current = true;
+            const startTime = performance.now();
+
+            const step = (now: number) => {
+                const elapsed = now - startTime;
+                const progress = Math.min(1, elapsed / SCROLL_DURATION_MS);
+                const eased = easeInOutCubic(progress);
+
+                window.scrollTo(0, Math.round(startY + distance * eased));
+
+                if (progress < 1) {
+                    rafIdRef.current = window.requestAnimationFrame(step);
+                } else {
+                    rafIdRef.current = null;
+                    isProgrammaticScrollRef.current = false;
+                }
+            };
+
+            rafIdRef.current = window.requestAnimationFrame(step);
+        },
+        [cancelActiveAnimation]
+    );
+
+    const scrollToSection = useCallback(
+        (id: string, updateUrl = true) => {
+            const targetEl = document.getElementById(id);
+            if (!targetEl) return;
+
+            setActiveId(id);
+
+            const elementTop =
+                targetEl.getBoundingClientRect().top + window.scrollY;
+            const offsetPosition = Math.max(0, elementTop - SCROLL_OFFSET_PX);
+
+            if (updateUrl) {
+                window.history.replaceState(null, "", `#${id}`);
+            }
+
+            animateScrollTo(offsetPosition);
+        },
+        [animateScrollTo]
+    );
+
+    const handleTocClick = (
+        e: React.MouseEvent<HTMLAnchorElement>,
+        id: string
+    ) => {
+        e.preventDefault();
+        scrollToSection(id, true);
+    };
 
     useEffect(() => {
         if (!sections.length) return;
+
+        // Abort programmatic smooth scroll if user manually scrolls with wheel/touch
+        const handleUserInterrupt = () => {
+            if (isProgrammaticScrollRef.current) {
+                cancelActiveAnimation();
+            }
+        };
+
+        window.addEventListener("wheel", handleUserInterrupt, {
+            passive: true,
+        });
+        window.addEventListener("touchmove", handleUserInterrupt, {
+            passive: true,
+        });
+
+        // Handle initial URL hash smoothly on mount
+        const rawHash = window.location.hash.replace(/^#/, "");
+        if (rawHash) {
+            const hashEl = document.getElementById(rawHash);
+            if (hashEl) {
+                const parentSection = hashEl.closest("section[id]");
+                const matchedId = parentSection?.id || rawHash;
+                if (sections.some((s) => s.id === matchedId)) {
+                    setActiveId(matchedId);
+                }
+                window.requestAnimationFrame(() => {
+                    const top =
+                        hashEl.getBoundingClientRect().top + window.scrollY;
+                    animateScrollTo(Math.max(0, top - SCROLL_OFFSET_PX));
+                });
+            }
+        }
 
         const elements = sections
             .map((s) => document.getElementById(s.id))
             .filter((el): el is HTMLElement => el !== null);
 
-        if (!elements.length) return;
+        if (!elements.length) {
+            return () => {
+                window.removeEventListener("wheel", handleUserInterrupt);
+                window.removeEventListener("touchmove", handleUserInterrupt);
+                cancelActiveAnimation();
+            };
+        }
 
         const observer = new IntersectionObserver(
             (entries) => {
+                if (isProgrammaticScrollRef.current) return;
+
                 const visible = entries
                     .filter((entry) => entry.isIntersecting)
                     .sort(
@@ -79,8 +201,13 @@ export function LegalPageShell({
         );
 
         elements.forEach((el) => observer.observe(el));
-        return () => observer.disconnect();
-    }, [sections]);
+        return () => {
+            observer.disconnect();
+            window.removeEventListener("wheel", handleUserInterrupt);
+            window.removeEventListener("touchmove", handleUserInterrupt);
+            cancelActiveAnimation();
+        };
+    }, [sections, animateScrollTo, cancelActiveAnimation]);
 
     return (
         <div className="max-w-6xl mx-auto pt-4 sm:pt-8 pb-8">
@@ -144,19 +271,28 @@ export function LegalPageShell({
                                     <a
                                         key={sec.id}
                                         href={`#${sec.id}`}
-                                        onClick={() => setActiveId(sec.id)}
+                                        onClick={(e) =>
+                                            handleTocClick(e, sec.id)
+                                        }
                                         aria-current={
                                             isCurrent ? "location" : undefined
                                         }
-                                        className={`group flex items-center gap-2 px-2.5 py-2 rounded-lg text-xs font-bold whitespace-nowrap lg:whitespace-normal transition-colors duration-150 ${
+                                        className={`group relative flex items-center gap-2 px-2.5 py-2 rounded-lg text-xs font-bold whitespace-nowrap lg:whitespace-normal transition-colors duration-150 ${
                                             isCurrent
-                                                ? "bg-gold/10 text-amber-700 dark:text-gold border border-gold/25"
-                                                : "text-gray-600 dark:text-gray-400 border border-transparent hover:bg-gray-50 dark:hover:bg-white/[0.03] hover:text-gray-900 dark:hover:text-white"
+                                                ? "text-amber-700 dark:text-gold"
+                                                : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/[0.03] hover:text-gray-900 dark:hover:text-white"
                                         }`}
                                     >
+                                        {isCurrent && (
+                                            <motion.span
+                                                layoutId="legal-toc-active-pill"
+                                                transition={SPRING_SOFT}
+                                                className="absolute inset-0 rounded-lg bg-gold/10 border border-gold/25 pointer-events-none"
+                                            />
+                                        )}
                                         {numbered && (
                                             <span
-                                                className={`tabular-nums text-[11px] font-black shrink-0 ${
+                                                className={`relative z-10 tabular-nums text-[11px] font-black shrink-0 ${
                                                     isCurrent
                                                         ? "text-amber-600 dark:text-gold"
                                                         : "text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300"
@@ -165,7 +301,7 @@ export function LegalPageShell({
                                                 {idx + 1}.
                                             </span>
                                         )}
-                                        <span className="truncate">
+                                        <span className="relative z-10 truncate">
                                             {sec.label}
                                         </span>
                                     </a>
@@ -193,4 +329,3 @@ export function LegalPageShell({
         </div>
     );
 }
-

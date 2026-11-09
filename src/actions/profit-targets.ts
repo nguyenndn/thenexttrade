@@ -5,6 +5,7 @@ import { getAuthUser } from "@/lib/auth-cache";
 import { revalidatePath } from "next/cache";
 import { ActionResponse, TargetType, UpdateProfitTargetsInput, profitTargetsInputSchema } from "@/lib/profit-target/types";
 import { aggregateAccountTargets } from "@/lib/profit-target/target-calculator";
+import { normalizeCurrencyCode } from "@/lib/utils/cent-account";
 
 export async function updateAccountProfitTargets(
   accountId: string,
@@ -83,6 +84,7 @@ export async function getAccountProfitTargets(
     monthlyTargetType: TargetType;
     initialBalance: number | null;
     balance: number;
+    currency: string;
   }>
 > {
   const user = await getAuthUser();
@@ -104,6 +106,8 @@ export async function getAccountProfitTargets(
         monthlyTargetType: true,
         initialBalance: true,
         balance: true,
+        currency: true,
+        server: true,
       },
     });
 
@@ -120,6 +124,7 @@ export async function getAccountProfitTargets(
         monthlyTargetType: (account.monthlyTargetType as TargetType) || "USD",
         initialBalance: account.initialBalance,
         balance: account.balance,
+        currency: normalizeCurrencyCode(account.currency, account.server),
       },
     };
   } catch (error) {
@@ -141,6 +146,7 @@ export async function getAllAccountsProfitTargets(): Promise<
       monthlyTargetType: TargetType;
       initialBalance: number | null;
       balance: number;
+      currency: string;
     }>;
   }>
 > {
@@ -162,6 +168,8 @@ export async function getAllAccountsProfitTargets(): Promise<
         monthlyTargetType: true,
         initialBalance: true,
         balance: true,
+        currency: true,
+        server: true,
       },
       orderBy: [{ isDefault: "desc" }, { createdAt: "asc" }],
     });
@@ -192,6 +200,7 @@ export async function getAllAccountsProfitTargets(): Promise<
           monthlyTargetType: (a.monthlyTargetType as TargetType) || "USD",
           initialBalance: a.initialBalance,
           balance: a.balance,
+          currency: normalizeCurrencyCode(a.currency, a.server),
         })),
       },
     };

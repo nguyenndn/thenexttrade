@@ -9,6 +9,7 @@ import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth-cache";
 import { getUserTradingDataState } from "@/lib/trading-data-state";
 import { SAMPLE_DATE_RANGE } from "@/lib/sample-data/mock-sample-data";
+import { normalizeCurrencyCode } from "@/lib/utils/cent-account";
 
 export const dynamic = "force-dynamic";
 
@@ -140,21 +141,27 @@ export default async function JournalPage({
             ? resolvedParams.dir
             : undefined;
 
-    // Fetch account timezone for broker-aligned day boundaries in parallel with
+    // Fetch account timezone & currency for broker-aligned day boundaries in parallel with
     // the user data-state check. The journal query starts once both are ready.
-    const accountTimezonePromise = accountId
+    const accountInfoPromise = accountId
         ? prisma.tradingAccount
               .findFirst({
                   where: { id: accountId, userId: user.id },
-                  select: { timezone: true },
+                  select: { timezone: true, currency: true, server: true },
               })
-              .then((account) => account?.timezone || undefined)
-        : Promise.resolve(undefined);
+        : prisma.tradingAccount
+              .findFirst({
+                  where: { userId: user.id },
+                  orderBy: { createdAt: "asc" },
+                  select: { timezone: true, currency: true, server: true },
+              });
 
-    const [tradingDataState, accountTimezone] = await Promise.all([
+    const [tradingDataState, accountInfo] = await Promise.all([
         tradingDataStatePromise,
-        accountTimezonePromise,
+        accountInfoPromise,
     ]);
+    const accountTimezone = accountId ? accountInfo?.timezone || undefined : undefined;
+    const accountCurrency = normalizeCurrencyCode(accountInfo?.currency, accountInfo?.server);
 
     const [{ entries, meta, stats }, { strategies }, userTags] =
         await Promise.all([
@@ -190,6 +197,7 @@ export default async function JournalPage({
                 userTags={userTags}
                 hasTradeData={tradingDataState.hasTradeData}
                 currentAccountId={accountId}
+                currency={accountCurrency}
             />
         </div>
     );

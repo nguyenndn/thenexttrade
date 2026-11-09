@@ -1,9 +1,49 @@
 "use server";
 
+import path from "path";
 import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth-cache";
 import { revalidatePath } from "next/cache";
 import { detectBroker } from "@/lib/ea/broker-detection";
+import {
+    isCentAccount,
+    isCentSymbol,
+    normalizeCurrencyCode,
+    normalizeLotSize,
+} from "@/lib/utils/cent-account";
+import { classifyTradeResult } from "@/lib/utils/trade-classification";
+import { EATrade, RawEATrade, parseEATrade } from "@/lib/ea/utils";
+import { isLiveTradingPayload } from "@/lib/trading-account-classification";
+import { decryptPassword } from "@/lib/crypto";
+
+function resolveSavedPassword(
+    cred?: { encryptedPassword?: string | null; keyVersion?: string | null } | null
+): string {
+    if (!cred?.encryptedPassword) return "";
+    if (cred.keyVersion === "v1") {
+        try {
+            return decryptPassword(cred.encryptedPassword);
+        } catch {
+            return "";
+        }
+    }
+    return cred.encryptedPassword;
+}
+
+function getApkCloudSyncService() {
+    // Load self-contained APK Cloud Sync Service from <repo>/mt5-cloud-sync at runtime
+    // using Function constructor so Turbopack does not statically rewrite process.cwd() to /ROOT
+    const runtimeLoader = new Function(
+        "entryPath",
+        "const mod = process.getBuiltinModule ? process.getBuiltinModule('module') : require('module'); return mod.createRequire(entryPath)(entryPath);"
+    ) as (entryPath: string) => {
+        CloudSyncService: { getInstance: () => any };
+    };
+    const rootDir = process["cwd"]();
+    const modulePath = [rootDir, "mt5-cloud-sync", "index.js"].join(path.sep);
+    const { CloudSyncService } = runtimeLoader(modulePath);
+    return CloudSyncService.getInstance();
+}
 
 export async function saveCloudSyncCredentials(
     accountId: string,
@@ -27,7 +67,7 @@ export async function saveCloudSyncCredentials(
 
     const trimmedPassword = investorPassword?.trim();
     if (!trimmedPassword && !account.credential) {
-        return { success: false, error: "Investor password is required." };
+        return { success: false, error: "PASS INVESTOR ( Password also accept ) is required." };
     }
 
     const effectiveServer = server?.trim() || account.server;
@@ -78,6 +118,340 @@ export async function saveCloudSyncCredentials(
     }
 }
 
+async function executeApkCloudSyncJob(params: {
+    jobId: string;
+    userId: string;
+    accountId: string;
+    accountNumber: string;
+    serverName: string;
+    password: string;
+    fromDate: Date;
+    toDate: Date;
+    platform: string;
+    syncOpenTrades: boolean;
+    existingCurrency?: string | null;
+    existingBroker?: string | null;
+}) {
+    const {
+        jobId,
+        userId,
+        accountId,
+        accountNumber,
+        serverName,
+        password,
+        fromDate,
+        toDate,
+        platform,
+        syncOpenTrades,
+        existingCurrency,
+        existingBroker,
+    } = params;
+
+    try {
+        await prisma.mt5ImportJob.update({
+            where: { id: jobId },
+            data: {
+                status: "PROCESSING",
+                progressPercent: 25,
+                message: "Connecting via MT5 APK Cloud Sync & loading trade history...",
+            },
+        });
+
+        const cloudSync = getApkCloudSyncService();
+
+        // Step 1 & Step 2: Login + Load Trade History in [fromDate, toDate]
+        const syncResult = await cloudSync.step2GetHistoryAndSync({
+            serverName,
+            login: accountNumber,
+            password,
+            from: fromDate.toISOString(),
+            to: toDate.toISOString(),
+            limit: 50000,
+            autoPush: false,
+        });
+
+        if (!syncResult || !syncResult.success) {
+            const errMsg =
+                syncResult?.error ||
+                "Failed to authenticate or load trade history from MT5 server.";
+            await prisma.mt5ImportJob.update({
+                where: { id: jobId },
+                data: {
+                    status: "FAILED",
+                    errorCode: "AUTH_OR_SYNC_FAILED",
+                    errorMessage: errMsg,
+                    completedAt: new Date(),
+                },
+            });
+            return {
+                success: false as const,
+                status: "FAILED" as const,
+                error: errMsg,
+            };
+        }
+
+        const rawTrades: RawEATrade[] = Array.isArray(syncResult.syncEnvelope?.trades)
+            ? syncResult.syncEnvelope.trades
+            : [];
+        const currency = String(
+            syncResult.syncEnvelope?.currency || existingCurrency || "USD"
+        );
+        const server = String(syncResult.syncEnvelope?.server || serverName);
+        const broker = String(
+            syncResult.syncEnvelope?.broker || existingBroker || ""
+        );
+        const balance = Number(syncResult.syncEnvelope?.balance ?? 0);
+        const equity = Number(syncResult.syncEnvelope?.equity ?? balance);
+        const leverage = syncResult.syncEnvelope?.leverage;
+        const accountTradeMode = syncResult.syncEnvelope?.accountTradeMode;
+
+        const parsedTrades: EATrade[] = [];
+        for (const rawTrade of rawTrades) {
+            try {
+                // Keep broker epoch seconds intact (gmtOffset = 0), matching /api/worker/jobs/submit and /api/sync/trades
+                parsedTrades.push(
+                    parseEATrade(rawTrade, platform || "MT5", 0)
+                );
+            } catch {
+                // Skip malformed trade entry
+            }
+        }
+
+        // Deduplicate by ticket (prefer closed trade over open snapshot)
+        const dedupedByTicket = new Map<string, EATrade>();
+        for (const trade of parsedTrades) {
+            const prev = dedupedByTicket.get(trade.ticket);
+            if (!prev || trade.closeTime !== null || prev.closeTime === null) {
+                dedupedByTicket.set(trade.ticket, trade);
+            }
+        }
+        const uniqueTrades = Array.from(dedupedByTicket.values());
+        const eligibleTrades = syncOpenTrades
+            ? uniqueTrades
+            : uniqueTrades.filter((t) => t.closeTime !== null);
+
+        const tickets = eligibleTrades.map((t) => t.ticket);
+        const resolvedCurrency = normalizeCurrencyCode(
+            currency,
+            server,
+            eligibleTrades.map((t) => t.symbol)
+        );
+        const isCent = isCentAccount({ currency: resolvedCurrency, server });
+        const normalizedLotFor = (trade: EATrade) =>
+            normalizeLotSize(
+                trade.volume,
+                isCent || isCentSymbol(trade.symbol)
+            );
+
+        const existingEntries =
+            tickets.length > 0
+                ? await prisma.journalEntry.findMany({
+                      where: {
+                          accountId,
+                          externalTicket: { in: tickets },
+                      },
+                      select: {
+                          externalTicket: true,
+                          status: true,
+                          pnl: true,
+                          commission: true,
+                          swap: true,
+                          stopLoss: true,
+                          takeProfit: true,
+                          entryDate: true,
+                          entryPrice: true,
+                          exitDate: true,
+                          exitPrice: true,
+                          lotSize: true,
+                      },
+                  })
+                : [];
+
+        const existingByTicket = new Map(
+            existingEntries.map((e) => [e.externalTicket, e])
+        );
+
+        const newTrades = eligibleTrades.filter(
+            (t) => !existingByTicket.has(t.ticket)
+        );
+        const closingTrades = eligibleTrades.filter((t) => {
+            const existing = existingByTicket.get(t.ticket);
+            if (!existing || t.closeTime === null) return false;
+            if (existing.status === "OPEN") return true;
+            const prevExitMs = existing.exitDate ? new Date(existing.exitDate).getTime() : 0;
+            const nextExitMs = t.closeTime.getTime();
+            const prevPnl = Number(existing.pnl ?? 0);
+            const nextPnl = Number(t.profit ?? 0);
+            return (
+                Math.abs(prevExitMs - nextExitMs) > 1000 ||
+                Math.abs(prevPnl - nextPnl) > 0.005
+            );
+        });
+
+        const detectedBroker = detectBroker(server, broker);
+        const isRealAccount = isLiveTradingPayload({
+            accountTradeMode,
+            server,
+            broker,
+        });
+        const resolvedAccountType = isRealAccount ? "REAL" : "DEMO";
+        const received = eligibleTrades.length;
+
+        const imported = await prisma.$transaction(async (tx) => {
+            let inserted = 0;
+            let closed = 0;
+
+            if (newTrades.length > 0) {
+                const insertData = newTrades.map((trade) => {
+                    const isClosed = trade.closeTime !== null;
+                    return {
+                        userId,
+                        accountId,
+                        symbol: trade.symbol,
+                        type: trade.type,
+                        entryDate: trade.openTime,
+                        entryPrice: trade.openPrice,
+                        exitDate: isClosed ? trade.closeTime : null,
+                        exitPrice: isClosed ? trade.closePrice : null,
+                        stopLoss: trade.stopLoss || null,
+                        takeProfit: trade.takeProfit || null,
+                        lotSize: normalizedLotFor(trade),
+                        pnl: isClosed ? trade.profit : 0,
+                        commission: trade.commission,
+                        swap: trade.swap,
+                        status: isClosed ? ("CLOSED" as const) : ("OPEN" as const),
+                        result: isClosed
+                            ? classifyTradeResult({
+                                  pnl:
+                                      (trade.profit || 0) +
+                                      (trade.commission || 0) +
+                                      (trade.swap || 0),
+                              })
+                            : null,
+                        externalTicket: trade.ticket,
+                        syncSource: "EA_SYNC",
+                        syncedAt: new Date(),
+                    };
+                });
+
+                const res = await tx.journalEntry.createMany({
+                    data: insertData,
+                    skipDuplicates: true,
+                });
+                inserted = res.count;
+            }
+
+            for (const trade of closingTrades) {
+                const upd = await tx.journalEntry.updateMany({
+                    where: {
+                        accountId,
+                        externalTicket: trade.ticket,
+                    },
+                    data: {
+                        status: "CLOSED",
+                        exitDate: trade.closeTime,
+                        exitPrice: trade.closePrice,
+                        entryDate: trade.openTime,
+                        entryPrice: trade.openPrice,
+                        lotSize: normalizedLotFor(trade),
+                        stopLoss: trade.stopLoss || null,
+                        takeProfit: trade.takeProfit || null,
+                        pnl: trade.profit,
+                        commission: trade.commission,
+                        swap: trade.swap,
+                        result: classifyTradeResult({
+                            pnl:
+                                (trade.profit || 0) +
+                                (trade.commission || 0) +
+                                (trade.swap || 0),
+                        }),
+                        syncedAt: new Date(),
+                    },
+                });
+                closed += upd.count;
+            }
+
+            const skipped = Math.max(0, received - inserted - closed);
+            const summaryMessage = `Synced ${received} trades (${inserted} new, ${closed} updated, ${skipped} already synced).`;
+
+            await tx.syncHistory.create({
+                data: {
+                    tradingAccountId: accountId,
+                    tradesReceived: received,
+                    tradesImported: inserted + closed,
+                    tradesSkipped: skipped,
+                    eaVersion: "2.4.0",
+                    clientTime: new Date(),
+                },
+            });
+
+            await tx.tradingAccount.update({
+                where: { id: accountId },
+                data: {
+                    status: "CONNECTED",
+                    syncSource: "CLOUD_WORKER",
+                    lastHeartbeat: new Date(),
+                    lastSync: new Date(),
+                    eaVersion: "2.4.0",
+                    totalTrades: { increment: inserted },
+                    currency: resolvedCurrency,
+                    server,
+                    ...(detectedBroker || broker
+                        ? { broker: detectedBroker || broker }
+                        : {}),
+                    ...(leverage ? { leverage: String(leverage) } : {}),
+                    accountType: resolvedAccountType,
+                    ...(Number.isFinite(balance) ? { balance } : {}),
+                    ...(Number.isFinite(equity) ? { equity } : {}),
+                },
+            });
+
+            await tx.mt5ImportJob.update({
+                where: { id: jobId },
+                data: {
+                    status: "COMPLETED",
+                    progressPercent: 100,
+                    dealsReceived: received,
+                    message: summaryMessage,
+                    completedAt: new Date(),
+                },
+            });
+
+            return {
+                success: true as const,
+                status: "COMPLETED" as const,
+                received,
+                inserted,
+                closed,
+                skipped,
+                message: summaryMessage,
+            };
+        });
+
+        return imported;
+    } catch (err: any) {
+        const errMsg =
+            err?.message ||
+            "Unexpected error while executing MT5 Cloud Sync.";
+        await prisma.mt5ImportJob
+            .update({
+                where: { id: jobId },
+                data: {
+                    status: "FAILED",
+                    errorCode: "SYNC_EXECUTION_ERROR",
+                    errorMessage: errMsg,
+                    completedAt: new Date(),
+                },
+            })
+            .catch(() => {});
+        return {
+            success: false as const,
+            status: "FAILED" as const,
+            error: errMsg,
+        };
+    }
+}
+
 export async function triggerCloudSync(
     accountId: string,
     period: string | number = "30",
@@ -100,7 +474,7 @@ export async function triggerCloudSync(
     if (!account.credential) {
         return {
             success: false,
-            error: "Please configure your Investor Password before syncing.",
+            error: "Please configure your PASS INVESTOR ( Password also accept ) before syncing.",
             needsCredentials: true,
         };
     }
@@ -119,7 +493,6 @@ export async function triggerCloudSync(
         const isPending = activeJob.status === "PENDING";
         const STALE_THRESHOLD_MS = isPending ? 60 * 1000 : 120 * 1000;
         if (ageMs > STALE_THRESHOLD_MS) {
-            // Expire the old stuck job so user is not blocked
             await prisma.mt5ImportJob.update({
                 where: { id: activeJob.id },
                 data: {
@@ -143,27 +516,59 @@ export async function triggerCloudSync(
     }
 
     const now = new Date();
+    const endOfTodayUtc = new Date(
+        Date.UTC(
+            now.getUTCFullYear(),
+            now.getUTCMonth(),
+            now.getUTCDate(),
+            23,
+            59,
+            59,
+            999
+        )
+    );
     let fromDate: Date;
-    let toDate: Date = now;
+    let toDate: Date = endOfTodayUtc;
     const isCustom = String(period) === "custom";
     const isAll = String(period) === "all";
 
     if (isCustom) {
         if (customRange?.from) {
-            fromDate = new Date(customRange.from);
+            fromDate = new Date(`${customRange.from}T00:00:00.000Z`);
         } else {
             fromDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
         }
         if (customRange?.to) {
-            const endOfDay = new Date(customRange.to);
-            endOfDay.setHours(23, 59, 59, 999);
-            toDate = endOfDay;
+            toDate = new Date(`${customRange.to}T23:59:59.999Z`);
         }
     } else if (isAll) {
-        fromDate = new Date(2015, 0, 1);
+        fromDate = new Date(Date.UTC(2015, 0, 1, 0, 0, 0, 0));
+    } else if (String(period) === "1") {
+        // "Today": start of today in UTC (00:00:00.000Z) through end of today (23:59:59.999Z)
+        fromDate = new Date(
+            Date.UTC(
+                now.getUTCFullYear(),
+                now.getUTCMonth(),
+                now.getUTCDate(),
+                0,
+                0,
+                0,
+                0
+            )
+        );
     } else {
         const days = Math.max(1, parseInt(String(period), 10) || 30);
-        fromDate = new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
+        fromDate = new Date(
+            Date.UTC(
+                now.getUTCFullYear(),
+                now.getUTCMonth(),
+                now.getUTCDate() - days,
+                0,
+                0,
+                0,
+                0
+            )
+        );
     }
 
     const jobId = `job_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
@@ -177,18 +582,50 @@ export async function triggerCloudSync(
             rangeFrom: fromDate,
             rangeTo: toDate,
             status: "PENDING",
-            progressPercent: 0,
-            message: "Waiting for worker pickup...",
+            progressPercent: 10,
+            message: "Starting MT5 APK Cloud Sync...",
         },
     });
 
+    // Execute MT5 APK Cloud Sync directly inside the Next.js server process (no port 3085 needed)
+    const execRes = await executeApkCloudSyncJob({
+        jobId: job.id,
+        userId: user.id,
+        accountId: account.id,
+        accountNumber: String(account.accountNumber || "").trim(),
+        serverName: String(account.server || "STARTRADERFinancial-Demo").trim(),
+        password: resolveSavedPassword(account.credential),
+        fromDate,
+        toDate,
+        platform: account.platform || "MT5",
+        syncOpenTrades: account.syncOpenTrades !== false,
+        existingCurrency: account.currency,
+        existingBroker: account.broker,
+    });
+
     revalidatePath("/dashboard/accounts");
+    revalidatePath("/dashboard");
+    revalidatePath("/dashboard/journal");
+    revalidatePath("/dashboard/analytics");
+
+    if (!execRes || !execRes.success) {
+        return {
+            success: false,
+            jobId: job.id,
+            status: "FAILED",
+            error: execRes?.error || "Failed to sync trade history.",
+        };
+    }
 
     return {
         success: true,
         jobId: job.id,
-        status: "PENDING",
-        message: "Sync request queued successfully.",
+        status: "COMPLETED",
+        dealsReceived: execRes.received,
+        inserted: execRes.inserted,
+        updated: execRes.closed,
+        skipped: execRes.skipped,
+        message: execRes.message || "Cloud sync completed successfully.",
     };
 }
 
@@ -204,7 +641,18 @@ export async function getCloudSyncStatus(accountId: string) {
             id: true,
             syncSource: true,
             lastSync: true,
-            credential: { select: { updatedAt: true } },
+            currency: true,
+            server: true,
+            broker: true,
+            balance: true,
+            equity: true,
+            credential: {
+                select: {
+                    updatedAt: true,
+                    encryptedPassword: true,
+                    keyVersion: true,
+                },
+            },
             mt5ImportJobs: {
                 orderBy: { createdAt: "desc" },
                 take: 1,
@@ -229,7 +677,6 @@ export async function getCloudSyncStatus(accountId: string) {
 
     let latestJob = account.mt5ImportJobs[0] || null;
 
-    // Auto-expire stale PENDING (60s) or PROCESSING (120s) jobs
     if (latestJob && (latestJob.status === "PENDING" || latestJob.status === "PROCESSING")) {
         const ageMs = Date.now() - new Date(latestJob.createdAt).getTime();
         const isPending = latestJob.status === "PENDING";
@@ -259,8 +706,14 @@ export async function getCloudSyncStatus(accountId: string) {
     return {
         success: true,
         hasCredentials: Boolean(account.credential),
+        savedPassword: resolveSavedPassword(account.credential),
         syncSource: account.syncSource,
         lastSync: account.lastSync,
+        currency: normalizeCurrencyCode(account.currency, account.server),
+        server: account.server,
+        broker: account.broker,
+        balance: account.balance,
+        equity: account.equity,
         latestJob,
     };
 }
@@ -298,4 +751,30 @@ export async function cancelCloudSyncJob(accountId: string, reason?: string) {
 
     revalidatePath("/dashboard/accounts");
     return { success: true, message: "Sync job cancelled." };
+}
+
+export async function searchMt5BrokersAndServers(
+    query: string = "",
+    region: string = "VN"
+) {
+    try {
+        const cloudSync = getApkCloudSyncService();
+        const res = await cloudSync.searchBrokersAndServers(
+            String(query || "").trim(),
+            region
+        );
+        return {
+            success: true,
+            query: res.query,
+            brokers: res.brokers || [],
+            servers: res.servers || [],
+        };
+    } catch (err: any) {
+        return {
+            success: false,
+            error: err?.message || "Failed to search MT5 brokers and servers",
+            brokers: [],
+            servers: [],
+        };
+    }
 }

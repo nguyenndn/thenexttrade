@@ -7,6 +7,7 @@ import {
   getUserLoyaltyProgress,
   getLoyaltyTiers,
   calculateUserCumulativeLots,
+  isLoyaltyEnabled,
 } from "@/lib/loyalty/loyalty.server";
 import type { ClaimRewardInput, UserLoyaltyProgress, UsdtNetwork } from "@/lib/loyalty/loyalty.types";
 
@@ -41,9 +42,18 @@ export async function submitClaimReward(input: ClaimRewardInput): Promise<{
   error?: string;
 }> {
   try {
-    const user = await getAuthUser();
+    const [user, loyaltyEnabled] = await Promise.all([
+      getAuthUser(),
+      isLoyaltyEnabled(),
+    ]);
     if (!user) {
       return { success: false, error: "Unauthorized. Please log in." };
+    }
+    if (!loyaltyEnabled) {
+      return {
+        success: false,
+        error: "The Partner Loyalty & Rewards program is currently disabled.",
+      };
     }
 
     const { level, note } = input;
@@ -90,12 +100,20 @@ export async function submitClaimReward(input: ClaimRewardInput): Promise<{
       return { success: false, error: `Invalid loyalty milestone tier level: ${level}.` };
     }
 
-    // 3. Verify user's actual cumulative lots
-    const { totalLots } = await calculateUserCumulativeLots(user.id);
+    // 3. Verify user's actual cumulative XAUUSD/GOLD lots on the selected REAL IB account
+    const lotData = await calculateUserCumulativeLots(user.id, input.accountId);
+    if (!lotData.accountId) {
+      return {
+        success: false,
+        error: "Only verified Partner IB REAL accounts qualify for Loyalty rewards.",
+      };
+    }
+
+    const { totalLots } = lotData;
     if (totalLots < targetTier.requiredLots) {
       return {
         success: false,
-        error: `Insufficient volume. You have ${totalLots} lots, but Level ${level} requires ${targetTier.requiredLots} lots.`,
+        error: `Insufficient XAUUSD/GOLD volume on account #${lotData.accountNumber}. This account has ${totalLots} lots, but Level ${level} requires ${targetTier.requiredLots} lots.`,
       };
     }
 
@@ -111,15 +129,22 @@ export async function submitClaimReward(input: ClaimRewardInput): Promise<{
 
     if (existing) {
       if (existing.status === "PENDING") {
-        return { success: false, error: "Your claim for this milestone is currently pending review." };
+        return {
+          success: false,
+          error: `Your claim for Level ${level} is currently pending admin review.`,
+        };
       }
       if (existing.status === "COMPLETED" || existing.status === "APPROVED") {
-        return { success: false, error: "You have already claimed this milestone reward." };
+        return {
+          success: false,
+          error: `You have already claimed the Level ${level} milestone reward.`,
+        };
       }
     }
 
-    // 5. Create or Re-Submit (if previously REJECTED) Claim Record
+    // 5. Create or Re-Submit Claim Record with IB Account & XAUUSD/GOLD metadata
     const claimPayload = {
+      tierId: targetTier.id || null,
       tierName: targetTier.name,
       requiredLots: targetTier.requiredLots,
       actualLots: totalLots,
@@ -129,10 +154,17 @@ export async function submitClaimReward(input: ClaimRewardInput): Promise<{
       payoutMethod: "USDT",
       network,
       usdtAddress: cleanAddress,
-      payoutDetails: note ? { note } : undefined,
+      payoutDetails: {
+        accountId: lotData.accountId,
+        accountNumber: lotData.accountNumber,
+        broker: lotData.broker,
+        accountName: lotData.accountName,
+        symbolScope: "XAUUSD/GOLD",
+        ...(note ? { note } : {}),
+      },
       status: "PENDING" as const,
-      adminNote: null,
-      txHash: null,
+      adminNotes: null,
+      transactionRef: null,
       processedBy: null,
       processedAt: null,
     };

@@ -2,6 +2,7 @@
 
 import { Download } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { formatDashboardCurrency } from "@/lib/utils/cent-account";
 
 interface ReportPreviewProps {
     data: any;
@@ -10,6 +11,7 @@ interface ReportPreviewProps {
 
 export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
     if (!data) return null;
+    const currency = data.currency || "USD";
 
     return (
         <div className="bg-white dark:bg-[#1E2028] p-6 rounded-lg border border-dashboard shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -41,8 +43,11 @@ export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
                         <p
                             className={`text-2xl font-black ${data.summary.netPnL >= 0 ? "text-primary" : "text-red-500"}`}
                         >
-                            {data.summary.netPnL >= 0 ? "+" : ""}$
-                            {data.summary.netPnL.toFixed(2)}
+                            {formatDashboardCurrency(
+                                data.summary.netPnL,
+                                currency,
+                                { signDisplay: "always" }
+                            )}
                         </p>
                     </div>
                     <div>
@@ -96,8 +101,14 @@ export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
                                     <div
                                         className={`font-bold ${strat.pnl >= 0 ? "text-primary" : "text-red-500"}`}
                                     >
-                                        {strat.pnl >= 0 ? "+" : ""}$
-                                        {strat.pnl.toFixed(0)}
+                                        {formatDashboardCurrency(
+                                            strat.pnl,
+                                            currency,
+                                            {
+                                                signDisplay: "always",
+                                                fractionDigits: 0,
+                                            }
+                                        )}
                                     </div>
                                     <div className="text-xs text-gray-600">
                                         {strat.winRate.toFixed(0)}% WR
@@ -129,8 +140,14 @@ export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
                                     <span
                                         className={`font-bold ${pair.pnl >= 0 ? "text-primary" : "text-red-500"}`}
                                     >
-                                        {pair.pnl >= 0 ? "+" : ""}$
-                                        {pair.pnl.toFixed(0)}
+                                        {formatDashboardCurrency(
+                                            pair.pnl,
+                                            currency,
+                                            {
+                                                signDisplay: "always",
+                                                fractionDigits: 0,
+                                            }
+                                        )}
                                     </span>
                                 </div>
                             </div>
@@ -204,8 +221,11 @@ export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
                                             <td
                                                 className={`px-4 py-3 text-right font-bold whitespace-nowrap ${trade.pnl >= 0 ? "text-primary" : "text-red-500"}`}
                                             >
-                                                {trade.pnl >= 0 ? "+" : ""}$
-                                                {trade.pnl.toFixed(2)}
+                                                {formatDashboardCurrency(
+                                                    trade.pnl,
+                                                    currency,
+                                                    { signDisplay: "always" }
+                                                )}
                                             </td>
                                         </tr>
                                     ))

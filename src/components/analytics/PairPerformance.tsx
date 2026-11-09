@@ -21,10 +21,12 @@ interface PairPerformanceProps {
         tradeCount: number;
         winRate: number;
     }>;
+    currency?: string;
 }
 import { processPairPerformanceData } from "./utils/chartHelpers";
+import { formatDashboardCurrency } from "@/lib/utils/cent-account";
 
-export function PairPerformance({ data }: PairPerformanceProps) {
+export function PairPerformance({ data, currency = "USD" }: PairPerformanceProps) {
     const { theme } = useTheme();
     const isDark = theme === "dark";
 
@@ -91,7 +93,7 @@ export function PairPerformance({ data }: PairPerformanceProps) {
                                 }}
                                 itemStyle={{ color: isDark ? "#fff" : "#000" }}
                                 formatter={(value: any) => [
-                                    `$${Number(value).toLocaleString()}`,
+                                    formatDashboardCurrency(Number(value), currency),
                                     "PnL",
                                 ]}
                             />
@@ -121,10 +123,8 @@ export function PairPerformance({ data }: PairPerformanceProps) {
                 <div className="mt-4 flex justify-between items-center text-[10px] text-gray-500 font-bold uppercase tracking-wider">
                     <span>Best: {bestPair.symbol}</span>
                     <span className="text-primary">
-                        +
-                        {bestPair.pnl.toLocaleString("en-US", {
-                            style: "currency",
-                            currency: "USD",
+                        {formatDashboardCurrency(bestPair.pnl, currency, {
+                            signDisplay: "always",
                         })}
                     </span>
                 </div>

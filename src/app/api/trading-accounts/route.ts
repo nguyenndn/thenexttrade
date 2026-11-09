@@ -46,6 +46,7 @@ export async function GET(request: NextRequest) {
                     autoSync: true,
                     createdAt: true,
                     server: true,
+                    currency: true,
                     balance: true,
                     equity: true,
                     accountType: true,

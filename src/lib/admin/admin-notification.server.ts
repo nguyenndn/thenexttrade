@@ -263,7 +263,7 @@ export async function notifyAdminsOfSyncFailure(params: NotifySyncFailureParams)
             type: NotificationType.ANNOUNCEMENT,
             title,
             message,
-            link: `/admin/mt5-cloud?search=${encodeURIComponent(params.accountNumber)}`,
+            link: `/admin/ib/sync-requests?search=${encodeURIComponent(params.accountNumber)}`,
             priority: NotificationPriority.URGENT,
             dedupeKey: `admin-sync-fail-${params.jobId}-${admin.userId}`,
         }));

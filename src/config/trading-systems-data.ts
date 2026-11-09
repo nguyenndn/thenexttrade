@@ -47,7 +47,7 @@ export interface SystemData {
     title: string;
     description: string;
     longDescription: string;
-    type: "AUTO_TRADE" | "MANUAL_ASSIST" | "INDICATOR";
+    type: "AUTO_TRADE" | "SEMI_AUTO" | "MANUAL_ASSIST" | "INDICATOR";
     platform: "MT5" | "BOTH";
     icon: LucideIcon;
     targetAsset: string;

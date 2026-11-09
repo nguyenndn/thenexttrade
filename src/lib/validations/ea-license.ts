@@ -44,11 +44,12 @@ export const createEAProductSchema = z.object({
     name: z.string().min(1, "Product name is required"),
     slug: z.string().min(1, "Slug is required"),
     description: z.string().optional(),
-    type: z.enum(["AUTO_TRADE", "MANUAL_ASSIST", "INDICATOR"]),
+    type: z.enum(["AUTO_TRADE", "SEMI_AUTO", "MANUAL_ASSIST", "INDICATOR"]),
     platform: z.nativeEnum(PlatformType),
     version: z.string().default("1.0.0"),
     changelog: z.string().optional(),
     isActive: z.boolean().default(true),
+    isFree: z.boolean().optional(),
 });
 
 export const updateEAProductSchema = createEAProductSchema.partial();

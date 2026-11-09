@@ -47,6 +47,7 @@ export default function PrivacyPolicyPage() {
             title="Privacy Policy"
             lead="Effective June 1, 2026 · Plain-language summary of what we collect, why we collect it, and your full control over your Trading Journal data."
             sections={PRIVACY_SECTIONS}
+            numbered={true}
             footerNote="This policy may change as the service evolves. When it does, we'll update the effective date at the top of this page."
             intro={
                 <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-5 sm:p-6 shadow-sm">
@@ -75,10 +76,13 @@ export default function PrivacyPolicyPage() {
                 </div>
             }
         >
-            {/* Overview */}
+            {/* 1. Overview */}
             <section id="overview" className="pb-7 scroll-mt-28">
-                <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-2.5">
-                    Overview
+                <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-2.5 flex items-center gap-2">
+                    <span className="tabular-nums text-amber-600 dark:text-gold">
+                        1.
+                    </span>
+                    <span>Overview</span>
                 </h2>
                 <p className="text-sm sm:text-base leading-relaxed text-gray-600 dark:text-gray-300">
                     TheNextTrade is a free Trading Journal, analytics workspace,
@@ -91,10 +95,13 @@ export default function PrivacyPolicyPage() {
                 </p>
             </section>
 
-            {/* Data Controller */}
+            {/* 2. Data Controller */}
             <section id="controller" className="py-7 scroll-mt-28">
-                <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-2.5">
-                    Data Controller
+                <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-2.5 flex items-center gap-2">
+                    <span className="tabular-nums text-amber-600 dark:text-gold">
+                        2.
+                    </span>
+                    <span>Data Controller</span>
                 </h2>
                 <p className="text-sm sm:text-base leading-relaxed text-gray-600 dark:text-gray-300">
                     The data controller responsible for processing and
@@ -104,10 +111,10 @@ export default function PrivacyPolicyPage() {
                     </strong>{" "}
                     (contactable at{" "}
                     <a
-                        href="mailto:support@thenexttrade.com"
+                        href="mailto:support@thenexttrade.io"
                         className="font-bold text-amber-600 dark:text-gold hover:underline"
                     >
-                        support@thenexttrade.com
+                        support@thenexttrade.io
                     </a>{" "}
                     and via official Telegram{" "}
                     <a
@@ -122,10 +129,13 @@ export default function PrivacyPolicyPage() {
                 </p>
             </section>
 
-            {/* Information We Collect */}
+            {/* 3. Information We Collect */}
             <section id="information-we-collect" className="py-7 scroll-mt-28">
-                <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-3.5">
-                    Information We Collect
+                <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-3.5 flex items-center gap-2">
+                    <span className="tabular-nums text-amber-600 dark:text-gold">
+                        3.
+                    </span>
+                    <span>Information We Collect</span>
                 </h2>
                 <p className="text-sm sm:text-base leading-relaxed text-gray-600 dark:text-gray-300 mb-3.5">
                     In accordance with global privacy standards (including GDPR
@@ -162,10 +172,13 @@ export default function PrivacyPolicyPage() {
                 </dl>
             </section>
 
-            {/* How We Use Information */}
+            {/* 4. How We Use Information */}
             <section id="how-we-use-information" className="py-7 scroll-mt-28">
-                <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-2.5">
-                    How We Use Information
+                <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-2.5 flex items-center gap-2">
+                    <span className="tabular-nums text-amber-600 dark:text-gold">
+                        4.
+                    </span>
+                    <span>How We Use Information</span>
                 </h2>
                 <p className="text-sm sm:text-base leading-relaxed text-gray-600 dark:text-gray-300 mb-3">
                     TheNextTrade uses the information described above strictly
@@ -193,10 +206,13 @@ export default function PrivacyPolicyPage() {
                 </ul>
             </section>
 
-            {/* Security */}
+            {/* 5. Security */}
             <section id="security" className="py-7 scroll-mt-28">
-                <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-2.5">
-                    Security
+                <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-2.5 flex items-center gap-2">
+                    <span className="tabular-nums text-amber-600 dark:text-gold">
+                        5.
+                    </span>
+                    <span>Security</span>
                 </h2>
                 <p className="text-sm sm:text-base leading-relaxed text-gray-600 dark:text-gray-300">
                     TheNextTrade uses industry-standard security measures,
@@ -206,10 +222,13 @@ export default function PrivacyPolicyPage() {
                 </p>
             </section>
 
-            {/* Data Retention */}
+            {/* 6. Data Retention */}
             <section id="data-retention" className="py-7 scroll-mt-28">
-                <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-2.5">
-                    Data Retention
+                <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-2.5 flex items-center gap-2">
+                    <span className="tabular-nums text-amber-600 dark:text-gold">
+                        6.
+                    </span>
+                    <span>Data Retention</span>
                 </h2>
                 <p className="text-sm sm:text-base leading-relaxed text-gray-600 dark:text-gray-300 mb-3">
                     <strong className="font-bold text-gray-900 dark:text-white">
@@ -245,10 +264,13 @@ export default function PrivacyPolicyPage() {
                 </p>
             </section>
 
-            {/* Data Sharing */}
+            {/* 7. Data Sharing */}
             <section id="data-sharing" className="py-7 scroll-mt-28">
-                <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-2.5">
-                    Data Sharing
+                <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-2.5 flex items-center gap-2">
+                    <span className="tabular-nums text-amber-600 dark:text-gold">
+                        7.
+                    </span>
+                    <span>Data Sharing</span>
                 </h2>
                 <p className="text-sm sm:text-base leading-relaxed text-gray-600 dark:text-gray-300">
                     <strong className="font-bold text-gray-900 dark:text-white">
@@ -262,10 +284,13 @@ export default function PrivacyPolicyPage() {
                 </p>
             </section>
 
-            {/* Your Rights */}
+            {/* 8. Your Rights */}
             <section id="your-rights" className="py-7 scroll-mt-28">
-                <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-2.5">
-                    Your Rights &amp; Response Timelines
+                <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-2.5 flex items-center gap-2">
+                    <span className="tabular-nums text-amber-600 dark:text-gold">
+                        8.
+                    </span>
+                    <span>Your Rights &amp; Response Timelines</span>
                 </h2>
                 <p className="text-sm sm:text-base leading-relaxed text-gray-600 dark:text-gray-300 mb-3">
                     You have the right to be informed, access, rectify, export,
@@ -291,10 +316,13 @@ export default function PrivacyPolicyPage() {
                 </p>
             </section>
 
-            {/* Legal Basis */}
+            {/* 9. Legal Basis */}
             <section id="legal-basis" className="py-7 scroll-mt-28">
-                <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-2.5">
-                    Legal Basis for Processing
+                <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-2.5 flex items-center gap-2">
+                    <span className="tabular-nums text-amber-600 dark:text-gold">
+                        9.
+                    </span>
+                    <span>Legal Basis for Processing</span>
                 </h2>
                 <p className="text-sm sm:text-base leading-relaxed text-gray-600 dark:text-gray-300 mb-3">
                     We rely on the following legal bases under GDPR and
@@ -321,10 +349,13 @@ export default function PrivacyPolicyPage() {
                 </ul>
             </section>
 
-            {/* International Transfers */}
+            {/* 10. International Transfers */}
             <section id="international-transfers" className="py-7 scroll-mt-28">
-                <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-2.5">
-                    Where Your Data Is Stored
+                <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-2.5 flex items-center gap-2">
+                    <span className="tabular-nums text-amber-600 dark:text-gold">
+                        10.
+                    </span>
+                    <span>Where Your Data Is Stored</span>
                 </h2>
                 <p className="text-sm sm:text-base leading-relaxed text-gray-600 dark:text-gray-300">
                     Our cloud database, hosting, and security providers operate
@@ -336,10 +367,13 @@ export default function PrivacyPolicyPage() {
                 </p>
             </section>
 
-            {/* Complaints */}
+            {/* 11. Complaints */}
             <section id="complaints" className="py-7 scroll-mt-28">
-                <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-2.5">
-                    Right to Lodge a Complaint
+                <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-2.5 flex items-center gap-2">
+                    <span className="tabular-nums text-amber-600 dark:text-gold">
+                        11.
+                    </span>
+                    <span>Right to Lodge a Complaint</span>
                 </h2>
                 <p className="text-sm sm:text-base leading-relaxed text-gray-600 dark:text-gray-300">
                     If you believe our processing of your personal data violates
@@ -350,10 +384,13 @@ export default function PrivacyPolicyPage() {
                 </p>
             </section>
 
-            {/* Children's Privacy */}
+            {/* 12. Children's Privacy */}
             <section id="children" className="py-7 scroll-mt-28">
-                <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-2.5">
-                    Children&apos;s Privacy
+                <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-2.5 flex items-center gap-2">
+                    <span className="tabular-nums text-amber-600 dark:text-gold">
+                        12.
+                    </span>
+                    <span>Children&apos;s Privacy</span>
                 </h2>
                 <p className="text-sm sm:text-base leading-relaxed text-gray-600 dark:text-gray-300">
                     TheNextTrade is intended strictly for adults aged{" "}
@@ -368,10 +405,13 @@ export default function PrivacyPolicyPage() {
                 </p>
             </section>
 
-            {/* Cookies */}
+            {/* 13. Cookies */}
             <section id="cookies" className="py-7 scroll-mt-28">
-                <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-2.5">
-                    Cookies
+                <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-2.5 flex items-center gap-2">
+                    <span className="tabular-nums text-amber-600 dark:text-gold">
+                        13.
+                    </span>
+                    <span>Cookies</span>
                 </h2>
                 <p className="text-sm sm:text-base leading-relaxed text-gray-600 dark:text-gray-300">
                     TheNextTrade uses strictly necessary cookies to keep you
@@ -393,10 +433,13 @@ export default function PrivacyPolicyPage() {
                 </p>
             </section>
 
-            {/* Contact */}
+            {/* 14. Contact */}
             <section id="contact" className="pt-7 scroll-mt-28">
-                <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-2.5">
-                    Contact
+                <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white mb-2.5 flex items-center gap-2">
+                    <span className="tabular-nums text-amber-600 dark:text-gold">
+                        14.
+                    </span>
+                    <span>Contact</span>
                 </h2>
                 <p className="text-sm sm:text-base leading-relaxed text-gray-600 dark:text-gray-300">
                     For privacy questions or data requests, contact us on
@@ -411,10 +454,10 @@ export default function PrivacyPolicyPage() {
                     </a>{" "}
                     or by email at{" "}
                     <a
-                        href="mailto:support@thenexttrade.com"
+                        href="mailto:support@thenexttrade.io"
                         className="font-bold text-amber-600 dark:text-gold hover:underline"
                     >
-                        support@thenexttrade.com
+                        support@thenexttrade.io
                     </a>
                     .
                 </p>

@@ -6,7 +6,7 @@ import { NextResponse } from "next/server";
 // (calculators, live rates, correlation, economic calendar).
 export async function GET() {
     const baseUrl =
-        process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.com";
+        process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.io";
 
     const spec = {
         openapi: "3.1.0",
@@ -15,7 +15,7 @@ export async function GET() {
             description:
                 "Free public endpoints for forex calculators, live market rates, pair correlation, and the economic calendar. No authentication required.",
             version: "1.0.0",
-            contact: { email: "support@thenexttrade.com" },
+            contact: { email: "support@thenexttrade.io" },
         },
         servers: [{ url: baseUrl }],
         tags: [

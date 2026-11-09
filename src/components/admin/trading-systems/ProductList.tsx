@@ -214,6 +214,11 @@ export function ProductList({ products }: ProductListProps) {
                                 Auto Trade
                             </DropdownMenuItem>
                             <DropdownMenuItem
+                                onClick={() => setFilterType("SEMI_AUTO")}
+                            >
+                                Semi Auto
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
                                 onClick={() => setFilterType("MANUAL_ASSIST")}
                             >
                                 Manual Assist

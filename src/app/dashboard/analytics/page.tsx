@@ -18,6 +18,7 @@ import {
     parseISO,
 } from "date-fns";
 import { parseLocalStartOfDay, parseLocalEndOfDay } from "@/lib/utils";
+import { normalizeCurrencyCode } from "@/lib/utils/cent-account";
 import { getUserTradingDataState } from "@/lib/trading-data-state";
 import {
     getKeyStats,
@@ -145,7 +146,8 @@ async function AnalyticsDataWrapper({
         getCurrentStreak(user.id, accountId),
         prisma.tradingAccount.findMany({
             where: { userId: user.id, ...(accountId ? { id: accountId } : {}) },
-            select: { balance: true, lastSync: true },
+            select: { balance: true, lastSync: true, currency: true, server: true },
+            orderBy: { createdAt: "asc" },
         }),
         prisma.journalEntry.findMany({
             where: {
@@ -253,7 +255,12 @@ async function AnalyticsDataWrapper({
     const psychologyData = await calculatePsychologyDiagnostic(user.id, accountId);
 
     // 5. Construct Final Data Object
+    const resolvedCurrency = normalizeCurrencyCode(
+        accounts[0]?.currency,
+        accounts[0]?.server
+    );
     const data: AnalyticsData = {
+        currency: resolvedCurrency,
         summary: {
             totalTrades: stats.totalTrades,
             winRate: stats.winRate ?? 0,

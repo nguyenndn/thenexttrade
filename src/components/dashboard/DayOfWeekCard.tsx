@@ -1,6 +1,7 @@
 "use client";
 
 import { Calendar } from "lucide-react";
+import { formatDashboardCurrency } from "@/lib/utils/cent-account";
 
 interface DayData {
     day: string;
@@ -12,6 +13,7 @@ interface DayData {
 
 interface DayOfWeekCardProps {
     data: DayData[];
+    currency?: string;
 }
 
 const DAY_SHORT: Record<string, string> = {
@@ -24,7 +26,10 @@ const DAY_SHORT: Record<string, string> = {
     Saturday: "Sat",
 };
 
-export function DayOfWeekCard({ data }: DayOfWeekCardProps) {
+export function DayOfWeekCard({
+    data,
+    currency = "USD",
+}: DayOfWeekCardProps) {
     const tradingDays = data
         .filter((d) => d.dayIndex >= 1 && d.dayIndex <= 5)
         .sort((a, b) => a.dayIndex - b.dayIndex);
@@ -156,7 +161,14 @@ export function DayOfWeekCard({ data }: DayOfWeekCardProps) {
                                     >
                                         {d.tradeCount === 0
                                             ? "--"
-                                            : `${d.pnl >= 0 ? "+" : ""}${d.pnl.toFixed(0)}`}
+                                            : formatDashboardCurrency(
+                                                  d.pnl,
+                                                  currency,
+                                                  {
+                                                      signDisplay: "always",
+                                                      fractionDigits: 0,
+                                                  }
+                                              )}
                                     </span>
 
                                     <span className="text-[11px] text-gray-500 font-semibold font-mono tabular-nums min-w-[70px] text-right shrink-0">

@@ -9,11 +9,12 @@ import {
     Users,
     Clock,
     Play,
-    Square,
     Edit2,
     Trash2,
     CheckCircle2,
     FileText,
+    Power,
+    ExternalLink,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
@@ -26,12 +27,14 @@ import { toast } from "sonner";
 import { CompetitionModal } from "./CompetitionModal";
 import {
     toggleCompetitionStatus,
+    toggleCompetitionsFeature,
     deleteCompetition,
 } from "@/actions/admin/competitions";
 import { useRouter } from "next/navigation";
 
 interface CompetitionListClientProps {
     initialCompetitions: any[];
+    initialCompetitionsEnabled?: boolean;
     stats: {
         totalCompetitions: number;
         activeCount: number;
@@ -43,11 +46,16 @@ interface CompetitionListClientProps {
 
 export function CompetitionListClient({
     initialCompetitions,
+    initialCompetitionsEnabled = true,
     stats,
 }: CompetitionListClientProps) {
     const router = useRouter();
     const [isPending, startTransition] = useTransition();
     const [competitions, setCompetitions] = useState(initialCompetitions);
+    const [competitionsEnabled, setCompetitionsEnabled] = useState<boolean>(
+        initialCompetitionsEnabled
+    );
+    const [isTogglingFeature, setIsTogglingFeature] = useState(false);
     const [selectedTab, setSelectedTab] = useState<string>("ALL");
     const [search, setSearch] = useState<string>("");
     const [modalOpen, setModalOpen] = useState(false);
@@ -70,6 +78,30 @@ export function CompetitionListClient({
         startTransition(() => {
             router.refresh();
         });
+    };
+
+    const handleToggleCompetitionsFeature = async () => {
+        const nextState = !competitionsEnabled;
+        setIsTogglingFeature(true);
+        try {
+            const res = await toggleCompetitionsFeature(nextState);
+            if (!res.success) {
+                toast.error(res.error || "Failed to toggle Competitions feature");
+                return;
+            }
+            setCompetitionsEnabled(nextState);
+            window.dispatchEvent(new CustomEvent("feature-flags-updated"));
+            toast.success(
+                nextState
+                    ? "Trading Sprints is now ON (Visible in Leaderboard)"
+                    : "Trading Sprints is now OFF (Hidden from Leaderboard)"
+            );
+            router.refresh();
+        } catch {
+            toast.error("Failed to toggle Competitions feature");
+        } finally {
+            setIsTogglingFeature(false);
+        }
     };
 
     const handleStatusToggle = async (id: string, newStatus: any) => {
@@ -216,14 +248,33 @@ export function CompetitionListClient({
                 title="Trading Competitions & Sprints"
                 description="Configure verified MT5 trading tournaments, live season prize pools, and automated leaderboard rules."
             >
-                <Button
-                    variant="primary"
-                    onClick={handleCreateClick}
-                    className="shadow-lg shadow-amber-500/20 font-bold"
-                >
-                    <Plus size={16} strokeWidth={2.5} />
-                    Create Competition
-                </Button>
+                <div className="flex flex-wrap items-center gap-2">
+                    <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        disabled={isTogglingFeature}
+                        onClick={handleToggleCompetitionsFeature}
+                        className={`rounded-lg h-9 px-3.5 text-xs font-bold gap-1.5 transition-all ${
+                            competitionsEnabled
+                                ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20"
+                                : "border-rose-500/40 bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-500/20"
+                        }`}
+                    >
+                        <Power size={14} />
+                        <span>
+                            Sprint Arena: {competitionsEnabled ? "ON" : "OFF"}
+                        </span>
+                    </Button>
+                    <Button
+                        variant="primary"
+                        onClick={handleCreateClick}
+                        className="shadow-lg shadow-amber-500/20 font-bold"
+                    >
+                        <Plus size={16} strokeWidth={2.5} />
+                        Create Competition
+                    </Button>
+                </div>
             </AdminPageHeader>
 
             {/* Top Metric Cards with AnimatedStatCard (matching sync-requests & pipeline) */}
@@ -390,46 +441,53 @@ export function CompetitionListClient({
                                             </td>
                                             <td className="px-4 py-3.5 text-right">
                                                 <div className="flex items-center justify-end gap-1.5">
-                                                    {comp.status ===
-                                                        "DRAFT" && (
-                                                        <Button
-                                                            variant="outline"
-                                                            size="sm"
-                                                            disabled={
-                                                                processingId ===
-                                                                comp.id
-                                                            }
-                                                            onClick={() =>
-                                                                handleStatusToggle(
-                                                                    comp.id,
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        disabled={
+                                                            processingId ===
+                                                            comp.id
+                                                        }
+                                                        onClick={() =>
+                                                            handleStatusToggle(
+                                                                comp.id,
+                                                                comp.status ===
                                                                     "ACTIVE"
-                                                                )
-                                                            }
-                                                            className="h-8 px-3 rounded-lg text-xs font-bold text-emerald-600 hover:text-emerald-700 border-emerald-500/30 hover:bg-emerald-50 dark:hover:bg-emerald-500/10 gap-1"
-                                                        >
-                                                            <Play size={12} />
-                                                            Launch
-                                                        </Button>
-                                                    )}
+                                                                    ? "DRAFT"
+                                                                    : "ACTIVE"
+                                                            )
+                                                        }
+                                                        className={`h-8 px-3 rounded-lg text-xs font-bold gap-1.5 ${
+                                                            comp.status ===
+                                                            "ACTIVE"
+                                                                ? "text-emerald-600 dark:text-emerald-400 border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20"
+                                                                : "text-gray-500 dark:text-gray-400 border-gray-300 dark:border-white/10 hover:text-gray-900 dark:hover:text-white"
+                                                        }`}
+                                                    >
+                                                        <Power size={12} />
+                                                        {comp.status ===
+                                                        "ACTIVE"
+                                                            ? "ON"
+                                                            : "OFF"}
+                                                    </Button>
+
                                                     {comp.status ===
                                                         "ACTIVE" && (
                                                         <Button
                                                             variant="outline"
-                                                            size="sm"
-                                                            disabled={
-                                                                processingId ===
-                                                                comp.id
-                                                            }
+                                                            size="icon"
                                                             onClick={() =>
-                                                                handleStatusToggle(
-                                                                    comp.id,
-                                                                    "ENDED"
+                                                                router.push(
+                                                                    "/dashboard/leaderboard?type=sprint"
                                                                 )
                                                             }
-                                                            className="h-8 px-3 rounded-lg text-xs font-bold text-amber-600 hover:text-amber-700 border-amber-500/30 hover:bg-amber-50 dark:hover:bg-amber-500/10 gap-1"
+                                                            className="h-8 w-8 min-w-8 aspect-square rounded-lg text-amber-600 dark:text-amber-400 border-amber-500/30 hover:bg-amber-500/10 shrink-0"
+                                                            aria-label="Open Sprint Leaderboard"
+                                                            title="Open Sprint Leaderboard"
                                                         >
-                                                            <Square size={12} />
-                                                            End
+                                                            <ExternalLink
+                                                                size={13}
+                                                            />
                                                         </Button>
                                                     )}
 

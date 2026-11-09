@@ -6,6 +6,7 @@ import {
     Activity,
     DollarSign,
 } from "lucide-react";
+import { formatDashboardCurrency } from "@/lib/utils/cent-account";
 
 interface StatsProps {
     stats: {
@@ -18,16 +19,14 @@ interface StatsProps {
         bestPair: string;
         worstPair: string;
     };
+    currency?: string;
 }
 
-export function StatsOverview({ stats }: StatsProps) {
+export function StatsOverview({ stats, currency = "USD" }: StatsProps) {
     const cards = [
         {
             title: "Net Profit",
-            value: stats.netProfit.toLocaleString("en-US", {
-                style: "currency",
-                currency: "USD",
-            }),
+            value: formatDashboardCurrency(stats.netProfit, currency),
             icon: DollarSign,
             color: stats.netProfit >= 0 ? "text-primary" : "text-red-500",
             bg: stats.netProfit >= 0 ? "bg-primary/10" : "bg-red-500/10",
@@ -94,7 +93,7 @@ export function StatsOverview({ stats }: StatsProps) {
     );
 }
 
-export function DetailedStats({ stats }: StatsProps) {
+export function DetailedStats({ stats, currency = "USD" }: StatsProps) {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-dashboard flex justify-between items-center group">
@@ -103,7 +102,9 @@ export function DetailedStats({ stats }: StatsProps) {
                         Avg Win
                     </p>
                     <p className="text-xl font-bold font-mono tabular-nums text-primary">
-                        +${stats.avgWin.toFixed(2)}
+                        {formatDashboardCurrency(stats.avgWin, currency, {
+                            signDisplay: "always",
+                        })}
                     </p>
                 </div>
                 <div className="p-2 bg-primary/10 text-primary rounded-lg">
@@ -117,7 +118,7 @@ export function DetailedStats({ stats }: StatsProps) {
                         Avg Loss
                     </p>
                     <p className="text-xl font-bold font-mono tabular-nums text-red-500">
-                        -${Math.abs(stats.avgLoss).toFixed(2)}
+                        {formatDashboardCurrency(-Math.abs(stats.avgLoss), currency)}
                     </p>
                 </div>
                 <div className="p-2 bg-red-500/10 text-red-500 rounded-lg">

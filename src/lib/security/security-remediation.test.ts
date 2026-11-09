@@ -10,8 +10,6 @@ import { POST as postMt5Sync } from "@/app/api/mt5/sync/route";
 import { GET as getRevealKey } from "@/app/api/trading-accounts/[id]/reveal-key/route";
 import { GET as getExportCsv } from "@/app/api/export/csv/route";
 import { GET as getProfile, PUT as putProfile } from "@/app/api/profile/route";
-import { GET as getRemoteState } from "@/app/api/remote/state/route";
-import { DELETE as deleteRemoteConnect } from "@/app/api/remote/connect/route";
 import { POST as postSecurityLog } from "@/app/api/internal/security-log/route";
 
 vi.mock("@/lib/prisma", () => ({
@@ -64,16 +62,6 @@ vi.mock("@/lib/supabase/server", () => ({
 vi.mock("@/lib/onboarding/onboarding.server", () => ({
     getOnboardingState: vi.fn(async () => ({ tradingGoal: "Consistency" })),
     updateOnboardingSettings: vi.fn(async () => ({})),
-}));
-
-vi.mock("@/lib/mt5-bridge/client.server", () => ({
-    getBridgeStateForAccount: vi.fn(async () => ({
-        ok: true,
-        state: { connected: true, balance: 1000, equity: 1000 },
-    })),
-    disconnectBridgeAccountById: vi.fn(async () => ({ ok: true })),
-    connectBridgeAccountForUser: vi.fn(),
-    ensureAccountConnectedOnBridge: vi.fn(),
 }));
 
 vi.mock("@/lib/security-logger", () => ({
@@ -454,61 +442,7 @@ describe("Security Audit Remediation Suite (2026-10-31)", () => {
         });
     });
 
-    describe("LOW-NEW-3: Bounded Remote Owner Cache & Internal Security Log Auth", () => {
-        it("caches verified owner on GET /api/remote/state and evicts on DELETE /api/remote/connect", async () => {
-            vi.mocked(getAuthUser).mockResolvedValue({
-                id: "user-owner-1",
-            } as any);
-            vi.mocked(prisma.tradingAccount.findMany).mockResolvedValue([
-                {
-                    id: "acc-bridge-1",
-                    name: "Main MT5",
-                    accountNumber: "9001",
-                    broker: "Exness",
-                    server: "Exness-Real",
-                    balance: 1000,
-                    equity: 1000,
-                    currency: "USD",
-                    status: "ACTIVE",
-                    ibAttribution: "VERIFIED",
-                    createdAt: new Date(),
-                    lastHeartbeat: new Date(),
-                    credential: { keyVersion: 1 },
-                    proEntitlement: null,
-                },
-            ] as any);
-            vi.mocked(prisma.profile.findUnique).mockResolvedValue({
-                telegramId: "",
-                mainTradingAccountId: "acc-bridge-1",
-            } as any);
-
-            // 1. Full poll populates cache
-            const fullReq = new NextRequest(
-                "http://localhost/api/remote/state?accountId=acc-bridge-1"
-            );
-            const fullRes = await getRemoteState(fullReq);
-            expect(fullRes.status).toBe(200);
-
-            const cache = (
-                globalThis as unknown as {
-                    __verifiedOwnerCache?: Map<string, unknown>;
-                }
-            ).__verifiedOwnerCache;
-            expect(cache?.has("acc-bridge-1")).toBe(true);
-
-            // 2. Disconnect evicts account from cache
-            vi.mocked(prisma.tradingAccount.findFirst).mockResolvedValue({
-                id: "acc-bridge-1",
-            } as any);
-            const delReq = new NextRequest(
-                "http://localhost/api/remote/connect?accountId=acc-bridge-1",
-                { method: "DELETE" }
-            );
-            const delRes = await deleteRemoteConnect(delReq);
-            expect(delRes.status).toBe(200);
-            expect(cache?.has("acc-bridge-1")).toBe(false);
-        });
-
+    describe("LOW-NEW-3: Internal Security Log Auth", () => {
         it("requires Bearer secret on /api/internal/security-log whenever INTERNAL_SECURITY_SECRET is set", async () => {
             process.env.INTERNAL_SECURITY_SECRET = "top-secret-internal-token";
 

@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getTier, getPercentile, getTierProgress } from "@/lib/gamification";
 
 import { revalidatePath } from "next/cache";
+import { isRealTradingAccount } from "@/lib/loyalty/loyalty.server";
 
 export type LeaderboardType =
     "sprint" | "trading" | "xp" | "streak" | "academy" | "mystats";
@@ -47,6 +48,7 @@ export interface LeaderboardResponse {
         lessonsCompleted?: number;
         studyTimeMinutes?: number;
         totalTrades?: number;
+        pnl?: number;
         badges?: UserBadgeInfo[];
         memberSince?: string;
     } | null;
@@ -68,6 +70,15 @@ async function getCurrentUserId(): Promise<string | null> {
 
 export async function getActiveCompetition() {
     try {
+        const setting = await prisma.systemSetting.findUnique({
+            where: { key: "feature_competitions" },
+        });
+        const enabled =
+            (setting?.value as { enabled?: boolean } | null)?.enabled ?? true;
+        if (!enabled) {
+            return null;
+        }
+
         const competition = await prisma.competition.findFirst({
             where: {
                 status: { in: ["ACTIVE", "UPCOMING"] },
@@ -93,12 +104,60 @@ export async function joinCompetition(
     const userId = await getCurrentUserId();
     if (!userId) return { error: "Please log in to join the competition." };
 
-    const account = await prisma.tradingAccount.findFirst({
-        where: { id: tradingAccountId, userId },
-    });
+    const [competition, account] = await Promise.all([
+        prisma.competition.findUnique({
+            where: { id: competitionId },
+            select: {
+                id: true,
+                status: true,
+                eligibleBrokers: true,
+                endDate: true,
+            },
+        }),
+        prisma.tradingAccount.findFirst({
+            where: { id: tradingAccountId, userId },
+        }),
+    ]);
+
+    if (!competition) {
+        return { error: "Competition not found." };
+    }
+    if (
+        competition.status === "ENDED" ||
+        competition.status === "CANCELLED" ||
+        new Date(competition.endDate) < new Date()
+    ) {
+        return { error: "This competition has already ended." };
+    }
 
     if (!account) {
         return { error: "Trading account not found or unauthorized." };
+    }
+
+    if (!isRealTradingAccount(account)) {
+        return {
+            error: "Only live (REAL) accounts can join Trading Competitions.",
+        };
+    }
+
+    if (
+        competition.eligibleBrokers &&
+        competition.eligibleBrokers.trim().toUpperCase() !== "ALL"
+    ) {
+        const allowedList = competition.eligibleBrokers
+            .split(",")
+            .map((b) => b.trim().toLowerCase())
+            .filter(Boolean);
+        const acctBroker = (account.broker || "").trim().toLowerCase();
+        const isEligibleBroker = allowedList.some(
+            (allowed) =>
+                acctBroker.includes(allowed) || allowed.includes(acctBroker)
+        );
+        if (!acctBroker || !isEligibleBroker) {
+            return {
+                error: `This competition requires an account with: ${competition.eligibleBrokers}.`,
+            };
+        }
     }
 
     try {
@@ -117,6 +176,11 @@ export async function joinCompetition(
                 userId,
                 tradingAccountId,
             },
+        });
+
+        await prisma.tradingAccount.updateMany({
+            where: { userId, useForLeaderboard: true },
+            data: { useForLeaderboard: false },
         });
 
         await prisma.tradingAccount.update({
@@ -166,17 +230,42 @@ export async function getLeaderboard(
     type: LeaderboardType = "trading",
     limit: number = 50,
     sortBy: "percentage" | "currency" = "currency",
-    period: PeriodFilter = "30D"
+    period: PeriodFilter = "30D",
+    preloadedCompetition?: Awaited<ReturnType<typeof getActiveCompetition>>,
+    preloadedUserId?: string | null
 ): Promise<LeaderboardResponse> {
-    const userId = await getCurrentUserId();
+    const userId =
+        preloadedUserId !== undefined
+            ? preloadedUserId
+            : await getCurrentUserId();
 
     switch (type) {
         case "sprint": {
-            const activeComp = await getActiveCompetition();
-            const cutoff = activeComp?.startDate ? new Date(activeComp.startDate) : undefined;
+            const activeComp =
+                preloadedCompetition !== undefined
+                    ? preloadedCompetition
+                    : await getActiveCompetition();
+            const cutoff = activeComp?.startDate
+                ? new Date(activeComp.startDate)
+                : undefined;
+            const endCutoff = activeComp?.endDate
+                ? new Date(activeComp.endDate)
+                : undefined;
             const minTrades = activeComp?.minTrades ?? 10;
-            const effectiveSortBy = activeComp?.scoringMetric === "win_rate" ? "percentage" : sortBy;
-            return getTradingLeaderboard(userId, limit, effectiveSortBy, "30D", cutoff, minTrades);
+            const effectiveSortBy =
+                activeComp?.scoringMetric === "percentage" ||
+                activeComp?.scoringMetric === "win_rate"
+                    ? "percentage"
+                    : sortBy;
+            return getTradingLeaderboard(
+                userId,
+                limit,
+                effectiveSortBy,
+                "30D",
+                cutoff,
+                minTrades,
+                endCutoff
+            );
         }
         case "xp":
             return getXpLeaderboard(userId, limit);
@@ -610,7 +699,8 @@ async function getTradingLeaderboard(
     sortBy: "percentage" | "currency" = "currency",
     period: PeriodFilter = "30D",
     competitionCutoff?: Date,
-    competitionMinTrades?: number
+    competitionMinTrades?: number,
+    competitionEndDate?: Date
 ): Promise<LeaderboardResponse> {
     let cutoffDate = new Date(0);
     const now = Date.now();
@@ -624,6 +714,7 @@ async function getTradingLeaderboard(
         cutoffDate = new Date(now - 90 * 24 * 60 * 60 * 1000);
     }
 
+    const endDate = competitionEndDate ?? new Date(now);
     const minTrades = competitionMinTrades ?? 10;
 
     // Check if current user has a leaderboard account
@@ -653,12 +744,16 @@ async function getTradingLeaderboard(
  COUNT(*) AS "totalTrades",
  COALESCE(SUM(COALESCE(je.pnl, 0) + COALESCE(je.commission, 0) + COALESCE(je.swap, 0)), 0) AS "totalPnl"
  FROM "User" u
- INNER JOIN "trading_accounts" ta ON ta."userId" = u.id AND ta.use_for_leaderboard = true
+ INNER JOIN "trading_accounts" ta ON ta."userId" = u.id
+   AND ta.use_for_leaderboard = true
+   AND UPPER(COALESCE(ta.account_type, 'REAL')) NOT IN ('DEMO', 'CONTEST')
+   AND COALESCE(ta.server, '') NOT ILIKE '%demo%'
  INNER JOIN "JournalEntry" je ON je."accountId" = ta.id
  WHERE u."showOnLeaderboard" = true
  -- A closed trade's PnL belongs to the period it was closed in, matching
  -- the exitDate-based date filters used everywhere else in analytics.
  AND je."exitDate" >= ${cutoffDate}
+ AND je."exitDate" <= ${endDate}
  AND je.status = 'CLOSED'
  GROUP BY u.id, u.name, u.image, u.xp, u.level
  HAVING COUNT(*) >= ${minTrades}
@@ -707,10 +802,6 @@ async function getTradingLeaderboard(
         const myStats = results.find((r) => r.userId === userId);
         if (myStats) {
             const rank = results.findIndex((r) => r.userId === userId) + 1;
-            const currentUser = await prisma.user.findUnique({
-                where: { id: userId },
-                select: { xp: true },
-            });
 
             myRank = {
                 rank,
@@ -719,7 +810,10 @@ async function getTradingLeaderboard(
                         ? Number(myStats.winRate)
                         : Number(myStats.totalPnl ?? 0),
                 percentile: getPercentile(rank, total),
-                tierProgress: getTierProgress(currentUser?.xp ?? 0),
+                tierProgress: getTierProgress(myStats.xp ?? 0),
+                level: myStats.level,
+                totalTrades: Number(myStats.totalTrades),
+                pnl: Number(myStats.totalPnl ?? 0),
             };
         }
     }
@@ -850,36 +944,46 @@ export interface SidebarDataResponse {
     accounts: UserTradingAccountInfo[];
 }
 
-export async function getLeaderboardSidebarData(): Promise<SidebarDataResponse> {
-    const userId = await getCurrentUserId();
+export async function getLeaderboardSidebarData(
+    preloadedUserId?: string | null
+): Promise<SidebarDataResponse> {
+    const userId =
+        preloadedUserId !== undefined
+            ? preloadedUserId
+            : await getCurrentUserId();
     if (!userId) {
         return { showOnLeaderboard: false, accounts: [] };
     }
 
-    const user = await prisma.user.findUnique({
-        where: { id: userId },
-        select: { showOnLeaderboard: true },
-    });
-
-    const accounts = await prisma.tradingAccount.findMany({
-        where: { userId },
-        select: {
-            id: true,
-            name: true,
-            accountNumber: true,
-            broker: true,
-            useForLeaderboard: true,
-            journalEntries: {
-                where: { status: "CLOSED" },
-                select: {
-                    pnl: true,
-                    commission: true,
-                    swap: true,
-                    entryDate: true,
+    const [user, rawAccounts] = await Promise.all([
+        prisma.user.findUnique({
+            where: { id: userId },
+            select: { showOnLeaderboard: true },
+        }),
+        prisma.tradingAccount.findMany({
+            where: { userId },
+            select: {
+                id: true,
+                name: true,
+                accountNumber: true,
+                broker: true,
+                accountType: true,
+                server: true,
+                useForLeaderboard: true,
+                journalEntries: {
+                    where: { status: "CLOSED" },
+                    select: {
+                        pnl: true,
+                        commission: true,
+                        swap: true,
+                        entryDate: true,
+                    },
                 },
             },
-        },
-    });
+        }),
+    ]);
+
+    const accounts = rawAccounts.filter((acc) => isRealTradingAccount(acc));
 
     const now = new Date();
     const startOfDay = new Date(
@@ -935,6 +1039,24 @@ export async function toggleAccountLeaderboardVisibility(
 ): Promise<boolean> {
     const userId = await getCurrentUserId();
     if (!userId) throw new Error("Unauthorized");
+
+    const account = await prisma.tradingAccount.findFirst({
+        where: { id: accountId, userId },
+        select: { id: true, accountType: true, server: true },
+    });
+
+    if (!account) throw new Error("Account not found");
+
+    if (useForLeaderboard && !isRealTradingAccount(account)) {
+        throw new Error("Only real accounts can be used for leaderboard");
+    }
+
+    if (useForLeaderboard) {
+        await prisma.tradingAccount.updateMany({
+            where: { userId, useForLeaderboard: true },
+            data: { useForLeaderboard: false },
+        });
+    }
 
     await prisma.tradingAccount.update({
         where: { id: accountId, userId },

@@ -17,7 +17,34 @@ export interface LoyaltyTierItem {
   isActive: boolean;
 }
 
+export type EnrichedLoyaltyTierItem = LoyaltyTierItem & {
+  isUnlocked: boolean;
+  isClaimed: boolean;
+  isPending: boolean;
+  canClaim: boolean;
+};
+
+export interface LoyaltyAccountProgress {
+  accountId: string;
+  name: string;
+  accountNumber: string;
+  broker: string;
+  server: string | null;
+  totalCumulativeLots: number;
+  totalClosedTrades: number;
+  lastTradeAt: string | null;
+  currentTier: LoyaltyTierItem | null;
+  nextTier: LoyaltyTierItem | null;
+  progressToNext: number;
+  lotsToNext: number;
+  claimedLevels: number[];
+  pendingLevels: number[];
+  tiers: EnrichedLoyaltyTierItem[];
+}
+
 export interface UserLoyaltyProgress {
+  selectedAccountId?: string | null;
+  eligibleAccounts?: LoyaltyAccountProgress[];
   totalCumulativeLots: number;
   currentTier: LoyaltyTierItem | null;
   nextTier: LoyaltyTierItem | null;
@@ -25,12 +52,7 @@ export interface UserLoyaltyProgress {
   lotsToNext: number;
   claimedLevels: number[];
   pendingLevels: number[];
-  tiers: (LoyaltyTierItem & {
-    isUnlocked: boolean;
-    isClaimed: boolean;
-    isPending: boolean;
-    canClaim: boolean;
-  })[];
+  tiers: EnrichedLoyaltyTierItem[];
   eligibility: {
     hasPartnerBrokerAccount: boolean;
     activeLiveAccounts: number;
@@ -58,6 +80,10 @@ export interface LoyaltyClaimRecord {
   payoutMethod: string;
   network?: string | null;
   usdtAddress?: string | null;
+  accountId?: string | null;
+  accountNumber?: string | null;
+  broker?: string | null;
+  accountName?: string | null;
   status: LoyaltyClaimStatus;
   adminNotes?: string | null;
   transactionRef?: string | null;
@@ -74,6 +100,7 @@ export interface LoyaltyClaimRecord {
 
 export interface ClaimRewardInput {
   level: number;
+  accountId?: string;
   network?: UsdtNetwork;
   usdtAddress?: string;
   note?: string;

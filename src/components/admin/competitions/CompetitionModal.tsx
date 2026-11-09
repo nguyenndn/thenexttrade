@@ -36,7 +36,7 @@ export function CompetitionModal({
     const [title, setTitle] = useState("");
     const [slug, setSlug] = useState("");
     const [description, setDescription] = useState("");
-    const [status, setStatus] = useState<"DRAFT" | "UPCOMING" | "ACTIVE" | "ENDED">("DRAFT");
+    const [status, setStatus] = useState<"DRAFT" | "UPCOMING" | "ACTIVE" | "ENDED">("ACTIVE");
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
     const [prizePool, setPrizePool] = useState<number>(1000);
@@ -85,7 +85,7 @@ export function CompetitionModal({
             setTitle(`${now.toLocaleString("en-US", { month: "long" })} Trading Sprint`);
             setSlug("");
             setDescription("Monthly verified MT5 trading tournament with institutional risk telemetry.");
-            setStatus("DRAFT");
+            setStatus("ACTIVE");
             setStartDate(start.toISOString().slice(0, 16));
             setEndDate(end.toISOString().slice(0, 16));
             setPrizePool(1000);

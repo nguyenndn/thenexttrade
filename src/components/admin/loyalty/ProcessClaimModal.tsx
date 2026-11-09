@@ -95,6 +95,7 @@ export function ProcessClaimModal({
               </DialogTitle>
               <DialogDescription className="text-xs text-gray-500 dark:text-gray-400">
                 Claim ID: {claim.id.slice(0, 12)}... · Trader: {claim.user?.name || claim.user?.email || "Unknown"}
+                {claim.accountNumber ? ` · IB Account: #${claim.accountNumber} (${claim.broker || "Partner IB"})` : ""}
               </DialogDescription>
             </div>
           </div>

@@ -322,7 +322,6 @@ export function DashboardFilter({
             )}
         >
             <div className="flex items-center gap-2 w-full md:w-auto flex-1 md:flex-initial">
-                {/* Temporarily hidden while Cloud Sync infrastructure is offline
                 <Button
                     onClick={handleSyncNow}
                     disabled={
@@ -343,7 +342,6 @@ export function DashboardFilter({
                     />
                     <span>Sync Now</span>
                 </Button>
-                */}
 
                 <Popover open={isOpen} onOpenChange={handleOpenChange}>
                     <PopoverTrigger asChild>

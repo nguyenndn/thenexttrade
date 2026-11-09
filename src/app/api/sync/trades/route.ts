@@ -5,6 +5,12 @@ import { rateLimit } from "@/lib/rate-limit";
 import { generateTradeHash } from "@/lib/importers";
 import { normalizeBrokerTimezone, parseBrokerNumber } from "@/lib/utils";
 import { normalizeSyncApiKey } from "@/lib/utils/api-key";
+import {
+    isCentAccount,
+    isCentSymbol,
+    normalizeCurrencyCode,
+    normalizeLotSize,
+} from "@/lib/utils/cent-account";
 
 const limiter = rateLimit({
     uniqueTokenPerInterval: 500,
@@ -82,6 +88,9 @@ export async function POST(request: NextRequest) {
                         accountNumber: true,
                         autoSync: true,
                         platform: true,
+                        currency: true,
+                        server: true,
+                        accountType: true,
                     },
                 },
             },
@@ -98,6 +107,9 @@ export async function POST(request: NextRequest) {
                             accountNumber: true,
                             autoSync: true,
                             platform: true,
+                            currency: true,
+                            server: true,
+                            accountType: true,
                         },
                     },
                 },
@@ -203,9 +215,26 @@ export async function POST(request: NextRequest) {
                 if (parsedEquity !== null)
                     accountUpdate.equity = parsedEquity;
             }
+            const resolvedCurrency = normalizeCurrencyCode(
+                currency || dbAccount.currency,
+                server || dbAccount.server,
+                Array.isArray(trades) ? trades.map((t: any) => t?.symbol) : []
+            );
+            const isAccountCent =
+                isCentAccount(dbAccount) ||
+                isCentAccount({
+                    currency: resolvedCurrency,
+                    server: server || dbAccount.server,
+                });
+
             if (broker) accountUpdate.broker = broker;
             if (server) accountUpdate.server = server;
-            if (currency) accountUpdate.currency = currency;
+            if (
+                currency ||
+                resolvedCurrency !== (dbAccount.currency || "USD")
+            ) {
+                accountUpdate.currency = resolvedCurrency;
+            }
             if (leverage) accountUpdate.leverage = String(leverage);
             const normalizedTimezone = normalizeBrokerTimezone(
                 brokerTimezone,
@@ -360,6 +389,11 @@ export async function POST(request: NextRequest) {
                                 entryPrice: trade.openPrice,
                             });
 
+                            const normalizedLot = normalizeLotSize(
+                                Number(trade.lots) || 0.01,
+                                isAccountCent || isCentSymbol(trade.symbol)
+                            );
+
                             toCreate.push({
                                 userId: user.id,
                                 accountId: dbAccount.id,
@@ -371,7 +405,7 @@ export async function POST(request: NextRequest) {
                                 entryPrice: trade.openPrice,
                                 exitDate: isClosed ? exitDate : null,
                                 exitPrice: trade.closePrice || null,
-                                lotSize: trade.lots,
+                                lotSize: normalizedLot,
                                 pnl: profit,
                                 commission,
                                 swap,

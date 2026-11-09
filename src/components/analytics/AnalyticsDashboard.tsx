@@ -12,6 +12,7 @@ import { DayPerformance } from "./DayPerformance";
 import { TargetProgressWidget } from "@/components/dashboard/targets/TargetProgressWidget";
 
 export interface AnalyticsData {
+    currency?: string;
     summary: {
         totalTrades: number;
         winRate: number;
@@ -90,23 +91,25 @@ export function AnalyticsDashboard({
                 <>
                     {/* Charts Row 1 - Full Width */}
                     <div className="grid grid-cols-1 gap-4">
-                        <TargetProgressWidget accountId={accountId} />
+                        <TargetProgressWidget accountId={accountId} currency={data.currency} />
                         <EquityCurve
                             data={data.equityCurve}
                             totalCommission={data.summary.totalCommission}
                             totalSwap={data.summary.totalSwap}
+                            currency={data.currency}
                         />
                         <ProfitCalendar
                             data={data.dailyPnL}
                             equityCurve={data.equityCurve}
                             accountId={accountId || undefined}
+                            currency={data.currency}
                         />
                     </div>
 
                     {/* Charts Row 2 - Two Columns */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                        <PairPerformance data={data.pairPerformance} />
-                        <DayPerformance data={data.dayOfWeekPerformance} />
+                        <PairPerformance data={data.pairPerformance} currency={data.currency} />
+                        <DayPerformance data={data.dayOfWeekPerformance} currency={data.currency} />
                     </div>
                 </>
             )}

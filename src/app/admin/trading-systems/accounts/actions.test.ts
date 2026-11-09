@@ -68,7 +68,7 @@ vi.mock("@/lib/supabase/server", () => ({
     createClient: vi.fn().mockResolvedValue({
         auth: {
             getUser: vi.fn().mockResolvedValue({
-                data: { user: { id: "admin-user-id", email: "admin@thenexttrade.com" } },
+                data: { user: { id: "admin-user-id", email: "admin@thenexttrade.io" } },
             }),
             mfa: {
                 getAuthenticatorAssuranceLevel: vi.fn().mockResolvedValue({

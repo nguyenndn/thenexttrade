@@ -53,7 +53,7 @@ export function testOpenAiCompatibleCredential(
         {
             "Content-Type": "application/json",
             Authorization: `Bearer ${input.decryptedSecret}`,
-            "HTTP-Referer": "https://thenexttrade.com",
+            "HTTP-Referer": "https://thenexttrade.io",
             "X-Title": "TheNextTrade AI Gateway",
         },
         {

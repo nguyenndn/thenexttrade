@@ -6,17 +6,20 @@ import { Edit2, Trash2, Target, TrendingUp, Percent, Save, BookOpen, Layers, Arr
 import { Button } from "@/components/ui/Button";
 import { Strategy, StrategyPerformance } from "./StrategyManager";
 import { PlaybookLightbox } from "./PlaybookLightbox";
+import { formatDashboardCurrency } from "@/lib/utils/cent-account";
 
 export function StrategyCard({
     strategy,
     performance,
     isGhost,
+    currency = "USD",
     onEdit,
     onDelete,
 }: {
     strategy: Strategy;
     performance?: StrategyPerformance;
     isGhost?: boolean;
+    currency?: string;
     onEdit: () => void;
     onDelete: () => void;
 }) {
@@ -210,7 +213,11 @@ export function StrategyCard({
                                 <p
                                     className={`text-base font-bold font-mono tabular-nums ${performance.totalPnL >= 0 ? "text-emerald-500" : "text-red-500"}`}
                                 >
-                                    ${Math.abs(performance.totalPnL ?? 0).toFixed(0)}
+                                    {formatDashboardCurrency(
+                                        performance.totalPnL ?? 0,
+                                        currency,
+                                        { fractionDigits: 0 }
+                                    )}
                                 </p>
                                 <p className="text-[10px] uppercase font-bold text-gray-500">
                                     P&L

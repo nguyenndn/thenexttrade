@@ -721,7 +721,7 @@ export async function syncOpenRouterModels() {
         const response = await fetch("https://openrouter.ai/api/v1/models", {
             method: "GET",
             headers: {
-                "HTTP-Referer": "https://thenexttrade.com",
+                "HTTP-Referer": "https://thenexttrade.io",
                 "X-Title": "TheNextTrade AI Gateway",
             },
         });

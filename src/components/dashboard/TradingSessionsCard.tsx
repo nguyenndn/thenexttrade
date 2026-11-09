@@ -1,6 +1,7 @@
 "use client";
 
 import { Globe, Sun, Moon, Sunset } from "lucide-react";
+import { formatDashboardCurrency } from "@/lib/utils/cent-account";
 
 interface SessionData {
     session: string;
@@ -41,9 +42,13 @@ const SESSION_CONFIG: Record<
 
 interface TradingSessionsCardProps {
     data: SessionData[];
+    currency?: string;
 }
 
-export function TradingSessionsCard({ data }: TradingSessionsCardProps) {
+export function TradingSessionsCard({
+    data,
+    currency = "USD",
+}: TradingSessionsCardProps) {
     const bestSession =
         data.length > 0
             ? data.reduce((best, s) => (s.pnl > best.pnl ? s : best), data[0])
@@ -123,10 +128,14 @@ export function TradingSessionsCard({ data }: TradingSessionsCardProps) {
                                                 <span
                                                     className={`text-xs font-black font-mono tabular-nums ${session.pnl >= 0 ? "text-primary" : "text-red-500"}`}
                                                 >
-                                                    {session.pnl >= 0
-                                                        ? "+"
-                                                        : ""}
-                                                    {session.pnl.toFixed(2)}
+                                                    {formatDashboardCurrency(
+                                                        session.pnl,
+                                                        currency,
+                                                        {
+                                                            signDisplay:
+                                                                "always",
+                                                        }
+                                                    )}
                                                 </span>
                                             </div>
                                             {/* Mini bar */}

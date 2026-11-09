@@ -339,7 +339,7 @@ export function LicenseAccountsPanel({
                     </ol>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                         {[
-                            "https://thenexttrade.com",
+                            "https://thenexttrade.io",
                             "https://api.github.com",
                             "https://raw.githubusercontent.com",
                         ].map((url) => (

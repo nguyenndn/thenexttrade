@@ -1,6 +1,7 @@
 "use client";
 
 import { BarChart3 } from "lucide-react";
+import { formatDashboardCurrency } from "@/lib/utils/cent-account";
 
 interface SymbolStat {
     symbol: string;
@@ -10,15 +11,17 @@ interface SymbolStat {
 
 interface SymbolPerformanceListProps {
     data: SymbolStat[];
+    currency?: string;
 }
 
-export function SymbolPerformanceList({ data }: SymbolPerformanceListProps) {
+export function SymbolPerformanceList({
+    data,
+    currency = "USD",
+}: SymbolPerformanceListProps) {
     const formatCurrency = (value: number) => {
-        return new Intl.NumberFormat("en-US", {
-            style: "currency",
-            currency: "USD",
-            signDisplay: "never", // Handle color manually
-        }).format(Math.abs(value));
+        return formatDashboardCurrency(Math.abs(value), currency, {
+            signDisplay: "never",
+        });
     };
 
     return (

@@ -13,6 +13,7 @@ import {
     isDemoTradingAccount,
     isLiveTradingPayload,
 } from "@/lib/trading-account-classification";
+import { normalizeCurrencyCode } from "@/lib/utils/cent-account";
 /**
  * Maps a GMT hour offset from the EA to the most appropriate IANA timezone.
  * Covers all common MT5 broker server timezones.
@@ -252,7 +253,14 @@ export async function POST(request: NextRequest) {
                     ? { broker: detectedBroker || broker }
                     : {}),
                 ...(!currentAccount?.server && server ? { server } : {}),
-                ...(currency ? { currency } : {}),
+                ...(currency
+                    ? {
+                          currency: normalizeCurrencyCode(
+                              currency,
+                              server || currentAccount?.server
+                          ),
+                      }
+                    : {}),
                 ...(leverage ? { leverage: String(leverage) } : {}),
                 ...(accountTradeMode !== undefined || server || broker
                     ? {

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowUp, ArrowDown, Minus, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ChartEmptyState } from "@/components/ui/ChartEmptyState";
+import { formatDashboardCurrency } from "@/lib/utils/cent-account";
 
 interface StrategyPerformance {
     strategy: string;
@@ -18,10 +19,12 @@ interface StrategyPerformance {
 
 interface StrategyComparisonTableProps {
     data: StrategyPerformance[];
+    currency?: string;
 }
 
 export function StrategyComparisonTable({
     data,
+    currency = "USD",
 }: StrategyComparisonTableProps) {
     const sortedData = useMemo(() => {
         return [...data].sort((a, b) => b.totalPnL - a.totalPnL);
@@ -144,10 +147,11 @@ export function StrategyComparisonTable({
                                                     : "text-red-500"
                                             )}
                                         >
-                                            {item.totalPnL >= 0 ? "+" : ""}$
-                                            {Math.abs(
-                                                item.totalPnL
-                                            ).toLocaleString()}
+                                            {formatDashboardCurrency(
+                                                item.totalPnL,
+                                                currency,
+                                                { signDisplay: "always" }
+                                            )}
                                         </span>
                                         {/* Visualization bar */}
                                         <div className="w-24 h-1 bg-gray-200 dark:bg-gray-700 rounded-full mt-1 overflow-hidden flex justify-end">
@@ -177,10 +181,10 @@ export function StrategyComparisonTable({
                                                     : "text-red-500"
                                             )}
                                         >
-                                            {(item.avgPnL ?? 0) >= 0 ? "+" : ""}
-                                            $
-                                            {Math.abs(item.avgPnL ?? 0).toFixed(
-                                                2
+                                            {formatDashboardCurrency(
+                                                item.avgPnL ?? 0,
+                                                currency,
+                                                { signDisplay: "always" }
                                             )}
                                         </span>
                                         {item.avgPnL > 0 && (

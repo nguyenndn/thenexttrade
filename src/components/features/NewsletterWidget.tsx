@@ -22,7 +22,7 @@ export default function NewsletterWidget() {
                 <input
                     type="email"
                     aria-label="Email address"
-                    placeholder="trader@thenexttrade.com"
+                    placeholder="trader@thenexttrade.io"
                     className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 placeholder:text-cyan-100/70 text-white focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-white/50 transition-all text-sm"
                     required
                 />

@@ -11,6 +11,7 @@ import {
     ResponsiveContainer,
     Cell,
 } from "recharts";
+import { formatDashboardCurrency } from "@/lib/utils/cent-account";
 
 interface StrategyPerformance {
     strategy: string;
@@ -23,9 +24,13 @@ interface StrategyPerformance {
 
 interface Props {
     data: StrategyPerformance[];
+    currency?: string;
 }
 
-export function StrategyPerformanceChart({ data }: Props) {
+export function StrategyPerformanceChart({
+    data,
+    currency = "USD",
+}: Props) {
     return (
         <div className="bg-white dark:bg-[#1E2028] p-6 rounded-lg border border-dashboard shadow-sm">
             <h3 className="text-lg font-bold text-gray-700 dark:text-white mb-6">
@@ -61,7 +66,11 @@ export function StrategyPerformanceChart({ data }: Props) {
                             axisLine={false}
                             tickLine={false}
                             tick={{ fill: "#9CA3AF", fontSize: 12 }}
-                            tickFormatter={(value) => `$${value}`}
+                            tickFormatter={(value) =>
+                                formatDashboardCurrency(value, currency, {
+                                    fractionDigits: 0,
+                                })
+                            }
                         />
                         <YAxis
                             yAxisId="right"
@@ -99,10 +108,10 @@ export function StrategyPerformanceChart({ data }: Props) {
                                                     <span
                                                         className={`font-mono font-bold ${item.totalPnL >= 0 ? "text-primary" : "text-red-500"}`}
                                                     >
-                                                        $
-                                                        {(
-                                                            item.totalPnL ?? 0
-                                                        ).toFixed(2)}
+                                                        {formatDashboardCurrency(
+                                                            item.totalPnL ?? 0,
+                                                            currency
+                                                        )}
                                                     </span>
                                                 </div>
                                                 <div className="flex justify-between gap-8">

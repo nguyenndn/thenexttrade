@@ -121,7 +121,7 @@ export async function GET(request: Request) {
                 ) {
                     const baseUrl =
                         process.env.NEXT_PUBLIC_APP_URL ||
-                        "https://thenexttrade.com";
+                        "https://thenexttrade.io";
                     const reportHtml = buildReportEmailHtml({
                         userName: user.name || "Trader",
                         periodLabel: report.periodLabel,

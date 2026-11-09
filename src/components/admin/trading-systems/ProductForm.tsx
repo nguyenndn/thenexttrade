@@ -109,8 +109,15 @@ export function ProductForm({ initialData }: ProductFormProps) {
         setIsLoading(true);
         try {
             // Force Platform to MT5
+            const generatedSlug =
+                initialData?.slug ||
+                values.name
+                    .toLowerCase()
+                    .replace(/[^a-z0-9]+/g, "-")
+                    .replace(/^-+|-+$/g, "");
             const cleanValues = {
                 ...values,
+                slug: generatedSlug,
                 platform: "MT5" as PlatformType,
                 changelog: values.changelog || "",
                 // If files are selected, we don't rely on the form strings for files as they will be updated by upload
@@ -232,9 +239,12 @@ export function ProductForm({ initialData }: ProductFormProps) {
                                                 EAType.AUTO_TRADE
                                                     ? "Auto Trade (Robot)"
                                                     : typeValue ===
-                                                        EAType.MANUAL_ASSIST
-                                                      ? "Manual Assist (Tool)"
-                                                      : "Indicator"}
+                                                        EAType.SEMI_AUTO
+                                                      ? "Semi Auto"
+                                                      : typeValue ===
+                                                          EAType.MANUAL_ASSIST
+                                                        ? "Manual Assist (Tool)"
+                                                        : "Indicator"}
                                             </span>
                                             <ChevronDown
                                                 size={14}
@@ -242,7 +252,10 @@ export function ProductForm({ initialData }: ProductFormProps) {
                                             />
                                         </Button>
                                     </DropdownMenuTrigger>
-                                    <DropdownMenuContent className="w-[var(--radix-dropdown-menu-trigger-width)]">
+                                    <DropdownMenuContent
+                                        align="start"
+                                        className="w-[var(--radix-dropdown-menu-trigger-width)]"
+                                    >
                                         <DropdownMenuItem
                                             onClick={() =>
                                                 form.setValue(
@@ -253,6 +266,17 @@ export function ProductForm({ initialData }: ProductFormProps) {
                                             }
                                         >
                                             Auto Trade (Robot)
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem
+                                            onClick={() =>
+                                                form.setValue(
+                                                    "type",
+                                                    EAType.SEMI_AUTO,
+                                                    { shouldValidate: true }
+                                                )
+                                            }
+                                        >
+                                            Semi Auto
                                         </DropdownMenuItem>
                                         <DropdownMenuItem
                                             onClick={() =>
@@ -303,7 +327,10 @@ export function ProductForm({ initialData }: ProductFormProps) {
                                             />
                                         </Button>
                                     </DropdownMenuTrigger>
-                                    <DropdownMenuContent className="w-[var(--radix-dropdown-menu-trigger-width)]">
+                                    <DropdownMenuContent
+                                        align="start"
+                                        className="w-[var(--radix-dropdown-menu-trigger-width)]"
+                                    >
                                         <DropdownMenuItem
                                             onClick={() =>
                                                 form.setValue(

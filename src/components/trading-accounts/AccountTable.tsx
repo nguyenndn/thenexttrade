@@ -12,7 +12,6 @@ import {
     Clock,
     Cable,
     RefreshCw,
-    LifeBuoy,
     X,
 } from "lucide-react";
 import { cancelCloudSyncJob } from "@/actions/cloud-sync";
@@ -29,6 +28,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { CloudSyncModal } from "./CloudSyncModal";
 import { cn } from "@/lib/utils";
+import {
+    formatAccountBalance,
+    getCurrencyInfo,
+    convertToUsdEquivalent,
+} from "@/lib/utils/cent-account";
 import { normalizeSyncSource, formatSyncErrorMessage } from "@/lib/sync/sync-source";
 import type { SyncMethod } from "@/lib/onboarding/first-session.server";
 
@@ -44,8 +48,6 @@ interface AccountTableProps {
     onOpenSyncSetup?: (method?: SyncMethod) => void;
     activeSyncingAccounts?: Record<string, { jobId?: string; startedAt: number }>;
     onSyncStarted?: (accountId: string, jobId?: string) => void;
-    onRequestSupport?: (accountId: string) => void;
-    userTickets?: any[];
 }
 
 const getAccountType = (
@@ -100,26 +102,8 @@ export function AccountTable({
     onOpenSyncSetup,
     activeSyncingAccounts,
     onSyncStarted,
-    onRequestSupport,
-    userTickets = [],
 }: AccountTableProps) {
     const [cloudSyncAccount, setCloudSyncAccount] = useState<any>(null);
-
-    // Map active pending support sync tickets by tradingAccountId or accountNumber
-    const pendingTicketsByAccount = (userTickets || []).reduce<Record<string, any>>(
-        (acc, ticket) => {
-            if (ticket.status === "PENDING") {
-                if (ticket.tradingAccountId) {
-                    acc[ticket.tradingAccountId] = ticket;
-                }
-                if (ticket.accountNumber) {
-                    acc[ticket.accountNumber] = ticket;
-                }
-            }
-            return acc;
-        },
-        {}
-    );
 
     return (
         <div className="w-full overflow-hidden rounded-lg border border-dashboard/80 bg-white shadow-sm dark:border-white/[0.08] dark:bg-[#1E2028]">
@@ -133,20 +117,25 @@ export function AccountTable({
                         : null;
                     const isReal = accountType === "REAL";
                     const syncMethod = getSyncMethod(account);
-                    // Temporarily disabled while Cloud Sync worker infrastructure is offline
-                    const isAccountSyncing = false;
+                    const isAccountSyncing = Boolean(
+                        activeSyncingAccounts?.[account.id] ||
+                        (account.latestJob &&
+                            (account.latestJob.status === "PENDING" ||
+                                account.latestJob.status === "PROCESSING") &&
+                            Date.now() - new Date(account.latestJob.createdAt).getTime() <
+                                (account.latestJob.status === "PENDING" ? 60000 : 120000))
+                    );
                     const latestJob = account.latestJob;
-                    const isLatestSyncFailed = false;
+                    const isLatestSyncFailed = Boolean(
+                        !isAccountSyncing &&
+                        latestJob &&
+                        latestJob.status === "FAILED" &&
+                        Date.now() - new Date(latestJob.createdAt).getTime() < 3600000
+                    );
                     const balance = account.balance ?? 0;
                     const isUnderReview =
                         account.proStatus === "PENDING" ||
                         account.eligibility?.status === "PENDING_REVIEW";
-                    const pendingTicket =
-                        pendingTicketsByAccount[account.id] ||
-                        (account.accountNumber
-                            ? pendingTicketsByAccount[account.accountNumber]
-                            : undefined);
-                    const hasPendingSupport = Boolean(pendingTicket);
 
                     return (
                         <div key={`mobile-${account.id}`} className="p-4 space-y-3">
@@ -226,18 +215,6 @@ export function AccountTable({
                                             <Settings size={15} />
                                             <span>Account Settings</span>
                                         </DropdownMenuItem>
-
-                                        {/* Temporarily hidden while Cloud Sync infrastructure is offline
-                                        {onRequestSupport && (
-                                            <DropdownMenuItem
-                                                onClick={() => onRequestSupport(account.id)}
-                                                className="flex items-center gap-3 px-3 py-2 font-semibold text-sm cursor-pointer rounded-lg hover:bg-gray-50 dark:hover:bg-white/5"
-                                            >
-                                                <LifeBuoy size={15} className="text-amber-500" />
-                                                <span>{hasPendingSupport ? "View Support Ticket" : "Sync Support"}</span>
-                                            </DropdownMenuItem>
-                                        )}
-                                        */}
 
                                         {isAccountSyncing && (
                                             <DropdownMenuItem
@@ -320,9 +297,14 @@ export function AccountTable({
                                 </div>
                                 <div className="p-2.5">
                                     <span className="text-[10px] uppercase font-bold text-gray-400 block mb-0.5">Balance</span>
-                                    <span className="font-bold text-gray-900 dark:text-white tabular-nums">
-                                        ${balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                    <span className="font-bold text-gray-900 dark:text-white tabular-nums block truncate">
+                                        {formatAccountBalance(balance, account.currency, account.server)}
                                     </span>
+                                    {getCurrencyInfo(account.currency, account.server).isCent && (
+                                        <span className="text-[10px] text-gray-400 dark:text-gray-500 tabular-nums block">
+                                            ≈ ${convertToUsdEquivalent(balance, account.currency, account.server).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD
+                                        </span>
+                                    )}
                                 </div>
                                 <div className="p-2.5">
                                     <span className="text-[10px] uppercase font-bold text-gray-400 block mb-0.5">Telemetry</span>
@@ -388,7 +370,6 @@ export function AccountTable({
                                     >
                                         Dashboard
                                     </Link>
-                                    {/* Temporarily hidden while Cloud Sync infrastructure is offline
                                     <Button
                                         size="sm"
                                         variant="outline"
@@ -399,7 +380,6 @@ export function AccountTable({
                                         <RefreshCw size={12} className={cn(isAccountSyncing && "animate-spin")} />
                                         <span>{isLatestSyncFailed ? "Retry" : "Sync"}</span>
                                     </Button>
-                                    */}
                                 </div>
                             </div>
                         </div>
@@ -431,10 +411,23 @@ export function AccountTable({
                             const isReal = accountType === "REAL";
                             const syncMethod = getSyncMethod(account);
 
-                            // Temporarily disabled while Cloud Sync worker infrastructure is offline
-                            const isAccountSyncing = false;
+                            const isAccountSyncing = Boolean(
+                                activeSyncingAccounts?.[account.id] ||
+                                (account.latestJob &&
+                                    (account.latestJob.status === "PENDING" ||
+                                        account.latestJob.status === "PROCESSING") &&
+                                    Date.now() - new Date(account.latestJob.createdAt).getTime() <
+                                        (account.latestJob.status === "PENDING" ? 60000 : 120000))
+                            );
                             const latestJob = account.latestJob;
-                            const isLatestSyncFailed = false;
+                            const isLatestSyncFailed = Boolean(
+                                !isAccountSyncing &&
+                                latestJob &&
+                                latestJob.status === "FAILED" &&
+                                (!account.lastSync ||
+                                    new Date(latestJob.createdAt).getTime() > new Date(account.lastSync).getTime() ||
+                                    (latestJob.completedAt && new Date(latestJob.completedAt).getTime() > new Date(account.lastSync).getTime()))
+                            );
 
                             const balance = account.balance || 0;
 
@@ -442,13 +435,6 @@ export function AccountTable({
                                 account.vipStatus === "PENDING" ||
                                 account.eligibility?.status === "PENDING_REVIEW" ||
                                 account.eligibility?.status === "PENDING";
-
-                            const pendingTicket =
-                                pendingTicketsByAccount[account.id] ||
-                                (account.accountNumber
-                                    ? pendingTicketsByAccount[account.accountNumber]
-                                    : null);
-                            const hasPendingSupport = Boolean(pendingTicket);
 
                             return (
                                 <tr
@@ -504,19 +490,6 @@ export function AccountTable({
                                                     <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 block tracking-wide tabular-nums font-mono">
                                                         #{account.accountNumber || "—"}
                                                     </span>
-                                                    {hasPendingSupport && (
-                                                        <Button
-                                                            type="button"
-                                                            variant="ghost"
-                                                            size="sm"
-                                                            onClick={() => onRequestSupport?.(account.id)}
-                                                            className="h-auto p-0 inline-flex items-center gap-1 px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/30 hover:bg-amber-500/25 transition-colors cursor-pointer"
-                                                            title="Manual sync support request pending. Click to view ticket."
-                                                        >
-                                                            <span className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse shrink-0" />
-                                                            Support Pending
-                                                        </Button>
-                                                    )}
                                                 </div>
                                             </div>
                                         </div>
@@ -557,9 +530,14 @@ export function AccountTable({
 
                                     {/* 4. Balance */}
                                     <td className="py-4 px-3 align-middle text-right whitespace-nowrap">
-                                        <span className="text-sm font-bold text-gray-900 dark:text-white tabular-nums">
-                                            ${balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                        <span className="text-sm font-bold text-gray-900 dark:text-white tabular-nums block">
+                                            {formatAccountBalance(balance, account.currency, account.server)}
                                         </span>
+                                        {getCurrencyInfo(account.currency, account.server).isCent && (
+                                            <span className="text-[10px] font-medium text-gray-400 dark:text-gray-500 tabular-nums block">
+                                                ≈ ${convertToUsdEquivalent(balance, account.currency, account.server).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD
+                                            </span>
+                                        )}
                                     </td>
 
                                     {/* 5. Last Sync */}
@@ -636,7 +614,7 @@ export function AccountTable({
                                                         size="sm"
                                                         onClick={() => onOpenSyncSetup(preferredSyncMethod)}
                                                         className="h-auto p-0 text-xs font-semibold text-gold dark:text-amber-400 hover:underline inline-flex items-center gap-1 hover:bg-transparent"
-                                                        title="Connect EA Trade Manager"
+                                                        title="Connect Cloud Sync or EA Trade Manager"
                                                     >
                                                         <Cable size={12} /> Connect
                                                     </Button>
@@ -697,7 +675,6 @@ export function AccountTable({
                                                 Dashboard
                                             </Link>
 
-                                            {/* Temporarily hidden while Cloud Sync infrastructure is offline
                                             <span className="text-gray-300 dark:text-white/15 select-none text-xs">·</span>
 
                                             {isAccountSyncing ? (
@@ -725,7 +702,6 @@ export function AccountTable({
                                                     {isLatestSyncFailed ? "Retry Sync" : "Sync"}
                                                 </Button>
                                             )}
-                                            */}
 
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger asChild>
@@ -762,18 +738,6 @@ export function AccountTable({
                                                         />
                                                         <span>{isMain ? "Main Account" : "Set as Main"}</span>
                                                     </DropdownMenuItem>
-
-                                                    {/* Temporarily hidden while Cloud Sync infrastructure is offline
-                                                    {onRequestSupport && (
-                                                        <DropdownMenuItem
-                                                            onClick={() => onRequestSupport(account.id)}
-                                                            className="flex items-center gap-3 px-3 py-2 font-semibold text-sm cursor-pointer rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 focus:bg-gray-50 dark:focus:bg-white/5 transition-colors"
-                                                        >
-                                                            <LifeBuoy size={15} className="text-amber-500" />
-                                                            <span>{hasPendingSupport ? "View Support Ticket" : "Sync Support"}</span>
-                                                        </DropdownMenuItem>
-                                                    )}
-                                                    */}
 
                                                     {isAccountSyncing && (
                                                         <DropdownMenuItem
@@ -858,7 +822,6 @@ export function AccountTable({
                     account={cloudSyncAccount}
                     onUpdated={onUpdate}
                     onSyncStarted={onSyncStarted}
-                    onRequestSupport={onRequestSupport}
                 />
             )}
         </div>

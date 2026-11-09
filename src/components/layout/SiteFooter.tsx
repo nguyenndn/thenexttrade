@@ -55,12 +55,6 @@ export function SiteFooter() {
                         >
                             Cookies
                         </Link>
-                        <Link
-                            href="/legal/terms-of-service#third-party-brokers"
-                            className="text-sm font-bold text-gray-600 dark:text-slate-400 hover:text-amber-600 dark:hover:text-gold transition-colors"
-                        >
-                            Affiliate Disclosure
-                        </Link>
                     </div>
                 </div>
             </div>

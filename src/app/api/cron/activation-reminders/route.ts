@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
         const candidates = await getActivationReminderCandidates();
         const nowStr = new Date().toISOString();
         const appUrl =
-            process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.com";
+            process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.io";
 
         let inAppCount = 0;
         let emailCount = 0;

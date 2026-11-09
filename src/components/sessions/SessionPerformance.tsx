@@ -10,6 +10,7 @@ import {
     ResponsiveContainer,
     Cell,
 } from "recharts";
+import { formatDashboardCurrency } from "@/lib/utils/cent-account";
 
 interface SessionPerformanceProps {
     data: Array<{
@@ -21,9 +22,13 @@ interface SessionPerformanceProps {
         totalPnL: number;
         profitFactor: number;
     }>;
+    currency?: string;
 }
 
-export function SessionPerformance({ data }: SessionPerformanceProps) {
+export function SessionPerformance({
+    data,
+    currency = "USD",
+}: SessionPerformanceProps) {
     return (
         <div className="bg-white dark:bg-[#1E2028] p-6 rounded-lg border border-dashboard shadow-sm h-full flex flex-col transition-shadow hover:shadow-md">
             <h3 className="font-bold text-gray-700 dark:text-white mb-2">
@@ -50,7 +55,11 @@ export function SessionPerformance({ data }: SessionPerformanceProps) {
                             type="number"
                             stroke="#9CA3AF"
                             fontSize={12}
-                            tickFormatter={(value) => `$${value}`}
+                            tickFormatter={(value) =>
+                                formatDashboardCurrency(value, currency, {
+                                    fractionDigits: 0,
+                                })
+                            }
                         />
                         <YAxis
                             type="category"
@@ -76,10 +85,10 @@ export function SessionPerformance({ data }: SessionPerformanceProps) {
                                                     <span
                                                         className={`font-mono font-bold ${data.totalPnL >= 0 ? "text-primary" : "text-red-400"}`}
                                                     >
-                                                        $
-                                                        {(
-                                                            data.totalPnL ?? 0
-                                                        ).toLocaleString()}
+                                                        {formatDashboardCurrency(
+                                                            data.totalPnL ?? 0,
+                                                            currency
+                                                        )}
                                                     </span>
                                                 </div>
                                                 <div className="flex justify-between gap-4">

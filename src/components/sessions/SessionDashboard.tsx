@@ -73,6 +73,7 @@ interface SessionData {
         type: "positive" | "negative" | "warning" | "neutral";
         text: string;
     }[];
+    currency?: string;
 }
 
 export function SessionDashboard({
@@ -269,15 +270,24 @@ export function SessionDashboard({
                     {/* Main Charts */}
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                         <div className="lg:col-span-2">
-                            <SessionPerformance data={data.sessionStats} />
+                            <SessionPerformance
+                                data={data.sessionStats}
+                                currency={data.currency}
+                            />
                         </div>
                         <div className="lg:col-span-1">
-                            <SessionClock data={data.sessionStats} />
+                            <SessionClock
+                                data={data.sessionStats}
+                                currency={data.currency}
+                            />
                         </div>
                     </div>
 
                     {/* Hourly Heatmap */}
-                    <HourlyHeatmap data={data.hourlyStats} />
+                    <HourlyHeatmap
+                        data={data.hourlyStats}
+                        currency={data.currency}
+                    />
                 </>
             )}
         </div>

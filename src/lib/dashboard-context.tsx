@@ -133,30 +133,37 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
     const [hasTradeData, setHasTradeData] = useState(true); // Default to true to avoid flash
     const [hasTradeDataLoaded, setHasTradeDataLoaded] = useState(false);
 
-    // Fetch feature flags ONCE (singleton survives StrictMode double-mount)
+    // Fetch feature flags and refresh when "feature-flags-updated" is dispatched
     useEffect(() => {
-        // Collect all feature flags from both menu items and menu groups
-        const flagSet = new Set<string>();
-        for (const item of dashboardMenuItems) {
-            if ((item as any).featureFlag)
-                flagSet.add((item as any).featureFlag);
-        }
-        for (const group of dashboardMenuGroups) {
-            for (const item of group.items) {
-                if ((item as any).featureFlag)
-                    flagSet.add((item as any).featureFlag);
+        const refreshFlags = () => {
+            const flagSet = new Set<string>();
+            for (const item of dashboardMenuItems) {
+                if ((item as { featureFlag?: string }).featureFlag)
+                    flagSet.add((item as { featureFlag: string }).featureFlag);
             }
-        }
+            for (const group of dashboardMenuGroups) {
+                for (const item of group.items) {
+                    if ((item as { featureFlag?: string }).featureFlag)
+                        flagSet.add((item as { featureFlag: string }).featureFlag);
+                }
+            }
 
-        const flagKeys = Array.from(flagSet);
-        if (flagKeys.length === 0) {
-            setFeatureFlags({ disabledFlags: new Set(), loaded: true });
-            return;
-        }
+            const flagKeys = Array.from(flagSet);
+            if (flagKeys.length === 0) {
+                setFeatureFlags({ disabledFlags: new Set(), loaded: true });
+                return;
+            }
 
-        loadFeatureFlags(flagKeys).then((disabled) => {
-            setFeatureFlags({ disabledFlags: disabled, loaded: true });
-        });
+            loadFeatureFlags(flagKeys).then((disabled) => {
+                setFeatureFlags({ disabledFlags: disabled, loaded: true });
+            });
+        };
+
+        refreshFlags();
+        window.addEventListener("feature-flags-updated", refreshFlags);
+        return () => {
+            window.removeEventListener("feature-flags-updated", refreshFlags);
+        };
     }, []);
 
     // Fetch system config ONCE (shared singleton with other components)

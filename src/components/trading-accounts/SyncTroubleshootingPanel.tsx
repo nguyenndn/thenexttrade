@@ -30,7 +30,7 @@ const TRADE_MANAGER_HELP: HelpTopic[] = [
         question: "Trade Manager EA cannot connect to server",
         answer: [
             "Confirm the WebRequest URL is added in MT5 → Tools → Options → Expert Advisors.",
-            "The correct URL is: https://api.thenexttrade.com",
+            "The correct URL is: https://api.thenexttrade.io",
             'Confirm the EA is attached to a chart and "Algo Trading" (or "Auto Trading") is enabled at the top toolbar.',
         ],
     },

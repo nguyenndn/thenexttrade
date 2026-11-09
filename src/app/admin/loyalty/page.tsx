@@ -28,6 +28,7 @@ export default async function AdminLoyaltyPage() {
   const res = await fetchAdminLoyaltyData();
   const initialClaims = res.data?.claims || [];
   const initialTiers = res.data?.tiers || [];
+  const initialLoyaltyEnabled = res.data?.loyaltyEnabled ?? true;
   const initialStats = res.data?.stats || {
     pendingCount: 0,
     pendingAmount: 0,
@@ -43,6 +44,7 @@ export default async function AdminLoyaltyPage() {
         initialClaims={initialClaims}
         initialStats={initialStats}
         initialTiers={initialTiers}
+        initialLoyaltyEnabled={initialLoyaltyEnabled}
       />
     </div>
   );

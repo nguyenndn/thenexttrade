@@ -48,17 +48,74 @@ export async function grantAllEasForTradingAccount(
     params: {
         userId: string;
         tradingAccountId: string;
+        broker?: string;
+        accountNumber?: string;
+        approvedBy?: string;
     },
     db: Prisma.TransactionClient = prisma
 ): Promise<void> {
-    const { userId, tradingAccountId } = params;
+    const { userId, tradingAccountId, broker, accountNumber, approvedBy } = params;
     try {
+        const now = new Date();
+        const cleanAcct = accountNumber?.trim() || null;
+        const cleanBroker = broker?.trim() || null;
+
+        if (db.proEntitlement) {
+            await db.proEntitlement.upsert({
+                where: { tradingAccountId },
+                create: {
+                    userId,
+                    tradingAccountId,
+                    status: "ACTIVE",
+                    source: "IB_VERIFIED",
+                    broker: cleanBroker,
+                    accountNumber: cleanAcct,
+                    accountNumberMasked: cleanAcct
+                        ? `***${cleanAcct.slice(-4)}`
+                        : null,
+                    startsAt: now,
+                    lastReviewedAt: now,
+                    reviewedBy: approvedBy || null,
+                },
+                update: {
+                    status: "ACTIVE",
+                    source: "IB_VERIFIED",
+                    ...(cleanBroker ? { broker: cleanBroker } : {}),
+                    ...(cleanAcct
+                        ? {
+                              accountNumber: cleanAcct,
+                              accountNumberMasked: `***${cleanAcct.slice(-4)}`,
+                          }
+                        : {}),
+                    startsAt: now,
+                    expiresAt: null,
+                    lastReviewedAt: now,
+                    ...(approvedBy ? { reviewedBy: approvedBy } : {}),
+                },
+            });
+        }
+
+        if (cleanAcct && db.vipRequest) {
+            await db.vipRequest.updateMany({
+                where: {
+                    userId,
+                    accountNumber: cleanAcct,
+                    status: "PENDING",
+                },
+                data: {
+                    status: "APPROVED",
+                    tradingAccountId,
+                    reviewedBy: approvedBy || null,
+                    reviewedAt: now,
+                },
+            });
+        }
+
         const activeProducts = await db.eAProduct.findMany({
             where: { isActive: true },
             select: { id: true },
         });
 
-        const now = new Date();
         for (const product of activeProducts) {
             const scopeKey = `${userId}:${product.id}:ACCOUNT:${tradingAccountId}`;
             await db.eAProductAccess.upsert({
@@ -170,6 +227,9 @@ export async function ensureTradingAccountLicenseKey(
                 {
                     userId,
                     tradingAccountId: existing.id,
+                    broker: cleanBroker || existing.broker || undefined,
+                    accountNumber: cleanAccountNumber,
+                    approvedBy,
                 },
                 db
             );
@@ -210,6 +270,9 @@ export async function ensureTradingAccountLicenseKey(
             {
                 userId,
                 tradingAccountId: created.id,
+                broker: cleanBroker,
+                accountNumber: cleanAccountNumber,
+                approvedBy,
             },
             db
         );

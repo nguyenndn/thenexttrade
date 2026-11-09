@@ -1,10 +1,12 @@
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { format } from "date-fns";
+import { formatDashboardCurrency } from "@/lib/utils/cent-account";
 
 export async function generatePDF(data: any) {
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.width;
+    const currency = data.currency || "USD";
 
     // Header
     doc.setFontSize(22);
@@ -27,7 +29,7 @@ export async function generatePDF(data: any) {
     const summaryData = [
         [
             "Net P/L",
-            `$${data.summary.netPnL.toFixed(2)}`,
+            formatDashboardCurrency(data.summary.netPnL, currency),
             "Win Rate",
             `${data.summary.winRate.toFixed(1)}%`,
         ],
@@ -41,15 +43,15 @@ export async function generatePDF(data: any) {
         ],
         [
             "Avg Win",
-            `$${data.summary.avgWin.toFixed(2)}`,
+            formatDashboardCurrency(data.summary.avgWin, currency),
             "Avg Loss",
-            `$${data.summary.avgLoss.toFixed(2)}`,
+            formatDashboardCurrency(data.summary.avgLoss, currency),
         ],
         [
             "Largest Win",
-            `$${data.summary.largestWin.toFixed(2)}`,
+            formatDashboardCurrency(data.summary.largestWin, currency),
             "Largest Loss",
-            `$${data.summary.largestLoss.toFixed(2)}`,
+            formatDashboardCurrency(data.summary.largestLoss, currency),
         ],
     ];
 
@@ -79,7 +81,7 @@ export async function generatePDF(data: any) {
             s.name,
             s.trades,
             `${s.winRate.toFixed(1)}%`,
-            `$${s.pnl.toFixed(2)}`,
+            formatDashboardCurrency(s.pnl, currency),
         ]),
         headStyles: { fillColor: [0, 200, 136] },
         theme: "grid",
@@ -99,7 +101,7 @@ export async function generatePDF(data: any) {
                 p.symbol,
                 p.trades,
                 `${p.winRate.toFixed(1)}%`,
-                `$${p.pnl.toFixed(2)}`,
+                formatDashboardCurrency(p.pnl, currency),
             ]),
         headStyles: { fillColor: [47, 128, 237] }, // Blue
         theme: "grid",
@@ -118,7 +120,7 @@ export async function generatePDF(data: any) {
             t.symbol,
             t.type,
             t.result,
-            `$${t.pnl.toFixed(2)}`,
+            formatDashboardCurrency(t.pnl, currency),
         ]),
         headStyles: { fillColor: [20, 20, 30] },
         theme: "striped",

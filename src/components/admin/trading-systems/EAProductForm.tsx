@@ -135,7 +135,7 @@ export function EAProductForm({ product }: EAProductFormProps) {
                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
                         Type
                     </label>
-                    <DropdownMenu>
+                    <DropdownMenu className="w-full block">
                         <DropdownMenuTrigger asChild>
                             <Button
                                 variant="outline"
@@ -144,15 +144,17 @@ export function EAProductForm({ product }: EAProductFormProps) {
                                 <span>
                                     {typeValue === EAType.AUTO_TRADE
                                         ? "Auto Trade"
-                                        : typeValue === EAType.MANUAL_ASSIST
-                                          ? "Manual Assist"
-                                          : "Indicator"}
+                                        : typeValue === EAType.SEMI_AUTO
+                                          ? "Semi Auto"
+                                          : typeValue === EAType.MANUAL_ASSIST
+                                            ? "Manual Assist"
+                                            : "Indicator"}
                                 </span>
                                 <ChevronDown size={14} className="opacity-50" />
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent
-                            align="end"
+                            align="start"
                             className="w-full min-w-[var(--radix-dropdown-menu-trigger-width)]"
                         >
                             <DropdownMenuItem
@@ -161,6 +163,13 @@ export function EAProductForm({ product }: EAProductFormProps) {
                                 }
                             >
                                 Auto Trade
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                                onClick={() =>
+                                    setValue("type", EAType.SEMI_AUTO)
+                                }
+                            >
+                                Semi Auto
                             </DropdownMenuItem>
                             <DropdownMenuItem
                                 onClick={() =>
@@ -185,7 +194,7 @@ export function EAProductForm({ product }: EAProductFormProps) {
                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
                         Platform
                     </label>
-                    <DropdownMenu>
+                    <DropdownMenu className="w-full block">
                         <DropdownMenuTrigger asChild>
                             <Button
                                 variant="outline"
@@ -196,7 +205,7 @@ export function EAProductForm({ product }: EAProductFormProps) {
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent
-                            align="end"
+                            align="start"
                             className="w-full min-w-[var(--radix-dropdown-menu-trigger-width)]"
                         >
                             <DropdownMenuItem

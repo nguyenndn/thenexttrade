@@ -68,7 +68,7 @@ export default function Error({
                 <p className="mt-10 text-sm text-gray-500">
                     Problem persists?{" "}
                     <a
-                        href="mailto:support@thenexttrade.com"
+                        href="mailto:support@thenexttrade.io"
                         className="text-primary font-semibold hover:underline"
                     >
                         Contact Support

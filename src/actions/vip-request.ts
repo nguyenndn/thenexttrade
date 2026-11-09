@@ -275,40 +275,68 @@ export async function approveVipRequest(requestId: string) {
                 ensureTradingAccountLicenseKey,
                 syncLicensesToGitHubBackup,
             } = await import("@/lib/ea/github-license-sync.server");
+            const cleanAccountNum = vipRequest.accountNumber.trim();
+            const cleanBrokerName = vipRequest.broker.trim();
             await ensureTradingAccountLicenseKey({
                 userId: vipRequest.userId,
-                broker: vipRequest.broker,
-                accountNumber: vipRequest.accountNumber,
+                broker: cleanBrokerName,
+                accountNumber: cleanAccountNum,
                 isApproved: true,
                 approvedBy: user.id,
             });
-            await prisma.eALicense.upsert({
+            const existingLicense = await prisma.eALicense.findFirst({
                 where: {
-                    broker_accountNumber: {
-                        broker: vipRequest.broker,
-                        accountNumber: vipRequest.accountNumber.trim(),
-                    },
-                },
-                create: {
                     userId: vipRequest.userId,
-                    broker: vipRequest.broker,
-                    accountNumber: vipRequest.accountNumber.trim(),
-                    status: "APPROVED",
-                    isVerified: true,
-                    verifiedAt: new Date(),
-                    approvedBy: user.id,
-                    approvedAt: new Date(),
-                    startDate: new Date(),
-                    expiryDate: null,
+                    accountNumber: cleanAccountNum,
                 },
-                update: {
-                    status: "APPROVED",
-                    isVerified: true,
-                    verifiedAt: new Date(),
-                    approvedBy: user.id,
-                    approvedAt: new Date(),
-                },
+                select: { id: true },
             });
+            if (existingLicense) {
+                await prisma.eALicense.update({
+                    where: { id: existingLicense.id },
+                    data: {
+                        status: "APPROVED",
+                        isVerified: true,
+                        verifiedAt: new Date(),
+                        approvedBy: user.id,
+                        approvedAt: new Date(),
+                        rejectedBy: null,
+                        rejectedAt: null,
+                        rejectReason: null,
+                    },
+                });
+            } else {
+                await prisma.eALicense.upsert({
+                    where: {
+                        broker_accountNumber: {
+                            broker: cleanBrokerName,
+                            accountNumber: cleanAccountNum,
+                        },
+                    },
+                    create: {
+                        userId: vipRequest.userId,
+                        broker: cleanBrokerName,
+                        accountNumber: cleanAccountNum,
+                        status: "APPROVED",
+                        isVerified: true,
+                        verifiedAt: new Date(),
+                        approvedBy: user.id,
+                        approvedAt: new Date(),
+                        startDate: new Date(),
+                        expiryDate: null,
+                    },
+                    update: {
+                        status: "APPROVED",
+                        isVerified: true,
+                        verifiedAt: new Date(),
+                        approvedBy: user.id,
+                        approvedAt: new Date(),
+                        rejectedBy: null,
+                        rejectedAt: null,
+                        rejectReason: null,
+                    },
+                });
+            }
             await syncLicensesToGitHubBackup();
         } catch (syncErr) {
             console.error("Non-fatal EA license / GitHub sync error after VIP approval:", syncErr);
@@ -429,6 +457,18 @@ export async function deleteVipRequest(requestId: string) {
                 targetUserId: existingRequest.userId,
                 productSlug: "gsn-phoenix-grid",
                 tradingAccountId: existingRequest.tradingAccountId || null,
+            });
+            await prisma.eAProductAccess.updateMany({
+                where: {
+                    userId: existingRequest.userId,
+                    status: "GRANTED",
+                    ...(existingRequest.tradingAccountId
+                        ? { tradingAccountId: existingRequest.tradingAccountId }
+                        : {}),
+                },
+                data: {
+                    status: "REVOKED",
+                },
             });
 
             if (existingRequest.accountNumber) {
@@ -803,6 +843,18 @@ export async function revokeProAccess(
             productSlug: "gsn-phoenix-grid",
             tradingAccountId: effectiveTradingAccountId,
         });
+        await prisma.eAProductAccess.updateMany({
+            where: {
+                userId,
+                status: "GRANTED",
+                ...(effectiveTradingAccountId
+                    ? { tradingAccountId: effectiveTradingAccountId }
+                    : {}),
+            },
+            data: {
+                status: "REVOKED",
+            },
+        });
 
         // Synchronize EALicense -> SUSPENDED and TradingAccount.ibAttribution -> UNVERIFIED
         if (effectiveTradingAccountId) {
@@ -956,36 +1008,59 @@ export async function grantManualPro(
                     isApproved: true,
                     approvedBy: user.id,
                 });
-                await prisma.eALicense.upsert({
+                const existingLic = await prisma.eALicense.findFirst({
                     where: {
-                        broker_accountNumber: {
+                        userId,
+                        accountNumber: cleanAcct,
+                    },
+                    select: { id: true },
+                });
+                if (existingLic) {
+                    await prisma.eALicense.update({
+                        where: { id: existingLic.id },
+                        data: {
+                            status: "APPROVED",
+                            isVerified: true,
+                            verifiedAt: new Date(),
+                            approvedBy: user.id,
+                            approvedAt: new Date(),
+                            rejectedBy: null,
+                            rejectedAt: null,
+                            rejectReason: null,
+                        },
+                    });
+                } else {
+                    await prisma.eALicense.upsert({
+                        where: {
+                            broker_accountNumber: {
+                                broker: upperBroker,
+                                accountNumber: cleanAcct,
+                            },
+                        },
+                        create: {
+                            userId,
                             broker: upperBroker,
                             accountNumber: cleanAcct,
+                            status: "APPROVED",
+                            isVerified: true,
+                            verifiedAt: new Date(),
+                            approvedBy: user.id,
+                            approvedAt: new Date(),
+                            startDate: new Date(),
+                            note: note || "Approved via Manual Admin Pro Grant",
                         },
-                    },
-                    create: {
-                        userId,
-                        broker: upperBroker,
-                        accountNumber: cleanAcct,
-                        status: "APPROVED",
-                        isVerified: true,
-                        verifiedAt: new Date(),
-                        approvedBy: user.id,
-                        approvedAt: new Date(),
-                        startDate: new Date(),
-                        note: note || "Approved via Manual Admin Pro Grant",
-                    },
-                    update: {
-                        status: "APPROVED",
-                        isVerified: true,
-                        verifiedAt: new Date(),
-                        approvedBy: user.id,
-                        approvedAt: new Date(),
-                        rejectedBy: null,
-                        rejectedAt: null,
-                        rejectReason: null,
-                    },
-                });
+                        update: {
+                            status: "APPROVED",
+                            isVerified: true,
+                            verifiedAt: new Date(),
+                            approvedBy: user.id,
+                            approvedAt: new Date(),
+                            rejectedBy: null,
+                            rejectedAt: null,
+                            rejectReason: null,
+                        },
+                    });
+                }
                 await syncLicensesToGitHubBackup();
             }
         } catch (err) {

@@ -1004,6 +1004,7 @@ enum ArticleStatus {
 
 enum EAType {
   AUTO_TRADE
+  SEMI_AUTO
   MANUAL_ASSIST
   INDICATOR
 }

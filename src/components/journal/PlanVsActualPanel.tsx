@@ -8,6 +8,7 @@ import {
     AlertTriangle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { formatDashboardCurrency } from "@/lib/utils/cent-account";
 
 interface PlanVsActualPanelProps {
     plan: {
@@ -42,9 +43,10 @@ interface PlanVsActualPanelProps {
         followedPlan?: boolean | null;
         ruleChecks?: any[];
     };
+    currency?: string;
 }
 
-export function PlanVsActualPanel({ plan, entry }: PlanVsActualPanelProps) {
+export function PlanVsActualPanel({ plan, entry, currency = "USD" }: PlanVsActualPanelProps) {
     // Calculations
     const entryDiff =
         plan.plannedEntry && entry.entryPrice
@@ -165,7 +167,9 @@ export function PlanVsActualPanel({ plan, entry }: PlanVsActualPanelProps) {
                                 Risk Amount
                             </span>
                             <span className="font-mono tabular-nums font-bold text-gray-700 dark:text-white">
-                                {plan.riskAmount ? `$${plan.riskAmount}` : "-"}
+                                {plan.riskAmount
+                                    ? formatDashboardCurrency(plan.riskAmount, currency)
+                                    : "-"}
                             </span>
                         </div>
                     </div>
@@ -309,7 +313,11 @@ export function PlanVsActualPanel({ plan, entry }: PlanVsActualPanelProps) {
                                         : "text-red-500"
                                 )}
                             >
-                                {entry.pnl ? `$${entry.pnl.toFixed(2)}` : "-"}
+                                {entry.pnl != null
+                                    ? formatDashboardCurrency(entry.pnl, currency, {
+                                          signDisplay: "always",
+                                      })
+                                    : "-"}
                             </span>
                         </div>
                     </div>

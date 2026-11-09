@@ -20,10 +20,17 @@ export async function GET(request: NextRequest) {
         where: { key: { in: keys } },
     });
 
+    const DEFAULT_ENABLED_KEYS = new Set([
+        "feature_loyalty",
+        "feature_competitions",
+    ]);
+
     const flags: Record<string, boolean> = {};
     for (const key of keys) {
         const setting = settings.find((s) => s.key === key);
-        flags[key] = (setting?.value as { enabled: boolean })?.enabled ?? false;
+        const defaultEnabled = DEFAULT_ENABLED_KEYS.has(key);
+        flags[key] =
+            (setting?.value as { enabled?: boolean })?.enabled ?? defaultEnabled;
     }
 
     return NextResponse.json({ flags });

@@ -22,6 +22,7 @@ import {
     isToday,
 } from "date-fns";
 import { Button } from "@/components/ui/Button";
+import { formatDashboardCurrency } from "@/lib/utils/cent-account";
 
 interface DayData {
     date: string;
@@ -32,11 +33,13 @@ interface DayData {
 interface CalendarHeatmapProps {
     dailyData: DayData[];
     onDayClick?: (date: string) => void;
+    currency?: string;
 }
 
 export function CalendarHeatmap({
     dailyData,
     onDayClick,
+    currency = "USD",
 }: CalendarHeatmapProps) {
     const [currentMonth, setCurrentMonth] = useState(new Date());
 
@@ -145,8 +148,9 @@ export function CalendarHeatmap({
                             <span
                                 className={`font-bold ${monthSummary.totalPnl >= 0 ? "text-emerald-500" : "text-red-500"}`}
                             >
-                                {monthSummary.totalPnl >= 0 ? "+" : ""}
-                                {monthSummary.totalPnl.toFixed(2)}$
+                                {formatDashboardCurrency(monthSummary.totalPnl, currency, {
+                                    signDisplay: "always",
+                                })}
                             </span>
                         </div>
                     </div>
@@ -165,8 +169,9 @@ export function CalendarHeatmap({
                     <span
                         className={`font-bold ${monthSummary.totalPnl >= 0 ? "text-emerald-500" : "text-red-500"}`}
                     >
-                        {monthSummary.totalPnl >= 0 ? "+" : ""}
-                        {monthSummary.totalPnl.toFixed(2)}$
+                        {formatDashboardCurrency(monthSummary.totalPnl, currency, {
+                            signDisplay: "always",
+                        })}
                     </span>
                 </div>
             </div>

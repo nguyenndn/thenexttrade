@@ -1,6 +1,7 @@
 "use client";
 
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
+import { formatDashboardCurrency } from "@/lib/utils/cent-account";
 
 interface PnLDisplayProps {
     value: number | null | undefined;
@@ -12,12 +13,13 @@ interface PnLDisplayProps {
 export const PnLDisplay = ({
     value,
     showIcon = false,
-    currency = "$",
+    currency = "USD",
     className = "",
 }: PnLDisplayProps) => {
     const numValue = value || 0;
     const isPositive = numValue > 0;
     const isNegative = numValue < 0;
+    const resolvedCurrency = currency === "$" ? "USD" : currency;
 
     const colorClass = isPositive
         ? "text-primary"
@@ -36,11 +38,8 @@ export const PnLDisplay = ({
                     {numValue === 0 && <Minus size={14} />}
                 </>
             )}
-            {numValue < 0 ? "-" : numValue > 0 && showIcon ? "+" : ""}
-            {currency}
-            {Math.abs(numValue).toLocaleString(undefined, {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
+            {formatDashboardCurrency(numValue, resolvedCurrency, {
+                signDisplay: showIcon ? "always" : "auto",
             })}
         </span>
     );

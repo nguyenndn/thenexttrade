@@ -175,10 +175,10 @@ export const POPULAR_MT5_SERVERS: MT5ServerItem[] = [
     { name: "BullWaves-LIVE", broker: "BullWaves" },
     { name: "Bybit-Demo", broker: "Bybit", isDemo: true },
     { name: "Bybit-Live", broker: "Bybit" },
-    { name: "Bybit-live-2", broker: "Bybit" },
-    { name: "Bybit-live-4", broker: "Bybit" },
-    { name: "Bybit-live-5", broker: "Bybit" },
-    { name: "Bybit-live-6", broker: "Bybit" },
+    { name: "Bybit-Live-2", broker: "Bybit" },
+    { name: "Bybit-Live-4", broker: "Bybit" },
+    { name: "Bybit-Live-5", broker: "Bybit" },
+    { name: "Bybit-Live-6", broker: "Bybit" },
     { name: "Bybit-Live-7", broker: "Bybit" },
     { name: "BybitX-Live", broker: "BybitX" },
     { name: "BytroxGlobal-Server", broker: "BytroxGlobal" },
@@ -296,8 +296,8 @@ export const POPULAR_MT5_SERVERS: MT5ServerItem[] = [
     { name: "ECMarkets-MT5-Live01", broker: "ECMarkets" },
     { name: "ECMarketsFinancial-MT5-Live04", broker: "ECMarketsFinancial" },
     { name: "ECMarketsLtd-MT5-Live03", broker: "ECMarketsLtd" },
-    { name: "ECmarketsLtd-MT5-Live05", broker: "ECmarketsLtd" },
-    { name: "ECmarketsLtd-MT5-Live06", broker: "ECmarketsLtd" },
+    { name: "ECMarketsLtd-MT5-Live05", broker: "ECMarketsLtd" },
+    { name: "ECMarketsLtd-MT5-Live06", broker: "ECMarketsLtd" },
     { name: "EFXPro-Live", broker: "EFXPro" },
     { name: "EGlobalTrade-Classic", broker: "EGlobalTrade" },
     { name: "EGlobalTrade-Demo", broker: "EGlobalTrade", isDemo: true },
@@ -370,7 +370,7 @@ export const POPULAR_MT5_SERVERS: MT5ServerItem[] = [
     { name: "Exness-MT5Real4", broker: "Exness" },
     { name: "Exness-MT5Real40", broker: "Exness" },
     { name: "Exness-MT5Real41", broker: "Exness" },
-    { name: "exness-MT5Real42", broker: "Exness" },
+    { name: "Exness-MT5Real42", broker: "Exness" },
     { name: "Exness-MT5Real46", broker: "Exness" },
     { name: "Exness-MT5Real5", broker: "Exness" },
     { name: "Exness-MT5Real51", broker: "Exness" },
@@ -611,7 +611,7 @@ export const POPULAR_MT5_SERVERS: MT5ServerItem[] = [
     { name: "FxPro-MT5", broker: "FxPro" },
     { name: "FxPro-MT5 Demo", broker: "FxPro", isDemo: true },
     { name: "FxPro-MT5 Live02", broker: "FxPro" },
-    { name: "fxpro-mt5 live03", broker: "fxpro" },
+    { name: "FxPro-MT5 Live03", broker: "FxPro" },
     { name: "FxPro.Global-MT5 Live02", broker: "FxPro.Global" },
     { name: "FXRKMarkets-Server", broker: "FXRKMarkets" },
     { name: "FXTRADING.com-Demo", broker: "FXTRADING.com", isDemo: true },
@@ -745,7 +745,7 @@ export const POPULAR_MT5_SERVERS: MT5ServerItem[] = [
     { name: "ICMarketsSC-MT5-2", broker: "IC Markets" },
     { name: "ICMarketsSC-MT5-3", broker: "IC Markets" },
     { name: "ICMarketsSC-MT5-4", broker: "IC Markets" },
-    { name: "Icmarketssc-mt5-6", broker: "IC Markets" },
+    { name: "ICMarketsSC-MT5-6", broker: "IC Markets" },
     { name: "ICMCapital-Demo", broker: "ICMCapital", isDemo: true },
     { name: "ICTrading-Demo", broker: "ICTrading", isDemo: true },
     { name: "ICTrading-MT5-2", broker: "ICTrading" },
@@ -1072,14 +1072,17 @@ export const POPULAR_MT5_SERVERS: MT5ServerItem[] = [
     { name: "SquaredFinancialSC-MT5 Live", broker: "SquaredFinancialSC" },
     { name: "StarBridgeCapitalGroup-MT5-Live 2", broker: "StarBridgeCapitalGroup" },
     { name: "StarlightCapital-Server", broker: "IG" },
-    { name: "STARTRADERFinancial-Demo", broker: "STARTRADER", isDemo: true },
-    { name: "STARTRADERFinancial-Live", broker: "STARTRADER" },
-    { name: "STARTRADERFinancial-Live 3", broker: "STARTRADER" },
-    { name: "STARTRADERFinancial-Live 4", broker: "STARTRADER" },
-    { name: "STARTRADERFinancial-Live 5", broker: "STARTRADER" },
-    { name: "STARTRADERFinancial-Live 6", broker: "STARTRADER" },
-    { name: "STARTRADERFinancial-Live2", broker: "STARTRADER" },
-    { name: "STARTRADERPrimeGlobal-Live", broker: "STARTRADER" },
+    { name: "STARTRADERFinancial-Demo", broker: "StarTrader", isDemo: true },
+    { name: "STARTRADERFinancial-Live", broker: "StarTrader" },
+    { name: "STARTRADERFinancial-Live 2", broker: "StarTrader" },
+    { name: "STARTRADERFinancial-Live 3", broker: "StarTrader" },
+    { name: "STARTRADERFinancial-Live 4", broker: "StarTrader" },
+    { name: "STARTRADERFinancial-Live 5", broker: "StarTrader" },
+    { name: "STARTRADERFinancial-Live 6", broker: "StarTrader" },
+    { name: "STARTRADERFinancial-Live2", broker: "StarTrader" },
+    { name: "STARTRADERInternational-Demo", broker: "StarTrader", isDemo: true },
+    { name: "STARTRADERInternational-Live", broker: "StarTrader" },
+    { name: "STARTRADERPrimeGlobal-Live", broker: "StarTrader" },
     { name: "starwaveFX-server", broker: "starwaveFX" },
     { name: "STBProvider-Server", broker: "STBProvider" },
     { name: "STGlobalMarketsLtd-Live-1", broker: "STGlobalMarketsLtd" },
@@ -1149,14 +1152,14 @@ export const POPULAR_MT5_SERVERS: MT5ServerItem[] = [
     { name: "TradeifyVentures-Trade", broker: "TradeifyVentures" },
     { name: "TradeMaxGlobal-Demo", broker: "TradeMaxGlobal", isDemo: true },
     { name: "TradeMaxGlobal-Live", broker: "TradeMaxGlobal" },
-    { name: "trademaxglobal-live2", broker: "trademaxglobal" },
+    { name: "TradeMaxGlobal-Live2", broker: "TradeMaxGlobal" },
     { name: "TradeQuo-Server", broker: "TradeQuo" },
     { name: "TradeQuoGlobal-Server", broker: "TradeQuoGlobal" },
     { name: "Traderscale-Trade", broker: "Traderscale" },
     { name: "TradersHubLtd-Live", broker: "TradersHubLtd" },
     { name: "TradersTrust-Server", broker: "TradersTrust" },
     { name: "TradersWay-Demo", broker: "TradersWay", isDemo: true },
-    { name: "Tradersway-Live", broker: "Tradersway" },
+    { name: "TradersWay-Live", broker: "TradersWay" },
     { name: "TraderWaves", broker: "TraderWaves" },
     { name: "TradeSmart-Server01", broker: "TradeSmart" },
     { name: "Tradeview-Demo", broker: "Tradeview", isDemo: true },
@@ -1220,18 +1223,18 @@ export const POPULAR_MT5_SERVERS: MT5ServerItem[] = [
     { name: "VantageGlobalPrimeLLP-Live", broker: "Vantage" },
     { name: "VantageInternational-Demo", broker: "Vantage", isDemo: true },
     { name: "VantageInternational-Live", broker: "Vantage" },
-    { name: "Vantageinternational-Live 10", broker: "Vantage" },
+    { name: "VantageInternational-Live 10", broker: "Vantage" },
     { name: "VantageInternational-Live 11", broker: "Vantage" },
     { name: "VantageInternational-Live 13", broker: "Vantage" },
     { name: "VantageInternational-Live 14", broker: "Vantage" },
     { name: "VantageInternational-Live 15", broker: "Vantage" },
     { name: "VantageInternational-Live 19", broker: "Vantage" },
-    { name: "Vantageinternational-Live 21", broker: "Vantage" },
+    { name: "VantageInternational-Live 21", broker: "Vantage" },
     { name: "VantageInternational-Live 3", broker: "Vantage" },
     { name: "VantageInternational-Live 4", broker: "Vantage" },
     { name: "VantageInternational-Live 5", broker: "Vantage" },
     { name: "VantageInternational-Live 6", broker: "Vantage" },
-    { name: "vantageinternational-live 7", broker: "Vantage" },
+    { name: "VantageInternational-Live 7", broker: "Vantage" },
     { name: "VantageInternational-Live 8", broker: "Vantage" },
     { name: "VantageMarkets-Demo", broker: "Vantage", isDemo: true },
     { name: "VantageMarkets-Live", broker: "Vantage" },
@@ -1245,10 +1248,9 @@ export const POPULAR_MT5_SERVERS: MT5ServerItem[] = [
     { name: "VantageMarkets-Live 2", broker: "Vantage" },
     { name: "VantageMarkets-Live 21", broker: "Vantage" },
     { name: "VantageMarkets-Live 3", broker: "Vantage" },
-    { name: "Vantagemarkets-live 4", broker: "Vantage" },
     { name: "VantageMarkets-Live 4", broker: "Vantage" },
     { name: "VantageMarkets-Live 5", broker: "Vantage" },
-    { name: "vantagemarkets-live 6", broker: "Vantage" },
+    { name: "VantageMarkets-Live 6", broker: "Vantage" },
     { name: "VantageMarkets-Live 7", broker: "Vantage" },
     { name: "VantageMarkets-Live 8", broker: "Vantage" },
     { name: "VantageMarketsMU-Demo", broker: "Vantage", isDemo: true },
@@ -1277,8 +1279,8 @@ export const POPULAR_MT5_SERVERS: MT5ServerItem[] = [
     { name: "VTMarkets-Live", broker: "VTMarkets" },
     { name: "VTMarkets-Live 2", broker: "VTMarkets" },
     { name: "VTMarkets-Live 3", broker: "VTMarkets" },
-    { name: "VTmarkets-Live 5", broker: "VTmarkets" },
-    { name: "Vtmarkets-Live 6", broker: "Vtmarkets" },
+    { name: "VTMarkets-Live 5", broker: "VTMarkets" },
+    { name: "VTMarkets-Live 6", broker: "VTMarkets" },
     { name: "VTMarkets-Live 7", broker: "VTMarkets" },
     { name: "VTMarkets-Live 8", broker: "VTMarkets" },
     { name: "VTMarkets-Live 9", broker: "VTMarkets" },
@@ -1320,7 +1322,7 @@ export const POPULAR_MT5_SERVERS: MT5ServerItem[] = [
     { name: "XFunded-Trade", broker: "XFunded" },
     { name: "XinWangGoldenCompany-Live", broker: "XinWangGoldenCompany" },
     { name: "Xlence-Demo1", broker: "Xlence", isDemo: true },
-    { name: "xlence-real1", broker: "xlence" },
+    { name: "Xlence-Real1", broker: "Xlence" },
     { name: "XM.COM-MT5", broker: "XM" },
     { name: "XmaxMarkets-Live", broker: "XM" },
     { name: "XMGlobal-Demo", broker: "XM", isDemo: true },
@@ -1383,13 +1385,22 @@ export const POPULAR_MT5_SERVERS: MT5ServerItem[] = [
     { name: "Zonofx-Server", broker: "Zonofx" },
     { name: "ZoraCapital-Server", broker: "ZoraCapital" },
     { name: "ZuperiorFX-Server", broker: "ZuperiorFX" },
-    { name: "STARTRADERFinancial-Live", broker: "StarTrader" },
-    { name: "STARTRADERFinancial-Live 2", broker: "StarTrader" },
-    { name: "STARTRADERFinancial-Live 3", broker: "StarTrader" },
-    { name: "STARTRADERFinancial-Demo", broker: "StarTrader", isDemo: true },
-    { name: "STARTRADERInternational-Live", broker: "StarTrader" },
-    { name: "STARTRADERInternational-Demo", broker: "StarTrader", isDemo: true },
 ];
+
+/**
+ * Deduplicate server entries case-insensitively by server name.
+ */
+export function dedupeMt5Servers(servers: MT5ServerItem[]): MT5ServerItem[] {
+    const seen = new Set<string>();
+    const unique: MT5ServerItem[] = [];
+    for (const s of servers) {
+        const key = s.name.trim().toLowerCase();
+        if (!key || seen.has(key)) continue;
+        seen.add(key);
+        unique.push(s);
+    }
+    return unique;
+}
 
 /**
  * Filter servers by search query (matches server name or broker name).
@@ -1397,9 +1408,9 @@ export const POPULAR_MT5_SERVERS: MT5ServerItem[] = [
 export function filterMt5Servers(query: string, limit = 50): MT5ServerItem[] {
     const q = query.trim().toLowerCase();
     if (!q) {
-        return POPULAR_MT5_SERVERS.slice(0, limit);
+        return dedupeMt5Servers(POPULAR_MT5_SERVERS).slice(0, limit);
     }
-    const filtered = POPULAR_MT5_SERVERS.filter(
+    const filtered = dedupeMt5Servers(POPULAR_MT5_SERVERS).filter(
         (s) =>
             s.name.toLowerCase().includes(q) ||
             (s.broker && s.broker.toLowerCase().includes(q))
@@ -1412,8 +1423,9 @@ export function filterMt5Servers(query: string, limit = 50): MT5ServerItem[] {
  * If no broker is provided or unknown, returns all POPULAR_MT5_SERVERS.
  */
 export function getServersForBroker(broker?: string | null): MT5ServerItem[] {
+    const uniqueAll = dedupeMt5Servers(POPULAR_MT5_SERVERS);
     if (!broker || !broker.trim()) {
-        return POPULAR_MT5_SERVERS;
+        return uniqueAll;
     }
 
     const b = broker.trim().toLowerCase();
@@ -1434,11 +1446,11 @@ export function getServersForBroker(broker?: string | null): MT5ServerItem[] {
         keywords.push(b);
     }
 
-    const matched = POPULAR_MT5_SERVERS.filter((s) => {
+    const matched = uniqueAll.filter((s) => {
         const sName = s.name.toLowerCase();
         const sBroker = (s.broker || "").toLowerCase();
         return keywords.some((k) => sName.includes(k) || sBroker.includes(k));
     });
 
-    return matched.length > 0 ? matched : POPULAR_MT5_SERVERS;
+    return matched.length > 0 ? matched : uniqueAll;
 }

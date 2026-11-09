@@ -4,17 +4,19 @@ import React from "react";
 import { TargetProgressBarProps } from "./TargetProgressTypes";
 import { CheckCircle2, TrendingUp, Crosshair } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-const formatMoney = (val: number, includeSign = false) => {
-    const f = Math.abs(val).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    return includeSign ? (val >= 0 ? `+$${f}` : `-$${f}`) : `$${f}`;
-};
+import { formatDashboardCurrency } from "@/lib/utils/cent-account";
 
 export function TargetProgressBar({ data }: TargetProgressBarProps) {
     const {
         label, targetAmount, rawTargetValue, targetType, netClosedPnl,
         completionRate, visualProgressPercent, remainingAmount, status, baseBalance,
+        currency = "USD",
     } = data;
+
+    const formatMoney = (val: number, includeSign = false) =>
+        formatDashboardCurrency(val, currency, {
+            signDisplay: includeSign ? "always" : "auto",
+        });
 
     const isAchieved = status === "ACHIEVED";
     const isNotSet = status === "NOT_SET";

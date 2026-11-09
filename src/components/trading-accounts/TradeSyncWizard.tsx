@@ -182,7 +182,7 @@ export function TradeSyncWizard({
     };
 
     const handleCopyUrl = () => {
-        const urlToCopy = syncServerUrl || "https://thenexttrade.com";
+        const urlToCopy = syncServerUrl || "https://thenexttrade.io";
         navigator.clipboard.writeText(urlToCopy);
         setCopiedUrl(true);
         toast.success("WebRequest URL copied to clipboard!");
@@ -671,7 +671,7 @@ export function TradeSyncWizard({
                                             </div>
                                             <div className="flex items-center gap-2">
                                                 <code className="flex-1 bg-white dark:bg-black/40 px-2.5 py-2 rounded-lg border border-dashboard font-mono text-[11px] text-primary break-all">
-                                                    {syncServerUrl || "https://thenexttrade.com"}
+                                                    {syncServerUrl || "https://thenexttrade.io"}
                                                 </code>
                                                 <Button
                                                     type="button"

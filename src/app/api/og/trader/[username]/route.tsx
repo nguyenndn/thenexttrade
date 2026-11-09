@@ -299,7 +299,7 @@ export async function GET(
                             fontWeight: 700,
                         }}
                     >
-                        thenexttrade.com/trader/{profile.username}
+                        thenexttrade.io/trader/{profile.username}
                     </span>
                 </div>
             </div>,

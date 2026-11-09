@@ -222,7 +222,7 @@ export default async function ArticlePage({
                     dateModified: new Date(article.updatedAt).toISOString(),
                     author: {
                         name: article.author.name || "TheNextTrade Team",
-                        url: `${process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.com"}/about`,
+                        url: `${process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.io"}/about`,
                     },
                 }}
             />

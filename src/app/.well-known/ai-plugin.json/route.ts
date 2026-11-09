@@ -12,11 +12,11 @@ export async function GET() {
         auth: { type: "none" },
         api: {
             type: "openapi",
-            url: `${process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.com"}/api/openapi.json`,
+            url: `${process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.io"}/api/openapi.json`,
         },
-        logo_url: `${process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.com"}/logo.png`,
-        contact_email: "support@thenexttrade.com",
-        legal_info_url: `${process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.com"}/legal/terms-of-service`,
+        logo_url: `${process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.io"}/logo.png`,
+        contact_email: "support@thenexttrade.io",
+        legal_info_url: `${process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.io"}/legal/terms-of-service`,
     };
 
     return NextResponse.json(plugin, {

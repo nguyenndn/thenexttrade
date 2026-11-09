@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Clock } from "lucide-react";
+import { formatDashboardCurrency } from "@/lib/utils/cent-account";
 
 interface SessionClockProps {
     data: Array<{
@@ -10,9 +11,10 @@ interface SessionClockProps {
         color: string;
         totalPnL: number;
     }>;
+    currency?: string;
 }
 
-export function SessionClock({ data }: SessionClockProps) {
+export function SessionClock({ data, currency = "USD" }: SessionClockProps) {
     const [now, setNow] = useState(new Date());
 
     useEffect(() => {
@@ -133,8 +135,11 @@ export function SessionClock({ data }: SessionClockProps) {
                                     <span
                                         className={`font-bold ${stats.totalPnL > 0 ? "text-green-500" : stats.totalPnL < 0 ? "text-red-500" : "text-gray-500"}`}
                                     >
-                                        {stats.totalPnL > 0 ? "+" : ""}
-                                        {stats.totalPnL.toFixed(2)}
+                                        {formatDashboardCurrency(
+                                            stats.totalPnL,
+                                            currency,
+                                            { signDisplay: "always" }
+                                        )}
                                     </span>
                                 </div>
                             )}

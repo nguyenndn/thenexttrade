@@ -9,6 +9,7 @@ import { format } from "date-fns";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { SPRING_SOFT, backdropVariants, panelVariants } from "@/lib/animations";
+import { formatDashboardCurrency, getCurrencyInfo } from "@/lib/utils/cent-account";
 
 interface DayTradeListProps {
     date: string;
@@ -30,6 +31,7 @@ interface DayTradeListProps {
     };
     startBalance?: number;
     endBalance?: number;
+    currency?: string;
     onClose: () => void;
 }
 
@@ -39,8 +41,10 @@ export function DayTradeList({
     stats,
     startBalance,
     endBalance,
+    currency = "USD",
     onClose,
 }: DayTradeListProps) {
+    const currencyInfo = getCurrencyInfo(currency);
     const netPnl = trades.reduce((sum, t) => sum + (t.netPnl || t.pnl || 0), 0);
     const totalLots =
         stats?.totalLots !== undefined
@@ -154,11 +158,7 @@ export function DayTradeList({
                                     Start Balance
                                 </p>
                                 <p className="text-base font-bold text-gray-700 dark:text-white">
-                                    $
-                                    {startBalance?.toLocaleString("en-US", {
-                                        minimumFractionDigits: 2,
-                                        maximumFractionDigits: 2,
-                                    }) || "0.00"}
+                                    {formatDashboardCurrency(startBalance || 0, currency)}
                                 </p>
                             </div>
                             <div className="text-right">
@@ -166,11 +166,7 @@ export function DayTradeList({
                                     End Balance
                                 </p>
                                 <p className="text-base font-bold text-gray-700 dark:text-white">
-                                    $
-                                    {endBalance?.toLocaleString("en-US", {
-                                        minimumFractionDigits: 2,
-                                        maximumFractionDigits: 2,
-                                    }) || "0.00"}
+                                    {formatDashboardCurrency(endBalance || 0, currency)}
                                 </p>
                             </div>
                         </div>
@@ -181,7 +177,7 @@ export function DayTradeList({
                                     Deposit
                                 </span>
                                 <span className="font-bold text-gray-700 dark:text-white">
-                                    ${deposit.toFixed(2)}
+                                    {formatDashboardCurrency(deposit, currency)}
                                 </span>
                             </div>
                             <div className="flex justify-between items-center text-sm">
@@ -195,17 +191,14 @@ export function DayTradeList({
                                             : "text-gray-700 dark:text-white"
                                     }`}
                                 >
-                                    {(stats?.totalCommission ?? 0) < 0 ? "-" : ""}$
-                                    {Math.abs(
+                                    {formatDashboardCurrency(
                                         stats?.totalCommission ??
                                             trades.reduce(
                                                 (s, t) => s + (t.commission || 0),
                                                 0
-                                            )
-                                    ).toLocaleString("en-US", {
-                                        minimumFractionDigits: 2,
-                                        maximumFractionDigits: 2,
-                                    })}
+                                            ),
+                                        currency
+                                    )}
                                 </span>
                             </div>
                             <div className="flex justify-between items-center text-sm">
@@ -221,28 +214,26 @@ export function DayTradeList({
                                               : "text-gray-700 dark:text-white"
                                     }`}
                                 >
-                                    {(stats?.totalSwap ?? 0) > 0
-                                        ? "+"
-                                        : (stats?.totalSwap ?? 0) < 0
-                                          ? "-"
-                                          : ""}
-                                    $
-                                    {Math.abs(
+                                    {formatDashboardCurrency(
                                         stats?.totalSwap ??
                                             trades.reduce(
                                                 (s, t) => s + (t.swap || 0),
                                                 0
-                                            )
-                                    ).toLocaleString("en-US", {
-                                        minimumFractionDigits: 2,
-                                        maximumFractionDigits: 2,
-                                    })}
+                                            ),
+                                        currency,
+                                        {
+                                            signDisplay:
+                                                (stats?.totalSwap ?? 0) !== 0
+                                                    ? "always"
+                                                    : "auto",
+                                        }
+                                    )}
                                 </span>
                             </div>
                             <div className="flex justify-between items-center text-sm">
                                 <span className="text-gray-600 dark:text-gray-300 flex items-center gap-1.5">
                                     <span className="flex items-center justify-center w-4 h-4 rounded-full bg-gray-100 dark:bg-white/10 text-[9px] font-bold text-gray-600 dark:text-gray-300">
-                                        $
+                                        {currencyInfo.symbol.slice(0, 1)}
                                     </span>
                                     Commissions & Fees
                                 </span>
@@ -255,20 +246,16 @@ export function DayTradeList({
                                               : "text-gray-700 dark:text-white"
                                     }`}
                                 >
-                                    {(stats?.commissionsAndFees ?? 0) > 0
-                                        ? "+"
-                                        : (stats?.commissionsAndFees ?? 0) < 0
-                                          ? "-"
-                                          : ""}
-                                    $
-                                    {stats?.commissionsAndFees
-                                        ? Math.abs(
-                                              stats.commissionsAndFees
-                                          ).toLocaleString("en-US", {
-                                              minimumFractionDigits: 2,
-                                              maximumFractionDigits: 2,
-                                          })
-                                        : "0.00"}
+                                    {formatDashboardCurrency(
+                                        stats?.commissionsAndFees || 0,
+                                        currency,
+                                        {
+                                            signDisplay:
+                                                (stats?.commissionsAndFees ?? 0) !== 0
+                                                    ? "always"
+                                                    : "auto",
+                                        }
+                                    )}
                                 </span>
                             </div>
                         </div>
@@ -331,16 +318,7 @@ export function DayTradeList({
                                     Best Trade
                                 </span>
                                 <span className="font-bold text-[#3B82F6]">
-                                    {stats?.bestTrade
-                                        ? "$" +
-                                          stats.bestTrade.toLocaleString(
-                                              "en-US",
-                                              {
-                                                  minimumFractionDigits: 2,
-                                                  maximumFractionDigits: 2,
-                                              }
-                                          )
-                                        : "$0.00"}
+                                    {formatDashboardCurrency(stats?.bestTrade || 0, currency)}
                                 </span>
                             </div>
                             <div className="flex justify-between items-center text-sm">
@@ -348,16 +326,7 @@ export function DayTradeList({
                                     Worst Trade
                                 </span>
                                 <span className="font-bold text-red-500">
-                                    {stats?.worstTrade
-                                        ? (stats.worstTrade > 0 ? "" : "-") +
-                                          "$" +
-                                          Math.abs(
-                                              stats.worstTrade
-                                          ).toLocaleString("en-US", {
-                                              minimumFractionDigits: 2,
-                                              maximumFractionDigits: 2,
-                                          })
-                                        : "$0.00"}
+                                    {formatDashboardCurrency(stats?.worstTrade || 0, currency)}
                                 </span>
                             </div>
                             <div className="flex justify-between items-center text-sm">

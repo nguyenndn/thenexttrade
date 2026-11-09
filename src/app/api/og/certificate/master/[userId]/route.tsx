@@ -251,7 +251,7 @@ export async function GET(
                             fontWeight: 700,
                         }}
                     >
-                        thenexttrade.com/certificate/master/{data.userId}
+                        thenexttrade.io/certificate/master/{data.userId}
                     </span>
                 </div>
             </div>,

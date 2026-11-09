@@ -31,6 +31,7 @@ import { Button } from "@/components/ui/Button";
 import { toast } from "sonner";
 import { trackEvent } from "@/lib/track";
 import { cn } from "@/lib/utils";
+import { formatAccountBalance } from "@/lib/utils/cent-account";
 import type { SyncMethod } from "@/lib/onboarding/first-session.server";
 import { normalizeSyncSource, formatSyncErrorMessage } from "@/lib/sync/sync-source";
 
@@ -74,7 +75,6 @@ interface AccountCardProps {
     onOpenSyncSetup?: (method?: SyncMethod) => void;
     isSyncing?: boolean;
     onSyncStarted?: (accountId: string, jobId?: string) => void;
-    onRequestSupport?: (accountId: string) => void;
 }
 
 // Returns account type label, or null if not yet synced
@@ -176,13 +176,25 @@ export function AccountCard({
     onOpenSyncSetup,
     isSyncing: propIsSyncing,
     onSyncStarted,
-    onRequestSupport,
 }: AccountCardProps) {
     const [isCloudSyncOpen, setIsCloudSyncOpen] = useState(false);
-    // Temporarily disabled while Cloud Sync worker infrastructure is offline
-    const isSyncing = false;
+    const isSyncing = Boolean(
+        propIsSyncing ||
+        (account.latestJob &&
+            (account.latestJob.status === "PENDING" ||
+                account.latestJob.status === "PROCESSING") &&
+            Date.now() - new Date(account.latestJob.createdAt).getTime() <
+                (account.latestJob.status === "PENDING" ? 60000 : 120000))
+    );
     const latestJob = account.latestJob;
-    const isLatestSyncFailed = false;
+    const isLatestSyncFailed = Boolean(
+        !isSyncing &&
+        latestJob &&
+        latestJob.status === "FAILED" &&
+        (!account.lastSync ||
+            new Date(latestJob.createdAt).getTime() > new Date(account.lastSync).getTime() ||
+            (latestJob.completedAt && new Date(latestJob.completedAt).getTime() > new Date(account.lastSync).getTime()))
+    );
 
     // Only trust accountType if account has actually synced at least once
     const hasSynced = !!account.lastSync;
@@ -502,9 +514,9 @@ export function AccountCard({
                                 </p>
                                 <p
                                     className="text-lg font-black text-gray-900 dark:text-white truncate"
-                                    title={`$${balance.toLocaleString()}`}
+                                    title={formatAccountBalance(balance, account.currency, account.server)}
                                 >
-                                    ${balance.toLocaleString()}
+                                    {formatAccountBalance(balance, account.currency, account.server)}
                                 </p>
                             </div>
                             <div className="min-w-0 pl-3 border-l border-dashboard/80 dark:border-white/[0.08]">
@@ -513,9 +525,9 @@ export function AccountCard({
                                 </p>
                                 <p
                                     className={cn("text-lg font-black truncate", equityColorClass)}
-                                    title={`$${equity.toLocaleString()}`}
+                                    title={formatAccountBalance(equity, account.currency, account.server)}
                                 >
-                                    ${equity.toLocaleString()}
+                                    {formatAccountBalance(equity, account.currency, account.server)}
                                 </p>
                             </div>
                         </div>
@@ -685,7 +697,6 @@ export function AccountCard({
                                     Dashboard
                                 </Link>
 
-                                {/* Temporarily hidden while Cloud Sync infrastructure is offline
                                 <span className="text-gray-300 dark:text-white/15 select-none text-xs">·</span>
 
                                 {isSyncing ? (
@@ -713,7 +724,6 @@ export function AccountCard({
                                         {isLatestSyncFailed ? "Retry Sync" : "Sync"}
                                     </Button>
                                 )}
-                                */}
                             </>
                         )}
                     </div>
@@ -728,7 +738,6 @@ export function AccountCard({
                     account={account}
                     onUpdated={onUpdate}
                     onSyncStarted={onSyncStarted}
-                    onRequestSupport={onRequestSupport}
                 />
             )}
         </div>

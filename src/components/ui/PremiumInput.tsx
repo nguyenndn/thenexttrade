@@ -6,7 +6,7 @@ import { Button } from "./Button";
 export interface PremiumInputProps
     extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "prefix"> {
     error?: string;
-    label?: string;
+    label?: React.ReactNode;
     icon?: LucideIcon;
     prefix?: React.ReactNode;
     helperText?: string;

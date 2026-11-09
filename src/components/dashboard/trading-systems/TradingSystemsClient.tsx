@@ -42,7 +42,9 @@ export function TradingSystemsClient({
     const eaCount = products.filter(
         (p) =>
             (p.platform === "MT5" || p.platform === "BOTH") &&
-            (p.type === "AUTO_TRADE" || p.type === "MANUAL_ASSIST")
+            (p.type === "AUTO_TRADE" ||
+                p.type === "SEMI_AUTO" ||
+                p.type === "MANUAL_ASSIST")
     ).length;
 
     const indicatorCount = products.filter(
@@ -54,7 +56,9 @@ export function TradingSystemsClient({
     const eaProducts = products.filter(
         (p) =>
             (p.platform === "MT5" || p.platform === "BOTH") &&
-            (p.type === "AUTO_TRADE" || p.type === "MANUAL_ASSIST")
+            (p.type === "AUTO_TRADE" ||
+                p.type === "SEMI_AUTO" ||
+                p.type === "MANUAL_ASSIST")
     );
 
     const indicatorProducts = products.filter(

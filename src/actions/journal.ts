@@ -225,6 +225,8 @@ export async function getJournalEntries(
                         color: true,
                         accountType: true,
                         timezone: true,
+                        currency: true,
+                        server: true,
                     },
                 },
                 tradePlan: {

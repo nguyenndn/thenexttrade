@@ -3,19 +3,26 @@
 import { Medal, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { TradingViewMiniChart } from "./TradingViewMiniChart";
+import { formatDashboardCurrency, normalizeCurrencyCode } from "@/lib/utils/cent-account";
 
 interface TradeShareCardProps {
     entry: any; // Using any for simplicity with existing JournalEntry type
     variant: "basic" | "full";
     className?: string;
+    currency?: string;
 }
 
 export function TradeShareCard({
     entry,
     variant,
     className,
+    currency,
 }: TradeShareCardProps) {
     if (!entry) return null;
+    const entryCurrency = normalizeCurrencyCode(
+        entry.account?.currency || currency,
+        entry.account?.server
+    );
 
     const isWin = entry.pnl && entry.pnl > 0;
 
@@ -130,10 +137,9 @@ export function TradeShareCard({
                             )}
                         >
                             {showMoney ? (
-                                <>
-                                    {entry.pnl && entry.pnl > 0 ? "+" : ""}$
-                                    {Math.abs(entry.pnl).toFixed(2)}
-                                </>
+                                formatDashboardCurrency(entry.pnl || 0, entryCurrency, {
+                                    signDisplay: "always",
+                                })
                             ) : (
                                 <>
                                     {entry.pnl && entry.pnl > 0 ? "+" : ""}

@@ -160,7 +160,7 @@ type DropdownMenuContentProps = Omit<
 
 export function DropdownMenuContent({
     children,
-    align = "center",
+    align = "start",
     className,
     style: externalStyle,
     ...props
@@ -184,23 +184,27 @@ export function DropdownMenuContent({
                 const width = triggerRect.width;
 
                 if (contentRef.current) {
-                    const contentRect =
-                        contentRef.current.getBoundingClientRect();
+                    const contentWidth = Math.max(
+                        contentRef.current.offsetWidth,
+                        triggerRect.width
+                    );
+                    const contentHeight = contentRef.current.offsetHeight;
+
                     if (align === "end") {
-                        left = triggerRect.right - contentRect.width;
+                        left = triggerRect.right - contentWidth;
                     } else if (align === "center") {
                         left =
                             triggerRect.left +
                             triggerRect.width / 2 -
-                            contentRect.width / 2;
+                            contentWidth / 2;
                     }
 
-                    if (top + contentRect.height > window.innerHeight) {
-                        top = triggerRect.top - contentRect.height - 4;
+                    if (top + contentHeight > window.innerHeight) {
+                        top = triggerRect.top - contentHeight - 4;
                     }
                     if (left < 4) left = 4;
-                    if (left + contentRect.width > window.innerWidth - 4) {
-                        left = window.innerWidth - contentRect.width - 4;
+                    if (left + contentWidth > window.innerWidth - 4) {
+                        left = window.innerWidth - contentWidth - 4;
                     }
                 }
 

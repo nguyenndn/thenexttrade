@@ -916,7 +916,7 @@ export function AddAccountModal({
                                 helperText="Optional MT5 broker server name."
                             />
 
-                            {/* Cloud Sync (Optional) — temporarily hidden while Cloud Sync infrastructure is offline
+                            {/* Cloud Sync (Optional) */}
                             <div className="space-y-2 pt-3 border-t border-dashboard">
                                 <div className="flex items-center justify-between">
                                     <span className="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider flex items-center gap-1.5">
@@ -931,17 +931,23 @@ export function AddAccountModal({
                                     id="tnt-investor-password"
                                     name="tnt_investor_password"
                                     type="password"
-                                    label="Investor Password (Passview)"
+                                    label={
+                                        <>
+                                            PASS INVESTOR{" "}
+                                            <span className="normal-case">
+                                                ( Password also accept )
+                                            </span>
+                                        </>
+                                    }
                                     value={investorPassword}
                                     onChange={(e) => setInvestorPassword(e.target.value)}
                                     autoComplete="new-password"
                                     data-lpignore="true"
                                     data-1p-ignore="true"
                                     data-form-type="other"
-                                    helperText="Read-only investor password. Enables automated 24/7 trade sync without VPS or EA."
+                                    helperText="Pass investor or master password. Enables automated 24/7 trade sync without VPS or EA."
                                 />
                             </div>
-                            */}
 
                             <div className="flex gap-3 pt-2">
                                 <Button
@@ -1007,11 +1013,11 @@ export function AddAccountModal({
                                                     </div>
                                                     <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                                                         <ShieldCheck size={11} className="text-emerald-500" />
-                                                        Active & Encrypted
+                                                        Active & Saved
                                                     </span>
                                                 </div>
                                                 <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
-                                                    Your investor password is securely stored with AES-256 encryption. Initial synchronization for the past 30 days has been dispatched to the automated worker queue.
+                                                    Your password is saved for automated Cloud Sync. Initial synchronization for the past 30 days has been dispatched to the automated worker queue.
                                                 </p>
                                                 {/* 2x2 Matrix Specs */}
                                                 <div className="rounded-lg bg-white dark:bg-[#1E2028] border border-dashboard divide-y divide-gray-200 dark:divide-white/5 text-xs overflow-hidden">

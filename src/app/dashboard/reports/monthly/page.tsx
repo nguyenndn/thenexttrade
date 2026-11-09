@@ -8,6 +8,8 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { ANALYTICS_TABS } from "@/config/navigation";
 import { TargetProgressWidget } from "@/components/dashboard/targets/TargetProgressWidget";
 import { resolveDefaultAccountId } from "@/actions/main-account";
+import { prisma } from "@/lib/prisma";
+import { normalizeCurrencyCode } from "@/lib/utils/cent-account";
 
 export const dynamic = "force-dynamic";
 
@@ -28,7 +30,21 @@ export default async function MonthlyReviewPage({
     const defaultAccId = await resolveDefaultAccountId(user.id);
     const accountId = resolved?.accountId || defaultAccId || "all";
 
-    const { reports, total } = await getReports("MONTHLY", 1, 20);
+    const [reportRes, targetAcc] = await Promise.all([
+        getReports("MONTHLY", 1, 20),
+        prisma.tradingAccount.findFirst({
+            where: {
+                userId: user.id,
+                ...(accountId !== "all" ? { id: accountId } : {}),
+            },
+            select: { currency: true, server: true },
+        }),
+    ]);
+    const { reports, total } = reportRes;
+    const accountCurrency = normalizeCurrencyCode(
+        targetAcc?.currency,
+        targetAcc?.server
+    );
 
     return (
         <div className="space-y-4">
@@ -42,7 +58,12 @@ export default async function MonthlyReviewPage({
 
             <TargetProgressWidget accountId={accountId} highlightPeriod="MONTHLY" />
 
-            <ReportView reports={reports as any} total={total} type="monthly" />
+            <ReportView
+                reports={reports as any}
+                total={total}
+                type="monthly"
+                currency={accountCurrency}
+            />
         </div>
     );
 }

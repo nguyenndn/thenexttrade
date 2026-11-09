@@ -253,13 +253,20 @@ export function LoyaltyClaimsTable({
 
                                         {/* Milestone Tier */}
                                         <td className="px-4 py-3.5">
-                                            <div className="flex items-center gap-2">
-                                                <span className="font-mono tabular-nums text-[10px] font-bold px-2 py-0.5 rounded-lg bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20">
-                                                    L{claim.level}
-                                                </span>
-                                                <span className="font-bold text-gray-900 dark:text-white text-xs">
-                                                    {claim.tierName}
-                                                </span>
+                                            <div className="space-y-1">
+                                                <div className="flex items-center gap-2">
+                                                    <span className="font-mono tabular-nums text-[10px] font-bold px-2 py-0.5 rounded-lg bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20">
+                                                        L{claim.level}
+                                                    </span>
+                                                    <span className="font-bold text-gray-900 dark:text-white text-xs">
+                                                        {claim.tierName}
+                                                    </span>
+                                                </div>
+                                                {claim.accountNumber && (
+                                                    <p className="font-mono text-[11px] text-gray-400">
+                                                        #{claim.accountNumber} · {claim.broker || "Partner IB"}
+                                                    </p>
+                                                )}
                                             </div>
                                         </td>
 

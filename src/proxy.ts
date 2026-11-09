@@ -208,7 +208,7 @@ function addSecurityHeaders(response: NextResponse, isDev: boolean): void {
         "default-src 'self'",
         "script-src 'self' 'unsafe-inline' https://*.supabase.co https://*.google.com https://*.googleapis.com https://*.googletagmanager.com https://challenges.cloudflare.com",
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-        "img-src 'self' blob: data: https://*.supabase.co https://*.unsplash.com https://flagcdn.com https://images.unsplash.com https://cdn.jsdelivr.net https://*.r2.dev https://*.thenexttrade.com",
+        "img-src 'self' blob: data: https://*.supabase.co https://*.unsplash.com https://flagcdn.com https://images.unsplash.com https://cdn.jsdelivr.net https://*.r2.dev https://*.thenexttrade.io",
         "font-src 'self' data: https://fonts.gstatic.com",
         "connect-src 'self' https://*.supabase.co https://*.google-analytics.com https://*.googleapis.com wss://*.supabase.co https://challenges.cloudflare.com https://cdn.jsdelivr.net",
         "frame-src https://challenges.cloudflare.com",
@@ -337,7 +337,6 @@ export async function proxy(request: NextRequest) {
         // Skip rate limiting for internal/high-frequency routes (PRO-QA-001, PRO-QA-011)
         const skipRateLimit =
             pathname === "/api/pro-status" ||
-            pathname === "/api/remote/state" ||
             pathname.startsWith("/api/cron/") ||
             pathname.startsWith("/api/internal/");
 

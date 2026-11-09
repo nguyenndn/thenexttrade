@@ -7,33 +7,43 @@ import type {
     LoyaltyClaimStatus,
     LoyaltyTierItem,
 } from "@/lib/loyalty/loyalty.types";
-import type { AdminLoyaltyStats } from "@/actions/admin/loyalty";
+import {
+    toggleLoyaltyFeature,
+    type AdminLoyaltyStats,
+} from "@/actions/admin/loyalty";
 import { LoyaltyKpiCards } from "./LoyaltyKpiCards";
 import { LoyaltyClaimsTable } from "./LoyaltyClaimsTable";
 import { LoyaltyTiersMatrix } from "./LoyaltyTiersMatrix";
 import { LoyaltyAnalyticsPanel } from "./LoyaltyAnalyticsPanel";
 import { ProcessClaimModal } from "./ProcessClaimModal";
-import { RefreshCw, Clock, Award, BarChart3 } from "lucide-react";
+import { RefreshCw, Clock, Award, BarChart3, Power } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/Tabs";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 interface AdminLoyaltyClientProps {
     initialClaims: LoyaltyClaimRecord[];
     initialStats: AdminLoyaltyStats;
     initialTiers: LoyaltyTierItem[];
+    initialLoyaltyEnabled?: boolean;
 }
 
 export function AdminLoyaltyClient({
     initialClaims,
     initialStats,
     initialTiers,
+    initialLoyaltyEnabled = true,
 }: AdminLoyaltyClientProps) {
     const router = useRouter();
     const [claims] = useState<LoyaltyClaimRecord[]>(initialClaims);
     const [stats] = useState<AdminLoyaltyStats>(initialStats);
-    const [tiers] = useState<LoyaltyTierItem[]>(initialTiers);
+    const [tiers, setTiers] = useState<LoyaltyTierItem[]>(initialTiers);
+    const [loyaltyEnabled, setLoyaltyEnabled] = useState<boolean>(
+        initialLoyaltyEnabled
+    );
+    const [isTogglingFeature, setIsTogglingFeature] = useState(false);
     const [activeSection, setActiveSection] = useState<string>("claims");
     const [statusFilter, setStatusFilter] = useState<
         LoyaltyClaimStatus | "ALL"
@@ -52,6 +62,30 @@ export function AdminLoyaltyClient({
         startTransition(() => {
             router.refresh();
         });
+    };
+
+    const handleToggleLoyaltyFeature = async () => {
+        const nextState = !loyaltyEnabled;
+        setIsTogglingFeature(true);
+        try {
+            const res = await toggleLoyaltyFeature(nextState);
+            if (!res.success) {
+                toast.error(res.error || "Failed to toggle Loyalty feature");
+                return;
+            }
+            setLoyaltyEnabled(nextState);
+            window.dispatchEvent(new CustomEvent("feature-flags-updated"));
+            toast.success(
+                nextState
+                    ? "Loyalty & Rewards menu is now ON (Visible in User Dashboard)"
+                    : "Loyalty & Rewards menu is now OFF (Hidden in User Dashboard)"
+            );
+            router.refresh();
+        } catch {
+            toast.error("Failed to toggle Loyalty feature");
+        } finally {
+            setIsTogglingFeature(false);
+        }
     };
 
     const sectionTabs = [
@@ -81,19 +115,41 @@ export function AdminLoyaltyClient({
                 title="Loyalty Claims & Volume Rewards Hub"
                 description="Audit trader milestone claims, verify live MT5 volume, and manage USDT cash disbursements."
             >
-                <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleRefresh}
-                    disabled={isPending}
-                    className="rounded-lg h-9 px-3.5 text-xs font-bold gap-1.5"
-                >
-                    <RefreshCw
-                        size={14}
-                        className={cn(isPending && "animate-spin text-primary")}
-                    />
-                    Refresh Queue
-                </Button>
+                <div className="flex flex-wrap items-center gap-2">
+                    <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        disabled={isTogglingFeature}
+                        onClick={handleToggleLoyaltyFeature}
+                        className={cn(
+                            "rounded-lg h-9 px-3.5 text-xs font-bold gap-1.5 transition-all",
+                            loyaltyEnabled
+                                ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20"
+                                : "border-rose-500/40 bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-500/20"
+                        )}
+                    >
+                        <Power size={14} />
+                        <span>
+                            Loyalty Menu: {loyaltyEnabled ? "ON" : "OFF"}
+                        </span>
+                    </Button>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleRefresh}
+                        disabled={isPending}
+                        className="rounded-lg h-9 px-3.5 text-xs font-bold gap-1.5"
+                    >
+                        <RefreshCw
+                            size={14}
+                            className={cn(
+                                isPending && "animate-spin text-primary"
+                            )}
+                        />
+                        Refresh Queue
+                    </Button>
+                </div>
             </AdminPageHeader>
 
             {/* Top KPI Cards (matching sync-requests & pipeline AnimatedStatCard) */}
@@ -159,7 +215,10 @@ export function AdminLoyaltyClient({
 
                 {/* Tab 2: Milestone Tiers Matrix */}
                 <TabsContent value="tiers" className="mt-6 space-y-6">
-                    <LoyaltyTiersMatrix tiers={tiers} />
+                    <LoyaltyTiersMatrix
+                        tiers={tiers}
+                        onTiersChange={setTiers}
+                    />
                 </TabsContent>
 
                 {/* Tab 3: Financial Analytics */}

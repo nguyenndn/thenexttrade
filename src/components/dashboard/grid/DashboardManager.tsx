@@ -1084,47 +1084,57 @@ function getWidgetProps(
     onTradeClick?: (id: string) => void,
     onAddTrade?: () => void
 ) {
+    const currency = data.dashboardData?.currency || "USD";
     switch (type) {
         case "BALANCE_GROWTH":
-            return { data: data.chartData };
+            return { data: data.chartData, currency };
         case "DAILY_WIN_RATE":
             return {
                 data: data.dailyWinRates,
                 selectedDates: data.selectedDates,
             };
         case "PROFIT_DIST":
-            return { data: data.symbolPerformance };
+            return { data: data.symbolPerformance, currency };
         case "LOT_DIST":
             return { data: data.lotDistribution };
         case "MONTHLY_ANALYTICS":
-            return { data: data.monthlyAnalytics };
+            return { data: data.monthlyAnalytics, currency };
         case "TOP_TRADES":
             return {
                 bestTrades: data.bestTrades,
                 worstTrades: data.worstTrades,
+                currency,
             };
         case "SYMBOL_PERF":
-            return { data: data.symbolAnalytics };
+            return { data: data.symbolAnalytics, currency };
         case "RECENT_TRADES":
-            return { trades: data.recentTrades, onTradeClick, onAddTrade };
+            return {
+                trades: data.recentTrades,
+                currency,
+                onTradeClick,
+                onAddTrade,
+            };
         case "TRADING_SESSIONS":
-            return { data: data.sessionPerformance };
+            return { data: data.sessionPerformance, currency };
         case "DAY_OF_WEEK":
-            return { data: data.dayOfWeekPerformance };
+            return { data: data.dayOfWeekPerformance, currency };
         case "TRADING_CALENDAR":
             return {
                 data: data.dailyPerformance || [],
                 selectedDates: data.selectedDates,
+                currency,
             };
         case "WIN_LOSS_COMPARISON":
             return {
                 avgWin: data.dashboardData?.avgWin || 0,
                 avgLoss: data.dashboardData?.avgLoss || 0,
+                currency,
             };
         case "PL_HEATMAP":
             return {
                 data: data.dailyPerformance || [],
                 selectedDates: data.selectedDates,
+                currency,
             };
         default:
             return {};

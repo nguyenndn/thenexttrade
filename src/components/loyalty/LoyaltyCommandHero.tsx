@@ -1,13 +1,20 @@
 "use client";
 
-import type { UserLoyaltyProgress } from "@/lib/loyalty/loyalty.types";
+import type {
+  UserLoyaltyProgress,
+  LoyaltyAccountProgress,
+} from "@/lib/loyalty/loyalty.types";
 import { Award, Zap, TrendingUp, CheckCircle2, ShieldCheck, Activity } from "lucide-react";
 
 interface LoyaltyCommandHeroProps {
   progress: UserLoyaltyProgress;
+  selectedAccount?: LoyaltyAccountProgress | null;
 }
 
-export function LoyaltyCommandHero({ progress }: LoyaltyCommandHeroProps) {
+export function LoyaltyCommandHero({
+  progress,
+  selectedAccount,
+}: LoyaltyCommandHeroProps) {
   const {
     totalCumulativeLots,
     currentTier,
@@ -28,13 +35,18 @@ export function LoyaltyCommandHero({ progress }: LoyaltyCommandHeroProps) {
           <div className="w-10 h-10 rounded-lg bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/20 text-amber-500 flex items-center justify-center shrink-0 shadow-xs">
             <Award size={20} />
           </div>
-          <div className="flex items-center gap-2.5">
+          <div className="flex flex-wrap items-center gap-2.5">
             <h2 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white tracking-tight">
               {currentTier ? currentTier.name : "Initiating Trader"}
             </h2>
             <span className="inline-flex items-center px-2 py-0.5 rounded-lg text-[11px] font-mono font-bold uppercase tracking-wide bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
               Level {currentTier ? currentTier.level : 0}
             </span>
+            {selectedAccount && (
+              <span className="inline-flex items-center px-2 py-0.5 rounded-lg text-[11px] font-mono font-bold bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-white/10">
+                #{selectedAccount.accountNumber} · {selectedAccount.broker}
+              </span>
+            )}
           </div>
         </div>
 
@@ -57,10 +69,10 @@ export function LoyaltyCommandHero({ progress }: LoyaltyCommandHeroProps) {
         <div className="lg:col-span-4 space-y-1.5">
           <span className="text-xs font-bold text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
             <TrendingUp size={14} className="text-amber-500" />
-            Qualifying Lifetime Volume
+            Qualifying XAUUSD / GOLD Volume
           </span>
           <div className="flex items-baseline gap-2">
-            <span className="font-mono text-4xl sm:text-5xl font-black text-gray-900 dark:text-white tracking-tight">
+            <span className="font-mono tabular-nums text-4xl sm:text-5xl font-black text-gray-900 dark:text-white tracking-tight">
               {totalCumulativeLots.toLocaleString(undefined, {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2,
@@ -71,7 +83,7 @@ export function LoyaltyCommandHero({ progress }: LoyaltyCommandHeroProps) {
             </span>
           </div>
           <p className="text-[11px] text-gray-400 leading-relaxed">
-            Continuous aggregation across verified live MT5 trading journals.
+            Calculated independently per verified Partner IB REAL account (XAUUSD / GOLD closed lots only; currency pairs excluded).
           </p>
         </div>
 
@@ -141,30 +153,32 @@ export function LoyaltyCommandHero({ progress }: LoyaltyCommandHeroProps) {
           <div className="grid grid-cols-2 rounded-lg border border-gray-200 dark:border-white/10 divide-x divide-y divide-gray-200 dark:divide-white/10 bg-gray-50/50 dark:bg-white/[0.015] overflow-hidden">
             <div className="p-3">
               <span className="block text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-0.5">
-                Active MT5
+                IB Real Account
               </span>
-              <span className="font-mono text-xs sm:text-sm font-bold text-gray-900 dark:text-white flex items-center gap-1">
+              <span className="font-mono text-xs sm:text-sm font-bold text-gray-900 dark:text-white flex items-center gap-1 truncate">
                 <Activity size={12} className="text-amber-500 shrink-0" />
-                {eligibility.activeLiveAccounts} Connected
+                {selectedAccount
+                  ? `#${selectedAccount.accountNumber}`
+                  : "None Verified"}
               </span>
             </div>
 
             <div className="p-3">
               <span className="block text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-0.5">
-                Trades Logged
+                XAUUSD Trades
               </span>
               <span className="font-mono text-xs sm:text-sm font-bold text-gray-900 dark:text-white">
-                {eligibility.totalClosedTrades.toLocaleString()} Executed
+                {eligibility.totalClosedTrades.toLocaleString()} Closed
               </span>
             </div>
 
             <div className="p-3">
               <span className="block text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-0.5">
-                Partner Broker
+                IB Attribution
               </span>
               <span className="text-xs font-bold text-amber-600 dark:text-amber-400 flex items-center gap-1">
                 <ShieldCheck size={12} className="shrink-0" />
-                {eligibility.hasPartnerBrokerAccount ? "Verified Partner" : "Standard Sync"}
+                {selectedAccount ? "Verified IB Real" : "Unverified"}
               </span>
             </div>
 

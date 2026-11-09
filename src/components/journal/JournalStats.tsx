@@ -1,4 +1,5 @@
 import { Activity, Trophy, Layers, Target, Scale, Receipt, Repeat } from "lucide-react";
+import { formatDashboardCurrency } from "@/lib/utils/cent-account";
 
 interface StatsProps {
     stats: {
@@ -11,9 +12,10 @@ interface StatsProps {
         totalCommission?: number;
         totalSwap?: number;
     };
+    currency?: string;
 }
 
-export default function JournalStats({ stats }: StatsProps) {
+export default function JournalStats({ stats, currency = "USD" }: StatsProps) {
     const cards = [
         {
             title: "Total Trades",
@@ -33,11 +35,9 @@ export default function JournalStats({ stats }: StatsProps) {
         },
         {
             title: "Net Profit",
-            value: new Intl.NumberFormat("en-US", {
-                style: "currency",
-                currency: "USD",
+            value: formatDashboardCurrency(stats.totalPnL, currency, {
                 signDisplay: "always",
-            }).format(stats.totalPnL),
+            }),
             icon: Activity,
             color: stats.totalPnL >= 0 ? "text-primary" : "text-red-500",
             bg:
@@ -48,11 +48,7 @@ export default function JournalStats({ stats }: StatsProps) {
         },
         {
             title: "Total Commission",
-            value: new Intl.NumberFormat("en-US", {
-                style: "currency",
-                currency: "USD",
-                signDisplay: "auto",
-            }).format(stats.totalCommission || 0),
+            value: formatDashboardCurrency(stats.totalCommission || 0, currency),
             icon: Receipt,
             color:
                 (stats.totalCommission || 0) < 0
@@ -66,11 +62,7 @@ export default function JournalStats({ stats }: StatsProps) {
         },
         {
             title: "Total Swap",
-            value: new Intl.NumberFormat("en-US", {
-                style: "currency",
-                currency: "USD",
-                signDisplay: "auto",
-            }).format(stats.totalSwap || 0),
+            value: formatDashboardCurrency(stats.totalSwap || 0, currency),
             icon: Repeat,
             color:
                 (stats.totalSwap || 0) > 0

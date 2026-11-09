@@ -3,6 +3,7 @@
 import { ArrowRight, Clock } from "lucide-react";
 import { utcTime } from "@/lib/utils";
 import Link from "next/link";
+import { formatDashboardCurrency } from "@/lib/utils/cent-account";
 
 interface Trade {
     id: string;
@@ -18,17 +19,19 @@ interface Trade {
 
 interface RecentTradesMiniProps {
     trades: Trade[];
+    currency?: string;
 }
 
-export function RecentTradesMini({ trades }: RecentTradesMiniProps) {
+export function RecentTradesMini({
+    trades,
+    currency = "USD",
+}: RecentTradesMiniProps) {
     const displayTrades = trades.slice(0, 5);
 
     const formatCurrency = (value: number) => {
-        return new Intl.NumberFormat("en-US", {
-            style: "currency",
-            currency: "USD",
+        return formatDashboardCurrency(value, currency, {
             signDisplay: "always",
-        }).format(value);
+        });
     };
 
     const formatDate = (date: Date | string | null) => {

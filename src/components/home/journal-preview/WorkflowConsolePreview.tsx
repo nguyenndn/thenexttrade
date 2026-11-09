@@ -84,7 +84,7 @@ export function WorkflowConsolePreview({
 
                 {/* Cockpit Status Bar Footer */}
                 <div className="mt-2.5 pt-2 border-t border-gray-100 dark:border-white/10 flex items-center justify-between text-[10px] text-gray-400 shrink-0">
-                    <span className="font-mono text-[9px]">app.thenexttrade.com</span>
+                    <span className="font-mono text-[9px]">app.thenexttrade.io</span>
                     <span className="text-[9px]">Click steps or tabs to explore live preview</span>
                 </div>
             </div>

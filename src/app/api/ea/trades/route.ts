@@ -12,6 +12,7 @@ import { resolveSyncAuth } from "@/lib/sync-auth";
 import {
     isCentAccount,
     isCentSymbol,
+    normalizeCurrencyCode,
     normalizeLotSize,
 } from "@/lib/utils/cent-account";
 import { parseBrokerNumber } from "@/lib/utils";
@@ -317,7 +318,17 @@ export async function POST(request: NextRequest) {
             : uniqueTrades.filter((t) => t.closeTime !== null);
 
         const tickets = eligibleTrades.map((t) => t.ticket);
-        const isCent = isCentAccount(account);
+        const resolvedCurrency = normalizeCurrencyCode(
+            currency || account.currency,
+            server || account.server,
+            eligibleTrades.map((t) => t.symbol)
+        );
+        const isCent =
+            isCentAccount(account) ||
+            isCentAccount({
+                currency: resolvedCurrency,
+                server: server || account.server,
+            });
         const normalizedLotFor = (trade: EATrade) =>
             normalizeLotSize(
                 trade.volume,
@@ -623,6 +634,13 @@ export async function POST(request: NextRequest) {
                     lastSync: new Date(),
                     eaVersion: safeEaVersion,
                     totalTrades: { increment: inserted },
+                    ...(currency || resolvedCurrency !== (account.currency || "USD")
+                        ? { currency: resolvedCurrency }
+                        : {}),
+                    ...(!account.server && server ? { server } : {}),
+                    ...(!account.broker && (detectedBroker || broker)
+                        ? { broker: detectedBroker || broker }
+                        : {}),
                     ...(safeBalance !== undefined &&
                     Number.isFinite(safeBalance)
                         ? { balance: safeBalance }

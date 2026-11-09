@@ -1,7 +1,10 @@
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getAuthUser } from "@/lib/auth-cache";
-import { getUserLoyaltyProgress } from "@/lib/loyalty/loyalty.server";
+import {
+  getUserLoyaltyProgress,
+  isLoyaltyEnabled,
+} from "@/lib/loyalty/loyalty.server";
 import { LoyaltyDashboardClient } from "@/components/loyalty/LoyaltyDashboardClient";
 
 export const metadata: Metadata = {
@@ -11,9 +14,17 @@ export const metadata: Metadata = {
 };
 
 export default async function LoyaltyPage() {
-  const user = await getAuthUser();
+  const [user, loyaltyEnabled] = await Promise.all([
+    getAuthUser(),
+    isLoyaltyEnabled(),
+  ]);
+
   if (!user) {
     redirect("/auth/login?returnUrl=/dashboard/loyalty");
+  }
+
+  if (!loyaltyEnabled) {
+    redirect("/dashboard");
   }
 
   const progress = await getUserLoyaltyProgress(user.id);

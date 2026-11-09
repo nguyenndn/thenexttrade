@@ -28,6 +28,12 @@ import {
     PopoverTrigger,
     PopoverContent,
 } from "@/components/ui/popover";
+import {
+    DropdownMenu,
+    DropdownMenuTrigger,
+    DropdownMenuContent,
+    DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 import { updateTradingAccount } from "@/actions/accounts";
 import { updateAccountProfitTargets } from "@/actions/profit-targets";
 import { saveCloudSyncCredentials, getCloudSyncStatus } from "@/actions/cloud-sync";
@@ -41,6 +47,7 @@ import {
     SupportedBroker,
 } from "@/lib/validations/vip-request";
 import { ServerCombobox } from "@/components/trading-accounts/ServerCombobox";
+import { getCurrencyInfo } from "@/lib/utils/cent-account";
 import Link from "next/link";
 
 interface AccountSettingsModalProps {
@@ -86,6 +93,21 @@ const COLORS = [
     "#1E293B", // Midnight Zinc
 ];
 
+const CURRENCY_OPTIONS = [
+    { code: "USD", label: "USD ($)" },
+    { code: "USC", label: "USC (Cent)" },
+    { code: "EUR", label: "EUR (€)" },
+    { code: "EUC", label: "EUC (EUR Cent)" },
+    { code: "GBP", label: "GBP (£)" },
+    { code: "GBC", label: "GBC (GBP Cent)" },
+    { code: "JPY", label: "JPY (¥)" },
+    { code: "AUD", label: "AUD (A$)" },
+    { code: "CAD", label: "CAD (C$)" },
+    { code: "CHF", label: "CHF" },
+    { code: "NZD", label: "NZD (NZ$)" },
+    { code: "SGD", label: "SGD (S$)" },
+] as const;
+
 export function AccountSettingsModal({
     isOpen,
     onClose,
@@ -95,10 +117,13 @@ export function AccountSettingsModal({
 }: AccountSettingsModalProps) {
     const [name, setName] = useState(account.name || "");
     const [server, setServer] = useState(account.server || "");
+    const [currency, setCurrency] = useState(
+        getCurrencyInfo(account.currency, account.server).code
+    );
     const [color, setColor] = useState(account.color || "hsl(var(--primary))");
     const [colorPickerOpen, setColorPickerOpen] = useState(false);
-    const [investorPassword, setInvestorPassword] = useState("");
-    const [hasCredentials, setHasCredentials] = useState(Boolean(account.credential));
+    const [investorPassword, setInvestorPassword] = useState(account.savedPassword || "");
+    const [hasCredentials, setHasCredentials] = useState(Boolean(account.hasCredentials || account.credential));
     const [isSaving, setIsSaving] = useState(false);
     const [targetState, setTargetState] = useState<AccountProfitTargetState>({
         weeklyEnabled: Boolean(account.weeklyTarget && account.weeklyTarget > 0),
@@ -115,8 +140,10 @@ export function AccountSettingsModal({
         let isMounted = true;
         setName(account.name || "");
         setServer(account.server || "");
+        setCurrency(getCurrencyInfo(account.currency, account.server).code);
         setColor(account.color || "hsl(var(--primary))");
-        setInvestorPassword("");
+        setInvestorPassword(account.savedPassword || "");
+        setHasCredentials(Boolean(account.hasCredentials || account.credential || account.savedPassword));
         setTargetState({
             weeklyEnabled: Boolean(account.weeklyTarget && account.weeklyTarget > 0),
             weeklyTarget: account.weeklyTarget ? String(account.weeklyTarget) : "",
@@ -131,6 +158,9 @@ export function AccountSettingsModal({
                 if (!isMounted) return;
                 if (res.success) {
                     setHasCredentials(Boolean(res.hasCredentials));
+                    if (res.savedPassword) {
+                        setInvestorPassword((prev: string) => prev || res.savedPassword || "");
+                    }
                 }
             })
             .catch(() => { });
@@ -138,7 +168,7 @@ export function AccountSettingsModal({
         return () => {
             isMounted = false;
         };
-    }, [isOpen, account?.id, account?.name, account?.server, account?.color]);
+    }, [isOpen, account?.id, account?.name, account?.server, account?.currency, account?.color]);
 
     // Body scroll lock
     useEffect(() => {
@@ -185,13 +215,17 @@ export function AccountSettingsModal({
         setIsSaving(true);
         try {
             // 1. Update basic account fields
+            const resolvedCurrency = getCurrencyInfo(
+                currency,
+                server.trim() || account.server
+            ).code;
             const result = await updateTradingAccount(account.id, {
                 name: name.trim(),
                 color,
                 broker: account.broker || undefined,
                 server: server.trim() || undefined,
                 balance: account.balance,
-                currency: account.currency,
+                currency: resolvedCurrency,
             });
 
             if (result.error) throw new Error(result.error);
@@ -223,7 +257,7 @@ export function AccountSettingsModal({
                 } else {
                     setHasCredentials(true);
                     setInvestorPassword("");
-                    toast.success("Investor password encrypted & stored securely");
+                    toast.success("Investor password saved");
                 }
             }
 
@@ -427,15 +461,55 @@ export function AccountSettingsModal({
                                         <Monitor size={12} className="text-gray-400 shrink-0" />
                                         Platform & Base
                                     </span>
-                                    <span className="font-semibold text-gray-800 dark:text-gray-200 block truncate">
-                                        {account.platform || "MT5"} ({account.currency || "USD"})
-                                    </span>
+                                    <div className="flex items-center justify-between gap-1.5">
+                                        <span className="font-semibold text-gray-800 dark:text-gray-200 truncate">
+                                            {account.platform || "MT5"}
+                                        </span>
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <Button
+                                                    type="button"
+                                                    variant="outline"
+                                                    size="sm"
+                                                    className="h-6 px-2 py-0 text-[11px] font-bold rounded-md border-dashboard bg-white dark:bg-[#1E2028] text-gray-700 dark:text-gray-200 flex items-center gap-1 shrink-0"
+                                                    aria-label="Select account currency"
+                                                >
+                                                    <span>
+                                                        {
+                                                            getCurrencyInfo(
+                                                                currency,
+                                                                server || account.server
+                                                            ).label
+                                                        }
+                                                    </span>
+                                                    <ChevronDown size={11} className="text-gray-400" />
+                                                </Button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent
+                                                align="end"
+                                                className="min-w-[150px] max-h-60 overflow-y-auto custom-scrollbar z-[220]"
+                                            >
+                                                {CURRENCY_OPTIONS.map((opt) => (
+                                                    <DropdownMenuItem
+                                                        key={opt.code}
+                                                        onClick={() => setCurrency(opt.code)}
+                                                        className="flex items-center justify-between gap-2 text-xs font-medium"
+                                                    >
+                                                        <span>{opt.label}</span>
+                                                        {currency === opt.code && (
+                                                            <Check size={13} className="text-primary" />
+                                                        )}
+                                                    </DropdownMenuItem>
+                                                ))}
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    {/* Cloud Sync & Credentials — temporarily hidden while Cloud Sync infrastructure is offline
+                    {/* Cloud Sync & Credentials */}
                     <div className="space-y-4 pt-2 border-t border-dashboard">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
@@ -447,7 +521,7 @@ export function AccountSettingsModal({
                             {hasCredentials ? (
                                 <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                                     <ShieldCheck size={11} className="text-emerald-500" />
-                                    Active & Encrypted
+                                    Active & Saved
                                 </span>
                             ) : (
                                 <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
@@ -460,7 +534,7 @@ export function AccountSettingsModal({
                         <div className="p-3 rounded-lg bg-primary/5 border border-primary/15 text-xs text-gray-600 dark:text-gray-300 flex items-center gap-2.5">
                             <CloudSync size={16} className="text-primary shrink-0" />
                             <p className="text-[11px] leading-relaxed">
-                                Provide your <strong>investor password (passview)</strong> to enable automated Cloud Sync.
+                                Provide your <strong>PASS INVESTOR ( Password also accept )</strong> to enable automated Cloud Sync.
                             </p>
                         </div>
 
@@ -471,29 +545,34 @@ export function AccountSettingsModal({
                                 type="password"
                                 autoComplete="new-password"
                                 data-lpignore="true"
-                                label="Investor Password (Passview)"
+                                label={
+                                    <>
+                                        PASS INVESTOR{" "}
+                                        <span className="normal-case">
+                                            ( Password also accept )
+                                        </span>
+                                    </>
+                                }
                                 value={investorPassword}
                                 onChange={(e) => setInvestorPassword(e.target.value)}
-                                placeholder={
-                                    hasCredentials
-                                        ? "•••••••••••• (Leave blank to keep existing passview)"
-                                        : "Enter investor password (passview)"
-                                }
                                 helperText={
                                     hasCredentials
-                                        ? "Passview encrypted and stored securely. Fill only to update."
-                                        : "Enter read-only passview to enable Cloud Sync."
+                                        ? "Password stored for automated Cloud Sync. Update anytime if changed."
+                                        : "Pass investor or master password to enable Cloud Sync."
                                 }
                             />
                         </div>
                     </div>
-                    */}
 
 
                     {/* Profit Milestones & Targets */}
                     <AccountProfitTargetSettings
                         value={targetState}
                         onChange={setTargetState}
+                        currency={
+                            getCurrencyInfo(currency, server || account.server)
+                                .code
+                        }
                     />
 
                     {/* API Configuration */}

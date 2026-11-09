@@ -26,9 +26,11 @@ import { toast } from "sonner";
 import { joinCompetition } from "../actions";
 
 export interface CompetitionPrize {
-    place: number;
-    prize: number;
+    place?: number;
+    rank?: number;
+    prize?: number;
     reward: string;
+    title?: string;
 }
 
 export interface DynamicCompetition {
@@ -113,8 +115,8 @@ export function TradingSprintBanner({
           ? competition.eligibleBrokers.split(",").map((s) => s.trim()).filter(Boolean)
           : [];
 
-    // Parse prizes
-    const prizes: CompetitionPrize[] =
+    // Parse prizes (supports both { place, prize, reward } and { rank, reward, title })
+    const rawPrizes =
         Array.isArray(competition.prizes) && competition.prizes.length > 0
             ? (competition.prizes as CompetitionPrize[])
             : [
@@ -134,6 +136,31 @@ export function TradingSprintBanner({
                       reward: "3 Months VIP Subscription",
                   },
               ];
+
+    const prizes = rawPrizes.map((item, idx) => {
+        const place = item.place ?? item.rank ?? idx + 1;
+        const parsedFromReward =
+            typeof item.reward === "string"
+                ? Number(item.reward.replace(/[^0-9.]/g, ""))
+                : NaN;
+        const fallbackMultiplier = idx === 0 ? 0.5 : idx === 1 ? 0.3 : 0.2;
+        const numericPrize =
+            typeof item.prize === "number" && !Number.isNaN(item.prize)
+                ? item.prize
+                : !Number.isNaN(parsedFromReward) && parsedFromReward > 0
+                  ? parsedFromReward
+                  : Math.round((competition.prizePool || 0) * fallbackMultiplier);
+        const descriptionLabel =
+            item.title && item.reward?.trim().startsWith("$")
+                ? `${item.title} Prize Payout`
+                : item.reward || item.title || "Tournament Prize";
+
+        return {
+            place,
+            prize: numericPrize,
+            reward: descriptionLabel,
+        };
+    });
 
     const handleJoin = async () => {
         if (!selectedAccountId) {

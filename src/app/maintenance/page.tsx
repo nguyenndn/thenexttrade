@@ -94,7 +94,7 @@ export default async function MaintenancePage() {
                         <p className="text-[13px] text-slate-500 dark:text-gray-400 font-medium">
                             Need immediate assistance?{" "}
                             <a
-                                href="mailto:support@thenexttrade.com"
+                                href="mailto:support@thenexttrade.io"
                                 className="text-amber-600 dark:text-gold font-bold hover:underline underline-offset-4"
                             >
                                 Contact Support

@@ -223,10 +223,10 @@ export default function CookiePolicyPage() {
                     </a>{" "}
                     or by email at{" "}
                     <a
-                        href="mailto:support@thenexttrade.com"
+                        href="mailto:support@thenexttrade.io"
                         className="font-bold text-amber-600 dark:text-gold hover:underline"
                     >
-                        support@thenexttrade.com
+                        support@thenexttrade.io
                     </a>
                     .
                 </p>

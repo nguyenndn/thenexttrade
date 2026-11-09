@@ -14,6 +14,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { formatDashboardCurrency } from "@/lib/utils/cent-account";
 
 interface DailyPerfItem {
     date: string;
@@ -25,11 +26,13 @@ interface DailyPerfItem {
 interface PlCalendarHeatmapProps {
     data: DailyPerfItem[];
     selectedDates?: { from?: string; to?: string };
+    currency?: string;
 }
 
 export function PlCalendarHeatmap({
     data,
     selectedDates,
+    currency = "USD",
 }: PlCalendarHeatmapProps) {
     // Parse range or fallback to last 30 days
     const dateRange = useMemo(() => {
@@ -225,12 +228,13 @@ export function PlCalendarHeatmap({
                                                                 <p
                                                                     className={`font-black text-sm ${profit >= 0 ? "text-emerald-500" : "text-red-500"}`}
                                                                 >
-                                                                    {profit >= 0
-                                                                        ? "+"
-                                                                        : ""}
-                                                                    $
-                                                                    {profit.toFixed(
-                                                                        2
+                                                                    {formatDashboardCurrency(
+                                                                        profit,
+                                                                        currency,
+                                                                        {
+                                                                            signDisplay:
+                                                                                "always",
+                                                                        }
                                                                     )}
                                                                 </p>
                                                                 <p className="text-[10px] text-gray-300 dark:text-gray-600">

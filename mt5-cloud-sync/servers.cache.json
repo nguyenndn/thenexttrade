@@ -1,0 +1,913 @@
+{
+  "searchedQueries": [
+    "vantage",
+    "starttrader",
+    "startrader"
+  ],
+  "servers": [
+    {
+      "name": "VantageGlobalPrimeLLP-Demo",
+      "serverName": "VantageGlobalPrimeLLP-Demo",
+      "broker": "Vantage",
+      "company": "Vantage Global Prime LLP",
+      "website": "www.vantagemarkets.co.uk",
+      "logoUrl": "https://download.terminal.free/cdn/mobile/logos/4/435A481FD2998BB7C20B85A542F19137.png",
+      "isDemo": true,
+      "accessPoints": [
+        "a2fc4d02d7d074215.awsglobalaccelerator.com:700",
+        "a2fc4d02d7d074215.awsglobalaccelerator.com:701",
+        "18.168.174.114:443",
+        "18.171.31.250:443"
+      ],
+      "keywords": [
+        "vantage"
+      ],
+      "updatedAt": "2026-11-07T05:04:03.133Z"
+    },
+    {
+      "name": "VantageGlobalPrimeLLP-Live",
+      "serverName": "VantageGlobalPrimeLLP-Live",
+      "broker": "Vantage",
+      "company": "Vantage Global Prime LLP",
+      "website": "www.vantagemarkets.co.uk",
+      "logoUrl": "https://download.terminal.free/cdn/mobile/logos/4/435A481FD2998BB7C20B85A542F19137.png",
+      "isDemo": false,
+      "accessPoints": [
+        "ae2f03ca1c999ed85.awsglobalaccelerator.com:700",
+        "ae2f03ca1c999ed85.awsglobalaccelerator.com:701",
+        "ae2f03ca1c999ed85.awsglobalaccelerator.com:702",
+        "ae2f03ca1c999ed85.awsglobalaccelerator.com:703",
+        "ae2f03ca1c999ed85.awsglobalaccelerator.com:704",
+        "ae2f03ca1c999ed85.awsglobalaccelerator.com:705",
+        "35.179.62.4:443",
+        "35.179.22.177:443"
+      ],
+      "keywords": [
+        "vantage"
+      ],
+      "updatedAt": "2026-11-07T05:04:03.133Z"
+    },
+    {
+      "name": "VantageGlobalPrimeLLP-Live 2",
+      "serverName": "VantageGlobalPrimeLLP-Live 2",
+      "broker": "Vantage",
+      "company": "Vantage Global Prime LLP",
+      "website": "www.vantagemarkets.co.uk",
+      "logoUrl": "https://download.terminal.free/cdn/mobile/logos/4/435A481FD2998BB7C20B85A542F19137.png",
+      "isDemo": false,
+      "accessPoints": [
+        "13.134.42.101:443",
+        "18.135.2.146:443"
+      ],
+      "keywords": [
+        "vantage"
+      ],
+      "updatedAt": "2026-11-07T05:04:03.133Z"
+    },
+    {
+      "name": "VantageGlobalPrimeAU-Demo",
+      "serverName": "VantageGlobalPrimeAU-Demo",
+      "broker": "Vantage",
+      "company": "Vantage Global Prime Pty Ltd",
+      "website": "www.vantagemarkets.com.au",
+      "logoUrl": "https://download.terminal.free/cdn/mobile/logos/A/AE1A4F67556B7FD0A756A4276C212E3C.png",
+      "isDemo": true,
+      "accessPoints": [
+        "aaaac78c2e3f5bd48.awsglobalaccelerator.com:700",
+        "aaaac78c2e3f5bd48.awsglobalaccelerator.com:701",
+        "3.213.140.50:443",
+        "98.84.74.44:443"
+      ],
+      "keywords": [
+        "vantage"
+      ],
+      "updatedAt": "2026-11-07T05:04:03.133Z"
+    },
+    {
+      "name": "VantageGlobalPrimeAU-Live",
+      "serverName": "VantageGlobalPrimeAU-Live",
+      "broker": "Vantage",
+      "company": "Vantage Global Prime Pty Ltd",
+      "website": "www.vantagemarkets.com.au",
+      "logoUrl": "https://download.terminal.free/cdn/mobile/logos/A/AE1A4F67556B7FD0A756A4276C212E3C.png",
+      "isDemo": false,
+      "accessPoints": [
+        "a07941075b77c8a83.awsglobalaccelerator.com:700",
+        "a07941075b77c8a83.awsglobalaccelerator.com:701",
+        "a07941075b77c8a83.awsglobalaccelerator.com:702",
+        "a07941075b77c8a83.awsglobalaccelerator.com:703",
+        "a07941075b77c8a83.awsglobalaccelerator.com:704",
+        "a07941075b77c8a83.awsglobalaccelerator.com:705",
+        "3.221.250.56:443",
+        "18.235.159.221:443"
+      ],
+      "keywords": [
+        "vantage"
+      ],
+      "updatedAt": "2026-11-07T05:04:03.133Z"
+    },
+    {
+      "name": "VantageMarkets-Demo",
+      "serverName": "VantageMarkets-Demo",
+      "broker": "Vantage",
+      "company": "Vantage Markets (Pty) Ltd",
+      "website": "www.vantagemarkets.com",
+      "logoUrl": "https://download.terminal.free/cdn/mobile/logos/4/49374E47DE34F9E15655626E4653C81C.png",
+      "isDemo": true,
+      "accessPoints": [
+        "a2ccde13c297ed6bd.awsglobalaccelerator.com:700",
+        "a2ccde13c297ed6bd.awsglobalaccelerator.com:701",
+        "a2ccde13c297ed6bd.awsglobalaccelerator.com:702",
+        "a2ccde13c297ed6bd.awsglobalaccelerator.com:703",
+        "18.210.228.251:443"
+      ],
+      "keywords": [
+        "vantage"
+      ],
+      "updatedAt": "2026-11-07T05:04:03.133Z"
+    },
+    {
+      "name": "VantageMarkets-Live",
+      "serverName": "VantageMarkets-Live",
+      "broker": "Vantage",
+      "company": "Vantage Markets (Pty) Ltd",
+      "website": "www.vantagemarkets.com",
+      "logoUrl": "https://download.terminal.free/cdn/mobile/logos/4/49374E47DE34F9E15655626E4653C81C.png",
+      "isDemo": false,
+      "accessPoints": [
+        "a5b97de2e5413de2e.awsglobalaccelerator.com:700",
+        "a5b97de2e5413de2e.awsglobalaccelerator.com:701",
+        "a5b97de2e5413de2e.awsglobalaccelerator.com:702",
+        "a5b97de2e5413de2e.awsglobalaccelerator.com:703",
+        "a5b97de2e5413de2e.awsglobalaccelerator.com:704",
+        "a5b97de2e5413de2e.awsglobalaccelerator.com:705",
+        "52.6.206.105:443",
+        "174.129.28.63:443"
+      ],
+      "keywords": [
+        "vantage"
+      ],
+      "updatedAt": "2026-11-07T05:04:03.133Z"
+    },
+    {
+      "name": "VantageMarkets-Live 10",
+      "serverName": "VantageMarkets-Live 10",
+      "broker": "Vantage",
+      "company": "Vantage Markets (Pty) Ltd",
+      "website": "www.vantagemarkets.com",
+      "logoUrl": "https://download.terminal.free/cdn/mobile/logos/4/49374E47DE34F9E15655626E4653C81C.png",
+      "isDemo": false,
+      "accessPoints": [
+        "a8c595cf83a866128.awsglobalaccelerator.com:700",
+        "a8c595cf83a866128.awsglobalaccelerator.com:701",
+        "a8c595cf83a866128.awsglobalaccelerator.com:702",
+        "a8c595cf83a866128.awsglobalaccelerator.com:703",
+        "a8c595cf83a866128.awsglobalaccelerator.com:704",
+        "a8c595cf83a866128.awsglobalaccelerator.com:705",
+        "18.135.219.10:443",
+        "18.130.159.141:443",
+        "66.253.6.132:443",
+        "193.30.23.89:754",
+        "193.30.23.89:763"
+      ],
+      "keywords": [
+        "vantage"
+      ],
+      "updatedAt": "2026-11-07T05:04:03.133Z"
+    },
+    {
+      "name": "VantageMarkets-Live 11",
+      "serverName": "VantageMarkets-Live 11",
+      "broker": "Vantage",
+      "company": "Vantage Markets (Pty) Ltd",
+      "website": "www.vantagemarkets.com",
+      "logoUrl": "https://download.terminal.free/cdn/mobile/logos/4/49374E47DE34F9E15655626E4653C81C.png",
+      "isDemo": false,
+      "accessPoints": [
+        "a902eace4c312cefa.awsglobalaccelerator.com:700",
+        "a902eace4c312cefa.awsglobalaccelerator.com:701",
+        "a902eace4c312cefa.awsglobalaccelerator.com:702",
+        "a902eace4c312cefa.awsglobalaccelerator.com:703",
+        "a902eace4c312cefa.awsglobalaccelerator.com:704",
+        "a902eace4c312cefa.awsglobalaccelerator.com:705",
+        "54.46.40.43:443",
+        "43.198.70.85:443"
+      ],
+      "keywords": [
+        "vantage"
+      ],
+      "updatedAt": "2026-11-07T05:04:03.133Z"
+    },
+    {
+      "name": "VantageMarkets-Live 12",
+      "serverName": "VantageMarkets-Live 12",
+      "broker": "Vantage",
+      "company": "Vantage Markets (Pty) Ltd",
+      "website": "www.vantagemarkets.com",
+      "logoUrl": "https://download.terminal.free/cdn/mobile/logos/4/49374E47DE34F9E15655626E4653C81C.png",
+      "isDemo": false,
+      "accessPoints": [
+        "13.42.147.206:443",
+        "18.130.6.97:443"
+      ],
+      "keywords": [
+        "vantage"
+      ],
+      "updatedAt": "2026-11-07T05:04:03.133Z"
+    },
+    {
+      "name": "VantageMarkets-Live 13",
+      "serverName": "VantageMarkets-Live 13",
+      "broker": "Vantage",
+      "company": "Vantage Markets (Pty) Ltd",
+      "website": "www.vantagemarkets.com",
+      "logoUrl": "https://download.terminal.free/cdn/mobile/logos/4/49374E47DE34F9E15655626E4653C81C.png",
+      "isDemo": false,
+      "accessPoints": [
+        "afcabd6dba099845a.awsglobalaccelerator.com:700",
+        "afcabd6dba099845a.awsglobalaccelerator.com:701",
+        "afcabd6dba099845a.awsglobalaccelerator.com:702",
+        "afcabd6dba099845a.awsglobalaccelerator.com:703",
+        "afcabd6dba099845a.awsglobalaccelerator.com:704",
+        "afcabd6dba099845a.awsglobalaccelerator.com:705",
+        "43.198.143.67:443",
+        "18.166.179.86:443"
+      ],
+      "keywords": [
+        "vantage"
+      ],
+      "updatedAt": "2026-11-07T05:04:03.133Z"
+    },
+    {
+      "name": "VantageMarkets-Live 14",
+      "serverName": "VantageMarkets-Live 14",
+      "broker": "Vantage",
+      "company": "Vantage Markets (Pty) Ltd",
+      "website": "www.vantagemarkets.com",
+      "logoUrl": "https://download.terminal.free/cdn/mobile/logos/4/49374E47DE34F9E15655626E4653C81C.png",
+      "isDemo": false,
+      "accessPoints": [
+        "18.135.241.34:443",
+        "af4bb0d834b41b01f.awsglobalaccelerator.com:700",
+        "af4bb0d834b41b01f.awsglobalaccelerator.com:701",
+        "af4bb0d834b41b01f.awsglobalaccelerator.com:702",
+        "af4bb0d834b41b01f.awsglobalaccelerator.com:703",
+        "af4bb0d834b41b01f.awsglobalaccelerator.com:704",
+        "af4bb0d834b41b01f.awsglobalaccelerator.com:705",
+        "13.42.71.143:443",
+        "13.134.0.208:443"
+      ],
+      "keywords": [
+        "vantage"
+      ],
+      "updatedAt": "2026-11-07T05:04:03.133Z"
+    },
+    {
+      "name": "VantageMarkets-Live 15",
+      "serverName": "VantageMarkets-Live 15",
+      "broker": "Vantage",
+      "company": "Vantage Markets (Pty) Ltd",
+      "website": "www.vantagemarkets.com",
+      "logoUrl": "https://download.terminal.free/cdn/mobile/logos/4/49374E47DE34F9E15655626E4653C81C.png",
+      "isDemo": false,
+      "accessPoints": [
+        "ab115c43dd08af309.awsglobalaccelerator.com:700",
+        "ab115c43dd08af309.awsglobalaccelerator.com:701",
+        "ab115c43dd08af309.awsglobalaccelerator.com:702",
+        "ab115c43dd08af309.awsglobalaccelerator.com:703",
+        "ab115c43dd08af309.awsglobalaccelerator.com:704",
+        "ab115c43dd08af309.awsglobalaccelerator.com:705",
+        "18.163.172.83:443",
+        "43.199.170.27:443",
+        "16.163.169.6:443"
+      ],
+      "keywords": [
+        "vantage"
+      ],
+      "updatedAt": "2026-11-07T05:04:03.133Z"
+    },
+    {
+      "name": "VantageMarkets-Live 17",
+      "serverName": "VantageMarkets-Live 17",
+      "broker": "Vantage",
+      "company": "Vantage Markets (Pty) Ltd",
+      "website": "www.vantagemarkets.com",
+      "logoUrl": "https://download.terminal.free/cdn/mobile/logos/4/49374E47DE34F9E15655626E4653C81C.png",
+      "isDemo": false,
+      "accessPoints": [
+        "54.227.194.220:443",
+        "54.172.128.8:443"
+      ],
+      "keywords": [
+        "vantage"
+      ],
+      "updatedAt": "2026-11-07T05:04:03.133Z"
+    },
+    {
+      "name": "VantageMarkets-Live 19",
+      "serverName": "VantageMarkets-Live 19",
+      "broker": "Vantage",
+      "company": "Vantage Markets (Pty) Ltd",
+      "website": "www.vantagemarkets.com",
+      "logoUrl": "https://download.terminal.free/cdn/mobile/logos/4/49374E47DE34F9E15655626E4653C81C.png",
+      "isDemo": false,
+      "accessPoints": [
+        "a43b2c9876e6ee278.awsglobalaccelerator.com:700",
+        "a43b2c9876e6ee278.awsglobalaccelerator.com:701",
+        "a43b2c9876e6ee278.awsglobalaccelerator.com:702",
+        "a43b2c9876e6ee278.awsglobalaccelerator.com:703",
+        "a43b2c9876e6ee278.awsglobalaccelerator.com:704",
+        "a43b2c9876e6ee278.awsglobalaccelerator.com:705",
+        "54.46.112.40:443",
+        "43.199.120.162:443"
+      ],
+      "keywords": [
+        "vantage"
+      ],
+      "updatedAt": "2026-11-07T05:04:03.133Z"
+    },
+    {
+      "name": "VantageMarkets-Live 2",
+      "serverName": "VantageMarkets-Live 2",
+      "broker": "Vantage",
+      "company": "Vantage Markets (Pty) Ltd",
+      "website": "www.vantagemarkets.com",
+      "logoUrl": "https://download.terminal.free/cdn/mobile/logos/4/49374E47DE34F9E15655626E4653C81C.png",
+      "isDemo": false,
+      "accessPoints": [
+        "a672dec7a1f6f93f1.awsglobalaccelerator.com:700",
+        "35.176.91.216:443",
+        "13.134.76.223:443",
+        "66.253.6.133:443",
+        "64.6.174.37:444",
+        "193.30.23.89:700",
+        "193.30.23.89:709"
+      ],
+      "keywords": [
+        "vantage"
+      ],
+      "updatedAt": "2026-11-07T05:04:03.133Z"
+    },
+    {
+      "name": "VantageMarkets-Live 21",
+      "serverName": "VantageMarkets-Live 21",
+      "broker": "Vantage",
+      "company": "Vantage Markets (Pty) Ltd",
+      "website": "www.vantagemarkets.com",
+      "logoUrl": "https://download.terminal.free/cdn/mobile/logos/4/49374E47DE34F9E15655626E4653C81C.png",
+      "isDemo": false,
+      "accessPoints": [
+        "a96810e367f55aeb1.awsglobalaccelerator.com:700",
+        "a96810e367f55aeb1.awsglobalaccelerator.com:701",
+        "a96810e367f55aeb1.awsglobalaccelerator.com:702",
+        "a96810e367f55aeb1.awsglobalaccelerator.com:703",
+        "a96810e367f55aeb1.awsglobalaccelerator.com:704",
+        "a96810e367f55aeb1.awsglobalaccelerator.com:705",
+        "18.167.153.70:443",
+        "16.162.75.37:443"
+      ],
+      "keywords": [
+        "vantage"
+      ],
+      "updatedAt": "2026-11-07T05:04:03.133Z"
+    },
+    {
+      "name": "VantageMarkets-Live 3",
+      "serverName": "VantageMarkets-Live 3",
+      "broker": "Vantage",
+      "company": "Vantage Markets (Pty) Ltd",
+      "website": "www.vantagemarkets.com",
+      "logoUrl": "https://download.terminal.free/cdn/mobile/logos/4/49374E47DE34F9E15655626E4653C81C.png",
+      "isDemo": false,
+      "accessPoints": [
+        "adfbda1aa34f4536a.awsglobalaccelerator.com:700",
+        "adfbda1aa34f4536a.awsglobalaccelerator.com:701",
+        "adfbda1aa34f4536a.awsglobalaccelerator.com:702",
+        "adfbda1aa34f4536a.awsglobalaccelerator.com:703",
+        "adfbda1aa34f4536a.awsglobalaccelerator.com:704",
+        "adfbda1aa34f4536a.awsglobalaccelerator.com:705",
+        "43.199.238.107:443",
+        "16.162.234.126:443"
+      ],
+      "keywords": [
+        "vantage"
+      ],
+      "updatedAt": "2026-11-07T05:04:03.133Z"
+    },
+    {
+      "name": "VantageMarkets-Live 4",
+      "serverName": "VantageMarkets-Live 4",
+      "broker": "Vantage",
+      "company": "Vantage Markets (Pty) Ltd",
+      "website": "www.vantagemarkets.com",
+      "logoUrl": "https://download.terminal.free/cdn/mobile/logos/4/49374E47DE34F9E15655626E4653C81C.png",
+      "isDemo": false,
+      "accessPoints": [
+        "a63dabdf85444f189.awsglobalaccelerator.com:700",
+        "a63dabdf85444f189.awsglobalaccelerator.com:701",
+        "a63dabdf85444f189.awsglobalaccelerator.com:702",
+        "a63dabdf85444f189.awsglobalaccelerator.com:703",
+        "a63dabdf85444f189.awsglobalaccelerator.com:704",
+        "a63dabdf85444f189.awsglobalaccelerator.com:705",
+        "3.10.197.46:443",
+        "52.56.32.191:443",
+        "66.253.6.131:443",
+        "193.30.23.89:718",
+        "193.30.23.89:727",
+        "64.6.174.35:444"
+      ],
+      "keywords": [
+        "vantage"
+      ],
+      "updatedAt": "2026-11-07T05:04:03.133Z"
+    },
+    {
+      "name": "VantageMarkets-Live 5",
+      "serverName": "VantageMarkets-Live 5",
+      "broker": "Vantage",
+      "company": "Vantage Markets (Pty) Ltd",
+      "website": "www.vantagemarkets.com",
+      "logoUrl": "https://download.terminal.free/cdn/mobile/logos/4/49374E47DE34F9E15655626E4653C81C.png",
+      "isDemo": false,
+      "accessPoints": [
+        "a61303536d0114e62.awsglobalaccelerator.com:700",
+        "a61303536d0114e62.awsglobalaccelerator.com:701",
+        "a61303536d0114e62.awsglobalaccelerator.com:702",
+        "a61303536d0114e62.awsglobalaccelerator.com:703",
+        "a61303536d0114e62.awsglobalaccelerator.com:704",
+        "a61303536d0114e62.awsglobalaccelerator.com:705",
+        "3.211.11.17:443",
+        "107.21.138.2:443"
+      ],
+      "keywords": [
+        "vantage"
+      ],
+      "updatedAt": "2026-11-07T05:04:03.133Z"
+    },
+    {
+      "name": "VantageMarkets-Live 6",
+      "serverName": "VantageMarkets-Live 6",
+      "broker": "Vantage",
+      "company": "Vantage Markets (Pty) Ltd",
+      "website": "www.vantagemarkets.com",
+      "logoUrl": "https://download.terminal.free/cdn/mobile/logos/4/49374E47DE34F9E15655626E4653C81C.png",
+      "isDemo": false,
+      "accessPoints": [
+        "a47cf273b69f74f27.awsglobalaccelerator.com:700",
+        "a47cf273b69f74f27.awsglobalaccelerator.com:701",
+        "a47cf273b69f74f27.awsglobalaccelerator.com:702",
+        "a47cf273b69f74f27.awsglobalaccelerator.com:703",
+        "a47cf273b69f74f27.awsglobalaccelerator.com:704",
+        "a47cf273b69f74f27.awsglobalaccelerator.com:705",
+        "18.133.218.2:443",
+        "35.179.255.176:443",
+        "66.253.6.134:443",
+        "64.6.174.38:444",
+        "193.30.23.89:736",
+        "193.30.23.89:745"
+      ],
+      "keywords": [
+        "vantage"
+      ],
+      "updatedAt": "2026-11-07T05:04:03.133Z"
+    },
+    {
+      "name": "VantageMarkets-Live 7",
+      "serverName": "VantageMarkets-Live 7",
+      "broker": "Vantage",
+      "company": "Vantage Markets (Pty) Ltd",
+      "website": "www.vantagemarkets.com",
+      "logoUrl": "https://download.terminal.free/cdn/mobile/logos/4/49374E47DE34F9E15655626E4653C81C.png",
+      "isDemo": false,
+      "accessPoints": [
+        "ad19457a7f0141065.awsglobalaccelerator.com:700",
+        "ad19457a7f0141065.awsglobalaccelerator.com:701",
+        "ad19457a7f0141065.awsglobalaccelerator.com:702",
+        "ad19457a7f0141065.awsglobalaccelerator.com:703",
+        "ad19457a7f0141065.awsglobalaccelerator.com:704",
+        "ad19457a7f0141065.awsglobalaccelerator.com:705",
+        "43.199.251.115:443",
+        "43.199.245.127:443",
+        "64.6.174.44:443",
+        "64.6.174.45:444",
+        "193.30.23.89:772",
+        "193.30.23.89:781",
+        "64.6.174.46:443",
+        "66.253.6.179:444"
+      ],
+      "keywords": [
+        "vantage"
+      ],
+      "updatedAt": "2026-11-07T05:04:03.133Z"
+    },
+    {
+      "name": "VantageMarkets-Live 8",
+      "serverName": "VantageMarkets-Live 8",
+      "broker": "Vantage",
+      "company": "Vantage Markets (Pty) Ltd",
+      "website": "www.vantagemarkets.com",
+      "logoUrl": "https://download.terminal.free/cdn/mobile/logos/4/49374E47DE34F9E15655626E4653C81C.png",
+      "isDemo": false,
+      "accessPoints": [
+        "18.170.164.239:443",
+        "35.178.90.104:443",
+        "a503f891ac2efd1f7.awsglobalaccelerator.com:706",
+        "a503f891ac2efd1f7.awsglobalaccelerator.com:707",
+        "a503f891ac2efd1f7.awsglobalaccelerator.com:708",
+        "a503f891ac2efd1f7.awsglobalaccelerator.com:709"
+      ],
+      "keywords": [
+        "vantage"
+      ],
+      "updatedAt": "2026-11-07T05:04:03.133Z"
+    },
+    {
+      "name": "VantageMarkets-Live 9",
+      "serverName": "VantageMarkets-Live 9",
+      "broker": "Vantage",
+      "company": "Vantage Markets (Pty) Ltd",
+      "website": "www.vantagemarkets.com",
+      "logoUrl": "https://download.terminal.free/cdn/mobile/logos/4/49374E47DE34F9E15655626E4653C81C.png",
+      "isDemo": false,
+      "accessPoints": [
+        "54.197.98.43:443",
+        "54.225.132.135:443"
+      ],
+      "keywords": [
+        "vantage"
+      ],
+      "updatedAt": "2026-11-07T05:04:03.133Z"
+    },
+    {
+      "name": "VantageTradingLtd-Demo",
+      "serverName": "VantageTradingLtd-Demo",
+      "broker": "Vantage",
+      "company": "Vantage Trading Ltd",
+      "website": "www.vantagetradings.com",
+      "logoUrl": "https://download.terminal.free/cdn/mobile/logos/C/C46E8ED2589D08142CECBA5F9E43C69D.png",
+      "isDemo": true,
+      "accessPoints": [
+        "15.181.163.245:443",
+        "16.162.241.45:443",
+        "54.250.12.192:443",
+        "13.208.112.19:443",
+        "18.132.157.59:443"
+      ],
+      "keywords": [
+        "vantage"
+      ],
+      "updatedAt": "2026-11-07T05:04:03.133Z"
+    },
+    {
+      "name": "VantageTradingLtd-Live",
+      "serverName": "VantageTradingLtd-Live",
+      "broker": "Vantage",
+      "company": "Vantage Trading Ltd",
+      "website": "www.vantagetradings.com",
+      "logoUrl": "https://download.terminal.free/cdn/mobile/logos/C/C46E8ED2589D08142CECBA5F9E43C69D.png",
+      "isDemo": false,
+      "accessPoints": [
+        "a5d3f6d325917482b.awsglobalaccelerator.com:700",
+        "a5d3f6d325917482b.awsglobalaccelerator.com:701",
+        "a5d3f6d325917482b.awsglobalaccelerator.com:702",
+        "a5d3f6d325917482b.awsglobalaccelerator.com:703",
+        "a5d3f6d325917482b.awsglobalaccelerator.com:704",
+        "a5d3f6d325917482b.awsglobalaccelerator.com:705",
+        "54.199.57.71:443",
+        "13.159.179.77:443"
+      ],
+      "keywords": [
+        "vantage"
+      ],
+      "updatedAt": "2026-11-07T05:04:03.133Z"
+    },
+    {
+      "name": "VantageTradingLtd-Live 2",
+      "serverName": "VantageTradingLtd-Live 2",
+      "broker": "Vantage",
+      "company": "Vantage Trading Ltd",
+      "website": "www.vantagetradings.com",
+      "logoUrl": "https://download.terminal.free/cdn/mobile/logos/C/C46E8ED2589D08142CECBA5F9E43C69D.png",
+      "isDemo": false,
+      "accessPoints": [
+        "a689e24dcf3e812c7.awsglobalaccelerator.com:700",
+        "a689e24dcf3e812c7.awsglobalaccelerator.com:701",
+        "a689e24dcf3e812c7.awsglobalaccelerator.com:702",
+        "a689e24dcf3e812c7.awsglobalaccelerator.com:703",
+        "52.198.52.165:443",
+        "13.158.195.55:443"
+      ],
+      "keywords": [
+        "vantage"
+      ],
+      "updatedAt": "2026-11-07T05:04:03.133Z"
+    },
+    {
+      "name": "VantageMarketsFutures-Demo",
+      "serverName": "VantageMarketsFutures-Demo",
+      "broker": "PT.",
+      "company": "PT. Vantage Markets Futures",
+      "website": "www.vantagemarkets.co.id",
+      "logoUrl": "https://download.terminal.free/cdn/mobile/logos/5/5B4BF7A7D8F56B1071D85CBD59983B4A.png",
+      "isDemo": true,
+      "accessPoints": [
+        "a237b0851ac2cf254.awsglobalaccelerator.com:700",
+        "a237b0851ac2cf254.awsglobalaccelerator.com:701",
+        "a237b0851ac2cf254.awsglobalaccelerator.com:702",
+        "a237b0851ac2cf254.awsglobalaccelerator.com:703",
+        "108.136.207.184:443"
+      ],
+      "keywords": [
+        "vantage"
+      ],
+      "updatedAt": "2026-11-07T05:04:03.133Z"
+    },
+    {
+      "name": "VantageMarketsFutures-Live",
+      "serverName": "VantageMarketsFutures-Live",
+      "broker": "PT.",
+      "company": "PT. Vantage Markets Futures",
+      "website": "www.vantagemarkets.co.id",
+      "logoUrl": "https://download.terminal.free/cdn/mobile/logos/5/5B4BF7A7D8F56B1071D85CBD59983B4A.png",
+      "isDemo": false,
+      "accessPoints": [
+        "aa38ba693552fd71d.awsglobalaccelerator.com:700",
+        "aa38ba693552fd71d.awsglobalaccelerator.com:701",
+        "aa38ba693552fd71d.awsglobalaccelerator.com:702",
+        "aa38ba693552fd71d.awsglobalaccelerator.com:703",
+        "15.232.76.75:443",
+        "16.79.178.120:443"
+      ],
+      "keywords": [
+        "vantage"
+      ],
+      "updatedAt": "2026-11-07T05:04:03.133Z"
+    },
+    {
+      "name": "VantageMarketsMU-Demo",
+      "serverName": "VantageMarketsMU-Demo",
+      "broker": "VIG",
+      "company": "VIG Group Ltd.",
+      "website": "www.vantagemarkets.com",
+      "logoUrl": "https://download.terminal.free/cdn/mobile/logos/7/79A94C4ED4B16B995DB9C0209EAB4469.png",
+      "isDemo": true,
+      "accessPoints": [
+        "3.8.67.108:443",
+        "ad115f4b9ec24857d.awsglobalaccelerator.com:700",
+        "ad115f4b9ec24857d.awsglobalaccelerator.com:701",
+        "ad115f4b9ec24857d.awsglobalaccelerator.com:702",
+        "ad115f4b9ec24857d.awsglobalaccelerator.com:703",
+        "18.168.0.162:443"
+      ],
+      "keywords": [
+        "vantage"
+      ],
+      "updatedAt": "2026-11-07T05:04:03.133Z"
+    },
+    {
+      "name": "VantageMarketsMU-Live",
+      "serverName": "VantageMarketsMU-Live",
+      "broker": "VIG",
+      "company": "VIG Group Ltd.",
+      "website": "www.vantagemarkets.com",
+      "logoUrl": "https://download.terminal.free/cdn/mobile/logos/7/79A94C4ED4B16B995DB9C0209EAB4469.png",
+      "isDemo": false,
+      "accessPoints": [
+        "a792b21a55ab384ac.awsglobalaccelerator.com:700",
+        "a792b21a55ab384ac.awsglobalaccelerator.com:701",
+        "a792b21a55ab384ac.awsglobalaccelerator.com:702",
+        "a792b21a55ab384ac.awsglobalaccelerator.com:703",
+        "18.170.189.191:443",
+        "18.135.149.102:443"
+      ],
+      "keywords": [
+        "vantage"
+      ],
+      "updatedAt": "2026-11-07T05:04:03.133Z"
+    },
+    {
+      "name": "STARTRADERPrimeGlobal-Live",
+      "serverName": "STARTRADERPrimeGlobal-Live",
+      "broker": "STARTRADER",
+      "company": "STARTRADER Prime Global Pty Ltd",
+      "website": "www.startraderprime.com.au",
+      "logoUrl": "https://download.terminal.free/cdn/mobile/logos/0/0C0F3926F08A6E13C8FBBDA962409C83.png",
+      "isDemo": false,
+      "accessPoints": [
+        "35.177.241.86:443",
+        "52.64.90.37:443",
+        "35.177.205.146:443",
+        "15.181.161.205:443",
+        "18.135.63.244:443",
+        "43.216.134.124:443",
+        "44.195.131.183:443"
+      ],
+      "keywords": [
+        "startrader"
+      ],
+      "updatedAt": "2026-11-07T05:05:53.229Z"
+    },
+    {
+      "name": "STARTRADERFinancial-Demo",
+      "serverName": "STARTRADERFinancial-Demo",
+      "broker": "Startrader",
+      "company": "Startrader Financial Markets Limited",
+      "website": "www.startrader.com",
+      "logoUrl": "https://download.terminal.free/cdn/mobile/logos/4/49753489EC9EDED255EC6E72CEC59912.png",
+      "isDemo": true,
+      "accessPoints": [
+        "18.169.198.62:443",
+        "54.208.226.140:443",
+        "43.216.248.23:443"
+      ],
+      "keywords": [
+        "startrader"
+      ],
+      "updatedAt": "2026-11-07T05:05:53.229Z"
+    },
+    {
+      "name": "STARTRADERFinancial-Live",
+      "serverName": "STARTRADERFinancial-Live",
+      "broker": "Startrader",
+      "company": "Startrader Financial Markets Limited",
+      "website": "www.startrader.com",
+      "logoUrl": "https://download.terminal.free/cdn/mobile/logos/4/49753489EC9EDED255EC6E72CEC59912.png",
+      "isDemo": false,
+      "accessPoints": [
+        "a663559ed4882aad5.awsglobalaccelerator.com:700",
+        "a663559ed4882aad5.awsglobalaccelerator.com:701",
+        "a663559ed4882aad5.awsglobalaccelerator.com:702",
+        "a663559ed4882aad5.awsglobalaccelerator.com:703",
+        "a663559ed4882aad5.awsglobalaccelerator.com:704",
+        "a663559ed4882aad5.awsglobalaccelerator.com:705",
+        "3.8.62.240:443",
+        "3.10.61.89:443",
+        "nlb-k7433r2c9jkelv9yvp.cn-shanghai.nlb.aliyuncs.com:443",
+        "nlb-xo4l54nqg3fiw4ubrb.cn-beijing.nlb.aliyuncsslb.com:443",
+        "nlb-v196j43bqjw95b1g2v.cn-shenzhen.nlb.aliyuncsslb.com:443"
+      ],
+      "keywords": [
+        "startrader"
+      ],
+      "updatedAt": "2026-11-07T05:05:53.229Z"
+    },
+    {
+      "name": "STARTRADERFinancial-Live 3",
+      "serverName": "STARTRADERFinancial-Live 3",
+      "broker": "Startrader",
+      "company": "Startrader Financial Markets Limited",
+      "website": "www.startrader.com",
+      "logoUrl": "https://download.terminal.free/cdn/mobile/logos/4/49753489EC9EDED255EC6E72CEC59912.png",
+      "isDemo": false,
+      "accessPoints": [
+        "a1b80a56e31697d2e.awsglobalaccelerator.com:700",
+        "a1b80a56e31697d2e.awsglobalaccelerator.com:701",
+        "a1b80a56e31697d2e.awsglobalaccelerator.com:702",
+        "a1b80a56e31697d2e.awsglobalaccelerator.com:703",
+        "a1b80a56e31697d2e.awsglobalaccelerator.com:704",
+        "a1b80a56e31697d2e.awsglobalaccelerator.com:705",
+        "18.171.138.166:443",
+        "18.132.159.31:443"
+      ],
+      "keywords": [
+        "startrader"
+      ],
+      "updatedAt": "2026-11-07T05:05:53.229Z"
+    },
+    {
+      "name": "STARTRADERFinancial-Live 4",
+      "serverName": "STARTRADERFinancial-Live 4",
+      "broker": "Startrader",
+      "company": "Startrader Financial Markets Limited",
+      "website": "www.startrader.com",
+      "logoUrl": "https://download.terminal.free/cdn/mobile/logos/4/49753489EC9EDED255EC6E72CEC59912.png",
+      "isDemo": false,
+      "accessPoints": [
+        "a06fe8b46e6f62bbc.awsglobalaccelerator.com:700",
+        "a06fe8b46e6f62bbc.awsglobalaccelerator.com:701",
+        "a06fe8b46e6f62bbc.awsglobalaccelerator.com:702",
+        "a06fe8b46e6f62bbc.awsglobalaccelerator.com:703",
+        "a06fe8b46e6f62bbc.awsglobalaccelerator.com:704",
+        "a06fe8b46e6f62bbc.awsglobalaccelerator.com:705",
+        "13.134.47.15:443",
+        "18.133.91.169:443"
+      ],
+      "keywords": [
+        "startrader"
+      ],
+      "updatedAt": "2026-11-07T05:05:53.229Z"
+    },
+    {
+      "name": "STARTRADERFinancial-Live 5",
+      "serverName": "STARTRADERFinancial-Live 5",
+      "broker": "Startrader",
+      "company": "Startrader Financial Markets Limited",
+      "website": "www.startrader.com",
+      "logoUrl": "https://download.terminal.free/cdn/mobile/logos/4/49753489EC9EDED255EC6E72CEC59912.png",
+      "isDemo": false,
+      "accessPoints": [
+        "47.93.190.145:700",
+        "106.14.1.73:701",
+        "8.134.182.200:702",
+        "47.106.68.210:703",
+        "47.97.49.164:704",
+        "47.105.85.156:705",
+        "47.108.128.198:706",
+        "8.130.185.149:707",
+        "47.243.11.150:443",
+        "47.243.155.185:443",
+        "43.198.180.124:443",
+        "54.46.59.106:443"
+      ],
+      "keywords": [
+        "startrader"
+      ],
+      "updatedAt": "2026-11-07T05:05:53.229Z"
+    },
+    {
+      "name": "STARTRADERFinancial-Live 6",
+      "serverName": "STARTRADERFinancial-Live 6",
+      "broker": "Startrader",
+      "company": "Startrader Financial Markets Limited",
+      "website": "www.startrader.com",
+      "logoUrl": "https://download.terminal.free/cdn/mobile/logos/4/49753489EC9EDED255EC6E72CEC59912.png",
+      "isDemo": false,
+      "accessPoints": [
+        "ac4bcb4ce2c727521.awsglobalaccelerator.com:700",
+        "ac4bcb4ce2c727521.awsglobalaccelerator.com:701",
+        "ac4bcb4ce2c727521.awsglobalaccelerator.com:702",
+        "ac4bcb4ce2c727521.awsglobalaccelerator.com:703",
+        "ac4bcb4ce2c727521.awsglobalaccelerator.com:704",
+        "ac4bcb4ce2c727521.awsglobalaccelerator.com:705",
+        "95.40.177.159:443",
+        "16.162.84.121:443",
+        "39.108.96.64:700"
+      ],
+      "keywords": [
+        "startrader"
+      ],
+      "updatedAt": "2026-11-07T05:05:53.229Z"
+    },
+    {
+      "name": "STARTRADERFinancial-Live02",
+      "serverName": "STARTRADERFinancial-Live02",
+      "broker": "Startrader",
+      "company": "Startrader Financial Markets Limited",
+      "website": "www.startrader.com",
+      "logoUrl": "https://download.terminal.free/cdn/mobile/logos/4/49753489EC9EDED255EC6E72CEC59912.png",
+      "isDemo": false,
+      "accessPoints": [
+        "185.97.161.95:443",
+        "8.153.199.228:443",
+        "8.153.199.228:1950",
+        "162.255.145.171:443"
+      ],
+      "keywords": [
+        "startrader"
+      ],
+      "updatedAt": "2026-11-07T05:05:53.229Z"
+    },
+    {
+      "name": "STARTRADERFinancial-Live7",
+      "serverName": "STARTRADERFinancial-Live7",
+      "broker": "Startrader",
+      "company": "Startrader Financial Markets Limited",
+      "website": "www.startrader.com",
+      "logoUrl": "https://download.terminal.free/cdn/mobile/logos/4/49753489EC9EDED255EC6E72CEC59912.png",
+      "isDemo": false,
+      "accessPoints": [
+        "a7cd1bff3ec40a9e5.awsglobalaccelerator.com:700",
+        "a7cd1bff3ec40a9e5.awsglobalaccelerator.com:701",
+        "a7cd1bff3ec40a9e5.awsglobalaccelerator.com:702",
+        "a7cd1bff3ec40a9e5.awsglobalaccelerator.com:703",
+        "13.135.190.55:443",
+        "18.169.79.59:443"
+      ],
+      "keywords": [
+        "startrader"
+      ],
+      "updatedAt": "2026-11-07T05:05:53.229Z"
+    },
+    {
+      "name": "STARTRADERFinancial-Live8",
+      "serverName": "STARTRADERFinancial-Live8",
+      "broker": "Startrader",
+      "company": "Startrader Financial Markets Limited",
+      "website": "www.startrader.com",
+      "logoUrl": "https://download.terminal.free/cdn/mobile/logos/4/49753489EC9EDED255EC6E72CEC59912.png",
+      "isDemo": false,
+      "accessPoints": [
+        "a4649104f3034de0e.awsglobalaccelerator.com:700",
+        "a4649104f3034de0e.awsglobalaccelerator.com:701",
+        "a4649104f3034de0e.awsglobalaccelerator.com:702",
+        "a4649104f3034de0e.awsglobalaccelerator.com:703",
+        "18.169.60.226:443",
+        "3.11.54.95:443"
+      ],
+      "keywords": [
+        "startrader"
+      ],
+      "updatedAt": "2026-11-07T05:05:53.229Z"
+    }
+  ]
+}

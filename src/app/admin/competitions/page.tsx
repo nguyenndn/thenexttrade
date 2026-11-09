@@ -25,12 +25,14 @@ export default async function AdminCompetitionsPage() {
         redirect("/dashboard");
     }
 
-    const { competitions, stats } = await fetchAdminCompetitions();
+    const { competitions, competitionsEnabled, stats } =
+        await fetchAdminCompetitions();
 
     return (
         <div className="space-y-6 pb-10">
             <CompetitionListClient
                 initialCompetitions={competitions}
+                initialCompetitionsEnabled={competitionsEnabled}
                 stats={stats}
             />
         </div>

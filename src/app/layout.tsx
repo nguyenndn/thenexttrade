@@ -57,7 +57,7 @@ export const metadata: Metadata = {
     openGraph: {
         type: "website",
         locale: "en_US",
-        url: "https://thenexttrade.com",
+        url: "https://thenexttrade.io",
         title: "TheNextTrade - Professional Forex Trading Tools",
         description: "Forex tools, journal, and education — free to start.",
         siteName: "TheNextTrade",

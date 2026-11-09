@@ -20,11 +20,13 @@ export interface AccountProfitTargetState {
 export interface AccountProfitTargetSettingsProps {
     value: AccountProfitTargetState;
     onChange: (state: AccountProfitTargetState) => void;
+    currency?: string;
 }
 
 export function AccountProfitTargetSettings({
     value,
     onChange,
+    currency = "USD",
 }: AccountProfitTargetSettingsProps) {
     return (
         <div className="space-y-4 pt-2 border-t border-dashboard">
@@ -58,7 +60,7 @@ export function AccountProfitTargetSettings({
                     }
                     helperText={
                         value.weeklyTargetType === "USD"
-                            ? "Absolute dollar target for Monday to Sunday UTC"
+                            ? `Absolute ${currency} target for Monday to Sunday UTC`
                             : "Percentage of starting capital base for the week"
                     }
                     presets={
@@ -66,6 +68,7 @@ export function AccountProfitTargetSettings({
                             ? WEEKLY_PRESETS.usd
                             : WEEKLY_PRESETS.pct
                     }
+                    currency={currency}
                 />
                 <TargetPeriodField
                     id="account-monthly-target"
@@ -84,7 +87,7 @@ export function AccountProfitTargetSettings({
                     }
                     helperText={
                         value.monthlyTargetType === "USD"
-                            ? "Absolute dollar target for calendar month"
+                            ? `Absolute ${currency} target for calendar month`
                             : "Percentage of starting capital base for the month"
                     }
                     presets={
@@ -92,6 +95,7 @@ export function AccountProfitTargetSettings({
                             ? MONTHLY_PRESETS.usd
                             : MONTHLY_PRESETS.pct
                     }
+                    currency={currency}
                 />
             </div>
         </div>

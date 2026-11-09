@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/Button";
 import { NumberTicker } from "@/components/ui/NumberTicker";
+import { getCurrencyTickerProps } from "@/lib/utils/cent-account";
 
 export type HeroWidgetType =
     | "TOTAL_BALANCE"
@@ -107,6 +108,11 @@ export function DashboardHero({
     };
 
     // Extracted values
+    const currency = data.dashboardData.currency || "USD";
+    const unsignedCurrencyTicker = getCurrencyTickerProps(currency, "");
+    const plusCurrencyTicker = getCurrencyTickerProps(currency, "+");
+    const minusCurrencyTicker = getCurrencyTickerProps(currency, "-");
+
     const totalBalance = data.dashboardData.totalBalance;
     const periodPnL = data.dashboardData.periodPnL;
     const winRate = data.dashboardData.winRate;
@@ -142,7 +148,8 @@ export function DashboardHero({
                         <p className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-emerald-500">
                             <NumberTicker
                                 value={totalBalance}
-                                prefix="$"
+                                prefix={unsignedCurrencyTicker.prefix}
+                                suffix={unsignedCurrencyTicker.suffix}
                                 decimals={2}
                             />
                         </p>
@@ -152,6 +159,8 @@ export function DashboardHero({
                     </>
                 );
             case "PERIOD_PNL":
+                const pnlTicker =
+                    periodPnL >= 0 ? plusCurrencyTicker : minusCurrencyTicker;
                 return (
                     <>
                         <div className="flex items-center justify-center gap-2">
@@ -175,7 +184,8 @@ export function DashboardHero({
                             >
                                 <NumberTicker
                                     value={Math.abs(periodPnL)}
-                                    prefix={periodPnL >= 0 ? "+$" : "-$"}
+                                    prefix={pnlTicker.prefix}
+                                    suffix={pnlTicker.suffix}
                                     decimals={2}
                                 />
                             </p>
@@ -338,7 +348,8 @@ export function DashboardHero({
                         <p className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-emerald-500">
                             <NumberTicker
                                 value={avgWin}
-                                prefix="$"
+                                prefix={unsignedCurrencyTicker.prefix}
+                                suffix={unsignedCurrencyTicker.suffix}
                                 decimals={2}
                             />
                         </p>
@@ -353,7 +364,8 @@ export function DashboardHero({
                         <p className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-red-500">
                             <NumberTicker
                                 value={Math.abs(avgLoss)}
-                                prefix="-$"
+                                prefix={minusCurrencyTicker.prefix}
+                                suffix={minusCurrencyTicker.suffix}
                                 decimals={2}
                             />
                         </p>
@@ -418,6 +430,8 @@ export function DashboardHero({
             case "EXPECTANCY":
                 const expColor =
                     expectancy >= 0 ? "text-emerald-500" : "text-red-500";
+                const expTicker =
+                    expectancy >= 0 ? plusCurrencyTicker : minusCurrencyTicker;
                 return (
                     <>
                         <p
@@ -428,7 +442,8 @@ export function DashboardHero({
                         >
                             <NumberTicker
                                 value={Math.abs(expectancy)}
-                                prefix={expectancy >= 0 ? "+$" : "-$"}
+                                prefix={expTicker.prefix}
+                                suffix={expTicker.suffix}
                                 decimals={2}
                             />
                         </p>
@@ -443,7 +458,8 @@ export function DashboardHero({
                         <p className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-red-500">
                             <NumberTicker
                                 value={Math.abs(fees)}
-                                prefix="-$"
+                                prefix={minusCurrencyTicker.prefix}
+                                suffix={minusCurrencyTicker.suffix}
                                 decimals={2}
                             />
                         </p>
@@ -458,7 +474,8 @@ export function DashboardHero({
                         <p className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-emerald-500">
                             <NumberTicker
                                 value={maxWin}
-                                prefix="$"
+                                prefix={unsignedCurrencyTicker.prefix}
+                                suffix={unsignedCurrencyTicker.suffix}
                                 decimals={2}
                             />
                         </p>
@@ -473,7 +490,8 @@ export function DashboardHero({
                         <p className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-red-500">
                             <NumberTicker
                                 value={Math.abs(maxLoss)}
-                                prefix="-$"
+                                prefix={minusCurrencyTicker.prefix}
+                                suffix={minusCurrencyTicker.suffix}
                                 decimals={2}
                             />
                         </p>

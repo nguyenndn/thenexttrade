@@ -15,14 +15,12 @@ import {
     ArrowRight,
     ArrowUpRight,
     Users,
-    LifeBuoy,
 } from "lucide-react";
 import { SyncHealthCenter } from "./SyncHealthCenter";
 import { AccountTable } from "./AccountTable";
 import { AddAccountModal } from "./AddAccountModal";
-import { SyncSupportDrawer } from "./SyncSupportDrawer";
-import { getUserSupportSyncTickets } from "@/actions/support-sync";
 import { formatSyncErrorMessage } from "@/lib/sync/sync-source";
+import { convertToUsdEquivalent } from "@/lib/utils/cent-account";
 import { cn } from "@/lib/utils";
 import { AccountSettingsModal } from "./AccountSettingsModal";
 import { RegenerateKeyModal } from "./RegenerateKeyModal";
@@ -86,6 +84,7 @@ interface TradingAccount {
     monthlyTargetType?: string;
     initialBalance?: number | null;
     hasCredentials?: boolean;
+    savedPassword?: string;
     latestJob?: any | null;
 }
 
@@ -164,32 +163,26 @@ export function AccountListClient({
     >(preferredSyncMethod);
     const [wasInSyncSetup, setWasInSyncSetup] = useState(false);
 
-    // Support Sync Drawer state
-    const [supportDrawerOpen, setSupportDrawerOpen] = useState(false);
-    const [supportDrawerAccountId, setSupportDrawerAccountId] = useState<string | null>(null);
-    const [supportDrawerTab, setSupportDrawerTab] = useState<"list" | "create">("list");
-    const [userTickets, setUserTickets] = useState<any[]>([]);
-
-    const loadUserTickets = async () => {
-        try {
-            const tickets = await getUserSupportSyncTickets();
-            setUserTickets(tickets || []);
-        } catch {
-            // Ignore error
-        }
-    };
-
-    useEffect(() => {
-        loadUserTickets();
-    }, []);
-
-    const pendingSupportCount = userTickets.filter((t) => t.status === "PENDING").length;
-
     // Track accounts actively syncing in background: accountId -> { jobId?: string; startedAt: number }
-    // Temporarily initialized empty while Cloud Sync worker infrastructure is offline
     const [activeSyncingAccounts, setActiveSyncingAccounts] = useState<
         Record<string, { jobId?: string; startedAt: number }>
-    >(() => ({}));
+    >(() => {
+        const initial: Record<string, { jobId?: string; startedAt: number }> = {};
+        const now = Date.now();
+        for (const acc of initialAccounts) {
+            if (acc.latestJob && (acc.latestJob.status === "PENDING" || acc.latestJob.status === "PROCESSING")) {
+                const jobAge = now - new Date(acc.latestJob.createdAt).getTime();
+                const maxAge = acc.latestJob.status === "PENDING" ? 60000 : 120000;
+                if (jobAge < maxAge) {
+                    initial[acc.id] = {
+                        jobId: acc.latestJob.id,
+                        startedAt: new Date(acc.latestJob.createdAt).getTime(),
+                    };
+                }
+            }
+        }
+        return initial;
+    });
 
     const handleSyncStarted = (accountId: string, jobId?: string) => {
         setActiveSyncingAccounts((prev) => ({
@@ -219,15 +212,7 @@ export function AccountListClient({
                 if (Date.now() - syncInfo.startedAt > 90000) {
                     toast.error(`Cloud Sync Failed: ${accLabel}`, {
                         description:
-                            "Unable to sync trade history. Please try again or request sync support.",
-                        action: {
-                            label: "Sync Support",
-                            onClick: () => {
-                                setSupportDrawerAccountId(accountId);
-                                setSupportDrawerTab("create");
-                                setSupportDrawerOpen(true);
-                            },
-                        },
+                            "Unable to sync trade history. Please try again.",
                         duration: 8000,
                     });
 
@@ -270,17 +255,8 @@ export function AccountListClient({
                     } else if (res.latestJob.status === "FAILED") {
                         toast.error(`Cloud Sync Failed: ${accLabel}`, {
                             description: formatSyncErrorMessage(res.latestJob),
-                                action: {
-                                    label: "Sync Support",
-                                    onClick: () => {
-                                        setSupportDrawerAccountId(accountId);
-                                        setSupportDrawerTab("create");
-                                        setSupportDrawerOpen(true);
-                                    },
-                                },
-                                duration: 8000,
-                            }
-                        );
+                            duration: 8000,
+                        });
                         setActiveSyncingAccounts((prev) => {
                             const next = { ...prev };
                             delete next[accountId];
@@ -436,9 +412,15 @@ export function AccountListClient({
         router,
     ]);
 
-    // Calculate summary stats
+    // Calculate summary stats (normalize Cent / EUR / GBP balances to USD equivalent)
     const totalBalance = initialAccounts.reduce(
-        (sum, acc) => sum + (acc.balance || 0),
+        (sum, acc) =>
+            sum +
+            convertToUsdEquivalent(
+                acc.balance || 0,
+                acc.currency,
+                acc.server
+            ),
         0
     );
     const totalConnected = initialAccounts.length;
@@ -512,29 +494,6 @@ export function AccountListClient({
                         <Crown size={14} className="text-amber-500" />
                         Free vs Pro
                     </Button>
-                    {/* Temporarily hidden while Cloud Sync infrastructure is offline
-                    <Button
-                        variant="outline"
-                        size="smd"
-                        onClick={() => {
-                            setSupportDrawerAccountId(null);
-                            setSupportDrawerTab(userTickets.length > 0 ? "list" : "create");
-                            setSupportDrawerOpen(true);
-                        }}
-                        className={cn(
-                            "flex items-center justify-center gap-2 border-dashboard bg-white dark:bg-white/[0.04] text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.08] flex-1 sm:flex-none shadow-sm font-semibold transition-all",
-                            pendingSupportCount > 0 && "border-amber-500/40 bg-amber-50/60 dark:bg-amber-500/10 text-amber-800 dark:text-amber-300"
-                        )}
-                    >
-                        <LifeBuoy size={14} className={cn("text-amber-500", pendingSupportCount > 0 && "animate-pulse")} />
-                        <span>Sync Support</span>
-                        {pendingSupportCount > 0 && (
-                            <span className="ml-0.5 px-1.5 py-0.2 rounded-full bg-amber-500 text-white text-[10px] font-black leading-none">
-                                {pendingSupportCount}
-                            </span>
-                        )}
-                    </Button>
-                    */}
                     <Button
                         id="onborda-add-account"
                         variant="gold"
@@ -719,12 +678,6 @@ export function AccountListClient({
                         preferredSyncMethod={preferredSyncMethod}
                         activeSyncingAccounts={activeSyncingAccounts}
                         onSyncStarted={handleSyncStarted}
-                        onRequestSupport={(id) => {
-                            setSupportDrawerAccountId(id);
-                            setSupportDrawerTab("create");
-                            setSupportDrawerOpen(true);
-                        }}
-                        userTickets={userTickets}
                         onOpenSyncSetup={(method) => {
                             setDefaultSyncMethod(method);
                             setActiveModal({
@@ -1152,17 +1105,6 @@ export function AccountListClient({
                         setActiveModal({ type: "SYNC_SETUP" });
                     }
                 }}
-            />
-
-            {/* Sync Support Slide-over Drawer */}
-            <SyncSupportDrawer
-                isOpen={supportDrawerOpen}
-                onClose={() => setSupportDrawerOpen(false)}
-                accounts={initialAccounts}
-                tickets={userTickets}
-                onRefreshTickets={loadUserTickets}
-                initialAccountId={supportDrawerAccountId}
-                defaultTab={supportDrawerTab}
             />
         </div>
     );

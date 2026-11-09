@@ -33,9 +33,7 @@
     "db:seed": "dotenv -e .env -- prisma db seed",
     "db:push": "dotenv -e .env -- prisma db push",
     "db:studio": "dotenv -e .env -- prisma studio",
-    "perf:test": "dotenv -e .env -- tsx scripts/measure-performance.ts",
-    "mt5:bridge": "node scripts/start-mt5-bridge.cjs",
-    "mt5:build": "dotnet build mt5-bridge/mt5-bridge.csproj -c Release"
+    "perf:test": "dotenv -e .env -- tsx scripts/measure-performance.ts"
   },
   "keywords": [],
   "author": "",
