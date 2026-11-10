@@ -43,7 +43,7 @@ export async function POST(req: Request) {
 
         if (admins.length > 0) {
             const label =
-                type === "BUG" ? "🐛 Bug Report" : "💡 Feature Request";
+                type === "BUG" ? "Bug Report" : "Feature Request";
             const preview =
                 message.trim().length > 80
                     ? message.trim().slice(0, 80) + "…"
@@ -57,7 +57,9 @@ export async function POST(req: Request) {
                     message: preview,
                     priority: NotificationPriority.NORMAL,
                     link: NOTIFICATION_ROUTES.FEEDBACK_ADMIN,
+                    dedupeKey: `admin-feedback-${feedback.id}-${admin.userId}`,
                 })),
+                skipDuplicates: true,
             });
         }
 

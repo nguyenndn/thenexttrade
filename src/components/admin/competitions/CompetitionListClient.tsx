@@ -25,6 +25,16 @@ import {
 } from "@/app/admin/ib/sync-requests/SyncFilterToolbar";
 import { toast } from "sonner";
 import { CompetitionModal } from "./CompetitionModal";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+} from "@/components/ui/Dialog";
+import Link from "next/link";
+import { formatDistanceToNow } from "date-fns";
 import {
     toggleCompetitionStatus,
     toggleCompetitionsFeature,
@@ -63,6 +73,13 @@ export function CompetitionListClient({
         null
     );
     const [processingId, setProcessingId] = useState<string | null>(null);
+    const [deleteTarget, setDeleteTarget] = useState<{
+        id: string;
+        title: string;
+    } | null>(null);
+    const [viewingParticipantsComp, setViewingParticipantsComp] = useState<
+        any | null
+    >(null);
 
     const handleCreateClick = () => {
         setEditingCompetition(null);
@@ -126,8 +143,13 @@ export function CompetitionListClient({
         }
     };
 
-    const handleDelete = async (id: string, title: string) => {
-        if (!confirm(`Are you sure you want to delete "${title}"?`)) return;
+    const handleDelete = (id: string, title: string) => {
+        setDeleteTarget({ id, title });
+    };
+
+    const handleConfirmDelete = async () => {
+        if (!deleteTarget) return;
+        const { id } = deleteTarget;
 
         setProcessingId(id);
         try {
@@ -137,6 +159,7 @@ export function CompetitionListClient({
             } else {
                 toast.success("Competition deleted successfully");
                 setCompetitions((prev) => prev.filter((c) => c.id !== id));
+                setDeleteTarget(null);
                 router.refresh();
             }
         } catch (err: any) {
@@ -430,14 +453,24 @@ export function CompetitionListClient({
                                                 </p>
                                             </td>
                                             <td className="px-4 py-3.5">
-                                                <span className="inline-flex items-center gap-1.5 text-xs font-mono tabular-nums font-bold text-gray-700 dark:text-gray-300">
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    onClick={() =>
+                                                        setViewingParticipantsComp(
+                                                            comp
+                                                        )
+                                                    }
+                                                    className="h-7 px-2.5 rounded-lg text-xs font-mono tabular-nums font-bold text-gray-700 dark:text-gray-300 border-gray-200 dark:border-white/10 hover:border-amber-500/40 hover:text-amber-600 dark:hover:text-amber-400"
+                                                    aria-label={`Inspect enrolled traders for ${comp.title}`}
+                                                >
                                                     <Users
                                                         size={13}
                                                         className="text-gray-400"
                                                     />
                                                     {comp._count
                                                         ?.participants ?? 0}
-                                                </span>
+                                                </Button>
                                             </td>
                                             <td className="px-4 py-3.5 text-right">
                                                 <div className="flex items-center justify-end gap-1.5">
@@ -541,6 +574,159 @@ export function CompetitionListClient({
                 competition={editingCompetition}
                 onSuccess={() => router.refresh()}
             />
+
+            {/* Delete Confirmation Dialog */}
+            <ConfirmDialog
+                isOpen={!!deleteTarget}
+                title="Delete Competition"
+                description={
+                    deleteTarget
+                        ? `Are you sure you want to delete "${deleteTarget.title}"? All participant enrollments for this sprint will be removed.`
+                        : ""
+                }
+                confirmText="Delete Sprint"
+                cancelText="Cancel"
+                variant="danger"
+                isLoading={
+                    !!deleteTarget && processingId === deleteTarget.id
+                }
+                onConfirm={handleConfirmDelete}
+                onCancel={() => setDeleteTarget(null)}
+            />
+
+            {/* Enrolled Contenders Inspection Modal */}
+            <Dialog
+                open={!!viewingParticipantsComp}
+                onOpenChange={(open) => {
+                    if (!open) setViewingParticipantsComp(null);
+                }}
+            >
+                <DialogContent className="sm:max-w-[560px] p-0 overflow-hidden bg-white dark:bg-[#1E2028] border-dashboard rounded-2xl">
+                    <DialogHeader className="px-6 pt-6 pb-4 border-b border-dashboard">
+                        <div className="flex items-center gap-2.5">
+                            <div className="w-9 h-9 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500">
+                                <Users size={18} />
+                            </div>
+                            <div>
+                                <DialogTitle className="text-base font-bold text-gray-900 dark:text-white">
+                                    Enrolled Contenders
+                                </DialogTitle>
+                                <DialogDescription className="text-xs text-gray-500 dark:text-gray-400">
+                                    {viewingParticipantsComp?.title} &middot;{" "}
+                                    <span className="font-mono tabular-nums font-bold text-gray-700 dark:text-gray-300">
+                                        {viewingParticipantsComp?.participants
+                                            ?.length ??
+                                            viewingParticipantsComp?._count
+                                                ?.participants ??
+                                            0}
+                                    </span>{" "}
+                                    registered traders
+                                </DialogDescription>
+                            </div>
+                        </div>
+                    </DialogHeader>
+
+                    <div className="px-6 py-4 max-h-[380px] overflow-y-auto divide-y divide-gray-100 dark:divide-white/5">
+                        {!viewingParticipantsComp?.participants ||
+                        viewingParticipantsComp.participants.length === 0 ? (
+                            <div className="py-10 text-center space-y-2">
+                                <Users
+                                    size={28}
+                                    className="mx-auto text-gray-400 dark:text-gray-500"
+                                />
+                                <p className="text-sm font-bold text-gray-700 dark:text-gray-300">
+                                    No contenders enrolled yet
+                                </p>
+                                <p className="text-xs text-gray-500 dark:text-gray-400">
+                                    Traders who enroll their live MT5 account on
+                                    the Sprint Leaderboard will appear here.
+                                </p>
+                            </div>
+                        ) : (
+                            viewingParticipantsComp.participants.map(
+                                (p: any) => (
+                                    <div
+                                        key={p.id}
+                                        className="py-3 flex items-center justify-between gap-3"
+                                    >
+                                        <div className="min-w-0">
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-xs font-bold text-gray-900 dark:text-white truncate">
+                                                    {p.user?.name ||
+                                                        "Unnamed Trader"}
+                                                </span>
+                                                {p.user?.id && (
+                                                    <Link
+                                                        href={`/admin/users/${p.user.id}?tab=accounts`}
+                                                        className="text-[11px] font-semibold text-amber-600 dark:text-amber-400 hover:underline inline-flex items-center gap-0.5 shrink-0"
+                                                    >
+                                                        Profile
+                                                        <ExternalLink
+                                                            size={10}
+                                                        />
+                                                    </Link>
+                                                )}
+                                            </div>
+                                            <p className="text-[11px] text-gray-500 dark:text-gray-400 truncate">
+                                                {p.user?.email}
+                                            </p>
+                                        </div>
+
+                                        <div className="text-right shrink-0">
+                                            <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-gray-100 dark:bg-white/[0.04] border border-gray-200/70 dark:border-white/10 text-[11px] font-mono tabular-nums font-bold text-gray-800 dark:text-gray-200">
+                                                <span>
+                                                    #
+                                                    {p.tradingAccount
+                                                        ?.accountNumber ||
+                                                        "N/A"}
+                                                </span>
+                                                {p.tradingAccount?.broker && (
+                                                    <span className="text-amber-600 dark:text-amber-400 uppercase">
+                                                        &middot;{" "}
+                                                        {
+                                                            p.tradingAccount
+                                                                .broker
+                                                        }
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <p className="text-[10px] text-gray-400 font-mono tabular-nums mt-0.5">
+                                                Enrolled{" "}
+                                                {p.joinedAt
+                                                    ? formatDistanceToNow(
+                                                          new Date(
+                                                              p.joinedAt
+                                                          ),
+                                                          { addSuffix: true }
+                                                      )
+                                                    : "recently"}
+                                            </p>
+                                        </div>
+                                    </div>
+                                )
+                            )
+                        )}
+                    </div>
+
+                    <div className="px-6 py-3.5 bg-gray-50/60 dark:bg-white/[0.02] border-t border-dashboard flex items-center justify-between">
+                        <Link
+                            href="/dashboard/leaderboard?type=sprint"
+                            className="text-xs font-semibold text-amber-600 dark:text-amber-400 hover:underline inline-flex items-center gap-1"
+                        >
+                            Open Live Sprint Standings
+                            <ExternalLink size={12} />
+                        </Link>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setViewingParticipantsComp(null)}
+                            className="rounded-lg text-xs"
+                        >
+                            Close
+                        </Button>
+                    </div>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }

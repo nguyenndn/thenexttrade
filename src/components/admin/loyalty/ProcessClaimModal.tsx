@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -20,7 +20,7 @@ import {
   XCircle,
   Coins,
   Loader2,
-  ExternalLink,
+  Clock,
 } from "lucide-react";
 
 interface ProcessClaimModalProps {
@@ -40,6 +40,16 @@ export function ProcessClaimModal({
   const [adminNotes, setAdminNotes] = useState("");
   const [copied, setCopied] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (claim) {
+      setTransactionRef(claim.transactionRef || "");
+      setAdminNotes(claim.adminNotes || "");
+    } else {
+      setTransactionRef("");
+      setAdminNotes("");
+    }
+  }, [claim, isOpen]);
 
   if (!claim) return null;
 
@@ -85,19 +95,39 @@ export function ProcessClaimModal({
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-lg rounded-2xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 p-6 shadow-2xl">
         <DialogHeader>
-          <div className="flex items-center gap-3 mb-1">
-            <div className="w-10 h-10 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500">
-              <Coins size={20} />
+          <div className="flex items-start justify-between gap-3 mb-1">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500 shrink-0">
+                <Coins size={20} />
+              </div>
+              <div>
+                <DialogTitle className="text-lg font-black text-gray-900 dark:text-white">
+                  {claim.status === "PENDING"
+                    ? "Review & Process Loyalty Claim"
+                    : "Inspect Loyalty Claim Record"}
+                </DialogTitle>
+                <DialogDescription className="text-xs text-gray-500 dark:text-gray-400">
+                  Claim ID: {claim.id.slice(0, 12)}... · Trader: {claim.user?.name || claim.user?.email || "Unknown"}
+                </DialogDescription>
+              </div>
             </div>
-            <div>
-              <DialogTitle className="text-lg font-black text-gray-900 dark:text-white">
-                Review & Process Loyalty Claim
-              </DialogTitle>
-              <DialogDescription className="text-xs text-gray-500 dark:text-gray-400">
-                Claim ID: {claim.id.slice(0, 12)}... · Trader: {claim.user?.name || claim.user?.email || "Unknown"}
-                {claim.accountNumber ? ` · IB Account: #${claim.accountNumber} (${claim.broker || "Partner IB"})` : ""}
-              </DialogDescription>
-            </div>
+
+            {claim.status === "COMPLETED" ? (
+              <span className="px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-300 dark:border-emerald-500/20 inline-flex items-center gap-1 shrink-0">
+                <CheckCircle2 size={12} />
+                COMPLETED
+              </span>
+            ) : claim.status === "REJECTED" ? (
+              <span className="px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-500/10 dark:text-rose-300 dark:border-rose-500/20 inline-flex items-center gap-1 shrink-0">
+                <XCircle size={12} />
+                REJECTED
+              </span>
+            ) : (
+              <span className="px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-500/10 dark:text-amber-300 dark:border-amber-500/20 inline-flex items-center gap-1 shrink-0">
+                <Clock size={12} />
+                PENDING
+              </span>
+            )}
           </div>
         </DialogHeader>
 
@@ -105,19 +135,26 @@ export function ProcessClaimModal({
         <div className="grid grid-cols-2 rounded-lg border border-gray-200 dark:border-white/10 divide-x divide-y divide-gray-200 dark:divide-white/10 bg-gray-50/50 dark:bg-white/[0.02] overflow-hidden my-3">
           <div className="p-3">
             <span className="block text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-0.5">
-              Milestone Tier
+              Milestone & Volume
             </span>
-            <span className="font-mono text-sm font-bold text-gray-900 dark:text-white">
+            <span className="font-mono tabular-nums text-xs font-bold text-gray-900 dark:text-white block">
               Level {claim.level} ({claim.tierName})
+            </span>
+            <span className="font-mono tabular-nums text-[11px] text-gray-500 dark:text-gray-400">
+              {claim.actualLots.toLocaleString()} / {claim.requiredLots.toLocaleString()} XAUUSD Lots
             </span>
           </div>
 
           <div className="p-3">
             <span className="block text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-0.5">
-              Volume Lots
+              IB Trading Account
             </span>
-            <span className="font-mono text-sm font-bold text-gray-900 dark:text-white">
-              {claim.actualLots.toLocaleString()} / {claim.requiredLots.toLocaleString()} Lots
+            <span className="font-mono tabular-nums text-xs font-bold text-gray-900 dark:text-white block truncate">
+              {claim.accountNumber ? `#${claim.accountNumber}` : "Verified IB Account"}
+            </span>
+            <span className="text-[11px] font-semibold text-amber-600 dark:text-amber-400 block truncate">
+              {claim.broker || "Partner IB"}
+              {claim.accountName ? ` · ${claim.accountName}` : ""}
             </span>
           </div>
 
@@ -125,7 +162,7 @@ export function ProcessClaimModal({
             <span className="block text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-0.5">
               Reward Allocation
             </span>
-            <span className="font-mono text-sm font-black text-amber-600 dark:text-amber-400">
+            <span className="font-mono tabular-nums text-sm font-black text-amber-600 dark:text-amber-400">
               {claim.cashAmount ? `$${claim.cashAmount.toLocaleString()} USDT` : claim.rewardTitle}
             </span>
           </div>
@@ -134,7 +171,7 @@ export function ProcessClaimModal({
             <span className="block text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-0.5">
               Network Protocol
             </span>
-            <span className="font-mono text-sm font-bold text-amber-600 dark:text-amber-400">
+            <span className="font-mono tabular-nums text-sm font-bold text-amber-600 dark:text-amber-400">
               {claim.network || "USDT BEP-20"}
             </span>
           </div>
@@ -199,7 +236,7 @@ export function ProcessClaimModal({
             disabled={isSubmitting}
             className="rounded-lg h-9 px-3.5 text-xs font-bold text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/20 border-red-200 dark:border-red-900/30"
           >
-            <XCircle size={14} className="mr-1.5" />
+            <XCircle size={14} />
             Reject Claim
           </Button>
 
@@ -221,13 +258,15 @@ export function ProcessClaimModal({
             >
               {isSubmitting ? (
                 <>
-                  <Loader2 size={14} className="animate-spin mr-1.5" />
+                  <Loader2 size={14} className="animate-spin" />
                   Processing...
                 </>
               ) : (
                 <>
-                  <CheckCircle2 size={14} className="mr-1.5" />
-                  Mark Paid & Completed
+                  <CheckCircle2 size={14} />
+                  {claim.status === "COMPLETED"
+                    ? "Update Paid Record"
+                    : "Mark Paid & Completed"}
                 </>
               )}
             </Button>

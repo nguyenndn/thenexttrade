@@ -102,12 +102,20 @@ export function LoyaltyClaimsTable({
                 const txMatch = claim.transactionRef
                     ?.toLowerCase()
                     .includes(q);
+                const accountMatch = claim.accountNumber
+                    ?.toLowerCase()
+                    .includes(q);
+                const brokerMatch = claim.broker
+                    ?.toLowerCase()
+                    .includes(q);
                 return Boolean(
                     nameMatch ||
                         emailMatch ||
                         tierMatch ||
                         addressMatch ||
-                        txMatch
+                        txMatch ||
+                        accountMatch ||
+                        brokerMatch
                 );
             }
             return true;

@@ -2,8 +2,10 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import {
     notifyAdminsOfNewAccount,
     notifyAdminsOfVipRequest,
+    notifyAdminsOfSyncFailure,
     notifyAdminsOfLoyaltyClaim,
     notifyAdminsOfContactMessage,
+    notifyAdminsOfCompetitionJoin,
 } from "./admin-notification.server";
 import { prisma } from "@/lib/prisma";
 import { NotificationType, NotificationPriority } from "@prisma/client";
@@ -215,5 +217,68 @@ describe("notifyAdminsOfContactMessage", () => {
         expect(first.title).toBe("New Contact Inquiry: Semi-Auto Mode Inquiry");
         expect(first.link).toBe("/admin/messages");
         expect(first.dedupeKey).toBe("admin-contact-msg-msg-77-admin-1");
+    });
+});
+
+describe("notifyAdminsOfSyncFailure", () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+
+    it("creates URGENT notifications linking to /admin/ib/sync-requests?q=<accountNumber>", async () => {
+        vi.mocked(prisma.profile.findMany).mockResolvedValueOnce([
+            { userId: "admin-1" },
+        ] as any);
+
+        await notifyAdminsOfSyncFailure({
+            jobId: "job-55",
+            userId: "user-456",
+            broker: "VANTAGE",
+            accountNumber: "88990011",
+            server: "VantageInternational-Live",
+            errorMessage: "Investor password invalid",
+        });
+
+        expect(prisma.notification.createMany).toHaveBeenCalledTimes(1);
+        const callArg = vi.mocked(prisma.notification.createMany).mock.calls[0][0];
+        const first = (callArg?.data as any[])[0];
+
+        expect(first.userId).toBe("admin-1");
+        expect(first.priority).toBe(NotificationPriority.URGENT);
+        expect(first.link).toBe("/admin/ib/sync-requests?q=88990011");
+        expect(first.dedupeKey).toBe("admin-sync-fail-job-55-admin-1");
+    });
+});
+
+describe("notifyAdminsOfCompetitionJoin", () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+
+    it("creates NORMAL notifications linking to /admin/competitions when a trader joins a sprint", async () => {
+        vi.mocked(prisma.profile.findMany).mockResolvedValueOnce([
+            { userId: "admin-1" },
+        ] as any);
+
+        await notifyAdminsOfCompetitionJoin({
+            participantId: "part-101",
+            competitionId: "comp-1",
+            competitionTitle: "10-Trade Gold Sprint",
+            userId: "user-456",
+            userName: "Playwright Trader",
+            userEmail: "playwright.trader@gmail.com",
+            accountNumber: "88990011",
+            broker: "VANTAGE",
+        });
+
+        expect(prisma.notification.createMany).toHaveBeenCalledTimes(1);
+        const callArg = vi.mocked(prisma.notification.createMany).mock.calls[0][0];
+        const first = (callArg?.data as any[])[0];
+
+        expect(first.userId).toBe("admin-1");
+        expect(first.priority).toBe(NotificationPriority.NORMAL);
+        expect(first.title).toBe("Competition Entry: 10-Trade Gold Sprint");
+        expect(first.link).toBe("/admin/competitions");
+        expect(first.dedupeKey).toBe("admin-comp-join-part-101-88990011-admin-1");
     });
 });

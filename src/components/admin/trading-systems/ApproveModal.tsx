@@ -69,7 +69,7 @@ export function ApproveModal({ license, isOpen, onClose }: ApproveModalProps) {
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-            <DialogContent className="bg-white dark:bg-[#0D111C] rounded-2xl border border-gray-200 dark:border-white/10 max-w-md">
+            <DialogContent className="bg-white dark:bg-[#1E2028] rounded-2xl border border-gray-200 dark:border-white/10 max-w-md">
                 <DialogHeader>
                     <DialogTitle className="text-xl font-bold text-gray-700 dark:text-white">
                         Approve Account
@@ -132,7 +132,7 @@ export function ApproveModal({ license, isOpen, onClose }: ApproveModalProps) {
                             disabled={isSubmitting}
                         >
                             {isSubmitting && (
-                                <Loader2 className="mr-1.5 h-4 w-4 animate-spin" />
+                                <Loader2 className="h-4 w-4 animate-spin" />
                             )}
                             Confirm Approve
                         </Button>

@@ -66,7 +66,7 @@ export function PendingAccountCard({
                         window.open(brokerConfig?.ibDashboardUrl, "_blank")
                     }
                 >
-                    <ExternalLink size={14} className="mr-1" />
+                    <ExternalLink size={14} />
                     Check IB
                 </Button>
 
@@ -77,7 +77,7 @@ export function PendingAccountCard({
                     className="col-span-1 h-10 bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-900/10 dark:text-red-400 dark:hover:bg-red-900/20 rounded-lg font-bold text-xs px-2 whitespace-nowrap"
                     onClick={() => onReject(license)}
                 >
-                    <X size={14} className="mr-1" />
+                    <X size={14} />
                     Reject
                 </Button>
 
@@ -88,7 +88,7 @@ export function PendingAccountCard({
                     className="col-span-2 shadow-amber-500/20 uppercase tracking-wide w-full"
                     onClick={() => onApprove(license)}
                 >
-                    <Check size={18} className="mr-2" />
+                    <Check size={18} />
                     Approve
                 </Button>
             </div>

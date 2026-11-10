@@ -47,6 +47,8 @@ export function LoyaltyDashboardClient({
     tier: LoyaltyTierItem;
     network: string;
     address: string;
+    accountNumber?: string;
+    broker?: string;
   } | null>(null);
   const [claimingLevel, setClaimingLevel] = useState<number | null>(null);
 
@@ -64,7 +66,7 @@ export function LoyaltyDashboardClient({
       return initialProgress;
     }
     const accountClaims = (initialProgress.userClaims || []).filter(
-      (c) => c.accountId === selectedAccount.accountId
+      (c) => !c.accountId || c.accountId === selectedAccount.accountId
     );
     return {
       ...initialProgress,
@@ -138,6 +140,8 @@ export function LoyaltyDashboardClient({
         tier,
         network: activeWallet.network,
         address: activeWallet.address,
+        accountNumber: selectedAccount.accountNumber,
+        broker: selectedAccount.broker,
       });
       router.refresh();
     } catch {

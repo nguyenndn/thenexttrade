@@ -604,9 +604,9 @@ export function VipPipelineClient({
                                                     <DropdownMenuContent align="end" className="w-40">
                                                         <DropdownMenuItem
                                                             onClick={() => setDeleteModalId(req.requestId)}
-                                                            className="text-red-600 dark:text-red-400"
+                                                            className="text-red-600 dark:text-red-400 gap-2 cursor-pointer"
                                                         >
-                                                            <Trash2 size={14} className="mr-2" /> Delete Request
+                                                            <Trash2 size={14} /> Delete Request
                                                         </DropdownMenuItem>
                                                     </DropdownMenuContent>
                                                 </DropdownMenu>
@@ -638,20 +638,29 @@ export function VipPipelineClient({
                             animate="animate"
                             exit="exit"
                             transition={SPRING_SOFT}
-                            className="relative bg-white dark:bg-[#0D111C] rounded-2xl border border-gray-200 dark:border-white/10 p-6 max-w-md w-full space-y-4 shadow-xl"
+                            className="relative bg-white dark:bg-[#1E2028] rounded-2xl border border-gray-200 dark:border-white/10 p-6 max-w-md w-full space-y-4 shadow-xl"
                         >
                             <h3 className="text-lg font-black text-gray-900 dark:text-white">
                                 Reject VIP Request
                             </h3>
-                            <p className="text-sm text-gray-500">
+                            <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
                                 Please specify a reason for rejecting this request. The trader will receive a notification with this explanation.
                             </p>
-                            <textarea
-                                value={rejectReason}
-                                onChange={(e) => setRejectReason(e.target.value)}
-                                aria-label="Reason for rejection"
-                                className="w-full h-24 p-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
-                            />
+                            <div>
+                                <label
+                                    htmlFor="vip-reject-reason"
+                                    className="block text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-1.5"
+                                >
+                                    Rejection Reason
+                                </label>
+                                <textarea
+                                    id="vip-reject-reason"
+                                    value={rejectReason}
+                                    onChange={(e) => setRejectReason(e.target.value)}
+                                    aria-label="Reason for rejection"
+                                    className="w-full h-24 p-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
+                                />
+                            </div>
                             <div className="flex justify-end gap-2 pt-2">
                                 <Button variant="outline" onClick={() => setRejectModalId(null)}>
                                     Cancel

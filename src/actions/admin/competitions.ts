@@ -112,6 +112,31 @@ export async function fetchAdminCompetitions() {
                 _count: {
                     select: { participants: true },
                 },
+                participants: {
+                    orderBy: { joinedAt: "desc" },
+                    select: {
+                        id: true,
+                        joinedAt: true,
+                        user: {
+                            select: {
+                                id: true,
+                                name: true,
+                                email: true,
+                                image: true,
+                            },
+                        },
+                        tradingAccount: {
+                            select: {
+                                id: true,
+                                name: true,
+                                accountNumber: true,
+                                broker: true,
+                                balance: true,
+                                currency: true,
+                            },
+                        },
+                    },
+                },
             },
         }),
         isCompetitionsEnabled(),

@@ -139,6 +139,8 @@ interface ClaimSuccessModalProps {
     tier: LoyaltyTierItem;
     network: string;
     address: string;
+    accountNumber?: string;
+    broker?: string;
   } | null;
 }
 
@@ -149,7 +151,7 @@ export function ClaimSuccessModal({
 }: ClaimSuccessModalProps) {
   if (!data) return null;
 
-  const { tier, network, address } = data;
+  const { tier, network, address, accountNumber, broker } = data;
   const maskedAddress =
     address.length > 12
       ? `${address.slice(0, 6)}...${address.slice(-6)}`
@@ -191,6 +193,11 @@ export function ClaimSuccessModal({
               <span className="font-semibold text-xs text-gray-900 dark:text-white truncate block mt-0.5">
                 Level {tier.level} ({tier.name})
               </span>
+              {accountNumber && (
+                <span className="font-mono tabular-nums text-[10px] text-gray-500 dark:text-gray-400 block truncate">
+                  #{accountNumber} · {broker || "Partner IB"}
+                </span>
+              )}
             </div>
             <div className="p-3">
               <span className="block text-[10px] font-bold uppercase tracking-wider text-gray-400">

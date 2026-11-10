@@ -64,13 +64,23 @@ function resolveFilterWhere(
             return { broadcastId: { not: null } };
         case "SYSTEM":
             return {
-                type: {
-                    in: [
-                        NotificationType.MAINTENANCE,
-                        NotificationType.FEATURE_UPDATE,
-                        NotificationType.PROMOTION,
-                    ],
-                },
+                OR: [
+                    {
+                        type: {
+                            in: [
+                                NotificationType.MAINTENANCE,
+                                NotificationType.FEATURE_UPDATE,
+                                NotificationType.PROMOTION,
+                                NotificationType.FEEDBACK_RECEIVED,
+                            ],
+                        },
+                    },
+                    { dedupeKey: { startsWith: "admin-sync-fail-" } },
+                    { dedupeKey: { startsWith: "admin-loyalty-claim-" } },
+                    { dedupeKey: { startsWith: "admin-contact-msg-" } },
+                    { dedupeKey: { startsWith: "admin-feedback-" } },
+                    { dedupeKey: { startsWith: "admin-comp-join-" } },
+                ],
             };
         case "ALL":
         default:

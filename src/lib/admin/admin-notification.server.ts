@@ -263,7 +263,7 @@ export async function notifyAdminsOfSyncFailure(params: NotifySyncFailureParams)
             type: NotificationType.ANNOUNCEMENT,
             title,
             message,
-            link: `/admin/ib/sync-requests?search=${encodeURIComponent(params.accountNumber)}`,
+            link: `/admin/ib/sync-requests?q=${encodeURIComponent(params.accountNumber)}`,
             priority: NotificationPriority.URGENT,
             dedupeKey: `admin-sync-fail-${params.jobId}-${admin.userId}`,
         }));
@@ -375,4 +375,58 @@ export async function notifyAdminsOfContactMessage(
         console.error("[notifyAdminsOfContactMessage error]:", error);
     }
 }
+
+interface NotifyCompetitionJoinParams {
+    participantId: string;
+    competitionId: string;
+    competitionTitle: string;
+    userId: string;
+    userName?: string | null;
+    userEmail?: string | null;
+    accountNumber?: string | null;
+    broker?: string | null;
+}
+
+/**
+ * Sends in-app notification to all ADMIN users when a trader enrolls
+ * an MT5 account into a Trading Competition / Sprint.
+ */
+export async function notifyAdminsOfCompetitionJoin(
+    params: NotifyCompetitionJoinParams
+) {
+    try {
+        const admins = await prisma.profile.findMany({
+            where: { role: "ADMIN" },
+            select: { userId: true },
+        });
+
+        if (!admins.length) return;
+
+        const traderIdentifier =
+            params.userName || params.userEmail || "A trader";
+        const accountLabel = params.accountNumber
+            ? `${params.broker || "MT5"} #${params.accountNumber}`
+            : params.broker || "MT5 account";
+        const title = `Competition Entry: ${params.competitionTitle}`;
+        const message = `${traderIdentifier} enrolled ${accountLabel} in ${params.competitionTitle}.`;
+
+        const notificationsData = admins.map((admin) => ({
+            userId: admin.userId,
+            type: NotificationType.ANNOUNCEMENT,
+            title,
+            message,
+            link: "/admin/competitions",
+            priority: NotificationPriority.NORMAL,
+            dedupeKey: `admin-comp-join-${params.participantId}-${params.accountNumber || "acc"}-${admin.userId}`,
+        }));
+
+        await persistAdminNotifications(
+            notificationsData,
+            "notifyAdminsOfCompetitionJoin"
+        );
+    } catch (error) {
+        console.error("[notifyAdminsOfCompetitionJoin error]:", error);
+    }
+}
+
 

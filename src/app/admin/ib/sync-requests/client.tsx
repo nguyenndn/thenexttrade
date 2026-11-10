@@ -367,9 +367,8 @@ export function SyncRequestsClient({
                                     </Button>
                                 </th>
                                 <th className="px-4 py-3.5">Trader</th>
-                                <th className="px-4 py-3.5">Type</th>
                                 <th className="px-4 py-3.5">MT5 Account & Server</th>
-                                <th className="px-4 py-3.5">Telemetry / Notes</th>
+                                <th className="px-4 py-3.5">Sync Range</th>
                                 <th className="px-4 py-3.5">Status</th>
                                 <th className="px-4 py-3.5">Requested</th>
                                 <th className="px-4 py-3.5 text-right">Actions</th>
@@ -378,7 +377,7 @@ export function SyncRequestsClient({
                         <tbody className="divide-y divide-gray-100 dark:divide-white/5">
                             {initialData.items.length === 0 ? (
                                 <tr>
-                                    <td colSpan={8} className="py-16 text-center text-gray-400 dark:text-gray-500">
+                                    <td colSpan={7} className="py-16 text-center text-gray-400 dark:text-gray-500">
                                         <CloudSync className="h-10 w-10 mx-auto mb-2 opacity-30 text-primary" />
                                         <p className="text-sm font-bold text-gray-700 dark:text-gray-300">No sync requests found</p>
                                         <p className="text-xs mt-1 text-gray-500 dark:text-gray-400">
@@ -473,19 +472,18 @@ export function SyncRequestsClient({
                                                 </div>
                                             </td>
 
-                                            {/* Type */}
-                                            <td className="px-4 py-3.5">
-                                                <span className="px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-gold/10 text-amber-700 dark:text-gold border border-gold/20 inline-flex items-center gap-1.5 shrink-0">
-                                                    <CloudSync size={12} className="text-amber-600 dark:text-gold" />
-                                                    Cloud Sync
-                                                </span>
-                                            </td>
-
                                             {/* MT5 Account & Server */}
                                             <td className="px-4 py-3.5">
-                                                <span className="font-mono text-xs font-bold px-2 py-0.5 rounded-lg bg-gray-100 dark:bg-white/10 text-gray-900 dark:text-white">
-                                                    #{item.account?.accountNumber || "N/A"}
-                                                </span>
+                                                <div className="flex items-center gap-1.5">
+                                                    <span className="font-mono tabular-nums text-xs font-bold px-2 py-0.5 rounded-lg bg-gray-100 dark:bg-white/10 text-gray-900 dark:text-white">
+                                                        #{item.account?.accountNumber || "N/A"}
+                                                    </span>
+                                                    {item.account?.broker && (
+                                                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-lg bg-gold/10 text-amber-700 dark:text-gold border border-gold/20">
+                                                            {item.account.broker}
+                                                        </span>
+                                                    )}
+                                                </div>
                                                 <div className="mt-1 flex items-center gap-1 text-[11px] text-gray-500 dark:text-gray-400">
                                                     <Server className="h-3 w-3 shrink-0 opacity-60" />
                                                     <span className="truncate max-w-[180px]">
@@ -591,7 +589,7 @@ export function SyncRequestsClient({
 
                                                     {item.account?.id && (
                                                         <Link
-                                                            href={`/admin/ib/traders?search=${item.account.accountNumber || ""}`}
+                                                            href={`/admin/ib/traders?q=${encodeURIComponent(item.account.accountNumber || "")}`}
                                                             className="p-2 text-gray-400 hover:text-gray-700 dark:hover:text-white rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 inline-flex items-center transition-colors"
                                                             title="View in Trader Monitor"
                                                         >
@@ -672,7 +670,7 @@ export function SyncRequestsClient({
                             animate="animate"
                             exit="exit"
                             transition={SPRING_SOFT}
-                            className="w-full max-w-md rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0D111C] p-6 shadow-2xl space-y-4"
+                            className="w-full max-w-md rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 shadow-2xl space-y-4"
                         >
                             <div className="flex items-start gap-3">
                                 <div className="p-2.5 rounded-lg bg-rose-500/10 text-rose-600 dark:text-rose-400 ring-1 ring-rose-500/20 shrink-0">
@@ -737,7 +735,7 @@ export function SyncRequestsClient({
                             animate="animate"
                             exit="exit"
                             transition={SPRING_SOFT}
-                            className="w-full max-w-md rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0D111C] p-6 shadow-2xl space-y-4"
+                            className="w-full max-w-md rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 shadow-2xl space-y-4"
                         >
                             <div className="flex items-start gap-3">
                                 <div className="p-2.5 rounded-lg bg-rose-500/10 text-rose-600 dark:text-rose-400 ring-1 ring-rose-500/20 shrink-0">
@@ -752,8 +750,8 @@ export function SyncRequestsClient({
                                         <span className="font-bold font-mono tabular-nums text-gray-800 dark:text-gray-200">
                                             {selectedIds.size}
                                         </span>{" "}
-                                        selected sync {selectedIds.size === 1 ? "request" : "requests"}?
-                                        Both worker sync jobs and support tickets in this selection will be permanently removed. This action cannot be undone.
+                                        selected Cloud Sync {selectedIds.size === 1 ? "job" : "jobs"}?
+                                        All selected worker sync records will be permanently removed. This action cannot be undone.
                                     </p>
                                 </div>
                             </div>
@@ -802,7 +800,7 @@ export function SyncRequestsClient({
                             animate="animate"
                             exit="exit"
                             transition={SPRING_SOFT}
-                            className="w-full max-w-xl rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0D111C] p-6 shadow-2xl space-y-5"
+                            className="w-full max-w-xl rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 shadow-2xl space-y-5"
                         >
                             <div className="flex items-start justify-between">
                                 <div className="flex items-center gap-3">

@@ -8,6 +8,7 @@ import { getTier, getPercentile, getTierProgress } from "@/lib/gamification";
 import { revalidatePath } from "next/cache";
 import { isRealTradingAccount } from "@/lib/loyalty/loyalty.server";
 import { normalizeUsdBalance } from "@/lib/utils/cent-account";
+import { notifyAdminsOfCompetitionJoin } from "@/lib/admin/admin-notification.server";
 
 export type LeaderboardType =
     "sprint" | "trading" | "xp" | "streak" | "academy" | "mystats";
@@ -132,11 +133,12 @@ export async function joinCompetition(
     const userId = await getCurrentUserId();
     if (!userId) return { error: "Please log in to join the competition." };
 
-    const [competition, account] = await Promise.all([
+    const [competition, account, user] = await Promise.all([
         prisma.competition.findUnique({
             where: { id: competitionId },
             select: {
                 id: true,
+                title: true,
                 status: true,
                 eligibleBrokers: true,
                 endDate: true,
@@ -144,6 +146,10 @@ export async function joinCompetition(
         }),
         prisma.tradingAccount.findFirst({
             where: { id: tradingAccountId, userId },
+        }),
+        prisma.user.findUnique({
+            where: { id: userId },
+            select: { name: true, email: true },
         }),
     ]);
 
@@ -216,7 +222,19 @@ export async function joinCompetition(
             data: { useForLeaderboard: true },
         });
 
+        await notifyAdminsOfCompetitionJoin({
+            participantId: participant.id,
+            competitionId: competition.id,
+            competitionTitle: competition.title,
+            userId,
+            userName: user?.name,
+            userEmail: user?.email,
+            accountNumber: account.accountNumber,
+            broker: account.broker,
+        });
+
         revalidatePath("/dashboard/leaderboard");
+        revalidatePath("/admin/competitions");
         return { success: true, participant };
     } catch (error: any) {
         console.error("joinCompetition error:", error);

@@ -299,9 +299,9 @@ export function TradingSprintBanner({
                             <span className="text-xs text-gray-600 dark:text-gray-400 font-medium">
                                 Sign in with your trader profile to enroll your account and compete for the prize pool.
                             </span>
-                            <Link href="/login?redirect=/dashboard/leaderboard?type=sprint">
+                            <Link href="/auth/login?returnUrl=/dashboard/leaderboard?type=sprint">
                                 <Button size="sm" className="text-xs font-bold rounded-lg bg-gold hover:bg-amber-600 !text-white">
-                                    Sign In to Compete <ArrowRight size={13} className="ml-1" />
+                                    Sign In to Compete <ArrowRight size={13} />
                                 </Button>
                             </Link>
                         </div>
@@ -335,9 +335,9 @@ export function TradingSprintBanner({
                             <span className="text-xs text-gray-600 dark:text-gray-400 font-medium">
                                 You don&apos;t have any MT5 accounts connected yet. Connect your account to enter the tournament.
                             </span>
-                            <Link href="/dashboard/rules">
+                            <Link href="/dashboard/accounts">
                                 <Button variant="outline" size="sm" className="text-xs font-bold rounded-lg">
-                                    Connect MT5 Account <ArrowRight size={13} className="ml-1" />
+                                    Connect MT5 Account <ArrowRight size={13} />
                                 </Button>
                             </Link>
                         </div>
