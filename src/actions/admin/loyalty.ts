@@ -15,6 +15,12 @@ import {
   ensureDefaultLoyaltyTiersSeeded,
   isLoyaltyEnabled,
 } from "@/lib/loyalty/loyalty.server";
+import {
+  sendEmailWithDetails,
+  buildUnifiedEmailHtml,
+  EMAIL_GOLD_COLORS,
+  GOLD_CTA_BUTTON_STYLE,
+} from "@/lib/services/email.service";
 
 async function requireAdmin() {
   const user = await getAuthUser();
@@ -241,10 +247,92 @@ export async function processAdminClaim(input: ProcessClaimInput): Promise<{
           title: notifyTitle,
           message: notifyMsg,
           type: "FEATURE_UPDATE",
+          priority: "HIGH",
+          link: "/dashboard/loyalty",
         },
       });
     } catch {
       // Non-critical notification failure
+    }
+
+    // Dispatch email notification to the trader (non-blocking)
+    if (existing.user?.email) {
+      try {
+        const appUrl =
+          process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.vercel.app";
+        const userName = existing.user.name || "Trader";
+        const isCompleted = action === "COMPLETE";
+        const isRejected = action === "REJECT";
+        const emailSubject = isCompleted
+          ? `USDT Dispatched! Milestone Level ${updated.level} (${updated.tierName})`
+          : isRejected
+            ? `Update on your Loyalty Claim: Level ${updated.level}`
+            : `Loyalty Claim Approved: Level ${updated.level} (${updated.tierName})`;
+
+        const statusBadgeColor = isCompleted
+          ? EMAIL_GOLD_COLORS.primaryGreen
+          : isRejected
+            ? EMAIL_GOLD_COLORS.dangerRed
+            : EMAIL_GOLD_COLORS.brandGoldDark;
+
+        const bodyHtml = `
+          <div style="padding: 6px 0;">
+            <div style="text-align: center; margin-bottom: 20px;">
+              <h2 style="margin: 0 0 6px 0; font-size: 22px; font-weight: 800; color: #111827;">${emailSubject}</h2>
+              <p style="margin: 0; font-size: 14px; color: #6B7280;">Partner Loyalty &amp; Rewards Program</p>
+            </div>
+            <p style="font-size: 15px; color: #374151; line-height: 1.6; margin-bottom: 20px;">
+              Hi <strong>${userName}</strong>, your milestone reward request for <strong>Level ${updated.level} — ${updated.tierName}</strong> (${updated.rewardTitle}) has been updated to <strong style="color: ${statusBadgeColor};">${newStatus}</strong>.
+            </p>
+            <div style="background-color: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 12px; padding: 18px 20px; margin: 20px 0;">
+              <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="font-size: 13px; color: #374151;">
+                <tr>
+                  <td style="padding: 6px 0; color: #6B7280;">Reward:</td>
+                  <td align="right" style="padding: 6px 0; font-weight: 700; color: #111827;">${updated.rewardTitle}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 6px 0; color: #6B7280;">Destination Wallet (${updated.network || "USDT"}):</td>
+                  <td align="right" style="padding: 6px 0; font-family: monospace; color: #111827;">${updated.usdtAddress || "N/A"}</td>
+                </tr>
+                ${
+                  updated.transactionRef
+                    ? `<tr>
+                        <td style="padding: 6px 0; color: #6B7280;">Transaction Ref (TxID):</td>
+                        <td align="right" style="padding: 6px 0; font-family: monospace; font-weight: 700; color: ${EMAIL_GOLD_COLORS.primaryGreen};">${updated.transactionRef}</td>
+                      </tr>`
+                    : ""
+                }
+                ${
+                  updated.adminNotes
+                    ? `<tr>
+                        <td style="padding: 6px 0; color: #6B7280;">Admin Note:</td>
+                        <td align="right" style="padding: 6px 0; color: #111827;">${updated.adminNotes}</td>
+                      </tr>`
+                    : ""
+                }
+              </table>
+            </div>
+            <div style="text-align: center; margin: 28px 0 12px 0;">
+              <a href="${appUrl}/dashboard/loyalty" style="${GOLD_CTA_BUTTON_STYLE}">
+                View Loyalty Dashboard →
+              </a>
+            </div>
+          </div>
+        `;
+
+        await sendEmailWithDetails({
+          to: existing.user.email,
+          subject: emailSubject,
+          html: buildUnifiedEmailHtml({
+            subject: emailSubject,
+            preheader: `Your Level ${updated.level} Loyalty claim status is now ${newStatus}.`,
+            bodyHtml,
+            appUrl,
+          }),
+        });
+      } catch (emailErr) {
+        console.warn("[Admin Loyalty] Email notification failed:", emailErr);
+      }
     }
 
     revalidatePath("/admin/loyalty");

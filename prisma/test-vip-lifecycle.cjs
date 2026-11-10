@@ -12,7 +12,6 @@ const prisma = new PrismaClient();
 const TEST_EMAIL = "test-vip-simulation@thenexttrade.local";
 let testUserId = null;
 let testAccountId = null;
-let testTicketId = null;
 
 async function logStep(num, name, passed, details) {
     const icon = passed ? "✅" : "❌";
@@ -63,7 +62,6 @@ async function runSimulation() {
         if (priorUser) {
             await prisma.journalEntry.deleteMany({ where: { userId: priorUser.id } });
             await prisma.proEntitlement.deleteMany({ where: { userId: priorUser.id } });
-            await prisma.supportSyncTicket.deleteMany({ where: { userId: priorUser.id } });
             await prisma.tradingAccount.deleteMany({ where: { userId: priorUser.id } });
             await prisma.user.delete({ where: { id: priorUser.id } });
         }
@@ -163,7 +161,7 @@ async function runSimulation() {
             where: {
                 accountId: account.id,
                 status: "CLOSED",
-                syncSource: { in: ["EA_SYNC", "EA_HISTORY", "SUPPORT_SYNC"] },
+                syncSource: { in: ["EA_SYNC", "EA_HISTORY", "CLOUD_WORKER"] },
                 exitDate: { gte: period30dStart },
             },
             _sum: { lotSize: true },
@@ -312,46 +310,14 @@ async function runSimulation() {
             `Entitlement status: ${expiredEntitlement.status}, note: ${expiredEntitlement.adminNote}`
         );
 
-        // ====================================================================
-        // STEP 9: SUPPORT-SYNC CONCIERGE TICKET CREATION
-        // ====================================================================
-        // Next Saturday 10:00 UTC calculation
-        const sat = new Date(now);
-        const dayOfWeek = sat.getUTCDay();
-        const daysUntilSaturday = (6 - dayOfWeek + 7) % 7 || 7;
-        sat.setUTCDate(sat.getUTCDate() + daysUntilSaturday);
-        sat.setUTCHours(10, 0, 0, 0);
-
-        const ticket = await prisma.supportSyncTicket.create({
-            data: {
-                userId: user.id,
-                tradingAccountId: account.id,
-                broker: "Exness",
-                accountNumber: "99887766",
-                server: "Exness-Real12",
-                notes: "Manual trader request for weekly sync",
-                scheduledFor: sat,
-                status: "PENDING",
-            },
-        });
-        testTicketId = ticket.id;
-
-        await logStep(
-            9,
-            "Support-Sync Concierge Ticket Created -> Batch scheduled for Saturday 10:00 UTC",
-            ticket.status === "PENDING" && ticket.scheduledFor.toISOString() === sat.toISOString(),
-            `Ticket ID: ${ticket.id}, Scheduled: ${ticket.scheduledFor.toISOString()}`
-        );
-
         console.log("\n================================================================");
-        console.log("🎉 ALL 9 LIFECYCLE SIMULATION STAGES COMPLETED & ASSERTED!");
+        console.log("🎉 ALL 8 LIFECYCLE SIMULATION STAGES COMPLETED & ASSERTED!");
         console.log("================================================================");
     } finally {
         // --- CLEANUP TEST DATA ---
         if (testUserId) {
             await prisma.journalEntry.deleteMany({ where: { userId: testUserId } });
             await prisma.proEntitlement.deleteMany({ where: { userId: testUserId } });
-            await prisma.supportSyncTicket.deleteMany({ where: { userId: testUserId } });
             await prisma.tradingAccount.deleteMany({ where: { userId: testUserId } });
             await prisma.user.delete({ where: { id: testUserId } });
             console.log("\n🧹 Test records cleaned up successfully from database.");

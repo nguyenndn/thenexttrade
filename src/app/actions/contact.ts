@@ -9,6 +9,7 @@ import {
     EMAIL_GOLD_COLORS,
     GOLD_CTA_BUTTON_STYLE,
 } from "@/lib/services/email.service";
+import { notifyAdminsOfContactMessage } from "@/lib/admin/admin-notification.server";
 
 const contactSchema = z.object({
     name: z.string().min(2, "Name must be at least 2 characters").max(100),
@@ -96,7 +97,7 @@ export async function submitContactForm(data: ContactFormData) {
         }
 
         // 1. Insert message into PostgreSQL database using type-safe Prisma Client
-        await prisma.contactMessage.create({
+        const createdMessage = await prisma.contactMessage.create({
             data: {
                 name: validData.name,
                 email: validData.email,
@@ -104,6 +105,14 @@ export async function submitContactForm(data: ContactFormData) {
                 message: validData.message,
                 status: "new",
             },
+        });
+
+        // 1b. Notify all admins in-app
+        await notifyAdminsOfContactMessage({
+            messageId: createdMessage.id,
+            senderName: validData.name,
+            senderEmail: validData.email,
+            subject: validData.subject,
         });
 
         // 2. Dispatch notification email to administrator / support

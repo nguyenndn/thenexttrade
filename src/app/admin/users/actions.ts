@@ -324,9 +324,6 @@ async function performCascadeUserDelete(tx: any, userId: string) {
     await tx.mt5ImportJob.deleteMany({
         where: { OR: [{ userId }, { tradingAccount: { userId } }] },
     });
-    await tx.supportSyncTicket.deleteMany({
-        where: { OR: [{ userId }, { tradingAccount: { userId } }] },
-    });
     await tx.accountNotification.deleteMany({ where: { userId } });
     await tx.tradingAccount.deleteMany({ where: { userId } });
 

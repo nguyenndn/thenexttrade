@@ -5,6 +5,7 @@ import {
   isRealTradingAccount,
   isIbVerifiedTradingAccount,
 } from "./loyalty.server";
+import { normalizeLotSize } from "@/lib/utils/cent-account";
 
 describe("Loyalty & Rewards Program Unit Tests", () => {
   describe("XAUUSD / GOLD Symbol Filter & IB Real Account Qualification", () => {
@@ -23,6 +24,24 @@ describe("Loyalty & Rewards Program Unit Tests", () => {
       expect(isGoldSymbol("XAUEUR")).toBe(false);
       expect(isGoldSymbol("BTCUSD")).toBe(false);
       expect(isGoldSymbol("")).toBe(false);
+    });
+
+    it("normalizes Cent account XAUUSDc lots by dividing by 100 (100 Cent Lots = 1 Standard Lot)", () => {
+      expect(
+        normalizeLotSize(100, {
+          symbol: "XAUUSDc",
+          currency: "USC",
+          server: "Exness-MT5RealCent",
+        })
+      ).toBe(1);
+
+      expect(
+        normalizeLotSize(10, {
+          symbol: "XAUUSD",
+          currency: "USD",
+          server: "Exness-MT5Real",
+        })
+      ).toBe(10);
     });
 
     it("excludes Demo, Contest, Evaluation, and Trial accounts", () => {

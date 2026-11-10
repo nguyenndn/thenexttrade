@@ -340,30 +340,6 @@ export function getSampleVipFundingGraceData() {
     };
 }
 
-export function getSampleVipSupportSyncSuccessData() {
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-    return {
-        userName: "Alex Trader",
-        accountNumber: "5510294",
-        broker: "Exness Real",
-        status: "SUCCESS" as const,
-        syncedTradesCount: 18,
-        rolling30dLots: 3.45,
-        appUrl,
-    };
-}
-
-export function getSampleVipSupportSyncFailedData() {
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-    return {
-        userName: "Alex Trader",
-        accountNumber: "5510294",
-        broker: "Exness Real",
-        status: "FAILED" as const,
-        failureReason: "Invalid Investor Password (Authentication Error on Exness-Real12 server).",
-        appUrl,
-    };
-}
 
 
 

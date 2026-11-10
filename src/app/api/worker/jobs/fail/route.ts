@@ -2,13 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { notifyAdminsOfSyncFailure } from "@/lib/admin/admin-notification.server";
-import {
-    failSupportSyncTicket,
-    getSupportTicketIdFromJobId,
-    sanitizeSupportSyncMessage,
-    SUPPORT_SYNC_MODE,
-} from "@/lib/services/support-sync-jobs.server";
-import { getNextSupportSyncAt } from "@/lib/support-sync-schedule";
+
+function sanitizeWorkerErrorMessage(
+    message: string | null | undefined,
+    maxLength = 500
+): string {
+    const cleaned = (message || "Unknown worker error")
+        .replace(/[\r\n\t]+/g, " ")
+        .trim();
+    return (cleaned || "Unknown worker error").slice(0, maxLength);
+}
 
 export async function POST(request: NextRequest) {
     try {
@@ -79,7 +82,7 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        const safeErrorMessage = sanitizeSupportSyncMessage(errorMessage, 500);
+        const safeErrorMessage = sanitizeWorkerErrorMessage(errorMessage, 500);
 
         await prisma.mt5ImportJob.update({
             where: { id: jobId },
@@ -92,52 +95,13 @@ export async function POST(request: NextRequest) {
             },
         });
 
-        if (job.mode === SUPPORT_SYNC_MODE) {
-            const ticketId = getSupportTicketIdFromJobId(job.id);
-            if (ticketId) {
-                await failSupportSyncTicket({
-                    ticketId,
-                    errorCode,
-                    errorMessage: safeErrorMessage,
-                });
-            }
-        }
-
-        // If MT5 connection timed out 5 times or failed, create a support ticket and alert Admins
+        // If MT5 connection timed out 5 times or failed, alert Admins
         if (
-            job.mode !== SUPPORT_SYNC_MODE &&
             job.account &&
             (errorCode === "LOGIN_TIMEOUT_5X" ||
                 errorCode === "LOGIN_FAILED" ||
                 errorCode === "SERVERS_DAT_PROVISION_FAILED")
         ) {
-            try {
-                const existingPending = await prisma.supportSyncTicket.findFirst({
-                    where: {
-                        tradingAccountId: job.account.id,
-                        status: "PENDING",
-                    },
-                });
-
-                if (!existingPending) {
-                    await prisma.supportSyncTicket.create({
-                        data: {
-                            userId: job.account.userId,
-                            tradingAccountId: job.account.id,
-                            broker: job.account.broker || "Unknown Broker",
-                            accountNumber:
-                                job.account.accountNumber || "Unknown",
-                            server: job.account.server || null,
-                            scheduledFor: getNextSupportSyncAt(),
-                            status: "PENDING",
-                            notes: `[Auto-Worker Alert] Sync failed (${errorCode}). Error: ${safeErrorMessage}`,
-                        },
-                    });
-                }
-            } catch (ticketErr) {
-                console.error("[createSupportSyncTicket error]:", ticketErr);
-            }
-
             await notifyAdminsOfSyncFailure({
                 jobId: job.id,
                 userId: job.account.userId,

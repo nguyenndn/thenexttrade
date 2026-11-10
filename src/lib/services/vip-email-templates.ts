@@ -54,7 +54,7 @@ export function buildVipTrialEndingSoonEmailHtml(
       <ol style="margin: 0; padding-left: 20px; font-size: 14px; color: #374151; line-height: 1.8;">
         <li>Open an account on <strong>Vantage, Exness, VTMarkets, or Ultima Markets</strong> via our partner link.</li>
         <li>Deposit <strong>$200+</strong> on your REAL trading account.</li>
-        <li>Attach our Trade Manager EA to sync trades (or request Support-Sync concierge).</li>
+        <li>Attach our Trade Manager EA to sync trades (or use MT5 Cloud Sync).</li>
       </ol>
     </div>
 
@@ -65,7 +65,7 @@ export function buildVipTrialEndingSoonEmailHtml(
     </div>
 
     <p style="font-size: 12px; color: #6B7280; line-height: 1.5; margin: 0;">
-      Don't want to run EA? You can request concierge <strong>Support-Sync</strong> using your read-only Investor password in Account Settings.
+      Don't want to run EA? You can use <strong>MT5 Cloud Sync</strong> with your read-only Investor password in Account Settings.
     </p>
   </div>
   `;
@@ -336,81 +336,3 @@ export function buildVipFundingGraceEmailHtml(
     });
 }
 
-// ============================================================================
-// 6. SUPPORT-SYNC BATCH RESULT (SATURDAY BATCH)
-// ============================================================================
-
-export interface VipSupportSyncResultEmailData {
-    userName: string;
-    accountNumber: string;
-    broker: string;
-    status: "SUCCESS" | "FAILED";
-    syncedTradesCount?: number;
-    rolling30dLots?: number;
-    failureReason?: string;
-    appUrl?: string;
-}
-
-export function buildVipSupportSyncResultEmailHtml(
-    data: VipSupportSyncResultEmailData
-): string {
-    const appUrl =
-        data.appUrl ||
-        process.env.NEXT_PUBLIC_APP_URL ||
-        "https://thenexttrade.vercel.app";
-
-    const isSuccess = data.status === "SUCCESS";
-    const titleText = isSuccess
-        ? "Support-Sync Batch Completed Successfully"
-        : "Support-Sync Verification Update";
-
-    const bodyHtml = `
-  <div style="padding: 4px 0; text-align: center;">
-    <h2 style="margin: 0 0 6px 0; font-size: 22px; font-weight: 800; color: #111827;">${titleText}</h2>
-    <p style="margin: 0 0 20px 0; font-size: 14px; color: #6B7280;">Concierge batch review for ${data.broker} (${data.accountNumber}).</p>
-
-    <div style="background: ${isSuccess ? "#FFFBEB" : "#FEF2F2"}; border: 1px solid ${isSuccess ? "#FDE68A" : "#FECACA"}; border-radius: 12px; padding: 18px; margin: 20px 0; text-align: left;">
-      <p style="font-size: 14px; color: ${isSuccess ? "#92400E" : "#991B1B"}; line-height: 1.6; margin: 0 0 10px 0; font-weight: 600;">
-        Hi ${data.userName},
-      </p>
-      ${
-          isSuccess
-              ? `<p style="font-size: 14px; color: #78350F; line-height: 1.6; margin: 0;">
-          Our Support team successfully verified your account. We have synced <strong>${data.syncedTradesCount ?? 0} new closed trades</strong> to your journal. Your 30-day verified volume is now <strong>${(data.rolling30dLots ?? 0).toFixed(2)} Lots</strong>.
-        </p>`
-              : `<p style="font-size: 14px; color: #7F1D1D; line-height: 1.6; margin: 0;">
-          We could not complete trade synchronization for account <strong>${data.accountNumber}</strong> during this Saturday batch.
-          <br><br><strong>Reason:</strong> ${data.failureReason || "Invalid Investor Password or server connection timeout."}
-        </p>`
-      }
-    </div>
-
-    ${
-        !isSuccess
-            ? `<div style="background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 12px; padding: 16px; margin: 20px 0; text-align: left; font-size: 13px; color: #374151; line-height: 1.6;">
-        <strong>How to resolve:</strong> Please visit your Account Settings, verify that your read-only Investor Password and Broker server are correct, and submit a new sync request for the next batch.
-      </div>`
-            : ""
-    }
-
-    <div style="text-align: center; margin: 28px 0 16px 0;">
-      <a href="${appUrl}/dashboard/journal" style="${GOLD_CTA_BUTTON_STYLE}">
-        ${isSuccess ? "View Updated Journal →" : "Update Investor Password →"}
-      </a>
-    </div>
-  </div>
-  `;
-
-    const subject = isSuccess
-        ? `Support-Sync Batch Completed — ${data.syncedTradesCount ?? 0} Trades Synced`
-        : "Support-Sync Update: Action required for your MT5 account";
-
-    return buildUnifiedEmailHtml({
-        subject,
-        preheader: isSuccess
-            ? `Your Saturday Support-Sync batch has synced ${data.syncedTradesCount ?? 0} trades.`
-            : "Support-Sync batch encountered an issue with your account credentials.",
-        bodyHtml,
-        appUrl,
-    });
-}

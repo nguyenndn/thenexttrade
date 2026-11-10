@@ -83,6 +83,32 @@ export async function PATCH(req: Request) {
             data: { status },
         });
 
+        // Notify the user who submitted the feedback about the status update
+        if (feedback.userId) {
+            try {
+                const statusLabel =
+                    status === "RESOLVED"
+                        ? "Resolved"
+                        : status === "IN_PROGRESS"
+                          ? "In Progress"
+                          : status === "CLOSED"
+                            ? "Closed"
+                            : "Open";
+                await prisma.notification.create({
+                    data: {
+                        userId: feedback.userId,
+                        type: "FEATURE_UPDATE",
+                        title: `Feedback Status Updated: ${statusLabel}`,
+                        message: `Your ${feedback.type === "BUG" ? "bug report" : "feature request"} ("${feedback.message.slice(0, 60)}${feedback.message.length > 60 ? "…" : ""}") is now marked as ${statusLabel}.`,
+                        priority: "NORMAL",
+                        link: "/dashboard/settings/feedback",
+                    },
+                });
+            } catch (notifErr) {
+                console.warn("[ADMIN_FEEDBACK] Notification warning:", notifErr);
+            }
+        }
+
         return NextResponse.json({ success: true, feedback });
     } catch (error) {
         console.error("Failed to update feedback:", error);

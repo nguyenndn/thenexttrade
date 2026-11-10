@@ -3,7 +3,6 @@ import { Prisma, TradeStatus } from "@prisma/client";
 export const ELIGIBLE_SYNC_SOURCES = [
     "EA_SYNC",
     "EA_HISTORY",
-    "SUPPORT_SYNC",
     "CLOUD_WORKER",
 ] as const;
 

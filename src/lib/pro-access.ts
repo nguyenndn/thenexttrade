@@ -25,7 +25,6 @@ export const FUNDING_GRACE_DAYS = 7;
 export const VALID_SYNC_SOURCES = [
     "EA_SYNC",
     "EA_HISTORY",
-    "SUPPORT_SYNC",
     "CLOUD_WORKER",
 ];
 export const VIP_ELIGIBLE_BROKERS = ["VANTAGE", "EXNESS", "VTMARKETS", "ULTIMAMARKETS"];

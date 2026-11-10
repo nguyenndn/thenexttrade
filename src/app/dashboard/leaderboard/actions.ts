@@ -7,6 +7,7 @@ import { getTier, getPercentile, getTierProgress } from "@/lib/gamification";
 
 import { revalidatePath } from "next/cache";
 import { isRealTradingAccount } from "@/lib/loyalty/loyalty.server";
+import { normalizeUsdBalance } from "@/lib/utils/cent-account";
 
 export type LeaderboardType =
     "sprint" | "trading" | "xp" | "streak" | "academy" | "mystats";
@@ -68,6 +69,31 @@ async function getCurrentUserId(): Promise<string | null> {
     return user?.id ?? null;
 }
 
+export async function syncCompetitionLifecycleStatuses(): Promise<void> {
+    try {
+        const now = new Date();
+        await Promise.all([
+            prisma.competition.updateMany({
+                where: {
+                    status: "UPCOMING",
+                    startDate: { lte: now },
+                    endDate: { gte: now },
+                },
+                data: { status: "ACTIVE" },
+            }),
+            prisma.competition.updateMany({
+                where: {
+                    status: { in: ["UPCOMING", "ACTIVE"] },
+                    endDate: { lt: now },
+                },
+                data: { status: "ENDED" },
+            }),
+        ]);
+    } catch {
+        // non-fatal background lifecycle sync
+    }
+}
+
 export async function getActiveCompetition() {
     try {
         const setting = await prisma.systemSetting.findUnique({
@@ -78,6 +104,8 @@ export async function getActiveCompetition() {
         if (!enabled) {
             return null;
         }
+
+        await syncCompetitionLifecycleStatuses();
 
         const competition = await prisma.competition.findFirst({
             where: {
@@ -742,7 +770,19 @@ async function getTradingLeaderboard(
  SELECT u.id AS "userId", u.name, u.image, u.xp, u.level,
  ROUND(COUNT(CASE WHEN je.result = 'WIN' THEN 1 END) * 100.0 / NULLIF(COUNT(CASE WHEN je.result IN ('WIN', 'LOSS') THEN 1 END), 0), 1) AS "winRate",
  COUNT(*) AS "totalTrades",
- COALESCE(SUM(COALESCE(je.pnl, 0) + COALESCE(je.commission, 0) + COALESCE(je.swap, 0)), 0) AS "totalPnl"
+ COALESCE(
+   SUM(
+     (COALESCE(je.pnl, 0) + COALESCE(je.commission, 0) + COALESCE(je.swap, 0))
+     * CASE
+         WHEN UPPER(COALESCE(ta.currency, 'USD')) IN ('USC', 'USCENT', 'USDCENT', 'CENT', 'US_CENT', 'USDT_CENT', 'EUC', 'EURC', 'EURCENT', 'EU_CENT', 'GBC', 'GBPC', 'GBPCENT', 'GB_CENT')
+           OR COALESCE(ta.server, '') ILIKE '%cent%'
+           OR COALESCE(ta.account_type, '') ILIKE '%cent%'
+         THEN 0.01
+         ELSE 1.0
+       END
+   ),
+   0
+ ) AS "totalPnl"
  FROM "User" u
  INNER JOIN "trading_accounts" ta ON ta."userId" = u.id
    AND ta.use_for_leaderboard = true
@@ -967,6 +1007,7 @@ export async function getLeaderboardSidebarData(
                 name: true,
                 accountNumber: true,
                 broker: true,
+                currency: true,
                 accountType: true,
                 server: true,
                 useForLeaderboard: true,
@@ -1012,6 +1053,12 @@ export async function getLeaderboardSidebarData(
             hasData = true;
         });
 
+        const normOpts = {
+            currency: acc.currency,
+            server: acc.server,
+            accountType: acc.accountType,
+        };
+
         return {
             id: acc.id,
             name: acc.name,
@@ -1019,9 +1066,9 @@ export async function getLeaderboardSidebarData(
             broker: acc.broker,
             useForLeaderboard: acc.useForLeaderboard,
             pnl: {
-                daily,
-                weekly,
-                monthly,
+                daily: normalizeUsdBalance(daily, normOpts),
+                weekly: normalizeUsdBalance(weekly, normOpts),
+                monthly: normalizeUsdBalance(monthly, normOpts),
             },
             hasData,
         };

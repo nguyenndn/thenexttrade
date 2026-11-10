@@ -181,26 +181,6 @@ export function EmailLabClient({
             statusLabel: "Active SMTP",
             category: "vip",
         },
-        {
-            id: "vip_support_sync_success",
-            title: "Support-Sync Batch Success (Saturday)",
-            description:
-                "Sent after Saturday concierge batch when Support successfully syncs closed trades to trader's journal.",
-            sourceFile: "src/lib/services/vip-email-templates.ts",
-            status: "active",
-            statusLabel: "Active SMTP",
-            category: "vip",
-        },
-        {
-            id: "vip_support_sync_failed",
-            title: "Support-Sync Batch Failed (Action Req)",
-            description:
-                "Sent when Saturday batch fails (e.g. invalid investor password) with instructions to update credentials.",
-            sourceFile: "src/lib/services/vip-email-templates.ts",
-            status: "active",
-            statusLabel: "Active SMTP",
-            category: "vip",
-        },
 
         // ── EA & Academy Deliveries ──
         {

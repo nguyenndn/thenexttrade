@@ -28,14 +28,12 @@ export default async function SyncRequestsPage({ searchParams }: PageProps) {
     const params = (await Promise.resolve(searchParams)) || {};
     const page = params.page ? parseInt(params.page, 10) || 1 : 1;
     const limit = params.limit ? parseInt(params.limit, 10) || 20 : 20;
-    const type = (params.type as "ALL" | "CLOUD" | "SUPPORT") || "ALL";
     const status = params.status || "ALL";
     const search = params.q || "";
     const dateRange = params.range || "all";
 
     const res = await getAdminSyncRequests({
         page,
-        type,
         status,
         search,
         dateRange,
@@ -48,7 +46,6 @@ export default async function SyncRequestsPage({ searchParams }: PageProps) {
             currentParams={{
                 page: String(page),
                 limit: String(limit),
-                type,
                 status,
                 q: search,
                 range: dateRange,

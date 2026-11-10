@@ -277,3 +277,102 @@ export async function notifyAdminsOfSyncFailure(params: NotifySyncFailureParams)
     }
 }
 
+interface NotifyLoyaltyClaimParams {
+    claimId: string;
+    userId: string;
+    level: number;
+    tierName: string;
+    rewardTitle: string;
+    cashAmount?: number | null;
+    accountNumber?: string | null;
+    broker?: string | null;
+    userEmail?: string | null;
+    userName?: string | null;
+}
+
+/**
+ * Sends in-app high-priority notification to all ADMIN users when a trader
+ * submits a Loyalty Milestone reward claim.
+ */
+export async function notifyAdminsOfLoyaltyClaim(
+    params: NotifyLoyaltyClaimParams
+) {
+    try {
+        const admins = await prisma.profile.findMany({
+            where: { role: "ADMIN" },
+            select: { userId: true },
+        });
+
+        if (!admins.length) return;
+
+        const traderIdentifier =
+            params.userName || params.userEmail || "A trader";
+        const accountSuffix = params.accountNumber
+            ? ` (${params.broker || "MT5"} #${params.accountNumber})`
+            : "";
+        const title = `New Loyalty Claim: Level ${params.level} (${params.tierName})`;
+        const message = `${traderIdentifier} requested ${params.rewardTitle}${accountSuffix} for USDT dispatch review.`;
+
+        const notificationsData = admins.map((admin) => ({
+            userId: admin.userId,
+            type: NotificationType.ANNOUNCEMENT,
+            title,
+            message,
+            link: "/admin/loyalty",
+            priority: NotificationPriority.HIGH,
+            dedupeKey: `admin-loyalty-claim-${params.claimId}-${admin.userId}`,
+        }));
+
+        await persistAdminNotifications(
+            notificationsData,
+            "notifyAdminsOfLoyaltyClaim"
+        );
+    } catch (error) {
+        console.error("[notifyAdminsOfLoyaltyClaim error]:", error);
+    }
+}
+
+interface NotifyContactMessageParams {
+    messageId: string;
+    senderName: string;
+    senderEmail: string;
+    subject: string;
+}
+
+/**
+ * Sends in-app notification to all ADMIN users when a visitor or trader
+ * submits a Contact Message.
+ */
+export async function notifyAdminsOfContactMessage(
+    params: NotifyContactMessageParams
+) {
+    try {
+        const admins = await prisma.profile.findMany({
+            where: { role: "ADMIN" },
+            select: { userId: true },
+        });
+
+        if (!admins.length) return;
+
+        const title = `New Contact Inquiry: ${params.subject.slice(0, 60)}`;
+        const message = `${params.senderName} (${params.senderEmail}) sent a message via the Contact form.`;
+
+        const notificationsData = admins.map((admin) => ({
+            userId: admin.userId,
+            type: NotificationType.ANNOUNCEMENT,
+            title,
+            message,
+            link: "/admin/messages",
+            priority: NotificationPriority.NORMAL,
+            dedupeKey: `admin-contact-msg-${params.messageId}-${admin.userId}`,
+        }));
+
+        await persistAdminNotifications(
+            notificationsData,
+            "notifyAdminsOfContactMessage"
+        );
+    } catch (error) {
+        console.error("[notifyAdminsOfContactMessage error]:", error);
+    }
+}
+

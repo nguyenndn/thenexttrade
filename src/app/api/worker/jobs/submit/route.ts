@@ -10,11 +10,6 @@ import {
     normalizeCurrencyCode,
     normalizeLotSize,
 } from "@/lib/utils/cent-account";
-import {
-    getSupportTicketIdFromJobId,
-    SUPPORT_SYNC_MODE,
-    verifySupportSyncTicket,
-} from "@/lib/services/support-sync-jobs.server";
 
 interface DealPayload {
     ticket: number | string;
@@ -103,8 +98,7 @@ export async function POST(request: NextRequest) {
 
         let imported = 0;
         let updated = 0;
-        const syncSource =
-            job.mode === SUPPORT_SYNC_MODE ? "SUPPORT_SYNC" : "CLOUD_WORKER";
+        const syncSource = "CLOUD_WORKER";
 
         for (const deal of deals) {
             try {
@@ -285,31 +279,15 @@ export async function POST(request: NextRequest) {
             },
         });
 
-        let supportTicketVerified = false;
-        if (job.mode === SUPPORT_SYNC_MODE) {
-            const ticketId = getSupportTicketIdFromJobId(job.id);
-            if (ticketId) {
-                supportTicketVerified = await verifySupportSyncTicket({
-                    ticketId,
-                    imported,
-                    updated,
-                    totalDeals: deals.length,
-                });
-            }
-        }
-
         revalidatePath("/dashboard/accounts");
         revalidatePath("/dashboard");
-        if (supportTicketVerified) {
-            revalidatePath("/admin/ib/sync-requests");
-        }
+        revalidatePath("/admin/ib/sync-requests");
 
         return NextResponse.json({
             success: true,
             imported,
             updated,
             totalDeals: deals.length,
-            supportTicketVerified,
         });
     } catch (error: any) {
         return NextResponse.json(

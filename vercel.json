@@ -10,8 +10,7 @@
     { "path": "/api/cron/cleanup-security-logs", "schedule": "30 3 * * *" },
     { "path": "/api/cron/activation-reminders", "schedule": "0 6 * * *" },
     { "path": "/api/cron/sync-events", "schedule": "0 */6 * * *" },
-    { "path": "/api/cron/welcome-nudges", "schedule": "0 */6 * * *" },
-    { "path": "/api/cron/support-sync", "schedule": "0 10 * * 6" }
+    { "path": "/api/cron/welcome-nudges", "schedule": "0 */6 * * *" }
   ],
   "headers": [
     {

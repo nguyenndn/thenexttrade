@@ -16,8 +16,6 @@ import {
     Copy,
     Terminal,
     AlertTriangle,
-    LifeBuoy,
-    KeyRound,
     ExternalLink,
     CheckSquare,
     Square,
@@ -32,8 +30,7 @@ import {
     deleteBulkSyncRequestsAdmin,
     UnifiedSyncItem,
 } from "@/actions/admin-sync-requests";
-import { SyncFilterToolbar, TypeFilterOption, RangeOption } from "./SyncFilterToolbar";
-import { AdminTicketDetailDrawer } from "./AdminTicketDetailDrawer";
+import { SyncFilterToolbar, RangeOption } from "./SyncFilterToolbar";
 import { toast } from "sonner";
 import Link from "next/link";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/Avatar";
@@ -55,14 +52,12 @@ interface SyncRequestsClientProps {
             failedCount: number;
             queueCount: number;
             cloudTotal: number;
-            supportTotal: number;
             successRate: string;
         } | null;
     };
     currentParams: {
         page: string;
         limit: string;
-        type: string;
         status: string;
         q: string;
         range: string;
@@ -78,7 +73,6 @@ export function SyncRequestsClient({
 
     const [search, setSearch] = useState(currentParams.q || "");
     const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
-    const [selectedSupportTicket, setSelectedSupportTicket] = useState<UnifiedSyncItem | null>(null);
     const [deleteTargetJob, setDeleteTargetJob] = useState<{
         id: string;
         accountNumber?: string;
@@ -131,7 +125,6 @@ export function SyncRequestsClient({
         failedCount: 0,
         queueCount: 0,
         cloudTotal: 0,
-        supportTotal: 0,
         successRate: "100.0",
     };
 
@@ -141,7 +134,6 @@ export function SyncRequestsClient({
         const query = new URLSearchParams();
         if (merged.page && merged.page !== "1") query.set("page", merged.page);
         if (merged.limit && merged.limit !== "20") query.set("limit", merged.limit);
-        if (merged.type && merged.type !== "ALL") query.set("type", merged.type);
         if (merged.status && merged.status !== "ALL") query.set("status", merged.status);
         if (merged.q) query.set("q", merged.q);
         if (merged.range && merged.range !== "all") query.set("range", merged.range);
@@ -155,7 +147,7 @@ export function SyncRequestsClient({
     useEffect(() => {
         setSearch(currentParams.q || "");
         setSelectedIds(new Set());
-    }, [currentParams.q, currentParams.page, currentParams.status, currentParams.type, currentParams.range]);
+    }, [currentParams.q, currentParams.page, currentParams.status, currentParams.range]);
 
     // Real-time debounced search
     useEffect(() => {
@@ -246,16 +238,10 @@ export function SyncRequestsClient({
         }
     };
 
-    const typeOptions: TypeFilterOption[] = [
-        { value: "ALL", label: "All Types" },
-        { value: "CLOUD", label: "Cloud Sync (Worker)" },
-        { value: "SUPPORT", label: "Support Tickets (Manual)" },
-    ];
-
     const statusTabs = [
         { key: "ALL", label: "All Requests", count: stats.totalAll, icon: CloudSync },
         { key: "QUEUE", label: "In Queue / Pending", count: stats.queueCount, icon: Clock },
-        { key: "COMPLETED", label: "Completed / Verified", count: stats.completedCount, icon: CheckCircle2 },
+        { key: "COMPLETED", label: "Completed", count: stats.completedCount, icon: CheckCircle2 },
         { key: "FAILED", label: "Failed", count: stats.failedCount, icon: XCircle },
     ];
 
@@ -306,7 +292,7 @@ export function SyncRequestsClient({
                 />
             </div>
 
-            {/* Filter and Search Bar Container (Shared Component with Type Filter) */}
+            {/* Filter and Search Bar Container */}
             <SyncFilterToolbar
                 search={search}
                 onSearchChange={setSearch}
@@ -318,9 +304,6 @@ export function SyncRequestsClient({
                 statusTabs={statusTabs}
                 activeStatus={currentParams.status || "ALL"}
                 onStatusChange={(val) => updateFilters({ status: val, page: "1" })}
-                typeValue={currentParams.type || "ALL"}
-                typeOptions={typeOptions}
-                onTypeChange={(val) => updateFilters({ type: val, page: "1" })}
                 rangeValue={currentParams.range || "all"}
                 rangeOptions={rangeOptions}
                 onRangeChange={(val) => updateFilters({ range: val, page: "1" })}
@@ -399,13 +382,12 @@ export function SyncRequestsClient({
                                         <CloudSync className="h-10 w-10 mx-auto mb-2 opacity-30 text-primary" />
                                         <p className="text-sm font-bold text-gray-700 dark:text-gray-300">No sync requests found</p>
                                         <p className="text-xs mt-1 text-gray-500 dark:text-gray-400">
-                                            Sync jobs from Cloud Sync worker and trader support tickets will appear here.
+                                            Sync jobs from Cloud Sync worker will appear here.
                                         </p>
                                     </td>
                                 </tr>
                             ) : (
                                 initialData.items.map((item) => {
-                                    const isSupport = item.type === "SUPPORT_TICKET";
                                     const isFailed = item.unifiedStatus === "FAILED";
                                     const isCompleted = item.unifiedStatus === "COMPLETED";
                                     const isQueue = item.unifiedStatus === "QUEUE";
@@ -414,14 +396,9 @@ export function SyncRequestsClient({
                                     return (
                                         <tr
                                             key={item.id}
-                                            onClick={() => {
-                                                if (isSupport) {
-                                                    setSelectedSupportTicket(item);
-                                                }
-                                            }}
                                             className={`hover:bg-gray-50/70 dark:hover:bg-white/[0.02] transition-colors ${
                                                 isSelected ? "bg-primary/5 dark:bg-primary/[0.04]" : ""
-                                            } ${isSupport ? "cursor-pointer" : ""}`}
+                                            }`}
                                         >
                                             {/* Selection Checkbox */}
                                             <td className="px-3 py-3.5 text-center" onClick={(e) => e.stopPropagation()}>
@@ -498,17 +475,10 @@ export function SyncRequestsClient({
 
                                             {/* Type */}
                                             <td className="px-4 py-3.5">
-                                                {isSupport ? (
-                                                    <span className="px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20 inline-flex items-center gap-1.5 shrink-0">
-                                                        <LifeBuoy size={12} className="text-amber-600 dark:text-amber-400" />
-                                                        Support Ticket
-                                                    </span>
-                                                ) : (
-                                                    <span className="px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-gold/10 text-amber-700 dark:text-gold border border-gold/20 inline-flex items-center gap-1.5 shrink-0">
-                                                        <CloudSync size={12} className="text-amber-600 dark:text-gold" />
-                                                        Cloud Sync
-                                                    </span>
-                                                )}
+                                                <span className="px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-gold/10 text-amber-700 dark:text-gold border border-gold/20 inline-flex items-center gap-1.5 shrink-0">
+                                                    <CloudSync size={12} className="text-amber-600 dark:text-gold" />
+                                                    Cloud Sync
+                                                </span>
                                             </td>
 
                                             {/* MT5 Account & Server */}
@@ -526,46 +496,20 @@ export function SyncRequestsClient({
 
                                             {/* Telemetry / Notes */}
                                             <td className="px-4 py-3.5">
-                                                {isSupport ? (
-                                                    <div className="space-y-1">
-                                                        {item.supportTicket?.notes ? (
-                                                            <p
-                                                                className="text-xs text-gray-700 dark:text-gray-300 italic truncate max-w-[200px]"
-                                                                title={item.supportTicket.notes}
-                                                            >
-                                                                &ldquo;{item.supportTicket.notes}&rdquo;
-                                                            </p>
-                                                        ) : (
-                                                            <p className="text-xs text-gray-400 italic">No notes provided</p>
-                                                        )}
-                                                        <div>
-                                                            {item.supportTicket?.hasInvestorPassword ? (
-                                                                <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded-lg border border-emerald-500/20">
-                                                                    <KeyRound size={10} /> Passview Ready
-                                                                </span>
-                                                            ) : (
-                                                                <span className="inline-flex items-center gap-1 text-[10px] text-gray-400">
-                                                                    No Passview
-                                                                </span>
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                ) : (
-                                                    <div className="space-y-0.5">
-                                                        <span className="font-bold text-gray-800 dark:text-gray-200 capitalize text-xs block">
-                                                            {item.cloudJob?.mode === "custom"
-                                                                ? "Custom Range"
-                                                                : `${item.cloudJob?.mode || "30"} Days`}
-                                                        </span>
-                                                        {item.cloudJob?.rangeFrom ? (
-                                                            <p className="text-[10px] text-gray-400">
-                                                                From {new Date(item.cloudJob.rangeFrom).toLocaleDateString()}
-                                                            </p>
-                                                        ) : (
-                                                            <p className="text-[10px] text-gray-400">Worker sync job</p>
-                                                        )}
-                                                    </div>
-                                                )}
+                                                <div className="space-y-0.5">
+                                                    <span className="font-bold text-gray-800 dark:text-gray-200 capitalize text-xs block">
+                                                        {item.cloudJob?.mode === "custom"
+                                                            ? "Custom Range"
+                                                            : `${item.cloudJob?.mode || "30"} Days`}
+                                                    </span>
+                                                    {item.cloudJob?.rangeFrom ? (
+                                                        <p className="text-[10px] text-gray-400">
+                                                            From {new Date(item.cloudJob.rangeFrom).toLocaleDateString()}
+                                                        </p>
+                                                    ) : (
+                                                        <p className="text-[10px] text-gray-400">Worker sync job</p>
+                                                    )}
+                                                </div>
                                             </td>
 
                                             {/* Status Badge */}
@@ -573,9 +517,7 @@ export function SyncRequestsClient({
                                                 {isCompleted && (
                                                     <span className="px-2.5 py-0.5 rounded-lg text-[10px] font-black font-mono tabular-nums uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-300 dark:border-emerald-500/20 inline-flex items-center gap-1">
                                                         <CheckCircle2 size={12} />
-                                                        {isSupport
-                                                            ? "VERIFIED"
-                                                            : `${item.cloudJob?.dealsReceived || 0} deals`}
+                                                        {`${item.cloudJob?.dealsReceived || 0} deals`}
                                                     </span>
                                                 )}
                                                 {isFailed && (
@@ -609,134 +551,85 @@ export function SyncRequestsClient({
                                                     <span>{formatDistanceToNow(new Date(item.createdAt), { addSuffix: true })}</span>
                                                 </div>
                                                 <p className="text-[10px] text-gray-400 mt-0.5 font-mono">
-                                                    {isSupport
-                                                        ? `Ticket #${item.supportTicket?.ticketNumber || item.id.slice(-8).toUpperCase()}`
-                                                        : `Worker: ${item.cloudJob?.workerId || "unassigned"}`}
+                                                    {`Worker: ${item.cloudJob?.workerId || "unassigned"}`}
                                                 </p>
                                             </td>
 
                                             {/* Actions */}
                                             <td className="px-4 py-3.5 text-right" onClick={(e) => e.stopPropagation()}>
                                                 <div className="flex items-center justify-end gap-1.5">
-                                                    {isSupport ? (
-                                                        <>
-                                                            <Button
-                                                                type="button"
-                                                                size="sm"
-                                                                variant="outline"
-                                                                onClick={() => setSelectedSupportTicket(item)}
-                                                                className="h-8 px-3 rounded-lg text-xs font-bold text-amber-700 dark:text-amber-300 border-amber-500/30 hover:bg-amber-50 dark:hover:bg-amber-500/10 gap-1.5"
-                                                            >
-                                                                <LifeBuoy size={12} className="text-amber-600 dark:text-amber-400" />
-                                                                Inspect &amp; Resolve
-                                                            </Button>
-
-                                                            {item.account?.id && (
-                                                                <Link
-                                                                    href={`/admin/ib/traders?search=${item.account.accountNumber || ""}`}
-                                                                    className="p-2 text-gray-400 hover:text-gray-700 dark:hover:text-white rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 inline-flex items-center transition-colors"
-                                                                    title="View in Trader Monitor"
-                                                                >
-                                                                    <ExternalLink className="h-3.5 w-3.5" />
-                                                                </Link>
-                                                            )}
-
-                                                            <Button
-                                                                type="button"
-                                                                size="icon"
-                                                                variant="outline"
-                                                                disabled={actionLoadingId === item.id}
-                                                                onClick={() =>
-                                                                    setDeleteTargetJob({
-                                                                        id: item.id,
-                                                                        accountNumber: item.account?.accountNumber,
-                                                                        trader: item.user?.name || item.user?.email || undefined,
-                                                                        type: "Support Ticket",
-                                                                    })
-                                                                }
-                                                                className="h-8 w-8 min-w-8 aspect-square rounded-lg text-gray-400 hover:text-rose-600 hover:border-rose-500/30 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors shrink-0"
-                                                                title="Delete support ticket"
-                                                                aria-label="Delete support ticket"
-                                                            >
-                                                                <Trash2 className="h-3.5 w-3.5" />
-                                                            </Button>
-                                                        </>
-                                                    ) : (
-                                                        <>
-                                                            {isFailed && (
-                                                                <Button
-                                                                    type="button"
-                                                                    size="sm"
-                                                                    variant="outline"
-                                                                    disabled={actionLoadingId === item.id}
-                                                                    onClick={() => handleRetry(item.id)}
-                                                                    className="h-8 px-3 rounded-lg text-xs font-bold text-primary hover:text-primary/80 gap-1.5"
-                                                                >
-                                                                    <RefreshCw
-                                                                        className={`h-3 w-3 ${
-                                                                            actionLoadingId === item.id ? "animate-spin" : ""
-                                                                        }`}
-                                                                    />
-                                                                    Retry
-                                                                </Button>
-                                                            )}
-
-                                                            {isQueue && (
-                                                                <Button
-                                                                    type="button"
-                                                                    size="sm"
-                                                                    variant="outline"
-                                                                    disabled={actionLoadingId === item.id}
-                                                                    onClick={() => handleCancel(item.id)}
-                                                                    className="h-8 px-3 rounded-lg text-xs font-bold text-rose-600 hover:text-rose-700 border-rose-500/30"
-                                                                >
-                                                                    Cancel
-                                                                </Button>
-                                                            )}
-
-                                                            {item.account?.id && (
-                                                                <Link
-                                                                    href={`/admin/ib/traders?search=${item.account.accountNumber || ""}`}
-                                                                    className="p-2 text-gray-400 hover:text-gray-700 dark:hover:text-white rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 inline-flex items-center transition-colors"
-                                                                    title="View in Trader Monitor"
-                                                                >
-                                                                    <ExternalLink className="h-3.5 w-3.5" />
-                                                                </Link>
-                                                            )}
-
-                                                            <Button
-                                                                type="button"
-                                                                size="icon"
-                                                                variant="outline"
-                                                                onClick={() => setDiagnosticsJob(item)}
-                                                                className="h-8 w-8 min-w-8 aspect-square rounded-lg text-gray-400 hover:text-primary hover:border-primary/30 hover:bg-primary/5 dark:hover:bg-primary/10 transition-colors shrink-0"
-                                                                title="Inspect sync request details"
-                                                                aria-label="Inspect sync request details"
-                                                            >
-                                                                <Eye className="h-3.5 w-3.5" />
-                                                            </Button>
-
-                                                            <Button
-                                                                type="button"
-                                                                size="icon"
-                                                                variant="outline"
-                                                                disabled={actionLoadingId === item.id}
-                                                                onClick={() =>
-                                                                    setDeleteTargetJob({
-                                                                        id: item.id,
-                                                                        accountNumber: item.account?.accountNumber,
-                                                                        trader: item.user?.name || item.user?.email || undefined,
-                                                                        type: "Cloud Sync Job",
-                                                                    })
-                                                                }
-                                                                className="h-8 w-8 min-w-8 aspect-square rounded-lg text-gray-400 hover:text-rose-600 hover:border-rose-500/30 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors shrink-0"
-                                                                title="Delete sync request"
-                                                                aria-label="Delete sync request"
-                                                            >
-                                                                <Trash2 className="h-3.5 w-3.5" />
-                                                            </Button>
-                                                        </>
+                                                    {isFailed && (
+                                                        <Button
+                                                            type="button"
+                                                            size="sm"
+                                                            variant="outline"
+                                                            disabled={actionLoadingId === item.id}
+                                                            onClick={() => handleRetry(item.id)}
+                                                            className="h-8 px-3 rounded-lg text-xs font-bold text-primary hover:text-primary/80 gap-1.5"
+                                                        >
+                                                            <RefreshCw
+                                                                className={`h-3 w-3 ${
+                                                                    actionLoadingId === item.id ? "animate-spin" : ""
+                                                                }`}
+                                                            />
+                                                            Retry
+                                                        </Button>
                                                     )}
+
+                                                    {isQueue && (
+                                                        <Button
+                                                            type="button"
+                                                            size="sm"
+                                                            variant="outline"
+                                                            disabled={actionLoadingId === item.id}
+                                                            onClick={() => handleCancel(item.id)}
+                                                            className="h-8 px-3 rounded-lg text-xs font-bold text-rose-600 hover:text-rose-700 border-rose-500/30"
+                                                        >
+                                                            Cancel
+                                                        </Button>
+                                                    )}
+
+                                                    {item.account?.id && (
+                                                        <Link
+                                                            href={`/admin/ib/traders?search=${item.account.accountNumber || ""}`}
+                                                            className="p-2 text-gray-400 hover:text-gray-700 dark:hover:text-white rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 inline-flex items-center transition-colors"
+                                                            title="View in Trader Monitor"
+                                                        >
+                                                            <ExternalLink className="h-3.5 w-3.5" />
+                                                        </Link>
+                                                    )}
+
+                                                    <Button
+                                                        type="button"
+                                                        size="icon"
+                                                        variant="outline"
+                                                        onClick={() => setDiagnosticsJob(item)}
+                                                        className="h-8 w-8 min-w-8 aspect-square rounded-lg text-gray-400 hover:text-primary hover:border-primary/30 hover:bg-primary/5 dark:hover:bg-primary/10 transition-colors shrink-0"
+                                                        title="Inspect sync request details"
+                                                        aria-label="Inspect sync request details"
+                                                    >
+                                                        <Eye className="h-3.5 w-3.5" />
+                                                    </Button>
+
+                                                    <Button
+                                                        type="button"
+                                                        size="icon"
+                                                        variant="outline"
+                                                        disabled={actionLoadingId === item.id}
+                                                        onClick={() =>
+                                                            setDeleteTargetJob({
+                                                                id: item.id,
+                                                                accountNumber: item.account?.accountNumber,
+                                                                trader: item.user?.name || item.user?.email || undefined,
+                                                                type: "Cloud Sync Job",
+                                                            })
+                                                        }
+                                                        className="h-8 w-8 min-w-8 aspect-square rounded-lg text-gray-400 hover:text-rose-600 hover:border-rose-500/30 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors shrink-0"
+                                                        title="Delete sync request"
+                                                        aria-label="Delete sync request"
+                                                    >
+                                                        <Trash2 className="h-3.5 w-3.5" />
+                                                    </Button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -761,14 +654,6 @@ export function SyncRequestsClient({
                     </div>
                 )}
             </div>
-
-            {/* Slide-over Drawer for Support Ticket */}
-            <AdminTicketDetailDrawer
-                item={selectedSupportTicket}
-                isOpen={Boolean(selectedSupportTicket)}
-                onClose={() => setSelectedSupportTicket(null)}
-                onUpdated={() => router.refresh()}
-            />
 
             {/* Delete Confirmation Modal */}
             <AnimatePresence>
@@ -1029,7 +914,6 @@ export function SyncRequestsClient({
                                             account: diagnosticsJob.account,
                                             user: diagnosticsJob.user,
                                             cloudJob: diagnosticsJob.cloudJob,
-                                            supportTicket: diagnosticsJob.supportTicket,
                                             createdAt: diagnosticsJob.createdAt,
                                         },
                                         null,

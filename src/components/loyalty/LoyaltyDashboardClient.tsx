@@ -64,7 +64,7 @@ export function LoyaltyDashboardClient({
       return initialProgress;
     }
     const accountClaims = (initialProgress.userClaims || []).filter(
-      (c) => !c.accountId || c.accountId === selectedAccount.accountId
+      (c) => c.accountId === selectedAccount.accountId
     );
     return {
       ...initialProgress,

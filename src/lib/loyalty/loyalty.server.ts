@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { normalizeLotSize } from "@/lib/utils/cent-account";
 import type {
   LoyaltyTierItem,
   EnrichedLoyaltyTierItem,
@@ -405,6 +406,7 @@ export async function getEligibleIbAccountsWithGoldLots(userId: string): Promise
           name: true,
           broker: true,
           server: true,
+          currency: true,
           accountNumber: true,
           accountType: true,
           status: true,
@@ -486,6 +488,17 @@ export async function getEligibleIbAccountsWithGoldLots(userId: string): Promise
       },
     });
 
+    const accountMetaMap = new Map(
+      eligibleAccounts.map((a) => [
+        a.id,
+        {
+          currency: a.currency,
+          server: a.server,
+          accountType: a.accountType,
+        },
+      ])
+    );
+
     const statsByAccount = new Map<
       string,
       { lots: number; count: number; latestDate: Date | null }
@@ -493,12 +506,19 @@ export async function getEligibleIbAccountsWithGoldLots(userId: string): Promise
 
     for (const trade of goldTrades) {
       if (!trade.accountId || !isGoldSymbol(trade.symbol)) continue;
+      const acctMeta = accountMetaMap.get(trade.accountId);
+      const normalizedLots = normalizeLotSize(Number(trade.lotSize) || 0, {
+        symbol: trade.symbol,
+        currency: acctMeta?.currency,
+        server: acctMeta?.server,
+        accountType: acctMeta?.accountType,
+      });
       const cur = statsByAccount.get(trade.accountId) || {
         lots: 0,
         count: 0,
         latestDate: null,
       };
-      cur.lots += Number(trade.lotSize) || 0;
+      cur.lots += normalizedLots;
       cur.count += 1;
       const tradeDate = trade.exitDate || trade.entryDate;
       if (tradeDate && (!cur.latestDate || tradeDate > cur.latestDate)) {

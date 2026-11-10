@@ -17,7 +17,6 @@ import {
     buildVipInactivityWarningEmailHtml,
     buildVipPolicyPausedEmailHtml,
     buildVipFundingGraceEmailHtml,
-    buildVipSupportSyncResultEmailHtml,
 } from "./email.service";
 import {
     getSampleEALicenseData,
@@ -35,8 +34,6 @@ import {
     getSampleVipInactivityWarningData,
     getSampleVipPolicyPausedData,
     getSampleVipFundingGraceData,
-    getSampleVipSupportSyncSuccessData,
-    getSampleVipSupportSyncFailedData,
 } from "../email-lab/sample-data";
 
 describe("Email Templates & Builder Service", () => {
@@ -233,21 +230,6 @@ describe("Email Templates & Builder Service", () => {
         expect(html).toContain(data.graceDeadline);
         expect(html).toContain("Manage Trading Accounts");
     });
-
-    it("renders VIP Support-Sync batch result email for both Success and Failed", () => {
-        // Success case
-        const successData = getSampleVipSupportSyncSuccessData();
-        const successHtml = buildVipSupportSyncResultEmailHtml(successData);
-        expect(successHtml).toContain("Support-Sync Batch Completed Successfully");
-        expect(successHtml).toContain(`${successData.syncedTradesCount} new closed trades`);
-        expect(successHtml).toContain("View Updated Journal");
-
-        // Failed case
-        const failedData = getSampleVipSupportSyncFailedData();
-        const failedHtml = buildVipSupportSyncResultEmailHtml(failedData);
-        expect(failedHtml).toContain("Support-Sync Verification Update");
-        expect(failedHtml).toContain(failedData.failureReason);
-        expect(failedHtml).toContain("Update Investor Password");
-    });
 });
+
 

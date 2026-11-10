@@ -9,6 +9,7 @@ import {
   calculateUserCumulativeLots,
   isLoyaltyEnabled,
 } from "@/lib/loyalty/loyalty.server";
+import { notifyAdminsOfLoyaltyClaim } from "@/lib/admin/admin-notification.server";
 import type { ClaimRewardInput, UserLoyaltyProgress, UsdtNetwork } from "@/lib/loyalty/loyalty.types";
 
 /**
@@ -117,27 +118,42 @@ export async function submitClaimReward(input: ClaimRewardInput): Promise<{
       };
     }
 
-    // 4. Check if already claimed or pending
-    const existing = await prisma.loyaltyClaim.findUnique({
+    // 4. Ensure legacy (user_id, level) unique index is dropped so per-account claims work seamlessly,
+    //    then check if already claimed or pending on THIS specific IB account
+    await prisma
+      .$executeRawUnsafe(
+        "DROP INDEX IF EXISTS loyalty_claims_user_id_level_key"
+      )
+      .catch(() => {});
+
+    const userLevelClaims = await prisma.loyaltyClaim.findMany({
       where: {
-        userId_level: {
-          userId: user.id,
-          level,
-        },
+        userId: user.id,
+        level,
       },
+      orderBy: { claimedAt: "desc" },
     });
 
-    if (existing) {
-      if (existing.status === "PENDING") {
+    const existingForAccount = userLevelClaims.find((claim) => {
+      const details =
+        (claim.payoutDetails as Record<string, unknown> | null) || {};
+      return details.accountId === lotData.accountId;
+    });
+
+    if (existingForAccount) {
+      if (existingForAccount.status === "PENDING") {
         return {
           success: false,
-          error: `Your claim for Level ${level} is currently pending admin review.`,
+          error: `Your claim for Level ${level} on account #${lotData.accountNumber} is currently pending admin review.`,
         };
       }
-      if (existing.status === "COMPLETED" || existing.status === "APPROVED") {
+      if (
+        existingForAccount.status === "COMPLETED" ||
+        existingForAccount.status === "APPROVED"
+      ) {
         return {
           success: false,
-          error: `You have already claimed the Level ${level} milestone reward.`,
+          error: `Account #${lotData.accountNumber} has already claimed the Level ${level} milestone reward.`,
         };
       }
     }
@@ -169,22 +185,30 @@ export async function submitClaimReward(input: ClaimRewardInput): Promise<{
       processedAt: null,
     };
 
-    await prisma.loyaltyClaim.upsert({
-      where: {
-        userId_level: {
+    let savedClaimId: string;
+    if (existingForAccount) {
+      const updatedClaim = await prisma.loyaltyClaim.update({
+        where: { id: existingForAccount.id },
+        data: {
+          ...claimPayload,
+          claimedAt: new Date(),
+        },
+        select: { id: true },
+      });
+      savedClaimId = updatedClaim.id;
+    } else {
+      const createdClaim = await prisma.loyaltyClaim.create({
+        data: {
           userId: user.id,
           level: targetTier.level,
+          ...claimPayload,
         },
-      },
-      create: {
-        userId: user.id,
-        level: targetTier.level,
-        ...claimPayload,
-      },
-      update: claimPayload,
-    });
+        select: { id: true },
+      });
+      savedClaimId = createdClaim.id;
+    }
 
-    // 6. Notify user of claim receipt
+    // 6. Notify user of claim receipt & notify all admins of new claim
     try {
       await prisma.notification.create({
         data: {
@@ -192,11 +216,24 @@ export async function submitClaimReward(input: ClaimRewardInput): Promise<{
           title: `Milestone Claim Submitted: Level ${targetTier.level} (${targetTier.name})`,
           message: `Your reward request for ${targetTier.rewardTitle} has been submitted for USDT dispatch verification.`,
           type: "FEATURE_UPDATE",
+          link: "/dashboard/loyalty",
         },
       });
     } catch {
       // Non-critical notification failure
     }
+
+    await notifyAdminsOfLoyaltyClaim({
+      claimId: savedClaimId,
+      userId: user.id,
+      level: targetTier.level,
+      tierName: targetTier.name,
+      rewardTitle: targetTier.rewardTitle,
+      cashAmount: targetTier.cashAmount,
+      accountNumber: lotData.accountNumber,
+      broker: lotData.broker,
+      userEmail: user.email || null,
+    });
 
     revalidatePath("/dashboard/loyalty");
     revalidatePath("/admin/loyalty");

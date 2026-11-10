@@ -10,7 +10,7 @@ describe("buildEligibleJournalWhere", () => {
         });
 
         expect(where.syncSource).toEqual({
-            in: ["EA_SYNC", "EA_HISTORY", "SUPPORT_SYNC", "CLOUD_WORKER"],
+            in: ["EA_SYNC", "EA_HISTORY", "CLOUD_WORKER"],
         });
         expect(where.status).toBe("CLOSED");
         expect(where.accountId).toBe("acc-1");

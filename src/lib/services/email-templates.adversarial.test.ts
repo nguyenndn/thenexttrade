@@ -17,7 +17,6 @@ import {
     buildVipInactivityWarningEmailHtml,
     buildVipPolicyPausedEmailHtml,
     buildVipFundingGraceEmailHtml,
-    buildVipSupportSyncResultEmailHtml,
     EMAIL_GOLD_COLORS,
     GOLD_CTA_BUTTON_STYLE,
 } from "./email.service";
@@ -564,29 +563,6 @@ describe("Empirical Adversarial Stress Testing — Email Templates", () => {
             expect(html).toContain("Instant 0-Second Auto-Restore");
             verifyHtmlWellFormed(html);
         });
-
-        it("renders VIP Support-Sync with missing optional fields (undefined count, lots, reason)", () => {
-            // Success without counts
-            const successHtml = buildVipSupportSyncResultEmailHtml({
-                userName: "Sync Trader",
-                accountNumber: "12345",
-                broker: "Exness",
-                status: "SUCCESS",
-            });
-            expect(successHtml).toContain("0 new closed trades");
-            expect(successHtml).toContain("0.00 Lots");
-            verifyHtmlWellFormed(successHtml);
-
-            // Failed without failureReason
-            const failedHtml = buildVipSupportSyncResultEmailHtml({
-                userName: "Sync Trader",
-                accountNumber: "12345",
-                broker: "Exness",
-                status: "FAILED",
-            });
-            expect(failedHtml).toContain("Invalid Investor Password or server connection timeout.");
-            verifyHtmlWellFormed(failedHtml);
-        });
     });
 
     // ──────────────────────────────────────────────────────────────────────────
@@ -707,12 +683,6 @@ describe("Empirical Adversarial Stress Testing — Email Templates", () => {
                     currentBalance: 150,
                     graceDaysRemaining: 7,
                     graceDeadline: "D",
-                }),
-                buildVipSupportSyncResultEmailHtml({
-                    userName: "A",
-                    accountNumber: "1",
-                    broker: "B",
-                    status: "SUCCESS",
                 }),
             ];
 

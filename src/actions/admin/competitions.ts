@@ -86,6 +86,25 @@ export async function toggleCompetitionsFeature(enabled: boolean): Promise<{
 export async function fetchAdminCompetitions() {
     await verifyAdmin();
 
+    const now = new Date();
+    await Promise.all([
+        prisma.competition.updateMany({
+            where: {
+                status: "UPCOMING",
+                startDate: { lte: now },
+                endDate: { gte: now },
+            },
+            data: { status: "ACTIVE" },
+        }),
+        prisma.competition.updateMany({
+            where: {
+                status: { in: ["UPCOMING", "ACTIVE"] },
+                endDate: { lt: now },
+            },
+            data: { status: "ENDED" },
+        }),
+    ]).catch(() => {});
+
     const [competitions, competitionsEnabled] = await Promise.all([
         prisma.competition.findMany({
             orderBy: { createdAt: "desc" },

@@ -6,7 +6,6 @@ import { revalidatePath } from "next/cache";
 import { NotificationType, NotificationPriority } from "@prisma/client";
 import { maskAccountNumber, findOrMatchTradingAccount } from "@/lib/pro-access";
 import { NOTIFICATION_ROUTES } from "@/lib/notification-routes";
-import { notifyAdminsOfVipRequest } from "@/lib/admin/admin-notification.server";
 import { resolveIbDateFilter, type IbStatsFilter } from "@/lib/admin/ib/date-filter";
 
 // ============================================================================
@@ -277,7 +276,7 @@ export async function approveVipRequest(requestId: string) {
             } = await import("@/lib/ea/github-license-sync.server");
             const cleanAccountNum = vipRequest.accountNumber.trim();
             const cleanBrokerName = vipRequest.broker.trim();
-            await ensureTradingAccountLicenseKey({
+            const ensured = await ensureTradingAccountLicenseKey({
                 userId: vipRequest.userId,
                 broker: cleanBrokerName,
                 accountNumber: cleanAccountNum,
@@ -338,6 +337,38 @@ export async function approveVipRequest(requestId: string) {
                 });
             }
             await syncLicensesToGitHubBackup();
+
+            // Dispatch VIP & EA License activation email to the trader (non-blocking)
+            const targetEmail = vipRequest.email?.trim();
+            if (targetEmail && ensured.licenseKey) {
+                try {
+                    const {
+                        sendEmailWithDetails,
+                        buildEALicenseEmailHtml,
+                    } = await import("@/lib/services/email.service");
+                    const appUrl =
+                        process.env.NEXT_PUBLIC_APP_URL ||
+                        "https://thenexttrade.vercel.app";
+                    const emailHtml = buildEALicenseEmailHtml({
+                        userName: vipRequest.fullName || "Trader",
+                        eaName: "Partner Pro & GoldScalperNinja MT5",
+                        licenseKey: ensured.licenseKey,
+                        mt5Account: `${cleanAccountNum} (${cleanBrokerName})`,
+                        downloadUrl: `${appUrl}/dashboard/trading-systems`,
+                        guideUrl: `${appUrl}/dashboard/trading-systems`,
+                    });
+                    await sendEmailWithDetails({
+                        to: targetEmail,
+                        subject: `VIP Partner Pro Approved & Lifetime EA License Key 🔑`,
+                        html: emailHtml,
+                    });
+                } catch (emailErr) {
+                    console.warn(
+                        "[approveVipRequest] Non-fatal email dispatch error:",
+                        emailErr
+                    );
+                }
+            }
         } catch (syncErr) {
             console.error("Non-fatal EA license / GitHub sync error after VIP approval:", syncErr);
         }
@@ -403,6 +434,52 @@ export async function rejectVipRequest(requestId: string, reason?: string) {
             link: NOTIFICATION_ROUTES.VIP_ACCOUNTS,
         },
     });
+
+    // Dispatch VIP rejection email to the trader (non-blocking)
+    if (vipRequest.email?.trim()) {
+        try {
+            const {
+                sendEmailWithDetails,
+                buildUnifiedEmailHtml,
+                GOLD_CTA_BUTTON_STYLE,
+            } = await import("@/lib/services/email.service");
+            const appUrl =
+                process.env.NEXT_PUBLIC_APP_URL ||
+                "https://thenexttrade.vercel.app";
+            const subject = `Update on your Partner Pro Verification (${vipRequest.broker} #${vipRequest.accountNumber})`;
+            const bodyHtml = `
+              <div style="padding: 6px 0;">
+                <h2 style="margin: 0 0 8px 0; font-size: 20px; font-weight: 800; color: #111827;">Partner Pro Verification Update</h2>
+                <p style="font-size: 14px; color: #374151; line-height: 1.6;">
+                  Hi <strong>${vipRequest.fullName || "Trader"}</strong>, we reviewed your Partner Pro verification request for <strong>${vipRequest.broker} #${vipRequest.accountNumber}</strong>, and could not approve it at this time.
+                </p>
+                <div style="background: #FEF2F2; border: 1px solid #FECACA; border-radius: 12px; padding: 16px; margin: 18px 0; font-size: 14px; color: #991B1B;">
+                  <strong>Reason:</strong> ${cleanReason || "Account could not be verified under our partner IB code or minimum deposit criteria."}
+                </div>
+                <p style="font-size: 13px; color: #6B7280; line-height: 1.6;">
+                  You can update your account details or submit a new verification request anytime from your Accounts page.
+                </p>
+                <div style="text-align: center; margin: 24px 0 12px 0;">
+                  <a href="${appUrl}/dashboard/accounts" style="${GOLD_CTA_BUTTON_STYLE}">
+                    Review Account Status →
+                  </a>
+                </div>
+              </div>
+            `;
+            await sendEmailWithDetails({
+                to: vipRequest.email.trim(),
+                subject,
+                html: buildUnifiedEmailHtml({
+                    subject,
+                    preheader: `Your Partner Pro verification request for ${vipRequest.broker} #${vipRequest.accountNumber} requires attention.`,
+                    bodyHtml,
+                    appUrl,
+                }),
+            });
+        } catch (emailErr) {
+            console.warn("[rejectVipRequest] Non-fatal email error:", emailErr);
+        }
+    }
 
     revalidatePath(`/admin/users/${vipRequest.userId}`);
     revalidatePath("/admin/ib/pipeline");

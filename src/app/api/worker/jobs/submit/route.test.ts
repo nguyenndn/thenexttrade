@@ -1,7 +1,6 @@
 import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { verifySupportSyncTicket } from "@/lib/services/support-sync-jobs.server";
 import { POST } from "./route";
 
 vi.mock("@/lib/prisma", () => ({
@@ -33,13 +32,6 @@ vi.mock("next/cache", () => ({
     revalidatePath: vi.fn(),
 }));
 
-vi.mock("@/lib/services/support-sync-jobs.server", () => ({
-    getSupportTicketIdFromJobId: (jobId: string) =>
-        jobId.startsWith("support_") ? jobId.slice("support_".length) : null,
-    SUPPORT_SYNC_MODE: "SUPPORT_SYNC",
-    verifySupportSyncTicket: vi.fn(),
-}));
-
 const originalWorkerKey = process.env.WORKER_API_KEY;
 
 describe("POST /api/worker/jobs/submit", () => {
@@ -48,10 +40,10 @@ describe("POST /api/worker/jobs/submit", () => {
         process.env.WORKER_API_KEY = "worker-test-key";
 
         vi.mocked(prisma.mt5ImportJob.findUnique).mockResolvedValue({
-            id: "support_ticket-123",
+            id: "job-123",
             userId: "user-1",
             accountId: "acc-1",
-            mode: "SUPPORT_SYNC",
+            mode: "30",
             account: {
                 id: "acc-1",
                 broker: "Vantage",
@@ -63,7 +55,6 @@ describe("POST /api/worker/jobs/submit", () => {
         vi.mocked(prisma.journalEntry.create).mockResolvedValue({} as never);
         vi.mocked(prisma.tradingAccount.update).mockResolvedValue({} as never);
         vi.mocked(prisma.mt5ImportJob.update).mockResolvedValue({} as never);
-        vi.mocked(verifySupportSyncTicket).mockResolvedValue(true);
     });
 
     afterAll(() => {
@@ -74,7 +65,7 @@ describe("POST /api/worker/jobs/submit", () => {
         }
     });
 
-    it("records Support Sync on the journal, account, and ticket", async () => {
+    it("records CLOUD_WORKER sync on the journal and account", async () => {
         const request = new NextRequest(
             "http://localhost/api/worker/jobs/submit",
             {
@@ -84,7 +75,7 @@ describe("POST /api/worker/jobs/submit", () => {
                     "x-worker-key": "worker-test-key",
                 },
                 body: JSON.stringify({
-                    jobId: "support_ticket-123",
+                    jobId: "job-123",
                     balance: 500,
                     deals: [
                         {
@@ -113,29 +104,23 @@ describe("POST /api/worker/jobs/submit", () => {
         expect(prisma.journalEntry.create).toHaveBeenCalledWith({
             data: expect.objectContaining({
                 accountId: "acc-1",
-                syncSource: "SUPPORT_SYNC",
+                syncSource: "CLOUD_WORKER",
             }),
         });
         expect(prisma.tradingAccount.update).toHaveBeenCalledWith({
             where: { id: "acc-1" },
             data: expect.objectContaining({
-                syncSource: "SUPPORT_SYNC",
+                syncSource: "CLOUD_WORKER",
             }),
-        });
-        expect(verifySupportSyncTicket).toHaveBeenCalledWith({
-            ticketId: "ticket-123",
-            imported: 1,
-            updated: 0,
-            totalDeals: 1,
         });
     });
 
     it("does not overwrite an existing broker with worker-reported company", async () => {
         vi.mocked(prisma.mt5ImportJob.findUnique).mockResolvedValue({
-            id: "support_ticket-123",
+            id: "job-123",
             userId: "user-1",
             accountId: "acc-1",
-            mode: "SUPPORT_SYNC",
+            mode: "30",
             account: {
                 id: "acc-1",
                 broker: "Vantage",
@@ -153,7 +138,7 @@ describe("POST /api/worker/jobs/submit", () => {
                     "x-worker-key": "worker-test-key",
                 },
                 body: JSON.stringify({
-                    jobId: "support_ticket-123",
+                    jobId: "job-123",
                     company: "Exness Technologies Ltd",
                     deals: [],
                 }),

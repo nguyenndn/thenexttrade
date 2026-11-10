@@ -18,7 +18,6 @@ export const CRON_JOBS = [
     "ib-snapshots",
     "license-github-sync",
     "send-scheduled-broadcasts",
-    "support-sync",
     "sync-events",
     "vip-policy",
     "welcome-nudges",

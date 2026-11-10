@@ -2,6 +2,8 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import {
     notifyAdminsOfNewAccount,
     notifyAdminsOfVipRequest,
+    notifyAdminsOfLoyaltyClaim,
+    notifyAdminsOfContactMessage,
 } from "./admin-notification.server";
 import { prisma } from "@/lib/prisma";
 import { NotificationType, NotificationPriority } from "@prisma/client";
@@ -149,5 +151,69 @@ describe("notifyAdminsOfNewAccount", () => {
                 }),
             })
         );
+    });
+});
+
+describe("notifyAdminsOfLoyaltyClaim", () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+
+    it("creates HIGH priority notifications for all admins when a user submits a loyalty claim", async () => {
+        vi.mocked(prisma.profile.findMany).mockResolvedValueOnce([
+            { userId: "admin-1" },
+        ] as any);
+
+        await notifyAdminsOfLoyaltyClaim({
+            claimId: "claim-99",
+            userId: "user-456",
+            userName: "Playwright Trader",
+            level: 1,
+            tierName: "Rookie Scalper",
+            rewardTitle: "$10 USDT Cash Reward",
+            accountNumber: "88990011",
+            broker: "VANTAGE",
+        });
+
+        expect(prisma.notification.createMany).toHaveBeenCalledTimes(1);
+        const callArg = vi.mocked(prisma.notification.createMany).mock.calls[0][0];
+        const first = (callArg?.data as any[])[0];
+
+        expect(first.userId).toBe("admin-1");
+        expect(first.priority).toBe(NotificationPriority.HIGH);
+        expect(first.title).toBe("New Loyalty Claim: Level 1 (Rookie Scalper)");
+        expect(first.message).toContain("Playwright Trader");
+        expect(first.message).toContain("VANTAGE #88990011");
+        expect(first.link).toBe("/admin/loyalty");
+        expect(first.dedupeKey).toBe("admin-loyalty-claim-claim-99-admin-1");
+    });
+});
+
+describe("notifyAdminsOfContactMessage", () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+
+    it("creates NORMAL priority notifications for all admins when a visitor submits the contact form", async () => {
+        vi.mocked(prisma.profile.findMany).mockResolvedValueOnce([
+            { userId: "admin-1" },
+        ] as any);
+
+        await notifyAdminsOfContactMessage({
+            messageId: "msg-77",
+            senderName: "Playwright Trader",
+            senderEmail: "playwright.trader.613741@gmail.com",
+            subject: "Semi-Auto Mode Inquiry",
+        });
+
+        expect(prisma.notification.createMany).toHaveBeenCalledTimes(1);
+        const callArg = vi.mocked(prisma.notification.createMany).mock.calls[0][0];
+        const first = (callArg?.data as any[])[0];
+
+        expect(first.userId).toBe("admin-1");
+        expect(first.priority).toBe(NotificationPriority.NORMAL);
+        expect(first.title).toBe("New Contact Inquiry: Semi-Auto Mode Inquiry");
+        expect(first.link).toBe("/admin/messages");
+        expect(first.dedupeKey).toBe("admin-contact-msg-msg-77-admin-1");
     });
 });

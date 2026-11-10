@@ -77,7 +77,6 @@ describe("TC-00: VIP & Trial Constants & Whitelists", () => {
         expect(VALID_SYNC_SOURCES).toEqual([
             "EA_SYNC",
             "EA_HISTORY",
-            "SUPPORT_SYNC",
             "CLOUD_WORKER",
         ]);
         expect(VIP_ELIGIBLE_BROKERS).toEqual(["VANTAGE", "EXNESS", "VTMARKETS", "ULTIMAMARKETS"]);

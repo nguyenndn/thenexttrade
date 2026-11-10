@@ -22,7 +22,6 @@ import {
     buildVipInactivityWarningEmailHtml,
     buildVipPolicyPausedEmailHtml,
     buildVipFundingGraceEmailHtml,
-    buildVipSupportSyncResultEmailHtml,
 } from "@/lib/services/email.service";
 import {
     buildActivationEmailHtml,
@@ -46,8 +45,6 @@ import {
     getSampleVipInactivityWarningData,
     getSampleVipPolicyPausedData,
     getSampleVipFundingGraceData,
-    getSampleVipSupportSyncSuccessData,
-    getSampleVipSupportSyncFailedData,
 } from "@/lib/email-lab/sample-data";
 
 export type EmailLabTemplateId =
@@ -77,9 +74,7 @@ export type EmailLabTemplateId =
     | "vip_trial_ended"
     | "vip_inactivity_warning"
     | "vip_policy_paused"
-    | "vip_funding_grace"
-    | "vip_support_sync_success"
-    | "vip_support_sync_failed";
+    | "vip_funding_grace";
 
 interface SendEmailLabResult {
     success: boolean;
@@ -300,20 +295,6 @@ function resolveTemplateContent(templateId: EmailLabTemplateId): {
             return {
                 subject: "Action required: Top up to $200 within 7 days to maintain VIP",
                 html: buildVipFundingGraceEmailHtml(data),
-            };
-        }
-        case "vip_support_sync_success": {
-            const data = getSampleVipSupportSyncSuccessData();
-            return {
-                subject: `Support-Sync Batch Completed — ${data.syncedTradesCount} Trades Synced`,
-                html: buildVipSupportSyncResultEmailHtml(data),
-            };
-        }
-        case "vip_support_sync_failed": {
-            const data = getSampleVipSupportSyncFailedData();
-            return {
-                subject: "Support-Sync Update: Action required for your MT5 account",
-                html: buildVipSupportSyncResultEmailHtml(data),
             };
         }
         default:

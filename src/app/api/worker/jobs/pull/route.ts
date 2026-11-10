@@ -1,11 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getInvestorPasswordForAccount } from "@/lib/credentials/investor-password.server";
-import {
-    failSupportSyncTicket,
-    getSupportTicketIdFromJobId,
-    SUPPORT_SYNC_MODE,
-} from "@/lib/services/support-sync-jobs.server";
 
 export async function GET(request: NextRequest) {
     try {
@@ -79,16 +74,6 @@ export async function GET(request: NextRequest) {
                     completedAt: new Date(),
                 },
             });
-            if (job.mode === SUPPORT_SYNC_MODE) {
-                const ticketId = getSupportTicketIdFromJobId(job.id);
-                if (ticketId) {
-                    await failSupportSyncTicket({
-                        ticketId,
-                        errorCode,
-                        errorMessage,
-                    });
-                }
-            }
             return NextResponse.json({
                 job: null,
                 message: "Job failed: missing investor credentials",

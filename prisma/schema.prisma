@@ -73,7 +73,6 @@ model User {
   adminAuditLogs           AdminAuditLog[]
   mt5ImportJobs            Mt5ImportJob[]
   TradeCheckSnapshot       TradeCheckSnapshot[]
-  supportSyncTickets       SupportSyncTicket[]
   tradingDayNotes          TradingDayNote[]
   eaProductAccesses        EAProductAccess[]
   eaProductUsageEvents     EAProductUsageEvent[]
@@ -455,7 +454,6 @@ model TradingAccount {
   fundingAmount            Float?                    @map("funding_amount")
   fundingLastVerifiedAt    DateTime?                 @map("funding_last_verified_at") @db.Timestamptz(6)
   fundingGraceUntil        DateTime?                 @map("funding_grace_until") @db.Timestamptz(6)
-  supportSyncTickets       SupportSyncTicket[]
   ibAttribution            String                    @default("UNKNOWN") @map("ib_attribution") @db.VarChar(20)
   ibAttributionSource      String?                   @map("ib_attribution_source") @db.VarChar(30)
   ibAttributionAt          DateTime?                 @map("ib_attribution_at") @db.Timestamptz(6)
@@ -2063,36 +2061,6 @@ model TradingAccountCapitalSnapshot {
   @@map("trading_account_capital_snapshots")
 }
 
-enum SupportSyncStatus {
-  PENDING
-  VERIFIED
-  FAILED
-  CANCELLED
-}
-
-model SupportSyncTicket {
-  id               String            @id @default(cuid())
-  userId           String            @map("user_id") @db.Uuid
-  tradingAccountId String?           @map("trading_account_id")
-  broker           String            @db.VarChar(100)
-  accountNumber    String            @map("account_number") @db.VarChar(50)
-  server           String?           @db.VarChar(100)
-  status           SupportSyncStatus @default(PENDING)
-  scheduledFor     DateTime?         @map("scheduled_for") @db.Timestamptz(6)
-  verifiedAt       DateTime?         @map("verified_at") @db.Timestamptz(6)
-  verifiedBy       String?           @map("verified_by") @db.Uuid
-  notes            String?
-  createdAt        DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt        DateTime          @updatedAt @map("updated_at") @db.Timestamptz(6)
-
-  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  tradingAccount   TradingAccount?   @relation(fields: [tradingAccountId], references: [id], onDelete: SetNull)
-
-  @@index([userId])
-  @@index([status, scheduledFor])
-  @@map("support_sync_tickets")
-}
-
 enum LoyaltyClaimStatus {
   PENDING
   APPROVED
@@ -2157,7 +2125,7 @@ model LoyaltyClaim {
   user            User               @relation(fields: [userId], references: [id], onDelete: Cascade)
   tier            LoyaltyTier?       @relation(fields: [tierId], references: [id], onDelete: SetNull)
 
-  @@unique([userId, level])
+  @@index([userId, level])
   @@index([userId])
   @@index([status])
   @@index([claimedAt])

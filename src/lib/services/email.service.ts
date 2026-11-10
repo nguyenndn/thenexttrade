@@ -853,12 +853,10 @@ export {
     buildVipInactivityWarningEmailHtml,
     buildVipPolicyPausedEmailHtml,
     buildVipFundingGraceEmailHtml,
-    buildVipSupportSyncResultEmailHtml,
     type VipTrialEndingSoonEmailData,
     type VipTrialEndedEmailData,
     type VipInactivityWarningEmailData,
     type VipPolicyPausedEmailData,
     type VipFundingGraceEmailData,
-    type VipSupportSyncResultEmailData,
 } from "./vip-email-templates";
 
