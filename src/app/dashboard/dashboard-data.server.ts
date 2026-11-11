@@ -38,7 +38,10 @@ import type { WeeklyReviewEligibility } from "@/lib/reports/weekly-review-eligib
 import { getTraderGrowthViewModel } from "@/lib/trader-growth/orchestrator.server";
 import type { TraderGrowthViewModel } from "@/lib/trader-growth/types";
 import { triggerCoachNotifications } from "@/lib/coach/coach-notifications.server";
-import { normalizeCurrencyCode } from "@/lib/utils/cent-account";
+import {
+    convertToUsdEquivalent,
+    normalizeCurrencyCode,
+} from "@/lib/utils/cent-account";
 
 // ─── Types ──────────────────────────────────────────────────────────────
 
@@ -153,28 +156,55 @@ export async function resolveAccountAndDates(
     searchParams: { [key: string]: string | string[] | undefined }
 ): Promise<ResolvedParams> {
     const cookieStore = await cookies();
-    const lastAccountId = cookieStore.get("last_account_id")?.value;
+    const rawLastAccountId = cookieStore.get("last_account_id")?.value;
     const isSampleMode =
         cookieStore.get("the_next_trade_sample_mode")?.value === "true";
 
-    let accountId =
+    const userAccounts = await prisma.tradingAccount.findMany({
+        where: { userId },
+        select: { id: true, timezone: true, currency: true, server: true },
+    });
+    const validLastAccountId =
+        rawLastAccountId &&
+        userAccounts.some((acc) => acc.id === rawLastAccountId)
+            ? rawLastAccountId
+            : undefined;
+
+    const rawAccountId =
         typeof searchParams?.accountId === "string"
             ? searchParams.accountId
             : undefined;
+    const isExplicitAllAccounts = rawAccountId === "all";
+    let normalizedAccountId =
+        rawAccountId && rawAccountId !== "all" ? rawAccountId : undefined;
+
     let fromParam =
         typeof searchParams?.from === "string" ? searchParams.from : undefined;
     let toParam =
         typeof searchParams?.to === "string" ? searchParams.to : undefined;
     let needsRedirect = false;
 
-    // Resolve accountId if missing (Priority 1: Main account in /dashboard/accounts)
-    if (!accountId) {
+    if (normalizedAccountId) {
+        const isOwned = userAccounts.some(
+            (acc) => acc.id === normalizedAccountId
+        );
+        if (!isOwned) {
+            normalizedAccountId = undefined;
+        }
+    }
+
+    // Resolve accountId if missing and user did not explicitly request "all"
+    let accountId = normalizedAccountId;
+    if (!rawAccountId) {
         const { resolveDefaultAccountId } = await import(
             "@/actions/main-account"
         );
-        const targetId = await resolveDefaultAccountId(userId, lastAccountId);
+        const targetId = await resolveDefaultAccountId(
+            userId,
+            validLastAccountId
+        );
 
-        if (targetId) {
+        if (targetId && userAccounts.some((acc) => acc.id === targetId)) {
             accountId = targetId;
             needsRedirect = true;
         }
@@ -196,7 +226,7 @@ export async function resolveAccountAndDates(
     }
 
     // Single consolidated redirect
-    if (needsRedirect && accountId) {
+    if (needsRedirect && (accountId || isExplicitAllAccounts)) {
         const newParams = new URLSearchParams();
         if (searchParams) {
             Object.entries(searchParams).forEach(([key, value]) => {
@@ -210,7 +240,7 @@ export async function resolveAccountAndDates(
                 }
             });
         }
-        newParams.set("accountId", accountId);
+        newParams.set("accountId", isExplicitAllAccounts ? "all" : accountId!);
         newParams.set("from", fromParam!);
         newParams.set("to", toParam!);
         redirect(`/dashboard?${newParams.toString()}`);
@@ -220,12 +250,9 @@ export async function resolveAccountAndDates(
 
     // Fetch account timezone & currency
     let accountTimezone: string | undefined;
-    let accountCurrency = "USD";
+    let accountCurrency: string | undefined;
     if (accountId) {
-        const acc = await prisma.tradingAccount.findFirst({
-            where: { id: accountId, userId },
-            select: { timezone: true, currency: true, server: true },
-        });
+        const acc = userAccounts.find((a) => a.id === accountId);
         accountTimezone = acc?.timezone || undefined;
         accountCurrency = normalizeCurrencyCode(acc?.currency, acc?.server);
     }
@@ -328,12 +355,10 @@ export async function getEmptyDashboardData(
                 isDefault: true,
             },
         }),
-        accountId
-            ? prisma.tradingAccount.findFirst({
-                  where: { id: accountId, userId },
-                  select: { balance: true, currency: true, server: true },
-              })
-            : Promise.resolve(null),
+        prisma.tradingAccount.findMany({
+            where: accountId ? { id: accountId, userId } : { userId },
+            select: { balance: true, currency: true, server: true },
+        }),
     ]);
 
     const settings = (userData?.settings as Record<string, any>) || {};
@@ -346,21 +371,42 @@ export async function getEmptyDashboardData(
         /* silent */
     });
 
+    const uniqueEmptyCurrencies = new Set(
+        selectedAccount.map((acc) =>
+            normalizeCurrencyCode(acc.currency, acc.server)
+        )
+    );
+    const hasMixedEmptyCurrencies = uniqueEmptyCurrencies.size > 1;
     const resolvedCurrency =
         accountCurrency ||
-        (selectedAccount
-            ? normalizeCurrencyCode(
-                  selectedAccount.currency,
-                  selectedAccount.server
+        (!accountId && hasMixedEmptyCurrencies
+            ? "USD"
+            : selectedAccount[0]
+              ? normalizeCurrencyCode(
+                    selectedAccount[0].currency,
+                    selectedAccount[0].server
+                )
+              : "USD");
+    const emptyTotalBalance =
+        !accountId && (hasMixedEmptyCurrencies || resolvedCurrency === "USD")
+            ? selectedAccount.reduce(
+                  (sum, acc) =>
+                      sum +
+                      convertToUsdEquivalent(
+                          acc.balance || 0,
+                          acc.currency,
+                          acc.server
+                      ),
+                  0
               )
-            : "USD");
+            : selectedAccount.reduce((sum, acc) => sum + (acc.balance || 0), 0);
 
     return {
         userName: userData?.name || "Trader",
         hasGlobalTrades: false,
         initialDashboards,
         dashboardData: {
-            totalBalance: selectedAccount?.balance || 0,
+            totalBalance: emptyTotalBalance,
             currency: resolvedCurrency,
             winRate: 0,
             winRateChange: 0,
@@ -464,7 +510,11 @@ export async function getFullDashboardData(
                 contains: filters.symbol,
                 mode: "insensitive",
             };
-        if (filters.result) prismaFilters.result = filters.result;
+        if (filters.result)
+            prismaFilters.result =
+                filters.result === "BREAK_EVEN"
+                    ? { in: ["BREAK_EVEN", "BE_PLUS"] }
+                    : filters.result;
     }
 
     // Parallel data fetch
@@ -498,11 +548,21 @@ export async function getFullDashboardData(
                 where: {
                     userId,
                     status: "CLOSED",
-                    entryDate: { gte: startDate, lte: endDate },
                     ...(accountId ? { accountId } : {}),
                     ...prismaFilters,
+                    AND: [
+                        {
+                            OR: [
+                                { exitDate: { gte: startDate, lte: endDate } },
+                                {
+                                    exitDate: null,
+                                    entryDate: { gte: startDate, lte: endDate },
+                                },
+                            ],
+                        },
+                    ],
                 },
-                orderBy: { entryDate: "desc" },
+                orderBy: [{ exitDate: "desc" }, { entryDate: "desc" }],
                 take: 10,
             }),
             getCachedDashboardStats(
@@ -517,7 +577,7 @@ export async function getFullDashboardData(
                 accountId,
                 startDate,
                 endDate,
-                undefined,
+                accountTimezone,
                 filters
             ),
             getSymbolPerformance(
@@ -588,15 +648,30 @@ export async function getFullDashboardData(
     const insightData = buildInsightData(intelligenceData);
 
     // Balances & Currency
-    const totalBalance = accounts.reduce(
-        (sum, acc) => sum + (acc.balance || 0),
-        0
+    const uniqueCurrencies = new Set(
+        accounts.map((acc) => normalizeCurrencyCode(acc.currency, acc.server))
     );
+    const hasMixedCurrencies = uniqueCurrencies.size > 1;
     const resolvedCurrency =
         params.accountCurrency ||
-        (accounts.length > 0
-            ? normalizeCurrencyCode(accounts[0].currency, accounts[0].server)
-            : "USD");
+        (!accountId && hasMixedCurrencies
+            ? "USD"
+            : accounts.length > 0
+              ? normalizeCurrencyCode(accounts[0].currency, accounts[0].server)
+              : "USD");
+    const totalBalance =
+        !accountId && (hasMixedCurrencies || resolvedCurrency === "USD")
+            ? accounts.reduce(
+                  (sum, acc) =>
+                      sum +
+                      convertToUsdEquivalent(
+                          acc.balance || 0,
+                          acc.currency,
+                          acc.server
+                      ),
+                  0
+              )
+            : accounts.reduce((sum, acc) => sum + (acc.balance || 0), 0);
 
     // Chart data
     const chartData = await buildChartData(
@@ -612,11 +687,12 @@ export async function getFullDashboardData(
     // Daily win rates (always last 7 days)
     const dailyWinRates = buildDailyWinRates(dailyWinRateLast7);
 
-    // Symbol performance for pie chart
+    // Symbol performance for pie chart (net profitable symbols only)
     const symbolPerformance = symbolStats
-        .sort((a, b) => b.grossProfit - a.grossProfit)
+        .filter((s) => s.pnl > 0)
+        .sort((a, b) => b.pnl - a.pnl)
         .slice(0, 5)
-        .map((s) => ({ name: s.symbol, value: s.grossProfit }));
+        .map((s) => ({ name: s.symbol, value: Number(s.pnl.toFixed(2)) }));
 
     // Symbol analytics for table
     const symbolAnalytics = symbolStats.map((s) => ({
@@ -635,8 +711,8 @@ export async function getFullDashboardData(
         periodPnL: stats.totalPnL,
         todayPnL: 0,
         profitFactor: stats.profitFactor,
-        avgWin: stats.winCount > 0 ? stats.grossProfit / stats.winCount : 0,
-        avgLoss: stats.lossCount > 0 ? stats.grossLoss / stats.lossCount : 0,
+        avgWin: stats.avgWin,
+        avgLoss: stats.avgLoss,
         winCount: stats.winCount,
         lossCount: stats.lossCount,
         breakEvenCount: Math.max(

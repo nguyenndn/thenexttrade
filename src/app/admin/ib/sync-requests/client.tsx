@@ -19,6 +19,7 @@ import {
     ExternalLink,
     CheckSquare,
     Square,
+    Hash,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { AnimatedStatCard } from "@/components/admin/dashboard/AnimatedStatCard";
@@ -31,6 +32,8 @@ import {
     UnifiedSyncItem,
 } from "@/actions/admin-sync-requests";
 import { SyncFilterToolbar, RangeOption } from "./SyncFilterToolbar";
+import { SavedPasswordReveal } from "@/components/trading-accounts/SavedPasswordReveal";
+import { CredentialCopyChip } from "@/components/trading-accounts/CredentialCopyChip";
 import { toast } from "sonner";
 import Link from "next/link";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/Avatar";
@@ -368,6 +371,7 @@ export function SyncRequestsClient({
                                 </th>
                                 <th className="px-4 py-3.5">Trader</th>
                                 <th className="px-4 py-3.5">MT5 Account & Server</th>
+                                <th className="px-4 py-3.5">MT5 Password</th>
                                 <th className="px-4 py-3.5">Sync Range</th>
                                 <th className="px-4 py-3.5">Status</th>
                                 <th className="px-4 py-3.5">Requested</th>
@@ -377,7 +381,7 @@ export function SyncRequestsClient({
                         <tbody className="divide-y divide-gray-100 dark:divide-white/5">
                             {initialData.items.length === 0 ? (
                                 <tr>
-                                    <td colSpan={7} className="py-16 text-center text-gray-400 dark:text-gray-500">
+                                    <td colSpan={8} className="py-16 text-center text-gray-400 dark:text-gray-500">
                                         <CloudSync className="h-10 w-10 mx-auto mb-2 opacity-30 text-primary" />
                                         <p className="text-sm font-bold text-gray-700 dark:text-gray-300">No sync requests found</p>
                                         <p className="text-xs mt-1 text-gray-500 dark:text-gray-400">
@@ -474,8 +478,8 @@ export function SyncRequestsClient({
 
                                             {/* MT5 Account & Server */}
                                             <td className="px-4 py-3.5">
-                                                <div className="flex items-center gap-1.5">
-                                                    <span className="font-mono tabular-nums text-xs font-bold px-2 py-0.5 rounded-lg bg-gray-100 dark:bg-white/10 text-gray-900 dark:text-white">
+                                                <div className="flex flex-wrap items-center gap-1.5">
+                                                    <span className="font-mono tabular-nums text-xs font-bold px-2 py-0.5 rounded-lg bg-gray-100 dark:bg-white/10 text-gray-900 dark:text-white select-all">
                                                         #{item.account?.accountNumber || "N/A"}
                                                     </span>
                                                     {item.account?.broker && (
@@ -486,10 +490,25 @@ export function SyncRequestsClient({
                                                 </div>
                                                 <div className="mt-1 flex items-center gap-1 text-[11px] text-gray-500 dark:text-gray-400">
                                                     <Server className="h-3 w-3 shrink-0 opacity-60" />
-                                                    <span className="truncate max-w-[180px]">
+                                                    <span className="truncate max-w-[180px] select-all">
                                                         {item.account?.server || item.account?.broker || "Server N/A"}
                                                     </span>
                                                 </div>
+                                            </td>
+
+                                            {/* MT5 Password */}
+                                            <td className="px-4 py-3.5" onClick={(e) => e.stopPropagation()}>
+                                                {item.account?.id ? (
+                                                    <SavedPasswordReveal
+                                                        accountId={item.account.id}
+                                                        hasSavedPassword={Boolean(item.account.hasSavedPassword)}
+                                                        variant="bar"
+                                                        showEmptyBadge
+                                                        className="bg-gray-50/80 dark:bg-[#151925]"
+                                                    />
+                                                ) : (
+                                                    <span className="text-xs text-gray-400">—</span>
+                                                )}
                                             </td>
 
                                             {/* Telemetry / Notes */}
@@ -856,10 +875,10 @@ export function SyncRequestsClient({
                                 </div>
                                 <div className="p-3">
                                     <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">
-                                        Account #
+                                        Account Number
                                     </span>
-                                    <span className="font-mono font-bold text-gray-800 dark:text-gray-200 mt-0.5 block">
-                                        {diagnosticsJob.account?.accountNumber || "N/A"}
+                                    <span className="font-mono tabular-nums font-bold text-gray-800 dark:text-gray-200 mt-0.5 block">
+                                        #{diagnosticsJob.account?.accountNumber || "N/A"}
                                     </span>
                                 </div>
                                 <div className="p-3 border-t">
@@ -879,6 +898,42 @@ export function SyncRequestsClient({
                                     </span>
                                 </div>
                             </div>
+
+                            {/* Dedicated MT5 Login Credentials Section */}
+                            {diagnosticsJob.account?.id && (
+                                <div className="space-y-2">
+                                    <span className="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider block">
+                                        MT5 Login Credentials
+                                    </span>
+                                    <div className="space-y-2 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] p-3">
+                                        <div className="flex flex-wrap items-center gap-2">
+                                            {diagnosticsJob.account.accountNumber && (
+                                                <CredentialCopyChip
+                                                    label="Login"
+                                                    value={diagnosticsJob.account.accountNumber}
+                                                    displayValue={`#${diagnosticsJob.account.accountNumber}`}
+                                                    icon={Hash}
+                                                    toastLabel="MT5 Account Number"
+                                                />
+                                            )}
+                                            {diagnosticsJob.account.server && (
+                                                <CredentialCopyChip
+                                                    label="Server"
+                                                    value={diagnosticsJob.account.server}
+                                                    icon={Server}
+                                                    toastLabel="MT5 Server"
+                                                />
+                                            )}
+                                        </div>
+                                        <SavedPasswordReveal
+                                            accountId={diagnosticsJob.account.id}
+                                            hasSavedPassword={Boolean(diagnosticsJob.account.hasSavedPassword)}
+                                            variant="field"
+                                            showEmptyBadge
+                                        />
+                                    </div>
+                                </div>
+                            )}
 
                             {/* Failure Reason Alert */}
                             {diagnosticsJob.unifiedStatus === "FAILED" && (

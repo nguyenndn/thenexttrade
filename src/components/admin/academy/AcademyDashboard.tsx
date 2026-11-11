@@ -1,13 +1,17 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Plus, SearchX, RotateCcw } from "lucide-react";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { CreateLevelModal } from "./CreateLevelModal";
 import { EditLevelModal } from "./EditLevelModal";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { Button } from "@/components/ui/Button";
-import { deleteLevel } from "@/app/admin/academy/actions";
+import { cn } from "@/lib/utils";
+import {
+    deleteLevel,
+    toggleAcademyFeature,
+} from "@/app/admin/academy/actions";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import {
@@ -24,10 +28,23 @@ import { AcademyLevelTree } from "./AcademyLevelTree";
 
 interface AcademyDashboardProps {
     initialLevels: AdminLevel[];
+    initialAcademyEnabled?: boolean;
 }
 
-export function AcademyDashboard({ initialLevels }: AcademyDashboardProps) {
+export function AcademyDashboard({
+    initialLevels,
+    initialAcademyEnabled = false,
+}: AcademyDashboardProps) {
     const router = useRouter();
+
+    const [academyEnabled, setAcademyEnabled] = useState<boolean>(
+        initialAcademyEnabled
+    );
+    const [isTogglingFeature, setIsTogglingFeature] = useState(false);
+
+    useEffect(() => {
+        setAcademyEnabled(initialAcademyEnabled);
+    }, [initialAcademyEnabled]);
 
     // Toolbar and View states
     const [searchQuery, setSearchQuery] = useState("");
@@ -149,13 +166,69 @@ export function AcademyDashboard({ initialLevels }: AcademyDashboardProps) {
         setSortOption("ORDER_ASC");
     };
 
+    const handleToggleAcademyFeature = async () => {
+        const nextState = !academyEnabled;
+        setIsTogglingFeature(true);
+        try {
+            const res = await toggleAcademyFeature(nextState);
+            if (!res.success) {
+                toast.error(res.error || "Failed to toggle Academy feature");
+                return;
+            }
+            setAcademyEnabled(nextState);
+            window.dispatchEvent(new CustomEvent("feature-flags-updated"));
+            toast.success(
+                nextState
+                    ? "Academy is now ON (Visible in Menu, Search & Routes)"
+                    : "Academy is now OFF (Hidden from regular users)"
+            );
+            router.refresh();
+        } catch {
+            toast.error("Failed to toggle Academy feature");
+        } finally {
+            setIsTogglingFeature(false);
+        }
+    };
+
     return (
         <div className="space-y-6 pb-10">
             {/* Header */}
             <AdminPageHeader
                 title="Academy Curriculum"
                 description="Manage course levels, modules, structured lessons, and quizzes."
-            />
+            >
+                <div className="flex flex-wrap items-center gap-2.5">
+                    <Button
+                        type="button"
+                        variant="outline"
+                        isLoading={isTogglingFeature}
+                        onClick={handleToggleAcademyFeature}
+                        className="bg-white dark:bg-[#1E2028] shadow-xs"
+                    >
+                        {!isTogglingFeature && (
+                            <span
+                                className={cn(
+                                    "h-2 w-2 rounded-full shrink-0",
+                                    academyEnabled
+                                        ? "bg-emerald-500 animate-pulse"
+                                        : "bg-rose-500"
+                                )}
+                            />
+                        )}
+                        <span>Academy:</span>
+                        <span
+                            className={cn(
+                                "font-extrabold",
+                                academyEnabled
+                                    ? "text-emerald-600 dark:text-emerald-400"
+                                    : "text-rose-600 dark:text-rose-400"
+                            )}
+                        >
+                            {academyEnabled ? "ON" : "OFF"}
+                        </span>
+                    </Button>
+                </div>
+            </AdminPageHeader>
 
             {/* Top KPI Metrics Cards */}
             <AcademyStatsGrid levels={initialLevels} />

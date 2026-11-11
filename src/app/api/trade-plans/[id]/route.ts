@@ -1,8 +1,32 @@
 import { NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
+import { z } from "zod";
 import { getAuthUser } from "@/lib/auth-cache";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
+
+const updateTradePlanSchema = z.object({
+    symbol: z.string().min(1).max(30).optional(),
+    type: z.enum(["BUY", "SELL"]).nullable().optional(),
+    plannedEntry: z.number().min(0).nullable().optional(),
+    plannedStopLoss: z.number().min(0).nullable().optional(),
+    plannedTakeProfit: z.number().min(0).nullable().optional(),
+    plannedLotSize: z.number().min(0).nullable().optional(),
+    riskAmount: z.number().min(0).nullable().optional(),
+    setupName: z.string().max(120).nullable().optional(),
+    thesis: z.string().nullable().optional(),
+    invalidation: z.string().nullable().optional(),
+    emotionBefore: z.string().max(50).nullable().optional(),
+    confidenceLevel: z.number().int().min(1).max(5).nullable().optional(),
+    ruleChecklist: z.unknown().optional(),
+    tags: z.array(z.string()).optional(),
+    images: z.array(z.string()).optional(),
+    accountId: z.string().nullable().optional(),
+    status: z
+        .enum(["PLANNED", "ACTIVE", "MATCHED", "REVIEWED", "CANCELLED"])
+        .optional(),
+});
 
 export async function GET(
     request: Request,
@@ -58,12 +82,24 @@ export async function PUT(
         }
 
         const body = await request.json();
+        const parsed = updateTradePlanSchema.safeParse(body);
+        if (!parsed.success) {
+            return NextResponse.json(
+                {
+                    error: "Invalid trade plan details",
+                    details: parsed.error.issues,
+                },
+                { status: 400 }
+            );
+        }
+
+        const data = parsed.data;
         const normalizedAccountId =
-            body.accountId === undefined
+            data.accountId === undefined
                 ? undefined
-                : !body.accountId || body.accountId === "none"
+                : !data.accountId || data.accountId === "none"
                   ? null
-                  : String(body.accountId);
+                  : data.accountId;
 
         if (normalizedAccountId) {
             const acct = await prisma.tradingAccount.findFirst({
@@ -81,23 +117,30 @@ export async function PUT(
         const plan = await prisma.tradePlan.update({
             where: { id },
             data: {
-                symbol: body.symbol,
-                type: body.type,
-                plannedEntry: body.plannedEntry,
-                plannedStopLoss: body.plannedStopLoss,
-                plannedTakeProfit: body.plannedTakeProfit,
-                plannedLotSize: body.plannedLotSize,
-                riskAmount: body.riskAmount,
-                setupName: body.setupName,
-                thesis: body.thesis,
-                invalidation: body.invalidation,
-                emotionBefore: body.emotionBefore,
-                confidenceLevel: body.confidenceLevel,
-                ruleChecklist: body.ruleChecklist,
+                symbol: data.symbol,
+                type: data.type,
+                plannedEntry: data.plannedEntry,
+                plannedStopLoss: data.plannedStopLoss,
+                plannedTakeProfit: data.plannedTakeProfit,
+                plannedLotSize: data.plannedLotSize,
+                riskAmount: data.riskAmount,
+                setupName: data.setupName,
+                thesis: data.thesis,
+                invalidation: data.invalidation,
+                emotionBefore: data.emotionBefore,
+                confidenceLevel: data.confidenceLevel,
+                ruleChecklist:
+                    data.ruleChecklist === undefined
+                        ? undefined
+                        : data.ruleChecklist === null
+                          ? Prisma.JsonNull
+                          : (data.ruleChecklist as Prisma.InputJsonValue),
+                tags: data.tags,
+                images: data.images,
                 ...(normalizedAccountId !== undefined
                     ? { accountId: normalizedAccountId }
                     : {}),
-                status: body.status,
+                status: data.status,
             },
         });
 

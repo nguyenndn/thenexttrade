@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { getAuthUser } from "@/lib/auth-cache";
 import { prisma } from "@/lib/prisma";
+import { sanitizeInput } from "@/lib/sanitize";
 import {
     getEmailPreferences,
     DEFAULT_EMAIL_PREFERENCES,
@@ -133,8 +135,8 @@ export async function PUT(request: Request) {
         });
     }
 
-    // Persist payout wallet inside User.settings, merging
-    // with the stored blob so unrelated settings keys survive.
+    // Persist payout wallet inside User.settings ONLY when payoutWallet is explicitly sent,
+    // merging with the stored blob so unrelated settings keys survive.
     if (body.payoutWallet !== undefined) {
         const dbUser = await prisma.user.findUnique({
             where: { id: user.id },
@@ -142,16 +144,67 @@ export async function PUT(request: Request) {
         });
         const settings = (dbUser?.settings as Record<string, unknown>) || {};
 
-        let validWallet: { network: "BEP20" | "TRC20" | "ERC20"; address: string } | null = null;
-        if (body.payoutWallet && typeof body.payoutWallet === "object") {
-            const network = String(body.payoutWallet.network || "BEP20").toUpperCase();
-            const address = String(body.payoutWallet.address || "").trim();
-            if (["BEP20", "TRC20", "ERC20"].includes(network) && address.length >= 24) {
+        let validWallet: {
+            network: "BEP20" | "TRC20" | "ERC20";
+            address: string;
+        } | null = null;
+
+        if (body.payoutWallet === null || body.payoutWallet === "") {
+            validWallet = null;
+        } else if (typeof body.payoutWallet === "string") {
+            const trimmed = body.payoutWallet.trim();
+            if (trimmed.length === 0) {
+                validWallet = null;
+            } else if (trimmed.length < 10) {
+                return NextResponse.json(
+                    {
+                        error: "Payout wallet address must be at least 10 characters.",
+                    },
+                    { status: 400 }
+                );
+            } else {
+                const inferredNetwork = trimmed.startsWith("T")
+                    ? "TRC20"
+                    : "BEP20";
                 validWallet = {
-                    network: network as "BEP20" | "TRC20" | "ERC20",
-                    address,
+                    network: inferredNetwork,
+                    address: trimmed,
                 };
             }
+        } else if (typeof body.payoutWallet === "object") {
+            const walletObj = body.payoutWallet as Record<string, unknown>;
+            const rawAddress =
+                typeof walletObj.address === "string"
+                    ? walletObj.address.trim()
+                    : "";
+            if (rawAddress.length === 0) {
+                validWallet = null;
+            } else if (rawAddress.length < 10) {
+                return NextResponse.json(
+                    {
+                        error: "Payout wallet address must be at least 10 characters.",
+                    },
+                    { status: 400 }
+                );
+            } else {
+                const rawNet = String(
+                    walletObj.network || "BEP20"
+                ).toUpperCase();
+                const network = (
+                    ["BEP20", "TRC20", "ERC20"].includes(rawNet)
+                        ? rawNet
+                        : "BEP20"
+                ) as "BEP20" | "TRC20" | "ERC20";
+                validWallet = {
+                    network,
+                    address: rawAddress,
+                };
+            }
+        } else {
+            return NextResponse.json(
+                { error: "Invalid payoutWallet payload." },
+                { status: 400 }
+            );
         }
 
         await prisma.user.update({
@@ -178,8 +231,17 @@ export async function PUT(request: Request) {
         "showPercentMetrics",
     ] as const;
 
+    const hasHeadline = "profileHeadline" in body || "headline" in body;
+    const hasBio = "bio" in body;
+    const hasDollarAlias = "showDollarMetrics" in body && !("showMoney" in body);
+
     const hasProfileFields =
-        profileBooleanKeys.some((k) => k in body) || "profileHeadline" in body;
+        profileBooleanKeys.some((k) => k in body) ||
+        hasDollarAlias ||
+        hasHeadline ||
+        hasBio;
+
+    let updatedUsername: string | null = null;
 
     if (hasProfileFields) {
         const partialUpdate: Record<string, unknown> = {};
@@ -188,13 +250,33 @@ export async function PUT(request: Request) {
                 partialUpdate[key] = Boolean(body[key]);
             }
         }
-        if ("profileHeadline" in body) {
-            partialUpdate.profileHeadline = body.profileHeadline
-                ? String(body.profileHeadline).slice(0, 160)
-                : null;
+        if (hasDollarAlias) {
+            partialUpdate.showMoney = Boolean(body.showDollarMetrics);
+        }
+        if (hasHeadline) {
+            const rawHeadline = body.profileHeadline ?? body.headline;
+            const cleanHeadline = rawHeadline
+                ? sanitizeInput(String(rawHeadline)).slice(0, 160)
+                : "";
+            partialUpdate.profileHeadline = cleanHeadline || null;
+        }
+        if (hasBio) {
+            const cleanBio = body.bio
+                ? sanitizeInput(String(body.bio)).slice(0, 200)
+                : "";
+            partialUpdate.bio = cleanBio || null;
         }
 
-        await prisma.profile.upsert({
+        const rawHeadlineForCreate = body.profileHeadline ?? body.headline;
+        const cleanHeadlineForCreate = rawHeadlineForCreate
+            ? sanitizeInput(String(rawHeadlineForCreate)).slice(0, 160)
+            : null;
+        const cleanBioForCreate =
+            hasBio && body.bio
+                ? sanitizeInput(String(body.bio)).slice(0, 200)
+                : undefined;
+
+        const upserted = await prisma.profile.upsert({
             where: { userId: user.id },
             update: partialUpdate,
             create: {
@@ -204,16 +286,26 @@ export async function PUT(request: Request) {
                 showBadges: "showBadges" in body ? Boolean(body.showBadges) : true,
                 showPairStats: "showPairStats" in body ? Boolean(body.showPairStats) : true,
                 showSessionStats: "showSessionStats" in body ? Boolean(body.showSessionStats) : true,
-                profileHeadline: body.profileHeadline
-                    ? String(body.profileHeadline).slice(0, 160)
-                    : null,
-                showMoney: Boolean(body.showMoney),
+                profileHeadline: cleanHeadlineForCreate || null,
+                ...(cleanBioForCreate !== undefined ? { bio: cleanBioForCreate || null } : {}),
+                showMoney: hasDollarAlias
+                    ? Boolean(body.showDollarMetrics)
+                    : Boolean(body.showMoney),
                 showBroker: Boolean(body.showBroker),
                 showAccountNumber: Boolean(body.showAccountNumber),
                 showRealName: Boolean(body.showRealName),
                 showPercentMetrics: body.showPercentMetrics !== false,
             },
+            select: { username: true },
         });
+        updatedUsername = upserted.username;
+    }
+
+    revalidatePath("/dashboard/profile");
+    revalidatePath("/dashboard/settings/profile");
+    revalidatePath("/trader/[username]", "page");
+    if (updatedUsername) {
+        revalidatePath(`/trader/${updatedUsername}`);
     }
 
     return NextResponse.json({ success: true });

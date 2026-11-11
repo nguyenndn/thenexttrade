@@ -18,6 +18,7 @@ import {
     signupSchema,
     passwordSchema,
 } from "@/lib/validations/auth";
+import { isDisposableEmail } from "@/lib/validations/disposable-email";
 import { headers } from "next/headers";
 import { checkAuthRateLimit } from "@/lib/security/auth-rate-limit";
 import { AUTH_ERRORS } from "@/lib/security/auth-errors";
@@ -27,6 +28,31 @@ import {
     resolveReferrerByCode,
 } from "@/lib/referrals";
 import { isOnboardingDone } from "@/lib/onboarding/onboarding.server";
+
+function getAppBaseUrl(): string {
+    return (
+        process.env.NEXT_PUBLIC_APP_URL || "https://www.thenexttrade.com"
+    ).replace(/\/+$/, "");
+}
+
+function sanitizeNextPath(raw?: string | null): string {
+    if (
+        typeof raw === "string" &&
+        /^\/(?!\/)/.test(raw) &&
+        !raw.includes("\\") &&
+        !raw.startsWith("/auth/")
+    ) {
+        return raw;
+    }
+    return "/dashboard";
+}
+
+function isCustomSmtpConfigured(): boolean {
+    return Boolean(
+        process.env.SUPABASE_SERVICE_ROLE_KEY &&
+            (process.env.SMTP_HOST || process.env.EMAIL_SERVER_HOST)
+    );
+}
 
 async function getClientIP(): Promise<string> {
     const h = await headers();
@@ -41,7 +67,7 @@ export async function login(formData: FormData) {
     const supabase = await createClient();
     const ip = await getClientIP();
     const email = formData.get("email") as string;
-    let redirectTo = "/dashboard";
+    let redirectTo = sanitizeNextPath(formData.get("next") as string | null);
 
     // Apply Rate Limit
     if (await checkAuthRateLimit("login", ip, email)) {
@@ -157,7 +183,7 @@ export async function login(formData: FormData) {
     return { success: true, name: displayName, redirectTo };
 }
 
-export async function verifyLogin2FA(code: string) {
+export async function verifyLogin2FA(code: string, next?: string) {
     const supabase = await createClient();
     const {
         data: { user },
@@ -191,14 +217,24 @@ export async function verifyLogin2FA(code: string) {
 
     if (error) return { error: AUTH_ERRORS.OTP_VERIFY_GENERIC };
 
+    let destination = sanitizeNextPath(next);
+    if (destination === "/dashboard") {
+        const onboardingDone = await isOnboardingDone(user.id);
+        if (!onboardingDone) {
+            destination = "/onboarding";
+        }
+    }
+
     revalidatePath("/", "layout");
-    redirect("/dashboard");
+    redirect(destination);
 }
 
 export async function signInWithMagicLink(formData: FormData) {
     const supabase = await createClient();
-    const email = formData.get("email") as string;
-    const origin = (await headers()).get("origin");
+    const rawEmail = formData.get("email") as string;
+    const email = rawEmail?.trim().toLowerCase();
+    const appUrl = getAppBaseUrl();
+    const safeNext = sanitizeNextPath(formData.get("next") as string | null);
     const ip = await getClientIP();
 
     if (await checkAuthRateLimit("magic_link", ip, email)) {
@@ -216,10 +252,17 @@ export async function signInWithMagicLink(formData: FormData) {
         return { error: "Email is required" };
     }
 
+    if (isDisposableEmail(email)) {
+        return {
+            error: "Disposable or temporary email addresses are not allowed.",
+        };
+    }
+
     await supabase.auth.signInWithOtp({
         email,
         options: {
-            emailRedirectTo: `${origin}/auth/callback?next=/dashboard`,
+            shouldCreateUser: false,
+            emailRedirectTo: `${appUrl}/auth/callback?next=${encodeURIComponent(safeNext)}`,
         },
     });
 
@@ -430,8 +473,8 @@ export async function signout() {
 
 export async function forgotPassword(formData: FormData) {
     const supabase = await createClient();
-    const email = formData.get("email") as string;
-    const origin = (await headers()).get("origin");
+    const email = (formData.get("email") as string)?.trim().toLowerCase();
+    const appUrl = getAppBaseUrl();
     const ip = await getClientIP();
 
     if (await checkAuthRateLimit("forgot_password", ip, email)) {
@@ -449,7 +492,7 @@ export async function forgotPassword(formData: FormData) {
     }
 
     await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${origin}/auth/callback?next=/auth/update-password`,
+        redirectTo: `${appUrl}/auth/callback?next=/auth/update-password`,
     });
 
     // Return generic success regardless of error to prevent email enumeration
@@ -491,8 +534,8 @@ export async function updatePassword(formData: FormData) {
 
 export async function verifyOtpAction(formData: FormData) {
     const supabase = await createClient();
-    const email = formData.get("email") as string;
-    const otp = formData.get("otp") as string;
+    const email = (formData.get("email") as string)?.trim().toLowerCase();
+    const otp = (formData.get("otp") as string)?.trim();
     const ip = await getClientIP();
 
     if (await checkAuthRateLimit("verify_otp", ip, email)) {
@@ -503,11 +546,33 @@ export async function verifyOtpAction(formData: FormData) {
         return { error: "Email and an 8-digit OTP code are required." };
     }
 
-    const { data, error } = await supabase.auth.verifyOtp({
+    let verifyResult = await supabase.auth.verifyOtp({
         email,
         token: otp,
         type: "signup",
     });
+
+    if (verifyResult.error) {
+        const magicFallback = await supabase.auth.verifyOtp({
+            email,
+            token: otp,
+            type: "magiclink",
+        });
+        if (!magicFallback.error) {
+            verifyResult = magicFallback;
+        } else {
+            const emailFallback = await supabase.auth.verifyOtp({
+                email,
+                token: otp,
+                type: "email",
+            });
+            if (!emailFallback.error) {
+                verifyResult = emailFallback;
+            }
+        }
+    }
+
+    const { data, error } = verifyResult;
 
     if (error) {
         return { error: AUTH_ERRORS.OTP_VERIFY_GENERIC };
@@ -579,7 +644,7 @@ export async function verifyOtpAction(formData: FormData) {
 
 export async function resendOtpAction(formData: FormData) {
     const supabase = await createClient();
-    const email = formData.get("email") as string;
+    const email = (formData.get("email") as string)?.trim().toLowerCase();
     const ip = await getClientIP();
 
     if (await checkAuthRateLimit("resend_otp", ip, email)) {
@@ -588,6 +653,56 @@ export async function resendOtpAction(formData: FormData) {
 
     if (!email) {
         return { error: "Email is required." };
+    }
+
+    const customSmtpActive = isCustomSmtpConfigured();
+
+    if (customSmtpActive) {
+        const supabaseAdmin = createSupabaseAdminClient(
+            process.env.NEXT_PUBLIC_SUPABASE_URL!,
+            process.env.SUPABASE_SERVICE_ROLE_KEY!,
+            { auth: { autoRefreshToken: false, persistSession: false } }
+        );
+
+        const { data: linkData, error: linkErr } =
+            await supabaseAdmin.auth.admin.generateLink({
+                type: "magiclink",
+                email,
+            });
+
+        if (!linkErr && linkData?.properties?.email_otp) {
+            const otpCode = linkData.properties.email_otp;
+            const appUrl = getAppBaseUrl();
+            const confirmUrl = `${appUrl}/auth/verify-email?email=${encodeURIComponent(email)}`;
+            const userName =
+                linkData.user?.user_metadata?.full_name || "Trader";
+
+            const emailResult = await sendEmailWithDetails({
+                to: email,
+                subject: `Verify your email for TheNextTrade (${otpCode})`,
+                html: buildSignupOtpEmailHtml({
+                    userName,
+                    otpCode,
+                    confirmUrl,
+                }),
+                text: `Your TheNextTrade verification code is: ${otpCode}`,
+            });
+
+            if (emailResult.success) {
+                return {
+                    success: true,
+                    message: "A new 8-digit code has been sent to your email.",
+                };
+            }
+
+            logSecurityEvent({
+                type: SECURITY_EVENT_TYPES.AUTH_FAILED,
+                ip,
+                path: "/auth/actions/resend",
+                detail: `Custom SMTP resend failed: ${emailResult.error}`,
+            }).catch(() => {});
+            return { error: AUTH_ERRORS.OTP_RESEND_GENERIC };
+        }
     }
 
     const { error } = await supabase.auth.resend({

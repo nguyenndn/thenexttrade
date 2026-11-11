@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { CommentForm } from "./CommentForm";
 import { CommentList } from "./CommentList";
 import { Loader2, MessageSquare } from "lucide-react";
@@ -13,21 +14,42 @@ interface User {
     image: string | null;
 }
 
+interface CommentRecord {
+    id: string;
+    content: string;
+    createdAt: string | Date;
+    user: User;
+    replies?: CommentRecord[];
+    parentId?: string | null;
+}
+
 interface CommentSectionProps {
     articleId: string;
+    articleSlug?: string;
     currentUser?: User | null;
-    initialComments?: any[];
+    initialComments?: CommentRecord[];
 }
 
 export function CommentSection({
     articleId,
+    articleSlug,
     currentUser: initialUser,
     initialComments = [],
 }: CommentSectionProps) {
-    const [comments, setComments] = useState(initialComments);
+    const pathname = usePathname();
+    const [comments, setComments] = useState<CommentRecord[]>(initialComments);
     const [isLoading, setIsLoading] = useState(initialComments.length === 0);
     const [currentUser, setCurrentUser] = useState<User | null>(
         initialUser || null
+    );
+
+    const resolvedArticlePath = articleSlug
+        ? `/articles/${articleSlug}`
+        : pathname?.startsWith("/articles/")
+          ? pathname
+          : `/articles/${articleId}`;
+    const loginNextTarget = encodeURIComponent(
+        `${resolvedArticlePath}#comment-form-box`
     );
 
     useEffect(() => {
@@ -139,7 +161,7 @@ export function CommentSection({
                             engage with verified community traders.
                         </p>
                         <Link
-                            href={`/auth/login?next=/articles/${articleId}#comment-form-box`}
+                            href={`/auth/login?next=${loginNextTarget}`}
                             className={buttonVariants({
                                 variant: "gold",
                                 size: "smd",

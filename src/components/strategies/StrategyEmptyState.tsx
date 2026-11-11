@@ -1,7 +1,16 @@
+"use client";
+
+import Link from "next/link";
 import { Target, Plus, GraduationCap } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { buttonVariants } from "@/components/ui/button-variants";
+import { cn } from "@/lib/utils";
+import { useFeatureFlags } from "@/lib/dashboard-context";
 
 export function StrategyEmptyState({ onAdd }: { onAdd: () => void }) {
+    const { isEnabled } = useFeatureFlags();
+    const academyEnabled = isEnabled("feature_academy");
+
     return (
         <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-lg border-2 border-dashed border-dashboard mt-8">
             {/* Animated Target Icon */}
@@ -35,15 +44,18 @@ export function StrategyEmptyState({ onAdd }: { onAdd: () => void }) {
                     <Plus size={18} strokeWidth={2.5} />
                     Add Strategy
                 </Button>
-                <a href="/dashboard/academy">
-                    <Button
-                        variant="outline"
-                        className="gap-2 px-5 h-10 text-sm font-bold rounded-lg border-dashboard hover:border-amber-500/40 hover:bg-amber-500/5 hover:text-gold dark:hover:text-amber-400 transition-all duration-300"
+                {academyEnabled && (
+                    <Link
+                        href="/dashboard/academy"
+                        className={cn(
+                            buttonVariants({ variant: "outline" }),
+                            "gap-2 px-5 h-10 text-sm font-bold rounded-lg border-dashboard hover:border-amber-500/40 hover:bg-amber-500/5 hover:text-gold dark:hover:text-amber-400 transition-all duration-300 flex items-center justify-center"
+                        )}
                     >
                         <GraduationCap size={16} />
                         Start Academy
-                    </Button>
-                </a>
+                    </Link>
+                )}
             </div>
 
             <style jsx>{`

@@ -131,13 +131,13 @@ export const dashboardMenuItems = [
     },
 
     // --- GROWTH ---
-    // Temporarily hidden: Academy (will be reopened later per user request)
-    // {
-    //     name: "Academy",
-    //     href: "/dashboard/academy",
-    //     icon: GraduationCap,
-    //     requiresTradeData: false,
-    // },
+    {
+        name: "Academy",
+        href: "/dashboard/academy",
+        icon: GraduationCap,
+        requiresTradeData: false,
+        featureFlag: "feature_academy",
+    },
     {
         name: "Leaderboard",
         href: "/dashboard/leaderboard",
@@ -275,12 +275,12 @@ export const dashboardMenuGroups = [
         label: "More",
         icon: MoreHorizontal,
         items: [
-            // Temporarily hidden: Academy (will be reopened later per user request)
-            // {
-            //     name: "Academy",
-            //     href: "/dashboard/academy",
-            //     icon: GraduationCap,
-            // },
+            {
+                name: "Academy",
+                href: "/dashboard/academy",
+                icon: GraduationCap,
+                featureFlag: "feature_academy",
+            },
             {
                 name: "Leaderboard",
                 href: "/dashboard/leaderboard",

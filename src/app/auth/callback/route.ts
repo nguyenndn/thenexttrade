@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { prisma } from "@/lib/prisma";
 
 export async function GET(request: Request) {
     const { searchParams, origin } = new URL(request.url);
@@ -37,9 +38,61 @@ export async function GET(request: Request) {
 
     if (code) {
         const supabase = await createClient();
-        const { error } = await supabase.auth.exchangeCodeForSession(code);
+        const { data, error } = await supabase.auth.exchangeCodeForSession(code);
 
         if (!error) {
+            if (data?.user) {
+                const authUser = data.user;
+                const metaName = (
+                    authUser.user_metadata?.full_name ||
+                    authUser.user_metadata?.name ||
+                    ""
+                ).trim();
+                const confirmedAt = authUser.email_confirmed_at
+                    ? new Date(authUser.email_confirmed_at)
+                    : new Date();
+
+                try {
+                    const existingUser = await prisma.user.findUnique({
+                        where: { id: authUser.id },
+                        select: { id: true, name: true },
+                    });
+                    const conflictingEmailUser = authUser.email
+                        ? await prisma.user.findUnique({
+                              where: { email: authUser.email },
+                              select: { id: true },
+                          })
+                        : null;
+                    const canSetEmail =
+                        Boolean(authUser.email) &&
+                        (!conflictingEmailUser ||
+                            conflictingEmailUser.id === authUser.id);
+
+                    await prisma.user.upsert({
+                        where: { id: authUser.id },
+                        update: {
+                            ...(canSetEmail ? { email: authUser.email } : {}),
+                            ...(!existingUser?.name && metaName
+                                ? { name: metaName }
+                                : {}),
+                            emailVerified: confirmedAt,
+                        },
+                        create: {
+                            id: authUser.id,
+                            email: canSetEmail ? authUser.email : null,
+                            name: metaName,
+                            emailVerified: confirmedAt,
+                            image: authUser.user_metadata?.avatar_url || null,
+                        },
+                    });
+                } catch (upsertErr) {
+                    console.error(
+                        "Auth Callback User Upsert Error:",
+                        upsertErr
+                    );
+                }
+            }
+
             // Check if this was a password recovery request
             const isRecovery = next.includes("update-password");
 

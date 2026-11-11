@@ -2,9 +2,20 @@
 
 import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth-cache";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { z } from "zod";
-import { normalizeCurrencyCode } from "@/lib/utils/cent-account";
+import {
+    convertToUsdEquivalent,
+    normalizeCurrencyCode,
+} from "@/lib/utils/cent-account";
+
+function revalidateStrategyDependencies() {
+    revalidateTag("dashboard-stats", "max");
+    revalidatePath("/dashboard");
+    revalidatePath("/dashboard/journal");
+    revalidatePath("/dashboard/analytics");
+    revalidatePath("/dashboard/strategies");
+}
 
 const strategySchema = z.object({
     name: z.string().min(1).max(100),
@@ -109,7 +120,7 @@ export async function createStrategy(data: z.infer<typeof strategySchema>) {
             },
         });
 
-        revalidatePath("/dashboard/strategies");
+        revalidateStrategyDependencies();
         return { success: true };
     } catch (error) {
         return { error: "Failed to create strategy" };
@@ -183,7 +194,7 @@ export async function updateStrategy(
             });
         }
 
-        revalidatePath("/dashboard/strategies");
+        revalidateStrategyDependencies();
         return { success: true };
     } catch (error) {
         return { error: "Failed to update strategy" };
@@ -217,26 +228,59 @@ export async function deleteStrategy(id: string) {
             data: { strategy: null },
         });
 
-        revalidatePath("/dashboard/strategies");
+        revalidateStrategyDependencies();
         return { success: true };
     } catch (error) {
         return { error: "Failed to delete strategy" };
     }
 }
 
-export async function getStrategyPerformance() {
+export async function getStrategyPerformance(accountId?: string) {
     const user = await getAuthUser();
     if (!user) return { error: "Unauthorized" };
 
+    const normalizedAccountId =
+        accountId && accountId !== "all" ? accountId : undefined;
+
     try {
+        const userAccounts = await prisma.tradingAccount.findMany({
+            where: { userId: user.id },
+            select: { id: true, currency: true, server: true },
+        });
+        const validAccountId =
+            normalizedAccountId &&
+            userAccounts.some((acc) => acc.id === normalizedAccountId)
+                ? normalizedAccountId
+                : undefined;
+        const accountMap = new Map(userAccounts.map((acc) => [acc.id, acc]));
+        const uniqueCurrencies = new Set(
+            userAccounts.map((acc) =>
+                normalizeCurrencyCode(acc.currency, acc.server)
+            )
+        );
+        const shouldConvertToUsd = !validAccountId && uniqueCurrencies.size > 1;
+
+        const normalizeTradePnl = (
+            rawPnl: number,
+            tradeAccountId?: string | null
+        ): number => {
+            if (!shouldConvertToUsd) return rawPnl;
+            const acc = tradeAccountId
+                ? accountMap.get(tradeAccountId)
+                : undefined;
+            return convertToUsdEquivalent(rawPnl, acc?.currency, acc?.server);
+        };
+
         // 1. Get all closed trades with strategies
         const trades = await prisma.journalEntry.findMany({
             where: {
                 userId: user.id,
                 status: "CLOSED",
                 strategy: { not: null },
+                ...(validAccountId ? { accountId: validAccountId } : {}),
             },
             select: {
+                accountId: true,
                 strategy: true,
                 result: true,
                 pnl: true,
@@ -272,10 +316,11 @@ export async function getStrategyPerformance() {
             }
 
             const stats = statsMap.get(strategyName)!;
-            const netPnl =
+            const rawNetPnl =
                 (trade.pnl || 0) +
                 (trade.commission || 0) +
                 (trade.swap || 0);
+            const netPnl = normalizeTradePnl(rawNetPnl, trade.accountId);
             stats.totalTrades++;
             stats.totalPnL += netPnl;
             if (trade.result === "WIN") stats.winCount++;
@@ -288,7 +333,7 @@ export async function getStrategyPerformance() {
             where: { userId: user.id },
             select: { name: true, color: true, isPlaybook: true },
         });
-        const strategyMetaMap = new Map(userStrategies.map(s => [s.name, s]));
+        const strategyMetaMap = new Map(userStrategies.map((s) => [s.name, s]));
 
         const performance = Array.from(statsMap.values())
             .map((stat) => {
@@ -302,7 +347,11 @@ export async function getStrategyPerformance() {
                             : 0,
                     totalPnL: Number(stat.totalPnL.toFixed(2)),
                     avgPnL:
-                        stat.totalTrades > 0 ? Number((stat.totalPnL / stat.totalTrades).toFixed(2)) : 0,
+                        stat.totalTrades > 0
+                            ? Number(
+                                  (stat.totalPnL / stat.totalTrades).toFixed(2)
+                              )
+                            : 0,
                     profitFactor:
                         stat.grossLoss > 0
                             ? stat.grossProfit / stat.grossLoss
@@ -317,8 +366,13 @@ export async function getStrategyPerformance() {
 
         // Calculate overall Playbook vs Discretionary comparison
         const allClosedTrades = await prisma.journalEntry.findMany({
-            where: { userId: user.id, status: "CLOSED" },
+            where: {
+                userId: user.id,
+                status: "CLOSED",
+                ...(validAccountId ? { accountId: validAccountId } : {}),
+            },
             select: {
+                accountId: true,
                 strategy: true,
                 result: true,
                 pnl: true,
@@ -327,16 +381,23 @@ export async function getStrategyPerformance() {
             },
         });
 
-        let pbTrades = 0, pbWins = 0, pbPnL = 0, pbGrossProfit = 0, pbGrossLoss = 0;
-        let discTrades = 0, discWins = 0, discPnL = 0, discGrossProfit = 0, discGrossLoss = 0;
+        let pbTrades = 0,
+            pbWins = 0,
+            pbPnL = 0,
+            pbGrossProfit = 0,
+            pbGrossLoss = 0;
+        let discTrades = 0,
+            discWins = 0,
+            discPnL = 0,
+            discGrossProfit = 0,
+            discGrossLoss = 0;
 
         for (const t of allClosedTrades) {
             const meta = t.strategy ? strategyMetaMap.get(t.strategy) : null;
             const isPb = meta?.isPlaybook === true;
-            const pnl =
-                (t.pnl || 0) +
-                (t.commission || 0) +
-                (t.swap || 0);
+            const rawPnl =
+                (t.pnl || 0) + (t.commission || 0) + (t.swap || 0);
+            const pnl = normalizeTradePnl(rawPnl, t.accountId);
             const isWin = t.result === "WIN";
 
             if (isPb) {
@@ -359,31 +420,38 @@ export async function getStrategyPerformance() {
                 totalTrades: pbTrades,
                 winRate: pbTrades > 0 ? (pbWins / pbTrades) * 100 : 0,
                 totalPnL: pbPnL,
-                profitFactor: pbGrossLoss > 0 ? pbGrossProfit / pbGrossLoss : pbGrossProfit > 0 ? 99 : 0,
+                profitFactor:
+                    pbGrossLoss > 0
+                        ? pbGrossProfit / pbGrossLoss
+                        : pbGrossProfit > 0
+                          ? 99
+                          : 0,
             },
             discretionary: {
                 totalTrades: discTrades,
                 winRate: discTrades > 0 ? (discWins / discTrades) * 100 : 0,
                 totalPnL: discPnL,
-                profitFactor: discGrossLoss > 0 ? discGrossProfit / discGrossLoss : discGrossProfit > 0 ? 99 : 0,
-            }
+                profitFactor:
+                    discGrossLoss > 0
+                        ? discGrossProfit / discGrossLoss
+                        : discGrossProfit > 0
+                          ? 99
+                          : 0,
+            },
         };
 
-        const { resolveDefaultAccountId } = await import(
-            "@/actions/main-account"
-        );
-        const defaultAccId = await resolveDefaultAccountId(user.id);
-        const targetAcc = await prisma.tradingAccount.findFirst({
-            where: {
-                userId: user.id,
-                ...(defaultAccId ? { id: defaultAccId } : {}),
-            },
-            select: { currency: true, server: true },
-        });
-        const currency = normalizeCurrencyCode(
-            targetAcc?.currency,
-            targetAcc?.server
-        );
+        let currency = "USD";
+        if (!shouldConvertToUsd) {
+            if (validAccountId) {
+                const acc = accountMap.get(validAccountId);
+                currency = normalizeCurrencyCode(acc?.currency, acc?.server);
+            } else if (userAccounts[0]) {
+                currency = normalizeCurrencyCode(
+                    userAccounts[0].currency,
+                    userAccounts[0].server
+                );
+            }
+        }
 
         return { performance, summary, currency };
     } catch {
@@ -404,7 +472,7 @@ export async function untagStrategy(name: string) {
             data: { strategy: null },
         });
 
-        revalidatePath("/dashboard/strategies");
+        revalidateStrategyDependencies();
         return { success: true };
     } catch (error) {
         return { error: "Failed to untag strategy" };

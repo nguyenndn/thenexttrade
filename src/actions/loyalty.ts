@@ -21,9 +21,30 @@ export async function fetchUserLoyaltyDashboard(): Promise<{
   error?: string;
 }> {
   try {
-    const user = await getAuthUser();
+    const [user, loyaltyEnabled] = await Promise.all([
+      getAuthUser(),
+      isLoyaltyEnabled(),
+    ]);
     if (!user) {
       return { success: false, error: "Please log in to view Loyalty Program." };
+    }
+
+    if (!loyaltyEnabled) {
+      const isAdmin =
+        user.profile?.role === "ADMIN" ||
+        (
+          await prisma.profile.findUnique({
+            where: { userId: user.id },
+            select: { role: true },
+          })
+        )?.role === "ADMIN";
+
+      if (!isAdmin) {
+        return {
+          success: false,
+          error: "Loyalty program is currently unavailable",
+        };
+      }
     }
 
     const progress = await getUserLoyaltyProgress(user.id);

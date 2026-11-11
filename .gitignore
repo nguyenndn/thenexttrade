@@ -81,6 +81,8 @@ scratch/
 
 # cookies / auth tokens
 *cookie*
+!src/components/layout/CookieConsentBanner.tsx
+!src/app/legal/cookie-policy/**
 
 # impeccable engine binary (launcher auto-downloads to ~/.impeccable/bin)
 .agents/skills/impeccable/scripts/bin/

@@ -116,7 +116,7 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
     }
 
     return (
-        <TradingSystemsPageShell maxWidth="max-w-7xl">
+        <TradingSystemsPageShell maxWidth="max-w-7xl" user={user}>
             <JsonLd
                 type="SoftwareApplication"
                 data={{
@@ -257,7 +257,7 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
                                         <span>You are signed in</span>
                                     </div>
                                     <Link
-                                        href="/dashboard/accounts"
+                                        href="/dashboard/trading-systems"
                                         className={buttonVariants({
                                             variant: "gold",
                                             className:
@@ -265,13 +265,13 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
                                         })}
                                     >
                                         <KeyRound size={15} className="shrink-0" />
-                                        <span>Verify Partner Eligibility</span>
+                                        <span>Go to Trading Systems</span>
                                     </Link>
                                 </div>
                             ) : (
                                 <div className="flex flex-col gap-2.5">
                                     <Link
-                                        href="/auth/signup?next=/dashboard/accounts&source=trading_systems"
+                                        href="/auth/signup?next=/dashboard/trading-systems&source=trading_systems"
                                         className={buttonVariants({
                                             variant: "gold",
                                             className:
@@ -282,7 +282,7 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
                                         <span>Sign Up for Eligibility</span>
                                     </Link>
                                     <Link
-                                        href="/auth/login?next=/dashboard/accounts"
+                                        href="/auth/login?next=/dashboard/trading-systems"
                                         className={buttonVariants({
                                             variant: "outline",
                                             className:

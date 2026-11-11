@@ -43,6 +43,7 @@ import { toast } from "sonner";
 import { trackEvent } from "@/lib/track";
 import { isSyncHealthCenterEnabled } from "@/lib/feature-flags";
 import { getCloudSyncStatus, cancelCloudSyncJob } from "@/actions/cloud-sync";
+import { BROKER_INFO } from "@/lib/validations/vip-request";
 
 interface TradingAccount {
     id: string;
@@ -84,7 +85,7 @@ interface TradingAccount {
     monthlyTargetType?: string;
     initialBalance?: number | null;
     hasCredentials?: boolean;
-    savedPassword?: string;
+    hasSavedPassword?: boolean;
     latestJob?: any | null;
 }
 
@@ -1054,7 +1055,7 @@ export function AccountListClient({
                                     •
                                 </span>
                                 <a
-                                    href="https://www.ultimamarkets.trade/forex-trading/forex-trading-account/?affid=NzIzNDkwMw=="
+                                    href={BROKER_INFO.ULTIMAMARKETS.affiliateUrl}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="text-amber-500 hover:text-amber-600 dark:text-amber-400 dark:hover:text-amber-300 font-bold transition-colors"

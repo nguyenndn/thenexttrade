@@ -95,22 +95,52 @@ export default async function TradingSystemsPage() {
             (!globalProEntitlement.expiresAt ||
                 globalProEntitlement.expiresAt >= now)
     );
+    const buildCompositeAccountKey = (
+        broker?: string | null,
+        acctNum?: string | null
+    ): string =>
+        `${(broker || "").trim().toUpperCase()}::${(acctNum || "").trim()}`;
+
     const accountByNumber = new Map<string, (typeof tradingAccounts)[number]>();
+    const accountByNumberFallback = new Map<
+        string,
+        (typeof tradingAccounts)[number]
+    >();
     for (const acc of tradingAccounts) {
-        if (acc.accountNumber) {
-            accountByNumber.set(acc.accountNumber.trim(), acc);
+        const trimmedAcct = acc.accountNumber?.trim();
+        if (trimmedAcct) {
+            const compositeKey = buildCompositeAccountKey(
+                acc.broker,
+                trimmedAcct
+            );
+            if (!accountByNumber.has(compositeKey)) {
+                accountByNumber.set(compositeKey, acc);
+            }
+            if (!accountByNumberFallback.has(trimmedAcct)) {
+                accountByNumberFallback.set(trimmedAcct, acc);
+            }
         }
     }
 
     const accountLicensesMap = new Map<string, AccountLicenseItem>();
+    const licenseFallbackByAcctNum = new Map<string, AccountLicenseItem>();
 
     for (const lic of licenses) {
         const acctNum = lic.accountNumber.trim();
+        const brokerNorm = (lic.broker || "").trim();
+        const key = buildCompositeAccountKey(brokerNorm, acctNum);
+        if (accountLicensesMap.has(key)) continue;
+
+        const isExpiredApproved =
+            lic.status === AccountStatus.APPROVED &&
+            Boolean(lic.expiryDate && lic.expiryDate < now);
         const isApproved =
             lic.status === AccountStatus.APPROVED &&
             (!lic.expiryDate || lic.expiryDate >= now);
 
-        const matchedAcc = accountByNumber.get(acctNum);
+        const matchedAcc =
+            accountByNumber.get(key) ||
+            (!brokerNorm ? accountByNumberFallback.get(acctNum) : undefined);
         let licenseKey: string | null = null;
 
         if (isApproved) {
@@ -127,23 +157,40 @@ export default async function TradingSystemsPage() {
             }
         }
 
-        accountLicensesMap.set(acctNum, {
+        const resolvedStatus: AccountLicenseItem["status"] = isExpiredApproved
+            ? "EXPIRED"
+            : isApproved
+              ? "APPROVED"
+              : (lic.status as AccountLicenseItem["status"]);
+
+        const licenseItem: AccountLicenseItem = {
             id: lic.id,
             licenseId: lic.id,
             accountNumber: acctNum,
             broker: lic.broker,
-            status: isApproved
-                ? "APPROVED"
-                : (lic.status as AccountLicenseItem["status"]),
+            status: resolvedStatus,
             licenseKey,
             rejectReason: lic.rejectReason,
-        });
+        };
+
+        accountLicensesMap.set(key, licenseItem);
+        if (!licenseFallbackByAcctNum.has(acctNum)) {
+            licenseFallbackByAcctNum.set(acctNum, licenseItem);
+        }
     }
 
     // Also include any TradingAccount that was verified via VIP / IB Attribution or Global Pro
     for (const acc of tradingAccounts) {
         const acctNum = acc.accountNumber?.trim();
-        if (!acctNum || accountLicensesMap.has(acctNum)) continue;
+        if (!acctNum) continue;
+        const brokerNorm = (acc.broker || "").trim();
+        const key = buildCompositeAccountKey(brokerNorm, acctNum);
+        if (
+            accountLicensesMap.has(key) ||
+            (!brokerNorm && licenseFallbackByAcctNum.has(acctNum))
+        ) {
+            continue;
+        }
 
         const hasActivePro =
             hasGlobalPro ||
@@ -171,14 +218,18 @@ export default async function TradingSystemsPage() {
                 });
                 licenseKey = ensured.licenseKey;
             }
-            accountLicensesMap.set(acctNum, {
+            const licenseItem: AccountLicenseItem = {
                 id: acc.id,
                 licenseId: null,
                 accountNumber: acctNum,
                 broker: acc.broker || "Partner Broker",
                 status: "APPROVED",
                 licenseKey,
-            });
+            };
+            accountLicensesMap.set(key, licenseItem);
+            if (!licenseFallbackByAcctNum.has(acctNum)) {
+                licenseFallbackByAcctNum.set(acctNum, licenseItem);
+            }
         }
     }
 
@@ -190,7 +241,15 @@ export default async function TradingSystemsPage() {
     const userTradingAccounts: SelectableTradingAccount[] = tradingAccounts.map(
         (acc) => {
             const acctNum = acc.accountNumber?.trim() || null;
-            const matchedLic = acctNum ? accountLicensesMap.get(acctNum) : null;
+            const brokerNorm = (acc.broker || "").trim();
+            const matchedLic = acctNum
+                ? accountLicensesMap.get(
+                      buildCompositeAccountKey(brokerNorm, acctNum)
+                  ) ||
+                  (!brokerNorm
+                      ? licenseFallbackByAcctNum.get(acctNum)
+                      : undefined)
+                : null;
             return {
                 id: acc.id,
                 name: acc.name || "Trading Account",

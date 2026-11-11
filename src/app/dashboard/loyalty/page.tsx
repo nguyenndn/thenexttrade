@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getAuthUser } from "@/lib/auth-cache";
+import { prisma } from "@/lib/prisma";
 import {
   getUserLoyaltyProgress,
   isLoyaltyEnabled,
@@ -20,11 +21,22 @@ export default async function LoyaltyPage() {
   ]);
 
   if (!user) {
-    redirect("/auth/login?returnUrl=/dashboard/loyalty");
+    redirect("/auth/login?next=/dashboard/loyalty");
   }
 
   if (!loyaltyEnabled) {
-    redirect("/dashboard");
+    const isAdmin =
+      user.profile?.role === "ADMIN" ||
+      (
+        await prisma.profile.findUnique({
+          where: { userId: user.id },
+          select: { role: true },
+        })
+      )?.role === "ADMIN";
+
+    if (!isAdmin) {
+      redirect("/dashboard");
+    }
   }
 
   const progress = await getUserLoyaltyProgress(user.id);

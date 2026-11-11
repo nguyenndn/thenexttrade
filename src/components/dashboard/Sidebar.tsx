@@ -222,16 +222,17 @@ export function Sidebar({
     const isCollapsed = collapsed ?? false;
     // const [collapsed, setCollapsed] = useState(false); // Removed local state
     const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
-    const { disabledFlags } = useFeatureFlags();
+    const { disabledFlags, loaded } = useFeatureFlags();
 
-    // Filter out items with disabled feature flags
+    // Filter out items with disabled feature flags (and wait until loaded if unseeded)
     const visibleItems = useMemo(
         () =>
             items.filter((item: any) => {
                 if (!item.featureFlag) return true;
+                if (!loaded) return false;
                 return !disabledFlags.has(item.featureFlag);
             }),
-        [items, disabledFlags]
+        [items, disabledFlags, loaded]
     );
 
     // Map child tab routes to their parent menu item routes

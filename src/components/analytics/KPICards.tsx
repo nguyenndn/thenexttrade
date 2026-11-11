@@ -3,12 +3,12 @@
 import {
     Target,
     Scale,
-    DollarSign,
     Percent,
     Activity,
     TrendingUp,
     TrendingDown,
 } from "lucide-react";
+import { formatDashboardCurrency } from "@/lib/utils/cent-account";
 
 interface KPICardsProps {
     summary: {
@@ -17,15 +17,19 @@ interface KPICardsProps {
         profitFactor: number;
         totalPnL: number;
         avgRRR: number;
+        currency?: string;
         currentStreak: {
             type: "win" | "loss";
             count: number;
         };
     };
+    currency?: string;
 }
 
-export function KPICards({ summary }: KPICardsProps) {
+export function KPICards({ summary, currency }: KPICardsProps) {
     if (!summary) return null;
+
+    const resolvedCurrency = currency || summary.currency || "USD";
 
     const cards = [
         {
@@ -61,7 +65,11 @@ export function KPICards({ summary }: KPICardsProps) {
         },
         {
             title: "Total P&L",
-            value: `$${Math.abs(summary.totalPnL || 0).toLocaleString()}`,
+            value: formatDashboardCurrency(
+                summary.totalPnL || 0,
+                resolvedCurrency,
+                { signDisplay: "always" }
+            ),
             icon: (summary.totalPnL || 0) >= 0 ? TrendingUp : TrendingDown,
             color:
                 (summary.totalPnL || 0) >= 0
@@ -71,7 +79,6 @@ export function KPICards({ summary }: KPICardsProps) {
                 (summary.totalPnL || 0) >= 0
                     ? "bg-emerald-50 dark:bg-emerald-500/10"
                     : "bg-red-50 dark:bg-red-500/10",
-            prefix: (summary.totalPnL || 0) >= 0 ? "+" : "-",
         },
         {
             title: "Avg R:R",
@@ -126,7 +133,6 @@ export function KPICards({ summary }: KPICardsProps) {
                         <p
                             className={`text-[28px] font-bold font-mono tabular-nums tracking-tight ${colorClass} relative z-10`}
                         >
-                            {card.prefix && card.prefix}
                             {card.value}
                         </p>
                         {card.description && (

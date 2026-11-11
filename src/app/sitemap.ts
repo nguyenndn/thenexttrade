@@ -4,15 +4,19 @@ import { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
 import { getBaseUrl } from "@/lib/url";
 import { TRADING_SYSTEMS_DATA } from "@/config/trading-systems-data";
+import { isAcademyEnabled } from "@/app/admin/academy/actions";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const baseUrl = getBaseUrl();
+    const academyEnabled = await isAcademyEnabled();
 
     // 1. Static Routes - Main pages
     const mainRoutes = [
         { path: "", priority: 1.0, frequency: "daily" as const },
         { path: "/about", priority: 0.8, frequency: "monthly" as const },
-        { path: "/academy", priority: 0.9, frequency: "weekly" as const },
+        ...(academyEnabled
+            ? [{ path: "/academy", priority: 0.9, frequency: "weekly" as const }]
+            : []),
         { path: "/knowledge", priority: 0.9, frequency: "daily" as const },
         { path: "/brokers", priority: 0.85, frequency: "weekly" as const },
         { path: "/tools", priority: 0.95, frequency: "weekly" as const },
@@ -109,14 +113,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.8,
     }));
 
-    // 3. Fetch Academy Lessons
-    const lessons = await prisma.lesson.findMany({
-        where: { status: "published" },
-        select: {
-            slug: true,
-            updatedAt: true,
-        },
-    });
+    // 3. Fetch Academy Lessons (only when Academy feature is enabled)
+    const lessons = academyEnabled
+        ? await prisma.lesson.findMany({
+              where: { status: "published" },
+              select: {
+                  slug: true,
+                  updatedAt: true,
+              },
+          })
+        : [];
 
     const lessonUrls = lessons.map((lesson) => ({
         url: `${baseUrl}/academy/lesson/${lesson.slug}`,

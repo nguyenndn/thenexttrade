@@ -4,14 +4,33 @@ import { redirect } from "next/navigation";
 import { BookOpen, CheckCircle, Clock, PlayCircle } from "lucide-react";
 import Link from "next/link";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { isAcademyEnabled } from "@/app/admin/academy/actions";
 
 export const dynamic = "force-dynamic";
 
 export default async function MyLearningPage() {
-    const user = await getAuthUser();
+    const [user, academyEnabled] = await Promise.all([
+        getAuthUser(),
+        isAcademyEnabled(),
+    ]);
 
     if (!user) {
-        redirect("/auth/login");
+        redirect("/auth/login?next=/dashboard/learning");
+    }
+
+    if (!academyEnabled) {
+        const isAdmin =
+            user.profile?.role === "ADMIN" ||
+            (
+                await prisma.profile.findUnique({
+                    where: { userId: user.id },
+                    select: { role: true },
+                })
+            )?.role === "ADMIN";
+
+        if (!isAdmin) {
+            redirect("/dashboard");
+        }
     }
 
     // OPTIMIZED: Fetch levels and user progress in parallel

@@ -14,7 +14,7 @@ import { SPRING_SOFT, backdropVariants } from "@/lib/animations";
 export function MobileBottomTabBar() {
     const pathname = usePathname();
     const [openGroup, setOpenGroup] = useState<string | null>(null);
-    const { disabledFlags } = useFeatureFlags();
+    const { disabledFlags, loaded } = useFeatureFlags();
 
     // Determine which groups to use based on the path
     const isAdmin = pathname?.startsWith("/admin");
@@ -27,10 +27,11 @@ export function MobileBottomTabBar() {
             items: group.items.filter((item) => {
                 const flag = (item as any).featureFlag;
                 if (!flag) return true;
+                if (!loaded) return false;
                 return !disabledFlags.has(flag);
             }),
         }));
-    }, [rawGroups, disabledFlags]);
+    }, [rawGroups, disabledFlags, loaded]);
 
     // Close sheet on route change
     useEffect(() => {

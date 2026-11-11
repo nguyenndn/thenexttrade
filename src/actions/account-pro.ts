@@ -345,7 +345,7 @@ export async function upgradeToPartnerPro(
         return { error: firstError?.message || "Invalid input" };
     }
 
-    const { email, telegramId, fullName, country } = parsed.data;
+    const { email, telegramId, fullName, country, screenshotUrl } = parsed.data;
 
     // Normalize broker for VipRequest storage (admin-facing)
     const normalizedBroker = normalizeBroker(account.broker);
@@ -453,6 +453,7 @@ export async function upgradeToPartnerPro(
                 telegramId,
                 fullName: fullName || null,
                 country: country || null,
+                screenshotUrl: screenshotUrl || null,
             },
         });
 

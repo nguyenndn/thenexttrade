@@ -646,7 +646,7 @@ function ScoreAndRiskPanel({ data }: { data: IntelligenceData }) {
 // EMPTY STATE
 // ============================================================================
 function EmptyState({ totalTrades }: { totalTrades: number }) {
-    const progress = Math.min(100, (totalTrades / 30) * 100);
+    const progress = Math.min(100, (totalTrades / 20) * 100);
     return (
         <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-xl border-2 border-dashed border-dashboard mt-8">
             <div className="w-16 h-16 mb-6 mx-auto bg-gold/10 border border-gold/20 rounded-xl flex items-center justify-center">
@@ -661,12 +661,12 @@ function EmptyState({ totalTrades }: { totalTrades: number }) {
                 More Trades Needed
             </h3>
             <p className="text-gray-600 dark:text-gray-300 px-6 max-w-sm mx-auto mb-6">
-                Log at least 30 closed trades to activate trade telemetry and execution leak detection.
+                Log at least 20 closed trades to activate trade telemetry and execution leak detection.
             </p>
             <div className="max-w-xs mx-auto mb-6">
                 <div className="flex items-center justify-between mb-2">
                     <span className="text-sm font-bold font-mono tabular-nums text-gray-600 dark:text-gray-400">
-                        {totalTrades} / 30 trades
+                        {totalTrades} / 20 trades
                     </span>
                     <span className="text-sm font-bold font-mono tabular-nums text-amber-600 dark:text-gold">
                         {Math.round(progress)}%

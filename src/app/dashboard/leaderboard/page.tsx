@@ -21,6 +21,8 @@ import { TradingSprintBanner } from "./components/TradingSprintBanner";
 import { getTier } from "@/lib/gamification";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { isRealTradingAccount } from "@/lib/loyalty/loyalty.server";
+import { isAcademyEnabled } from "@/app/admin/academy/actions";
+import { isCompetitionsEnabled } from "@/actions/admin/competitions";
 
 const VALID_TYPES: LeaderboardType[] = [
     "sprint",
@@ -38,31 +40,44 @@ export const metadata = {
 };
 
 interface PageProps {
-    searchParams: Promise<{ type?: string; sortBy?: string; period?: string }>;
+    searchParams: Promise<{
+        type?: string;
+        sortBy?: string;
+        sort?: string;
+        period?: string;
+    }>;
 }
 
 export default async function LeaderboardPage({ searchParams }: PageProps) {
     const params = await searchParams;
-    let rawType = params.type || "trading";
-    if (rawType === "xp") {
-        rawType = "trading";
-    }
-
-    const rawSortBy = params.sortBy || "currency";
-    const sortBy = (rawSortBy === "percentage" ? "percentage" : "currency") as
-        "percentage" | "currency";
 
     const rawPeriod = (params.period || "30D").toUpperCase();
     const period: PeriodFilter = ["7D", "30D", "90D", "ALL"].includes(rawPeriod)
         ? (rawPeriod as PeriodFilter)
         : "30D";
 
-    // Fetch active competition status and current user in parallel
-    const [activeCompetition, user] = await Promise.all([
-        getActiveCompetition(),
-        getAuthUser(),
-    ]);
-    const hasActiveCompetition = Boolean(activeCompetition);
+    // Fetch active competition status, feature flags, and current user in parallel
+    const [activeCompetition, user, academyEnabled, competitionsEnabled] =
+        await Promise.all([
+            getActiveCompetition(),
+            getAuthUser(),
+            isAcademyEnabled(),
+            isCompetitionsEnabled(),
+        ]);
+    const hasActiveCompetition =
+        competitionsEnabled && Boolean(activeCompetition);
+
+    let rawType =
+        params.type || (hasActiveCompetition ? "sprint" : "trading");
+    if (rawType === "xp") {
+        rawType = "trading";
+    }
+
+    // Gate academy tab on academyEnabled
+    if (!academyEnabled && rawType === "academy") {
+        const fallbackType = hasActiveCompetition ? "sprint" : "trading";
+        redirect(`/dashboard/leaderboard?type=${fallbackType}`);
+    }
 
     // If user asked for sprint but no active competition exists, redirect to trading
     if (rawType === "sprint" && !hasActiveCompetition) {
@@ -75,6 +90,25 @@ export default async function LeaderboardPage({ searchParams }: PageProps) {
 
     const type = rawType as LeaderboardType;
     const fetchType = type === "mystats" ? "xp" : type;
+
+    const explicitSortParam = params.sortBy ?? params.sort;
+    let sortBy: "percentage" | "currency";
+    if (explicitSortParam !== undefined) {
+        sortBy =
+            explicitSortParam === "percentage" ||
+            explicitSortParam === "winRate" ||
+            explicitSortParam === "win_rate"
+                ? "percentage"
+                : "currency";
+    } else if (type === "sprint") {
+        sortBy =
+            activeCompetition?.scoringMetric === "percentage" ||
+            activeCompetition?.scoringMetric === "win_rate"
+                ? "percentage"
+                : "currency";
+    } else {
+        sortBy = "currency";
+    }
 
     // Fetch enrollment, trading accounts, leaderboard, and sidebar data in a single parallel batch
     const [enrollment, accountsRes, leaderboard, sidebarData] =
@@ -127,7 +161,7 @@ export default async function LeaderboardPage({ searchParams }: PageProps) {
                   studyTimeMinutes: leaderboard.myRank.studyTimeMinutes ?? 0,
                   percentile: leaderboard.myRank.percentile,
                   totalTrades: leaderboard.myRank.totalTrades ?? 0,
-                  pnl: leaderboard.myRank.pnl ?? 0,
+                  pnl: leaderboard.myRank.pnl ?? null,
               }
             : null;
 
@@ -160,8 +194,8 @@ export default async function LeaderboardPage({ searchParams }: PageProps) {
                 </Suspense>
             </div>
 
-            {/* Setup Prompt for Trading & Sprint */}
-            {(type === "trading" || type === "sprint") &&
+            {/* Setup Prompt for Trading Leaderboard */}
+            {type === "trading" &&
                 user &&
                 !leaderboard.hasLeaderboardAccount && <TradingSetupModal />}
 

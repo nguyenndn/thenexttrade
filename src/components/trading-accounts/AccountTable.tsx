@@ -134,8 +134,9 @@ export function AccountTable({
                     );
                     const balance = account.balance ?? 0;
                     const isUnderReview =
-                        account.proStatus === "PENDING" ||
-                        account.eligibility?.status === "PENDING_REVIEW";
+                        account.vipStatus === "PENDING" ||
+                        account.eligibility?.status === "PENDING_REVIEW" ||
+                        account.eligibility?.status === "PENDING";
 
                     return (
                         <div key={`mobile-${account.id}`} className="p-4 space-y-3">
@@ -341,7 +342,9 @@ export function AccountTable({
                             {/* Card Bottom: Pro Tier + Actions */}
                             <div className="flex items-center justify-between gap-2 pt-1">
                                 <div>
-                                    {account.proStatus === "ACTIVE" || account.eligibility?.status === "PRO_ACTIVE" ? (
+                                    {account.proStatus === "ACTIVE" ||
+                                    account.proStatus === "GRACE" ||
+                                    account.eligibility?.status === "PRO_ACTIVE" ? (
                                         <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-lg border border-emerald-500/30 bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400">
                                             <Crown size={10} className="text-emerald-500" /> Pro
                                         </span>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useEffect, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import type {
     LoyaltyClaimRecord,
@@ -16,7 +16,7 @@ import { LoyaltyClaimsTable } from "./LoyaltyClaimsTable";
 import { LoyaltyTiersMatrix } from "./LoyaltyTiersMatrix";
 import { LoyaltyAnalyticsPanel } from "./LoyaltyAnalyticsPanel";
 import { ProcessClaimModal } from "./ProcessClaimModal";
-import { RefreshCw, Clock, Award, BarChart3, Power } from "lucide-react";
+import { RefreshCw, Clock, Award, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/Tabs";
@@ -37,8 +37,8 @@ export function AdminLoyaltyClient({
     initialLoyaltyEnabled = true,
 }: AdminLoyaltyClientProps) {
     const router = useRouter();
-    const [claims] = useState<LoyaltyClaimRecord[]>(initialClaims);
-    const [stats] = useState<AdminLoyaltyStats>(initialStats);
+    const claims = initialClaims;
+    const stats = initialStats;
     const [tiers, setTiers] = useState<LoyaltyTierItem[]>(initialTiers);
     const [loyaltyEnabled, setLoyaltyEnabled] = useState<boolean>(
         initialLoyaltyEnabled
@@ -52,6 +52,18 @@ export function AdminLoyaltyClient({
         useState<LoyaltyClaimRecord | null>(null);
     const [isProcessModalOpen, setIsProcessModalOpen] = useState(false);
     const [isPending, startTransition] = useTransition();
+
+    useEffect(() => {
+        setTiers(initialTiers);
+    }, [initialTiers]);
+
+    useEffect(() => {
+        setLoyaltyEnabled(initialLoyaltyEnabled);
+    }, [initialLoyaltyEnabled]);
+
+    const currentSelectedClaim = selectedClaim
+        ? claims.find((c) => c.id === selectedClaim.id) ?? selectedClaim
+        : null;
 
     const handleSelectClaim = (claim: LoyaltyClaimRecord) => {
         setSelectedClaim(claim);
@@ -115,31 +127,42 @@ export function AdminLoyaltyClient({
                 title="Loyalty Claims & Volume Rewards Hub"
                 description="Audit trader milestone claims, verify live MT5 volume, and manage USDT cash disbursements."
             >
-                <div className="flex flex-wrap items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2.5">
                     <Button
                         type="button"
                         variant="outline"
-                        size="sm"
-                        disabled={isTogglingFeature}
+                        isLoading={isTogglingFeature}
                         onClick={handleToggleLoyaltyFeature}
-                        className={cn(
-                            "rounded-lg h-9 px-3.5 text-xs font-bold gap-1.5 transition-all",
-                            loyaltyEnabled
-                                ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20"
-                                : "border-rose-500/40 bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-500/20"
-                        )}
+                        className="bg-white dark:bg-[#1E2028] shadow-xs"
                     >
-                        <Power size={14} />
-                        <span>
-                            Loyalty Menu: {loyaltyEnabled ? "ON" : "OFF"}
+                        {!isTogglingFeature && (
+                            <span
+                                className={cn(
+                                    "h-2 w-2 rounded-full shrink-0",
+                                    loyaltyEnabled
+                                        ? "bg-emerald-500 animate-pulse"
+                                        : "bg-rose-500"
+                                )}
+                            />
+                        )}
+                        <span>Loyalty Menu:</span>
+                        <span
+                            className={cn(
+                                "font-extrabold",
+                                loyaltyEnabled
+                                    ? "text-emerald-600 dark:text-emerald-400"
+                                    : "text-rose-600 dark:text-rose-400"
+                            )}
+                        >
+                            {loyaltyEnabled ? "ON" : "OFF"}
                         </span>
                     </Button>
                     <Button
+                        type="button"
                         variant="outline"
-                        size="sm"
                         onClick={handleRefresh}
                         disabled={isPending}
-                        className="rounded-lg h-9 px-3.5 text-xs font-bold gap-1.5"
+                        className="bg-white dark:bg-[#1E2028] shadow-xs"
                     >
                         <RefreshCw
                             size={14}
@@ -147,7 +170,7 @@ export function AdminLoyaltyClient({
                                 isPending && "animate-spin text-primary"
                             )}
                         />
-                        Refresh Queue
+                        <span>Refresh Queue</span>
                     </Button>
                 </div>
             </AdminPageHeader>
@@ -231,7 +254,7 @@ export function AdminLoyaltyClient({
             <ProcessClaimModal
                 isOpen={isProcessModalOpen}
                 onClose={() => setIsProcessModalOpen(false)}
-                claim={selectedClaim}
+                claim={currentSelectedClaim}
                 onSuccess={handleRefresh}
             />
         </div>

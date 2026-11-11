@@ -18,7 +18,10 @@ import {
     parseISO,
 } from "date-fns";
 import { parseLocalStartOfDay, parseLocalEndOfDay } from "@/lib/utils";
-import { normalizeCurrencyCode } from "@/lib/utils/cent-account";
+import {
+    convertToUsdEquivalent,
+    normalizeCurrencyCode,
+} from "@/lib/utils/cent-account";
 import { getUserTradingDataState } from "@/lib/trading-data-state";
 import {
     getKeyStats,
@@ -55,31 +58,55 @@ export default async function AnalyticsPage({
     const tradingDataState = await getUserTradingDataState(user.id);
 
     // 1. Account & Date Filters
-    let accountId = resolvedParams?.accountId as string | undefined;
+    const userAccounts = await prisma.tradingAccount.findMany({
+        where: { userId: user.id },
+        select: { id: true, timezone: true },
+    });
 
-    // Default Account Logic if not provided (Priority 1: Main Account from /dashboard/accounts)
-    if (!accountId) {
+    const rawAccountId =
+        typeof resolvedParams?.accountId === "string"
+            ? resolvedParams.accountId
+            : undefined;
+    const normalizedAccountId =
+        rawAccountId && rawAccountId !== "all" ? rawAccountId : undefined;
+
+    let accountId: string | undefined;
+    if (rawAccountId === "all") {
+        accountId = undefined;
+    } else if (normalizedAccountId) {
+        accountId = userAccounts.some((a) => a.id === normalizedAccountId)
+            ? normalizedAccountId
+            : undefined;
+    } else {
         const cookieStore = await cookies();
-        const lastAccountId = cookieStore.get("last_account_id")?.value;
+        const rawLastAccountId = cookieStore.get("last_account_id")?.value;
+        const validLastAccountId =
+            rawLastAccountId &&
+            userAccounts.some((a) => a.id === rawLastAccountId)
+                ? rawLastAccountId
+                : undefined;
         const { resolveDefaultAccountId } = await import(
             "@/actions/main-account"
         );
-        accountId = await resolveDefaultAccountId(user.id, lastAccountId);
+        const resolvedDefault = await resolveDefaultAccountId(
+            user.id,
+            validLastAccountId
+        );
+        accountId =
+            resolvedDefault &&
+            userAccounts.some((a) => a.id === resolvedDefault)
+                ? resolvedDefault
+                : undefined;
     }
 
     // Date Range Logic (All-Time by default since Date Filter is removed)
     const startDateParam = resolvedParams?.from as string;
     const endDateParam = resolvedParams?.to as string;
 
-    // Fetch account timezone for date boundary alignment
-    let accountTimezone: string | undefined;
-    if (accountId) {
-        const acc = await prisma.tradingAccount.findFirst({
-            where: { id: accountId, userId: user.id },
-            select: { timezone: true },
-        });
-        accountTimezone = acc?.timezone || undefined;
-    }
+    // Resolve account timezone for date boundary alignment
+    const accountTimezone = accountId
+        ? userAccounts.find((a) => a.id === accountId)?.timezone || undefined
+        : undefined;
 
     const startDate = parseLocalStartOfDay(startDateParam, accountTimezone);
     const endDate = parseLocalEndOfDay(endDateParam, accountTimezone);
@@ -92,7 +119,11 @@ export default async function AnalyticsPage({
             >
                 {tradingDataState.hasTradeData && (
                     <DashboardFilter
-                        currentAccountId={accountId ?? undefined}
+                        currentAccountId={
+                            rawAccountId === "all"
+                                ? "all"
+                                : (accountId ?? undefined)
+                        }
                         hideDateFilter
                     />
                 )}
@@ -173,10 +204,43 @@ async function AnalyticsDataWrapper({
     ]);
 
     // 3. Transform Data
-    const currentBalance = accounts.reduce(
-        (sum, acc) => sum + (acc.balance || 0),
-        0
+    const uniqueCurrencies = new Set(
+        accounts.map((acc: { currency?: string | null; server?: string | null }) =>
+            normalizeCurrencyCode(acc.currency, acc.server)
+        )
     );
+    const hasMixedCurrencies = uniqueCurrencies.size > 1;
+    const resolvedCurrency =
+        !accountId && hasMixedCurrencies
+            ? "USD"
+            : normalizeCurrencyCode(
+                  accounts[0]?.currency,
+                  accounts[0]?.server
+              );
+    const currentBalance =
+        !accountId && (hasMixedCurrencies || resolvedCurrency === "USD")
+            ? accounts.reduce(
+                  (
+                      sum: number,
+                      acc: {
+                          balance?: number | null;
+                          currency?: string | null;
+                          server?: string | null;
+                      }
+                  ) =>
+                      sum +
+                      convertToUsdEquivalent(
+                          acc.balance || 0,
+                          acc.currency,
+                          acc.server
+                      ),
+                  0
+              )
+            : accounts.reduce(
+                  (sum: number, acc: { balance?: number | null }) =>
+                      sum + (acc.balance || 0),
+                  0
+              );
     const totalPeriodPnL = stats.totalPnL;
 
     // Equity Curve (backtracking from current balance)
@@ -255,10 +319,6 @@ async function AnalyticsDataWrapper({
     const psychologyData = await calculatePsychologyDiagnostic(user.id, accountId);
 
     // 5. Construct Final Data Object
-    const resolvedCurrency = normalizeCurrencyCode(
-        accounts[0]?.currency,
-        accounts[0]?.server
-    );
     const data: AnalyticsData = {
         currency: resolvedCurrency,
         summary: {
@@ -268,17 +328,13 @@ async function AnalyticsDataWrapper({
             totalPnL: stats.totalPnL,
             totalCommission: stats.commission,
             totalSwap: stats.swap,
-            avgRRR:
-                stats.lossCount > 0 && stats.avgLoss > 0
-                    ? stats.avgWin / stats.avgLoss
-                    : 0,
+            avgRRR: stats.avgLoss > 0 ? stats.avgWin / stats.avgLoss : 0,
             currentStreak:
                 streak.type === "none"
                     ? { type: "win", count: 0 }
                     : (streak as { type: "win" | "loss"; count: number }),
-            avgWin: stats.winCount > 0 ? stats.grossProfit / stats.winCount : 0,
-            avgLoss:
-                stats.lossCount > 0 ? stats.grossLoss / stats.lossCount : 0,
+            avgWin: stats.avgWin,
+            avgLoss: stats.avgLoss,
         },
         equityCurve,
         dailyPnL,

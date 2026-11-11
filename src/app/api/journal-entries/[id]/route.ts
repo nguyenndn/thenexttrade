@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -26,7 +27,10 @@ const journalEntryUpdateSchema = z.object({
         .transform((val) => (val ? new Date(val) : null))
         .refine((d) => d === null || !isNaN(d.getTime()), "Invalid exit date"),
     status: z.enum(["OPEN", "CLOSED"]).optional(),
-    result: z.enum(["WIN", "LOSS", "BREAK_EVEN"]).optional().nullable(),
+    result: z
+        .enum(["WIN", "LOSS", "BREAK_EVEN", "BE_PLUS"])
+        .optional()
+        .nullable(),
     pnl: z.number().optional().nullable(),
     commission: z.number().optional().nullable(),
     swap: z.number().optional().nullable(),
@@ -115,6 +119,7 @@ export async function PUT(
             where: { id: params.id },
             select: {
                 userId: true,
+                accountId: true,
                 entryDate: true,
                 exitDate: true,
                 result: true,
@@ -243,6 +248,32 @@ export async function PUT(
             }
         }
 
+        if (existing.accountId !== updated.accountId) {
+            if (existing.accountId) {
+                const prevCount = await prisma.journalEntry.count({
+                    where: { accountId: existing.accountId },
+                });
+                await prisma.tradingAccount.update({
+                    where: { id: existing.accountId },
+                    data: { totalTrades: prevCount },
+                });
+            }
+            if (updated.accountId) {
+                const nextCount = await prisma.journalEntry.count({
+                    where: { accountId: updated.accountId },
+                });
+                await prisma.tradingAccount.update({
+                    where: { id: updated.accountId },
+                    data: { totalTrades: nextCount },
+                });
+            }
+        }
+
+        revalidateTag("dashboard-stats", "max");
+        revalidatePath("/dashboard");
+        revalidatePath("/dashboard/journal");
+        revalidatePath("/dashboard/analytics");
+
         return NextResponse.json(updated);
     } catch (error) {
         if (error instanceof z.ZodError) {
@@ -273,6 +304,7 @@ export async function DELETE(
             where: { id: params.id },
             select: {
                 userId: true,
+                accountId: true,
                 entryDate: true,
                 exitDate: true,
                 result: true,
@@ -294,6 +326,21 @@ export async function DELETE(
         });
 
         await prisma.journalEntry.delete({ where: { id: params.id } });
+
+        if (existing.accountId) {
+            const remainingCount = await prisma.journalEntry.count({
+                where: { accountId: existing.accountId },
+            });
+            await prisma.tradingAccount.update({
+                where: { id: existing.accountId },
+                data: { totalTrades: Math.max(0, remainingCount) },
+            });
+        }
+
+        revalidateTag("dashboard-stats", "max");
+        revalidatePath("/dashboard");
+        revalidatePath("/dashboard/journal");
+        revalidatePath("/dashboard/analytics");
 
         return NextResponse.json({ success: true });
     } catch (error) {

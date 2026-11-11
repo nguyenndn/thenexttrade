@@ -1,27 +1,46 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { verifyLogin2FA } from "@/app/auth/actions";
+import { createClient } from "@/lib/supabase/client";
 import { Shield, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/Button";
 
-export default function Verify2FAPage() {
+function Verify2FAContent() {
+    const router = useRouter();
+    const searchParams = useSearchParams();
     const [code, setCode] = useState("");
     const [loading, setLoading] = useState(false);
+    const [signingOut, setSigningOut] = useState(false);
+
+    const next = searchParams.get("next") || "/dashboard";
 
     const handleVerify = async (e: React.FormEvent) => {
         e.preventDefault();
         if (code.length < 6) return;
 
         setLoading(true);
-        const res = await verifyLogin2FA(code);
+        const res = await verifyLogin2FA(code, next);
 
         if (res?.error) {
             toast.error(res.error);
             setLoading(false);
         }
         // Success will redirect automatically by server action
+    };
+
+    const handleBackToLogin = async () => {
+        setSigningOut(true);
+        try {
+            const supabase = createClient();
+            await supabase.auth.signOut();
+        } catch {
+            // Proceed to login even if sign-out encounters a transient error
+        } finally {
+            router.replace("/auth/login");
+        }
     };
 
     return (
@@ -63,7 +82,7 @@ export default function Verify2FAPage() {
 
                 <Button
                     type="submit"
-                    disabled={loading || code.length < 6}
+                    disabled={loading || signingOut || code.length < 6}
                     variant="primary"
                     className="w-full h-12 bg-gold hover:bg-amber-600 !text-white font-bold text-base rounded-lg transition-all shadow-md shadow-amber-500/20 disabled:opacity-50 flex items-center justify-center gap-2"
                 >
@@ -76,12 +95,26 @@ export default function Verify2FAPage() {
             </form>
 
             <Button
+                type="button"
                 variant="outline"
-                onClick={() => (window.location.href = "/auth/login")}
+                disabled={loading || signingOut}
+                onClick={handleBackToLogin}
                 className="w-full text-center mt-6 text-sm font-bold border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] text-slate-700 dark:text-slate-200 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg"
             >
-                Back to Login
+                {signingOut ? (
+                    <Loader2 size={18} className="animate-spin" />
+                ) : (
+                    "Back to Login"
+                )}
             </Button>
         </div>
+    );
+}
+
+export default function Verify2FAPage() {
+    return (
+        <Suspense fallback={null}>
+            <Verify2FAContent />
+        </Suspense>
     );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useTransition } from "react";
+import { useState, useEffect, useMemo, useTransition } from "react";
 import {
     Trophy,
     Plus,
@@ -17,6 +17,7 @@ import {
     ExternalLink,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { cn } from "@/lib/utils";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { AnimatedStatCard } from "@/components/admin/dashboard/AnimatedStatCard";
 import {
@@ -80,6 +81,14 @@ export function CompetitionListClient({
     const [viewingParticipantsComp, setViewingParticipantsComp] = useState<
         any | null
     >(null);
+
+    useEffect(() => {
+        setCompetitions(initialCompetitions);
+    }, [initialCompetitions]);
+
+    useEffect(() => {
+        setCompetitionsEnabled(initialCompetitionsEnabled);
+    }, [initialCompetitionsEnabled]);
 
     const handleCreateClick = () => {
         setEditingCompetition(null);
@@ -271,31 +280,43 @@ export function CompetitionListClient({
                 title="Trading Competitions & Sprints"
                 description="Configure verified MT5 trading tournaments, live season prize pools, and automated leaderboard rules."
             >
-                <div className="flex flex-wrap items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2.5">
                     <Button
                         type="button"
                         variant="outline"
-                        size="sm"
-                        disabled={isTogglingFeature}
+                        isLoading={isTogglingFeature}
                         onClick={handleToggleCompetitionsFeature}
-                        className={`rounded-lg h-9 px-3.5 text-xs font-bold gap-1.5 transition-all ${
-                            competitionsEnabled
-                                ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20"
-                                : "border-rose-500/40 bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-500/20"
-                        }`}
+                        className="bg-white dark:bg-[#1E2028] shadow-xs"
                     >
-                        <Power size={14} />
-                        <span>
-                            Sprint Arena: {competitionsEnabled ? "ON" : "OFF"}
+                        {!isTogglingFeature && (
+                            <span
+                                className={cn(
+                                    "h-2 w-2 rounded-full shrink-0",
+                                    competitionsEnabled
+                                        ? "bg-emerald-500 animate-pulse"
+                                        : "bg-rose-500"
+                                )}
+                            />
+                        )}
+                        <span>Sprint Arena:</span>
+                        <span
+                            className={cn(
+                                "font-extrabold",
+                                competitionsEnabled
+                                    ? "text-emerald-600 dark:text-emerald-400"
+                                    : "text-rose-600 dark:text-rose-400"
+                            )}
+                        >
+                            {competitionsEnabled ? "ON" : "OFF"}
                         </span>
                     </Button>
                     <Button
+                        type="button"
                         variant="primary"
                         onClick={handleCreateClick}
-                        className="shadow-lg shadow-amber-500/20 font-bold"
                     >
                         <Plus size={16} strokeWidth={2.5} />
-                        Create Competition
+                        <span>Create Competition</span>
                     </Button>
                 </div>
             </AdminPageHeader>

@@ -102,9 +102,11 @@ function getScoreInfo(score: number) {
 export function PublicProfileCard({
     profile,
     isModal = false,
+    isLoggedIn = false,
 }: {
     profile: PublicProfileData;
     isModal?: boolean;
+    isLoggedIn?: boolean;
 }) {
     const tilt = useTilt();
     const joinDate = format(new Date(profile.joinedDate), "MMM yyyy");
@@ -402,13 +404,16 @@ export function PublicProfileCard({
                                             <span className="text-sm font-black text-slate-800">
                                                 {profile.preferredSession.name}
                                             </span>
-                                            <span className="text-xs font-bold text-amber-600">
-                                                {
-                                                    profile.preferredSession
-                                                        .percentage
-                                                }
-                                                %
-                                            </span>
+                                            {profile.visibility
+                                                .showPercentMetrics && (
+                                                <span className="text-xs font-bold text-amber-600">
+                                                    {
+                                                        profile.preferredSession
+                                                            .percentage
+                                                    }
+                                                    %
+                                                </span>
+                                            )}
                                         </div>
                                     </div>
                                 </>
@@ -486,21 +491,27 @@ export function PublicProfileCard({
             </div>
 
             {/* CTA Button in natural layout flow below card */}
-            <div className="relative z-20 mt-8 text-center">
-                <Link
-                    href={`/auth/signup?ref=${profile.username}`}
-                    className={cn(
-                        buttonVariants({ variant: "gold", size: "smd" }),
-                        "gap-2 font-black shadow-lg shadow-gold/25 transition-all hover:scale-[1.03] active:scale-[0.97]"
-                    )}
-                >
-                    Join TheNextTrade
-                    <ArrowUpRight size={14} />
-                </Link>
-                <p className="mt-2 text-sm font-medium text-amber-900/70 dark:text-amber-200/70">
-                    Track, analyze, and improve your trading
-                </p>
-            </div>
+            {!isModal && (
+                <div className="relative z-20 mt-8 text-center">
+                    <Link
+                        href={
+                            isLoggedIn
+                                ? "/dashboard"
+                                : `/auth/signup?ref=${profile.username}`
+                        }
+                        className={cn(
+                            buttonVariants({ variant: "gold", size: "smd" }),
+                            "gap-2 font-black shadow-lg shadow-gold/25 transition-all hover:scale-[1.03] active:scale-[0.97]"
+                        )}
+                    >
+                        {isLoggedIn ? "Go to Dashboard" : "Join TheNextTrade"}
+                        <ArrowUpRight size={14} />
+                    </Link>
+                    <p className="mt-2 text-sm font-medium text-amber-900/70 dark:text-amber-200/70">
+                        Track, analyze, and improve your trading
+                    </p>
+                </div>
+            )}
         </div>
     );
 }

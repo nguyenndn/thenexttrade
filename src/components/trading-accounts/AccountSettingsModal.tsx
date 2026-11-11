@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { SPRING_SOFT, backdropVariants, panelVariants } from "@/lib/animations";
 import {
@@ -36,7 +36,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { updateTradingAccount } from "@/actions/accounts";
 import { updateAccountProfitTargets } from "@/actions/profit-targets";
-import { saveCloudSyncCredentials, getCloudSyncStatus } from "@/actions/cloud-sync";
+import {
+    saveCloudSyncCredentials,
+    getCloudSyncStatus,
+    revealTradingAccountPassword,
+} from "@/actions/cloud-sync";
 import {
     AccountProfitTargetSettings,
     AccountProfitTargetState,
@@ -122,8 +126,13 @@ export function AccountSettingsModal({
     );
     const [color, setColor] = useState(account.color || "hsl(var(--primary))");
     const [colorPickerOpen, setColorPickerOpen] = useState(false);
-    const [investorPassword, setInvestorPassword] = useState(account.savedPassword || "");
-    const [hasCredentials, setHasCredentials] = useState(Boolean(account.hasCredentials || account.credential));
+    const initialHasSavedPassword = Boolean(
+        account.hasSavedPassword ?? account.hasCredentials ?? account.credential
+    );
+    const [investorPassword, setInvestorPassword] = useState("");
+    const [loadedSavedPassword, setLoadedSavedPassword] = useState("");
+    const [hasCredentials, setHasCredentials] = useState(initialHasSavedPassword);
+    const isPasswordDirtyRef = useRef(false);
     const [isSaving, setIsSaving] = useState(false);
     const [targetState, setTargetState] = useState<AccountProfitTargetState>({
         weeklyEnabled: Boolean(account.weeklyTarget && account.weeklyTarget > 0),
@@ -134,16 +143,23 @@ export function AccountSettingsModal({
         monthlyTargetType: (account.monthlyTargetType as TargetType) || "USD",
     });
 
-    // Fetch fresh cloud sync credential status on open
+    // Fetch fresh cloud sync credential status & prefill saved password on open
     useEffect(() => {
         if (!isOpen || !account?.id) return;
         let isMounted = true;
+        const saved = Boolean(
+            account.hasSavedPassword ??
+                account.hasCredentials ??
+                account.credential
+        );
         setName(account.name || "");
         setServer(account.server || "");
         setCurrency(getCurrencyInfo(account.currency, account.server).code);
         setColor(account.color || "hsl(var(--primary))");
-        setInvestorPassword(account.savedPassword || "");
-        setHasCredentials(Boolean(account.hasCredentials || account.credential || account.savedPassword));
+        isPasswordDirtyRef.current = false;
+        setInvestorPassword("");
+        setLoadedSavedPassword("");
+        setHasCredentials(saved);
         setTargetState({
             weeklyEnabled: Boolean(account.weeklyTarget && account.weeklyTarget > 0),
             weeklyTarget: account.weeklyTarget ? String(account.weeklyTarget) : "",
@@ -153,22 +169,44 @@ export function AccountSettingsModal({
             monthlyTargetType: (account.monthlyTargetType as TargetType) || "USD",
         });
 
+        let requestedReveal = false;
+        const populateSavedPassword = () => {
+            if (requestedReveal) return;
+            requestedReveal = true;
+            revealTradingAccountPassword(account.id)
+                .then((pwRes) => {
+                    if (!isMounted || !pwRes.success || !pwRes.password) return;
+                    setLoadedSavedPassword(pwRes.password);
+                    if (!isPasswordDirtyRef.current) {
+                        setInvestorPassword(pwRes.password);
+                    }
+                })
+                .catch(() => {});
+        };
+
+        if (saved) {
+            populateSavedPassword();
+        }
+
         getCloudSyncStatus(account.id)
             .then((res) => {
                 if (!isMounted) return;
                 if (res.success) {
-                    setHasCredentials(Boolean(res.hasCredentials));
-                    if (res.savedPassword) {
-                        setInvestorPassword((prev: string) => prev || res.savedPassword || "");
+                    const hasSaved = Boolean(
+                        res.hasSavedPassword ?? res.hasCredentials
+                    );
+                    setHasCredentials(hasSaved);
+                    if (hasSaved) {
+                        populateSavedPassword();
                     }
                 }
             })
-            .catch(() => { });
+            .catch(() => {});
 
         return () => {
             isMounted = false;
         };
-    }, [isOpen, account?.id, account?.name, account?.server, account?.currency, account?.color]);
+    }, [isOpen, account?.id, account?.name, account?.server, account?.currency, account?.color, account?.hasSavedPassword, account?.hasCredentials]);
 
     // Body scroll lock
     useEffect(() => {
@@ -242,11 +280,16 @@ export function AccountSettingsModal({
                 return;
             }
 
-            // 3. Save Investor Password if provided
-            if (investorPassword.trim()) {
+            // 3. Save Investor Password if provided or modified
+            const trimmedPass = investorPassword.trim();
+            const shouldSavePassword =
+                trimmedPass.length > 0 &&
+                (!hasCredentials || trimmedPass !== loadedSavedPassword);
+
+            if (shouldSavePassword) {
                 const credResult = await saveCloudSyncCredentials(
                     account.id,
-                    investorPassword.trim(),
+                    trimmedPass,
                     server.trim() || undefined
                 );
 
@@ -256,7 +299,8 @@ export function AccountSettingsModal({
                     return;
                 } else {
                     setHasCredentials(true);
-                    setInvestorPassword("");
+                    setLoadedSavedPassword(trimmedPass);
+                    isPasswordDirtyRef.current = false;
                     toast.success("Investor password saved");
                 }
             }
@@ -543,6 +587,7 @@ export function AccountSettingsModal({
                                 id="settings-investor-password"
                                 name="settings_investor_password"
                                 type="password"
+                                allowCopy
                                 autoComplete="new-password"
                                 data-lpignore="true"
                                 label={
@@ -554,7 +599,10 @@ export function AccountSettingsModal({
                                     </>
                                 }
                                 value={investorPassword}
-                                onChange={(e) => setInvestorPassword(e.target.value)}
+                                onChange={(e) => {
+                                    isPasswordDirtyRef.current = true;
+                                    setInvestorPassword(e.target.value);
+                                }}
                                 helperText={
                                     hasCredentials
                                         ? "Password stored for automated Cloud Sync. Update anytime if changed."

@@ -94,6 +94,11 @@ export default async function UserDetailPage({
                     ibAttributionAt: true,
                     ibAttributionBy: true,
                     createdAt: true,
+                    credential: {
+                        select: {
+                            encryptedPassword: true,
+                        },
+                    },
                 },
             },
             eaDownloads: {
@@ -396,7 +401,14 @@ export default async function UserDetailPage({
         : null;
     const countryCode = normalizeCountryCode(user.profile?.country);
 
-    const serializedUser = JSON.parse(JSON.stringify(user));
+    const sanitizedUserForClient = {
+        ...user,
+        tradingAccounts: user.tradingAccounts.map(({ credential, ...acc }) => ({
+            ...acc,
+            hasSavedPassword: Boolean(credential?.encryptedPassword),
+        })),
+    };
+    const serializedUser = JSON.parse(JSON.stringify(sanitizedUserForClient));
     const capital = computeCapitalBreakdown(user.tradingAccounts);
     const realAccounts = user.tradingAccounts.filter(isLiveCapitalAccount);
     const demoAccountCount = user.tradingAccounts.filter(

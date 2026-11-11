@@ -181,22 +181,28 @@ export function LeaderboardRow({
                 </>
             )}
 
-            {type === "trading" && (
+            {(type === "trading" || type === "sprint") && (
                 <>
                     <td className="py-3.5 px-3">
-                        <span
-                            className={cn(
-                                "text-sm tabular-nums",
-                                sortBy === "currency"
-                                    ? "font-black"
-                                    : "font-semibold opacity-75",
-                                entry.pnl >= 0
-                                    ? "text-green-500"
-                                    : "text-red-500"
-                            )}
-                        >
-                            {entry.pnl >= 0 ? "+" : ""}${entry.pnl.toFixed(2)}
-                        </span>
+                        {entry.pnl === null ? (
+                            <span className="text-sm font-semibold text-gray-400 dark:text-gray-500 tabular-nums">
+                                —
+                            </span>
+                        ) : (
+                            <span
+                                className={cn(
+                                    "text-sm tabular-nums",
+                                    sortBy === "currency"
+                                        ? "font-black"
+                                        : "font-semibold opacity-75",
+                                    entry.pnl >= 0
+                                        ? "text-green-500"
+                                        : "text-red-500"
+                                )}
+                            >
+                                {entry.pnl >= 0 ? "+" : ""}${entry.pnl.toFixed(2)}
+                            </span>
+                        )}
                     </td>
                     <td className="py-3.5 px-3 hidden sm:table-cell">
                         <div

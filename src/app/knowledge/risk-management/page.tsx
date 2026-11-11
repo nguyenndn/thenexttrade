@@ -18,6 +18,7 @@ import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
 import { prisma } from "@/lib/prisma";
 import { getBaseUrl } from "@/lib/url";
 import { getAuthUser } from "@/lib/auth-cache";
+import { isAcademyEnabled } from "@/app/admin/academy/actions";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -119,7 +120,7 @@ export const revalidate = 86400;
 export default async function RiskManagementPage() {
     const baseUrl = getBaseUrl();
 
-    const [relatedArticles, user] = await Promise.all([
+    const [relatedArticles, user, academyEnabled] = await Promise.all([
         prisma.article.findMany({
             where: {
                 status: "PUBLISHED",
@@ -134,6 +135,7 @@ export default async function RiskManagementPage() {
             select: { title: true, slug: true, excerpt: true, thumbnail: true },
         }),
         getAuthUser(),
+        isAcademyEnabled(),
     ]);
 
     return (
@@ -383,16 +385,20 @@ export default async function RiskManagementPage() {
                         </div>
                     )}
 
-                    {/* ── Academy Level 9 CTA ── */}
+                    {/* ── Bottom Risk Management CTA ── */}
                     <div className="bg-white dark:bg-[#1E2028] border border-gold/25 rounded-xl p-8 md:p-10 text-center relative overflow-hidden shadow-sm">
                         <h3 className="text-xl md:text-2xl font-black text-gray-900 dark:text-white mb-3 font-heading tracking-tight tabular-nums">
-                            Level 9: Risk Management Blueprint
+                            {academyEnabled
+                                ? "Level 9: Risk Management Blueprint"
+                                : "Risk Management Calculators & Field Guides"}
                         </h3>
                         <p className="text-sm md:text-base text-gray-600 dark:text-gray-400 mb-6 max-w-md mx-auto font-medium leading-relaxed">
-                            A structured framework covering position sizing, drawdown control, risk-of-ruin math, and emotional discipline.
+                            {academyEnabled
+                                ? "A structured framework covering position sizing, drawdown control, risk-of-ruin math, and emotional discipline."
+                                : "Run cold risk math before every entry using our 18 free forex calculators for position sizing, drawdown control, and risk-of-ruin."}
                         </p>
                         <Link
-                            href="/academy"
+                            href={academyEnabled ? "/academy" : "/tools"}
                             className={buttonVariants({
                                 variant: "primary",
                                 size: "smd",
@@ -400,8 +406,17 @@ export default async function RiskManagementPage() {
                                     "items-center gap-2 rounded-lg bg-gold hover:bg-amber-600 !text-white font-bold shadow-lg shadow-amber-500/20",
                             })}
                         >
-                            <BookOpen size={15} className="stroke-[2]" />
-                            Explore the Academy
+                            {academyEnabled ? (
+                                <>
+                                    <BookOpen size={15} className="stroke-[2]" />
+                                    Explore the Academy
+                                </>
+                            ) : (
+                                <>
+                                    <Calculator size={15} className="stroke-[2]" />
+                                    Open Risk Calculators
+                                </>
+                            )}
                         </Link>
                     </div>
                 </div>

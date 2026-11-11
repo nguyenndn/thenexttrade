@@ -208,6 +208,9 @@ export async function adminBulkExtendGracePeriodAction(params: {
         revalidatePath("/admin/ib");
         revalidatePath("/admin/ib/pipeline");
         revalidatePath("/admin/ib/traders");
+        revalidatePath("/dashboard");
+        revalidatePath("/dashboard/accounts");
+        revalidatePath("/dashboard/trading-systems");
         return { success: true, count: params.userIds.length };
     } catch (err: any) {
         return { error: err.message || "Failed to extend grace period in bulk" };
@@ -224,7 +227,7 @@ export async function adminBulkSendSetupReminderAction(params: {
         return { error: "No users selected" };
     }
 
-    const slug = params.productSlug || "gold-scalper-ninja";
+    const slug = params.productSlug || "goldscalperninja";
 
     try {
         for (const userId of params.userIds) {

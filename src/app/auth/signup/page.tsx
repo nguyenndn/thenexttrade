@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { CountrySelect } from "@/components/ui/CountrySelect";
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { signup } from "@/app/auth/actions";
 import { Check, Eye, EyeOff, Lock, Mail, User } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
@@ -23,8 +23,21 @@ const steps: Array<{ id: SignupStep; label: string }> = [
     { id: 3, label: "Secure" },
 ];
 
-export default function SignupPage() {
+function SignupPageContent() {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const rawNext =
+        searchParams.get("next") ||
+        searchParams.get("returnUrl") ||
+        searchParams.get("redirect");
+    const nextPath =
+        rawNext &&
+        /^\/(?!\/)/.test(rawNext) &&
+        !rawNext.includes("\\") &&
+        !rawNext.startsWith("/auth/")
+            ? rawNext
+            : null;
+
     const [step, setStep] = useState<SignupStep>(1);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -195,7 +208,7 @@ export default function SignupPage() {
             const dashUrl = acctId
                 ? `/dashboard?accountId=${acctId}`
                 : "/dashboard";
-            router.push(dashUrl);
+            router.push(nextPath || dashUrl);
             return;
         }
 
@@ -568,12 +581,16 @@ export default function SignupPage() {
 
             <div className="mt-6 sm:mt-8 pt-4 border-t border-gray-200 dark:border-white/10 text-center space-y-2">
                 <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
-                    Free starter account · No credit card or MT5 password required · Instant access to Academy &amp; 17 Risk Tools
+                    Free starter account · No credit card or MT5 password required · Automated MT5 trade telemetry &amp; 17 Risk Tools
                 </p>
                 <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
                     Already have an account?{" "}
                     <Link
-                        href="/auth/login"
+                        href={
+                            nextPath
+                                ? `/auth/login?next=${encodeURIComponent(nextPath)}`
+                                : "/auth/login"
+                        }
                         className="font-bold text-amber-600 hover:text-amber-700 hover:underline dark:text-gold dark:hover:text-amber-300 py-1 inline-block"
                     >
                         Sign In
@@ -581,5 +598,13 @@ export default function SignupPage() {
                 </p>
             </div>
         </div>
+    );
+}
+
+export default function SignupPage() {
+    return (
+        <Suspense fallback={null}>
+            <SignupPageContent />
+        </Suspense>
     );
 }

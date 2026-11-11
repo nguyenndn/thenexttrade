@@ -31,6 +31,7 @@ interface SearchResult {
 
 interface SearchClientProps {
     user?: AuthUser | null;
+    academyEnabled?: boolean;
 }
 
 const SUGGESTED_TOPICS = [
@@ -41,7 +42,10 @@ const SUGGESTED_TOPICS = [
     "Risk of Ruin",
 ];
 
-export default function SearchClient({ user }: SearchClientProps) {
+export default function SearchClient({
+    user,
+    academyEnabled = false,
+}: SearchClientProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
     const query = searchParams.get("q") || "";
@@ -137,7 +141,11 @@ export default function SearchClient({ user }: SearchClientProps) {
                             {/* Category Badge */}
                             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-gold/10 border border-gold/20 text-amber-600 dark:text-gold text-xs font-black uppercase tracking-widest">
                                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                <span>Knowledge &amp; Curriculum Index</span>
+                                <span>
+                                    {academyEnabled
+                                        ? "Knowledge & Curriculum Index"
+                                        : "Knowledge & Research Index"}
+                                </span>
                             </div>
 
                             {/* Title with icon backdrop */}
@@ -158,7 +166,9 @@ export default function SearchClient({ user }: SearchClientProps) {
 
                             {/* Description */}
                             <p className="text-sm md:text-base text-gray-600 dark:text-gray-400 leading-relaxed max-w-2xl font-medium">
-                                Query across TheNextTrade&apos;s Academy curriculum, risk management frameworks, and execution research in one place.
+                                {academyEnabled
+                                    ? "Query across TheNextTrade's Academy curriculum, risk management frameworks, and execution research in one place."
+                                    : "Query across TheNextTrade's risk management frameworks, trading articles, and execution research in one place."}
                             </p>
                         </div>
                     </div>
@@ -172,7 +182,9 @@ export default function SearchClient({ user }: SearchClientProps) {
                             htmlFor="universal-search-query"
                             className="block text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-2"
                         >
-                            Search Articles &amp; Academy Curriculum
+                            {academyEnabled
+                                ? "Search Articles & Academy Curriculum"
+                                : "Search Articles & Execution Research"}
                         </label>
                         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                             <div className="relative flex-1 flex items-center rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 focus-within:border-gold focus-within:ring-2 focus-within:ring-gold/15 transition-all px-3.5 py-2">
@@ -213,7 +225,9 @@ export default function SearchClient({ user }: SearchClientProps) {
                             id="universal-search-helper"
                             className="mt-2 text-xs text-gray-500 dark:text-gray-400"
                         >
-                            Filter by market structure concept, drawdown rule, risk calculator, or Academy lesson title.
+                            {academyEnabled
+                                ? "Filter by market structure concept, drawdown rule, risk calculator, or Academy lesson title."
+                                : "Filter by market structure concept, drawdown rule, risk calculator, or article title."}
                         </p>
                     </form>
 
@@ -328,7 +342,9 @@ export default function SearchClient({ user }: SearchClientProps) {
                                             <AlertCircle size={22} />
                                         </div>
                                         <h3 className="text-lg font-extrabold text-gray-900 dark:text-white font-heading mb-1.5">
-                                            No matching articles or lessons found
+                                            {academyEnabled
+                                                ? "No matching articles or lessons found"
+                                                : "No matching articles found"}
                                         </h3>
                                         <p className="text-sm text-gray-600 dark:text-gray-400 font-medium max-w-md mx-auto mb-5">
                                             No entries matched &ldquo;{query}&rdquo;. Try broader trading terms such as position sizing, drawdown, or liquidity.

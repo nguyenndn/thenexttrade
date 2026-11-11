@@ -70,9 +70,9 @@ export default async function AcademyPage() {
         }),
         user
             ? prisma.userProgress.findMany({
-                  where: { userId: user.id, isCompleted: true },
-                  select: { lessonId: true },
-              })
+                where: { userId: user.id, isCompleted: true },
+                select: { lessonId: true },
+            })
             : Promise.resolve([]),
     ]);
 
@@ -215,11 +215,6 @@ export default async function AcademyPage() {
                 </div>
 
                 <div className="max-w-5xl mx-auto text-center relative z-10">
-                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-lg bg-gold/10 border border-gold/20 text-amber-600 dark:text-gold font-bold text-xs uppercase tracking-wider mb-6">
-                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                        <span>Trading Academy</span>
-                    </div>
-
                     <h1 className="text-4xl md:text-6xl font-black mb-6 leading-tight tracking-tight text-gray-900 dark:text-white font-heading">
                         The Trader&apos;s{" "}
                         <span className="text-amber-600 dark:text-gold">

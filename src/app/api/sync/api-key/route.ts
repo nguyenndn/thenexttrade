@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { createClient } from "@/lib/supabase/server";
 import { generateSyncApiKey, maskSyncApiKey } from "@/lib/utils/api-key";
@@ -28,18 +28,15 @@ export async function GET() {
             },
         });
 
-        if (!user) {
-            return NextResponse.json(
-                { error: "User not found" },
-                { status: 404 }
-            );
-        }
+        const maskedKey = user?.syncApiKey
+            ? maskSyncApiKey(user.syncApiKey)
+            : null;
 
         return NextResponse.json({
-            hasKey: !!user.syncApiKey,
-            key: user.syncApiKey ? maskSyncApiKey(user.syncApiKey) : null,
-            fullKey: user.syncApiKey,
-            createdAt: user.syncApiKeyCreatedAt,
+            hasKey: Boolean(user?.syncApiKey),
+            maskedKey,
+            key: maskedKey,
+            createdAt: user?.syncApiKeyCreatedAt ?? null,
         });
     } catch (error) {
         console.error("Get sync API key error:", error);
@@ -69,18 +66,31 @@ export async function POST() {
 
         // Generate new key: TNT-XXXX-XXXX-XXXX (17 chars, unambiguous Crockford Base32)
         const syncApiKey = generateSyncApiKey();
+        const createdAt = new Date();
 
-        await prisma.user.update({
+        await prisma.user.upsert({
             where: { id: authUser.id },
-            data: {
+            update: {
                 syncApiKey,
-                syncApiKeyCreatedAt: new Date(),
+                syncApiKeyCreatedAt: createdAt,
+            },
+            create: {
+                id: authUser.id,
+                email: authUser.email ?? null,
+                name:
+                    authUser.user_metadata?.full_name ||
+                    authUser.user_metadata?.name ||
+                    "",
+                syncApiKey,
+                syncApiKeyCreatedAt: createdAt,
             },
         });
 
         return NextResponse.json({
             success: true,
+            apiKey: syncApiKey,
             key: syncApiKey,
+            createdAt,
             message:
                 "Sync API key generated. Save it — it won't be shown in full again.",
         });
@@ -110,7 +120,7 @@ export async function DELETE() {
             );
         }
 
-        await prisma.user.update({
+        await prisma.user.updateMany({
             where: { id: authUser.id },
             data: {
                 syncApiKey: null,

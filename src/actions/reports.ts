@@ -121,6 +121,17 @@ export async function generateMyWeeklyReview(accountId?: string) {
     const user = await getAuthUser();
     if (!user) return { error: "Unauthorized" };
 
+    const rawAccountId =
+        accountId && accountId !== "all" ? accountId : undefined;
+    let validatedAccountId: string | undefined = undefined;
+    if (rawAccountId) {
+        const ownedAccount = await prisma.tradingAccount.findFirst({
+            where: { id: rawAccountId, userId: user.id },
+            select: { id: true },
+        });
+        validatedAccountId = ownedAccount?.id;
+    }
+
     const { generateWeeklyReportForUser } =
         await import("@/lib/services/report-generator.service");
 
@@ -130,7 +141,7 @@ export async function generateMyWeeklyReview(accountId?: string) {
     try {
         const result = await generateWeeklyReportForUser(
             user.id,
-            accountId,
+            validatedAccountId,
             timezone,
             true // current week
         );
@@ -230,6 +241,17 @@ export async function generateMyMonthlyReview(accountId?: string) {
     const user = await getAuthUser();
     if (!user) return { error: "Unauthorized" };
 
+    const rawAccountId =
+        accountId && accountId !== "all" ? accountId : undefined;
+    let validatedAccountId: string | undefined = undefined;
+    if (rawAccountId) {
+        const ownedAccount = await prisma.tradingAccount.findFirst({
+            where: { id: rawAccountId, userId: user.id },
+            select: { id: true },
+        });
+        validatedAccountId = ownedAccount?.id;
+    }
+
     const { generateMonthlyReportForUser } =
         await import("@/lib/services/report-generator.service");
 
@@ -238,7 +260,7 @@ export async function generateMyMonthlyReview(accountId?: string) {
     try {
         const result = await generateMonthlyReportForUser(
             user.id,
-            accountId,
+            validatedAccountId,
             timezone,
             true // current month
         );

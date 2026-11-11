@@ -29,18 +29,18 @@ export function SetTargetModal({
 
     useEffect(() => {
         if (!open) return;
+        if (accountId && accountId !== "all") setSelectedAccId(accountId);
+        else if (availableAccounts.length > 0 && !availableAccounts.some((a) => a.id === selectedAccId)) setSelectedAccId(availableAccounts[0].id);
+    }, [open, accountId, availableAccounts, selectedAccId]);
+
+    useEffect(() => {
+        if (!open) return;
         const acc = availableAccounts.find((a) => a.id === selectedAccId);
-        const wt = acc ? acc.weeklyTargetType : initialWeeklyTargetType;
-        const wv = acc ? acc.weeklyTarget : initialWeeklyTarget;
-        const mt = acc ? acc.monthlyTargetType : initialMonthlyTargetType;
-        const mv = acc ? acc.monthlyTarget : initialMonthlyTarget;
-        setWType(wt || "USD");
-        setWVal(wv ? String(wv) : "");
-        setWEnabled(Boolean(wv != null && wv > 0));
-        setMType(mt || "USD");
-        setMVal(mv ? String(mv) : "");
-        setMEnabled(Boolean(mv != null && mv > 0));
-    }, [open, selectedAccId]);
+        const [wt, wv] = acc ? [acc.weeklyTargetType, acc.weeklyTarget] : [initialWeeklyTargetType, initialWeeklyTarget];
+        const [mt, mv] = acc ? [acc.monthlyTargetType, acc.monthlyTarget] : [initialMonthlyTargetType, initialMonthlyTarget];
+        setWType(wt || "USD"); setWVal(wv ? String(wv) : ""); setWEnabled(Boolean(wv != null && wv > 0));
+        setMType(mt || "USD"); setMVal(mv ? String(mv) : ""); setMEnabled(Boolean(mv != null && mv > 0));
+    }, [open, selectedAccId, availableAccounts, initialWeeklyTarget, initialWeeklyTargetType, initialMonthlyTarget, initialMonthlyTargetType]);
 
     const handleSave = async () => {
         const weeklyTarget = !wEnabled ? null : (wVal.trim() === "" ? null : Number(wVal));

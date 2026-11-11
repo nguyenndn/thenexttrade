@@ -3,6 +3,7 @@ import { sendEmail } from "@/lib/services/email.service";
 import { renderWelcomeEmailHtml } from "@/lib/email-lab/sample-data";
 import { WELCOME_EMAIL_D0 } from "@/lib/emails/welcome-sequence";
 import { canSendEmailCategory } from "@/lib/email/preferences";
+import { isAcademyEnabled } from "@/app/admin/academy/actions";
 
 /**
  * Onboarding state stored in User.settings.onboarding
@@ -51,17 +52,41 @@ export async function updateOnboardingSettings(
     const existingSettings = (user?.settings as Record<string, unknown>) || {};
     const existingOnboarding =
         (existingSettings.onboarding as OnboardingState) || {};
+    const nextSettings = {
+        ...existingSettings,
+        onboarding: {
+            ...existingOnboarding,
+            ...patch,
+        },
+    };
 
-    await prisma.user.update({
+    await prisma.user.upsert({
         where: { id: userId },
+        update: {
+            settings: nextSettings,
+        },
+        create: {
+            id: userId,
+            settings: nextSettings,
+        },
+    });
+}
+
+async function createWelcomeNotification(userId: string): Promise<void> {
+    const academyEnabled = await isAcademyEnabled();
+    const message = academyEnabled
+        ? "Your trading command center is ready. Connect your MT5 account to start syncing trades automatically, or explore Academy to sharpen your edge."
+        : "Your trading command center is ready. Connect your MT5 account to sync live trade telemetry automatically and monitor your risk discipline.";
+
+    await prisma.notification.create({
         data: {
-            settings: {
-                ...existingSettings,
-                onboarding: {
-                    ...existingOnboarding,
-                    ...patch,
-                },
-            },
+            userId,
+            type: "FEATURE_UPDATE",
+            title: "Welcome to TheNextTrade!",
+            message,
+            link: "/dashboard/accounts",
+            icon: "Rocket",
+            priority: "NORMAL",
         },
     });
 }
@@ -82,18 +107,7 @@ export async function completeOnboarding(userId: string): Promise<void> {
     });
 
     // Create welcome notification so the bell is never empty for new users
-    await prisma.notification.create({
-        data: {
-            userId,
-            type: "FEATURE_UPDATE",
-            title: "Welcome to TheNextTrade! 🎉",
-            message:
-                "Your trading command center is ready. Connect your MT5 account to start syncing trades automatically, or explore Academy to sharpen your edge.",
-            link: "/dashboard/accounts",
-            icon: "Rocket",
-            priority: "NORMAL",
-        },
-    });
+    await createWelcomeNotification(userId);
 
     // D0 welcome email (docs/EMAIL.md — "Welcome email after successful
     // verification"). Fire-and-forget: a transport failure must never break

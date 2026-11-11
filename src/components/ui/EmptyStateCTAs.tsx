@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Plus, GraduationCap, Wallet } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { cn } from "@/lib/utils";
+import { useFeatureFlags } from "@/lib/dashboard-context";
 
 interface EmptyStateCTAsProps {
     /** Primary action - defaults to "Log Your First Trade" */
@@ -36,6 +37,13 @@ export function EmptyStateCTAs({
                   icon: Plus,
               };
 
+    const { isEnabled } = useFeatureFlags();
+    const academyEnabled = isEnabled("feature_academy");
+    const isAcademySecondary =
+        secondaryHref.startsWith("/dashboard/academy") ||
+        secondaryHref.startsWith("/academy");
+    const showSecondary = academyEnabled || !isAcademySecondary;
+
     const finalPrimaryLabel = primaryLabel || defaultPrimary.label;
     const finalPrimaryHref = primaryHref || defaultPrimary.href;
     const PrimaryIcon = defaultPrimary.icon;
@@ -52,16 +60,18 @@ export function EmptyStateCTAs({
                 <PrimaryIcon size={16} />
                 {finalPrimaryLabel}
             </Link>
-            <Link
-                href={secondaryHref}
-                className={cn(
-                    buttonVariants({ variant: "outline" }),
-                    "gap-2 px-5 h-10 text-sm font-bold rounded-lg border-dashboard hover:border-amber-500/40 hover:bg-amber-500/5 hover:text-gold dark:hover:text-amber-400 transition-all duration-300 flex items-center justify-center"
-                )}
-            >
-                <GraduationCap size={16} />
-                {secondaryLabel}
-            </Link>
+            {showSecondary && (
+                <Link
+                    href={secondaryHref}
+                    className={cn(
+                        buttonVariants({ variant: "outline" }),
+                        "gap-2 px-5 h-10 text-sm font-bold rounded-lg border-dashboard hover:border-amber-500/40 hover:bg-amber-500/5 hover:text-gold dark:hover:text-amber-400 transition-all duration-300 flex items-center justify-center"
+                    )}
+                >
+                    <GraduationCap size={16} />
+                    {secondaryLabel}
+                </Link>
+            )}
         </div>
     );
 }

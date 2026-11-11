@@ -33,9 +33,10 @@ function getHeaders(type: LeaderboardType) {
                 { label: "Study Time", className: "hidden sm:table-cell" },
                 { label: "Edge", className: "hidden md:table-cell" },
             ];
+        case "sprint":
         case "trading":
             return [
-                { label: "PnL", className: "" },
+                { label: "Net PnL", className: "" },
                 { label: "Win Rate", className: "hidden sm:table-cell" },
                 { label: "Trades", className: "hidden md:table-cell" },
             ];

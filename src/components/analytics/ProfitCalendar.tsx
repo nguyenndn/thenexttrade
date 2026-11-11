@@ -33,6 +33,7 @@ interface ProfitCalendarProps {
     equityCurve?: Array<{ date: string; balance: number; pnl: number }>;
     accountId?: string;
     currency?: string;
+    timezone?: string;
 }
 
 export function ProfitCalendar({
@@ -40,6 +41,7 @@ export function ProfitCalendar({
     equityCurve,
     accountId,
     currency = "USD",
+    timezone,
 }: ProfitCalendarProps) {
     const [currentMonth, setCurrentMonth] = useState(new Date());
     const [selectedDay, setSelectedDay] = useState<{
@@ -58,7 +60,7 @@ export function ProfitCalendar({
 
         try {
             setLoadingDay(dateKey);
-            const res = await getDayDetails(dateKey, accountId);
+            const res = await getDayDetails(dateKey, accountId, timezone);
 
             if (res && res.trades) {
                 let startBalance = 0;
@@ -464,6 +466,7 @@ export function ProfitCalendar({
                         stats={selectedDay.stats}
                         startBalance={selectedDay.startBalance}
                         endBalance={selectedDay.endBalance}
+                        accountId={accountId}
                         currency={currency}
                         onClose={() => setSelectedDay(null)}
                     />

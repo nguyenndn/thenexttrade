@@ -164,6 +164,8 @@ async function getCoreStats(
  COUNT(*) as "totalTrades",
  SUM(CASE WHEN "result" = 'WIN' THEN 1 ELSE 0 END) as "winCount",
  SUM(CASE WHEN "result" = 'LOSS' THEN 1 ELSE 0 END) as "lossCount",
+ COUNT(*) FILTER (WHERE (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) > 0) as "positiveTrades",
+ COUNT(*) FILTER (WHERE (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) < 0) as "negativeTrades",
  SUM(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "netPnL",
  SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) > 0 
  THEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) ELSE 0 END) as "grossProfit",
@@ -183,6 +185,8 @@ async function getCoreStats(
     const totalTrades = Number(row.totalTrades || 0);
     const winCount = Number(row.winCount || 0);
     const lossCount = Number(row.lossCount || 0);
+    const positiveTrades = Number(row.positiveTrades || 0);
+    const negativeTrades = Number(row.negativeTrades || 0);
     const grossProfit = Number(row.grossProfit || 0);
     const grossLoss = Number(row.grossLoss || 0);
 
@@ -200,8 +204,8 @@ async function getCoreStats(
                 : grossProfit > 0
                   ? 99
                   : 0,
-        avgWin: winCount > 0 ? grossProfit / winCount : 0,
-        avgLoss: lossCount > 0 ? grossLoss / lossCount : 0,
+        avgWin: positiveTrades > 0 ? grossProfit / positiveTrades : 0,
+        avgLoss: negativeTrades > 0 ? grossLoss / negativeTrades : 0,
         largestWin: Math.max(0, Number(row.largestWin || 0)),
         largestLoss: Math.min(0, Number(row.largestLoss || 0)),
     };
@@ -406,6 +410,16 @@ async function getPsychologyStats(
             emotionBefore: true,
             emotionAfter: true,
             mistakes: true,
+            tradePlan: {
+                select: {
+                    tradeCheckSnapshot: {
+                        select: {
+                            passed: true,
+                            snapshotData: true,
+                        },
+                    },
+                },
+            },
         },
     });
 
@@ -421,17 +435,17 @@ async function getPsychologyStats(
 
     // Plan compliance
     const withPlanSnapshot = trades.filter((t) => {
-        const snap = (t as any).tradePlan?.tradeCheckSnapshot;
+        const snap = t.tradePlan?.tradeCheckSnapshot;
         if (!snap) return false;
-        const data = snap.snapshotData as any;
-        return data && data.skipped !== true;
+        const data = snap.snapshotData as Record<string, unknown> | null;
+        return data !== null && typeof data === "object" && data.skipped !== true;
     });
 
     let planCompliance: number | null = null;
     if (withPlanSnapshot.length > 0) {
         planCompliance =
             (withPlanSnapshot.filter(
-                (t) => (t as any).tradePlan!.tradeCheckSnapshot!.passed
+                (t) => t.tradePlan?.tradeCheckSnapshot?.passed === true
             ).length /
                 withPlanSnapshot.length) *
             100;
@@ -564,6 +578,9 @@ export async function generateReport(
     accountId: string | undefined,
     period: ReportPeriod
 ) {
+    const resolvedAccountId =
+        accountId && accountId !== "all" ? accountId : undefined;
+
     // Check for existing report
     const existing = await prisma.tradingReport.findUnique({
         where: {
@@ -575,7 +592,9 @@ export async function generateReport(
         },
     });
 
-    if (existing) {
+    const isInProgressPeriod = period.end >= new Date();
+
+    if (existing && !isInProgressPeriod) {
         return {
             skipped: true,
             reason: "Report already exists",
@@ -586,7 +605,7 @@ export async function generateReport(
     // Core stats for this period
     const stats = await getCoreStats(
         userId,
-        accountId,
+        resolvedAccountId,
         period.start,
         period.end
     );
@@ -599,29 +618,74 @@ export async function generateReport(
     // Parallel fetch all breakdowns + psychology
     const [bySymbol, byStrategy, bySession, byDay, byDirection, psychology, bestWorst] =
         await Promise.all([
-            getSymbolBreakdown(userId, accountId, period.start, period.end),
-            getStrategyBreakdown(userId, accountId, period.start, period.end),
-            getSessionBreakdown(userId, accountId, period.start, period.end),
+            getSymbolBreakdown(userId, resolvedAccountId, period.start, period.end),
+            getStrategyBreakdown(userId, resolvedAccountId, period.start, period.end),
+            getSessionBreakdown(userId, resolvedAccountId, period.start, period.end),
             getDailyBreakdown(
                 userId,
-                accountId,
+                resolvedAccountId,
                 period.start,
                 period.end,
                 "Etc/UTC"
             ),
-            getDirectionBreakdown(userId, accountId, period.start, period.end),
-            getPsychologyStats(userId, accountId, period.start, period.end),
-            getBestWorstTrades(userId, accountId, period.start, period.end),
+            getDirectionBreakdown(userId, resolvedAccountId, period.start, period.end),
+            getPsychologyStats(userId, resolvedAccountId, period.start, period.end),
+            getBestWorstTrades(userId, resolvedAccountId, period.start, period.end),
         ]);
 
     // Previous period comparison
     const prevPeriod = getPreviousPeriod(period);
     const prevStats = await getCoreStats(
         userId,
-        accountId,
+        resolvedAccountId,
         prevPeriod.start,
         prevPeriod.end
     );
+
+    const reportData = {
+        periodEnd: period.end,
+        periodLabel: period.label,
+        // Core stats
+        totalTrades: stats.totalTrades,
+        winCount: stats.winCount,
+        lossCount: stats.lossCount,
+        winRate: stats.winRate,
+        netPnL: stats.netPnL,
+        grossProfit: stats.grossProfit,
+        grossLoss: stats.grossLoss,
+        profitFactor: stats.profitFactor,
+        avgWin: stats.avgWin,
+        avgLoss: stats.avgLoss,
+        largestWin: stats.largestWin,
+        largestLoss: stats.largestLoss,
+        // Previous period
+        prevPnL: prevStats.totalTrades > 0 ? prevStats.netPnL : null,
+        prevWinRate: prevStats.totalTrades > 0 ? prevStats.winRate : null,
+        prevTrades:
+            prevStats.totalTrades > 0 ? prevStats.totalTrades : null,
+        // Breakdowns
+        bySymbol: bySymbol as unknown as Prisma.InputJsonValue,
+        byStrategy: byStrategy as unknown as Prisma.InputJsonValue,
+        bySession: bySession as unknown as Prisma.InputJsonValue,
+        byDay: byDay as unknown as Prisma.InputJsonValue,
+        byDirection: byDirection as unknown as Prisma.InputJsonValue,
+        // Psychology
+        avgConfidence: psychology.avgConfidence,
+        planCompliance: psychology.planCompliance,
+        topEmotions: psychology.topEmotions as unknown as Prisma.InputJsonValue,
+        topMistakes: psychology.topMistakes as unknown as Prisma.InputJsonValue,
+        // Best/Worst
+        bestTrades: bestWorst.best as unknown as Prisma.InputJsonValue,
+        worstTrades: bestWorst.worst as unknown as Prisma.InputJsonValue,
+    };
+
+    if (existing) {
+        const updated = await prisma.tradingReport.update({
+            where: { id: existing.id },
+            data: reportData,
+        });
+        return { skipped: false, reportId: updated.id, stats };
+    }
 
     // Save report
     const report = await prisma.tradingReport.create({
@@ -629,40 +693,7 @@ export async function generateReport(
             userId,
             type: period.type,
             periodStart: period.start,
-            periodEnd: period.end,
-            periodLabel: period.label,
-            // Core stats
-            totalTrades: stats.totalTrades,
-            winCount: stats.winCount,
-            lossCount: stats.lossCount,
-            winRate: stats.winRate,
-            netPnL: stats.netPnL,
-            grossProfit: stats.grossProfit,
-            grossLoss: stats.grossLoss,
-            profitFactor: stats.profitFactor,
-            avgWin: stats.avgWin,
-            avgLoss: stats.avgLoss,
-            largestWin: stats.largestWin,
-            largestLoss: stats.largestLoss,
-            // Previous period
-            prevPnL: prevStats.totalTrades > 0 ? prevStats.netPnL : null,
-            prevWinRate: prevStats.totalTrades > 0 ? prevStats.winRate : null,
-            prevTrades:
-                prevStats.totalTrades > 0 ? prevStats.totalTrades : null,
-            // Breakdowns
-            bySymbol: bySymbol as any,
-            byStrategy: byStrategy as any,
-            bySession: bySession as any,
-            byDay: byDay as any,
-            byDirection: byDirection as any,
-            // Psychology
-            avgConfidence: psychology.avgConfidence,
-            planCompliance: psychology.planCompliance,
-            topEmotions: psychology.topEmotions as any,
-            topMistakes: psychology.topMistakes as any,
-            // Best/Worst
-            bestTrades: bestWorst.best as any,
-            worstTrades: bestWorst.worst as any,
+            ...reportData,
         },
     });
 
@@ -670,6 +701,15 @@ export async function generateReport(
 }
 
 // ─── Batch Generator (for Cron) ─────────────────────────────────────────────
+
+export interface GenerateReportResult {
+    skipped?: boolean;
+    reason?: string;
+    empty?: boolean;
+    reportId?: string;
+    stats?: Awaited<ReturnType<typeof getCoreStats>>;
+    error?: string;
+}
 
 export async function generateReportsForAllUsers(
     type: "WEEKLY" | "MONTHLY",
@@ -682,49 +722,41 @@ export async function generateReportsForAllUsers(
         },
         select: {
             id: true,
-            tradingAccounts: {
-                select: {
-                    id: true,
-                    timezone: true,
-                },
-            },
         },
     });
 
-    const results: { userId: string; accountId: string; result: any }[] = [];
+    const results: {
+        userId: string;
+        accountId: string;
+        result: GenerateReportResult;
+    }[] = [];
 
     for (const user of users) {
-        for (const account of user.tradingAccounts) {
-            // B1: All trade timestamps in DB are stored in UTC; do not shift report grouping by account.timezone
-            const tz = "Etc/UTC";
-            const now = new Date();
-            const period =
-                type === "WEEKLY"
-                    ? getWeeklyPeriod(now, tz, current)
-                    : getMonthlyPeriod(now, tz, current);
+        // B1: All trade timestamps in DB are stored in UTC; do not shift report grouping by account.timezone
+        const tz = "Etc/UTC";
+        const now = new Date();
+        const period =
+            type === "WEEKLY"
+                ? getWeeklyPeriod(now, tz, current)
+                : getMonthlyPeriod(now, tz, current);
 
-            try {
-                const result = await generateReport(
-                    user.id,
-                    account.id,
-                    period
-                );
-                results.push({
-                    userId: user.id,
-                    accountId: account.id,
-                    result,
-                });
-            } catch (error) {
-                console.error(
-                    `Report generation failed for user ${user.id}, account ${account.id}:`,
-                    error
-                );
-                results.push({
-                    userId: user.id,
-                    accountId: account.id,
-                    result: { error: String(error) },
-                });
-            }
+        try {
+            const result = await generateReport(user.id, undefined, period);
+            results.push({
+                userId: user.id,
+                accountId: "all",
+                result,
+            });
+        } catch (error) {
+            console.error(
+                `Report generation failed for user ${user.id}:`,
+                error
+            );
+            results.push({
+                userId: user.id,
+                accountId: "all",
+                result: { error: String(error) },
+            });
         }
     }
 

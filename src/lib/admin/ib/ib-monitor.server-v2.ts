@@ -213,9 +213,10 @@ function buildRow(
             lastTrade: lastTradeByAccount.get(raw.id) || null,
             isFresh: item.freshness === "FRESH",
             isDuplicate: duplicate,
-            totalTrades: raw.totalTrades || 0,
-            ibAttribution: (raw as any).ibAttribution || "UNKNOWN",
-        };
+                    totalTrades: raw.totalTrades || 0,
+                    ibAttribution: (raw as any).ibAttribution || "UNKNOWN",
+                    hasSavedPassword: Boolean(raw.credential?.encryptedPassword),
+                };
     });
     const activeAccounts = accountViews.filter((item) => eligible(item.raw));
     const operationalCounts = buildOperationalAccountCounts(
@@ -306,6 +307,7 @@ export async function getPaginatedTraderMonitorV2(filters: IbTraderFilters): Pro
                     currency: true, platform: true, status: true, syncSource: true, eaVersion: true,
                     lastSync: true, lastHeartbeat: true, totalTrades: true, accountType: true,
                     fundingVerifiedAt: true, fundingGraceUntil: true,
+                    credential: { select: { encryptedPassword: true } },
                 },
                 orderBy: { updatedAt: "desc" },
             },

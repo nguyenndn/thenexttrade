@@ -1,64 +1,11 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import { LineChart, WalletCards, Copy, Check, Bot } from "lucide-react";
+import { LineChart, WalletCards, Bot, Hash, Server } from "lucide-react";
 import { format, formatDistanceToNow } from "date-fns";
-import { Button } from "@/components/ui/Button";
 import { AccountIbAttributionBadge } from "@/components/admin/users/AccountIbAttributionBadge";
-
-function AccountCopyButton({
-    accountNumber,
-    server,
-}: {
-    accountNumber: string | null;
-    server: string | null;
-}) {
-    const [copied, setCopied] = useState(false);
-
-    if (!accountNumber) return null;
-
-    const handleCopy = (e: React.MouseEvent) => {
-        e.stopPropagation();
-        const textToCopy = server
-            ? `${server} · ${accountNumber}`
-            : accountNumber;
-        navigator.clipboard.writeText(textToCopy);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-    };
-
-    return (
-        <Button
-            type="button"
-            variant="ghost"
-            onClick={handleCopy}
-            aria-label={
-                server
-                    ? `Copy ${server} and account ${accountNumber}`
-                    : `Copy account ${accountNumber}`
-            }
-            title={
-                server
-                    ? `Click to copy "${server} · ${accountNumber}"`
-                    : `Click to copy account #${accountNumber}`
-            }
-            className="h-auto inline-flex items-center gap-1 rounded-lg px-1.5 py-0.5 text-[10px] font-mono tabular-nums font-medium text-gray-500 hover:text-amber-600 dark:hover:text-gold hover:bg-gold/10 transition-colors border border-gray-200/80 dark:border-white/10 dark:text-gray-400"
-        >
-            {copied ? (
-                <>
-                    <Check size={11} className="text-emerald-500 shrink-0" />
-                    <span className="text-emerald-500 font-bold">Copied</span>
-                </>
-            ) : (
-                <>
-                    <Copy size={11} className="text-gray-400 shrink-0" />
-                    <span>Copy</span>
-                </>
-            )}
-        </Button>
-    );
-}
+import { SavedPasswordReveal } from "@/components/trading-accounts/SavedPasswordReveal";
+import { CredentialCopyChip } from "@/components/trading-accounts/CredentialCopyChip";
 
 export interface TradingAccountItem {
     id: string;
@@ -81,6 +28,7 @@ export interface TradingAccountItem {
     ibAttributionSource?: string | null;
     ibAttributionAt?: Date | string | null;
     ibAttributionBy?: string | null;
+    hasSavedPassword?: boolean;
     createdAt: Date | string;
 }
 
@@ -301,15 +249,6 @@ export function UserAccountsList({
                                                     Free
                                                 </span>
                                             )}
-                                            <span className="text-[11px] font-mono text-gray-500">
-                                                #{acc.accountNumber || "N/A"}
-                                            </span>
-                                            <AccountCopyButton
-                                                accountNumber={
-                                                    acc.accountNumber
-                                                }
-                                                server={acc.server}
-                                            />
                                         </div>
 
                                         <p className="mt-1 text-xs text-gray-500 flex flex-wrap items-center gap-x-2 gap-y-0.5">
@@ -318,12 +257,6 @@ export function UserAccountsList({
                                             </span>
                                             <span>·</span>
                                             <span>{acc.platform || "MT5"}</span>
-                                            {acc.server && (
-                                                <>
-                                                    <span>·</span>
-                                                    <span>{acc.server}</span>
-                                                </>
-                                            )}
                                             {acc.eaVersion && (
                                                 <>
                                                     <span>·</span>
@@ -333,6 +266,39 @@ export function UserAccountsList({
                                                 </>
                                             )}
                                         </p>
+
+                                        {/* Dedicated MT5 Login Credentials Strip */}
+                                        <div className="mt-2.5 flex flex-wrap items-center gap-2 rounded-lg border border-gray-200/80 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] p-2">
+                                            {acc.accountNumber ? (
+                                                <CredentialCopyChip
+                                                    label="Login"
+                                                    value={acc.accountNumber}
+                                                    displayValue={`#${acc.accountNumber}`}
+                                                    icon={Hash}
+                                                    toastLabel="MT5 Account Number"
+                                                />
+                                            ) : (
+                                                <span className="inline-flex h-8 items-center rounded-lg border border-dashed border-gray-200 dark:border-white/10 px-2.5 text-xs font-mono text-gray-400">
+                                                    Login: N/A
+                                                </span>
+                                            )}
+                                            {acc.server && (
+                                                <CredentialCopyChip
+                                                    label="Server"
+                                                    value={acc.server}
+                                                    icon={Server}
+                                                    toastLabel="MT5 Server"
+                                                />
+                                            )}
+                                            <SavedPasswordReveal
+                                                accountId={acc.id}
+                                                hasSavedPassword={Boolean(
+                                                    acc.hasSavedPassword
+                                                )}
+                                                variant="bar"
+                                                showEmptyBadge
+                                            />
+                                        </div>
 
                                         {/* Active EA Badges on this account */}
                                         {accountEas.length > 0 && (

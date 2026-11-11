@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import type { ActivationState, ActivationStep } from "./activation-types";
 import { getUserTradingDataState } from "@/lib/trading-data-state";
 import { getWeeklyReviewEligibility } from "@/lib/reports/weekly-review-eligibility";
+import { isAcademyEnabled } from "@/app/admin/academy/actions";
 
 export async function getActivationState(
     userId: string
@@ -23,12 +24,14 @@ export async function getActivationState(
         completedLessonCount,
         checkinCount,
         weeklyReviewEligibility,
+        academyEnabled,
     ] = await Promise.all([
         getUserTradingDataState(userId),
         prisma.tradingReport.count({ where: { userId, type: "WEEKLY" } }),
         prisma.userProgress.count({ where: { userId, isCompleted: true } }),
         prisma.edgeEvent.count({ where: { userId, eventType: "CHECKIN" } }),
         getWeeklyReviewEligibility({ userId }),
+        isAcademyEnabled(),
     ]);
 
     const accountCount = tradingDataState.accountCount;
@@ -106,16 +109,20 @@ export async function getActivationState(
             disabledReason:
                 "Sync more trades before your first weekly review is ready.",
         },
-        {
-            id: "START_ACADEMY",
-            title: "Complete your first Academy lesson",
-            description:
-                "Lessons help turn trading activity into a repeatable playbook.",
-            ctaLabel: "Start Learning",
-            ctaHref: "/dashboard/academy",
-            completed: completedLessonCount > 0,
-            priority: 40,
-        },
+        ...(academyEnabled
+            ? [
+                  {
+                      id: "START_ACADEMY" as const,
+                      title: "Complete your first Academy lesson",
+                      description:
+                          "Lessons help turn trading activity into a repeatable playbook.",
+                      ctaLabel: "Start Learning",
+                      ctaHref: "/dashboard/academy",
+                      completed: completedLessonCount > 0,
+                      priority: 40,
+                  },
+              ]
+            : []),
         {
             id: "CHECK_IN",
             title: "Daily check-in",

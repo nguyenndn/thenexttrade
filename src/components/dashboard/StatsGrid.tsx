@@ -2,17 +2,24 @@
 
 import { Target, TrendingUp, ShieldAlert } from "lucide-react";
 import { NumberTicker } from "@/components/ui/NumberTicker";
+import { getCurrencyTickerProps } from "@/lib/utils/cent-account";
 
 interface StatsGridProps {
     data: {
         profitFactor: number;
         avgWin: number;
         avgLoss: number;
+        currency?: string;
     };
+    currency?: string;
     vertical?: boolean;
 }
 
-export function StatsGrid({ data, vertical = false }: StatsGridProps) {
+export function StatsGrid({ data, currency, vertical = false }: StatsGridProps) {
+    const resolvedCurrency = currency || data.currency || "USD";
+    const unsignedCurrencyTicker = getCurrencyTickerProps(resolvedCurrency, "");
+    const minusCurrencyTicker = getCurrencyTickerProps(resolvedCurrency, "-");
+
     const stats = [
         {
             label: "Profit Factor",
@@ -32,7 +39,8 @@ export function StatsGrid({ data, vertical = false }: StatsGridProps) {
             value: (
                 <NumberTicker
                     value={data.avgWin}
-                    prefix="$"
+                    prefix={unsignedCurrencyTicker.prefix}
+                    suffix={unsignedCurrencyTicker.suffix}
                     decimals={2}
                 />
             ),
@@ -46,7 +54,8 @@ export function StatsGrid({ data, vertical = false }: StatsGridProps) {
             value: (
                 <NumberTicker
                     value={Math.abs(data.avgLoss)}
-                    prefix="-$"
+                    prefix={minusCurrencyTicker.prefix}
+                    suffix={minusCurrencyTicker.suffix}
                     decimals={2}
                 />
             ),

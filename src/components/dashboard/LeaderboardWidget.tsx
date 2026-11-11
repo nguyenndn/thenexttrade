@@ -1,18 +1,64 @@
 import Link from "next/link";
-import { Trophy, ArrowRight, Shield } from "lucide-react";
+import { Trophy, ArrowRight } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth-cache";
-import { getTier } from "@/lib/gamification";
 
 export async function LeaderboardWidget() {
     const user = await getAuthUser();
 
-    // Show users sorted by XP, fallback to streak if no XP
+    // Show opted-in users sorted by XP/streak while excluding manual-only trade accounts
     const topUsers = await prisma.user.findMany({
-        where: { showOnLeaderboard: true },
+        where: {
+            showOnLeaderboard: true,
+            OR: [
+                { xp: { gt: 0 } },
+                { streak: { gt: 0 } },
+                {
+                    journalEntries: {
+                        some: {
+                            status: "CLOSED",
+                            syncSource: { not: "MANUAL" },
+                        },
+                    },
+                },
+            ],
+            NOT: {
+                AND: [
+                    { xp: 0 },
+                    { streak: 0 },
+                    {
+                        journalEntries: {
+                            every: { syncSource: "MANUAL" },
+                        },
+                    },
+                ],
+            },
+        },
         orderBy: [{ xp: "desc" }, { streak: "desc" }],
         take: 5,
-        select: { id: true, name: true, image: true, xp: true, streak: true },
+        select: {
+            id: true,
+            name: true,
+            image: true,
+            xp: true,
+            streak: true,
+            profile: {
+                select: {
+                    username: true,
+                    showRealName: true,
+                },
+            },
+            _count: {
+                select: {
+                    journalEntries: {
+                        where: {
+                            status: "CLOSED",
+                            syncSource: { not: "MANUAL" },
+                        },
+                    },
+                },
+            },
+        },
     });
 
     // Always show the widget, even with empty state
@@ -26,7 +72,9 @@ export async function LeaderboardWidget() {
         : 0;
 
     const myRank = user
-        ? (await prisma.user.count({ where: { xp: { gt: myXp } } })) + 1
+        ? (await prisma.user.count({
+              where: { showOnLeaderboard: true, xp: { gt: myXp } },
+          })) + 1
         : null;
 
     return (
@@ -66,10 +114,38 @@ export async function LeaderboardWidget() {
                     {/* List */}
                     <div className="space-y-1.5">
                         {topUsers.map((u, i) => {
-                            const tier = getTier(u.xp);
                             const isMe = user?.id === u.id;
-                            const score = u.xp > 0 ? u.xp : u.streak;
-                            const scoreLabel = u.xp > 0 ? "Edge" : "d";
+                            const showRealName =
+                                u.profile?.showRealName ?? false;
+                            const displayName = isMe
+                                ? u.name ||
+                                  (u.profile?.username
+                                      ? `@${u.profile.username}`
+                                      : "Trader")
+                                : showRealName && u.name
+                                  ? u.name
+                                  : u.profile?.username
+                                    ? `@${u.profile.username}`
+                                    : "Trader";
+                            const displayAvatar =
+                                isMe || showRealName ? u.image : null;
+                            const avatarInitial =
+                                displayName
+                                    .replace(/^@/, "")
+                                    .charAt(0)
+                                    .toUpperCase() || "T";
+                            const score =
+                                u.xp > 0
+                                    ? u.xp
+                                    : u.streak > 0
+                                      ? u.streak
+                                      : u._count.journalEntries;
+                            const scoreLabel =
+                                u.xp > 0
+                                    ? "Edge"
+                                    : u.streak > 0
+                                      ? "d"
+                                      : " trades";
 
                             return (
                                 <div
@@ -97,15 +173,15 @@ export async function LeaderboardWidget() {
 
                                     {/* Avatar */}
                                     <div className="w-7 h-7 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center text-[10px] font-bold text-white shrink-0 overflow-hidden">
-                                        {u.image ? (
+                                        {displayAvatar ? (
                                             // eslint-disable-next-line @next/next/no-img-element
                                             <img
-                                                src={u.image}
-                                                alt={u.name || ""}
+                                                src={displayAvatar}
+                                                alt={displayName}
                                                 className="w-full h-full object-cover"
                                             />
                                         ) : (
-                                            (u.name || "?")[0].toUpperCase()
+                                            avatarInitial
                                         )}
                                     </div>
 
@@ -117,7 +193,7 @@ export async function LeaderboardWidget() {
                                                 : "text-gray-700 dark:text-gray-300"
                                         }`}
                                     >
-                                        {u.name || "Unknown"}
+                                        {displayName}
                                         {isMe && (
                                             <span className="text-gray-500 font-normal ml-1">
                                                 (You)

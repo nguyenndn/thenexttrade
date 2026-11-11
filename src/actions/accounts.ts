@@ -3,7 +3,8 @@
 import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth-cache";
 import { generateApiKey, generateSyncApiKey } from "@/lib/utils/api-key";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
+import { cookies } from "next/headers";
 import { z } from "zod";
 import { getAccountsProEligibility } from "@/lib/pro-eligibility";
 import { getUserProAccess } from "@/lib/pro-access";
@@ -11,21 +12,6 @@ import { POPULAR_MT5_SERVERS } from "@/lib/constants/mt5-servers";
 import { detectBroker } from "@/lib/ea/broker-detection";
 import { notifyAdminsOfNewAccount } from "@/lib/admin/admin-notification.server";
 import { filterAccountsByBroker } from "@/lib/trading-account-identity";
-import { decryptPassword } from "@/lib/crypto";
-
-function resolveSavedPassword(
-    cred?: { encryptedPassword?: string | null; keyVersion?: string | null } | null
-): string {
-    if (!cred?.encryptedPassword) return "";
-    if (cred.keyVersion === "v1") {
-        try {
-            return decryptPassword(cred.encryptedPassword);
-        } catch {
-            return "";
-        }
-    }
-    return cred.encryptedPassword;
-}
 
 const accountSchema = z.object({
     name: z.string().min(1).max(50),
@@ -235,8 +221,10 @@ export async function getTradingAccounts(page = 1, limit = 12) {
                 ? Date.now() - new Date(acc.lastHeartbeat).getTime() <
                   10 * 60 * 1000
                 : false,
-            hasCredentials: Boolean(acc.credential?.accountId),
-            savedPassword: resolveSavedPassword(acc.credential),
+            hasCredentials: Boolean(
+                acc.credential?.encryptedPassword || acc.credential?.accountId
+            ),
+            hasSavedPassword: Boolean(acc.credential?.encryptedPassword),
             latestJob,
             // Pro/VIP/EA enrichment
             proStatus,
@@ -439,6 +427,35 @@ export async function updateTradingAccount(
     if (!validation.success) return { error: "Invalid data" };
 
     try {
+        const currentAccount = await prisma.tradingAccount.findFirst({
+            where: { id, userId: user.id },
+            select: { id: true, accountNumber: true, platform: true },
+        });
+        if (!currentAccount) {
+            return { error: "Account not found" };
+        }
+
+        const nextAccountNumber = validation.data.accountNumber?.trim();
+        const prevAccountNumber = currentAccount.accountNumber?.trim() || "";
+        if (nextAccountNumber && nextAccountNumber !== prevAccountNumber) {
+            const targetPlatform =
+                validation.data.platform || currentAccount.platform || "MT5";
+            const duplicate = await prisma.tradingAccount.findFirst({
+                where: {
+                    userId: user.id,
+                    platform: targetPlatform,
+                    accountNumber: nextAccountNumber,
+                    id: { not: id },
+                },
+                select: { id: true },
+            });
+            if (duplicate) {
+                return {
+                    error: `An account with number ${nextAccountNumber} already exists`,
+                };
+            }
+        }
+
         if (data.isDefault) {
             await prisma.tradingAccount.updateMany({
                 where: { userId: user.id, isDefault: true, id: { not: id } },
@@ -446,7 +463,12 @@ export async function updateTradingAccount(
             });
         }
 
-        const updateData = { ...validation.data };
+        const updateData = {
+            ...validation.data,
+            ...(validation.data.accountNumber !== undefined
+                ? { accountNumber: nextAccountNumber || null }
+                : {}),
+        };
         if (!updateData.broker && updateData.server) {
             const matched = POPULAR_MT5_SERVERS.find(
                 (s) => s.name.toLowerCase() === updateData.server?.trim().toLowerCase()
@@ -464,7 +486,10 @@ export async function updateTradingAccount(
             data: updateData,
         });
 
+        revalidatePath("/dashboard");
         revalidatePath("/dashboard/accounts");
+        revalidatePath("/dashboard/trading-systems");
+        revalidateTag("dashboard-stats", "max");
         return { success: true };
     } catch (error) {
         return { error: "Failed to update account" };
@@ -548,10 +573,21 @@ export async function deleteTradingAccount(id: string) {
             }).catch(() => {});
         }
 
+        try {
+            const cookieStore = await cookies();
+            if (cookieStore.get("last_account_id")?.value === id) {
+                cookieStore.delete("last_account_id");
+            }
+        } catch {
+            // Safe no-op when invoked outside a Next.js request scope
+        }
+
+        revalidatePath("/dashboard");
         revalidatePath("/dashboard/accounts");
         revalidatePath("/dashboard/trading-systems");
         revalidatePath("/admin/trading-systems");
         revalidatePath("/admin/trading-systems/accounts");
+        revalidateTag("dashboard-stats", "max");
         return { success: true };
     } catch (error) {
         console.error("deleteTradingAccount error:", error);

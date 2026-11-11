@@ -1,4 +1,5 @@
 import { NextResponse, NextRequest } from "next/server";
+import { z } from "zod";
 import { getAuthUser } from "@/lib/auth-cache";
 import {
     getOnboardingState,
@@ -8,6 +9,17 @@ import {
 } from "@/lib/onboarding/onboarding.server";
 
 export const dynamic = "force-dynamic";
+
+const OnboardingPostSchema = z
+    .object({
+        action: z.enum(["step", "complete", "skip"]),
+        lastCompletedStep: z.number().int().min(1).max(4).optional(),
+        tradingGoal: z.string().trim().min(1).max(100).optional(),
+        preferredSyncMethod: z.enum(["EA_SYNC", "MANUAL"]).optional(),
+        completedAt: z.string().datetime().optional(),
+        skippedAt: z.string().datetime().optional(),
+    })
+    .strict();
 
 /**
  * GET /api/onboarding
@@ -32,8 +44,28 @@ export async function POST(request: NextRequest) {
     if (!user)
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    const body = await request.json();
-    const { action, ...patch } = body;
+    let rawBody: unknown;
+    try {
+        rawBody = await request.json();
+    } catch {
+        return NextResponse.json(
+            { error: "Invalid JSON body" },
+            { status: 400 }
+        );
+    }
+
+    const parsed = OnboardingPostSchema.safeParse(rawBody);
+    if (!parsed.success) {
+        return NextResponse.json(
+            {
+                error: "Invalid onboarding payload",
+                details: parsed.error.flatten(),
+            },
+            { status: 400 }
+        );
+    }
+
+    const { action, ...patch } = parsed.data;
 
     switch (action) {
         case "step":
@@ -45,11 +77,6 @@ export async function POST(request: NextRequest) {
         case "skip":
             await skipOnboarding(user.id);
             break;
-        default:
-            return NextResponse.json(
-                { error: "Invalid action" },
-                { status: 400 }
-            );
     }
 
     return NextResponse.json({ success: true });

@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/Button";
 import type { ActivationState } from "@/lib/activation/activation-types";
 import { trackEvent } from "@/lib/track";
+import { useFeatureFlags } from "@/lib/dashboard-context";
 
 interface WelcomeHeroProps {
     userName: string;
@@ -54,6 +55,9 @@ export function WelcomeHero({
     activationState,
     tradingGoal,
 }: WelcomeHeroProps) {
+    const { isEnabled } = useFeatureFlags();
+    const academyEnabled = isEnabled("feature_academy");
+
     // Fire once on mount
     const hasTracked = useRef(false);
     useEffect(() => {
@@ -64,14 +68,24 @@ export function WelcomeHero({
             hasTracked.current = true;
         }
     }, [tradingGoal]);
-    const progress = Math.round(
-        (activationState.completedCount / activationState.totalCount) * 100
-    );
 
-    const nextStep = activationState.nextStep;
+    const visibleSteps = academyEnabled
+        ? activationState.steps
+        : activationState.steps.filter((s) => s.id !== "START_ACADEMY");
+    const completedCount = visibleSteps.filter((s) => s.completed).length;
+    const totalCount = visibleSteps.length;
+    const progress =
+        totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+
+    const nextStep =
+        !academyEnabled && activationState.nextStep?.id === "START_ACADEMY"
+            ? (visibleSteps.find(
+                  (s) => !s.completed && s.available !== false
+              ) ?? null)
+            : activationState.nextStep;
 
     // Secondary actions: show 2 non-next, non-completed steps
-    const secondarySteps = activationState.steps
+    const secondarySteps = visibleSteps
         .filter((s) => !s.completed && s.id !== nextStep?.id)
         .slice(0, 2);
 
@@ -82,7 +96,12 @@ export function WelcomeHero({
     // Resolve personalized message
     const goal = tradingGoal ? goalMessages[tradingGoal] : null;
     const heroTitle = goal ? goal.title : defaultMessage.title;
-    const heroSubtitle = goal ? goal.subtitle : defaultMessage.subtitle;
+    const heroSubtitle =
+        tradingGoal === "discipline" && !academyEnabled
+            ? "Set your trading rules and connect your account - your dashboard will track execution consistency, drawdown limits, and risk discipline."
+            : goal
+              ? goal.subtitle
+              : defaultMessage.subtitle;
 
     return (
         <div className="space-y-4">
@@ -128,8 +147,7 @@ export function WelcomeHero({
                             />
                         </div>
                         <span className="text-xs font-bold text-gray-500 dark:text-gray-400 font-mono tabular-nums">
-                            {activationState.completedCount}/
-                            {activationState.totalCount} done
+                            {completedCount}/{totalCount} done
                         </span>
                     </div>
 

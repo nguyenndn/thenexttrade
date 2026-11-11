@@ -31,6 +31,7 @@ import {
     Square,
     CalendarPlus,
     BellRing,
+    Hash,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { PremiumInput } from "@/components/ui/PremiumInput";
@@ -44,6 +45,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 import { AccountIbAttributionBadge } from "@/components/admin/users/AccountIbAttributionBadge";
+import { SavedPasswordReveal } from "@/components/trading-accounts/SavedPasswordReveal";
+import { CredentialCopyChip } from "@/components/trading-accounts/CredentialCopyChip";
 import {
     IbTraderPaginatedResult,
     IbTraderFilters,
@@ -949,16 +952,19 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                                                             {trader.accounts.length === 0 ? (
                                                                 <p className="text-xs text-gray-400">No accounts connected yet.</p>
                                                             ) : (
-                                                                <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                                                                <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
                                                                     {trader.accounts.map((acc) => (
                                                                         <div
                                                                             key={acc.id}
-                                                                            className="p-3 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] space-y-1.5"
+                                                                            className="p-3.5 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] space-y-2.5"
                                                                         >
-                                                                            <div className="flex items-center justify-between gap-2">
-                                                                                <span className="font-mono tabular-nums font-bold text-xs text-gray-900 dark:text-white truncate">
-                                                                                    {acc.accountNumber}
-                                                                                </span>
+                                                                            <div className="flex flex-wrap items-center justify-between gap-2">
+                                                                                <CredentialCopyChip
+                                                                                    value={acc.rawAccountNumber || acc.accountNumber}
+                                                                                    displayValue={acc.accountNumber}
+                                                                                    icon={Hash}
+                                                                                    toastLabel="MT5 Account Number"
+                                                                                />
                                                                                 <div className="flex items-center gap-1.5 shrink-0">
                                                                                     <AccountIbAttributionBadge
                                                                                         accountId={acc.id}
@@ -971,13 +977,26 @@ export function TraderMonitorClient({ initialData, currentFilters }: Props) {
                                                                                     </span>
                                                                                 </div>
                                                                             </div>
-                                                                            <div className="flex items-center justify-between text-xs text-gray-500">
-                                                                                <span>{acc.broker} ({acc.platform})</span>
-                                                                                <span className="font-mono tabular-nums font-bold text-emerald-600 dark:text-emerald-400">
+                                                                            <div className="flex items-center justify-between gap-2 text-xs text-gray-500">
+                                                                                <div className="min-w-0 truncate">
+                                                                                    <span className="font-semibold text-gray-700 dark:text-gray-300">
+                                                                                        {acc.broker} ({acc.platform})
+                                                                                    </span>
+                                                                                    {acc.server && (
+                                                                                        <span className="text-gray-400"> · {acc.server}</span>
+                                                                                    )}
+                                                                                </div>
+                                                                                <span className="shrink-0 font-mono tabular-nums font-bold text-emerald-600 dark:text-emerald-400">
                                                                                     ${acc.balance.toLocaleString("en-US")} {acc.currency}
                                                                                 </span>
                                                                             </div>
-                                                                            <div className="text-[11px] font-mono tabular-nums text-gray-400 flex items-center justify-between pt-1 border-t border-gray-100 dark:border-white/5">
+                                                                            <SavedPasswordReveal
+                                                                                accountId={acc.id}
+                                                                                hasSavedPassword={Boolean(acc.hasSavedPassword)}
+                                                                                variant="field"
+                                                                                showEmptyBadge
+                                                                            />
+                                                                            <div className="text-[11px] font-mono tabular-nums text-gray-400 flex items-center justify-between pt-1.5 border-t border-gray-200/60 dark:border-white/5">
                                                                                 <span>Trades: {acc.totalTrades}</span>
                                                                                 <span className="flex items-center gap-1 font-sans">
                                                                                     Fresh:{" "}

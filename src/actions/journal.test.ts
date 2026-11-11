@@ -20,6 +20,7 @@ vi.mock("@/lib/auth-cache", () => ({
 
 vi.mock("next/cache", () => ({
     revalidatePath: vi.fn(),
+    revalidateTag: vi.fn(),
 }));
 
 vi.mock("@/lib/experiments/progress.server", () => ({
@@ -142,8 +143,7 @@ describe("Journal Actions - Backend Logic & Edge Case Stress Testing", () => {
         const allowedFields = [
             "entryDate",
             "exitDate",
-            "profit",
-            "lots",
+            "lotSize",
             "symbol",
             "pnl",
             "createdAt",
@@ -176,6 +176,18 @@ describe("Journal Actions - Backend Logic & Edge Case Stress Testing", () => {
             await getJournalEntries(1, 20, { sortBy: "closeTime" });
             expect((prisma.journalEntry.findMany as any).mock.calls[2][0].orderBy).toEqual({
                 exitDate: "desc",
+            });
+
+            // profit -> pnl
+            await getJournalEntries(1, 20, { sortBy: "profit" });
+            expect((prisma.journalEntry.findMany as any).mock.calls[3][0].orderBy).toEqual({
+                pnl: "desc",
+            });
+
+            // lots -> lotSize
+            await getJournalEntries(1, 20, { sortBy: "lots" });
+            expect((prisma.journalEntry.findMany as any).mock.calls[4][0].orderBy).toEqual({
+                lotSize: "desc",
             });
         });
 

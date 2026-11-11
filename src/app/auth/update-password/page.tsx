@@ -59,7 +59,7 @@ export default function UpdatePasswordPage() {
                         />
                     </div>
                     <p className="text-xs text-slate-500 dark:text-slate-400 tabular-nums">
-                        Minimum 6 characters required.
+                        At least 10 characters with uppercase, lowercase, number, and symbol.
                     </p>
                 </div>
 

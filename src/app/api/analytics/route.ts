@@ -5,11 +5,13 @@ import {
     startOfMonth,
     endOfMonth,
     parseISO,
-    format,
-    getDay,
     addHours,
     endOfDay,
 } from "date-fns";
+import {
+    convertToUsdEquivalent,
+    normalizeCurrencyCode,
+} from "@/lib/utils/cent-account";
 
 export async function GET(request: NextRequest) {
     try {
@@ -22,11 +24,30 @@ export async function GET(request: NextRequest) {
             );
         }
 
-        // 2. Parse query params
+        // 2. Parse query params & verify account ownership
         const searchParams = request.nextUrl.searchParams;
         const startDateParam = searchParams.get("startDate");
         const endDateParam = searchParams.get("endDate");
-        const accountId = searchParams.get("accountId");
+        const rawAccountId = searchParams.get("accountId");
+
+        const userAccounts = await prisma.tradingAccount.findMany({
+            where: { userId: user.id },
+            select: {
+                id: true,
+                balance: true,
+                initialBalance: true,
+                currency: true,
+                server: true,
+            },
+        });
+
+        const candidateAccountId =
+            rawAccountId && rawAccountId !== "all" ? rawAccountId : undefined;
+        const normalizedAccountId =
+            candidateAccountId &&
+            userAccounts.some((acc) => acc.id === candidateAccountId)
+                ? candidateAccountId
+                : undefined;
 
         // Default to current month if no dates provided
         const now = new Date();
@@ -34,12 +55,19 @@ export async function GET(request: NextRequest) {
             ? parseISO(startDateParam)
             : startOfMonth(now);
         const endDate = endDateParam
-            ? endOfDay(parseISO(endDateParam))
+            ? endDateParam.includes("T")
+                ? parseISO(endDateParam)
+                : endOfDay(parseISO(endDateParam))
             : endOfMonth(now);
 
         // 3. Build where clause
         // FIX: Use exitDate for P/L realization, not entryDate
-        const whereClause: any = {
+        const whereClause: {
+            userId: string;
+            status: "CLOSED";
+            exitDate: { gte: Date; lte: Date };
+            accountId?: string;
+        } = {
             userId: user.id,
             status: "CLOSED",
             exitDate: {
@@ -48,8 +76,8 @@ export async function GET(request: NextRequest) {
             },
         };
 
-        if (accountId) {
-            whereClause.accountId = accountId;
+        if (normalizedAccountId) {
+            whereClause.accountId = normalizedAccountId;
         }
 
         // 4. Fetch all closed trades in date range
@@ -72,26 +100,40 @@ export async function GET(request: NextRequest) {
             },
         });
 
-        const getNetPnl = (t: any) =>
-            (t.pnl || 0) + (t.commission || 0) + (t.swap || 0);
+        const getNetPnl = (t: {
+            pnl: number | null;
+            commission: number | null;
+            swap: number | null;
+        }) => (t.pnl || 0) + (t.commission || 0) + (t.swap || 0);
 
         // 5. Calculate summary
         const totalTrades = trades.length;
         const wins = trades.filter((t) => t.result === "WIN");
         const losses = trades.filter((t) => t.result === "LOSS");
-        const breakEvens = trades.filter((t) => t.result === "BREAK_EVEN");
+        const breakEvens = trades.filter(
+            (t) => t.result === "BREAK_EVEN" || t.result === "BE_PLUS"
+        );
 
         const winCount = wins.length;
         const lossCount = losses.length;
         const breakEvenCount = breakEvens.length;
-        const winRate = totalTrades > 0 ? (winCount / totalTrades) * 100 : 0;
+        const totalClosed = winCount + lossCount + breakEvenCount;
+        const winRate =
+            totalClosed > 0
+                ? (winCount / totalClosed) * 100
+                : totalTrades > 0
+                  ? (winCount / totalTrades) * 100
+                  : 0;
 
-        const grossProfit = wins.reduce(
-            (sum, t) => sum + Math.max(0, getNetPnl(t)),
+        const positiveTrades = trades.filter((t) => getNetPnl(t) > 0);
+        const negativeTrades = trades.filter((t) => getNetPnl(t) < 0);
+
+        const grossProfit = positiveTrades.reduce(
+            (sum, t) => sum + getNetPnl(t),
             0
         );
         const grossLoss = Math.abs(
-            losses.reduce((sum, t) => sum + Math.min(0, getNetPnl(t)), 0)
+            negativeTrades.reduce((sum, t) => sum + getNetPnl(t), 0)
         );
         const totalPnL = trades.reduce((sum, t) => sum + getNetPnl(t), 0);
         const profitFactor =
@@ -101,8 +143,14 @@ export async function GET(request: NextRequest) {
                   ? 99
                   : 0;
 
-        const avgWin = winCount > 0 ? grossProfit / winCount : 0;
-        const avgLoss = lossCount > 0 ? grossLoss / lossCount : 0;
+        const avgWin =
+            positiveTrades.length > 0
+                ? grossProfit / positiveTrades.length
+                : 0;
+        const avgLoss =
+            negativeTrades.length > 0
+                ? grossLoss / negativeTrades.length
+                : 0;
         const avgRRR = avgLoss > 0 ? avgWin / avgLoss : 0;
 
         const pnlValues = trades.map((t) => getNetPnl(t));
@@ -117,7 +165,8 @@ export async function GET(request: NextRequest) {
             const firstResult = reversedTrades[0].result;
             if (firstResult === "WIN" || firstResult === "LOSS") {
                 currentStreak.type = firstResult.toLowerCase() as
-                    "win" | "loss";
+                    | "win"
+                    | "loss";
                 for (const trade of reversedTrades) {
                     if (trade.result === firstResult) {
                         currentStreak.count++;
@@ -128,18 +177,37 @@ export async function GET(request: NextRequest) {
             }
         }
 
-        // 5.5 Fetch current balance for accurate equity curve
-        const accountFilter = accountId
-            ? { userId: user.id, id: accountId }
-            : { userId: user.id };
-        const accounts = await prisma.tradingAccount.findMany({
-            where: accountFilter,
-            select: { balance: true },
-        });
-        const currentBalance = accounts.reduce(
-            (sum, acc) => sum + (acc.balance || 0),
-            0
+        // 5.5 Compute current balance for accurate equity curve (normalize USC/mixed in multi-account mode)
+        const accounts = normalizedAccountId
+            ? userAccounts.filter((acc) => acc.id === normalizedAccountId)
+            : userAccounts;
+        const uniqueCurrencies = new Set(
+            accounts.map((acc) =>
+                normalizeCurrencyCode(acc.currency, acc.server)
+            )
         );
+        const hasMixedCurrencies = uniqueCurrencies.size > 1;
+        const displayCurrency =
+            !normalizedAccountId && hasMixedCurrencies
+                ? "USD"
+                : normalizeCurrencyCode(
+                      accounts[0]?.currency,
+                      accounts[0]?.server
+                  );
+        const currentBalance =
+            !normalizedAccountId &&
+            (hasMixedCurrencies || displayCurrency === "USD")
+                ? accounts.reduce(
+                      (sum, acc) =>
+                          sum +
+                          convertToUsdEquivalent(
+                              acc.balance || 0,
+                              acc.currency,
+                              acc.server
+                          ),
+                      0
+                  )
+                : accounts.reduce((sum, acc) => sum + (acc.balance || 0), 0);
 
         // 6. Calculate equity curve
         // Backtrack from current balance to get starting balance of the period

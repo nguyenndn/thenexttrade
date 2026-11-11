@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, Trophy, Calendar, DollarSign, ShieldAlert, Award, FileText, CheckCircle2 } from "lucide-react";
+import { X, Trophy, Calendar, DollarSign, ShieldAlert, Award, FileText } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import {
     Select,
@@ -18,11 +18,40 @@ import {
     type CompetitionPrizeItem,
 } from "@/actions/admin/competitions";
 
+type ModalCompetitionStatus = "DRAFT" | "UPCOMING" | "ACTIVE" | "ENDED";
+
+interface EditableCompetition {
+    id: string;
+    title: string;
+    slug?: string | null;
+    description?: string | null;
+    status?: string;
+    startDate?: Date | string;
+    endDate?: Date | string;
+    prizePool?: number;
+    prizes?: unknown;
+    minTrades?: number | null;
+    maxDrawdown?: number | null;
+    eligibleBrokers?: string | null;
+    scoringMetric?: string | null;
+}
+
 interface CompetitionModalProps {
     isOpen: boolean;
     onClose: () => void;
-    competition?: any | null;
+    competition?: EditableCompetition | null;
     onSuccess?: () => void;
+}
+
+function formatDateTimeLocal(dateInput: Date | string): string {
+    const d = new Date(dateInput);
+    if (Number.isNaN(d.getTime())) return "";
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    const dd = String(d.getDate()).padStart(2, "0");
+    const hh = String(d.getHours()).padStart(2, "0");
+    const min = String(d.getMinutes()).padStart(2, "0");
+    return `${yyyy}-${mm}-${dd}T${hh}:${min}`;
 }
 
 export function CompetitionModal({
@@ -36,7 +65,7 @@ export function CompetitionModal({
     const [title, setTitle] = useState("");
     const [slug, setSlug] = useState("");
     const [description, setDescription] = useState("");
-    const [status, setStatus] = useState<"DRAFT" | "UPCOMING" | "ACTIVE" | "ENDED">("ACTIVE");
+    const [status, setStatus] = useState<ModalCompetitionStatus>("ACTIVE");
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
     const [prizePool, setPrizePool] = useState<number>(1000);
@@ -54,30 +83,43 @@ export function CompetitionModal({
             setTitle(competition.title || "");
             setSlug(competition.slug || "");
             setDescription(competition.description || "");
-            setStatus(competition.status || "DRAFT");
+            const normalizedStatus: ModalCompetitionStatus =
+                competition.status === "DRAFT" ||
+                competition.status === "UPCOMING" ||
+                competition.status === "ACTIVE" ||
+                competition.status === "ENDED"
+                    ? competition.status
+                    : "DRAFT";
+            setStatus(normalizedStatus);
             setStartDate(
                 competition.startDate
-                    ? new Date(competition.startDate).toISOString().slice(0, 16)
+                    ? formatDateTimeLocal(competition.startDate)
                     : ""
             );
             setEndDate(
                 competition.endDate
-                    ? new Date(competition.endDate).toISOString().slice(0, 16)
+                    ? formatDateTimeLocal(competition.endDate)
                     : ""
             );
             setPrizePool(competition.prizePool ?? 1000);
             setMinTrades(competition.minTrades ?? 10);
             setMaxDrawdown(competition.maxDrawdown ?? 10.0);
             setEligibleBrokers(competition.eligibleBrokers || "ALL");
-            setScoringMetric(competition.scoringMetric || "currency");
+            setScoringMetric(
+                competition.scoringMetric === "percentage" ||
+                    competition.scoringMetric === "win_rate"
+                    ? "percentage"
+                    : "currency"
+            );
 
             if (Array.isArray(competition.prizes) && competition.prizes.length >= 3) {
-                setRank1Reward(competition.prizes[0]?.reward || "$500");
-                setRank2Reward(competition.prizes[1]?.reward || "$300");
-                setRank3Reward(competition.prizes[2]?.reward || "$200");
+                const prizeItems = competition.prizes as Array<{ reward?: string }>;
+                setRank1Reward(prizeItems[0]?.reward || "$500");
+                setRank2Reward(prizeItems[1]?.reward || "$300");
+                setRank3Reward(prizeItems[2]?.reward || "$200");
             }
         } else {
-            // Default: current month start & end
+            // Default: current month start & end in local wall-clock time
             const now = new Date();
             const start = new Date(now.getFullYear(), now.getMonth(), 1, 0, 0);
             const end = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59);
@@ -86,8 +128,8 @@ export function CompetitionModal({
             setSlug("");
             setDescription("Monthly verified MT5 trading tournament with institutional risk telemetry.");
             setStatus("ACTIVE");
-            setStartDate(start.toISOString().slice(0, 16));
-            setEndDate(end.toISOString().slice(0, 16));
+            setStartDate(formatDateTimeLocal(start));
+            setEndDate(formatDateTimeLocal(end));
             setPrizePool(1000);
             setRank1Reward("$500");
             setRank2Reward("$300");
@@ -103,6 +145,20 @@ export function CompetitionModal({
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        const parsedStart = new Date(startDate);
+        const parsedEnd = new Date(endDate);
+        if (
+            Number.isNaN(parsedStart.getTime()) ||
+            Number.isNaN(parsedEnd.getTime())
+        ) {
+            toast.error("Please enter valid start and end dates.");
+            return;
+        }
+        if (parsedEnd <= parsedStart) {
+            toast.error("End date must be after start date.");
+            return;
+        }
+
         setIsSubmitting(true);
 
         const prizes: CompetitionPrizeItem[] = [
@@ -116,8 +172,8 @@ export function CompetitionModal({
             slug: slug || undefined,
             description,
             status,
-            startDate: new Date(startDate).toISOString(),
-            endDate: new Date(endDate).toISOString(),
+            startDate: parsedStart.toISOString(),
+            endDate: parsedEnd.toISOString(),
             prizePool: Number(prizePool) || 0,
             prizes,
             minTrades: Number(minTrades) || 10,
@@ -146,8 +202,12 @@ export function CompetitionModal({
                     onClose();
                 }
             }
-        } catch (err: any) {
-            toast.error(err.message || "Failed to save competition.");
+        } catch (err: unknown) {
+            const msg =
+                err instanceof Error
+                    ? err.message
+                    : "Failed to save competition.";
+            toast.error(msg);
         } finally {
             setIsSubmitting(false);
         }
@@ -202,7 +262,12 @@ export function CompetitionModal({
                             <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
                                 Status
                             </label>
-                            <Select value={status} onValueChange={(val: any) => setStatus(val)}>
+                            <Select
+                                value={status}
+                                onValueChange={(val) =>
+                                    setStatus(val as ModalCompetitionStatus)
+                                }
+                            >
                                 <SelectTrigger className="w-full px-3.5 py-2 h-auto rounded-lg border border-gray-300 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/40">
                                     <SelectValue />
                                 </SelectTrigger>
@@ -332,7 +397,16 @@ export function CompetitionModal({
                             <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
                                 Scoring Metric
                             </label>
-                            <Select value={scoringMetric} onValueChange={(val: any) => setScoringMetric(val)}>
+                            <Select
+                                value={scoringMetric}
+                                onValueChange={(val) =>
+                                    setScoringMetric(
+                                        val === "percentage"
+                                            ? "percentage"
+                                            : "currency"
+                                    )
+                                }
+                            >
                                 <SelectTrigger className="w-full px-3.5 py-2 h-auto rounded-lg border border-gray-300 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] text-sm text-gray-900 dark:text-white focus:outline-none">
                                     <SelectValue />
                                 </SelectTrigger>

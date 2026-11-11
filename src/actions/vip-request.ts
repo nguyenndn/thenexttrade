@@ -48,6 +48,7 @@ export async function getVipLink() {
             where: {
                 userId: user.id,
                 status: { in: ["ACTIVE", "GRACE"] },
+                OR: [{ expiresAt: null }, { expiresAt: { gt: new Date() } }],
             },
             select: { id: true },
         }),
@@ -251,7 +252,7 @@ export async function approveVipRequest(requestId: string) {
                 type: NotificationType.VIP_APPROVED,
                 title: "VIP Access Activated!",
                 message:
-                    "Your VIP request has been approved. You now have full VIP access — open the VIP tab to join the Telegram channel & TraderRoom.",
+                    "Your VIP request has been approved. You now have full Partner Pro access — open Trading Systems to download EAs and join the VIP Telegram community.",
                 priority: NotificationPriority.HIGH,
                 link: NOTIFICATION_ROUTES.VIP_COMMUNITY,
             },
@@ -484,6 +485,8 @@ export async function rejectVipRequest(requestId: string, reason?: string) {
     revalidatePath(`/admin/users/${vipRequest.userId}`);
     revalidatePath("/admin/ib/pipeline");
     revalidatePath("/dashboard");
+    revalidatePath("/dashboard/accounts");
+    revalidatePath("/dashboard/trading-systems");
     return { success: true };
 }
 

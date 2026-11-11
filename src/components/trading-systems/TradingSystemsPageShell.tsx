@@ -3,12 +3,14 @@ import { PublicHeader } from "@/components/layout/PublicHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { ScrollToTop } from "@/components/ui/ScrollToTop";
 import { DynamicFirefly } from "@/components/ui/DynamicFirefly";
+import type { AuthUser } from "@/lib/auth-types";
 
 interface TradingSystemsPageShellProps {
     children: React.ReactNode;
     className?: string;
     mainClassName?: string;
     maxWidth?: string; // e.g. "max-w-6xl"
+    user?: AuthUser | null;
 }
 
 export function TradingSystemsPageShell({
@@ -16,6 +18,7 @@ export function TradingSystemsPageShell({
     className = "",
     mainClassName = "",
     maxWidth = "max-w-7xl",
+    user,
 }: TradingSystemsPageShellProps) {
     return (
         <div
@@ -37,7 +40,7 @@ export function TradingSystemsPageShell({
             {/* Dynamic Firefly effect */}
             <DynamicFirefly />
 
-            <PublicHeader />
+            <PublicHeader user={user} />
 
             <main
                 className={`flex-1 pt-28 sm:pt-32 pb-16 relative z-10 ${mainClassName}`}

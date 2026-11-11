@@ -46,14 +46,21 @@ export function PublicHeader({
         fetch("/api/profile")
             .then((res) => (res.ok ? res.json() : null))
             .then((data) => {
-                if (data?.name) {
+                if (data?.id || data?.email || data?.name) {
+                    const fallbackName =
+                        data.name ||
+                        data.username ||
+                        (typeof data.email === "string"
+                            ? data.email.split("@")[0]
+                            : null) ||
+                        "Trader";
                     setUser({
                         id: data.id || "",
-                        name: data.name,
+                        name: fallbackName,
                         email: data.email,
                         image: data.image,
                         profile: {
-                            username: data.username || data.name || "user",
+                            username: data.username || fallbackName || "user",
                             role: data.role || "USER",
                             xp: data.xp || 0,
                             level: data.level || 1,

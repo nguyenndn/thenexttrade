@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { cn } from "@/lib/utils";
-import { LucideIcon, Eye, EyeOff } from "lucide-react";
+import { LucideIcon, Eye, EyeOff, Copy, Check } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "./Button";
 
 export interface PremiumInputProps
@@ -10,16 +11,35 @@ export interface PremiumInputProps
     icon?: LucideIcon;
     prefix?: React.ReactNode;
     helperText?: string;
+    allowCopy?: boolean;
 }
 
 const PremiumInput = React.forwardRef<HTMLInputElement, PremiumInputProps>(
     (
-        { className, type, error, label, id, icon: Icon, prefix, helperText, ...props },
+        {
+            className,
+            type,
+            error,
+            label,
+            id,
+            icon: Icon,
+            prefix,
+            helperText,
+            allowCopy = false,
+            ...props
+        },
         ref
     ) => {
         const [showPassword, setShowPassword] = useState(false);
+        const [copied, setCopied] = useState(false);
         const inputType =
             type === "password" ? (showPassword ? "text" : "password") : type;
+        const stringValue =
+            typeof props.value === "string"
+                ? props.value
+                : typeof props.value === "number"
+                  ? String(props.value)
+                  : "";
 
         return (
             <div className="w-full space-y-2">
@@ -54,7 +74,11 @@ const PremiumInput = React.forwardRef<HTMLInputElement, PremiumInputProps>(
                             "placeholder:text-gray-500 dark:placeholder:text-gray-600 placeholder:font-normal",
                             "text-gray-700 dark:text-white font-medium",
                             prefix ? "pl-16" : Icon ? "pl-9" : "",
-                            type === "password" ? "pr-10" : "",
+                            type === "password"
+                                ? allowCopy
+                                    ? "pr-20"
+                                    : "pr-10"
+                                : "",
                             error
                                 ? "border-red-500 focus-visible:border-red-500 focus-visible:ring-red-500/50"
                                 : "",
@@ -64,24 +88,53 @@ const PremiumInput = React.forwardRef<HTMLInputElement, PremiumInputProps>(
                         {...props}
                     />
                     {type === "password" && (
-                        <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
-                            onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                setShowPassword(!showPassword);
-                            }}
-                            aria-label={showPassword ? "Hide password" : "Show password"}
-                            className="absolute z-10 inset-y-0 right-0 h-full w-10 flex items-center justify-center p-0 rounded-r-lg rounded-l-none text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors border-0"
-                        >
-                            {showPassword ? (
-                                <EyeOff size={16} />
-                            ) : (
-                                <Eye size={16} />
+                        <div className="absolute z-10 inset-y-0 right-1 flex items-center gap-0.5">
+                            {allowCopy && (
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="icon"
+                                    disabled={!stringValue}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        if (!stringValue) return;
+                                        navigator.clipboard.writeText(stringValue);
+                                        setCopied(true);
+                                        toast.success("Password copied to clipboard.");
+                                        setTimeout(() => setCopied(false), 2000);
+                                    }}
+                                    aria-label="Copy password"
+                                    title="Copy password"
+                                    className="h-8 w-8 flex items-center justify-center p-0 rounded-lg text-gray-400 hover:text-emerald-600 dark:hover:text-emerald-400 disabled:opacity-35 transition-colors border-0"
+                                >
+                                    {copied ? (
+                                        <Check size={15} className="text-emerald-500" />
+                                    ) : (
+                                        <Copy size={15} />
+                                    )}
+                                </Button>
                             )}
-                        </Button>
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    setShowPassword(!showPassword);
+                                }}
+                                aria-label={showPassword ? "Hide password" : "Show password"}
+                                title={showPassword ? "Hide password" : "Show password"}
+                                className="h-8 w-8 flex items-center justify-center p-0 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors border-0"
+                            >
+                                {showPassword ? (
+                                    <EyeOff size={16} />
+                                ) : (
+                                    <Eye size={16} />
+                                )}
+                            </Button>
+                        </div>
                     )}
                 </div>
                 {error && (

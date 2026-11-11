@@ -98,12 +98,14 @@ export function LeaderboardContent({
                             </h3>
                             {(type === "trading" || type === "sprint") && (
                                 <p className="text-xs text-gray-500">
-                                    All participants with min. 10 closed trades ({period})
+                                    {type === "sprint"
+                                        ? "Enrolled sprint participants meeting minimum trade requirements"
+                                        : `All participants with min. 10 closed trades (${period})`}
                                 </p>
                             )}
                         </div>
                     </div>
-                    {type !== "trading" && (
+                    {type !== "trading" && type !== "sprint" && (
                         <Button
                             variant="outline"
                             size="sm"

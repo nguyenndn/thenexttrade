@@ -4,6 +4,7 @@ import { ALL_TOOLS } from "@/config/tools-data";
 import { ToolsGrid } from "@/components/tools/ToolsGrid";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button-variants";
+import { getAuthUser } from "@/lib/auth-cache";
 import { Suspense } from "react";
 
 import type { Metadata } from "next";
@@ -33,9 +34,12 @@ export const metadata: Metadata = {
 
 export const revalidate = 86400;
 
-export default function ToolsPage() {
+export default async function ToolsPage() {
+    const user = await getAuthUser();
+    const isLoggedIn = Boolean(user);
+
     return (
-        <ToolsPageShell maxWidth="max-w-6xl">
+        <ToolsPageShell maxWidth="max-w-6xl" user={user}>
             {/* Hero */}
             <div className="text-center mb-6 relative">
                 {/* H1 Title */}
@@ -109,7 +113,11 @@ export default function ToolsPage() {
                         </div>
                     </div>
                     <Link
-                        href="/auth/signup?source=tools_hub&intent=track"
+                        href={
+                            isLoggedIn
+                                ? "/dashboard"
+                                : "/auth/signup?source=tools_hub&intent=track"
+                        }
                         className={buttonVariants({
                             variant: "gold",
                             size: "smd",
@@ -117,7 +125,11 @@ export default function ToolsPage() {
                                 "shrink-0 font-black hover:scale-[1.02] active:scale-[0.98] group/btn",
                         })}
                     >
-                        <span>Start Free Journal</span>
+                        <span>
+                            {isLoggedIn
+                                ? "Go to Dashboard"
+                                : "Start Free Journal"}
+                        </span>
                         <ArrowRight
                             size={14}
                             className="group-hover/btn:translate-x-1 transition-transform duration-300"

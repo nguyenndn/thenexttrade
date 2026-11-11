@@ -45,24 +45,51 @@ export default async function JournalPage({
             ? parseInt(resolvedParams.limit) || 20
             : 20;
 
-    // Parse Filters
-    let accountId =
+    // Parse Filters & Validate Account Ownership
+    const userAccounts = await prisma.tradingAccount.findMany({
+        where: { userId: user.id },
+        orderBy: { createdAt: "asc" },
+        select: { id: true, timezone: true, currency: true, server: true },
+    });
+
+    const rawAccountId =
         typeof resolvedParams.accountId === "string"
             ? resolvedParams.accountId
             : undefined;
+    const normalizedAccountId =
+        rawAccountId && rawAccountId !== "all" ? rawAccountId : undefined;
 
     // Resolve accountId from Main Account (/dashboard/accounts) -> cookie -> first account if missing from URL
     const cookieStore = await cookies();
     const isSampleMode =
         cookieStore.get("the_next_trade_sample_mode")?.value === "true";
-    if (!accountId) {
-        const savedAccountId = cookieStore.get("last_account_id")?.value;
+
+    let accountId: string | undefined;
+    if (rawAccountId === "all") {
+        accountId = undefined;
+    } else if (normalizedAccountId) {
+        accountId = userAccounts.some((acc) => acc.id === normalizedAccountId)
+            ? normalizedAccountId
+            : undefined;
+    } else {
+        const rawSavedAccountId = cookieStore.get("last_account_id")?.value;
+        const validSavedAccountId =
+            rawSavedAccountId &&
+            userAccounts.some((acc) => acc.id === rawSavedAccountId)
+                ? rawSavedAccountId
+                : undefined;
         const { resolveDefaultAccountId } = await import(
             "@/actions/main-account"
         );
-        accountId = await resolveDefaultAccountId(user.id, savedAccountId);
-    } else if (accountId === "all") {
-        accountId = undefined;
+        const resolvedDefault = await resolveDefaultAccountId(
+            user.id,
+            validSavedAccountId
+        );
+        accountId =
+            resolvedDefault &&
+            userAccounts.some((acc) => acc.id === resolvedDefault)
+                ? resolvedDefault
+                : undefined;
     }
 
     const symbol =
@@ -141,27 +168,22 @@ export default async function JournalPage({
             ? resolvedParams.dir
             : undefined;
 
-    // Fetch account timezone & currency for broker-aligned day boundaries in parallel with
-    // the user data-state check. The journal query starts once both are ready.
-    const accountInfoPromise = accountId
-        ? prisma.tradingAccount
-              .findFirst({
-                  where: { id: accountId, userId: user.id },
-                  select: { timezone: true, currency: true, server: true },
-              })
-        : prisma.tradingAccount
-              .findFirst({
-                  where: { userId: user.id },
-                  orderBy: { createdAt: "asc" },
-                  select: { timezone: true, currency: true, server: true },
-              });
-
-    const [tradingDataState, accountInfo] = await Promise.all([
-        tradingDataStatePromise,
-        accountInfoPromise,
-    ]);
-    const accountTimezone = accountId ? accountInfo?.timezone || undefined : undefined;
-    const accountCurrency = normalizeCurrencyCode(accountInfo?.currency, accountInfo?.server);
+    const tradingDataState = await tradingDataStatePromise;
+    const accountInfo = accountId
+        ? userAccounts.find((acc) => acc.id === accountId)
+        : userAccounts[0];
+    const uniqueCurrencies = new Set(
+        userAccounts.map((acc) =>
+            normalizeCurrencyCode(acc.currency, acc.server)
+        )
+    );
+    const accountTimezone = accountId
+        ? accountInfo?.timezone || undefined
+        : undefined;
+    const accountCurrency =
+        !accountId && uniqueCurrencies.size > 1
+            ? "USD"
+            : normalizeCurrencyCode(accountInfo?.currency, accountInfo?.server);
 
     const [{ entries, meta, stats }, { strategies }, userTags] =
         await Promise.all([
@@ -196,7 +218,7 @@ export default async function JournalPage({
                 strategies={strategies}
                 userTags={userTags}
                 hasTradeData={tradingDataState.hasTradeData}
-                currentAccountId={accountId}
+                currentAccountId={rawAccountId === "all" ? "all" : accountId}
                 currency={accountCurrency}
             />
         </div>

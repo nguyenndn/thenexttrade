@@ -40,6 +40,7 @@ export type LicenseMutationResult = {
     githubSynced?: boolean;
     githubSkipped?: boolean;
     githubError?: string;
+    syncWarning?: string;
     syncJobId?: string;
     error?: string;
     licenseKey?: string;
@@ -816,6 +817,10 @@ export async function regenerateAccountLicenseKey(
             { maxWait: 10_000, timeout: 20_000 }
         );
 
+        const syncResult = await syncLicenseBackupOrQueue({
+            eventKey: buildSyncEventKey("regenerateAccountLicenseKey", accountId),
+        });
+
         revalidatePath("/admin/trading-systems");
         revalidatePath("/admin/trading-systems/accounts");
         revalidatePath("/dashboard/trading-systems");
@@ -824,8 +829,10 @@ export async function regenerateAccountLicenseKey(
             dbUpdated: true,
             accountRetained: false,
             licenseKey: newKey,
-            githubSynced: false,
-            githubSkipped: false,
+            ...syncFields(syncResult),
+            ...(syncResult.githubError
+                ? { syncWarning: syncResult.githubError }
+                : {}),
         };
     } catch (error) {
         console.error("regenerateAccountLicenseKey error:", error);

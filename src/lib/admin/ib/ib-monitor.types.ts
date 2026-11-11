@@ -117,6 +117,7 @@ export interface ExpandedTraderAccount {
     isDuplicate: boolean;
     totalTrades: number;
     ibAttribution?: "CONFIRMED" | "NOT_OURS" | "UNKNOWN" | string | null;
+    hasSavedPassword?: boolean;
 }
 
 export interface IbTraderRow {

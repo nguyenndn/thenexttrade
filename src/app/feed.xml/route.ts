@@ -1,10 +1,12 @@
 import RSS from "rss";
 import { prisma } from "@/lib/prisma";
+import { isAcademyEnabled } from "@/app/admin/academy/actions";
 
 export const dynamic = "force-dynamic"; // Always fetch fresh data
 
 export async function GET() {
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const academyEnabled = await isAcademyEnabled();
 
     const feed = new RSS({
         title: "The Next Trade",
@@ -43,42 +45,45 @@ export async function GET() {
         });
     });
 
-    // 2. Public Academy Lessons (freemium content for SEO)
-    const publicLessons = await prisma.lesson.findMany({
-        where: {
-            module: {
-                level: {
-                    accessLevel: "PUBLIC",
+    // 2. Public Academy Lessons (only when Academy is enabled & published)
+    if (academyEnabled) {
+        const publicLessons = await prisma.lesson.findMany({
+            where: {
+                status: "published",
+                module: {
+                    level: {
+                        accessLevel: "PUBLIC",
+                    },
                 },
             },
-        },
-        orderBy: { updatedAt: "desc" },
-        take: 30,
-        select: {
-            id: true,
-            title: true,
-            slug: true,
-            updatedAt: true,
-            module: {
-                select: {
-                    title: true,
-                    level: { select: { title: true } },
+            orderBy: { updatedAt: "desc" },
+            take: 30,
+            select: {
+                id: true,
+                title: true,
+                slug: true,
+                updatedAt: true,
+                module: {
+                    select: {
+                        title: true,
+                        level: { select: { title: true } },
+                    },
                 },
             },
-        },
-    });
-
-    publicLessons.forEach((lesson) => {
-        feed.item({
-            title: `[Academy] ${lesson.title}`,
-            description: `Free lesson from ${lesson.module.level.title} — ${lesson.module.title}. Start learning forex trading with TheNextTrade Academy.`,
-            url: `${baseUrl}/academy/lesson/${lesson.slug}`,
-            guid: `academy-${lesson.id}`,
-            date: lesson.updatedAt,
-            author: "The Next Trade Academy",
-            categories: ["Academy", lesson.module.level.title],
         });
-    });
+
+        publicLessons.forEach((lesson) => {
+            feed.item({
+                title: `[Academy] ${lesson.title}`,
+                description: `Free lesson from ${lesson.module.level.title} — ${lesson.module.title}. Start learning forex trading with TheNextTrade Academy.`,
+                url: `${baseUrl}/academy/lesson/${lesson.slug}`,
+                guid: `academy-${lesson.id}`,
+                date: lesson.updatedAt,
+                author: "The Next Trade Academy",
+                categories: ["Academy", lesson.module.level.title],
+            });
+        });
+    }
 
     return new Response(feed.xml({ indent: true }), {
         headers: {

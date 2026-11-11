@@ -23,6 +23,7 @@ export interface UnifiedSyncItem {
         server?: string | null;
         balance?: number | null;
         currency?: string | null;
+        hasSavedPassword?: boolean;
     };
     status: string;
     unifiedStatus: "QUEUE" | "COMPLETED" | "FAILED";
@@ -163,6 +164,11 @@ export async function getAdminSyncRequests(params: SyncRequestFilterParams = {})
                         accountNumber: true,
                         balance: true,
                         currency: true,
+                        credential: {
+                            select: {
+                                encryptedPassword: true,
+                            },
+                        },
                     },
                 },
                 user: {
@@ -216,6 +222,7 @@ export async function getAdminSyncRequests(params: SyncRequestFilterParams = {})
             server: job.account?.server || null,
             balance: job.account?.balance ?? null,
             currency: job.account?.currency || "USD",
+            hasSavedPassword: Boolean(job.account?.credential?.encryptedPassword),
         },
         status: job.status,
         unifiedStatus:

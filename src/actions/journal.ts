@@ -2,11 +2,20 @@
 
 import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth-cache";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { onUserTradesUpdated } from "@/lib/experiments/progress.server";
 import { z } from "zod";
 import { TradeType, TradeStatus, TradeResult } from "@prisma/client";
 import { buildDateRangeFilter } from "@/lib/utils";
+
+function revalidateJournalDependencies() {
+    revalidateTag("dashboard-stats", "max");
+    revalidatePath("/dashboard");
+    revalidatePath("/dashboard/journal");
+    revalidatePath("/dashboard/analytics");
+    revalidatePath("/dashboard/intelligence");
+    revalidatePath("/dashboard/strategies");
+}
 
 const journalSchema = z.object({
     symbol: z.string().min(1),
@@ -111,15 +120,21 @@ export async function getJournalEntries(
     }
 
     if (status) {
-        if (["WIN", "LOSS", "BREAK_EVEN"].includes(status)) {
+        if (status === "BREAK_EVEN") {
+            where.result = { in: ["BREAK_EVEN", "BE_PLUS"] as TradeResult[] };
+        } else if (["WIN", "LOSS", "BE_PLUS"].includes(status)) {
             where.result = status as TradeResult;
         } else if (["OPEN", "CLOSED"].includes(status)) {
             where.status = status as TradeStatus;
         }
     }
 
-    if (result && ["WIN", "LOSS", "BREAK_EVEN"].includes(result)) {
-        where.result = result as TradeResult;
+    if (result) {
+        if (result === "BREAK_EVEN") {
+            where.result = { in: ["BREAK_EVEN", "BE_PLUS"] as TradeResult[] };
+        } else if (["WIN", "LOSS", "BE_PLUS"].includes(result)) {
+            where.result = result as TradeResult;
+        }
     }
 
     if (source === "EA") {
@@ -173,18 +188,30 @@ export async function getJournalEntries(
     const ALLOWED_SORT_FIELDS = new Set([
         "entryDate",
         "exitDate",
-        "profit",
-        "lots",
         "symbol",
         "pnl",
+        "entryPrice",
+        "exitPrice",
+        "lotSize",
+        "commission",
+        "swap",
+        "stopLoss",
+        "takeProfit",
+        "type",
+        "status",
+        "result",
         "createdAt",
     ]);
 
     let field = "entryDate";
     if (sortBy) {
         let candidateField = sortBy;
-        if (sortBy === "date" || sortBy === "openTime") candidateField = "entryDate";
-        if (sortBy === "closeTime") candidateField = "exitDate";
+        if (sortBy === "date" || sortBy === "openTime")
+            candidateField = "entryDate";
+        else if (sortBy === "closeTime") candidateField = "exitDate";
+        else if (sortBy === "size" || sortBy === "lots")
+            candidateField = "lotSize";
+        else if (sortBy === "profit") candidateField = "pnl";
 
         if (ALLOWED_SORT_FIELDS.has(candidateField)) {
             field = candidateField;
@@ -404,7 +431,7 @@ export async function createJournalEntry(data: z.infer<typeof journalSchema>) {
             /* Experiment progress update should not block journal creation */
         }
 
-        revalidatePath("/dashboard/journal");
+        revalidateJournalDependencies();
         return { success: true, gamification: { xpEarned, isFirstTrade } };
     } catch (error) {
         return { error: "Failed to create entry" };
@@ -462,7 +489,7 @@ export async function updateJournalEntry(
             /* Experiment progress update should not block journal update */
         }
 
-        revalidatePath("/dashboard/journal");
+        revalidateJournalDependencies();
         return { success: true };
     } catch (error) {
         return { error: "Failed to update entry" };
@@ -495,7 +522,7 @@ export async function deleteJournalEntry(id: string) {
             });
         }
 
-        revalidatePath("/dashboard/journal");
+        revalidateJournalDependencies();
         return { success: true };
     } catch (error) {
         return { error: "Failed to delete entry" };
@@ -547,10 +574,66 @@ export async function bulkDeleteJournalEntries(ids: string[]) {
             }
         }
 
-        revalidatePath("/dashboard/journal");
+        revalidateJournalDependencies();
         return { success: true, count: deleted.count };
     } catch (error) {
         return { error: "Failed to delete entries" };
+    }
+}
+
+export async function deleteAllJournalEntries(accountId?: string) {
+    const user = await getAuthUser();
+    if (!user) return { error: "Unauthorized" };
+
+    const normalizedAccountId =
+        accountId && accountId !== "all" ? accountId : undefined;
+
+    try {
+        const deleteWhere = {
+            userId: user.id,
+            ...(normalizedAccountId ? { accountId: normalizedAccountId } : {}),
+        };
+
+        const affectedAccounts = await prisma.journalEntry.findMany({
+            where: deleteWhere,
+            select: { accountId: true },
+            distinct: ["accountId"],
+        });
+
+        await prisma.tradePlan.updateMany({
+            where: {
+                userId: user.id,
+                ...(normalizedAccountId
+                    ? { accountId: normalizedAccountId }
+                    : {}),
+                journalEntryId: { not: null },
+            },
+            data: {
+                journalEntryId: null,
+                status: "PLANNED",
+            },
+        });
+
+        const deleted = await prisma.journalEntry.deleteMany({
+            where: deleteWhere,
+        });
+
+        for (const item of affectedAccounts) {
+            if (item.accountId) {
+                const exactTotalTrades = await prisma.journalEntry.count({
+                    where: { accountId: item.accountId },
+                });
+                await prisma.tradingAccount.update({
+                    where: { id: item.accountId },
+                    data: { totalTrades: exactTotalTrades },
+                });
+            }
+        }
+
+        revalidateJournalDependencies();
+        return { success: true, count: deleted.count };
+    } catch {
+        return { error: "Failed to delete all entries" };
     }
 }
 
@@ -649,43 +732,153 @@ export async function getDailyPnlForCalendar(accountId?: string) {
 export async function exportJournalEntries(filters: {
     accountId?: string;
     symbol?: string;
+    search?: string;
     type?: string;
+    direction?: string;
+    result?: string;
+    source?: string;
+    comment?: string;
+    magicNumber?: string;
     status?: string;
     tag?: string;
+    strategy?: string;
+    session?: string;
     dateFrom?: string;
     dateTo?: string;
+    timezone?: string;
 }) {
     const user = await getAuthUser();
     if (!user) return { error: "Unauthorized" };
 
-    const { accountId, symbol, type, status, tag, dateFrom, dateTo } = filters;
+    const {
+        accountId,
+        symbol,
+        search,
+        type,
+        direction,
+        result,
+        source,
+        comment,
+        magicNumber,
+        status,
+        tag,
+        strategy,
+        session,
+        dateFrom,
+        dateTo,
+        timezone,
+    } = filters;
     const where: any = { userId: user.id };
+    const andConditions: any[] = [];
 
-    if (accountId && accountId !== "all") where.accountId = accountId;
+    const normalizedAccountId =
+        accountId && accountId !== "all" ? accountId : undefined;
+    let resolvedTimezone = timezone;
+
+    if (normalizedAccountId) {
+        const acc = await prisma.tradingAccount.findFirst({
+            where: { id: normalizedAccountId, userId: user.id },
+            select: { id: true, timezone: true },
+        });
+        if (acc) {
+            where.accountId = acc.id;
+            if (!resolvedTimezone) {
+                resolvedTimezone = acc.timezone || undefined;
+            }
+        }
+    }
+
     if (symbol) where.symbol = { contains: symbol, mode: "insensitive" };
-    if (type) where.type = type as TradeType;
+
+    if (search && search.trim() !== "") {
+        const term = search.trim();
+        andConditions.push({
+            OR: [
+                { symbol: { contains: term, mode: "insensitive" } },
+                { notes: { contains: term, mode: "insensitive" } },
+                { strategy: { contains: term, mode: "insensitive" } },
+            ],
+        });
+    }
+
+    const effectiveDirection = type || direction;
+    if (effectiveDirection && ["BUY", "SELL"].includes(effectiveDirection)) {
+        where.type = effectiveDirection as TradeType;
+    }
 
     if (status) {
-        if (["WIN", "LOSS", "BREAK_EVEN"].includes(status)) {
+        if (status === "BREAK_EVEN") {
+            where.result = { in: ["BREAK_EVEN", "BE_PLUS"] as TradeResult[] };
+        } else if (["WIN", "LOSS", "BE_PLUS"].includes(status)) {
             where.result = status as TradeResult;
         } else if (["OPEN", "CLOSED"].includes(status)) {
             where.status = status as TradeStatus;
         }
     }
 
-    const dateFilter = buildDateRangeFilter(dateFrom, dateTo);
-    if (dateFilter) {
-        where.OR = [{ exitDate: dateFilter }, { entryDate: dateFilter }];
+    if (result) {
+        if (result === "BREAK_EVEN") {
+            where.result = { in: ["BREAK_EVEN", "BE_PLUS"] as TradeResult[] };
+        } else if (["WIN", "LOSS", "BE_PLUS"].includes(result)) {
+            where.result = result as TradeResult;
+        }
     }
 
-    if (tag) {
+    if (source === "EA") {
+        where.syncSource = { in: ["EA", "APP", "MT5_CLOUD"] };
+    } else if (source === "MANUAL") {
+        andConditions.push({
+            OR: [{ syncSource: "MANUAL" }, { syncSource: null }],
+        });
+    }
+
+    if (comment) {
+        where.notes = { contains: comment, mode: "insensitive" };
+    }
+
+    if (magicNumber && magicNumber.trim() !== "") {
+        const parsedMagic = Number(magicNumber.trim());
+        if (!Number.isNaN(parsedMagic)) {
+            where.magicNumber = parsedMagic;
+        }
+    }
+
+    if (strategy) {
+        where.strategy = { equals: strategy, mode: "insensitive" };
+    }
+
+    if (session && session !== "ALL") {
+        where.tradingSession = session;
+    }
+
+    if (tag && tag !== "ALL") {
         where.tags = { has: tag };
+    }
+
+    const dateFilter = buildDateRangeFilter(dateFrom, dateTo, resolvedTimezone);
+    if (dateFilter) {
+        if (status === "OPEN") {
+            where.entryDate = dateFilter;
+        } else if (status === "CLOSED") {
+            where.exitDate = dateFilter;
+        } else {
+            andConditions.push({
+                OR: [
+                    { status: "CLOSED" as TradeStatus, exitDate: dateFilter },
+                    { status: "OPEN" as TradeStatus, entryDate: dateFilter },
+                ],
+            });
+        }
+    }
+
+    if (andConditions.length > 0) {
+        where.AND = andConditions;
     }
 
     try {
         const entries = await prisma.journalEntry.findMany({
             where,
-            orderBy: { entryDate: "desc" },
+            orderBy: [{ exitDate: "desc" }, { entryDate: "desc" }],
             include: { account: { select: { name: true } } },
             take: 5000, // Reasonable limit for CSV export
         });
@@ -730,21 +923,44 @@ export async function exportJournalEntries(filters: {
 /**
  * Get all trades and specific statistics for a given day (for calendar modal)
  */
-export async function getDayDetails(date: string, accountId?: string) {
+export async function getDayDetails(
+    date: string,
+    accountId?: string,
+    timezone?: string
+) {
     const user = await getAuthUser();
     if (!user) return { error: "Unauthorized" };
 
-    const start = new Date(date);
-    start.setUTCHours(0, 0, 0, 0);
-    const end = new Date(date);
-    end.setUTCHours(23, 59, 59, 999);
+    const normalizedAccountId =
+        accountId && accountId !== "all" ? accountId : undefined;
+    let resolvedTimezone = timezone;
+    let validAccountId: string | undefined;
+
+    if (normalizedAccountId) {
+        const acc = await prisma.tradingAccount.findFirst({
+            where: { id: normalizedAccountId, userId: user.id },
+            select: { id: true, timezone: true },
+        });
+        if (acc) {
+            validAccountId = acc.id;
+            if (!resolvedTimezone) {
+                resolvedTimezone = acc.timezone || undefined;
+            }
+        }
+    }
+
+    const dateFilter = buildDateRangeFilter(
+        date,
+        date,
+        resolvedTimezone || "Etc/UTC"
+    );
 
     const where: any = {
         userId: user.id,
         status: "CLOSED",
-        exitDate: { gte: start, lte: end },
+        ...(dateFilter ? { exitDate: dateFilter } : {}),
+        ...(validAccountId ? { accountId: validAccountId } : {}),
     };
-    if (accountId) where.accountId = accountId;
 
     try {
         const trades = await prisma.journalEntry.findMany({
@@ -788,7 +1004,6 @@ export async function getDayDetails(date: string, accountId?: string) {
         });
 
         let peak = 0;
-        let currentDrawdown = 0;
         let maxDrawdown = 0;
         let runningPnl = 0;
 
@@ -812,9 +1027,19 @@ export async function getDayDetails(date: string, accountId?: string) {
 
             if (netPnl > 0) {
                 grossProfit += netPnl;
-                winCount++;
             } else if (netPnl < 0) {
                 grossLoss += Math.abs(netPnl);
+            }
+
+            if (t.result === "WIN") {
+                winCount++;
+            } else if (t.result === "LOSS") {
+                lossCount++;
+            } else if (t.result === "BREAK_EVEN" || t.result === "BE_PLUS") {
+                breakEvenCount++;
+            } else if (netPnl > 0) {
+                winCount++;
+            } else if (netPnl < 0) {
                 lossCount++;
             } else {
                 breakEvenCount++;
@@ -841,6 +1066,8 @@ export async function getDayDetails(date: string, accountId?: string) {
             }
         });
 
+        const totalClosed = winCount + lossCount + breakEvenCount;
+
         return {
             trades: formattedTrades,
             stats: {
@@ -857,9 +1084,10 @@ export async function getDayDetails(date: string, accountId?: string) {
                 totalCommission,
                 totalSwap,
                 commissionsAndFees: totalCommissions,
-                winrate: winCount + lossCount + breakEvenCount > 0
-                    ? (winCount / (winCount + lossCount + breakEvenCount)) * 100
-                    : 0,
+                winrate:
+                    totalClosed > 0
+                        ? (winCount / totalClosed) * 100
+                        : 0,
                 profitFactor:
                     grossLoss > 0
                         ? grossProfit / grossLoss

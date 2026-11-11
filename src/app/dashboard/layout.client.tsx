@@ -25,19 +25,21 @@ interface DashboardLayoutClientProps {
     children: React.ReactNode;
     user: AuthUser | null;
     initialProStatus?: InitialProStatus | null;
+    initialDisabledFlags?: string[];
 }
 
 export function DashboardLayoutClient({
     children,
     user,
     initialProStatus,
+    initialDisabledFlags,
 }: DashboardLayoutClientProps) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [collapsed, setCollapsed] = useState(false);
 
     return (
         <DashboardButtonSizeProvider>
-            <DashboardProvider>
+            <DashboardProvider initialDisabledFlags={initialDisabledFlags}>
                 <ProProvider initialProStatus={initialProStatus}>
                     <SampleModeProvider>
                         <TradingStyleAutoSync userId={user?.id} />

@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getPublicProfileData } from "@/lib/profile-queries";
 import { PublicProfileCard } from "@/components/profile/PublicProfileCard";
+import { getAuthUser } from "@/lib/auth-cache";
 
 export const dynamic = "force-dynamic";
 
@@ -19,6 +20,7 @@ export async function generateMetadata({
         return { title: "Profile Not Found | TheNextTrade" };
     }
 
+    const canonicalUsername = profile.username || username;
     const displayName = profile.name;
     const statsLine = profile.visibility.showPercentMetrics
         ? `${profile.stats.totalTrades} trades, ${Math.round(profile.stats.winRate)}% win rate.`
@@ -26,23 +28,23 @@ export async function generateMetadata({
     const description = `${displayName}'s public trading profile for the last 90 days, based on ${profile.performanceWindow.qualifyingClosedTrades} synced closed trades. ${statsLine}`;
 
     return {
-        title: `${displayName} (@${username}) | TheNextTrade`,
+        title: `${displayName} (@${canonicalUsername}) | TheNextTrade`,
         description,
         alternates: {
-            canonical: `/trader/${username}`,
+            canonical: `/trader/${canonicalUsername}`,
         },
         openGraph: {
             title: `${displayName} | TheNextTrade`,
             description,
-            url: `/trader/${username}`,
-            images: [`/api/og/trader/${username}`],
+            url: `/trader/${canonicalUsername}`,
+            images: [`/api/og/trader/${canonicalUsername}`],
             type: "profile",
         },
         twitter: {
             card: "summary_large_image",
             title: `${displayName} | TheNextTrade`,
             description,
-            images: [`/api/og/trader/${username}`],
+            images: [`/api/og/trader/${canonicalUsername}`],
         },
     };
 }
@@ -53,7 +55,10 @@ export default async function TraderProfilePage({
     params: Params;
 }) {
     const { username } = await params;
-    const profile = await getPublicProfileData(username);
+    const [profile, user] = await Promise.all([
+        getPublicProfileData(username),
+        getAuthUser(),
+    ]);
 
     if (!profile) {
         notFound();
@@ -62,7 +67,10 @@ export default async function TraderProfilePage({
     return (
         <div className="min-h-screen bg-white dark:bg-transparent">
             <div className="max-w-4xl mx-auto px-4 py-10 md:py-16 tabular-nums">
-                <PublicProfileCard profile={profile} />
+                <PublicProfileCard
+                    profile={profile}
+                    isLoggedIn={Boolean(user)}
+                />
             </div>
         </div>
     );

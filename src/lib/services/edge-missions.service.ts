@@ -8,6 +8,7 @@ import {
     getMissionDef,
     type MissionDef,
 } from "@/config/edge-missions";
+import { isAcademyEnabled } from "@/app/admin/academy/actions";
 
 export interface MissionProgressItem {
     missionId: string;
@@ -86,18 +87,29 @@ export function getCurrentDayRange(date = new Date()) {
 export async function getUserMissions(
     userId: string
 ): Promise<MissionProgressItem[]> {
-    // Fetch existing progress
-    const existing = await prisma.userMissionProgress.findMany({
-        where: { userId },
-    });
+    // Fetch existing progress and feature flag in parallel
+    const [existing, academyEnabled] = await Promise.all([
+        prisma.userMissionProgress.findMany({
+            where: { userId },
+        }),
+        isAcademyEnabled(),
+    ]);
 
     const progressMap = new Map(
         existing.map((p) => [`${p.missionId}:${p.periodKey}`, p])
     );
 
+    const activeMissionDefs = academyEnabled
+        ? EDGE_MISSIONS
+        : EDGE_MISSIONS.filter(
+              (def) =>
+                  !def.ctaHref.startsWith("/dashboard/academy") &&
+                  !def.ctaHref.startsWith("/academy")
+          );
+
     const results: MissionProgressItem[] = [];
 
-    for (const def of EDGE_MISSIONS) {
+    for (const def of activeMissionDefs) {
         const periodKey = getMissionPeriodKey(def);
         const record = progressMap.get(`${def.id}:${periodKey}`);
 

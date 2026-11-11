@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { Search, FileText, X, ArrowRight } from "lucide-react";
@@ -15,6 +15,7 @@ import {
     CommandSeparator,
 } from "@/components/ui/command";
 import { dashboardMenuItems, adminMenuItems } from "@/config/navigation";
+import { useFeatureFlags } from "@/lib/dashboard-context";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 
@@ -55,8 +56,12 @@ function HighlightMatch({ text, query }: { text: string; query: string }) {
     );
 }
 
-// Flatten navigation items for search
-function flattenNavItems(menuList: any[]) {
+// Flatten navigation items for search, respecting active feature flags
+function flattenNavItems(
+    menuList: any[],
+    disabledFlags: Set<string>,
+    loaded: boolean
+) {
     const items: {
         name: string;
         href: string;
@@ -67,7 +72,10 @@ function flattenNavItems(menuList: any[]) {
     const seen = new Set<string>();
     for (const group of menuList) {
         if (group.href && group.href !== "#" && !seen.has(group.href)) {
-            if (!group.featureFlag) {
+            const isFlagAllowed =
+                !group.featureFlag ||
+                (loaded && !disabledFlags.has(group.featureFlag));
+            if (isFlagAllowed) {
                 seen.add(group.href);
                 items.push({
                     name: group.name,
@@ -81,7 +89,10 @@ function flattenNavItems(menuList: any[]) {
         if ("items" in group && Array.isArray((group as any).items)) {
             for (const sub of (group as any).items) {
                 if (!seen.has(sub.href)) {
-                    if (!sub.featureFlag) {
+                    const isSubFlagAllowed =
+                        !sub.featureFlag ||
+                        (loaded && !disabledFlags.has(sub.featureFlag));
+                    if (isSubFlagAllowed) {
                         seen.add(sub.href);
                         items.push({
                             name: sub.name,
@@ -98,8 +109,7 @@ function flattenNavItems(menuList: any[]) {
     return items;
 }
 
-const dashboardPages = flattenNavItems(dashboardMenuItems);
-const adminPages = flattenNavItems(adminMenuItems);
+const adminPages = flattenNavItems(adminMenuItems, new Set(), true);
 
 export function CommandPalette({
     searchRoute = "/dashboard/search",
@@ -111,10 +121,15 @@ export function CommandPalette({
     const [open, setOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const router = useRouter();
+    const { disabledFlags, loaded } = useFeatureFlags();
 
-    const allPages = searchRoute.startsWith("/admin")
-        ? adminPages
-        : dashboardPages;
+    const allPages = useMemo(
+        () =>
+            searchRoute.startsWith("/admin")
+                ? adminPages
+                : flattenNavItems(dashboardMenuItems, disabledFlags, loaded),
+        [searchRoute, disabledFlags, loaded]
+    );
 
     // Ctrl+K shortcut
     useEffect(() => {

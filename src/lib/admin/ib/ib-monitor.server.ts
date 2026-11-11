@@ -161,6 +161,11 @@ async function getPaginatedTraderMonitorLegacy(
                     lastHeartbeat: true,
                     totalTrades: true,
                     accountType: true,
+                    credential: {
+                        select: {
+                            encryptedPassword: true,
+                        },
+                    },
                 },
                 orderBy: { updatedAt: "desc" },
             },
@@ -277,6 +282,7 @@ async function getPaginatedTraderMonitorLegacy(
                     isDuplicate: isDup,
                     totalTrades: a.totalTrades || 0,
                     ibAttribution: (a as any).ibAttribution || "UNKNOWN",
+                    hasSavedPassword: Boolean(a.credential?.encryptedPassword),
                 };
             });
 

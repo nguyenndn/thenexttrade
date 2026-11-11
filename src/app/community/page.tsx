@@ -150,6 +150,30 @@ const VIP_FAQ = [
 
 export default async function CommunityPage() {
     const user = await getAuthUser();
+    const isLoggedIn = Boolean(user);
+    const resolvedPlatformLinks = platformLinks.map((item) => {
+        if (item.title === "Automated Trading Journal") {
+            return {
+                ...item,
+                href: isLoggedIn
+                    ? "/dashboard"
+                    : "/auth/signup?intent=TRADE_FIRST&source=community_ecosystem",
+                ctaText: isLoggedIn ? "Go to Dashboard" : "Start Free Journal",
+            };
+        }
+        if (item.title === "Leaderboard & Trader Performance") {
+            return {
+                ...item,
+                href: isLoggedIn
+                    ? "/dashboard/leaderboard"
+                    : "/auth/login?next=/dashboard/leaderboard",
+                ctaText: isLoggedIn
+                    ? "View Rankings"
+                    : "Sign In to View Rankings",
+            };
+        }
+        return item;
+    });
 
     const siteConfigRecord = await prisma.systemSetting.findUnique({
         where: { key: "site_config" },
@@ -592,7 +616,7 @@ export default async function CommunityPage() {
 
                     {/* 3 Direct Ecosystem Cards */}
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5">
-                        {platformLinks.map((p, i) => (
+                        {resolvedPlatformLinks.map((p, i) => (
                             <ScrollReveal
                                 key={p.title}
                                 delay={0.08 * i}

@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { LearningRecommendation as SharedLearningRecommendation } from "@/lib/trader-growth/types";
 import { TraderSignalInput } from "./signal-types";
+import { isAcademyEnabled } from "@/app/admin/academy/actions";
 
 export interface GetLearningRecommendationsOptions {
     userId: string;
@@ -69,6 +70,10 @@ export async function getLearningRecommendations(
     activeSignalsParam?: TraderSignalInput[],
     tradingGoalParam?: string | null
 ): Promise<SharedLearningRecommendation[]> {
+    if (!(await isAcademyEnabled())) {
+        return [];
+    }
+
     let userId: string;
     let activeSignals: TraderSignalInput[] = [];
     let tradingGoal: string | null = null;

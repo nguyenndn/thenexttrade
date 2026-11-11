@@ -31,6 +31,46 @@ const ruleSchema = z.object({
     strategyId: z.string().nullable().optional(),
 });
 
+const updateRuleSchema = z.object({
+    title: z.string().min(3).max(140).optional(),
+    description: z.string().nullable().optional(),
+    category: z
+        .enum([
+            "RISK",
+            "ENTRY",
+            "EXIT",
+            "PSYCHOLOGY",
+            "SESSION",
+            "MANAGEMENT",
+        ])
+        .optional(),
+    severity: z.enum(["LOW", "MEDIUM", "HIGH"]).optional(),
+    isActive: z.boolean().optional(),
+    accountId: z.string().nullable().optional(),
+    strategyId: z.string().nullable().optional(),
+});
+
+const updateGoalStatusSchema = z.object({
+    id: z.string().min(1),
+    status: z.enum(["ACTIVE", "COMPLETED", "CANCELLED"]),
+});
+
+const updateGoalProgressSchema = z.object({
+    id: z.string().min(1),
+    progress: z.number().int().min(0),
+});
+
+const saveRuleChecksSchema = z.object({
+    journalEntryId: z.string().min(1),
+    checks: z.array(
+        z.object({
+            tradingRuleId: z.string().min(1),
+            status: z.enum(["FOLLOWED", "BROKEN", "SKIPPED"]),
+            note: z.string().max(1000).optional(),
+        })
+    ),
+});
+
 const goalSchema = z.object({
     title: z.string().min(3).max(140),
     type: z.enum([
@@ -121,42 +161,48 @@ export async function updateTradingRule(
     const user = await getAuthUser();
     if (!user) return { error: "Unauthorized" };
 
+    const parsedId = z.string().min(1).safeParse(id);
+    const parsed = updateRuleSchema.safeParse(data);
+    if (!parsedId.success || !parsed.success) {
+        return { error: "Invalid rule details" };
+    }
+
     try {
         // Linked account/strategy must belong to the user.
-        if (data.accountId) {
+        if (parsed.data.accountId) {
             const acct = await prisma.tradingAccount.findFirst({
-                where: { id: data.accountId, userId: user.id },
+                where: { id: parsed.data.accountId, userId: user.id },
                 select: { id: true },
             });
             if (!acct) return { error: "Invalid account" };
         }
-        if (data.strategyId) {
+        if (parsed.data.strategyId) {
             const strat = await prisma.strategy.findFirst({
-                where: { id: data.strategyId, userId: user.id },
+                where: { id: parsed.data.strategyId, userId: user.id },
                 select: { id: true },
             });
             if (!strat) return { error: "Invalid strategy" };
         }
 
         const rule = await prisma.tradingRule.update({
-            where: { id, userId: user.id },
+            where: { id: parsedId.data, userId: user.id },
             data: {
-                title: data.title,
+                title: parsed.data.title,
                 description:
-                    data.description === undefined
+                    parsed.data.description === undefined
                         ? undefined
-                        : data.description || null,
-                category: data.category,
-                severity: data.severity,
-                isActive: data.isActive,
+                        : parsed.data.description || null,
+                category: parsed.data.category,
+                severity: parsed.data.severity,
+                isActive: parsed.data.isActive,
                 accountId:
-                    data.accountId === undefined
+                    parsed.data.accountId === undefined
                         ? undefined
-                        : data.accountId || null,
+                        : parsed.data.accountId || null,
                 strategyId:
-                    data.strategyId === undefined
+                    parsed.data.strategyId === undefined
                         ? undefined
-                        : data.strategyId || null,
+                        : parsed.data.strategyId || null,
             },
         });
 
@@ -309,10 +355,13 @@ export async function updateTraderGoalStatus(
     const user = await getAuthUser();
     if (!user) return { error: "Unauthorized" };
 
+    const parsed = updateGoalStatusSchema.safeParse({ id, status });
+    if (!parsed.success) return { error: "Invalid goal status" };
+
     try {
         const goal = await prisma.traderGoal.update({
-            where: { id, userId: user.id },
-            data: { status },
+            where: { id: parsed.data.id, userId: user.id },
+            data: { status: parsed.data.status },
         });
 
         revalidatePath("/dashboard/rules");
@@ -327,23 +376,26 @@ export async function updateTraderGoalProgress(id: string, progress: number) {
     const user = await getAuthUser();
     if (!user) return { error: "Unauthorized" };
 
+    const parsed = updateGoalProgressSchema.safeParse({ id, progress });
+    if (!parsed.success) return { error: "Invalid goal progress" };
+
     try {
         const goal = await prisma.traderGoal.findUnique({
-            where: { id, userId: user.id },
+            where: { id: parsed.data.id, userId: user.id },
         });
         if (!goal) return { error: "Goal not found" };
 
         const currentMeta = (goal.metadata as Record<string, any>) || {};
-        const newMeta = { ...currentMeta, progress };
+        const newMeta = { ...currentMeta, progress: parsed.data.progress };
 
         // Automatically mark as COMPLETED if progress meets or exceeds targetValue
         const isCompleted = goal.targetValue
-            ? progress >= goal.targetValue
+            ? parsed.data.progress >= goal.targetValue
             : false;
         const status = isCompleted ? "COMPLETED" : "ACTIVE";
 
         const updated = await prisma.traderGoal.update({
-            where: { id, userId: user.id },
+            where: { id: parsed.data.id, userId: user.id },
             data: {
                 metadata: newMeta,
                 status,
@@ -388,11 +440,14 @@ export async function saveTradeRuleChecks(
     const user = await getAuthUser();
     if (!user) return { error: "Unauthorized" };
 
+    const parsed = saveRuleChecksSchema.safeParse({ journalEntryId, checks });
+    if (!parsed.success) return { error: "Invalid rule checks" };
+
     try {
         // The journal entry must belong to the current user, otherwise a
         // caller could delete/inject rule checks on someone else's entry.
         const entry = await prisma.journalEntry.findUnique({
-            where: { id: journalEntryId },
+            where: { id: parsed.data.journalEntryId },
             select: { userId: true },
         });
         if (!entry) return { error: "Journal entry not found" };
@@ -400,20 +455,23 @@ export async function saveTradeRuleChecks(
 
         // Delete existing rule checks for this entry
         await prisma.tradeRuleCheck.deleteMany({
-            where: { journalEntryId, userId: user.id },
+            where: {
+                journalEntryId: parsed.data.journalEntryId,
+                userId: user.id,
+            },
         });
 
         // Create new checks (only for rules owned by this user)
-        if (checks.length > 0) {
+        if (parsed.data.checks.length > 0) {
             const requestedRuleIds = Array.from(
-                new Set(checks.map((c) => c.tradingRuleId))
+                new Set(parsed.data.checks.map((c) => c.tradingRuleId))
             );
             const ownedRules = await prisma.tradingRule.findMany({
                 where: { id: { in: requestedRuleIds }, userId: user.id },
                 select: { id: true },
             });
             const ownedRuleIdSet = new Set(ownedRules.map((r) => r.id));
-            const validChecks = checks.filter((c) =>
+            const validChecks = parsed.data.checks.filter((c) =>
                 ownedRuleIdSet.has(c.tradingRuleId)
             );
 
@@ -421,7 +479,7 @@ export async function saveTradeRuleChecks(
                 await prisma.tradeRuleCheck.createMany({
                     data: validChecks.map((c) => ({
                         userId: user.id,
-                        journalEntryId,
+                        journalEntryId: parsed.data.journalEntryId,
                         tradingRuleId: c.tradingRuleId,
                         status: c.status,
                         note: c.note || null,

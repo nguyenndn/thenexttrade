@@ -9,6 +9,7 @@ import { revalidatePath } from "next/cache";
 import { isRealTradingAccount } from "@/lib/loyalty/loyalty.server";
 import { normalizeUsdBalance } from "@/lib/utils/cent-account";
 import { notifyAdminsOfCompetitionJoin } from "@/lib/admin/admin-notification.server";
+import { isCompetitionsEnabled as getCompetitionsEnabled } from "@/actions/admin/competitions";
 
 export type LeaderboardType =
     "sprint" | "trading" | "xp" | "streak" | "academy" | "mystats";
@@ -26,7 +27,7 @@ export interface LeaderboardEntry {
     studyTimeMinutes: number;
     percentile: number;
     totalTrades: number;
-    pnl: number;
+    pnl: number | null;
     winRate?: number;
 }
 
@@ -50,7 +51,7 @@ export interface LeaderboardResponse {
         lessonsCompleted?: number;
         studyTimeMinutes?: number;
         totalTrades?: number;
-        pnl?: number;
+        pnl?: number | null;
         badges?: UserBadgeInfo[];
         memberSince?: string;
     } | null;
@@ -133,6 +134,11 @@ export async function joinCompetition(
     const userId = await getCurrentUserId();
     if (!userId) return { error: "Please log in to join the competition." };
 
+    const competitionsEnabled = await getCompetitionsEnabled();
+    if (!competitionsEnabled) {
+        return { error: "Trading competitions are currently disabled." };
+    }
+
     const [competition, account, user] = await Promise.all([
         prisma.competition.findUnique({
             where: { id: competitionId },
@@ -157,11 +163,10 @@ export async function joinCompetition(
         return { error: "Competition not found." };
     }
     if (
-        competition.status === "ENDED" ||
-        competition.status === "CANCELLED" ||
-        new Date(competition.endDate) < new Date()
+        (competition.status !== "ACTIVE" && competition.status !== "UPCOMING") ||
+        new Date() >= new Date(competition.endDate)
     ) {
-        return { error: "This competition has already ended." };
+        return { error: "This competition is no longer open for registration." };
     }
 
     if (!account) {
@@ -183,11 +188,13 @@ export async function joinCompetition(
             .map((b) => b.trim().toLowerCase())
             .filter(Boolean);
         const acctBroker = (account.broker || "").trim().toLowerCase();
-        const isEligibleBroker = allowedList.some(
-            (allowed) =>
-                acctBroker.includes(allowed) || allowed.includes(acctBroker)
-        );
-        if (!acctBroker || !isEligibleBroker) {
+        const isEligibleBroker =
+            acctBroker.length > 0 &&
+            allowedList.some(
+                (allowed) =>
+                    acctBroker === allowed || acctBroker.includes(allowed)
+            );
+        if (!isEligibleBroker) {
             return {
                 error: `This competition requires an account with: ${competition.eligibleBrokers}.`,
             };
@@ -236,9 +243,22 @@ export async function joinCompetition(
         revalidatePath("/dashboard/leaderboard");
         revalidatePath("/admin/competitions");
         return { success: true, participant };
-    } catch (error: any) {
+    } catch (error: unknown) {
+        if (
+            error instanceof Prisma.PrismaClientKnownRequestError &&
+            error.code === "P2002"
+        ) {
+            return {
+                error: "This trading account is already registered in this competition.",
+            };
+        }
         console.error("joinCompetition error:", error);
-        return { error: error.message || "Failed to join competition." };
+        return {
+            error:
+                error instanceof Error
+                    ? error.message
+                    : "Failed to join competition.",
+        };
     }
 }
 
@@ -291,26 +311,34 @@ export async function getLeaderboard(
                 preloadedCompetition !== undefined
                     ? preloadedCompetition
                     : await getActiveCompetition();
-            const cutoff = activeComp?.startDate
+            if (!activeComp) {
+                return {
+                    data: [],
+                    myRank: null,
+                    total: 0,
+                    rivals: null,
+                    hasLeaderboardAccount: false,
+                };
+            }
+            const cutoff = activeComp.startDate
                 ? new Date(activeComp.startDate)
                 : undefined;
-            const endCutoff = activeComp?.endDate
+            const endCutoff = activeComp.endDate
                 ? new Date(activeComp.endDate)
                 : undefined;
-            const minTrades = activeComp?.minTrades ?? 10;
-            const effectiveSortBy =
-                activeComp?.scoringMetric === "percentage" ||
-                activeComp?.scoringMetric === "win_rate"
-                    ? "percentage"
-                    : sortBy;
+            const minTrades = activeComp.minTrades ?? 10;
             return getTradingLeaderboard(
                 userId,
                 limit,
-                effectiveSortBy,
+                sortBy,
                 "30D",
                 cutoff,
                 minTrades,
-                endCutoff
+                endCutoff,
+                {
+                    id: activeComp.id,
+                    eligibleBrokers: activeComp.eligibleBrokers,
+                }
             );
         }
         case "xp":
@@ -435,7 +463,7 @@ function maskLeaderboardEntry(
     // 3. PnL / Money masking:
     // If showMoney is false or caller is not logged in, mask exact dollar PnL
     const canShowMoney = isCurrentUser || (isCallerLoggedIn && showMoney);
-    const safePnl = canShowMoney ? raw.pnl : 0;
+    const safePnl: number | null = canShowMoney ? raw.pnl : null;
 
     let safeValue = raw.value;
     let safeLabel = raw.label;
@@ -746,7 +774,11 @@ async function getTradingLeaderboard(
     period: PeriodFilter = "30D",
     competitionCutoff?: Date,
     competitionMinTrades?: number,
-    competitionEndDate?: Date
+    competitionEndDate?: Date,
+    sprintCompetition?: {
+        id: string;
+        eligibleBrokers?: string | null;
+    }
 ): Promise<LeaderboardResponse> {
     let cutoffDate = new Date(0);
     const now = Date.now();
@@ -763,15 +795,67 @@ async function getTradingLeaderboard(
     const endDate = competitionEndDate ?? new Date(now);
     const minTrades = competitionMinTrades ?? 10;
 
-    // Check if current user has a leaderboard account
+    // Check if current user has a leaderboard / enrolled sprint account
     let hasLeaderboardAccount = true;
     if (userId) {
-        const lbAccount = await prisma.tradingAccount.findFirst({
-            where: { userId, useForLeaderboard: true },
-            select: { id: true },
-        });
-        hasLeaderboardAccount = !!lbAccount;
+        if (sprintCompetition) {
+            const enrollment = await prisma.competitionParticipant.findUnique({
+                where: {
+                    competitionId_userId: {
+                        competitionId: sprintCompetition.id,
+                        userId,
+                    },
+                },
+                select: { id: true, isDisqualified: true },
+            });
+            hasLeaderboardAccount = Boolean(
+                enrollment && !enrollment.isDisqualified
+            );
+        } else {
+            const lbAccount = await prisma.tradingAccount.findFirst({
+                where: { userId, useForLeaderboard: true },
+                select: { id: true },
+            });
+            hasLeaderboardAccount = !!lbAccount;
+        }
     }
+
+    const allowedBrokers =
+        sprintCompetition?.eligibleBrokers &&
+        sprintCompetition.eligibleBrokers.trim().toUpperCase() !== "ALL"
+            ? sprintCompetition.eligibleBrokers
+                  .split(",")
+                  .map((b) => b.trim().toLowerCase())
+                  .filter(Boolean)
+            : [];
+
+    const sprintJoinSql = sprintCompetition
+        ? Prisma.sql`
+ INNER JOIN "competition_participants" cp ON cp.competition_id = ${sprintCompetition.id}
+   AND cp.user_id = u.id
+   AND cp.is_disqualified = false
+ INNER JOIN "trading_accounts" ta ON ta.id = cp.trading_account_id
+   AND ta."userId" = u.id
+   AND UPPER(COALESCE(ta.account_type, 'REAL')) NOT IN ('DEMO', 'CONTEST')
+   AND COALESCE(ta.server, '') NOT ILIKE '%demo%'
+ INNER JOIN "JournalEntry" je ON je."accountId" = cp.trading_account_id`
+        : Prisma.sql`
+ INNER JOIN "trading_accounts" ta ON ta."userId" = u.id
+   AND ta.use_for_leaderboard = true
+   AND UPPER(COALESCE(ta.account_type, 'REAL')) NOT IN ('DEMO', 'CONTEST')
+   AND COALESCE(ta.server, '') NOT ILIKE '%demo%'
+ INNER JOIN "JournalEntry" je ON je."accountId" = ta.id`;
+
+    const brokerFilterSql =
+        allowedBrokers.length > 0
+            ? Prisma.sql`AND (${Prisma.join(
+                  allowedBrokers.map(
+                      (b) =>
+                          Prisma.sql`LOWER(TRIM(COALESCE(ta.broker, ''))) LIKE ${`%${b}%`}`
+                  ),
+                  " OR "
+              )})`
+            : Prisma.empty;
 
     const results = await prisma.$queryRaw<
         Array<{
@@ -786,7 +870,14 @@ async function getTradingLeaderboard(
         }>
     >`
  SELECT u.id AS "userId", u.name, u.image, u.xp, u.level,
- ROUND(COUNT(CASE WHEN je.result = 'WIN' THEN 1 END) * 100.0 / NULLIF(COUNT(CASE WHEN je.result IN ('WIN', 'LOSS') THEN 1 END), 0), 1) AS "winRate",
+ COALESCE(
+   ROUND(
+     COUNT(CASE WHEN je.result = 'WIN' THEN 1 END) * 100.0
+     / NULLIF(COUNT(CASE WHEN je.result IN ('WIN', 'LOSS') THEN 1 END), 0),
+     1
+   ),
+   0
+ ) AS "winRate",
  COUNT(*) AS "totalTrades",
  COALESCE(
    SUM(
@@ -802,20 +893,18 @@ async function getTradingLeaderboard(
    0
  ) AS "totalPnl"
  FROM "User" u
- INNER JOIN "trading_accounts" ta ON ta."userId" = u.id
-   AND ta.use_for_leaderboard = true
-   AND UPPER(COALESCE(ta.account_type, 'REAL')) NOT IN ('DEMO', 'CONTEST')
-   AND COALESCE(ta.server, '') NOT ILIKE '%demo%'
- INNER JOIN "JournalEntry" je ON je."accountId" = ta.id
+ ${sprintJoinSql}
  WHERE u."showOnLeaderboard" = true
+ ${brokerFilterSql}
  -- A closed trade's PnL belongs to the period it was closed in, matching
  -- the exitDate-based date filters used everywhere else in analytics.
  AND je."exitDate" >= ${cutoffDate}
  AND je."exitDate" <= ${endDate}
  AND je.status = 'CLOSED'
+ AND COALESCE(je.sync_source, 'MANUAL') <> 'MANUAL'
  GROUP BY u.id, u.name, u.image, u.xp, u.level
  HAVING COUNT(*) >= ${minTrades}
- ORDER BY ${sortBy === "percentage" ? Prisma.raw('"winRate"') : Prisma.raw('"totalPnl"')} DESC, "totalTrades" DESC, u."updatedAt" DESC
+ ORDER BY ${sortBy === "percentage" ? Prisma.raw('"winRate" DESC NULLS LAST') : Prisma.raw('"totalPnl" DESC NULLS LAST')}, "totalTrades" DESC NULLS LAST, u."updatedAt" DESC NULLS LAST
  LIMIT ${limit}
  `;
 
@@ -980,6 +1069,9 @@ export async function toggleLeaderboardVisibility(): Promise<boolean> {
         data: { showOnLeaderboard: newValue },
     });
 
+    revalidatePath("/dashboard/leaderboard");
+    revalidatePath("/dashboard");
+
     return newValue;
 }
 
@@ -1030,7 +1122,10 @@ export async function getLeaderboardSidebarData(
                 server: true,
                 useForLeaderboard: true,
                 journalEntries: {
-                    where: { status: "CLOSED" },
+                    where: {
+                        status: "CLOSED",
+                        syncSource: { not: "MANUAL" },
+                    },
                     select: {
                         pnl: true,
                         commission: true,
@@ -1127,6 +1222,9 @@ export async function toggleAccountLeaderboardVisibility(
         where: { id: accountId, userId },
         data: { useForLeaderboard },
     });
+
+    revalidatePath("/dashboard/leaderboard");
+    revalidatePath("/dashboard");
 
     return useForLeaderboard;
 }

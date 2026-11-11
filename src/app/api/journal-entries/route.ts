@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth-cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -25,7 +26,10 @@ const journalEntrySchema = z.object({
         .transform((val) => (val ? new Date(val) : null))
         .refine((d) => d === null || !isNaN(d.getTime()), "Invalid exit date"),
     status: z.enum(["OPEN", "CLOSED"]).default("OPEN"),
-    result: z.enum(["WIN", "LOSS", "BREAK_EVEN"]).optional().nullable(),
+    result: z
+        .enum(["WIN", "LOSS", "BREAK_EVEN", "BE_PLUS"])
+        .optional()
+        .nullable(),
     pnl: z.number().optional().nullable(),
     commission: z.number().optional().nullable(),
     swap: z.number().optional().nullable(),
@@ -108,6 +112,13 @@ export async function POST(request: Request) {
             },
         });
 
+        if (entry.accountId) {
+            await prisma.tradingAccount.update({
+                where: { id: entry.accountId },
+                data: { totalTrades: { increment: 1 } },
+            });
+        }
+
         if (ruleChecks && ruleChecks.length > 0) {
             const requestedRuleIds = Array.from(
                 new Set(ruleChecks.map((c: any) => c.tradingRuleId))
@@ -173,6 +184,11 @@ export async function POST(request: Request) {
         } catch {
             /* XP failure should not block entry creation */
         }
+
+        revalidateTag("dashboard-stats", "max");
+        revalidatePath("/dashboard");
+        revalidatePath("/dashboard/journal");
+        revalidatePath("/dashboard/analytics");
 
         return NextResponse.json(
             { ...entry, gamification: { xpEarned, isFirstTrade } },
@@ -261,7 +277,7 @@ export async function GET(request: Request) {
     }
 
     try {
-        const [entries, total, pnlStat, winCount, lossCount, breakEvenCount] =
+        const [entries, total, pnlStat, closedTradesCount, winCount, lossCount] =
             await Promise.all([
                 prisma.journalEntry.findMany({
                     where,
@@ -280,18 +296,18 @@ export async function GET(request: Request) {
                     _sum: { pnl: true, commission: true, swap: true },
                 }),
                 prisma.journalEntry.count({
+                    where: { ...where, status: "CLOSED" },
+                }),
+                prisma.journalEntry.count({
                     where: { ...where, status: "CLOSED", result: "WIN" },
                 }),
                 prisma.journalEntry.count({
                     where: { ...where, status: "CLOSED", result: "LOSS" },
                 }),
-                prisma.journalEntry.count({
-                    where: { ...where, status: "CLOSED", result: "BREAK_EVEN" },
-                }),
             ]);
 
-        const totalClosed = winCount + lossCount + breakEvenCount;
-        const winRate = totalClosed > 0 ? (winCount / totalClosed) * 100 : 0;
+        const winRate =
+            closedTradesCount > 0 ? (winCount / closedTradesCount) * 100 : 0;
         const totalPnL =
             (pnlStat._sum.pnl || 0) +
             (pnlStat._sum.commission || 0) +

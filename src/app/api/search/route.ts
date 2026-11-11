@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { isAcademyEnabled } from "@/app/admin/academy/actions";
 
 export const dynamic = "force-dynamic";
 
@@ -214,51 +215,64 @@ export async function GET(request: Request) {
                 } = await supabase.auth.getUser();
 
                 if (user) {
-                    const lessons = await prisma.lesson.findMany({
-                        where: {
-                            status: "published",
-                            OR: [
-                                {
-                                    title: {
-                                        contains: searchQuery,
-                                        mode: "insensitive",
+                    const academyEnabled = await isAcademyEnabled();
+                    let canSearchLessons = academyEnabled;
+
+                    if (!canSearchLessons) {
+                        const profile = await prisma.profile.findUnique({
+                            where: { userId: user.id },
+                            select: { role: true },
+                        });
+                        canSearchLessons = profile?.role === "ADMIN";
+                    }
+
+                    if (canSearchLessons) {
+                        const lessons = await prisma.lesson.findMany({
+                            where: {
+                                status: "published",
+                                OR: [
+                                    {
+                                        title: {
+                                            contains: searchQuery,
+                                            mode: "insensitive",
+                                        },
                                     },
-                                },
-                                {
-                                    content: {
-                                        contains: searchQuery,
-                                        mode: "insensitive",
+                                    {
+                                        content: {
+                                            contains: searchQuery,
+                                            mode: "insensitive",
+                                        },
                                     },
-                                },
-                            ],
-                        },
-                        select: {
-                            id: true,
-                            title: true,
-                            slug: true,
-                            updatedAt: true,
-                            module: {
-                                select: {
-                                    title: true,
-                                    level: { select: { title: true } },
+                                ],
+                            },
+                            select: {
+                                id: true,
+                                title: true,
+                                slug: true,
+                                updatedAt: true,
+                                module: {
+                                    select: {
+                                        title: true,
+                                        level: { select: { title: true } },
+                                    },
                                 },
                             },
-                        },
-                        take: 10,
-                    });
+                            take: 10,
+                        });
 
-                    results.push(
-                        ...lessons.map((lesson) => ({
-                            type: "lesson",
-                            id: lesson.id,
-                            title: lesson.title,
-                            slug: `/dashboard/academy/lessons/${lesson.slug}`,
-                            description: `Lesson in ${lesson.module.level.title} - ${lesson.module.title}`,
-                            image: null,
-                            date: lesson.updatedAt,
-                            meta: { module: lesson.module.title },
-                        }))
-                    );
+                        results.push(
+                            ...lessons.map((lesson) => ({
+                                type: "lesson",
+                                id: lesson.id,
+                                title: lesson.title,
+                                slug: `/dashboard/academy/lessons/${lesson.slug}`,
+                                description: `Lesson in ${lesson.module.level.title} - ${lesson.module.title}`,
+                                image: null,
+                                date: lesson.updatedAt,
+                                meta: { module: lesson.module.title },
+                            }))
+                        );
+                    }
                 }
             }
         }

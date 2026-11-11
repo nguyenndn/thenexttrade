@@ -6,6 +6,7 @@ import { SaaSHeroSection } from "@/components/home/SaaSHeroSection";
 import { HomeTrustMetrics } from "@/components/home/HomeTrustMetrics";
 import { DynamicFirefly } from "@/components/ui/DynamicFirefly";
 import { prisma } from "@/lib/prisma";
+import { getAuthUser } from "@/lib/auth-cache";
 import dynamic from "next/dynamic";
 import type { Metadata } from "next";
 
@@ -114,20 +115,25 @@ const SiteFooter = dynamic(
 );
 
 export default async function Home() {
-    // Decoupled from request cookies — preserves static Edge ISR caching
-    const quote = await prisma.quote
-        .findFirst({
-            where: { type: "HOMEPAGE", isActive: true },
-            orderBy: { createdAt: "desc" },
-            select: { text: true, author: true },
-        })
-        .catch(() => null);
+    const [user, quote] = await Promise.all([
+        getAuthUser(),
+        prisma.quote
+            .findFirst({
+                where: { type: "HOMEPAGE", isActive: true },
+                orderBy: { createdAt: "desc" },
+                select: { text: true, author: true },
+            })
+            .catch(() => null),
+    ]);
 
     return (
         <main className="min-h-screen bg-white dark:bg-transparent overflow-x-clip">
-            <PublicHeader />
+            <PublicHeader user={user} />
             <Suspense fallback={<HomeFeedSkeleton />}>
-                <HomeFeed isLoggedIn={false} quote={quote || undefined} />
+                <HomeFeed
+                    isLoggedIn={Boolean(user)}
+                    quote={quote || undefined}
+                />
             </Suspense>
         </main>
     );

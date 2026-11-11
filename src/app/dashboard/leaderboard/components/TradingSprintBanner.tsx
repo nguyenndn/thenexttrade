@@ -109,6 +109,8 @@ export function TradingSprintBanner({
     const minTrades = competition.minTrades ?? 10;
     const maxDrawdown = competition.maxDrawdown ?? 10;
     const scoringMetric = competition.scoringMetric || "net_pnl";
+    const isWinRateMetric =
+        scoringMetric === "percentage" || scoringMetric === "win_rate";
     const eligibleBrokers = Array.isArray(competition.eligibleBrokers)
         ? competition.eligibleBrokers
         : typeof competition.eligibleBrokers === "string" && competition.eligibleBrokers !== "ALL"
@@ -299,7 +301,7 @@ export function TradingSprintBanner({
                             <span className="text-xs text-gray-600 dark:text-gray-400 font-medium">
                                 Sign in with your trader profile to enroll your account and compete for the prize pool.
                             </span>
-                            <Link href="/auth/login?returnUrl=/dashboard/leaderboard?type=sprint">
+                            <Link href="/auth/login?next=%2Fdashboard%2Fleaderboard%3Ftype%3Dsprint">
                                 <Button size="sm" className="text-xs font-bold rounded-lg bg-gold hover:bg-amber-600 !text-white">
                                     Sign In to Compete <ArrowRight size={13} />
                                 </Button>
@@ -401,7 +403,7 @@ export function TradingSprintBanner({
                         </span>
                         <span className="inline-flex items-center gap-1.5 rounded-lg bg-gray-100 dark:bg-[#151925] px-2.5 py-1">
                             <Zap size={14} className="text-amber-600 dark:text-gold" />
-                            Scoring: {scoringMetric === "win_rate" ? "Win Rate %" : "Net PnL ($)"}
+                            Scoring: {isWinRateMetric ? "Win Rate %" : "Net PnL ($)"}
                         </span>
                     </div>
 
@@ -436,7 +438,7 @@ export function TradingSprintBanner({
                                 <p className="font-bold text-gray-800 dark:text-gray-200">2. Scoring Metric</p>
                                 <p>
                                     Rankings are ordered by verified{" "}
-                                    {scoringMetric === "win_rate" ? "Win Rate (%)" : "Total Net PnL ($)"}{" "}
+                                    {isWinRateMetric ? "Win Rate (%)" : "Total Net PnL ($)"}{" "}
                                     over the competition window with a minimum threshold of {minTrades} closed trades.
                                 </p>
                             </div>

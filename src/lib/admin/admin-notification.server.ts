@@ -128,6 +128,7 @@ interface NotifyLicenseRequestParams {
     accountNumber: string;
     userEmail?: string | null;
     userName?: string | null;
+    submittedAtMs?: number | null;
 }
 
 /**
@@ -159,7 +160,7 @@ export async function notifyAdminsOfLicenseRequest(
             message,
             link: NOTIFICATION_ROUTES.EA_PENDING_ADMIN,
             priority: NotificationPriority.HIGH,
-            dedupeKey: `admin-license-req-${params.licenseId}-${admin.userId}`,
+            dedupeKey: `admin-license-req-${params.licenseId}-${params.submittedAtMs ?? "init"}-${admin.userId}`,
         }));
 
         await persistAdminNotifications(

@@ -98,10 +98,11 @@ export async function updateSession(request: NextRequest) {
 
     const path = request.nextUrl.pathname;
 
-    // 1. Protected Routes (Dashboard, Admin — except admin login page)
+    // 1. Protected Routes (Dashboard, Onboarding, Admin — except admin login page)
     if (
         !user &&
         (path.startsWith("/dashboard") ||
+            path.startsWith("/onboarding") ||
             (path.startsWith("/admin") && !path.startsWith("/admin/login")))
     ) {
         const loginUrl = new URL("/auth/login", request.url);
@@ -111,6 +112,7 @@ export async function updateSession(request: NextRequest) {
     if (
         user &&
         (path.startsWith("/dashboard") ||
+            path.startsWith("/onboarding") ||
             (path.startsWith("/admin") && !path.startsWith("/admin/login")))
     ) {
         const { data: aal, error } =
@@ -132,12 +134,23 @@ export async function updateSession(request: NextRequest) {
         return NextResponse.redirect(new URL("/admin", request.url));
     }
 
-    // 3. Auth Routes (Login/Register) - If logged in, redirect to Academy (User Hub)
+    // 3. Auth Routes (Login/Register) - If logged in, redirect to safe relative target or Dashboard
     if (
         user &&
         (path.startsWith("/auth/login") || path.startsWith("/auth/signup"))
     ) {
-        return NextResponse.redirect(new URL("/academy", request.url));
+        const rawRedirect =
+            request.nextUrl.searchParams.get("next") ||
+            request.nextUrl.searchParams.get("returnUrl") ||
+            request.nextUrl.searchParams.get("redirect");
+        const safeRedirect =
+            rawRedirect &&
+            /^\/(?!\/)/.test(rawRedirect) &&
+            !rawRedirect.includes("\\") &&
+            !rawRedirect.startsWith("/auth/")
+                ? rawRedirect
+                : "/dashboard";
+        return NextResponse.redirect(new URL(safeRedirect, request.url));
     }
 
     // 4. Maintenance Mode Check (uses 30s TTL cache to avoid repeated /api/system/config calls)

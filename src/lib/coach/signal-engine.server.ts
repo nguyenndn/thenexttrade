@@ -7,6 +7,15 @@ import {
     classifyTradeOutcome,
     isConfirmedStopLossExit,
 } from "@/lib/journal/trade-outcomes";
+import { isAcademyEnabled } from "@/app/admin/academy/actions";
+
+function getTradeNetPnl(trade: {
+    pnl: number | null;
+    commission: number | null;
+    swap: number | null;
+}): number {
+    return (trade.pnl ?? 0) + (trade.commission ?? 0) + (trade.swap ?? 0);
+}
 
 export async function computeTraderSignals(
     userId: string,
@@ -18,31 +27,46 @@ export async function computeTraderSignals(
     }
 ): Promise<TraderSignalInput[]> {
     const persist = options?.persist ?? true;
+    const requestedAccountId =
+        options?.accountId && options.accountId !== "all"
+            ? options.accountId
+            : undefined;
 
     // Gather inputs
-    const accounts = await prisma.tradingAccount.findMany({
+    const allUserAccounts = await prisma.tradingAccount.findMany({
         where: { userId },
     });
+    const matchedAccount = requestedAccountId
+        ? allUserAccounts.find((a) => a.id === requestedAccountId)
+        : undefined;
+    const resolvedAccountId = matchedAccount?.id;
+    const accounts = matchedAccount ? [matchedAccount] : allUserAccounts;
 
     const countAccounts = accounts.length;
 
-    // Fetch last 30 days trades
-    const thirtyDaysAgo = subDays(new Date(), 30);
-    const trades = await prisma.journalEntry.findMany({
-        where: {
-            userId,
-            status: "CLOSED",
-            entryDate: { gte: thirtyDaysAgo },
-        },
-        orderBy: { entryDate: "desc" },
-    });
-
-    const countCompletedLessons = await prisma.userProgress.count({
-        where: {
-            userId,
-            isCompleted: true,
-        },
-    });
+    // Fetch closed trades by exitDate (default last 30 days)
+    const since = options?.periodStart ?? subDays(new Date(), 30);
+    const [trades, countCompletedLessons, academyEnabled] = await Promise.all([
+        prisma.journalEntry.findMany({
+            where: {
+                userId,
+                status: "CLOSED",
+                ...(resolvedAccountId ? { accountId: resolvedAccountId } : {}),
+                exitDate: {
+                    gte: since,
+                    ...(options?.periodEnd ? { lte: options.periodEnd } : {}),
+                },
+            },
+            orderBy: { exitDate: "desc" },
+        }),
+        prisma.userProgress.count({
+            where: {
+                userId,
+                isCompleted: true,
+            },
+        }),
+        isAcademyEnabled(),
+    ]);
 
     const signals: TraderSignalInput[] = [];
 
@@ -156,7 +180,7 @@ export async function computeTraderSignals(
     }
 
     // 6. NO_LESSON_STARTED
-    if (countCompletedLessons === 0) {
+    if (academyEnabled && countCompletedLessons === 0) {
         signals.push({
             signalType: "NO_LESSON_STARTED",
             severity: "INFO",
@@ -193,8 +217,12 @@ export async function computeTraderSignals(
                 severity: maxStreak >= 5 ? "HIGH" : "MEDIUM",
                 title: `${maxStreak}-Trade Loss Streak Detected`,
                 summary: `You recently hit a streak of ${maxStreak} consecutive losses. Focus on cooling down and resetting emotional bias.`,
-                actionLabel: "Review Loss Streak Lesson",
-                actionHref: "/dashboard/academy",
+                actionLabel: academyEnabled
+                    ? "Review Loss Streak Lesson"
+                    : "Review Risk Rules",
+                actionHref: academyEnabled
+                    ? "/dashboard/academy"
+                    : "/dashboard/rules",
                 metadata: {
                     maxStreak,
                     evidence: [
@@ -251,7 +279,7 @@ export async function computeTraderSignals(
         const lossesByDay: Record<string, number> = {};
         for (const t of trades) {
             if (isConfirmedStopLossExit(t)) {
-                const dayStr = new Date(t.entryDate)
+                const dayStr = new Date(t.exitDate || t.entryDate)
                     .toISOString()
                     .split("T")[0];
                 lossesByDay[dayStr] = (lossesByDay[dayStr] || 0) + 1;
@@ -264,8 +292,12 @@ export async function computeTraderSignals(
                 severity: "MEDIUM",
                 title: "Frequent Stop-Loss Clustered Exits",
                 summary: `You had up to ${maxLossesInDay} stop-loss triggers within a single trading session/day. Consider reducing size or taking a step back on heavy volatility days.`,
-                actionLabel: "Study SL Placement",
-                actionHref: "/dashboard/academy",
+                actionLabel: academyEnabled
+                    ? "Study SL Placement"
+                    : "Review Risk Rules",
+                actionHref: academyEnabled
+                    ? "/dashboard/academy"
+                    : "/dashboard/rules",
                 metadata: {
                     maxLossesInDay,
                     evidence: [
@@ -309,8 +341,12 @@ export async function computeTraderSignals(
                 title: "Revenge Size-Up Pattern Detected",
                 summary:
                     "Your data shows you significantly increased lot size shortly after a losing trade. This is a common revenge-trading trap.",
-                actionLabel: "Review Psychology Lesson",
-                actionHref: "/dashboard/academy",
+                actionLabel: academyEnabled
+                    ? "Review Psychology Lesson"
+                    : "Review Risk Rules",
+                actionHref: academyEnabled
+                    ? "/dashboard/academy"
+                    : "/dashboard/rules",
                 metadata: {
                     evidence: [
                         {
@@ -338,8 +374,12 @@ export async function computeTraderSignals(
                     severity: "HIGH",
                     title: `Low Plan Compliance (${Math.round(ratio * 100)}%)`,
                     summary: `You marked ${nonCompliant} out of ${reviewedTrades.length} reviewed trades as 'Did Not Follow Plan'. Discipline is your primary edge.`,
-                    actionLabel: "Build Trading Plan",
-                    actionHref: "/dashboard/academy",
+                    actionLabel: academyEnabled
+                        ? "Build Trading Plan"
+                        : "Review Risk Rules",
+                    actionHref: academyEnabled
+                        ? "/dashboard/academy"
+                        : "/dashboard/rules",
                     metadata: {
                         ratio,
                         evidence: [
@@ -368,8 +408,12 @@ export async function computeTraderSignals(
                 severity: "MEDIUM",
                 title: `Heavy Break-Even Exits (${Math.round(beRatio * 100)}%)`,
                 summary: `Over 40% of your recent exits resulted in near break-even. Review whether you are moving stop-loss to entry too defensively.`,
-                actionLabel: "Study Exit Management",
-                actionHref: "/dashboard/academy",
+                actionLabel: academyEnabled
+                    ? "Study Exit Management"
+                    : "Review Strategies",
+                actionHref: academyEnabled
+                    ? "/dashboard/academy"
+                    : "/dashboard/strategies",
                 metadata: {
                     beRatio,
                     evidence: [
@@ -390,14 +434,15 @@ export async function computeTraderSignals(
         // 12. WEAK_SYMBOL
         const symbolStats: Record<string, { pnl: number; count: number }> = {};
         for (const t of trades) {
-            // Include breakeven (pnl === 0) trades — they are still symbol
-            // exposure. Only skip trades with no recorded P/L at all.
-            if (t.pnl != null) {
+            // Include breakeven (netPnl === 0) trades — they are still symbol
+            // exposure. Only skip trades with no recorded P/L fields at all.
+            if (t.pnl != null || t.commission != null || t.swap != null) {
+                const netPnl = getTradeNetPnl(t);
                 symbolStats[t.symbol] = symbolStats[t.symbol] || {
                     pnl: 0,
                     count: 0,
                 };
-                symbolStats[t.symbol].pnl += t.pnl;
+                symbolStats[t.symbol].pnl += netPnl;
                 symbolStats[t.symbol].count += 1;
             }
         }
@@ -430,11 +475,15 @@ export async function computeTraderSignals(
         // 13. WEAK_SESSION
         const sessionStats: Record<string, { pnl: number; count: number }> = {};
         for (const t of trades) {
-            if (t.pnl && t.tradingSession) {
+            if (
+                (t.pnl != null || t.commission != null || t.swap != null) &&
+                t.tradingSession
+            ) {
+                const netPnl = getTradeNetPnl(t);
                 sessionStats[t.tradingSession] = sessionStats[
                     t.tradingSession
                 ] || { pnl: 0, count: 0 };
-                sessionStats[t.tradingSession].pnl += t.pnl;
+                sessionStats[t.tradingSession].pnl += netPnl;
                 sessionStats[t.tradingSession].count += 1;
             }
         }
@@ -448,7 +497,7 @@ export async function computeTraderSignals(
                 title: `Weak Trading Session: ${weakSession[0]}`,
                 summary: `Your results are weakest during the ${weakSession[0]} session. Restricting activity to your high-win session could instantly boost edge.`,
                 actionLabel: "Analyze Sessions",
-                actionHref: "/dashboard/reports",
+                actionHref: "/dashboard/sessions",
                 metadata: {
                     session: weakSession[0],
                     evidence: [
@@ -483,8 +532,12 @@ export async function computeTraderSignals(
                 severity: "HIGH",
                 title: `Recurring Mistake: ${details?.name || topMistake[0]}`,
                 summary: `You logged the mistake "${details?.name || topMistake[0]}" ${topMistake[1]} times in recent trades. Address this leak immediately.`,
-                actionLabel: "Target Mistake Lesson",
-                actionHref: "/dashboard/academy",
+                actionLabel: academyEnabled
+                    ? "Target Mistake Lesson"
+                    : "Review Risk Rules",
+                actionHref: academyEnabled
+                    ? "/dashboard/academy"
+                    : "/dashboard/rules",
                 metadata: {
                     mistakeCode: topMistake[0],
                     evidence: [

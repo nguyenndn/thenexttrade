@@ -549,8 +549,8 @@ export default function ProfileClient({
                 </div>
             )}
 
-            {/* Data Privacy Controls (only when public) */}
-            {settings.isPublicProfile && isPrivacyPresetsEnabled() && (
+            {/* Data Privacy Controls (always configurable when public) */}
+            {settings.isPublicProfile && (
                 <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm overflow-hidden">
                     <div className="px-5 py-4 border-b border-dashboard flex items-center justify-between">
                         <div className="flex items-center gap-3">
@@ -622,6 +622,23 @@ export default function ProfileClient({
                             <Lightbulb size={12} className="inline-block mr-1 align-[-1px] text-amber-600 dark:text-gold" /> Tip: Most pro traders keep dollar amounts hidden
                             and only share percentage-based metrics.
                         </p>
+                    </div>
+
+                    <div className="px-5 py-4 border-t border-dashboard flex justify-end">
+                        <Button
+                            type="button"
+                            variant="primary"
+                            size="smd"
+                            onClick={handleSave}
+                            disabled={isPending || !hasChanges}
+                        >
+                            {isPending ? (
+                                <Loader2 size={16} className="animate-spin" />
+                            ) : (
+                                <Save size={16} />
+                            )}
+                            <span>Save Changes</span>
+                        </Button>
                     </div>
                 </div>
             )}

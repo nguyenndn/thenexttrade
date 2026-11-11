@@ -1,10 +1,5 @@
 import { cache } from "react";
 import { prisma } from "@/lib/prisma";
-import {
-    getKeyStats,
-    getSymbolPerformance,
-    getCurrentStreak,
-} from "@/lib/analytics-queries";
 
 // ============================================================================
 // TYPES
@@ -89,40 +84,54 @@ function isValidUuid(id: string): boolean {
 }
 
 async function getSessionPreference(
-    userId: string
+    userId: string,
+    startDate: Date,
+    endDate: Date
 ): Promise<{ name: string; percentage: number } | null> {
     if (!isValidUuid(userId)) {
         return null;
     }
 
     try {
-        const result = await prisma.$queryRaw`
+        const result = await prisma.$queryRaw<
+            Array<{ session: string; cnt: bigint }>
+        >`
  SELECT
- "trading_session" as "session",
+ je."trading_session" as "session",
  COUNT(*) as "cnt"
- FROM "JournalEntry"
- WHERE "userId" = ${userId}::uuid
- AND "status" = 'CLOSED'
- AND "trading_session" IS NOT NULL
- AND "exitDate" >= NOW() - INTERVAL '90 days'
- GROUP BY "trading_session"
+ FROM "JournalEntry" je
+ INNER JOIN "trading_accounts" ta ON ta.id = je."accountId"
+   AND UPPER(COALESCE(ta.account_type, 'REAL')) NOT IN ('DEMO', 'CONTEST')
+   AND COALESCE(ta.server, '') NOT ILIKE '%demo%'
+ WHERE je."userId" = ${userId}::uuid
+ AND je."status" = 'CLOSED'
+ AND COALESCE(je.sync_source, 'MANUAL') <> 'MANUAL'
+ AND je."trading_session" IS NOT NULL
+ AND je."exitDate" >= ${startDate}
+ AND je."exitDate" <= ${endDate}
+ GROUP BY je."trading_session"
  ORDER BY "cnt" DESC
  LIMIT 1
  `;
 
-        const row = (result as any[])[0];
+        const row = result[0];
         if (!row) return null;
 
-        const totalResult = await prisma.$queryRaw`
+        const totalResult = await prisma.$queryRaw<Array<{ total: bigint }>>`
  SELECT COUNT(*) as "total"
- FROM "JournalEntry"
- WHERE "userId" = ${userId}::uuid
- AND "status" = 'CLOSED'
- AND "trading_session" IS NOT NULL
- AND "exitDate" >= NOW() - INTERVAL '90 days'
+ FROM "JournalEntry" je
+ INNER JOIN "trading_accounts" ta ON ta.id = je."accountId"
+   AND UPPER(COALESCE(ta.account_type, 'REAL')) NOT IN ('DEMO', 'CONTEST')
+   AND COALESCE(ta.server, '') NOT ILIKE '%demo%'
+ WHERE je."userId" = ${userId}::uuid
+ AND je."status" = 'CLOSED'
+ AND COALESCE(je.sync_source, 'MANUAL') <> 'MANUAL'
+ AND je."trading_session" IS NOT NULL
+ AND je."exitDate" >= ${startDate}
+ AND je."exitDate" <= ${endDate}
  `;
 
-        const totalRow = (totalResult as any[])[0];
+        const totalRow = totalResult[0];
         const total = Number(totalRow?.total || 1);
 
         return {
@@ -135,14 +144,150 @@ async function getSessionPreference(
     }
 }
 
+async function getVerifiedPublicStats(
+    userId: string,
+    startDate: Date,
+    endDate: Date
+): Promise<{
+    totalTrades: number;
+    winRate: number;
+    avgWin: number;
+    avgLoss: number;
+    latestExitDate: Date | null;
+}> {
+    if (!isValidUuid(userId)) {
+        return {
+            totalTrades: 0,
+            winRate: 0,
+            avgWin: 0,
+            avgLoss: 0,
+            latestExitDate: null,
+        };
+    }
+
+    const rows = await prisma.$queryRaw<
+        Array<{
+            totalTrades: bigint;
+            winRate: number | null;
+            avgWin: number | null;
+            avgLoss: number | null;
+            latestExitDate: Date | null;
+        }>
+    >`
+ SELECT
+   COUNT(*) AS "totalTrades",
+   COALESCE(
+     ROUND(
+       COUNT(CASE WHEN je.result = 'WIN' THEN 1 END) * 100.0
+       / NULLIF(COUNT(CASE WHEN je.result IN ('WIN', 'LOSS') THEN 1 END), 0),
+       1
+     ),
+     0
+   ) AS "winRate",
+   COALESCE(
+     AVG(
+       CASE
+         WHEN (COALESCE(je.pnl, 0) + COALESCE(je.commission, 0) + COALESCE(je.swap, 0)) > 0
+         THEN (COALESCE(je.pnl, 0) + COALESCE(je.commission, 0) + COALESCE(je.swap, 0))
+       END
+     ),
+     0
+   ) AS "avgWin",
+   ABS(
+     COALESCE(
+       AVG(
+         CASE
+           WHEN (COALESCE(je.pnl, 0) + COALESCE(je.commission, 0) + COALESCE(je.swap, 0)) < 0
+           THEN (COALESCE(je.pnl, 0) + COALESCE(je.commission, 0) + COALESCE(je.swap, 0))
+         END
+       ),
+       0
+     )
+   ) AS "avgLoss",
+   MAX(je."exitDate") AS "latestExitDate"
+ FROM "JournalEntry" je
+ INNER JOIN "trading_accounts" ta ON ta.id = je."accountId"
+   AND UPPER(COALESCE(ta.account_type, 'REAL')) NOT IN ('DEMO', 'CONTEST')
+   AND COALESCE(ta.server, '') NOT ILIKE '%demo%'
+ WHERE je."userId" = ${userId}::uuid
+   AND je."status" = 'CLOSED'
+   AND COALESCE(je.sync_source, 'MANUAL') <> 'MANUAL'
+   AND je."exitDate" >= ${startDate}
+   AND je."exitDate" <= ${endDate}
+ `;
+
+    const r = rows[0];
+    return {
+        totalTrades: Number(r?.totalTrades ?? 0),
+        winRate: Number(r?.winRate ?? 0),
+        avgWin: Number(r?.avgWin ?? 0),
+        avgLoss: Number(r?.avgLoss ?? 0),
+        latestExitDate: r?.latestExitDate ?? null,
+    };
+}
+
+async function getVerifiedPublicTopPairs(
+    userId: string,
+    startDate: Date,
+    endDate: Date
+): Promise<Array<{ symbol: string; winRate: number; trades: number }>> {
+    if (!isValidUuid(userId)) {
+        return [];
+    }
+
+    const rows = await prisma.$queryRaw<
+        Array<{
+            symbol: string;
+            trades: bigint;
+            winRate: number | null;
+        }>
+    >`
+ SELECT
+   je.symbol AS "symbol",
+   COUNT(*) AS "trades",
+   COALESCE(
+     ROUND(
+       COUNT(CASE WHEN je.result = 'WIN' THEN 1 END) * 100.0
+       / NULLIF(COUNT(CASE WHEN je.result IN ('WIN', 'LOSS') THEN 1 END), 0),
+       1
+     ),
+     0
+   ) AS "winRate"
+ FROM "JournalEntry" je
+ INNER JOIN "trading_accounts" ta ON ta.id = je."accountId"
+   AND UPPER(COALESCE(ta.account_type, 'REAL')) NOT IN ('DEMO', 'CONTEST')
+   AND COALESCE(ta.server, '') NOT ILIKE '%demo%'
+ WHERE je."userId" = ${userId}::uuid
+   AND je."status" = 'CLOSED'
+   AND COALESCE(je.sync_source, 'MANUAL') <> 'MANUAL'
+   AND je."exitDate" >= ${startDate}
+   AND je."exitDate" <= ${endDate}
+ GROUP BY je.symbol
+ ORDER BY "trades" DESC
+ LIMIT 3
+ `;
+
+    return rows.map((row) => ({
+        symbol: row.symbol,
+        trades: Number(row.trades),
+        winRate: Number(row.winRate ?? 0),
+    }));
+}
+
 // ============================================================================
 // MAIN
 // ============================================================================
 
 export const getPublicProfileData = cache(
     async (username: string): Promise<PublicProfileData | null> => {
-    const profile = await prisma.profile.findUnique({
-        where: { username },
+    const cleanUsername = username.trim();
+    if (!cleanUsername) return null;
+
+    const profile = await prisma.profile.findFirst({
+        where: {
+            username: { equals: cleanUsername, mode: "insensitive" },
+            isPublicProfile: true,
+        },
         include: {
             user: {
                 select: {
@@ -176,60 +321,63 @@ export const getPublicProfileData = cache(
 
     const userId = profile.userId;
 
-    // Fetch stats in parallel (last 90 days)
-    const ninetyDaysAgo = new Date();
+    // Fetch verified real synced trade stats in parallel (last 90 days)
+    const now = new Date();
+    const ninetyDaysAgo = new Date(now);
     ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
 
-    const [stats, symbols, _streak, sessionPref, latestTrade] = await Promise.all([
-        getKeyStats(userId, undefined, ninetyDaysAgo, new Date()),
+    const [stats, symbols, sessionPref] = await Promise.all([
+        getVerifiedPublicStats(userId, ninetyDaysAgo, now),
         profile.showPairStats
-            ? getSymbolPerformance(userId, undefined, ninetyDaysAgo, new Date())
+            ? getVerifiedPublicTopPairs(userId, ninetyDaysAgo, now)
             : Promise.resolve([]),
-        getCurrentStreak(userId),
         profile.showSessionStats
-            ? getSessionPreference(userId)
+            ? getSessionPreference(userId, ninetyDaysAgo, now)
             : Promise.resolve(null),
-        prisma.journalEntry.findFirst({
-            where: {
-                userId,
-                status: "CLOSED",
-                exitDate: { gte: ninetyDaysAgo, lte: new Date() },
-            },
-            select: { exitDate: true },
-            orderBy: { exitDate: "desc" },
-        }),
     ]);
 
     const calculatedAt = new Date();
     const qualifyingClosedTrades = stats.totalTrades;
     const hasVerificationSample = qualifyingClosedTrades >= 10;
 
-    // Trade Score (only if toggled on AND enough data)
+    // Trade Score (only if toggled on AND enough verified real synced trades)
     let tradeScore: number | null = null;
     if (profile.showTradeScore && stats.totalTrades >= 30) {
         try {
-            const { getIntelligenceData } =
-                await import("@/lib/smart-analytics");
-            const intelligence = await getIntelligenceData(
-                userId,
-                undefined,
-                ninetyDaysAgo,
-                new Date()
-            );
-            tradeScore = intelligence.tradeScore.score;
+            const primaryRealAccount = await prisma.tradingAccount.findFirst({
+                where: {
+                    userId,
+                    accountType: { notIn: ["DEMO", "CONTEST"] },
+                    NOT: { server: { contains: "demo", mode: "insensitive" } },
+                },
+                orderBy: [{ useForLeaderboard: "desc" }, { createdAt: "desc" }],
+                select: { id: true },
+            });
+            if (primaryRealAccount) {
+                const { getIntelligenceData } =
+                    await import("@/lib/smart-analytics");
+                const intelligence = await getIntelligenceData(
+                    userId,
+                    primaryRealAccount.id,
+                    ninetyDaysAgo,
+                    now
+                );
+                tradeScore = intelligence.tradeScore.score;
+            }
         } catch {
             // Silent fail
         }
     }
 
     const avgRR = stats.avgLoss > 0 ? stats.avgWin / stats.avgLoss : 0;
+    const canShowPercent = profile.showPercentMetrics;
 
     return {
         name: profile.showRealName
             ? profile.user.name || "Trader"
             : `@${profile.username}`,
         username: profile.username || "",
-        image: profile.user.image,
+        image: profile.showRealName ? profile.user.image : null,
         headline: profile.profileHeadline,
         bio: profile.bio,
         joinedDate: profile.user.createdAt,
@@ -242,7 +390,7 @@ export const getPublicProfileData = cache(
             days: 90,
             qualifyingClosedTrades,
             calculatedAt,
-            latestTradeAt: latestTrade?.exitDate ?? null,
+            latestTradeAt: stats.latestExitDate,
             verificationLabel: hasVerificationSample
                 ? "Verified sample"
                 : "Early sample",
@@ -253,7 +401,7 @@ export const getPublicProfileData = cache(
 
         stats: {
             totalTrades: stats.totalTrades,
-            winRate: stats.winRate ?? 0,
+            winRate: canShowPercent ? stats.winRate : 0,
             avgRR,
             tradeScore,
         },
@@ -267,17 +415,19 @@ export const getPublicProfileData = cache(
             : null,
 
         topPairs: profile.showPairStats
-            ? [...symbols]
-                  .sort((a, b) => b.trades - a.trades)
-                  .slice(0, 3)
-                  .map((s) => ({
-                      symbol: s.symbol,
-                      winRate: s.winRate,
-                      trades: s.trades,
-                  }))
+            ? symbols.map((s) => ({
+                  symbol: s.symbol,
+                  winRate: canShowPercent ? s.winRate : 0,
+                  trades: s.trades,
+              }))
             : null,
 
-        preferredSession: sessionPref,
+        preferredSession: sessionPref
+            ? {
+                  name: sessionPref.name,
+                  percentage: canShowPercent ? sessionPref.percentage : 0,
+              }
+            : null,
 
         tradingStyle: (() => {
             const userSettings = (profile.user.settings as Record<string, any>) || {};
@@ -322,3 +472,5 @@ export const getPublicProfileData = cache(
         },
     };
 });
+
+export const getPublicProfileByUsername = getPublicProfileData;

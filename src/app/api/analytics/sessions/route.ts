@@ -58,60 +58,89 @@ export async function GET(request: NextRequest) {
         const searchParams = request.nextUrl.searchParams;
         const startDateParam = searchParams.get("startDate");
         const endDateParam = searchParams.get("endDate");
-        let accountId = searchParams.get("accountId") || undefined;
+        const rawAccountId = searchParams.get("accountId") || undefined;
 
-        if (!accountId) {
+        let normalizedAccountId: string | undefined;
+        if (rawAccountId === "all") {
+            normalizedAccountId = undefined;
+        } else if (rawAccountId) {
+            normalizedAccountId = rawAccountId;
+        } else {
+            const lastAccountId =
+                request.cookies.get("last_account_id")?.value;
             const { resolveDefaultAccountId } = await import(
                 "@/actions/main-account"
             );
-            accountId = await resolveDefaultAccountId(
+            const resolvedDefault = await resolveDefaultAccountId(
                 user.id,
-                request.cookies.get("last_account_id")?.value
+                lastAccountId
             );
+            normalizedAccountId =
+                resolvedDefault && resolvedDefault !== "all"
+                    ? resolvedDefault
+                    : undefined;
         }
+
+        const userAccounts = prisma.tradingAccount?.findMany
+            ? await prisma.tradingAccount.findMany({
+                  where: { userId: user.id },
+                  select: { id: true, currency: true, server: true },
+              })
+            : [];
 
         const now = new Date();
         const startDate = startDateParam
             ? parseISO(startDateParam)
             : startOfMonth(now);
         // A date-only endDate param (e.g. "2026-08-13") parses to midnight;
-        // extend it to end of day so trades on the final day aren't dropped.
+        // extend it to end of day ONLY when it is not already a full ISO timestamp.
         const endDate = endDateParam
-            ? endOfDay(parseISO(endDateParam))
+            ? endDateParam.includes("T")
+                ? parseISO(endDateParam)
+                : endOfDay(parseISO(endDateParam))
             : endOfMonth(now);
 
-        const whereClause: any = {
+        const whereClause: {
+            userId: string;
+            status: "CLOSED";
+            exitDate: { gte: Date; lte: Date };
+            accountId?: string;
+        } = {
             userId: user.id,
             status: "CLOSED", // Only closed trades for PnL analysis
-            entryDate: { gte: startDate, lte: endDate },
+            exitDate: { gte: startDate, lte: endDate },
         };
 
-        if (accountId && accountId !== "all") whereClause.accountId = accountId;
+        if (normalizedAccountId) whereClause.accountId = normalizedAccountId;
 
-        const targetAcc = await prisma.tradingAccount.findFirst({
-            where: {
-                userId: user.id,
-                ...(accountId && accountId !== "all" ? { id: accountId } : {}),
-            },
-            select: { currency: true, server: true },
-        });
-        const currency = normalizeCurrencyCode(
-            targetAcc?.currency,
-            targetAcc?.server
+        const targetAcc = normalizedAccountId
+            ? userAccounts.find((acc) => acc.id === normalizedAccountId)
+            : userAccounts[0];
+        const uniqueCurrencies = new Set(
+            userAccounts.map((acc) =>
+                normalizeCurrencyCode(acc.currency, acc.server)
+            )
         );
+        const currency =
+            !normalizedAccountId && uniqueCurrencies.size > 1
+                ? "USD"
+                : normalizeCurrencyCode(
+                      targetAcc?.currency,
+                      targetAcc?.server
+                  );
 
         // Fetch trades
         const trades = await prisma.journalEntry.findMany({
-            // Assuming JournalEntry is the model name
             where: whereClause,
             select: {
                 id: true,
                 pnl: true,
                 commission: true,
                 swap: true,
-                status: true, // Assuming result/status is available
-                exitPrice: true, // Check if win/loss is determined by status or pnl
+                status: true,
+                exitPrice: true,
                 entryDate: true,
+                exitDate: true,
                 tradingSession: true,
             },
         });
@@ -128,12 +157,16 @@ export async function GET(request: NextRequest) {
                           ).toFixed(2)
                       )
                     : null;
+            const isWin = netPnl !== null && netPnl > 0;
+            const isLoss = netPnl !== null && netPnl < 0;
+            const isBreakEven = netPnl !== null && netPnl === 0;
             return {
                 ...trade,
                 netPnl,
                 session: trade.tradingSession || detectSession(trade.entryDate),
-                isWin: netPnl !== null && netPnl > 0,
-                isLoss: netPnl !== null && netPnl <= 0,
+                isWin,
+                isLoss,
+                isBreakEven,
             };
         });
 
@@ -143,6 +176,7 @@ export async function GET(request: NextRequest) {
             {
                 wins: number;
                 losses: number;
+                totalTrades: number;
                 grossProfit: number;
                 grossLoss: number;
                 totalPnL: number;
@@ -153,6 +187,7 @@ export async function GET(request: NextRequest) {
             const current = sessionMap.get(trade.session) || {
                 wins: 0,
                 losses: 0,
+                totalTrades: 0,
                 grossProfit: 0,
                 grossLoss: 0,
                 totalPnL: 0,
@@ -163,10 +198,16 @@ export async function GET(request: NextRequest) {
 
             if (trade.isWin) {
                 current.wins++;
+                current.totalTrades++;
                 current.grossProfit += pnl;
-            } else {
+            } else if (trade.isLoss) {
                 current.losses++;
+                current.totalTrades++;
                 current.grossLoss += Math.abs(pnl);
+            } else if (trade.isBreakEven) {
+                current.totalTrades++;
+            } else {
+                current.totalTrades++;
             }
 
             sessionMap.set(trade.session, current);
@@ -175,7 +216,7 @@ export async function GET(request: NextRequest) {
         // Build session stats
         const sessionStats: SessionStats[] = Array.from(sessionMap.entries())
             .map(([session, data]) => {
-                const total = data.wins + data.losses;
+                const total = data.totalTrades;
                 return {
                     session,
                     displayName: SESSION_NAMES[session] || session,

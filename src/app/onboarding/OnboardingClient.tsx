@@ -129,8 +129,8 @@ export default function OnboardingClient({
         setError(null);
 
         if (file) {
-            if (file.size > 1024 * 1024) {
-                setError("Image size must be less than 1MB");
+            if (file.size > 2 * 1024 * 1024) {
+                setError("Image size must be less than 2MB");
                 e.target.value = "";
                 return;
             }
@@ -212,6 +212,35 @@ export default function OnboardingClient({
         }
     };
 
+    const handleCompleteRedirect = (fallbackPath: string) => {
+        try {
+            const urlIntent = new URLSearchParams(window.location.search)
+                .get("intent")
+                ?.trim();
+            const savedIntent =
+                urlIntent || localStorage.getItem("tnt_signup_intent");
+            if (
+                savedIntent === "BROKER_FUNDED" ||
+                savedIntent === "partner_pro"
+            ) {
+                localStorage.removeItem("tnt_signup_intent");
+                router.push(
+                    "/dashboard/accounts?action=add&intent=BROKER_FUNDED&mode=pro"
+                );
+                return;
+            }
+            if (savedIntent === "trading_style") {
+                localStorage.removeItem("tnt_signup_intent");
+                router.push("/dashboard/settings/trading-style");
+                return;
+            }
+        } catch {
+            // Ignore storage error
+        }
+
+        router.push(fallbackPath);
+    };
+
     const handleComplete = async () => {
         setIsLoading(true);
         setError(null);
@@ -223,35 +252,20 @@ export default function OnboardingClient({
                     return;
                 }
                 setError(result.error);
+                toast.error(result.error);
                 return;
             }
             trackEvent("onboarding_completed", { syncMethod });
 
-            // Check if user came with a Partner Broker signup intent or Trading Style intent
-            try {
-                const savedIntent = localStorage.getItem("tnt_signup_intent");
-                if (savedIntent === "BROKER_FUNDED" || savedIntent === "partner_pro") {
-                    localStorage.removeItem("tnt_signup_intent");
-                    router.push("/dashboard/accounts?action=add&intent=BROKER_FUNDED&mode=pro");
-                    return;
-                }
-                if (savedIntent === "trading_style") {
-                    localStorage.removeItem("tnt_signup_intent");
-                    router.push("/dashboard/settings/trading-style");
-                    return;
-                }
-            } catch {
-                // Ignore storage error
-            }
-
-            // Redirect based on sync method
-            if (syncMethod === "EA_SYNC") {
-                router.push("/dashboard/accounts?setup=sync&method=ea");
-            } else {
-                router.push("/dashboard/journal?action=log-trade");
-            }
+            handleCompleteRedirect(
+                syncMethod === "EA_SYNC"
+                    ? "/dashboard/accounts?setup=sync&method=ea"
+                    : "/dashboard/journal?action=log-trade"
+            );
         } catch {
-            setError("Failed to complete. Please try again.");
+            const msg = "Failed to complete. Please try again.";
+            setError(msg);
+            toast.error(msg);
         } finally {
             setIsLoading(false);
         }
@@ -269,29 +283,15 @@ export default function OnboardingClient({
                     return;
                 }
                 setError(result.error);
+                toast.error(result.error);
                 return;
             }
 
-            // Check if user came with a Partner Broker signup intent or Trading Style intent
-            try {
-                const savedIntent = localStorage.getItem("tnt_signup_intent");
-                if (savedIntent === "BROKER_FUNDED" || savedIntent === "partner_pro") {
-                    localStorage.removeItem("tnt_signup_intent");
-                    router.push("/dashboard/accounts?action=add&intent=BROKER_FUNDED&mode=pro");
-                    return;
-                }
-                if (savedIntent === "trading_style") {
-                    localStorage.removeItem("tnt_signup_intent");
-                    router.push("/dashboard/settings/trading-style");
-                    return;
-                }
-            } catch {
-                // Ignore storage error
-            }
-
-            router.push("/dashboard");
+            handleCompleteRedirect("/dashboard");
         } catch {
-            setError("Failed to skip. Please try again.");
+            const msg = "Failed to skip. Please try again.";
+            setError(msg);
+            toast.error(msg);
         } finally {
             setIsLoading(false);
         }
@@ -300,7 +300,7 @@ export default function OnboardingClient({
     const progressPercent = ((step - 1) / 3) * 100;
 
     return (
-        <div className="min-h-screen w-full flex flex-col items-center justify-center bg-white text-slate-800 dark:bg-[#0B0E14] dark:text-white p-4 font-sans relative overflow-hidden transition-colors duration-300">
+        <div className="min-h-screen w-full flex flex-col items-center justify-center bg-white text-slate-800 dark:bg-[#0B0E14] dark:text-white px-4 py-8 sm:py-10 font-sans relative overflow-x-hidden transition-colors duration-300">
             {/* Background gradient overlay matching auth pages */}
             <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(245,158,11,0.08)_0%,rgba(255,255,255,0.85)_40%,rgba(16,185,129,0.06)_100%)] dark:bg-[linear-gradient(135deg,rgba(245,158,11,0.06)_0%,rgba(11,14,20,0.92)_45%,rgba(16,185,129,0.05)_100%)] pointer-events-none" />
 
@@ -464,8 +464,8 @@ export default function OnboardingClient({
                                         className={`text-xs font-semibold tabular-nums ${error?.includes("Image size") ? "text-red-500" : "text-slate-400 dark:text-slate-500"}`}
                                     >
                                         {error?.includes("Image size")
-                                            ? "File too large (>1MB)"
-                                            : "Optional • Max 1MB"}
+                                            ? "File too large (>2MB)"
+                                            : "Optional • Max 2MB"}
                                     </p>
                                 </div>
 
@@ -887,10 +887,8 @@ export default function OnboardingClient({
                                 <Button
                                     type="button"
                                     variant="outline"
-                                    onClick={async () => {
-                                        await completeOnboardingAction();
-                                        router.push("/dashboard");
-                                    }}
+                                    disabled={isLoading}
+                                    onClick={handleSkip}
                                     className="w-full text-center text-xs text-slate-500 dark:text-slate-400 hover:text-amber-600 dark:hover:text-gold border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] rounded-lg font-black tracking-wide transition-colors py-2.5 uppercase h-auto"
                                 >
                                     Skip setup, go to Dashboard

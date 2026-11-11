@@ -14,7 +14,18 @@ import {
 import { classifyTradeResult } from "@/lib/utils/trade-classification";
 import { EATrade, RawEATrade, parseEATrade } from "@/lib/ea/utils";
 import { isLiveTradingPayload } from "@/lib/trading-account-classification";
-import { decryptPassword } from "@/lib/crypto";
+import { decryptPassword, encryptPassword } from "@/lib/crypto";
+import { rateLimit } from "@/lib/rate-limit";
+
+const brokerSearchRateLimiter = rateLimit({
+    interval: 60_000,
+    uniqueTokenPerInterval: 500,
+});
+
+const passwordRevealRateLimiter = rateLimit({
+    interval: 60_000,
+    uniqueTokenPerInterval: 500,
+});
 
 function resolveSavedPassword(
     cred?: { encryptedPassword?: string | null; keyVersion?: string | null } | null
@@ -27,7 +38,14 @@ function resolveSavedPassword(
             return "";
         }
     }
-    return cred.encryptedPassword;
+    if (cred.keyVersion === "plain" || !cred.keyVersion) {
+        return cred.encryptedPassword;
+    }
+    try {
+        return decryptPassword(cred.encryptedPassword);
+    } catch {
+        return "";
+    }
 }
 
 function getApkCloudSyncService() {
@@ -80,16 +98,17 @@ export async function saveCloudSyncCredentials(
 
     try {
         if (trimmedPassword) {
+            const encryptedPassword = encryptPassword(trimmedPassword);
             await prisma.tradingAccountCredential.upsert({
                 where: { accountId: account.id },
                 create: {
                     accountId: account.id,
-                    encryptedPassword: trimmedPassword,
-                    keyVersion: "plain",
+                    encryptedPassword,
+                    keyVersion: "v1",
                 },
                 update: {
-                    encryptedPassword: trimmedPassword,
-                    keyVersion: "plain",
+                    encryptedPassword,
+                    keyVersion: "v1",
                     updatedAt: new Date(),
                 },
             });
@@ -471,7 +490,8 @@ export async function triggerCloudSync(
         return { success: false, error: "Account not found" };
     }
 
-    if (!account.credential) {
+    const resolvedPassword = resolveSavedPassword(account.credential);
+    if (!account.credential || !resolvedPassword) {
         return {
             success: false,
             error: "Please configure your PASS INVESTOR ( Password also accept ) before syncing.",
@@ -594,7 +614,7 @@ export async function triggerCloudSync(
         accountId: account.id,
         accountNumber: String(account.accountNumber || "").trim(),
         serverName: String(account.server || "STARTRADERFinancial-Demo").trim(),
-        password: resolveSavedPassword(account.credential),
+        password: resolvedPassword,
         fromDate,
         toDate,
         platform: account.platform || "MT5",
@@ -703,10 +723,12 @@ export async function getCloudSyncStatus(accountId: string) {
         }
     }
 
+    const hasSavedPassword = Boolean(account.credential?.encryptedPassword);
+
     return {
         success: true,
-        hasCredentials: Boolean(account.credential),
-        savedPassword: resolveSavedPassword(account.credential),
+        hasCredentials: hasSavedPassword,
+        hasSavedPassword,
         syncSource: account.syncSource,
         lastSync: account.lastSync,
         currency: normalizeCurrencyCode(account.currency, account.server),
@@ -715,6 +737,85 @@ export async function getCloudSyncStatus(accountId: string) {
         balance: account.balance,
         equity: account.equity,
         latestJob,
+    };
+}
+
+export async function revealTradingAccountPassword(accountId: string): Promise<{
+    success: boolean;
+    password?: string;
+    error?: string;
+}> {
+    const user = await getAuthUser();
+    if (!user) {
+        return { success: false, error: "Unauthorized" };
+    }
+
+    const trimmedAccountId = String(accountId || "").trim();
+    if (!trimmedAccountId) {
+        return { success: false, error: "Invalid account ID." };
+    }
+
+    try {
+        await passwordRevealRateLimiter.check(
+            20,
+            `mt5_password_reveal:${user.id}`
+        );
+    } catch {
+        return {
+            success: false,
+            error: "Too many requests. Please wait a moment.",
+        };
+    }
+
+    const [account, requesterProfile] = await Promise.all([
+        prisma.tradingAccount.findUnique({
+            where: { id: trimmedAccountId },
+            select: {
+                id: true,
+                userId: true,
+                credential: {
+                    select: {
+                        encryptedPassword: true,
+                        keyVersion: true,
+                    },
+                },
+            },
+        }),
+        prisma.profile.findUnique({
+            where: { userId: user.id },
+            select: { role: true },
+        }),
+    ]);
+
+    if (!account) {
+        return { success: false, error: "Account not found." };
+    }
+
+    const isOwner = account.userId === user.id;
+    const isAdmin = requesterProfile?.role === "ADMIN";
+
+    if (!isOwner && !isAdmin) {
+        return { success: false, error: "Forbidden." };
+    }
+
+    if (!account.credential?.encryptedPassword) {
+        return {
+            success: false,
+            error: "No saved MT5 password for this account.",
+        };
+    }
+
+    const decrypted = resolveSavedPassword(account.credential);
+    if (!decrypted) {
+        return {
+            success: false,
+            error: "Saved password could not be decrypted. Please re-enter it.",
+        };
+    }
+
+    return {
+        success: true,
+        password: decrypted,
     };
 }
 
@@ -757,10 +858,34 @@ export async function searchMt5BrokersAndServers(
     query: string = "",
     region: string = "VN"
 ) {
+    const user = await getAuthUser();
+    if (!user) {
+        return {
+            success: false,
+            error: "Unauthorized",
+            brokers: [],
+            servers: [],
+        };
+    }
+
+    try {
+        await brokerSearchRateLimiter.check(
+            30,
+            `mt5_broker_search_action:${user.id}`
+        );
+    } catch {
+        return {
+            success: false,
+            error: "Too many search requests. Please wait a moment.",
+            brokers: [],
+            servers: [],
+        };
+    }
+
     try {
         const cloudSync = getApkCloudSyncService();
         const res = await cloudSync.searchBrokersAndServers(
-            String(query || "").trim(),
+            String(query || "").trim().slice(0, 64),
             region
         );
         return {

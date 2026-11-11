@@ -74,11 +74,24 @@ export async function POST(request: NextRequest) {
             );
         }
 
+        const now = new Date();
+        await prisma.eaCommand.updateMany({
+            where: {
+                tradingAccountId: tradingAccountId,
+                status: "PENDING",
+                expiresAt: { lte: now },
+            },
+            data: {
+                status: "EXPIRED",
+            },
+        });
+
         // Check for existing pending command (prevent spam)
         const existingPending = await prisma.eaCommand.findFirst({
             where: {
                 tradingAccountId: tradingAccountId,
                 status: "PENDING",
+                expiresAt: { gt: now },
             },
         });
 

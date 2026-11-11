@@ -52,13 +52,13 @@ export const METRIC_DEFINITIONS = {
         id: "winRate",
         label: "Win Rate",
         shortDescription:
-            "Percentage of decisive closed trades that ended in profit.",
-        formula: "wins / (wins + losses) × 100",
+            "Percentage of closed trades that ended in profit.",
+        formula: "Winning Trades / Total Closed Trades × 100",
         includedData:
-            "Closed trades in the selected account and date range. Break-even trades are excluded.",
+            "All closed trades in the selected account and date range (breakeven trades are included in total closed trades).",
         edgeCases: [
-            "If there are wins and no losses, Win Rate is 100%.",
-            "If there are only break-even trades, shows -- instead of 0%.",
+            "Breakeven trades (BREAK_EVEN and BE_PLUS) count toward total closed trades.",
+            "If there are only breakeven trades, Win Rate is 0%.",
             "Open trades are excluded from the calculation.",
         ],
         detailsHref: "/dashboard/intelligence",
@@ -72,9 +72,9 @@ export const METRIC_DEFINITIONS = {
         formula:
             "Composite score from win rate, risk:reward, plan compliance, SL discipline, revenge trading, weak pairs, and emotion patterns.",
         includedData:
-            "Closed trades in the selected account and date range. Requires enough trade history to avoid noisy scoring.",
+            "Closed trades in the selected account and date range. Requires at least 20 closed trades to avoid noisy scoring.",
         edgeCases: [
-            "If there are not enough trades, shows 'Need 30+ trades'.",
+            "If fewer than 20 closed trades exist, shows 'Need 20+ trades'.",
             "A profitable day can still have a lower score if risk or discipline signals are weak.",
             "The score reflects discipline and risk quality, not only P&L.",
         ],
@@ -128,7 +128,7 @@ export const METRIC_DEFINITIONS = {
         includedData: "Top 10 symbols by net profit in the selected period.",
         edgeCases: [
             "Symbols with fewer than 1 trade in the period are not shown.",
-            "Win Rate per symbol excludes break-even trades.",
+            "Win Rate per symbol includes breakeven trades in total closed trades.",
         ],
     },
 
@@ -148,10 +148,10 @@ export const METRIC_DEFINITIONS = {
         id: "dailyWinRate",
         label: "Daily Win Rate",
         shortDescription: "Win rate calculated per trading day.",
-        formula: "Daily wins / (Daily wins + Daily losses) × 100",
+        formula: "Daily wins / Total daily closed trades × 100",
         includedData: "Closed trades grouped by exit date.",
         edgeCases: [
-            "Days with only break-even trades show 0% (daily granularity).",
+            "Days with only breakeven trades show 0% (daily granularity).",
             "Non-trading days are not shown.",
         ],
     },

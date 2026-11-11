@@ -1,8 +1,22 @@
 import { NextResponse } from "next/server";
 import { getBaseUrl } from "@/lib/url";
+import { isAcademyEnabled } from "@/app/admin/academy/actions";
 
 export async function GET() {
     const baseUrl = getBaseUrl();
+    const academyEnabled = await isAcademyEnabled();
+
+    const academySection = academyEnabled
+        ? `
+### Academy (Structured Education)
+3-level forex trading education from beginner to advanced.
+- Level 1: Foundation (Forex Basics, Candlestick Charts, Support & Resistance)
+- Level 2: Strategy (Technical Indicators, Risk Management, Trade Planning)
+- Level 3: Mastery (Advanced Patterns, Psychology, System Building)
+- Public Lessons (free, no login required): Levels 1-3 first chapters
+- URL: ${baseUrl}/academy
+`
+        : "";
 
     const content = `# TheNextTrade
 > Professional Forex Trading Tools, Trading Playbook & Market Analytics Platform
@@ -45,15 +59,7 @@ Professional-grade financial calculators for forex risk management and analysis.
 - Currency Converter: ${baseUrl}/tools/currency-converter
 - Economic Calendar: ${baseUrl}/tools/economic-calendar
 - Market Hours: ${baseUrl}/tools/market-hours
-
-### Academy (Structured Education)
-3-level forex trading education from beginner to advanced.
-- Level 1: Foundation (Forex Basics, Candlestick Charts, Support & Resistance)
-- Level 2: Strategy (Technical Indicators, Risk Management, Trade Planning)
-- Level 3: Mastery (Advanced Patterns, Psychology, System Building)
-- Public Lessons (free, no login required): Levels 1-3 first chapters
-- URL: ${baseUrl}/academy
-
+${academySection}
 ### Knowledge Hub (Pillar Content)
 Comprehensive, in-depth guides on core trading topics.
 

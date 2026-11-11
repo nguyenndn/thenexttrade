@@ -160,6 +160,11 @@ function getMainValue(
                     entry.winRate !== undefined ? entry.winRate : entry.value;
                 return `${winRateVal.toFixed(1)}% Win Rate`;
             }
+            if (entry.pnl === null) {
+                return entry.winRate !== undefined
+                    ? `${entry.winRate.toFixed(1)}% Win Rate`
+                    : "—";
+            }
             const pnl =
                 entry.pnl >= 0
                     ? `+$${entry.pnl.toFixed(2)}`
@@ -232,9 +237,11 @@ function get2x2Stats(entry: LeaderboardEntry, type: LeaderboardType) {
                 {
                     label: "Total PnL",
                     value:
-                        entry.pnl >= 0
-                            ? `+$${entry.pnl.toFixed(0)}`
-                            : `-$${Math.abs(entry.pnl).toFixed(0)}`,
+                        entry.pnl === null
+                            ? "—"
+                            : entry.pnl >= 0
+                              ? `+$${entry.pnl.toFixed(0)}`
+                              : `-$${Math.abs(entry.pnl).toFixed(0)}`,
                 },
             ];
         }
@@ -247,9 +254,11 @@ function get2x2Stats(entry: LeaderboardEntry, type: LeaderboardType) {
                 {
                     label: "Total PnL",
                     value:
-                        entry.pnl >= 0
-                            ? `+$${entry.pnl.toFixed(0)}`
-                            : `-$${Math.abs(entry.pnl).toFixed(0)}`,
+                        entry.pnl === null
+                            ? "—"
+                            : entry.pnl >= 0
+                              ? `+$${entry.pnl.toFixed(0)}`
+                              : `-$${Math.abs(entry.pnl).toFixed(0)}`,
                 },
                 { label: "Level", value: `Level ${entry.level}` },
             ];

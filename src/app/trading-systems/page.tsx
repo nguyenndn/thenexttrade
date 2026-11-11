@@ -157,13 +157,13 @@ export default async function TradingSystemsIndexPage() {
     const isLoggedIn = !!user;
 
     const primaryCtaUrl = isLoggedIn
-        ? "/dashboard/accounts"
-        : "/auth/signup?next=/dashboard/accounts&source=trading_systems";
+        ? "/dashboard/trading-systems"
+        : "/auth/signup?next=/dashboard/trading-systems&source=trading_systems";
 
     const allTradingFaqs = [...SETUP_OPERATION_FAQS, ...LICENSING_RISK_FAQS];
 
     return (
-        <TradingSystemsPageShell maxWidth="max-w-7xl">
+        <TradingSystemsPageShell maxWidth="max-w-7xl" user={user}>
             <JsonLd
                 type="FAQPage"
                 data={{
@@ -338,7 +338,7 @@ export default async function TradingSystemsIndexPage() {
                         >
                             <span>
                                 {isLoggedIn
-                                    ? "Check My Account"
+                                    ? "Go to Trading Systems"
                                     : "Create Account & Check"}
                             </span>
                             <ArrowRight

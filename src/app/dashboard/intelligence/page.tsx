@@ -36,29 +36,54 @@ export default async function IntelligencePage({
     const tradingDataState = await getUserTradingDataState(user.id);
 
     // Account filter (Priority 1: Main Account from /dashboard/accounts)
-    let accountId = resolvedParams?.accountId as string | undefined;
+    const userAccounts = await prisma.tradingAccount.findMany({
+        where: { userId: user.id },
+        select: { id: true, timezone: true },
+    });
 
-    if (!accountId) {
+    const rawAccountId =
+        typeof resolvedParams?.accountId === "string"
+            ? resolvedParams.accountId
+            : undefined;
+    const normalizedAccountId =
+        rawAccountId && rawAccountId !== "all" ? rawAccountId : undefined;
+
+    let accountId: string | undefined;
+    if (rawAccountId === "all") {
+        accountId = undefined;
+    } else if (normalizedAccountId) {
+        accountId = userAccounts.some((a) => a.id === normalizedAccountId)
+            ? normalizedAccountId
+            : undefined;
+    } else {
         const cookieStore = await cookies();
-        const lastAccountId = cookieStore.get("last_account_id")?.value;
+        const rawLastAccountId = cookieStore.get("last_account_id")?.value;
+        const validLastAccountId =
+            rawLastAccountId &&
+            userAccounts.some((a) => a.id === rawLastAccountId)
+                ? rawLastAccountId
+                : undefined;
         const { resolveDefaultAccountId } = await import(
             "@/actions/main-account"
         );
-        accountId = await resolveDefaultAccountId(user.id, lastAccountId);
+        const resolvedDefault = await resolveDefaultAccountId(
+            user.id,
+            validLastAccountId
+        );
+        accountId =
+            resolvedDefault &&
+            userAccounts.some((a) => a.id === resolvedDefault)
+                ? resolvedDefault
+                : undefined;
     }
 
     // Date range
     const startDateParam = resolvedParams?.from as string;
     const endDateParam = resolvedParams?.to as string;
 
-    let accountTimezone: string | undefined;
-    if (accountId) {
-        const acc = await prisma.tradingAccount.findFirst({
-            where: { id: accountId, userId: user.id },
-            select: { timezone: true },
-        });
-        accountTimezone = acc?.timezone || undefined;
-    }
+    const accountTimezone = accountId
+        ? userAccounts.find((a) => a.id === accountId)?.timezone || undefined
+        : undefined;
 
     const startDate = parseLocalStartOfDay(startDateParam, accountTimezone);
     const endDate = parseLocalEndOfDay(endDateParam, accountTimezone);
@@ -80,7 +105,11 @@ export default async function IntelligencePage({
             >
                 {tradingDataState.hasTradeData && (
                     <DashboardFilter
-                        currentAccountId={accountId ?? undefined}
+                        currentAccountId={
+                            rawAccountId === "all"
+                                ? "all"
+                                : (accountId ?? undefined)
+                        }
                     />
                 )}
             </PageHeader>

@@ -10,6 +10,26 @@ import {
     isNonLiveTradingPayload,
 } from "@/lib/trading-account-classification";
 import { normalizeBrokerKey } from "@/lib/pro-access";
+import { rateLimit } from "@/lib/rate-limit";
+
+const legacyVerifyIpLimiter = rateLimit({
+    interval: 60_000,
+    uniqueTokenPerInterval: 500,
+});
+
+function getRequestClientIp(request: NextRequest): string {
+    const realIp = request.headers.get("x-real-ip")?.trim();
+    if (realIp) return realIp;
+    const vercelIp = request.headers
+        .get("x-vercel-forwarded-for")
+        ?.split(",")[0]
+        ?.trim();
+    if (vercelIp) return vercelIp;
+    return (
+        request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+        "127.0.0.1"
+    );
+}
 
 interface VerifyLicensePayload {
     licenseKey?: string | null;
@@ -429,6 +449,23 @@ async function handleVerifyLicense(
     }
 
     // 3. No License Key provided (Legacy account-number-only validation)
+    const clientIp = getRequestClientIp(request);
+    try {
+        await legacyVerifyIpLimiter.check(15, `ea-verify-legacy:${clientIp}`);
+    } catch {
+        return NextResponse.json(
+            {
+                success: false,
+                valid: false,
+                state: "UNKNOWN",
+                code: "RATE_LIMIT_EXCEEDED",
+                message:
+                    "Too many unauthenticated license verification requests. Please try again shortly.",
+            },
+            { status: 429 }
+        );
+    }
+
     if (isDemo) {
         return NextResponse.json({
             success: true,
@@ -441,53 +478,6 @@ async function handleVerifyLicense(
     }
 
     if (approvedEaLicense) {
-        const licenseBrokerKey = normalizeBrokerKey(approvedEaLicense.broker);
-        const linkedCandidates = await prisma.tradingAccount.findMany({
-            where: {
-                userId: approvedEaLicense.userId,
-                accountNumber: rawAccount,
-            },
-            select: { id: true, broker: true, platform: true },
-            take: 25,
-        });
-        const linkedMatches = licenseBrokerKey
-            ? linkedCandidates.filter(
-                  (candidate) =>
-                      normalizeBrokerKey(candidate.broker) === licenseBrokerKey
-              )
-            : linkedCandidates;
-        // Telemetry only — resolve the single account for this license.
-        const linkedAccount =
-            linkedMatches[0] ||
-            (linkedCandidates.length === 1 &&
-            !normalizeBrokerKey(linkedCandidates[0].broker)
-                ? linkedCandidates[0]
-                : null);
-
-        if (linkedAccount) {
-            await recordEaProductTelemetry({
-                userId: approvedEaLicense.userId,
-                tradingAccountId: linkedAccount.id,
-                accountNumber: rawAccount,
-                eventType: "HEARTBEAT",
-                productSlug: payload.productSlug || null,
-                eaName: payload.eaName || null,
-                eaVersion: payload.eaVersion || null,
-                balance: safeBalance,
-                equity: safeEquity,
-                currency: payload.currency || null,
-                broker:
-                    detectedBroker ||
-                    payload.broker ||
-                    approvedEaLicense.broker ||
-                    null,
-                server: payload.server || null,
-                platform: payload.platform || linkedAccount.platform || "MT5",
-                accountType: resolvedAccountType,
-                syncSource: "EA_LICENSE_VERIFY",
-            });
-        }
-
         return NextResponse.json({
             success: true,
             valid: true,
@@ -552,29 +542,6 @@ async function handleVerifyLicense(
             : null);
 
     if (verifiedTradingAccount && !explicitlyRevokedLicense) {
-        await recordEaProductTelemetry({
-            userId: verifiedTradingAccount.userId,
-            tradingAccountId: verifiedTradingAccount.id,
-            accountNumber: rawAccount,
-            eventType: "HEARTBEAT",
-            productSlug: payload.productSlug || null,
-            eaName: payload.eaName || null,
-            eaVersion: payload.eaVersion || null,
-            balance: safeBalance,
-            equity: safeEquity,
-            currency: payload.currency || null,
-            broker:
-                detectedBroker ||
-                payload.broker ||
-                verifiedTradingAccount.broker ||
-                null,
-            server: payload.server || null,
-            platform:
-                payload.platform || verifiedTradingAccount.platform || "MT5",
-            accountType: resolvedAccountType,
-            syncSource: "EA_LICENSE_VERIFY",
-        });
-
         return NextResponse.json({
             success: true,
             valid: true,

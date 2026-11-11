@@ -8,7 +8,7 @@ export interface AdvancedFilters {
     comment?: string;
     magicNumber?: number;
     symbol?: string;
-    result?: "WIN" | "LOSS" | "BREAK_EVEN";
+    result?: "WIN" | "LOSS" | "BREAK_EVEN" | "BE_PLUS";
 }
 
 export function buildAdvancedFiltersSql(filters?: AdvancedFilters) {
@@ -50,9 +50,15 @@ export function buildAdvancedFiltersSql(filters?: AdvancedFilters) {
     }
 
     if (filters.result) {
-        conditions.push(
-            Prisma.sql`AND "result" = ${filters.result}::"TradeResult"`
-        );
+        if (filters.result === "BREAK_EVEN") {
+            conditions.push(
+                Prisma.sql`AND "result" IN ('BREAK_EVEN'::"TradeResult", 'BE_PLUS'::"TradeResult")`
+            );
+        } else {
+            conditions.push(
+                Prisma.sql`AND "result" = ${filters.result}::"TradeResult"`
+            );
+        }
     }
 
     if (conditions.length === 0) return Prisma.empty;
@@ -119,6 +125,8 @@ export async function getKeyStats(
     endDate?: Date,
     filters?: AdvancedFilters
 ) {
+    const normalizedAccountId =
+        accountId && accountId !== "all" ? accountId : undefined;
     // Build date filter
     const dateFilter =
         startDate && endDate
@@ -130,9 +138,11 @@ export async function getKeyStats(
   SELECT 
   COUNT(*) as "totalTrades",
   SUM(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "totalPnL",
-  SUM(CASE WHEN "result" = 'WIN' THEN 1 ELSE 0 END) as "wins",
-  SUM(CASE WHEN "result" = 'LOSS' THEN 1 ELSE 0 END) as "losses",
-  SUM(CASE WHEN "result" = 'BREAK_EVEN' THEN 1 ELSE 0 END) as "breakEvens",
+  COUNT(*) FILTER (WHERE "result" = 'WIN') as "wins",
+  COUNT(*) FILTER (WHERE "result" = 'LOSS') as "losses",
+  COUNT(*) FILTER (WHERE "result" IN ('BREAK_EVEN', 'BE_PLUS')) as "breakEvens",
+  COUNT(*) FILTER (WHERE (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) > 0) as "positiveTrades",
+  COUNT(*) FILTER (WHERE (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) < 0) as "negativeTrades",
   SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) > 0 THEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) ELSE 0 END) as "grossProfit",
   SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) < 0 THEN ABS(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) ELSE 0 END) as "grossLoss",
   SUM(COALESCE("commission", 0)) as "commission",
@@ -143,7 +153,7 @@ export async function getKeyStats(
   FROM "JournalEntry"
   WHERE "userId" = ${userId}::uuid
   AND "status" = 'CLOSED'
-  AND (${accountId ? accountId : "1"} = '1' OR "accountId" = ${accountId})
+  AND (${normalizedAccountId ? normalizedAccountId : "1"} = '1' OR "accountId" = ${normalizedAccountId})
   ${dateFilter}
   ${advancedFiltersSql}
   `;
@@ -153,10 +163,11 @@ export async function getKeyStats(
     const wins = Number(stats.wins || 0);
     const losses = Number(stats.losses || 0);
     const breakEvens = Number(stats.breakEvens || 0);
-    // Denominator = decided trades (win + loss + break-even), matching the
-    // win-rate convention used by getMonthlyAnalytics / getJournalEntries so
-    // the dashboard KPI and charts never disagree.
-    const decisiveTrades = wins + losses + breakEvens;
+    const positiveTrades = Number(stats.positiveTrades || 0);
+    const negativeTrades = Number(stats.negativeTrades || 0);
+    // Denominator = total closed trades (win + loss + break-even/BE_PLUS), matching the
+    // win-rate convention used across all analytics views.
+    const totalClosed = wins + losses + breakEvens;
     const grossProfit = Number(stats.grossProfit || 0);
     const grossLoss = Number(stats.grossLoss || 0);
 
@@ -164,7 +175,7 @@ export async function getKeyStats(
         totalTrades,
         winCount: wins,
         lossCount: losses,
-        winRate: decisiveTrades > 0 ? (wins / decisiveTrades) * 100 : null,
+        winRate: totalClosed > 0 ? (wins / totalClosed) * 100 : 0,
         totalPnL: Number(stats.totalPnL || 0),
         profitFactor:
             grossLoss > 0
@@ -174,8 +185,8 @@ export async function getKeyStats(
                   : 0,
         grossProfit,
         grossLoss,
-        avgWin: wins > 0 ? grossProfit / wins : 0,
-        avgLoss: losses > 0 ? grossLoss / losses : 0,
+        avgWin: positiveTrades > 0 ? grossProfit / positiveTrades : 0,
+        avgLoss: negativeTrades > 0 ? grossLoss / negativeTrades : 0,
         commission: Number(stats.commission || 0),
         swap: Number(stats.swap || 0),
         maxWin: Number(stats.maxWin || 0),
@@ -226,6 +237,8 @@ export async function getDailyPerformance(
     timezone?: string,
     filters?: AdvancedFilters
 ) {
+    const normalizedAccountId =
+        accountId && accountId !== "all" ? accountId : undefined;
     const tz = timezone || "Etc/UTC";
     // Build date filter
     const dateFilter =
@@ -239,32 +252,34 @@ export async function getDailyPerformance(
   TO_CHAR("exitDate" AT TIME ZONE ${tz}, 'YYYY-MM-DD') as "date",
   SUM(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "profit",
   COUNT(*) as "tradeCount",
-  SUM(CASE WHEN "result" = 'WIN' THEN 1 ELSE 0 END) as "winCount",
-  SUM(CASE WHEN "result" = 'LOSS' THEN 1 ELSE 0 END) as "lossCount"
+  COUNT(*) FILTER (WHERE "result" = 'WIN') as "winCount",
+  COUNT(*) FILTER (WHERE "result" = 'LOSS') as "lossCount",
+  COUNT(*) FILTER (WHERE "result" IN ('BREAK_EVEN', 'BE_PLUS')) as "breakEvenCount"
   FROM "JournalEntry"
   WHERE "userId" = ${userId}::uuid
   AND "status" = 'CLOSED'
-  AND (${accountId ? accountId : "1"} = '1' OR "accountId" = ${accountId})
+  AND (${normalizedAccountId ? normalizedAccountId : "1"} = '1' OR "accountId" = ${normalizedAccountId})
   ${dateFilter}
   ${advancedFiltersSql}
   GROUP BY 1
   ORDER BY 1 ASC
   `;
 
-    return (result as any[]).map((row) => ({
-        date: row.date,
-        value: Number(row.profit || 0), // Daily PnL
-        winRate:
-            Number(row.winCount || 0) + Number(row.lossCount || 0) > 0
-                ? (Number(row.winCount || 0) /
-                      (Number(row.winCount || 0) +
-                          Number(row.lossCount || 0))) *
-                  100
-                : 0,
-        tradeCount: Number(row.tradeCount || 0),
-        winCount: Number(row.winCount || 0),
-        lossCount: Number(row.lossCount || 0),
-    }));
+    return (result as any[]).map((row) => {
+        const wins = Number(row.winCount || 0);
+        const losses = Number(row.lossCount || 0);
+        const breakEvens = Number(row.breakEvenCount || 0);
+        const totalClosed = wins + losses + breakEvens;
+
+        return {
+            date: row.date,
+            value: Number(row.profit || 0), // Daily PnL
+            winRate: totalClosed > 0 ? (wins / totalClosed) * 100 : 0,
+            tradeCount: Number(row.tradeCount || 0),
+            winCount: wins,
+            lossCount: losses,
+        };
+    });
 }
 
 /**
@@ -313,6 +328,8 @@ export async function getSymbolPerformance(
     endDate?: Date,
     filters?: AdvancedFilters
 ) {
+    const normalizedAccountId =
+        accountId && accountId !== "all" ? accountId : undefined;
     // Build date filter
     const dateFilter =
         startDate && endDate
@@ -326,13 +343,13 @@ export async function getSymbolPerformance(
   COUNT(*) as "tradeCount",
   SUM(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "netProfit",
   SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) > 0 THEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) ELSE 0 END) as "grossProfit",
-  SUM(CASE WHEN "result" = 'WIN' THEN 1 ELSE 0 END) as "winCount",
-  SUM(CASE WHEN "result" = 'LOSS' THEN 1 ELSE 0 END) as "lossCount",
-  SUM(CASE WHEN "result" = 'BREAK_EVEN' THEN 1 ELSE 0 END) as "breakEvenCount"
+  COUNT(*) FILTER (WHERE "result" = 'WIN') as "winCount",
+  COUNT(*) FILTER (WHERE "result" = 'LOSS') as "lossCount",
+  COUNT(*) FILTER (WHERE "result" IN ('BREAK_EVEN', 'BE_PLUS')) as "breakEvenCount"
   FROM "JournalEntry"
   WHERE "userId" = ${userId}::uuid
   AND "status" = 'CLOSED'
-  AND (${accountId ? accountId : "1"} = '1' OR "accountId" = ${accountId})
+  AND (${normalizedAccountId ? normalizedAccountId : "1"} = '1' OR "accountId" = ${normalizedAccountId})
   ${dateFilter}
   ${advancedFiltersSql}
   GROUP BY "symbol"
@@ -344,16 +361,16 @@ export async function getSymbolPerformance(
         const wins = Number(row.winCount || 0);
         const losses = Number(row.lossCount || 0);
         const breakEvens = Number(row.breakEvenCount || 0);
-        // Decided-trades denominator (win + loss + break-even) to match the
+        // Total closed denominator (win + loss + break-even/BE_PLUS) to match the
         // rest of analytics, so per-symbol win rate agrees with the KPI.
-        const decisiveTrades = wins + losses + breakEvens;
+        const totalClosed = wins + losses + breakEvens;
 
         return {
             symbol: row.symbol,
             trades: Number(row.tradeCount),
             pnl: Number(row.netProfit || 0),
             grossProfit: Number(row.grossProfit || 0),
-            winRate: decisiveTrades > 0 ? (wins / decisiveTrades) * 100 : 0,
+            winRate: totalClosed > 0 ? (wins / totalClosed) * 100 : 0,
         };
     });
 }
@@ -470,6 +487,8 @@ export async function getDayOfWeekPerformance(
     timezone?: string,
     filters?: AdvancedFilters
 ) {
+    const normalizedAccountId =
+        accountId && accountId !== "all" ? accountId : undefined;
     const tz = timezone || "Etc/UTC";
     // Build date filter
     const dateFilter =
@@ -483,13 +502,13 @@ export async function getDayOfWeekPerformance(
   EXTRACT(DOW FROM "exitDate" AT TIME ZONE ${tz}) as "dayIndex",
   COUNT(*) as "tradeCount",
   SUM(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "netProfit",
-  SUM(CASE WHEN "result" = 'WIN' THEN 1 ELSE 0 END) as "winCount",
-  SUM(CASE WHEN "result" = 'LOSS' THEN 1 ELSE 0 END) as "lossCount",
-  SUM(CASE WHEN "result" = 'BREAK_EVEN' THEN 1 ELSE 0 END) as "breakEvenCount"
+  COUNT(*) FILTER (WHERE "result" = 'WIN') as "winCount",
+  COUNT(*) FILTER (WHERE "result" = 'LOSS') as "lossCount",
+  COUNT(*) FILTER (WHERE "result" IN ('BREAK_EVEN', 'BE_PLUS')) as "breakEvenCount"
   FROM "JournalEntry"
   WHERE "userId" = ${userId}::uuid
   AND "status" = 'CLOSED'
-  AND (${accountId ? accountId : "1"} = '1' OR "accountId" = ${accountId})
+  AND (${normalizedAccountId ? normalizedAccountId : "1"} = '1' OR "accountId" = ${normalizedAccountId})
   ${dateFilter}
   ${advancedFiltersSql}
   GROUP BY 1
@@ -510,16 +529,16 @@ export async function getDayOfWeekPerformance(
         const wins = Number(row.winCount || 0);
         const losses = Number(row.lossCount || 0);
         const breakEvens = Number(row.breakEvenCount || 0);
-        // Decided-trades denominator (win + loss + break-even) to match the
+        // Total closed denominator (win + loss + break-even/BE_PLUS) to match the
         // rest of analytics, so per-day win rate agrees with the KPI.
-        const decisiveTrades = wins + losses + breakEvens;
+        const totalClosed = wins + losses + breakEvens;
 
         return {
             day: dayNames[Number(row.dayIndex)],
             dayIndex: Number(row.dayIndex),
             pnl: Number(row.netProfit || 0),
             tradeCount: Number(row.tradeCount || 0),
-            winRate: decisiveTrades > 0 ? (wins / decisiveTrades) * 100 : 0,
+            winRate: totalClosed > 0 ? (wins / totalClosed) * 100 : 0,
         };
     });
 }
@@ -572,6 +591,8 @@ export async function getSessionPerformance(
     endDate?: Date,
     filters?: AdvancedFilters
 ) {
+    const normalizedAccountId =
+        accountId && accountId !== "all" ? accountId : undefined;
     const dateFilter =
         startDate && endDate
             ? Prisma.sql`AND "exitDate" >= ${startDate} AND "exitDate" <= ${endDate}`
@@ -589,14 +610,14 @@ export async function getSessionPerformance(
   END as "session",
   COUNT(*) as "tradeCount",
   SUM(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "netProfit",
-  SUM(CASE WHEN "result" = 'WIN' THEN 1 ELSE 0 END) as "winCount",
-  SUM(CASE WHEN "result" = 'LOSS' THEN 1 ELSE 0 END) as "lossCount",
-  SUM(CASE WHEN "result" = 'BREAK_EVEN' THEN 1 ELSE 0 END) as "breakEvenCount"
+  COUNT(*) FILTER (WHERE "result" = 'WIN') as "winCount",
+  COUNT(*) FILTER (WHERE "result" = 'LOSS') as "lossCount",
+  COUNT(*) FILTER (WHERE "result" IN ('BREAK_EVEN', 'BE_PLUS')) as "breakEvenCount"
   FROM "JournalEntry"
   WHERE "userId" = ${userId}::uuid
   AND "status" = 'CLOSED'
   AND "entryDate" IS NOT NULL
-  AND (${accountId ? accountId : "1"} = '1' OR "accountId" = ${accountId})
+  AND (${normalizedAccountId ? normalizedAccountId : "1"} = '1' OR "accountId" = ${normalizedAccountId})
   ${dateFilter}
   ${advancedFiltersSql}
   GROUP BY 1
@@ -608,15 +629,15 @@ export async function getSessionPerformance(
         const wins = Number(row.winCount || 0);
         const losses = Number(row.lossCount || 0);
         const breakEvens = Number(row.breakEvenCount || 0);
-        // Decided-trades denominator (win + loss + break-even) to match the
+        // Total closed denominator (win + loss + break-even/BE_PLUS) to match the
         // rest of analytics, so per-session win rate agrees with the KPI.
-        const decisiveTrades = wins + losses + breakEvens;
+        const totalClosed = wins + losses + breakEvens;
 
         return {
             session: row.session as string,
             trades: Number(row.tradeCount || 0),
             pnl: Number(row.netProfit || 0),
-            winRate: decisiveTrades > 0 ? (wins / decisiveTrades) * 100 : 0,
+            winRate: totalClosed > 0 ? (wins / totalClosed) * 100 : 0,
         };
     });
 

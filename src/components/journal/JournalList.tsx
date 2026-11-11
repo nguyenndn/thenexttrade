@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { Edit2, ArrowUpDown, Activity, Zap } from "lucide-react";
+import { Edit2, ArrowUpDown, Activity, Brain } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
 import { utcTime, cn } from "@/lib/utils";
@@ -697,7 +697,7 @@ export default function JournalList({
                                                                             }}
                                                                             className="w-8 h-8 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-dashboard flex items-center justify-center text-gray-400 hover:text-gold dark:hover:text-amber-400 hover:border-amber-500/30 hover:bg-amber-500/5 dark:hover:bg-amber-500/10 transition-all group/detail"
                                                                         >
-                                                                            <Zap
+                                                                            <Brain
                                                                                 size={
                                                                                     14
                                                                                 }
@@ -996,7 +996,7 @@ export default function JournalList({
                                                                 }}
                                                                 className="w-8 h-8 rounded-lg bg-white dark:bg-[#1E2028] border border-dashboard flex items-center justify-center text-gray-400 hover:text-gold dark:hover:text-amber-400 hover:border-amber-500/30 hover:bg-amber-500/5 dark:hover:bg-amber-500/10 transition-all"
                                                             >
-                                                                <Zap
+                                                                <Brain
                                                                     size={14}
                                                                     className="text-amber-600 dark:text-gold transition-transform duration-150 hover:scale-110"
                                                                 />

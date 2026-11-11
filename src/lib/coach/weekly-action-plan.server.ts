@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { computeTraderSignals } from "./signal-engine.server";
 import { getLearningRecommendations } from "./lesson-recommendations.server";
 import { generateWeeklyAIReview } from "./ai-coach-engine.server";
+import { isAcademyEnabled } from "@/app/admin/academy/actions";
 
 function actionFingerprint(label: string, detail: string): string {
     return `${label} ${detail}`
@@ -28,10 +29,15 @@ export async function generateWeeklyActionPlan(
     }
 
     // Compute dynamic signals
-    const signals = await computeTraderSignals(userId, { persist: true });
+    const [signals, academyEnabled] = await Promise.all([
+        computeTraderSignals(userId, { persist: true }),
+        isAcademyEnabled(),
+    ]);
 
     // Resolve uncompleted academy lesson & article recommendations
-    const recommendations = await getLearningRecommendations(userId, signals);
+    const recommendations = academyEnabled
+        ? await getLearningRecommendations(userId, signals)
+        : [];
 
     // 1. Rule compliance stats
     const totalUserRulesCount = await prisma.tradingRule.count({
@@ -101,7 +107,7 @@ export async function generateWeeklyActionPlan(
         where: {
             userId,
             status: "CLOSED",
-            createdAt: {
+            exitDate: {
                 gte: report.periodStart,
                 lte: report.periodEnd,
             },
@@ -112,7 +118,7 @@ export async function generateWeeklyActionPlan(
         where: {
             userId,
             status: "CLOSED",
-            createdAt: {
+            exitDate: {
                 gte: report.periodStart,
                 lte: report.periodEnd,
             },
@@ -246,11 +252,24 @@ export async function generateWeeklyActionPlan(
     // Add study action if uncompleted recommendations exist
     if (recommendations.length > 0) {
         const topRec = recommendations[0];
+        const resolvedHref =
+            topRec.href &&
+            (academyEnabled ||
+                (!topRec.href.startsWith("/dashboard/academy") &&
+                    !topRec.href.startsWith("/academy")))
+                ? topRec.href
+                : academyEnabled
+                  ? "/dashboard/academy"
+                  : "/dashboard/journal";
         nextActions.push({
             stableKey: `STUDY:${topRec.slug}`,
-            label: `Study recommended ${topRec.type === "LESSON" ? "lesson" : "post"}`,
-            detail: `Read "${topRec.title}" to target trading leaks.`,
-            ctaHref: topRec.href || "/dashboard/academy",
+            label: academyEnabled
+                ? `Study recommended ${topRec.type === "LESSON" ? "lesson" : "post"}`
+                : "Review Trade Journal",
+            detail: academyEnabled
+                ? `Read "${topRec.title}" to target trading leaks.`
+                : "Review recent trades and rule compliance notes in your journal.",
+            ctaHref: resolvedHref,
         });
     }
 

@@ -5,7 +5,7 @@ import { createPortal } from "react-dom";
 import { useEffect } from "react";
 import { motion } from "framer-motion";
 
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { SPRING_SOFT, backdropVariants, panelVariants } from "@/lib/animations";
@@ -31,6 +31,7 @@ interface DayTradeListProps {
     };
     startBalance?: number;
     endBalance?: number;
+    accountId?: string;
     currency?: string;
     onClose: () => void;
 }
@@ -41,6 +42,7 @@ export function DayTradeList({
     stats,
     startBalance,
     endBalance,
+    accountId,
     currency = "USD",
     onClose,
 }: DayTradeListProps) {
@@ -50,7 +52,7 @@ export function DayTradeList({
         stats?.totalLots !== undefined
             ? stats.totalLots
             : trades.reduce((sum, t) => sum + (t.lotSize || 0), 0);
-    const dateObj = new Date(date);
+    const dateObj = parseISO(date);
     const displayDate = format(dateObj, "EEE, MMM d, yyyy");
 
     // Growth calculation
@@ -117,10 +119,8 @@ export function DayTradeList({
                                 <h3
                                     className={`text-[2.25rem] font-bold leading-tight tracking-tight ${netPnl >= 0 ? "text-[#3B82F6]" : "text-red-500"}`}
                                 >
-                                    {netPnl >= 0 ? "+" : ""}
-                                    {netPnl.toLocaleString("en-US", {
-                                        minimumFractionDigits: 2,
-                                        maximumFractionDigits: 2,
+                                    {formatDashboardCurrency(netPnl, currency, {
+                                        signDisplay: "always",
                                     })}
                                 </h3>
                             </div>
@@ -379,7 +379,7 @@ export function DayTradeList({
                 {/* Footer Action */}
                 <div className="p-4 bg-white dark:bg-[#1E2028] border-t border-dashboard shrink-0">
                     <Link
-                        href={`/dashboard/journal?from=${date}&to=${date}`}
+                        href={`/dashboard/journal?from=${date}&to=${date}${accountId && accountId !== "all" ? `&accountId=${accountId}` : ""}`}
                         className="block w-full py-2 text-center text-sm font-bold text-[#3B82F6] hover:text-[#2563EB] transition-colors"
                     >
                         View In Journal

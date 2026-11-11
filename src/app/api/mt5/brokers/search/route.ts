@@ -1,9 +1,20 @@
 import fs from "fs";
 import path from "path";
 import { NextRequest, NextResponse } from "next/server";
+import { getAuthUser } from "@/lib/auth-cache";
+import { rateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+
+const MAX_CACHE_KEY_LENGTH = 64;
+const MAX_CACHED_KEYS = 300;
+const MAX_CACHED_SERVERS = 300;
+
+const brokerSearchLimiter = rateLimit({
+    interval: 60_000,
+    uniqueTokenPerInterval: 500,
+});
 
 interface CachedServerItem {
     name: string;
@@ -134,14 +145,19 @@ async function handleBrokerServerSearch(params: {
     mode?: "cache" | "live";
     force?: boolean;
 }) {
-    const rawQuery = (params.query || "").trim();
-    const brokerFilter = (params.brokerFilter || "").trim();
-    const region = (params.region || "VN").trim() || "VN";
+    const rawQuery = (params.query || "").trim().slice(0, MAX_CACHE_KEY_LENGTH);
+    const brokerFilter = (params.brokerFilter || "")
+        .trim()
+        .slice(0, MAX_CACHE_KEY_LENGTH);
+    const region = (params.region || "VN").trim().slice(0, 16) || "VN";
     const limit = Math.min(Math.max(Number(params.limit) || 100, 1), 500);
     const mode = params.mode === "live" ? "live" : "cache";
     const force = Boolean(params.force);
 
-    const effectiveQuery = rawQuery || brokerFilter;
+    const effectiveQuery = (rawQuery || brokerFilter).slice(
+        0,
+        MAX_CACHE_KEY_LENGTH
+    );
     const effectiveQueryLower = effectiveQuery.toLowerCase();
 
     // If no query is typed, return empty list (static catalog is hidden)
@@ -193,14 +209,14 @@ async function handleBrokerServerSearch(params: {
     const serverMap = new Map<string, CachedServerItem>();
     for (const existing of cacheData.servers) {
         const name = String(existing.name || existing.serverName || "").trim();
-        if (!name) continue;
+        if (!name || name.length > MAX_CACHE_KEY_LENGTH) continue;
         serverMap.set(name.toLowerCase(), existing);
     }
 
     const nowIso = new Date().toISOString();
     for (const s of liveServersRaw) {
         const name = String(s.name || s.serverName || "").trim();
-        if (!name) continue;
+        if (!name || name.length > MAX_CACHE_KEY_LENGTH) continue;
         const key = name.toLowerCase();
         const prev = serverMap.get(key);
         const prevKeywords = Array.isArray(prev?.keywords) ? prev.keywords : [];
@@ -211,10 +227,14 @@ async function handleBrokerServerSearch(params: {
                     effectiveQueryLower,
                     rawQuery.toLowerCase(),
                     brokerFilter.toLowerCase(),
-                ].filter(Boolean)
+                ]
+                    .filter((k) => Boolean(k) && k.length <= MAX_CACHE_KEY_LENGTH)
             )
-        );
+        ).slice(-50);
 
+        if (serverMap.has(key)) {
+            serverMap.delete(key);
+        }
         serverMap.set(key, {
             name,
             serverName: name,
@@ -231,10 +251,22 @@ async function handleBrokerServerSearch(params: {
         });
     }
 
-    const updatedSearchedQueries = Array.from(
-        new Set([...cacheData.searchedQueries, effectiveQueryLower])
+    const sanitizedQueries = cacheData.searchedQueries.filter(
+        (q): q is string =>
+            typeof q === "string" &&
+            q.length > 0 &&
+            q.length <= MAX_CACHE_KEY_LENGTH
     );
-    const updatedServers = Array.from(serverMap.values());
+    const dedupedQueries = sanitizedQueries.filter(
+        (q) => q !== effectiveQueryLower
+    );
+    if (effectiveQueryLower.length <= MAX_CACHE_KEY_LENGTH) {
+        dedupedQueries.push(effectiveQueryLower);
+    }
+    const updatedSearchedQueries = dedupedQueries.slice(-MAX_CACHED_KEYS);
+    const updatedServers = Array.from(serverMap.values()).slice(
+        -MAX_CACHED_SERVERS
+    );
 
     writeServerCacheFile({
         searchedQueries: updatedSearchedQueries,
@@ -263,6 +295,26 @@ async function handleBrokerServerSearch(params: {
 
 export async function GET(request: NextRequest) {
     try {
+        const user = await getAuthUser();
+        if (!user) {
+            return NextResponse.json(
+                { success: false, error: "Unauthorized" },
+                { status: 401 }
+            );
+        }
+
+        try {
+            await brokerSearchLimiter.check(30, `mt5_broker_search:${user.id}`);
+        } catch {
+            return NextResponse.json(
+                {
+                    success: false,
+                    error: "Too many search requests. Please wait a moment.",
+                },
+                { status: 429 }
+            );
+        }
+
         const { searchParams } = new URL(request.url);
         const query =
             searchParams.get("q") ||
@@ -299,6 +351,26 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
     try {
+        const user = await getAuthUser();
+        if (!user) {
+            return NextResponse.json(
+                { success: false, error: "Unauthorized" },
+                { status: 401 }
+            );
+        }
+
+        try {
+            await brokerSearchLimiter.check(30, `mt5_broker_search:${user.id}`);
+        } catch {
+            return NextResponse.json(
+                {
+                    success: false,
+                    error: "Too many search requests. Please wait a moment.",
+                },
+                { status: 429 }
+            );
+        }
+
         const body = await request.json().catch(() => ({}));
         const query =
             body.q || body.query || body.server || body.company || "";

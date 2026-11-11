@@ -38,7 +38,7 @@ export const WELCOME_EMAIL_D0: WelcomeEmailTemplate = {
         preheader:
             "Your trading command center is ready. Here's how to get started.",
         bodyText:
-            "You've just joined a community of disciplined traders who track, analyze, and improve their performance every day.\n\nHere are your first 3 steps:\n\n1. Connect your MT5 account for automatic trade sync\n2. Explore Academy to learn proven strategies\n3. Log your first trade to unlock your dashboard\n\nYour dashboard is waiting — let's make it come alive.",
+            "You've just joined a community of disciplined traders who track, analyze, and improve their performance every day.\n\nHere are your first 3 steps:\n\n1. Connect your MT5 account for automatic trade sync\n2. Configure your daily drawdown and risk limits\n3. Log your first trade to unlock your dashboard\n\nYour dashboard is waiting — let's make it come alive.",
         ctaText: "Open Your Dashboard →",
         ctaHref: "/dashboard",
     },

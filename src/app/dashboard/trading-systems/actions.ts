@@ -13,6 +13,39 @@ import {
     filterAccountsByBroker,
     normalizeBrokerKey,
 } from "@/lib/trading-account-identity";
+import { SUPPORTED_BROKERS } from "@/lib/validations/vip-request";
+
+function resolveSupportedPartnerBroker(
+    rawBroker: string | null | undefined,
+    activeBrokers: Array<{ name: string; slug: string }>
+): string | null {
+    const trimmed = (rawBroker || "").trim();
+    if (!trimmed) return null;
+
+    const compact = trimmed.toUpperCase().replace(/[\s_-]/g, "");
+    let canonical = trimmed.toUpperCase();
+    if (compact.startsWith("EXNESS")) canonical = "EXNESS";
+    else if (compact.startsWith("VANTAGE")) canonical = "VANTAGE";
+    else if (compact.startsWith("VTMARKET") || compact === "VT")
+        canonical = "VTMARKETS";
+    else if (compact.startsWith("ULTIMA")) canonical = "ULTIMAMARKETS";
+
+    if ((SUPPORTED_BROKERS as readonly string[]).includes(canonical)) {
+        return canonical;
+    }
+
+    const matchedActive = activeBrokers.find((b) => {
+        const nameCompact = b.name.trim().toUpperCase().replace(/[\s_-]/g, "");
+        const slugCompact = b.slug.trim().toUpperCase().replace(/[\s_-]/g, "");
+        return compact === nameCompact || compact === slugCompact;
+    });
+
+    if (matchedActive) {
+        return matchedActive.name.trim().toUpperCase();
+    }
+
+    return null;
+}
 
 export async function submitMultipleAccountRequests(
     tradingAccountIds: string[]
@@ -31,85 +64,101 @@ export async function submitMultipleAccountRequests(
     }
 
     try {
-        const accounts = await prisma.tradingAccount.findMany({
-            where: {
-                id: { in: tradingAccountIds },
-                userId: user.id,
-            },
-            select: {
-                id: true,
-                name: true,
-                broker: true,
-                accountNumber: true,
-            },
-        });
+        const [accounts, activeBrokers] = await Promise.all([
+            prisma.tradingAccount.findMany({
+                where: {
+                    id: { in: tradingAccountIds },
+                    userId: user.id,
+                },
+                select: {
+                    id: true,
+                    name: true,
+                    broker: true,
+                    accountNumber: true,
+                },
+            }),
+            prisma.eABroker.findMany({
+                where: { isActive: true },
+                select: { name: true, slug: true },
+            }),
+        ]);
 
         if (accounts.length === 0) {
             return { error: "Selected trading accounts were not found." };
         }
 
         let submittedCount = 0;
+        let unsupportedBrokerCount = 0;
 
         for (const acc of accounts) {
             const cleanAccountNumber = (acc.accountNumber || "").trim();
             if (!cleanAccountNumber) {
                 continue;
             }
-            const cleanBroker = (acc.broker || "EXNESS").trim().toUpperCase();
+            const cleanBroker = resolveSupportedPartnerBroker(
+                acc.broker,
+                activeBrokers
+            );
+            if (!cleanBroker) {
+                unsupportedBrokerCount++;
+                continue;
+            }
 
-            // Check if another user owns this license
+            // Check if another user owns this (broker, accountNumber) license
             const existingLicense = await prisma.eALicense.findFirst({
                 where: {
+                    broker: { equals: cleanBroker, mode: "insensitive" },
                     accountNumber: cleanAccountNumber,
                 },
             });
 
             if (existingLicense && existingLicense.userId !== user.id) {
                 return {
-                    error: `Account #${cleanAccountNumber} is already registered by another user.`,
+                    error: `Account #${cleanAccountNumber} (${cleanBroker}) is already registered by another user.`,
                 };
             }
 
-            let submittedLicenseId: string | null = null;
+            let savedLicense: { id: string; updatedAt: Date } | null = null;
 
             if (existingLicense) {
                 if (
                     existingLicense.status === AccountStatus.REJECTED ||
                     existingLicense.status === AccountStatus.EXPIRED
                 ) {
-                    await prisma.eALicense.update({
+                    savedLicense = await prisma.eALicense.update({
                         where: { id: existingLicense.id },
                         data: {
+                            broker: cleanBroker,
                             status: AccountStatus.PENDING,
                             rejectReason: null,
                             rejectedAt: null,
                             rejectedBy: null,
                         },
+                        select: { id: true, updatedAt: true },
                     });
-                    submittedLicenseId = existingLicense.id;
                     submittedCount++;
                 }
             } else {
-                const created = await prisma.eALicense.create({
+                savedLicense = await prisma.eALicense.create({
                     data: {
                         userId: user.id,
                         broker: cleanBroker,
                         accountNumber: cleanAccountNumber,
                         status: AccountStatus.PENDING,
                     },
-                    select: { id: true },
+                    select: { id: true, updatedAt: true },
                 });
-                submittedLicenseId = created.id;
                 submittedCount++;
             }
 
-            if (submittedLicenseId) {
+            if (savedLicense) {
                 await notifyAdminsOfLicenseRequest({
-                    licenseId: submittedLicenseId,
+                    licenseId: savedLicense.id,
                     userId: user.id,
                     broker: cleanBroker,
                     accountNumber: cleanAccountNumber,
                     userEmail: user.email,
+                    submittedAtMs: savedLicense.updatedAt.getTime(),
                 });
             }
 
@@ -122,6 +171,11 @@ export async function submitMultipleAccountRequests(
         }
 
         if (submittedCount === 0) {
+            if (unsupportedBrokerCount > 0) {
+                return {
+                    error: "Selected accounts are missing a supported partner broker. Please set a supported partner broker in Account Settings first.",
+                };
+            }
             return {
                 error: "Selected accounts are either already submitted or missing an MT5 account number.",
             };
@@ -164,22 +218,38 @@ export async function submitAccountRequest(
     try {
         const { broker, accountNumber } = validation.data;
         const cleanAccountNumber = accountNumber.trim();
+        const activeBrokers = await prisma.eABroker.findMany({
+            where: { isActive: true },
+            select: { name: true, slug: true },
+        });
+        const cleanBroker = resolveSupportedPartnerBroker(
+            broker,
+            activeBrokers
+        );
+
+        if (!cleanBroker) {
+            return {
+                error: "Please select a supported partner broker.",
+            };
+        }
 
         const existing = await prisma.eALicense.findFirst({
             where: {
+                broker: { equals: cleanBroker, mode: "insensitive" },
                 accountNumber: cleanAccountNumber,
-                broker,
             },
         });
 
-        if (existing) {
-            return { error: "This trading account is already registered." };
+        if (existing && existing.userId !== user.id) {
+            return {
+                error: "This trading account is already registered by another user.",
+            };
         }
 
         const otherUserAccount = await prisma.tradingAccount.findFirst({
             where: {
                 accountNumber: cleanAccountNumber,
-                broker: { equals: broker, mode: "insensitive" },
+                broker: { equals: cleanBroker, mode: "insensitive" },
                 userId: { not: user.id },
             },
             select: { id: true },
@@ -191,33 +261,60 @@ export async function submitAccountRequest(
             };
         }
 
-        const createdLicense = await prisma.eALicense.create({
-            data: {
-                userId: user.id,
-                broker,
-                accountNumber: cleanAccountNumber,
-                status: AccountStatus.PENDING,
-            },
-            select: { id: true },
-        });
+        let savedLicense: { id: string; updatedAt: Date };
+
+        if (existing) {
+            if (
+                existing.status === AccountStatus.REJECTED ||
+                existing.status === AccountStatus.EXPIRED
+            ) {
+                savedLicense = await prisma.eALicense.update({
+                    where: { id: existing.id },
+                    data: {
+                        broker: cleanBroker,
+                        status: AccountStatus.PENDING,
+                        rejectReason: null,
+                        rejectedAt: null,
+                        rejectedBy: null,
+                    },
+                    select: { id: true, updatedAt: true },
+                });
+            } else {
+                return { error: "This trading account is already registered." };
+            }
+        } else {
+            savedLicense = await prisma.eALicense.create({
+                data: {
+                    userId: user.id,
+                    broker: cleanBroker,
+                    accountNumber: cleanAccountNumber,
+                    status: AccountStatus.PENDING,
+                },
+                select: { id: true, updatedAt: true },
+            });
+        }
 
         await notifyAdminsOfLicenseRequest({
-            licenseId: createdLicense.id,
+            licenseId: savedLicense.id,
             userId: user.id,
-            broker,
+            broker: cleanBroker,
             accountNumber: cleanAccountNumber,
             userEmail: user.email,
+            submittedAtMs: savedLicense.updatedAt.getTime(),
         });
 
         await ensureTradingAccountLicenseKey({
             userId: user.id,
-            broker,
+            broker: cleanBroker,
             accountNumber: cleanAccountNumber,
             isApproved: false,
         });
 
         revalidatePath("/dashboard/trading-systems");
         revalidatePath("/dashboard/accounts");
+        revalidatePath("/admin/trading-systems");
+        revalidatePath("/admin/trading-systems/accounts");
+        revalidatePath("/admin/trading-systems/accounts/pending");
         return { success: true };
     } catch {
         return { error: "Failed to submit account request." };
@@ -503,9 +600,13 @@ export async function updateTradingAccountLoginNumber(
             return { error: "Trading account not found." };
         }
 
+        const cleanBroker = (account.broker || "").trim();
         const duplicateOtherUser = await prisma.eALicense.findFirst({
             where: {
                 accountNumber: cleanNumber,
+                ...(cleanBroker
+                    ? { broker: { equals: cleanBroker, mode: "insensitive" } }
+                    : {}),
                 userId: { not: user.id },
             },
             select: { id: true },

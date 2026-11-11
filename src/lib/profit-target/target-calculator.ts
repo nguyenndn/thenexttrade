@@ -6,6 +6,7 @@ import {
   TradePnLInput,
 } from "./types";
 import { startOfWeek, endOfWeek, startOfMonth, endOfMonth } from "date-fns";
+import { convertToUsdEquivalent } from "@/lib/utils/cent-account";
 
 /**
  * Calculates the dollar target amount given a target value, target type, and capital base balance.
@@ -141,7 +142,9 @@ export function getBaseBalance(
  * Converts each account's target to USD using initialBalance (or balance fallback).
  */
 export function aggregateAccountTargets(
-  accounts: AccountTargetConfig[]
+  accounts: Array<
+    AccountTargetConfig & { currency?: string | null; server?: string | null }
+  >
 ): { weeklyTargetUsd: number; monthlyTargetUsd: number } {
   if (!accounts || accounts.length === 0) {
     return { weeklyTargetUsd: 0, monthlyTargetUsd: 0 };
@@ -170,8 +173,16 @@ export function aggregateAccountTargets(
       baseBalance
     );
 
-    weeklyTotal += weekly;
-    monthlyTotal += monthly;
+    weeklyTotal += convertToUsdEquivalent(
+      weekly,
+      account.currency,
+      account.server
+    );
+    monthlyTotal += convertToUsdEquivalent(
+      monthly,
+      account.currency,
+      account.server
+    );
   }
 
   return {

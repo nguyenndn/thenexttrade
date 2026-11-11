@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { useState, useEffect } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { login, signInWithMagicLink } from "@/app/auth/actions";
 import {
@@ -99,7 +100,20 @@ function LoginSuccessOverlay({
     );
 }
 
-export default function LoginPage() {
+function LoginPageContent() {
+    const searchParams = useSearchParams();
+    const rawNext =
+        searchParams.get("next") ||
+        searchParams.get("returnUrl") ||
+        searchParams.get("redirect");
+    const nextPath =
+        rawNext &&
+        /^\/(?!\/)/.test(rawNext) &&
+        !rawNext.includes("\\") &&
+        !rawNext.startsWith("/auth/")
+            ? rawNext
+            : null;
+
     const [loading, setLoading] = useState(false);
     const [isHydrated, setIsHydrated] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -132,6 +146,9 @@ export default function LoginPage() {
 
         const formData = new FormData(e.currentTarget);
         formData.set("cf-turnstile-response", turnstileToken);
+        if (nextPath) {
+            formData.set("next", nextPath);
+        }
         trackEvent("login_submitted", { method: "password" });
         const result = await login(formData);
 
@@ -142,7 +159,9 @@ export default function LoginPage() {
             setLoading(false);
         } else if (result?.requires2FA) {
             trackEvent("login_requires_2fa", { method: "password" });
-            window.location.href = "/auth/verify-2fa";
+            window.location.href = nextPath
+                ? `/auth/verify-2fa?next=${encodeURIComponent(nextPath)}`
+                : "/auth/verify-2fa";
         } else if (result?.success) {
             // ─── Show full-screen loading overlay via portal ───
             setTransitionName(result.name || "Trader");
@@ -158,6 +177,9 @@ export default function LoginPage() {
 
         const formData = new FormData(e.currentTarget);
         formData.set("cf-turnstile-response", turnstileToken);
+        if (nextPath) {
+            formData.set("next", nextPath);
+        }
         trackEvent("login_submitted", { method: "magic_link" });
         const result = await signInWithMagicLink(formData);
 
@@ -411,7 +433,11 @@ export default function LoginPage() {
                 <p className="text-center text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-6 sm:mt-8">
                     Do not have an account?{" "}
                     <Link
-                        href="/auth/signup"
+                        href={
+                            nextPath
+                                ? `/auth/signup?next=${encodeURIComponent(nextPath)}`
+                                : "/auth/signup"
+                        }
                         className="font-bold text-amber-600 hover:text-amber-700 hover:underline dark:text-gold dark:hover:text-amber-300 py-1 inline-block"
                     >
                         Sign up
@@ -427,5 +453,13 @@ export default function LoginPage() {
                 />
             )}
         </>
+    );
+}
+
+export default function LoginPage() {
+    return (
+        <Suspense fallback={null}>
+            <LoginPageContent />
+        </Suspense>
     );
 }

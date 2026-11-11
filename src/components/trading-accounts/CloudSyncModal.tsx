@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/Dialog";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { PremiumInput } from "@/components/ui/PremiumInput";
 import {
     Select,
     SelectContent,
@@ -21,9 +22,6 @@ import {
 import {
     CloudSync,
     CloudUpload,
-    Lock,
-    Eye,
-    EyeOff,
     RefreshCw,
     Server,
     Clock,
@@ -41,6 +39,7 @@ import {
     triggerCloudSync,
     getCloudSyncStatus,
     cancelCloudSyncJob,
+    revealTradingAccountPassword,
 } from "@/actions/cloud-sync";
 import { ServerCombobox } from "@/components/trading-accounts/ServerCombobox";
 import { detectBroker } from "@/lib/ea/broker-detection";
@@ -66,7 +65,7 @@ interface CloudSyncModalProps {
         syncSource?: string | null;
         lastSync?: string | Date | null;
         hasCredentials?: boolean;
-        savedPassword?: string;
+        hasSavedPassword?: boolean;
         latestJob?: any | null;
     };
     onUpdated?: () => void;
@@ -81,7 +80,8 @@ export function CloudSyncModal({
     onSyncStarted,
 }: CloudSyncModalProps) {
     const [password, setPassword] = useState("");
-    const [showPassword, setShowPassword] = useState(false);
+    const [loadedSavedPassword, setLoadedSavedPassword] = useState("");
+    const isPasswordDirtyRef = useRef(false);
     const [syncPeriod, setSyncPeriod] = useState("30");
     const [customFromDate, setCustomFromDate] = useState(() => {
         const d = new Date();
@@ -93,10 +93,11 @@ export function CloudSyncModal({
     });
     const [isSaving, setIsSaving] = useState(false);
     const [isSyncing, setIsSyncing] = useState(false);
-    const initialHasCredentials = Boolean(account.hasCredentials);
+    const initialHasCredentials = Boolean(
+        account.hasSavedPassword ?? account.hasCredentials
+    );
     const [loadingStatus, setLoadingStatus] = useState(false);
     const [hasCredentials, setHasCredentials] = useState(initialHasCredentials);
-    const [isEditingPassword, setIsEditingPassword] = useState(!initialHasCredentials);
     const [latestJob, setLatestJob] = useState<any>(account.latestJob || null);
     const [_jobWaitSeconds, setJobWaitSeconds] = useState(0);
     const [server, setServer] = useState(account.server || "");
@@ -154,30 +155,51 @@ export function CloudSyncModal({
         let isMounted = true;
         
         // Adopt props immediately so there is zero layout jump or morphing
-        const credsConfigured = Boolean(account.hasCredentials);
+        const credsConfigured = Boolean(
+            account.hasSavedPassword ?? account.hasCredentials
+        );
         setHasCredentials(credsConfigured);
-        setIsEditingPassword(!credsConfigured);
         setLatestJob(account.latestJob || null);
         setLoadingStatus(false);
 
-        setPassword(account.savedPassword || "");
+        isPasswordDirtyRef.current = false;
+        setPassword("");
+        setLoadedSavedPassword("");
         setServer(account.server || "");
         setBroker(account.broker || null);
         setAccountCurrency(account.currency || "USD");
         setIsEditingServer(!account.server);
         setJobWaitSeconds(0);
 
+        let requestedReveal = false;
+        const populateSavedPassword = () => {
+            if (requestedReveal) return;
+            requestedReveal = true;
+            revealTradingAccountPassword(account.id)
+                .then((pwRes) => {
+                    if (!isMounted || !pwRes.success || !pwRes.password) return;
+                    setLoadedSavedPassword(pwRes.password);
+                    if (!isPasswordDirtyRef.current) {
+                        setPassword(pwRes.password);
+                    }
+                })
+                .catch(() => {});
+        };
+
+        if (credsConfigured) {
+            populateSavedPassword();
+        }
+
         getCloudSyncStatus(account.id)
             .then((res) => {
                 if (!isMounted) return;
                 if (res.success) {
-                    const credsConfigured = Boolean(res.hasCredentials);
-                    setHasCredentials(credsConfigured);
-                    if (res.savedPassword) {
-                        setPassword((prev: string) => prev || res.savedPassword || "");
-                    }
-                    if (account.hasCredentials === undefined) {
-                        setIsEditingPassword(!credsConfigured);
+                    const credsFromServer = Boolean(
+                        res.hasSavedPassword ?? res.hasCredentials
+                    );
+                    setHasCredentials(credsFromServer);
+                    if (credsFromServer) {
+                        populateSavedPassword();
                     }
                     if (res.currency) {
                         setAccountCurrency(res.currency);
@@ -195,7 +217,7 @@ export function CloudSyncModal({
         return () => {
             isMounted = false;
         };
-    }, [isOpen, account.id, account.hasCredentials, account.server, account.broker, account.currency, account.latestJob]);
+    }, [isOpen, account.id, account.hasSavedPassword, account.hasCredentials, account.server, account.broker, account.currency, account.latestJob]);
 
     // Timer to track elapsed seconds while syncing / waiting for worker
     useEffect(() => {
@@ -267,11 +289,14 @@ export function CloudSyncModal({
         }
 
         // If user is entering a new password or updating server
-        const needSavePassword = !hasCredentials || (isEditingPassword && password.trim().length > 0);
+        const trimmedPassword = password.trim();
+        const passwordChanged =
+            trimmedPassword.length > 0 && trimmedPassword !== loadedSavedPassword;
+        const needSavePassword = !hasCredentials || passwordChanged;
         const needSaveServer = effectiveServer !== (account.server || "");
 
         if (needSavePassword || needSaveServer) {
-            if (needSavePassword && !password.trim()) {
+            if (needSavePassword && !trimmedPassword) {
                 toast.error("Please enter your PASS INVESTOR ( Password also accept ).");
                 return;
             }
@@ -280,7 +305,7 @@ export function CloudSyncModal({
             try {
                 const saveRes = await saveCloudSyncCredentials(
                     account.id,
-                    password.trim() || undefined,
+                    needSavePassword ? trimmedPassword : undefined,
                     effectiveServer,
                     effectiveBroker || undefined
                 );
@@ -291,8 +316,8 @@ export function CloudSyncModal({
                 }
                 if (needSavePassword) {
                     setHasCredentials(true);
-                    setIsEditingPassword(false);
-                    setPassword("");
+                    setLoadedSavedPassword(trimmedPassword);
+                    isPasswordDirtyRef.current = false;
                 }
                 setIsEditingServer(false);
                 toast.success("Credentials saved.");
@@ -619,75 +644,43 @@ export function CloudSyncModal({
                     </div>
                 )}
 
-                {/* Credentials Section - Only shown if not configured or explicitly editing */}
-                {(!hasCredentials || isEditingPassword) && (
-                    <div className="mt-2.5 space-y-2">
-                        {loadingStatus && account.hasCredentials === undefined ? (
-                            <div className="h-12 rounded-lg border border-gray-100 bg-gray-50/50 dark:border-white/10 dark:bg-white/[0.02] flex items-center justify-center gap-2">
-                                <RefreshCw className="h-3.5 w-3.5 animate-spin text-gray-400" />
-                                <span className="text-xs text-gray-400">Verifying credentials...</span>
-                            </div>
-                        ) : (
-                            <div className="space-y-2">
-                                <div className="flex items-center justify-between">
-                                    <label className="text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
-                                        PASS INVESTOR{" "}
-                                        <span className="normal-case">
-                                            ( Password also accept )
-                                        </span>
-                                    </label>
-                                    {hasCredentials && (
-                                        <Button
-                                            type="button"
-                                            variant="outline"
-                                            size="sm"
-                                            onClick={() => {
-                                                setIsEditingPassword(false);
-                                                setPassword("");
-                                            }}
-                                            className="h-6 px-2 text-[11px] text-gray-500 hover:text-gray-700 dark:hover:text-white rounded-lg"
-                                        >
-                                            Cancel
-                                        </Button>
-                                    )}
-                                </div>
-
-                                <div className="relative">
-                                    <Input
-                                        type={showPassword ? "text" : "password"}
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                        className="pr-10 rounded-lg h-9 text-xs"
-                                        autoFocus={isEditingPassword}
-                                    />
-                                    <Button
-                                        type="button"
-                                        variant="ghost"
-                                        size="icon"
-                                        onClick={() => setShowPassword(!showPassword)}
-                                        className="h-7 w-7 absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
-                                        aria-label={showPassword ? "Hide password" : "Show password"}
-                                    >
-                                        {showPassword ? (
-                                            <EyeOff className="h-4 w-4" />
-                                        ) : (
-                                            <Eye className="h-4 w-4" />
-                                        )}
-                                    </Button>
-                                </div>
-
-                                <div className="rounded-lg border border-gray-200 bg-gray-50/50 p-2 text-[11px] leading-relaxed text-gray-600 dark:border-white/10 dark:bg-white/[0.02] dark:text-gray-400">
-                                    <div className="flex items-start gap-2">
-                                        <Lock className="h-3.5 w-3.5 mt-0.5 shrink-0 text-gray-400" />
-                                        <span>
-                                            Provide your <strong>PASS INVESTOR ( Password also accept )</strong> to enable automated Cloud Sync.
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                )}
+                {/* Credentials Section */}
+                <div className="mt-2.5">
+                    {loadingStatus && account.hasCredentials === undefined && account.hasSavedPassword === undefined ? (
+                        <div className="h-12 rounded-lg border border-gray-100 bg-gray-50/50 dark:border-white/10 dark:bg-white/[0.02] flex items-center justify-center gap-2">
+                            <RefreshCw className="h-3.5 w-3.5 animate-spin text-gray-400" />
+                            <span className="text-xs text-gray-400">Verifying credentials...</span>
+                        </div>
+                    ) : (
+                        <PremiumInput
+                            id="cloud-sync-investor-password"
+                            name="cloud_sync_investor_password"
+                            type="password"
+                            allowCopy
+                            autoComplete="new-password"
+                            data-lpignore="true"
+                            className="h-9 py-2 text-xs"
+                            label={
+                                <>
+                                    PASS INVESTOR{" "}
+                                    <span className="normal-case">
+                                        ( Password also accept )
+                                    </span>
+                                </>
+                            }
+                            value={password}
+                            onChange={(e) => {
+                                isPasswordDirtyRef.current = true;
+                                setPassword(e.target.value);
+                            }}
+                            helperText={
+                                hasCredentials
+                                    ? "Password stored for automated Cloud Sync. Update anytime if changed."
+                                    : "Pass investor or master password to enable Cloud Sync."
+                            }
+                        />
+                    )}
+                </div>
 
                 {/* Sync Period (Data Filter) */}
                 <div className="mt-2.5 space-y-1">
@@ -760,7 +753,9 @@ export function CloudSyncModal({
                         <RefreshCw
                             className={`h-4 w-4 ${isJobActive ? "animate-spin" : ""}`}
                         />
-                        {!hasCredentials || (isEditingPassword && password.trim())
+                        {!hasCredentials ||
+                        (password.trim().length > 0 &&
+                            password.trim() !== loadedSavedPassword)
                             ? "Save & Sync Trade History"
                             : "Sync Trade History Now"}
                     </Button>

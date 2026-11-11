@@ -30,6 +30,7 @@ import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { normalizeCountryCode, getCountryName } from "@/lib/country-utils";
+import { useFeatureFlags } from "@/lib/dashboard-context";
 
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
@@ -100,6 +101,8 @@ const TRADING_GOALS = [
 
 export default function SettingsClient() {
     const router = useRouter();
+    const { isEnabled } = useFeatureFlags();
+    const loyaltyEnabled = isEnabled("feature_loyalty");
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
     const [isSavingEmail, setIsSavingEmail] = useState(false);
@@ -594,6 +597,7 @@ export default function SettingsClient() {
             </form>
 
             {/* ── Payout & Milestone Rewards Wallet Card ── */}
+            {loyaltyEnabled && (
             <form
                 id="payout-wallet"
                 onSubmit={handlePayoutWalletSubmit}
@@ -748,6 +752,7 @@ export default function SettingsClient() {
                     </Button>
                 </div>
             </form>
+            )}
 
             {/* ── Email Preferences Card ── */}
             <form

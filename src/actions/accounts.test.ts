@@ -60,6 +60,7 @@ vi.mock("@/lib/admin/admin-notification.server", () => ({
 
 vi.mock("next/cache", () => ({
     revalidatePath: vi.fn(),
+    revalidateTag: vi.fn(),
 }));
 
 describe("Trading Accounts Actions", () => {

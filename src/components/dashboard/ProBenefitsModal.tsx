@@ -21,6 +21,7 @@ import {
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { buttonVariants } from "@/components/ui/button-variants";
+import { useFeatureFlags } from "@/lib/dashboard-context";
 
 interface Benefit {
     icon: React.ElementType;
@@ -110,6 +111,17 @@ export function ProBenefitsModal({
     isPro = false,
     vipLink,
 }: ProBenefitsModalProps) {
+    const { isEnabled } = useFeatureFlags();
+    const academyEnabled = isEnabled("feature_academy");
+    const visibleBenefits = BENEFITS.map((section) => ({
+        ...section,
+        items: academyEnabled
+            ? section.items
+            : section.items.filter(
+                  (item) => item.title !== "Full Academy Access"
+              ),
+    })).filter((section) => section.items.length > 0);
+
     const [mounted, setMounted] = useState(false);
     useEffect(() => {
         setMounted(true);
@@ -189,7 +201,7 @@ export function ProBenefitsModal({
 
                         {/* Body */}
                         <div className="flex-1 overflow-y-auto px-5 py-4 space-y-5">
-                            {BENEFITS.map((section) => (
+                            {visibleBenefits.map((section) => (
                                 <div key={section.category}>
                                     <p className="mb-2.5 text-[11px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">
                                         {section.category}

@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { PublicHeader } from "@/components/layout/PublicHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
-import { CommentsFetcher } from "@/components/comments/CommentsFetcher";
+import { CommentSection } from "@/components/comments/CommentSection";
 import SocialShare from "@/components/features/SocialShare";
 import RelatedArticlesBottom from "@/components/features/RelatedArticlesBottom";
 import SidebarWidgets from "@/components/features/SidebarWidgets";
@@ -571,7 +571,19 @@ export default async function ArticlePage({
                                     </div>
                                 }
                             >
-                                <CommentsFetcher articleId={article.id} />
+                                <ArticleComments
+                                    articleId={article.id}
+                                    articleSlug={article.slug}
+                                    currentUser={
+                                        user
+                                            ? {
+                                                  id: user.id,
+                                                  name: user.name,
+                                                  image: user.image,
+                                              }
+                                            : null
+                                    }
+                                />
                             </Suspense>
                         </div>
                     </article>
@@ -601,5 +613,37 @@ export default async function ArticlePage({
             <ScrollToTopButton />
             <SiteFooter />
         </main>
+    );
+}
+
+async function ArticleComments({
+    articleId,
+    articleSlug,
+    currentUser,
+}: {
+    articleId: string;
+    articleSlug: string;
+    currentUser: { id: string; name: string | null; image: string | null } | null;
+}) {
+    const comments = await prisma.comment.findMany({
+        where: { articleId, parentId: null },
+        include: {
+            user: { select: { id: true, name: true, image: true } },
+            replies: {
+                include: {
+                    user: { select: { id: true, name: true, image: true } },
+                },
+            },
+        },
+        orderBy: { createdAt: "desc" },
+    });
+
+    return (
+        <CommentSection
+            articleId={articleId}
+            articleSlug={articleSlug}
+            currentUser={currentUser}
+            initialComments={comments}
+        />
     );
 }

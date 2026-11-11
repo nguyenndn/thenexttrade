@@ -295,7 +295,7 @@ export function DashboardHero({
                         >
                             {tradeScore !== null
                                 ? "View Details →"
-                                : "Need 30+ trades"}
+                                : "Need 20+ trades"}
                         </Link>
                     </>
                 );

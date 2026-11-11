@@ -8,6 +8,7 @@ import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
 import { getSimilarTools } from "@/config/tools-data";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { getBaseUrl } from "@/lib/url";
+import { getAuthUser } from "@/lib/auth-cache";
 
 import {
     HelpCircle,
@@ -26,9 +27,11 @@ interface ToolPageLayoutProps {
 export async function ToolPageLayout({ tool, children }: ToolPageLayoutProps) {
     const similarTools = getSimilarTools(tool.slug, 6);
     const baseUrl = getBaseUrl();
+    const user = await getAuthUser();
+    const isLoggedIn = Boolean(user);
 
     return (
-        <ToolsPageShell maxWidth="max-w-6xl" variant="workspace">
+        <ToolsPageShell maxWidth="max-w-6xl" variant="workspace" user={user}>
             <ToolViewTracker slug={tool.slug} />
 
             {/* Breadcrumb Schema */}
@@ -174,13 +177,17 @@ export async function ToolPageLayout({ tool, children }: ToolPageLayoutProps) {
                     </p>
                 </div>
                 <Link
-                    href={`/auth/signup?source=tool_detail&tool=${tool.slug}`}
+                    href={
+                        isLoggedIn
+                            ? "/dashboard"
+                            : `/auth/signup?source=tool_detail&tool=${tool.slug}`
+                    }
                     className={buttonVariants({
                         className:
                             "rounded-lg font-bold bg-gold hover:bg-gold/90 !text-white shrink-0 shadow-sm",
                     })}
                 >
-                    Start Free Journal
+                    {isLoggedIn ? "Go to Dashboard" : "Start Free Journal"}
                 </Link>
             </div>
 

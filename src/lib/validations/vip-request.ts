@@ -158,7 +158,7 @@ export const BROKER_INFO: Record<
         logo: "/images/brokers/ultima.png",
         affiliateUrl:
             "https://www.ultimamarkets.com/accounts/open-trading-account/?affid=NzIzNDkwMw==",
-        ibCode: "NzIzNDkwMw==",
+        ibCode: "7234903",
         color: "#7C3AED",
         minDeposit: 200,
         accountType: "Standard",
