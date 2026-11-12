@@ -1,4 +1,4 @@
-import { Bot, SlidersHorizontal, LucideIcon } from "lucide-react";
+import { Bot, SlidersHorizontal, Layers, LucideIcon } from "lucide-react";
 
 export interface SystemParameter {
     name: string;
@@ -1184,6 +1184,308 @@ export const TRADING_SYSTEMS_DATA: SystemData[] = [
             {
                 title: "Rule 5: Hard 8-Tier Ceiling & Scheduled Withdrawals",
                 desc: "Keep Max Grid Tiers Per Direction at 7–8 with Danger Tier Threshold at 4–5, and withdraw realized profits on a regular weekly or monthly schedule.",
+            },
+        ],
+    },
+    {
+        slug: "snr-system",
+        title: "GSN SNR System",
+        description:
+            "Malaysian SNR limit-order EA for XAUUSD: reads candle-body support and resistance (A / V / GAP, RBS / SBR flips), ICT CHoCH + Fibonacci OTE zones, and swing / Bollinger extremes, then places BUY LIMIT and SELL LIMIT orders with a hard stop-loss and 1:2 risk-reward.",
+        longDescription:
+            '<div class="flex-1 flex flex-col justify-between gap-2.5"><p><strong class="text-gold">3-Module Malaysian SNR Limit Engine — Body Levels, OTE Zones & Swing Extremes</strong></p><p class="text-xs text-gray-500 dark:text-gray-400">GSN SNR System scans the chart the way a Malaysian SNR trader does by hand: it marks support and resistance from candle <em>bodies</em> (not wicks), filters them by freshness and H1 storyline, and waits for price to come back. Every entry is a pending LIMIT order with a hard stop-loss attached at placement — no market chasing.</p><div class="flex-1 flex flex-col justify-between gap-2 py-1"><p>— <strong class="text-gold">Module 01: Malaysian SNR (A / V / GAP)</strong> — Maps A-peak resistance, V-valley support, and same-colour GAP junctions from open/close bodies, keeps only fresh levels (MISS rule, zero wick retests), and adds Engulfing (EG / Bystra) confluence plus RBS / SBR body-breakout flips.</p><p>— <strong class="text-gold">Module 02: ICT CHoCH / BOS + OTE 0.618–0.786</strong> — Detects fractal swing structure breaks, projects the Fibonacci Optimal Trade Entry box, checks for a Fair Value Gap inside the impulse leg, and rests limit orders inside the OTE zone.</p><p>— <strong class="text-gold">Module 03: Dynamic S&amp;R + Bollinger Extremes</strong> — Optional engine (off by default) that trades major swing SSR levels and Bollinger Band (20, 2.0) extremes.</p><p>— <strong class="text-gold">Single or DCA Execution per Module</strong> — Single mode: one limit order, hard SL, TP = SL × R:R, stop moved to breakeven at +1R. DCA mode: capped recovery basket with additive or multiplicative lots and stepped basket trailing from the weighted average entry.</p><p>— <strong class="text-gold">On-Chart Command Deck</strong> — Edit Base Lot, SL distance, R:R, spacing, max pending, DCA step and trail directly on the chart, delete one side of pending orders, and rescan M15 / H1 / H4 in one click.</p></div><p class="font-bold text-gold">Built for traders who want SNR discipline enforced by code: fresh levels only, pending orders only, hard stop-loss on every order.</p></div>',
+        type: "SEMI_AUTO",
+        platform: "MT5",
+        icon: Layers,
+        targetAsset: "XAUUSD (Gold) & Major FX",
+        strategyStyle:
+            "Malaysian SNR Body Levels, ICT CHoCH + OTE & Swing / BB Extremes via Limit Orders",
+        recommendedLeverage: "1:100 or higher",
+        setupDifficulty: "Easy (5 min)",
+        specHighlights: [
+            {
+                label: "Entry Type",
+                value: "Pending BUY LIMIT / SELL LIMIT only — no market chasing",
+            },
+            {
+                label: "Default Risk Frame",
+                value: "0.02 lot · $5.00 hard SL · 1:2 R:R ($10.00 TP)",
+            },
+            {
+                label: "Level Engines",
+                value: "Malaysian SNR + ICT OTE (0.618–0.786) + Swing / BB (20, 2.0)",
+            },
+            {
+                label: "Trend Filter",
+                value: "H1 Storyline from SNR body breakouts — no lagging indicators",
+            },
+            {
+                label: "Execution Modes",
+                value: "Single (+1R → Breakeven) or capped DCA basket with trailing",
+            },
+            {
+                label: "Recommended Chart",
+                value: "XAUUSD H1 (rescan on M15 / H1 / H4 from the panel)",
+            },
+        ],
+        accentRing: "ring-amber-500/15 dark:ring-amber-400/15",
+        bullets: [
+            "Fresh A / V / GAP body levels with MISS rule & RBS / SBR flips",
+            "ICT CHoCH / BOS + Fibonacci OTE (0.618–0.786) limit zones",
+            "Hard SL on every order, 1:2 R:R, breakeven at +1R",
+            "H1 Storyline filter, max pending cap & minimum $1.50 spacing",
+            "On-chart Command Deck: edit risk, delete one side, rescan TF",
+        ],
+        parameters: [
+            {
+                group: "1: Shared Entry & Risk",
+                name: "Base Lot Size (InpBaseLot)",
+                defaultValue: "0.02",
+                description:
+                    "Lot size for every Single-mode limit order and the first order of a DCA basket. Calibrated for XAUUSD on H1.",
+            },
+            {
+                group: "1: Shared Entry & Risk",
+                name: "Stop Loss Distance $ (InpSlPriceDist)",
+                defaultValue: "5.00",
+                description:
+                    "Hard stop-loss distance in price ($5.00 on Gold). Attached to the order at placement, never added later.",
+            },
+            {
+                group: "1: Shared Entry & Risk",
+                name: "Risk:Reward Ratio (InpRrRatio)",
+                defaultValue: "2.00",
+                description:
+                    "Take-profit distance = SL distance × R:R. Default gives a $10.00 TP against a $5.00 SL.",
+            },
+            {
+                group: "1: Shared Entry & Risk",
+                name: "Min Price Spacing $ (InpMinPriceDist)",
+                defaultValue: "1.50",
+                description:
+                    "Minimum distance from current price and between pending orders, so limits do not stack on top of each other.",
+            },
+            {
+                group: "1: Shared Entry & Risk",
+                name: "Max Pending Orders per Module (InpMaxPending)",
+                defaultValue: "6",
+                description:
+                    "Combined BUY + SELL pending order cap for each module.",
+            },
+            {
+                group: "1: Shared Entry & Risk",
+                name: "Auto Breakeven at +1R (InpAutoBreakeven)",
+                defaultValue: "true",
+                description:
+                    "In Single mode, moves the stop-loss to entry once the trade reaches +1R.",
+            },
+            {
+                group: "1: Shared Entry & Risk",
+                name: "Auto Rescan on New Candle (InpAutoRescanNewBar)",
+                defaultValue: "true",
+                description:
+                    "Re-runs the level scan on each new chart candle so stale levels are dropped and new ones are picked up.",
+            },
+            {
+                group: "1: Shared Entry & Risk",
+                name: "Enforce H1 Storyline (InpEnforceTrend)",
+                defaultValue: "true",
+                description:
+                    "Only places limits in the direction of the H1 storyline, derived from A / V body breakouts (RBS / SBR) and engulfing rejections.",
+            },
+            {
+                group: "2: Module 1 — Malaysian SNR",
+                name: "Enable Malaysian SNR Engine (InpEnableMsnr)",
+                defaultValue: "true",
+                description:
+                    "Scans A-peak resistance, V-valley support and GAP junctions from candle bodies, with freshness (MISS) and RBS / SBR flip validation.",
+            },
+            {
+                group: "2: Module 1 — Malaysian SNR",
+                name: "SNR Lookback Bars (InpLookbackBars)",
+                defaultValue: "240",
+                description:
+                    "Number of historical candles scanned for SNR levels.",
+            },
+            {
+                group: "3: Module 2 — CHoCH + OTE",
+                name: "Enable CHoCH + OTE Engine (InpEnableOte)",
+                defaultValue: "true",
+                description:
+                    "Detects CHoCH / BOS structure breaks and rests limit orders inside the Fibonacci 0.618–0.786 OTE box.",
+            },
+            {
+                group: "3: Module 2 — CHoCH + OTE",
+                name: "OTE Execution Mode (InpOteExecMode)",
+                defaultValue: "Single",
+                description:
+                    "Single = one limit order with hard SL/TP and +1R breakeven. DCA = recovery basket with stepped trailing.",
+            },
+            {
+                group: "3: Module 2 — CHoCH + OTE",
+                name: "OTE DCA Lot Progression (InpOteDcaLotType)",
+                defaultValue: "Additive",
+                description:
+                    "Additive: Base + N × 0.10 lot. Multiplicative: Base × 1.50^N.",
+            },
+            {
+                group: "3: Module 2 — CHoCH + OTE",
+                name: "OTE DCA Step / Max Orders",
+                defaultValue: "$3.00 / 5",
+                description:
+                    "Price distance between DCA recovery orders and the hard cap on basket size.",
+            },
+            {
+                group: "3: Module 2 — CHoCH + OTE",
+                name: "OTE Trailing Milestones $ (InpOteTrailSteps)",
+                defaultValue: "6,10,14,18,22",
+                description:
+                    "Basket profit milestones from the weighted average entry. First milestone moves SL to breakeven; each next milestone locks the previous one.",
+            },
+            {
+                group: "4: Module 3 — Dynamic S&R / BB",
+                name: "Enable Dynamic S&R Engine (InpEnableSnr)",
+                defaultValue: "false",
+                description:
+                    "Optional engine for major swing SSR levels and Bollinger Band (20, 2.0) extremes. Uses the same Single / DCA settings structure as Module 2.",
+            },
+            {
+                group: "5: Protection & Dashboard",
+                name: "Max Daily Drawdown % (InpMaxDailyLossPct)",
+                defaultValue: "0.0 (Off)",
+                description:
+                    "Daily equity drawdown circuit breaker. When hit, new limits and DCA orders are blocked for the rest of the day.",
+            },
+            {
+                group: "5: Protection & Dashboard",
+                name: "Base Magic Number (InpMagicBase)",
+                defaultValue: "20260900",
+                description:
+                    "Each module uses its own magic: Base (SNR), Base+1 (OTE), Base+2 (S&R), so baskets never mix.",
+            },
+            {
+                group: "5: Protection & Dashboard",
+                name: "Max Slippage Points (InpSlippagePoints)",
+                defaultValue: "20",
+                description:
+                    "Maximum accepted execution deviation for market-side actions.",
+            },
+            {
+                group: "5: Protection & Dashboard",
+                name: "Show Command Deck (InpEnableDashboard)",
+                defaultValue: "true",
+                description:
+                    "Shows the interactive on-chart panel for live parameter edits, module toggles and rescans.",
+            },
+        ],
+        logic: [
+            "Stage 1 (Scan): On attach and on each new candle, the EA scans up to 240 bars for candle-body levels — A (peak resistance), V (valley support) and GAP (same-colour momentum junctions).",
+            "Stage 2 (Validate): Each level must pass the MISS / freshness rule (no wick retest since formation). Engulfing (EG / Bystra) confluence and RBS / SBR body-breakout flips are tagged; Module 2 adds CHoCH / BOS + OTE 0.618–0.786 zones with a Fair Value Gap check.",
+            "Stage 3 (Filter): With the H1 Storyline filter on, only levels aligned with the H1 direction (from SNR body breakouts, no indicators) are kept. Levels closer than $1.50 to price or to an existing order are skipped.",
+            "Stage 4 (Place): BUY LIMIT below price at support, SELL LIMIT above price at resistance, each with a hard SL ($5.00 default) and TP = SL × R:R, capped at 6 pending orders per module.",
+            "Stage 5 (Manage): Single mode moves SL to breakeven at +1R. DCA mode adds capped recovery orders every $3.00 against the basket and trails a shared basket stop from the weighted average entry through the 6 / 10 / 14 / 18 / 22 milestones.",
+            "Stage 6 (Protect): A daily equity drawdown breaker (when set) and the license gate block new orders, while positions already open keep being managed until they close.",
+        ],
+        faqs: [
+            {
+                question: "What makes this a Malaysian SNR system rather than a normal support/resistance EA?",
+                answer: "Levels are drawn from candle open/close bodies, not wicks. The EA looks for A-shaped peaks (resistance), V-shaped valleys (support) and GAP junctions between same-colour candles, then keeps only fresh levels that price has not wicked back into (the MISS rule). Broken levels flip role through RBS (Resistance Become Support) and SBR (Support Become Resistance).",
+            },
+            {
+                question: "Does the EA enter at market?",
+                answer: "No. Every entry is a pending BUY LIMIT or SELL LIMIT placed at the level, with the stop-loss and take-profit attached in the same request. If price never returns to the level, no trade happens.",
+            },
+            {
+                question: "Which timeframe should I run it on?",
+                answer: "The default 0.02 base lot and $5.00 stop are calibrated for XAUUSD on H1. You can rescan M15, H1 or H4 from the Command Deck; on lower timeframes reduce the SL distance and lot size accordingly.",
+            },
+            {
+                question: "What is the difference between Single and DCA mode?",
+                answer: "Single mode places one order per level with a hard SL, TP at 1:2 and breakeven at +1R — the risk per trade is fixed. DCA mode opens up to 5 recovery orders every $3.00 against the basket and trails a shared stop from the average entry. DCA increases exposure quickly (additive lots reach 1.10 lots total at 5 orders from a 0.02 base), so test it on demo or cent first.",
+            },
+            {
+                question: "Can I stop one direction without removing the EA?",
+                answer: "Yes. The Command Deck has DELETE PENDING BUY and DELETE PENDING SELL buttons to remove and lock one side, plus a pause toggle. Open positions continue to be managed by their existing SL, TP and breakeven rules.",
+            },
+            {
+                question: "Does it filter news or trading sessions?",
+                answer: "No built-in news or session filter is active. Pause the EA or delete pending orders manually before FOMC, NFP and CPI releases, and use the daily drawdown breaker to cap a bad day.",
+            },
+        ],
+        colorTheme: "gold",
+        functions: [
+            {
+                title: "Malaysian SNR Body Levels",
+                desc: "A-peak resistance, V-valley support and GAP junctions from candle bodies, with MISS freshness and Engulfing (EG / Bystra) confluence.",
+            },
+            {
+                title: "RBS / SBR Role Flips",
+                desc: "When a candle body closes through a level, the EA flips its role — broken resistance becomes support, broken support becomes resistance.",
+            },
+            {
+                title: "ICT CHoCH + OTE Zones",
+                desc: "Fractal swing structure breaks with a Fibonacci 0.618–0.786 OTE box and a Fair Value Gap check before any limit is placed.",
+            },
+            {
+                title: "H1 Storyline Filter",
+                desc: "Direction comes from H1 SNR body breakouts and rejections — pure price action, no moving-average lag.",
+            },
+            {
+                title: "Hard SL & Fixed R:R",
+                desc: "Every limit carries a stop-loss at placement and TP = SL × R:R (1:2 default), with breakeven at +1R in Single mode.",
+            },
+            {
+                title: "On-Chart Command Deck",
+                desc: "Edit lot, SL, R:R, spacing, max pending, DCA step and trail live; toggle modules; delete one side; rescan M15 / H1 / H4.",
+            },
+        ],
+        setupSteps: [
+            {
+                step: "01",
+                title: "Copy the Compiled EA File",
+                desc: "In MT5 open File -> Open Data Folder -> MQL5 -> Experts, paste GoldScalperNinja_SNR.ex5, then refresh Expert Advisors in the Navigator.",
+            },
+            {
+                step: "02",
+                title: "Allow Algo Trading & WebRequest",
+                desc: "Tools -> Options -> Expert Advisors: enable Allow Algorithmic Trading and Allow WebRequest, then add your TheNextTrade server URL for license and telemetry sync.",
+            },
+            {
+                step: "03",
+                title: "Attach to XAUUSD H1",
+                desc: "Open an XAUUSD H1 chart, drag the EA on, and paste your License Key (TNT-XXXX-XXXX-XXXX) into the Sync API Key input.",
+            },
+            {
+                step: "04",
+                title: "Check Levels & Pending Orders",
+                desc: "Confirm the Command Deck appears, SNR ray lines and OTE boxes are drawn, and pending limits respect the max pending cap.",
+            },
+            {
+                step: "05",
+                title: "Set Your Daily Drawdown Breaker",
+                desc: "Max Daily Drawdown % is off by default. Set it (for example 3%) before running on a live account.",
+            },
+        ],
+        riskControls: [
+            {
+                title: "Rule 1: Start in Single Mode",
+                desc: "Single mode fixes the loss per order at the $5.00 hard SL. Only switch a module to DCA after testing it on demo or cent.",
+            },
+            {
+                title: "Rule 2: Size for All Pending Orders Filling",
+                desc: "Two default modules can hold up to 12 pending orders. At 0.02 lot and a $5.00 SL that is $10 per order — size the account for the case where several fill on the same move.",
+            },
+            {
+                title: "Rule 3: Turn On the Daily Breaker",
+                desc: "Set Max Daily Drawdown % (it ships at 0 = off) so the EA stops placing new limits after a bad day.",
+            },
+            {
+                title: "Rule 4: Clear Limits Before Red-Folder News",
+                desc: "There is no built-in news filter. Use DELETE PENDING BUY / SELL or pause before FOMC, NFP and CPI.",
+            },
+            {
+                title: "Rule 5: Keep DCA Caps Tight",
+                desc: "If you use DCA, keep Max DCA Orders at 5 or lower and prefer Additive lots over Multiplicative to keep basket exposure predictable.",
             },
         ],
     },

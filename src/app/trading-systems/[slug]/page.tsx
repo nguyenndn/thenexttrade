@@ -163,7 +163,11 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
                                 {system.platform}{" "}
                                 {system.type === "AUTO_TRADE"
                                     ? "EXPERT ADVISOR"
-                                    : "UTILITY"}
+                                    : system.type === "SEMI_AUTO"
+                                      ? "SEMI-AUTO EA"
+                                      : system.type === "INDICATOR"
+                                        ? "INDICATOR"
+                                        : "UTILITY"}
                             </span>
 
                             {/* Version Badge */}
@@ -194,7 +198,11 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
                     </div>
 
                     <div className="w-full shrink-0 flex justify-center lg:justify-end">
-                        <TradingSystemMockPanel slug={system.slug} />
+                        <TradingSystemMockPanel
+                            slug={system.slug}
+                            fallbackImage={dbProduct?.thumbnail}
+                            fallbackAlt={system.title}
+                        />
                     </div>
                 </div>
             </div>
@@ -328,6 +336,17 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
                                     for experienced traders only. It uses
                                     aggressive multipliers and hedging cycles
                                     that carry high margin exposure risk.
+                                </p>
+                            )}
+                            {system.slug === "snr-system" && (
+                                <p>
+                                    Risk Note: GSN SNR System places pending
+                                    limit orders with a hard stop-loss on every
+                                    order. Several limits can fill on the same
+                                    move, and DCA mode adds recovery orders that
+                                    raise exposure quickly; start in Single
+                                    mode, set the daily drawdown breaker, and
+                                    test on demo/cent before going live.
                                 </p>
                             )}
                         </div>

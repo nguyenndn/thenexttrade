@@ -1,6 +1,6 @@
 # Project Handoff
 
-Last reviewed: 2026-10-26
+Last reviewed: 2026-11-11
 
 This file is the practical handoff for a new developer or AI agent. It explains what the product is, which features matter, and where to work without reading every historical plan.
 
@@ -47,8 +47,8 @@ Do not replace the global platform identity with GoldScalperNinja. Treat GoldSca
 | Admin | Reports, 3-Tab User CRM, IB/VIP, AI Gateway, Email Lab | `/admin/*` | Yes | Needed for operation, support, and monitoring. |
 | Admin | Behaviour segmentation | `/admin/users/behavior` | Yes | Turns telemetry into who needs help and who is worth the most. |
 | Admin | Revenue & commission rates | `/admin/trading-systems/brokers` | Yes | Commission rates are the input to every IB revenue figure. |
-| Admin | Sync & Cloud Worker operations | `/admin/ib/sync-requests`, `/admin/mt5-cloud` | Yes | Covers Multi-Instance/Auto-Sleep cloud workers and manual support tickets. |
-| Hidden/legacy | Retired sync client (previously "TNT Connect"), legacy sync copy | legacy files/APIs only | Compatibility only | Current user-facing sync path is Trade Manager EA or Manual Journal. |
+| Admin | Cloud Sync & Support Sync operations | `/admin/ib/sync-requests` | Yes | Monitors cross-platform `mt5-cloud-sync` (MT5 Android APK emulation) jobs and manual support tickets (no Windows worker VPS). |
+| Hidden/legacy | Retired sync client (previously "TNT Connect"), legacy sync copy | legacy files/APIs only | Compatibility only | Current user-facing sync paths are Trade Manager EA, MT5 Cloud Sync, and Manual Journal. |
 | Removed/avoid | Prop firm/funded challenge direction | removed routes/blocks | No | Not aligned with the current product direction. |
 | Removed/avoid | EA backtest/performance simulator claims | old plans only | No | We do not have validated public backtest presentation for this flow. |
 
@@ -101,8 +101,9 @@ Admin rule: admin pages should answer "what should I do next?" not only show met
 
 Current user-facing sync methods:
 
-- Trade Manager EA: recommended desktop/MT5/VPS path.
-- Manual Journal: fallback for users who cannot or do not want to install MT5 tooling yet.
+- **Trade Manager EA**: recommended real-time desktop/MT5/VPS path.
+- **MT5 Cloud Sync (`mt5-cloud-sync/`)**: cross-platform automated history sync emulating the MT5 Android app in-process (Node.js + Java UniDBG, zero Windows VPS required) using AES-256-GCM encrypted Investor/Master credentials.
+- **Manual Journal**: fallback for users who want to log trades manually (plus concierge `SupportSyncTicket` fallback).
 
 Do not promote the retired sync client (previously "TNT Connect") in new UI copy. If legacy data exists, label it as a legacy source or normalize the copy to Trade Manager EA where technically correct.
 

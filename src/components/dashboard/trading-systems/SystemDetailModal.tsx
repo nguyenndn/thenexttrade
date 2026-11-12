@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/Dialog";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
+import { htmlToPlainText } from "@/lib/sanitize";
 import { EAProduct } from "@prisma/client";
 import { getSystemBySlug } from "@/config/trading-systems-data";
 import { TradingSystemsParamsTable } from "@/components/trading-systems/TradingSystemsParamsTable";
@@ -163,7 +164,7 @@ export function SystemDetailModal({
                                         )}
                                     </div>
                                     <DialogDescription className="text-xs text-gray-600 dark:text-gray-400 mt-1 line-clamp-1">
-                                        {product.description ||
+                                        {htmlToPlainText(product.description) ||
                                             system?.description ||
                                             "Institutional execution algorithm designed for disciplined trading."}
                                     </DialogDescription>

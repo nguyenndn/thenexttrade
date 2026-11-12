@@ -159,7 +159,12 @@ export async function GET(
         headers.set("Content-Type", "application/octet-stream");
         headers.set("Cache-Control", "no-cache");
 
-        return new NextResponse(stream as any, { headers });
+        // The SDK returns a Node stream; convert it to bytes so Next.js can
+        // send a valid body (a raw Node stream is not a valid BodyInit).
+        const bytes = await stream.transformToByteArray();
+        headers.set("Content-Length", String(bytes.length));
+
+        return new NextResponse(Buffer.from(bytes), { headers });
     } catch (error) {
         console.error("[API] Error downloading EA file:", error);
         return new NextResponse("Internal Server Error", { status: 500 });

@@ -1,18 +1,24 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import type { EAType, PlatformType } from "@prisma/client";
 import {
     ArrowRight,
-    Bot,
     CheckCircle2,
-    SlidersHorizontal,
     Cpu,
     ShieldCheck,
 } from "lucide-react";
 
 import { TradingSystemsPageShell } from "@/components/trading-systems/TradingSystemsPageShell";
+import {
+    TradingSystemCard,
+    type TradingSystemCardData,
+} from "@/components/trading-systems/TradingSystemCard";
 import { FAQAccordion } from "@/components/tools/FAQAccordion";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { getAuthUser } from "@/lib/auth-cache";
+import { prisma } from "@/lib/prisma";
+import { htmlToPlainText } from "@/lib/sanitize";
+import { getSystemBySlug } from "@/config/trading-systems-data";
 import { buttonVariants } from "@/components/ui/button-variants";
 
 export const metadata: Metadata = {
@@ -40,63 +46,56 @@ export const metadata: Metadata = {
 
 export const revalidate = 60;
 
-const TOOL_CARDS = [
-    {
-        slug: "goldscalperninja",
-        title: "GoldScalperNinja EA",
-        label: "100% Auto-Trading EA",
-        positioning:
-            "For hands-free XAU/USD execution: Automated MT5 gold architecture with price-chasing stop entries, D1 Trend Master compass, and Lot–Price distance filtering.",
-        bullets: [
-            "Price-chasing stop orders (no falling knife)",
-            "Two-phase sequence & cross-side pruning",
-            "Lot–Price distance & duplicate filter (v3.1)",
-            "D1 Trend Master daily compass & locks",
-            "Neon interactive HUD & mobile remote switch",
-        ],
-        ctaLabel: "Get GoldScalperNinja",
-        accentClass:
-            "from-amber-500/10 via-orange-500/5 to-transparent border-amber-500/20 hover:border-amber-500/40",
-        colorRgb: "245, 158, 11",
-        icon: Bot,
-    },
-    {
-        slug: "trade-manager",
-        title: "GSN Trade Manager",
-        label: "Manual Co-Pilot & Journal Sync",
-        positioning:
-            "For manual traders: 5-Tab MT5 Command Deck for 1-click split-TP scalping, automatic Web Journal sync via Sync Key, 42-signal MTF trend matrix, and Smart DCA / BE Lot recovery.",
-        bullets: [
-            "3-Target Split-TP (TP1–TP3) & Smart Partial Trim",
-            "Automatic Web Journal Sync (Zero MT5 password needed)",
-            "42-Signal MTF Confluence Matrix (6 engines × 7 TFs)",
-            "Smart DCA / BE Lot, Zone Box & Daily Loss Lock",
-        ],
-        ctaLabel: "Get Trade Manager",
-        accentClass:
-            "from-blue-500/10 via-cyan-500/5 to-transparent border-blue-500/20 hover:border-blue-500/40",
-        colorRgb: "59, 130, 246",
-        icon: SlidersHorizontal,
-    },
-    {
-        slug: "gsn-shadown-matrix",
-        title: "GSN Shadow Matrix",
-        label: "Auto Grid & Hedge Recovery EA",
-        positioning:
-            "For automated recovery: Asymmetric Dual Grid & Counter-Hedge XAUUSD engine with 6 M5 seed filters, EMA-34 reversal lot braking, Dynamic ATR spacing, and Same-Side Smart Pruning.",
-        bullets: [
-            "6 selectable M5 seed filters & +90-pt fast scalp",
-            "250-pt counter-hedge & 150-pt M15 dual pairs",
-            "EMA-34 reversal brake (flat 0.02 counter-trend lots)",
-            "Same-Side Smart Pruning (Tier >= 5) & $50.00 Async Exit",
-        ],
-        ctaLabel: "Get Shadow Matrix",
-        accentClass:
-            "from-emerald-500/10 via-teal-500/5 to-transparent border-emerald-500/20 hover:border-emerald-500/40",
-        colorRgb: "16, 185, 129",
-        icon: Bot,
-    },
-] as const;
+const TYPE_LABELS: Record<EAType, string> = {
+    AUTO_TRADE: "Expert Advisor",
+    SEMI_AUTO: "Semi-Auto EA",
+    MANUAL_ASSIST: "Manual Assist",
+    INDICATOR: "Indicator",
+};
+
+const PLATFORM_LABELS: Record<PlatformType, string> = {
+    MT4: "MT4",
+    MT5: "MT5",
+    BOTH: "MT4 / MT5",
+};
+
+const MAX_CARD_BULLETS = 4;
+
+async function getPublicTradingSystems(
+    fallbackHref: string
+): Promise<TradingSystemCardData[]> {
+    const products = await prisma.eAProduct.findMany({
+        where: { isActive: true },
+        orderBy: { createdAt: "asc" },
+        select: {
+            id: true,
+            name: true,
+            slug: true,
+            description: true,
+            type: true,
+            platform: true,
+            thumbnail: true,
+            version: true,
+        },
+    });
+
+    return products.map((product) => {
+        const system = getSystemBySlug(product.slug);
+        return {
+            id: product.id,
+            name: product.name,
+            typeLabel: TYPE_LABELS[product.type],
+            version: product.version.replace(/^v/i, ""),
+            platform: PLATFORM_LABELS[product.platform],
+            description:
+                htmlToPlainText(product.description) || system?.description || "",
+            bullets: system?.bullets.slice(0, MAX_CARD_BULLETS) ?? [],
+            thumbnail: product.thumbnail,
+            href: system ? `/trading-systems/${system.slug}` : fallbackHref,
+            ctaLabel: system ? "View Details" : "Check Access",
+        };
+    });
+}
 
 const SETUP_OPERATION_FAQS = [
     {
@@ -161,6 +160,7 @@ export default async function TradingSystemsIndexPage() {
         : "/auth/signup?next=/dashboard/trading-systems&source=trading_systems";
 
     const allTradingFaqs = [...SETUP_OPERATION_FAQS, ...LICENSING_RISK_FAQS];
+    const tradingSystems = await getPublicTradingSystems(primaryCtaUrl);
 
     return (
         <TradingSystemsPageShell maxWidth="max-w-7xl" user={user}>
@@ -216,59 +216,17 @@ export default async function TradingSystemsIndexPage() {
             <section id="available-tools" className="mb-14 scroll-mt-24">
                 <h2 className="sr-only">Available MT5 Systems</h2>
 
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                    {TOOL_CARDS.map((system) => (
-                        <article
-                            key={system.slug}
-                            className="group relative flex flex-col justify-between overflow-hidden rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028]/60 p-7 transition-all duration-300 hover:shadow-xl hover:border-gold/40"
-                        >
-                            <div className="space-y-5">
-                                <div>
-                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-lg bg-gold/10 text-amber-600 dark:text-gold border border-gold/25 text-[10px] font-black font-mono uppercase tracking-wider mb-2.5">
-                                        {system.label}
-                                    </span>
-                                    <h3 className="font-heading text-xl font-black text-gray-900 dark:text-white">
-                                        {system.title}
-                                    </h3>
-                                    <p className="mt-2.5 text-xs leading-relaxed text-gray-600 dark:text-gray-400 font-medium">
-                                        {system.positioning}
-                                    </p>
-                                </div>
-
-                                <div className="space-y-2 border-t border-dashed border-gray-200 dark:border-white/10 pt-4">
-                                    {system.bullets.map((bullet, idx) => (
-                                        <div
-                                            key={idx}
-                                            className="flex items-start gap-2 text-xs text-gray-700 dark:text-gray-300 font-medium"
-                                        >
-                                            <span
-                                                className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full"
-                                                style={{
-                                                    backgroundColor: `rgb(${system.colorRgb})`,
-                                                }}
-                                            />
-                                            <span>{bullet}</span>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-
-                            <div className="mt-7 pt-4 border-t border-gray-200 dark:border-white/10">
-                                <Link
-                                    href={`/trading-systems/${system.slug}`}
-                                    className={buttonVariants({
-                                        variant: "gold",
-                                        className:
-                                            "w-full h-10 px-4 items-center justify-center gap-2 text-xs sm:text-sm font-black uppercase tracking-wider",
-                                    })}
-                                >
-                                    <span>View Details</span>
-                                    <ArrowRight size={14} className="shrink-0" />
-                                </Link>
-                            </div>
-                        </article>
-                    ))}
-                </div>
+                {tradingSystems.length > 0 ? (
+                    <div className="grid gap-6 md:grid-cols-2">
+                        {tradingSystems.map((system) => (
+                            <TradingSystemCard key={system.id} system={system} />
+                        ))}
+                    </div>
+                ) : (
+                    <div className="rounded-xl border border-dashed border-gray-200 dark:border-white/10 bg-white/70 dark:bg-[#1E2028]/40 p-10 text-center text-sm font-medium text-gray-500 dark:text-gray-400">
+                        No trading systems are published right now. Check back soon.
+                    </div>
+                )}
             </section>
 
             {/* Block 3: Frequently Asked Questions - 2 Column Architecture */}

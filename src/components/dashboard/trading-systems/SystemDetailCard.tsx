@@ -7,12 +7,12 @@ import {
     Lock,
     Download,
     Star,
-    Play,
     BookOpen,
     X,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
+import { htmlToPlainText } from "@/lib/sanitize";
 import { SPRING_SOFT, backdropVariants, panelVariants } from "@/lib/animations";
 import { trackEvent } from "@/lib/track";
 import { toast } from "sonner";
@@ -77,15 +77,22 @@ export function SystemDetailCard({
 
             // Silent download – fetch as blob, trigger via hidden link
             const fileRes = await fetch(json.data.url);
+            if (!fileRes.ok) {
+                toast.error("Download failed. Please try again.");
+                return;
+            }
             const blob = await fileRes.blob();
             const blobUrl = URL.createObjectURL(blob);
 
             const a = document.createElement("a");
             a.href = blobUrl;
             // Keep original filename from URL
-            const originalName = decodeURIComponent(
-                json.data.url.split("/").pop()?.split("?")[0] || "download.ex5"
-            );
+            const originalName =
+                json.data.filename ||
+                decodeURIComponent(
+                    json.data.url.split("/").pop()?.split("?")[0] ||
+                        "download.ex5"
+                );
             a.download = originalName;
             document.body.appendChild(a);
             a.click();
@@ -322,7 +329,7 @@ export function SystemDetailCard({
 
                         {/* Description */}
                         <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed line-clamp-2 mb-4 min-h-[2.5rem]">
-                            {product.description ||
+                            {htmlToPlainText(product.description) ||
                                 "Institutional execution algorithm designed for disciplined trading on MetaTrader 5."}
                         </p>
                     </div>
@@ -332,7 +339,7 @@ export function SystemDetailCard({
                         {/* Download CTA */}
                         <div className="relative">
                             <Button
-                                variant="outline"
+                                variant={isLocked ? "outline" : "gold"}
                                 disabled={downloading}
                                 onClick={(e) => {
                                     e.stopPropagation();
@@ -365,7 +372,7 @@ export function SystemDetailCard({
                                     "flex items-center gap-1.5 h-8 px-3 rounded-lg font-semibold text-xs transition-all duration-200 border cursor-pointer",
                                     isLocked
                                         ? "bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 border-dashboard dark:border-white/10 hover:border-amber-500/40"
-                                        : "bg-gray-900 text-white hover:bg-black dark:bg-white/10 dark:text-white dark:hover:bg-white/15 border-transparent dark:border-white/10"
+                                        : "text-white"
                                 )}
                             >
                                 {isLocked ? (
@@ -420,23 +427,8 @@ export function SystemDetailCard({
                             </AnimatePresence>
                         </div>
 
-                        {/* Secondary Links: Tutorial & User Manual */}
+                        {/* Secondary Link: User Manual */}
                         <div className="flex items-center gap-2.5">
-                            <Button
-                                type="button"
-                                variant="ghost"
-                                size="sm"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    setModalTab("guide");
-                                    setIsDetailModalOpen(true);
-                                }}
-                                className="text-[11px] font-semibold text-gray-600 dark:text-gray-300 hover:text-amber-500 dark:hover:text-amber-400 flex items-center gap-1 transition-colors py-1 h-auto px-1.5"
-                            >
-                                <Play size={11} className="text-amber-500 fill-current" />
-                                <span>Tutorial</span>
-                            </Button>
-
                             <Button
                                 type="button"
                                 variant="ghost"

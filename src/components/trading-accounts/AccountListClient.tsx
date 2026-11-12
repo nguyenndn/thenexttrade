@@ -209,8 +209,8 @@ export function AccountListClient({
                     ? `#${targetAccount.accountNumber}`
                     : targetAccount?.name || "Account";
 
-                // Hard safety net: 90 seconds timeout
-                if (Date.now() - syncInfo.startedAt > 90000) {
+                // Hard safety net: 10 minutes timeout (supports sequential queue under high concurrency)
+                if (Date.now() - syncInfo.startedAt > 600000) {
                     toast.error(`Cloud Sync Failed: ${accLabel}`, {
                         description:
                             "Unable to sync trade history. Please try again.",
@@ -218,7 +218,7 @@ export function AccountListClient({
                     });
 
                     // Proactively mark job failed in background
-                    cancelCloudSyncJob(accountId, "Cloud sync timed out after 90s with no worker response.").catch(() => { });
+                    cancelCloudSyncJob(accountId, "Cloud sync timed out after 10m in queue.").catch(() => { });
 
                     setActiveSyncingAccounts((prev) => {
                         const next = { ...prev };

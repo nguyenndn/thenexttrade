@@ -1,6 +1,6 @@
 # Feature Catalog And Scope Control
 
-Last reviewed: 2026-10-26
+Last reviewed: 2026-11-11
 
 This file answers two questions:
 
@@ -126,9 +126,8 @@ Any feature that supports this loop is justified. Any feature that competes with
 | `/admin/messages` | Inbound inquiries & contact triage console | 4-status lifecycle (`new`, `read`, `replied`, `archived`), auto-read transition on click, client-side `mailto:` reply link, internal triage notes, multi-field search | In-app SMTP direct reply dispatching, unauthenticated access |
 | `/admin/ib` | Partner Pro operations overview | Pipeline, trader monitor summary, VIP/account states | Unsupported sync source options |
 | `/admin/ib/pipeline` | Upgrade workflow | Stages, account/user context, actions | 404 from removed route wiring |
-| `/admin/ib/traders` | Trader/account monitoring | User, account count, real balance, activity, product access | Duplicate account rows |
-| `/admin/ib/sync-requests` | Sync operations console | Cloud Sync job telemetry, manual sync support tickets, credential reveal with audit log | Showing investor passwords without `ADMIN_VIEW_CREDENTIAL` logging |
-| `/admin/mt5-cloud` | Cloud worker fleet management | Multi-instance & smart auto-sleep Windows worker telemetry, enrollment tokens | Unauthenticated worker polling |
+| `/admin/ib/traders` | Trader/account monitoring | User, account count, real balance, activity, product access, audited MT5 credential bar | Duplicate account rows |
+| `/admin/ib/sync-requests` | Sync operations console | `mt5-cloud-sync` (MT5 Android APK emulation) job telemetry, manual sync support tickets, audited credential reveal (`ADMIN_VIEW_CREDENTIAL`) | Showing investor passwords without `ADMIN_VIEW_CREDENTIAL` logging or relying on legacy Windows workers |
 | `/admin/trading-systems/[id]` | Product config & telemetry console | 2 tabs: `Product Configuration` (metadata, `.ex5` upload, announce) vs `Telemetry & Accounts` (live MT4/MT5 accounts, heartbeat <24h, EA Farm capital: `confirmedFarmBalanceUSD` vs `userPoolBalanceUSD`) | Ingesting backtest telemetry (live only), placing Drawdown Radar here (belongs to Trader Psychology) |
 | `/admin/trading-systems/brokers` | Commission rates config | Per-broker/per-symbol rates, `*` wildcard fallback, audit log | Rates that silently disagree with the broker's actual rebate |
 | `/admin/loyalty`, `/admin/competitions` | Retention & competition ops | Loyalty tiers, reward claim approvals, trading competitions | Manual DB edits without audit trail |

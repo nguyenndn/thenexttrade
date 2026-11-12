@@ -2,7 +2,7 @@
 
 <!-- impeccable:product-schema 1 -->
 
-Last reviewed: 2026-10-26
+Last reviewed: 2026-11-11
 
 This file describes the current product behavior at a practical level. For the complete Vietnamese Business Analyst / SRS specification across all 10 system modules, read [MASTER_BA_SPECIFICATION.md](MASTER_BA_SPECIFICATION.md). For detailed URL/query-param behavior and QA checklists, use [FEATURE_SPECS.md](FEATURE_SPECS.md).
 
@@ -12,7 +12,7 @@ For the scope decision behind each feature group, use [FEATURE_CATALOG.md](FEATU
 
 web
 
-Next.js App Router web app, responsive down to mobile web. MT5 integration runs through Expert Advisors on the trader's desktop or VPS, not through a native app.
+Next.js App Router web app, responsive down to mobile web. MT5 integration runs through Expert Advisors on the trader's desktop/VPS or cross-platform **MT5 Cloud Sync** (`mt5-cloud-sync/` Android client emulation on the web server), without requiring a native mobile app or a Windows worker server.
 
 ## Users
 
@@ -54,7 +54,7 @@ The platform operates on a 100% free-to-trader model powered by broker IB rebate
 
 ## Operating Context
 
-- Traders work in MT5 on desktop or VPS. Mobile users can review data but cannot run EA sync from the phone.
+- Traders work in MT5 on desktop/VPS or on mobile. Mobile-only traders can sync real MT5 trade history via **MT5 Cloud Sync** (`mt5-cloud-sync/`, emulating the MT5 Android client via Investor/Master password), while live EA execution runs on desktop or VPS.
 - Accounts live at partner brokers (Vantage Markets, VT Markets, Ultima Markets, Exness). Broker choice decides IB eligibility and Partner Pro access.
 - Community and support happen largely through Telegram.
 - Admins run IB attribution, VIP/Partner Pro approval, EA license issuance, and sync support from `/admin`.
@@ -64,7 +64,7 @@ The platform operates on a 100% free-to-trader model powered by broker IB rebate
 See Feature Inventory below for the full map. Durable constraints:
 
 - UI copy is English only, even though much of the community is Southeast Asian.
-- Current sync paths are Trade Manager EA and Manual Journal only.
+- Current sync paths are **Trade Manager EA**, **MT5 Cloud Sync** (`mt5-cloud-sync` Android client emulation), and **Manual Journal** (plus `SupportSyncTicket` concierge fallback).
 - No backtest or performance-simulator claims for EAs unless validated.
 - Prop-firm product direction is off unless re-approved.
 
@@ -165,7 +165,7 @@ The product becomes confusing when acquisition pages, community, brokers, tools,
 | Edge missions & daily check-in | Retention, streak, and habit loop | Active | `/dashboard/learning`, `/dashboard/settings/streak` |
 | Leaderboard & Loyalty | Trader discipline leaderboard and IB lot-based loyalty rewards | Active | `/dashboard/leaderboard`, `/dashboard/loyalty`, `/admin/loyalty`, `/admin/competitions` |
 | Trading systems/downloads | Unlock and manage GoldScalperNinja, Trade Manager, and GSN - Apex Gold Sentinel (1 License Key unlocks all 3 EAs) | Active | `/trading-systems`, `/dashboard/trading-systems`, `/admin/trading-systems` |
-| MT5 Cloud Workers | Multi-instance & smart auto-sleep Windows MT5 worker fleet | Active | `/admin/mt5-cloud`, `/api/worker/*` |
+| MT5 Cloud Sync | Cross-platform MT5 Android client emulation (`mt5-cloud-sync/`) for no-PC automated trade history sync & broker server search | Active | `/dashboard/accounts`, `/admin/ib/sync-requests`, `/api/mt5/brokers/search` |
 | Admin reports | System health and business reporting | Active | `/admin/reports` |
 | Admin analytics | Traffic, country, campaign, event analysis | Active | `/admin/analytics` |
 | Admin users/detail | User support and management | Active | `/admin/users` |
@@ -320,8 +320,9 @@ UX rules:
 
 Current user-facing sync methods:
 
-- **Trade Manager EA**: MT5 Expert Advisor/utility path for users on desktop or VPS. This is the recommended automated sync/execution-support path.
-- **Manual Journal**: Users can start without sync and log trades manually.
+- **Trade Manager EA**: MT5 Expert Advisor/utility path for users on desktop or VPS. This is the recommended real-time sync and remote execution-support path.
+- **MT5 Cloud Sync (`mt5-cloud-sync/`)**: Cross-platform automated history sync for mobile/no-PC users. Emulates the official MT5 Android app (`metatrader5.apk` + Java UniDBG) directly on the Linux/Node.js server using AES-256-GCM encrypted Investor/Master credentials — no Windows VPS worker required.
+- **Manual Journal**: Users can start without sync and log trades manually (with **Support-Sync Tickets** available as concierge fallback).
 
 Legacy compatibility:
 
@@ -394,8 +395,7 @@ Admin-facing:
 - `/admin/trading-systems/[id]` is the dual-tab EA product detail console: **Product Configuration** (binary upload, versioning, release announcements) and **Telemetry & Accounts** (live MT4/MT5 accounts, pulsing heartbeat status, and EA Farm Capital telemetry aggregating `confirmedFarmBalanceUSD` vs `userPoolBalanceUSD`).
 - `/admin/trading-systems/brokers` owns per-broker, per-symbol **commission rates** (with a wildcard `*` fallback). These rates drive estimated IB gross revenue.
 - `/admin/messages` is the customer inquiry triage console: 4-status lifecycle (`new`, `read`, `replied`, `archived`), auto-read on click, client-side `mailto:` reply link, internal triage notes, and multi-field search.
-- `/admin/ib/sync-requests` covers both worker-driven **Cloud Sync jobs** and **Manual Sync Support Tickets** — the fallback path when an automated sync cannot complete.
-- `/admin/mt5-cloud` manages the **Multi-Instance & Smart Auto-Sleep MT5 Cloud Worker** fleet.
+- `/admin/ib/sync-requests` covers in-process **MT5 Cloud Sync jobs** (`mt5-cloud-sync/` Android client emulation), **Manual Sync Support Tickets**, and audited MT5 credential reveal/copy (`ADMIN_VIEW_CREDENTIAL`).
 
 ## IB Business Model
 

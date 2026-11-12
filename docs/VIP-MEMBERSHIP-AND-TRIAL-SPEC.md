@@ -1,7 +1,7 @@
 # Đặc tả Kỹ thuật: 7-Day Free Trial & Active Trader Retention Policy (VIP/Pro)
 
 > **Tài liệu đặc tả nghiệp vụ & kiến trúc cho TheNextTrade**
-> **Phiên bản:** 1.8.0 | **Ngày cập nhật:** 21/10/2026
+> **Phiên bản:** 1.9.0 | **Ngày cập nhật:** 11/11/2026
 > **Trạng thái:** Tài liệu đối chiếu với implementation hiện tại; kết quả kiểm thử được ghi riêng, không dùng trạng thái “100%” cố định.
 
 ---
@@ -82,7 +82,7 @@ Nếu chỉ nạp $200 một lần là được VIP **vĩnh viễn** thì gặp 
 8. Nguồn volume    : CHỈ lệnh THẬT từ account sàn đối tác (syncSource ∈ {EA_SYNC,
                      EA_HISTORY, SUPPORT_SYNC, CLOUD_WORKER}, xem §7.7). Gồm: lệnh EA bắt (kể cả lệnh user
                      tự bấm tay trên MT5 — lệnh thật) + lệnh Support-sync (Support xác minh
-                     bằng pass Investor) + lệnh Cloud Worker dùng credential Investor đã lưu.
+                     bằng pass Investor) + lệnh MT5 Cloud Sync (`mt5-cloud-sync` giả lập app MT5 Android, ghi mã `CLOUD_WORKER`).
                      KHÔNG tính lệnh tự gõ khống trên web (MANUAL)
 9. Sàn đối tác chuẩn: Vantage, Exness, VTMarkets, Ultima Markets — nguồn chuẩn là cờ
                      EABroker.isVipEligible trong DB, không hardcode (xem §7.6)
@@ -158,7 +158,7 @@ policyState (theo thứ tự ưu tiên):
 
 > 💡 **Quy tắc Trading Days (Loại trừ T7 & CN — User chốt 02/09/2026):** Thị trường Forex đóng cửa vào cuối tuần, vì vậy hệ thống đếm số ngày không hoạt động chỉ tính các ngày trong tuần (Thứ Hai đến Thứ Sáu, Mon-Fri UTC). Thứ Bảy và Chủ Nhật không bị tính vào số ngày inactivity, đảm bảo trader không bị cảnh báo hay khóa tài khoản vô lý vào cuối tuần khi sàn đang đóng cửa.
 
-> **Nguồn volume cho `daysSinceLastTrade` / `rolling30dLots`:** chỉ lệnh **thật đã xác minh** từ account sàn đối tác — `syncSource ∈ {EA_SYNC, EA_HISTORY, SUPPORT_SYNC, CLOUD_WORKER}`. `SUPPORT_SYNC` là Support sync bằng pass Investor (xem §7.7); `CLOUD_WORKER` là worker kết nối tập trung bằng credential Investor đã lưu. Lệnh user **tự bấm tay trên MT5** vẫn được EA bắt và tính (lệnh thật, sinh hoa hồng IB); lệnh **tự gõ trên web journal** (`MANUAL`) không tính (khai khống được).
+> **Nguồn volume cho `daysSinceLastTrade` / `rolling30dLots`:** chỉ lệnh **thật đã xác minh** từ account sàn đối tác — `syncSource ∈ {EA_SYNC, EA_HISTORY, SUPPORT_SYNC, CLOUD_WORKER}`. `SUPPORT_SYNC` là Support sync bằng pass Investor (xem §7.7); `CLOUD_WORKER` là mã nguồn ghi bởi module `mt5-cloud-sync` (giả lập ứng dụng MT5 Android trực tiếp trên server không cần VPS Windows, đăng nhập bằng credential MT5 đã mã hóa). Lệnh user **tự bấm tay trên MT5** vẫn được EA/Cloud Sync bắt và tính (lệnh thật, sinh hoa hồng IB); lệnh **tự gõ trên web journal** (`MANUAL`) không tính (khai khống được).
 
 - **`pro-access.ts`** là nơi duy nhất tính `effective isPro`:
   `isPro_effective = entitlement.status ∈ {ACTIVE, GRACE} AND (source = MANUAL_ADMIN OR policyState ≠ PAUSED)`, kèm trả về `trialInfo` (khi user trong 7 ngày đầu & chưa có entitlement) và `activityInfo` (daysSinceLastTrade, rolling30dLots). `MANUAL_ADMIN` là quyền override của owner; volume/funding metrics vẫn được tính trung thực và không tự tăng chỉ vì override.
@@ -247,7 +247,7 @@ stateDiagram-v2
 - Thêm cột vào `TradingAccount` (additive): `fundingVerifiedAt DateTime?`, `fundingAmount Float?`, `fundingLastVerifiedAt DateTime?`, `fundingGraceUntil DateTime?`.
 - `JournalEntry.syncSource` là cột **String** (`@db.VarChar(20)`, `prisma/schema.prisma`) — KHÔNG phải enum → dùng được các giá trị **`SUPPORT_SYNC`** và **`CLOUD_WORKER`** mà **không cần migration**.
 - (Không thêm enum `ProStatus`.) Lịch sử funding dùng `TradingAccountCapitalSnapshot`: writer **đã có** tại `src/lib/admin/ib/capital.server.ts:117-136`, được gọi từ `src/lib/ea/telemetry.server.ts:150-170`.
-- Bảng `SupportSyncTicket` chỉ audit kênh concierge: userId, tradingAccountId, broker, accountNumber, status `PENDING/VERIFIED/FAILED`, requestedAt, scheduledFor (thứ 7), verifiedBy, note. **Ticket không chứa pass Investor**; credential Cloud Sync được lưu riêng tại `TradingAccountCredential` theo chính sách plaintext có kiểm soát ở §7.7.
+- Bảng `SupportSyncTicket` chỉ audit kênh concierge: userId, tradingAccountId, broker, accountNumber, status `PENDING/VERIFIED/FAILED`, requestedAt, scheduledFor (thứ 7), verifiedBy, note. **Ticket không chứa pass Investor**; credential Cloud Sync được lưu riêng tại `TradingAccountCredential` và mã hóa chuẩn AES-256-GCM (`keyVersion = "v1"`) ở §7.7.
 
 ### 7.4 Frontend (UI — dùng component có sẵn, copy tiếng Anh, icon lucide, KHÔNG emoji)
 
@@ -268,7 +268,7 @@ stateDiagram-v2
 
 ### 7.6 Nguồn volume & chống gian lận
 
-- **Tính** (lệnh THẬT đã xác minh từ account sàn đối tác): `syncSource ∈ {EA_SYNC, EA_HISTORY, SUPPORT_SYNC, CLOUD_WORKER}` và account thuộc **sàn đối tác có IB**. Lệnh user **tự bấm tay trên MT5** vẫn được EA bắt → vẫn tính (lệnh thật, có hoa hồng IB). Lệnh **Support-sync** (Support xác minh bằng pass Investor) và **Cloud Worker** (worker kết nối tập trung bằng credential đã lưu) → tính (xem §7.7).
+- **Tính** (lệnh THẬT đã xác minh từ account sàn đối tác): `syncSource ∈ {EA_SYNC, EA_HISTORY, SUPPORT_SYNC, CLOUD_WORKER}` và account thuộc **sàn đối tác có IB**. Lệnh user **tự bấm tay trên MT5** vẫn được EA bắt → vẫn tính (lệnh thật, có hoa hồng IB). Lệnh **Support-sync** (Support xác minh bằng pass Investor) và **MT5 Cloud Sync** (`mt5-cloud-sync` giả lập app MT5 Android, lưu mã `CLOUD_WORKER`) → tính (xem §7.7).
 - **Không tính**: lệnh tự gõ trên web journal (`syncSource = MANUAL` — tự khai, không kiểm chứng được), và account ở sàn **không có IB** với mình (giao dịch thật nhưng mình $0).
 - **Sàn đối tác chuẩn (User chốt 02/09/2026): Vantage, Exness, VTMarkets, Ultima Markets** — nguồn chuẩn là cờ `EABroker.isVipEligible` trong DB (admin thêm/bớt sàn tại đó), không hardcode danh sách.
 - Cách lọc: `JournalEntry.syncSource` + `JournalEntry.accountId → TradingAccount.broker` → đối chiếu `EABroker.isVipEligible`.
@@ -288,12 +288,11 @@ stateDiagram-v2
 - Lệnh `SUPPORT_SYNC` được tính vào `rolling30dLots` như `EA_HISTORY` (lệnh thật, có người xác minh) — §7.6.
 - Không realtime: lệnh trong tuần chỉ về web ở batch thứ 7 (chấp nhận được cho người không chạy EA).
 
-**Hạ tầng (nói thật — MT5 không có API server chính thức):**
-- **(A) v1 — bán thủ công (ĐÃ TRIỂN KHAI):** nhân viên đăng nhập MT5 (terminal nội bộ) bằng pass Investor để **xác minh** (REAL/vốn) và đối chiếu statement; nhập/normalize lệnh verified theo batch. Phù hợp số user nhỏ giai đoạn dev & launch.
-- **(B) v2 — bán tự động (Kích hoạt khi queue > 30 ticket/tuần):** terminal MT5 dưới quyền mình (VPS Windows) + bản EA nội bộ log vào account user bằng pass Investor → đẩy lịch sử tự động theo lịch. Cần hạ tầng + bản EA hỗ trợ; làm khi khối lượng tăng cao.
-- Khuyến nghị: triển khai (A) trước ở v1; nâng cấp (B) theo ngưỡng KPI vận hành.
+**Hạ tầng đồng bộ không cần PC của khách (ĐÃ CHUYỂN HẲN SANG `mt5-cloud-sync` — KHÔNG DÙNG VPS WINDOWS):**
+- **(A) Tự động hóa đa nền tảng qua `mt5-cloud-sync/` (ĐÃ TRIỂN KHAI — Đường chính):** Hệ thống **bỏ hoàn toàn VPS Windows tách rời chạy MT5 Worker**. Module `mt5-cloud-sync/` (`CloudSyncService.js` + `metatrader5.apk` + Java `UniDBG` `mt5-native-runner.jar`) chạy trực tiếp bên trong tiến trình Node.js trên máy chủ Linux Cloud, giả lập 1:1 ứng dụng MT5 Android để đăng nhập vào tài khoản user bằng mật khẩu Investor/Master và tải lịch sử giao dịch thật (`syncSource = CLOUD_WORKER`).
+- **(B) Kênh dự phòng Support-Sync thủ công (ĐÃ TRIỂN KHAI — Fallback):** Khi tài khoản gặp sự cố đặc thù từ phía máy chủ sàn mà tự động hóa không lấy được lịch sử, user hoặc hệ thống tạo `SupportSyncTicket` để nhân viên hỗ trợ kiểm tra đối soát (`VERIFIED`/`FAILED`) tại `/admin/ib/sync-requests`.
 
-**Xử lý pass Investor (Cloud Sync — quyết định sản phẩm đã chốt):** giữ **plaintext như hành vi cũ** để worker có thể kết nối MT5 mà không cần nhập lại credential. `saveCloudSyncCredentials()` lưu giá trị vào `TradingAccountCredential.encryptedPassword` với `keyVersion = "plain"`; tên cột là legacy, **không gọi `encryptPassword` và không mã hóa payload này**. Các kiểm soát bắt buộc: chỉ truyền qua TLS; chỉ server action/worker/admin có quyền mới được đọc; không log hoặc trả credential về client; hiển thị dạng masked/read-only; ghi audit ai đã sync account nào và khi nào; user thu hồi bằng cách đổi Investor Password (MT5 pass này chỉ đọc → không thể đặt lệnh/rút tiền).
+**Bảo mật & xử lý mật khẩu MT5 (`AES-256-GCM`):** `saveCloudSyncCredentials()` trong `src/actions/cloud-sync.ts` mã hóa mật khẩu bằng `encryptPassword()` và lưu vào `TradingAccountCredential.encryptedPassword` với `keyVersion = "v1"` (hàm đọc `src/lib/credentials/investor-password.server.ts` vẫn tương thích ngược với bản ghi `"plain"` cũ). Các kiểm soát bắt buộc: truyền qua TLS; không bao giờ log mật khẩu ra server log; chủ tài khoản có thể xem/sửa/copy trực tiếp trong modal cài đặt tài khoản sau xác thực phiên, và Admin có quyền xem/copy phục vụ hỗ trợ với điều kiện bắt buộc ghi vết `SecurityLog` (`ADMIN_VIEW_CREDENTIAL`). User có thể thu hồi quyền bất cứ lúc nào bằng cách đổi mật khẩu trên MT5.
 
 ---
 
@@ -308,7 +307,7 @@ stateDiagram-v2
 | Khai khống balance bằng EA sửa | **Planned, chưa implement:** phân phối .ex5 ký, không phát source. Hiện dựa vào đối chiếu chéo broker/server và (v2) lịch sử nạp. |
 | Volume khai khống bằng nhập tay | Chuẩn volume chỉ tính lệnh thật đã xác minh: EA_SYNC/EA_HISTORY/SUPPORT_SYNC (§7.6). |
 | Đổ lệnh lịch sử cũ > 30 ngày để lách | Cửa sổ rolling 30 ngày tính theo `exitDate` thực tế; lệnh ngoài window bị loại bỏ. |
-| Lộ/lạm dụng pass Investor (kênh concierge/Cloud Sync) | Pass chỉ đọc, không thể lệnh/rút; **giữ plaintext theo quyết định sản phẩm** trong `TradingAccountCredential` với `keyVersion = "plain"`; không log/không trả về client; giới hạn quyền đọc cho server action/worker/admin và ghi audit; user đổi pass là thu hồi ngay (§7.7). |
+| Lộ/lạm dụng pass Investor (kênh concierge/Cloud Sync) | Mã hóa chuẩn **AES-256-GCM (`keyVersion = "v1"`)** trong `TradingAccountCredential`; không log ra console; chỉ chủ tài khoản và Admin có quyền xem/copy trên giao diện bảo mật, mọi lần Admin xem đều ghi vết bất biến `SecurityLog` (`ADMIN_VIEW_CREDENTIAL`); user đổi pass là thu hồi ngay (§7.7). |
 | Cảnh báo nhầm / tạm khóa vào cuối tuần khi sàn Forex đóng cửa | Đếm ngày không hoạt động theo ngày giao dịch (Trading Days, Monday-Friday UTC); tự động bỏ qua Thứ 7 và Chủ Nhật (§5.2). |
 
 ---
@@ -404,6 +403,6 @@ Tài liệu đối chiếu với code hiện tại. Các thành phần đã có 
 1. **Backend & Architecture**: Triển khai trọn vẹn mô hình 2 lớp `ProEntitlement` + `ActivityPolicy` tại `src/lib/pro-access.ts`, cấp vốn 1 lần kèm cron recheck 30 ngày tại `src/lib/services/vip-policy.service.ts` & `/api/cron/vip-policy`.
 2. **Feature Gating**: quyền truy cập tính từ `ProEntitlement` + `ActivityPolicy`; cấu hình quota AI không tham gia quyết định quyền VIP.
 3. **Anti-Bypass Protection**: Chặn triệt để tài khoản Cent (`normalizeUsdBalance`), lọc bỏ hoàn toàn lệnh ngoài window 30 ngày và lệnh nhập tay.
-4. **Kênh Concierge Support-Sync**: Có Server Action `support-sync.ts`, lịch batch thứ 7 10:00 UTC và worker cập nhật `Mt5ImportJob`; chưa có đường gửi email kết quả được xác minh.
+4. **MT5 Cloud Sync & Kênh Concierge Support-Sync**: Đồng bộ tự động đa nền tảng qua `mt5-cloud-sync/` (giả lập MT5 Android trực tiếp trên server không cần VPS Windows, mã hóa mật khẩu AES-256-GCM `v1`), kèm Server Action `support-sync.ts`, lịch batch thứ 7 10:00 UTC và cập nhật `Mt5ImportJob` làm kênh dự phòng.
 5. **Frontend UI & Email Lab**: Cập nhật `VipStatusWidget.tsx` (có thẻ riêng cho `VIP Paused`), tích hợp 7 template HTML chuẩn Breek Gold vào `admin/email-lab`.
 6. **Kiểm thử**: Chạy lại các lệnh trong §12. Kết quả pass/fail và các phần bị chặn (ví dụ compile MQL5 nếu không có MetaEditor) phải được lấy từ execution report mới nhất, không hard-code trong tài liệu.

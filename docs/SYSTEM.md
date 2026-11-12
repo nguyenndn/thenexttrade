@@ -1,8 +1,8 @@
 # System
 
-Last reviewed: 2026-10-26
+Last reviewed: 2026-11-11
 
-TheNextTrade is a trader operating system: Trade Manager EA/manual trade capture, remote EA execution control, journal, analytics, Academy, Edge missions, Partner Pro/VIP operations, AI Gateway, trading-system access, and admin reporting in one Next.js app. For the complete Vietnamese Business Analyst / SRS specification across all 10 modules, read [MASTER_BA_SPECIFICATION.md](MASTER_BA_SPECIFICATION.md). For route-level behavior specs, use [FEATURE_SPECS.md](FEATURE_SPECS.md).
+TheNextTrade is a trader operating system: Trade Manager EA/manual/cloud trade capture, remote EA execution control, journal, analytics, Academy, Edge missions, Partner Pro/VIP operations, AI Gateway, trading-system access, and admin reporting in one Next.js app. For the complete Vietnamese Business Analyst / SRS specification across all 10 modules, read [MASTER_BA_SPECIFICATION.md](MASTER_BA_SPECIFICATION.md). For route-level behavior specs, use [FEATURE_SPECS.md](FEATURE_SPECS.md).
 
 ## Stack
 
@@ -12,10 +12,11 @@ TheNextTrade is a trader operating system: Trade Manager EA/manual trade capture
 | UI | Tailwind CSS, Radix primitives, Lucide icons |
 | Database | PostgreSQL via Prisma |
 | Auth | Supabase Auth plus app-owned profile/session/security data |
+| MT5 Cloud Sync | Cross-platform `mt5-cloud-sync/` (Node.js + Java OpenJDK 17+ UniDBG emulating `metatrader5.apk`) |
 | Storage | Cloudflare R2 through `src/lib/storage/object-storage.ts` |
 | Email | SMTP through `src/lib/services/email.service.ts` |
 | Analytics | Internal Postgres analytics plus optional GA4 |
-| Deploy | Coolify on VPS behind Cloudflare |
+| Deploy | Linux Cloud Server / VPS (Coolify or Railway Docker) behind Cloudflare — no Windows VPS needed |
 
 ## Data Flow
 
@@ -39,12 +40,11 @@ flowchart TD
   LegacySync[Legacy sync clients] --> SyncApi[/api/sync/*/]
   EaApi --> Prisma
   SyncApi --> Prisma
-  App -->|create Mt5ImportJob| Prisma
-  Worker[Python worker on laptop/VPS] -->|poll /api/worker/jobs/pull| WorkerApi[/api/worker/jobs/*/]
-  Worker -->|drive local MT5 terminal| MT5[MT5 terminal]
-  WorkerApi --> Prisma
-  Worker -->|env failure| Ticket[SupportSyncTicket]
-  Ticket --> Admin[Admin logs into MT5 manually]
+  App -->|in-process CloudSyncService| ApkSync["mt5-cloud-sync (MT5 Android APK + UniDBG Java)"]
+  ApkSync <-->|MT5 Mobile Protocol| BrokerSrv[MT5 Broker Server]
+  ApkSync -->|upsert deals & Mt5ImportJob| Prisma
+  ApkSync -->|sync failure fallback| Ticket[SupportSyncTicket]
+  Ticket --> Admin
 ```
 
 ## Core Data Areas
@@ -68,8 +68,8 @@ Source of truth: `src/app`.
 - Public: `/`, `/get-started`, `/about`, `/contact`, `/edge`, `/faq`, `/legal/*`, `/articles`, `/academy`, `/brokers`, `/tools/*`, `/trading-style`, `/community`, `/trading-systems`, `/trader/[username]`, `/share/[id]`, `/certificate/*`.
 - Auth: `/auth/login`, `/auth/signup`, `/auth/verify-email`, `/auth/verify-2fa`, `/auth/forgot-password`, `/auth/update-password`, `/onboarding`.
 - User dashboard: `/dashboard`, `/dashboard/accounts`, `/dashboard/journal`, `/dashboard/sessions`, `/dashboard/analytics`, `/dashboard/intelligence`, `/dashboard/reports/*`, `/dashboard/rules`, `/dashboard/strategies`, `/dashboard/trade-manager`, `/dashboard/trading-systems`, `/dashboard/learning`, `/dashboard/loyalty`, `/dashboard/leaderboard`, `/dashboard/academy/*`, `/dashboard/settings/*`.
-- Admin: `/admin`, `/admin/reports`, `/admin/analytics`, `/admin/release-health`, `/admin/users`, `/admin/users/behavior`, `/admin/users/[id]`, `/admin/ib/*`, `/admin/mt5-cloud`, `/admin/trading-systems/*`, `/admin/articles/*`, `/admin/academy/*`, `/admin/competitions`, `/admin/loyalty`, `/admin/notifications/*`, `/admin/messages`, `/admin/feedback`, `/admin/ai/*`, `/admin/email-lab`, `/admin/security`, `/admin/settings`.
-- APIs: `/api/sync/*`, `/api/ea/*`, `/api/remote/*`, `/api/worker/jobs/*`, `/api/v1/ai/*`, `/api/analytics/*`, `/api/admin/*`, `/api/articles/*`, `/api/academy/*`, `/api/cron/*`, `/api/trade-plans/*`, `/api/trading-accounts/*`.
+- Admin: `/admin`, `/admin/reports`, `/admin/analytics`, `/admin/release-health`, `/admin/users`, `/admin/users/behavior`, `/admin/users/[id]`, `/admin/ib/*`, `/admin/trading-systems/*`, `/admin/articles/*`, `/admin/academy/*`, `/admin/competitions`, `/admin/loyalty`, `/admin/notifications/*`, `/admin/messages`, `/admin/feedback`, `/admin/ai/*`, `/admin/email-lab`, `/admin/security`, `/admin/settings`.
+- APIs: `/api/sync/*`, `/api/ea/*`, `/api/remote/*`, `/api/mt5/brokers/search`, `/api/v1/ai/*`, `/api/analytics/*`, `/api/admin/*`, `/api/articles/*`, `/api/academy/*`, `/api/cron/*`, `/api/trade-plans/*`, `/api/trading-accounts/*` (plus legacy `/api/worker/jobs/*`).
 
 Navigation source of truth: `src/config/navigation.ts`.
 
@@ -88,7 +88,7 @@ Use this table when assigning bugs or feature work.
 | Sync Health Center | `/dashboard/accounts?health=sync` | `src/components/trading-accounts/SyncHealthCenter.tsx`, `SyncHealthSummaryCard.tsx`, `SyncHealthAccountRow.tsx`, `SyncRecoveryAction.tsx` | `TradingAccount`, `SyncHistory`, `ImportHistory`, `src/lib/sync-health.ts` |
 | Trade Manager EA sync | account setup, EA APIs | `src/app/api/ea/*`, `src/app/api/sync/*`, trading-system download/config surfaces | API key auth, commands, account heartbeat, first-data sync |
 | Trade Manager Remote Control (Hybrid) | `/dashboard/trade-manager`, `/api/remote/*`, `/api/ea/commands/*` | `src/app/dashboard/trade-manager/*`, `src/app/api/remote/*`, `src/app/api/ea/commands/*` | Hybrid execution: Primary .NET MT5 Socket Bridge microservice (Port 5055, 10-50ms TCP) + Secondary `EaCommand` polling fallback |
-| MT5 Cloud Worker Fleet | `/admin/mt5-cloud`, `/api/worker/jobs/*` | `src/app/admin/mt5-cloud/*`, `src/app/api/worker/jobs/*`, `tools/tnt-worker/*` | `Mt5Worker` (Multi-Instance & Smart Auto-Sleep), `Mt5EnrollmentToken`, `Mt5ImportJob`, `TradingAccountCredential` (AES-256-GCM) |
+| MT5 Cloud Sync (Android APK Engine) | `/dashboard/accounts`, `/admin/ib/sync-requests`, `/api/mt5/brokers/search` | `mt5-cloud-sync/*`, `src/actions/cloud-sync.ts`, `src/actions/admin-sync-requests.ts`, `src/app/api/mt5/brokers/search/route.ts`, `src/lib/credentials/investor-password.server.ts` | Cross-platform `CloudSyncService` (`metatrader5.apk` + Java UniDBG `mt5-native-runner.jar`), `Mt5ImportJob`, `SupportSyncTicket`, `TradingAccountCredential` (AES-256-GCM `v1`) |
 | Legacy sync compatibility | old sync APIs/app artifacts | `src/app/api/sync`, `src/app/api/app/version` | backwards-compatible import handling only; do not promote in new UI |
 | Journal & Strategies | `/dashboard/journal`, `/dashboard/strategies`, `/api/cron/journal-autopilot` | journal pages/components/actions, `src/app/dashboard/strategies/*`, `src/lib/journal/autopilot.server.ts` | `JournalEntry`, `Strategy`, `TradingDayNote`, imports, manual trades, AI gateway journal autopilot |
 | Trade plans | `/dashboard/journal?tab=plans` | `src/components/journal/TradePlanList.tsx`, `TradePlanCard.tsx`, `TradePlanModal.tsx`, `PlanVsActualPanel.tsx`, `src/actions/trade-plans.ts` | `TradePlan`, `JournalEntry`, account/symbol matching |
@@ -179,7 +179,7 @@ Current recurring release checks:
 - User APIs must resolve the authenticated user server-side.
 - Admin APIs must require `Profile.role` of `ADMIN` or `EDITOR`.
 - Sync APIs must authenticate with account/user API keys.
-- Worker APIs (`/api/worker/*`) authenticate with a shared worker key and are the only path allowed to claim jobs or submit extracted deals.
+- Legacy `/api/worker/*` endpoints remain gated behind a shared secret for backwards compatibility only; active MT5 Cloud Sync runs in-process via `src/actions/cloud-sync.ts` and `mt5-cloud-sync/`.
 - Analytics APIs must avoid storing sensitive personal or broker data.
 - File/media APIs should go through the object storage abstraction, not hard-coded local paths.
 - Read paths must not write. A `get*` server action or a page render must never mutate the database — writes triggered on page load fire on every visit and are invisible to the caller.
@@ -188,13 +188,13 @@ Current recurring release checks:
 
 The current user-facing sync paths are:
 
-- Trade Manager EA: `/api/ea/*`.
-- Manual Journal: `/dashboard/journal`.
-- Cloud Sync: a `Mt5ImportJob` row is created by the web app, then an external Python worker (`tools/tnt-worker/`) polls `GET /api/worker/jobs/pull`, drives a local MT5 terminal, extracts deals, and submits via `POST /api/worker/jobs/submit`. The worker reports terminal-side failures to `/api/worker/jobs/fail`.
+- **Trade Manager EA**: `/api/ea/*` (real-time desktop/VPS MQL5 telemetry and remote position control).
+- **MT5 Cloud Sync (`mt5-cloud-sync/`)**: Cross-platform, no-PC automated history sync executed directly inside the Next.js Node.js server process (`src/actions/cloud-sync.ts` -> `mt5-cloud-sync/CloudSyncService.js`). Instead of running a separate Windows VPS or `terminal64.exe` GUI worker, `mt5-cloud-sync` emulates the official **MetaTrader 5 Android App (`metatrader5.apk`)** using Node.js protocol handlers (`mt5-cloud-sync/apk/*`) paired with a headless **Java UniDBG ARM64 runner (`mt5-cloud-sync/bin/mt5-native-runner.jar`)**:
+  - Live broker & server catalog search runs via `/api/mt5/brokers/search` and caches server endpoints in `mt5-cloud-sync/servers.cache.json`.
+  - `triggerCloudSync` creates an `Mt5ImportJob`, decrypts the account's saved Investor/Master password, authenticates via the MT5 mobile protocol (`step1Login`), downloads binary trade containers under `mt5-cloud-sync/bases/<Server>/trades/<login>/`, normalizes cent accounts/lots, deduplicates deals by ticket, and upserts `JournalEntry` (`syncSource = "CLOUD_WORKER"` for schema compatibility), `SyncHistory`, and `TradingAccount`.
+- **Manual Journal**: `/dashboard/journal` for manual trade logging.
 
-Cloud Sync environment failures are expected, not exceptional. The worker distinguishes account errors from **MT5 environment errors** — `SERVERS_DAT_PROVISION_FAILED` (`-10005`), `MT5_INIT_FAILED`, and `LOGIN_TIMEOUT` are terminal-side and would hit a human on the same machine identically. Only `INVALID_CREDENTIALS` is an account problem. On `-10005` the worker fails fast after attempt 1 rather than looping 5 times.
-
-**Manual Sync Support Ticket is the fallback for every environment failure.** When an automated sync cannot complete, a `SupportSyncTicket` is raised (by the worker automatically, or by the user from `/dashboard/accounts`). An admin then logs into MT5 manually with the ticket's broker/server/account and the stored investor password, syncs by hand, and marks the ticket verified or failed. The user is notified in-app when the ticket reaches either state. The investor password is read through `src/lib/credentials/investor-password.server.ts`, which handles both `keyVersion` storage formats (`"plain"` legacy plaintext and `"v1"` AES-256-GCM); revealing it writes an `ADMIN_VIEW_CREDENTIAL` row to `SecurityLog`.
+**Manual Sync Support Ticket (`SupportSyncTicket`) is the concierge fallback.** Users can request manual sync assistance from `/dashboard/accounts` (or when an automated sync fails), managed by Admins at `/admin/ib/sync-requests`. Credentials are encrypted at rest with **AES-256-GCM (`keyVersion = "v1"`)** in `TradingAccountCredential` via `saveCloudSyncCredentials()` (`src/lib/credentials/investor-password.server.ts` also maintains read fallback for legacy `"plain"` rows). Both the account owner (in Account Settings / Cloud Sync modals) and authorized Admins can reveal/copy the saved password; every Admin reveal writes an immutable `ADMIN_VIEW_CREDENTIAL` entry to `SecurityLog`.
 
 Legacy `/api/sync/*` code may remain for backwards compatibility, but it should not appear as a primary setup path in new product surfaces.
 

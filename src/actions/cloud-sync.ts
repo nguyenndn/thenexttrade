@@ -137,7 +137,7 @@ export async function saveCloudSyncCredentials(
     }
 }
 
-async function executeApkCloudSyncJob(params: {
+interface ApkCloudSyncJobParams {
     jobId: string;
     userId: string;
     accountId: string;
@@ -150,7 +150,87 @@ async function executeApkCloudSyncJob(params: {
     syncOpenTrades: boolean;
     existingCurrency?: string | null;
     existingBroker?: string | null;
-}) {
+}
+
+const MAX_SYNC_WORKERS = Math.max(
+    1,
+    parseInt(process.env.MT5_SYNC_CONCURRENCY || "4", 10) || 4
+);
+
+interface CloudSyncQueueState {
+    queue: ApkCloudSyncJobParams[];
+    activeJobIds: Set<string>;
+}
+
+function getCloudSyncQueueState(): CloudSyncQueueState {
+    const g = globalThis as unknown as {
+        __mt5CloudSyncQueuePool?: CloudSyncQueueState;
+    };
+    if (!g.__mt5CloudSyncQueuePool) {
+        g.__mt5CloudSyncQueuePool = {
+            queue: [],
+            activeJobIds: new Set<string>(),
+        };
+    }
+    return g.__mt5CloudSyncQueuePool;
+}
+
+/**
+ * Returns:
+ * - `0` if currently running on one of the 4 active worker lanes
+ * - `1..N` if waiting in queue behind the 4 active worker lanes
+ * - `-1` if not found in queue or active workers
+ */
+function getJobQueuePosition(jobId: string): number {
+    const state = getCloudSyncQueueState();
+    if (state.activeJobIds.has(jobId)) return 0;
+    const idx = state.queue.findIndex((item) => item.jobId === jobId);
+    if (idx === -1) return -1;
+    return idx + 1;
+}
+
+function pumpCloudSyncWorkers(): void {
+    const state = getCloudSyncQueueState();
+    while (state.activeJobIds.size < MAX_SYNC_WORKERS && state.queue.length > 0) {
+        const nextTask = state.queue.shift();
+        if (!nextTask) break;
+
+        state.activeJobIds.add(nextTask.jobId);
+
+        void (async () => {
+            try {
+                // Skip if user cancelled while waiting in queue
+                const dbJob = await prisma.mt5ImportJob
+                    .findUnique({
+                        where: { id: nextTask.jobId },
+                        select: { status: true },
+                    })
+                    .catch(() => null);
+                if (!dbJob || dbJob.status !== "PENDING") {
+                    return;
+                }
+                await executeApkCloudSyncJob(nextTask);
+            } finally {
+                state.activeJobIds.delete(nextTask.jobId);
+                pumpCloudSyncWorkers();
+            }
+        })();
+    }
+}
+
+function enqueueCloudSyncJob(params: ApkCloudSyncJobParams): number {
+    const state = getCloudSyncQueueState();
+    const hasFreeLane =
+        state.activeJobIds.size < MAX_SYNC_WORKERS && state.queue.length === 0;
+    state.queue.push(params);
+    const waitingPosition = hasFreeLane ? 0 : state.queue.length;
+    setTimeout(() => {
+        pumpCloudSyncWorkers();
+    }, 0);
+    return waitingPosition;
+}
+
+async function executeApkCloudSyncJob(params: ApkCloudSyncJobParams) {
     const {
         jobId,
         userId,
@@ -509,10 +589,11 @@ export async function triggerCloudSync(
     });
 
     if (activeJob) {
+        const qPos = getJobQueuePosition(activeJob.id);
         const ageMs = Date.now() - new Date(activeJob.createdAt).getTime();
         const isPending = activeJob.status === "PENDING";
-        const STALE_THRESHOLD_MS = isPending ? 60 * 1000 : 120 * 1000;
-        if (ageMs > STALE_THRESHOLD_MS) {
+        const STALE_THRESHOLD_MS = 120 * 1000;
+        if (qPos === -1 && ageMs > STALE_THRESHOLD_MS) {
             await prisma.mt5ImportJob.update({
                 where: { id: activeJob.id },
                 data: {
@@ -528,8 +609,11 @@ export async function triggerCloudSync(
                 success: true,
                 jobId: activeJob.id,
                 status: activeJob.status,
+                queuePosition: qPos > 0 ? qPos : undefined,
                 message: isPending
-                    ? "Sync request already in queue. Waiting for background worker."
+                    ? qPos > 1
+                        ? `Queued for sync (#${qPos} in queue)...`
+                        : "Sync request already in queue. Starting shortly..."
                     : "Sync request is currently being processed by worker.",
             };
         }
@@ -603,12 +687,12 @@ export async function triggerCloudSync(
             rangeTo: toDate,
             status: "PENDING",
             progressPercent: 10,
-            message: "Starting MT5 APK Cloud Sync...",
+            message: "Queued for MT5 Cloud Sync...",
         },
     });
 
-    // Execute MT5 APK Cloud Sync directly inside the Next.js server process (no port 3085 needed)
-    const execRes = await executeApkCloudSyncJob({
+    // Enqueue into the 4-lane background worker pool (CONCURRENCY = 4, non-blocking)
+    const queuePosition = enqueueCloudSyncJob({
         jobId: job.id,
         userId: user.id,
         accountId: account.id,
@@ -623,29 +707,28 @@ export async function triggerCloudSync(
         existingBroker: account.broker,
     });
 
-    revalidatePath("/dashboard/accounts");
-    revalidatePath("/dashboard");
-    revalidatePath("/dashboard/journal");
-    revalidatePath("/dashboard/analytics");
+    const initialMsg =
+        queuePosition > 0
+            ? `Queued for sync (#${queuePosition} in queue)...`
+            : "Starting MT5 Cloud Sync...";
 
-    if (!execRes || !execRes.success) {
-        return {
-            success: false,
-            jobId: job.id,
-            status: "FAILED",
-            error: execRes?.error || "Failed to sync trade history.",
-        };
+    if (queuePosition > 0) {
+        await prisma.mt5ImportJob
+            .update({
+                where: { id: job.id },
+                data: { message: initialMsg },
+            })
+            .catch(() => {});
     }
+
+    revalidatePath("/dashboard/accounts");
 
     return {
         success: true,
         jobId: job.id,
-        status: "COMPLETED",
-        dealsReceived: execRes.received,
-        inserted: execRes.inserted,
-        updated: execRes.closed,
-        skipped: execRes.skipped,
-        message: execRes.message || "Cloud sync completed successfully.",
+        status: "PENDING",
+        queuePosition,
+        message: initialMsg,
     };
 }
 
@@ -698,10 +781,19 @@ export async function getCloudSyncStatus(accountId: string) {
     let latestJob = account.mt5ImportJobs[0] || null;
 
     if (latestJob && (latestJob.status === "PENDING" || latestJob.status === "PROCESSING")) {
+        const qPos = getJobQueuePosition(latestJob.id);
         const ageMs = Date.now() - new Date(latestJob.createdAt).getTime();
-        const isPending = latestJob.status === "PENDING";
-        const STALE_THRESHOLD_MS = isPending ? 60 * 1000 : 120 * 1000;
-        if (ageMs > STALE_THRESHOLD_MS) {
+        const STALE_THRESHOLD_MS = 180 * 1000;
+
+        if (latestJob.status === "PENDING" && qPos >= 0) {
+            latestJob = {
+                ...latestJob,
+                message:
+                    qPos > 0
+                        ? `Waiting in queue (#${qPos})...`
+                        : "Starting MT5 Cloud Sync...",
+            };
+        } else if (qPos === -1 && ageMs > STALE_THRESHOLD_MS) {
             const timeoutReason =
                 "Unable to sync trade history. Please try again or request sync support.";
 
@@ -721,6 +813,13 @@ export async function getCloudSyncStatus(accountId: string) {
                 errorMessage: timeoutReason,
             };
         }
+    } else if (latestJob && latestJob.status === "COMPLETED") {
+        try {
+            revalidatePath("/dashboard/accounts");
+            revalidatePath("/dashboard");
+            revalidatePath("/dashboard/journal");
+            revalidatePath("/dashboard/analytics");
+        } catch {}
     }
 
     const hasSavedPassword = Boolean(account.credential?.encryptedPassword);
@@ -837,6 +936,10 @@ export async function cancelCloudSyncJob(accountId: string, reason?: string) {
     if (activeJobs.length === 0) {
         return { success: true, message: "No active sync job to cancel." };
     }
+
+    // Drop any pending queued jobs for this account immediately
+    const qState = getCloudSyncQueueState();
+    qState.queue = qState.queue.filter((item) => item.accountId !== accountId);
 
     await prisma.mt5ImportJob.updateMany({
         where: {

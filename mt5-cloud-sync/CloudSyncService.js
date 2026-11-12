@@ -166,29 +166,32 @@ class CloudSyncService {
     password,
     from = null,
     to = null,
+    fromDate = null,
+    toDate = null,
     days = 30,
     limit = 5000,
     syncKey = '',
     crmBaseUrl = 'http://localhost:3000',
     autoPush = false
   }) {
-    // 1. Authenticate first via Step 1 if password is provided
-    let authResult = null;
-    if (password && String(password).trim()) {
-      authResult = await this.step1Login({ serverName, login, password });
-      if (!authResult.success) {
-        return authResult;
-      }
+    if (!serverName || !String(serverName).trim()) {
+      return { success: false, error: 'Server name is required' };
+    }
+    if (!login || !String(login).trim()) {
+      return { success: false, error: 'Account ID (login) is required' };
+    }
+    if (!password || !String(password).trim()) {
+      return { success: false, error: 'Password (or Passview/Investor password) is required' };
     }
 
-    // 2. Load Trade History from APK TradesBase (.dat containers) filtered by [from, to]
+    // Authenticate + Discover Live Server + Load Trade History in a single queued libcommon.so pass
     const historyResult = await this.tradesBase.loadTradeHistory({
-      login,
-      password,
-      server: serverName,
+      login: String(login).trim(),
+      password: String(password).trim(),
+      server: String(serverName).trim(),
       days,
-      from,
-      to,
+      from: from ?? fromDate,
+      to: to ?? toDate,
       limit
     });
 
@@ -196,7 +199,7 @@ class CloudSyncService {
       return historyResult;
     }
 
-    // 3. If autoPush is enabled and syncKey is provided, push to GSN-CRM (/api/ea/heartbeat + /api/ea/trades)
+    // Optional push to GSN-CRM (/api/ea/heartbeat + /api/ea/trades)
     let crmPushResult = null;
     if (autoPush && syncKey && String(syncKey).trim()) {
       crmPushResult = await this.pushToGsnCrm({
@@ -209,7 +212,7 @@ class CloudSyncService {
 
     return {
       ...historyResult,
-      auth: authResult ? authResult.account : historyResult.accountInfo,
+      auth: historyResult.accountInfo,
       crmPush: crmPushResult
     };
   }

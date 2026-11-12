@@ -275,7 +275,7 @@ export function CloudSyncModal({
                     }
                 }
             }
-        }, 3000);
+        }, 2000);
 
         return () => clearInterval(interval);
     }, [isOpen, latestJob, account.id, onUpdated]);

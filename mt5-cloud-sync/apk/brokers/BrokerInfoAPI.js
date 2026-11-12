@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { execFileSync } = require('child_process');
+const { enqueueNativeRun, cleanWorkDir, execJavaAsync } = require('../../NativeQueue');
 const { BrokerSignature_Lxy5, BrokerJsonParser_Lmy5 } = require('./BrokerInfo');
 const { ServersBase } = require('../terminal/ServersBase');
 
@@ -68,64 +68,62 @@ class BrokerInfoAPI {
     };
   }
 
-  _runNativeBrokerSearch(query) {
+  async _runNativeBrokerSearch(query) {
     const cleanQuery = String(query || '').trim();
     if (cleanQuery.length < 2) return null;
 
-    try {
-      const cloudSyncRoot = path.join(__dirname, '..', '..');
-      const binDir = path.join(cloudSyncRoot, 'bin');
-      const runnerJar = path.join(binDir, 'mt5-native-runner.jar');
-      const bundledApk = path.join(binDir, 'metatrader5.apk');
-      const fallbackApk = 'd:\\WORK\\TestREA\\metatrader5.apk';
-      const apkPath = process.env.MT5_APK_PATH || (fs.existsSync(bundledApk) ? bundledApk : fallbackApk);
-      const workDir = path.join(cloudSyncRoot, 'unidbg-workdir');
+    const cloudSyncRoot = path.join(__dirname, '..', '..');
+    const binDir = path.join(cloudSyncRoot, 'bin');
+    const runnerJar = path.join(binDir, 'mt5-native-runner.jar');
+    const bundledApk = path.join(binDir, 'metatrader5.apk');
+    const fallbackApk = 'd:\\WORK\\TestREA\\metatrader5.apk';
+    const apkPath = process.env.MT5_APK_PATH || (fs.existsSync(bundledApk) ? bundledApk : fallbackApk);
+    const workDir = path.join(cloudSyncRoot, 'unidbg-workdir');
 
-      const portableJava = 'd:\\WORK\\TestREA\\.tools\\jdk-17.0.21.0.2+1\\bin\\java.exe';
-      const javaBinName = process.platform === 'win32' ? 'java.exe' : 'java';
-      const javaHomeExe = process.env.JAVA_HOME
-        ? path.join(process.env.JAVA_HOME, 'bin', javaBinName)
-        : null;
-      const javaExe =
-        process.env.MT5_JAVA_PATH ||
-        (javaHomeExe && fs.existsSync(javaHomeExe) ? javaHomeExe : null) ||
-        (fs.existsSync(portableJava) ? portableJava : 'java');
+    const portableJava = 'd:\\WORK\\TestREA\\.tools\\jdk-17.0.21.0.2+1\\bin\\java.exe';
+    const javaBinName = process.platform === 'win32' ? 'java.exe' : 'java';
+    const javaHomeExe = process.env.JAVA_HOME
+      ? path.join(process.env.JAVA_HOME, 'bin', javaBinName)
+      : null;
+    const javaExe =
+      process.env.MT5_JAVA_PATH ||
+      (javaHomeExe && fs.existsSync(javaHomeExe) ? javaHomeExe : null) ||
+      (fs.existsSync(portableJava) ? portableJava : 'java');
 
-      if (!fs.existsSync(runnerJar) || !fs.existsSync(apkPath)) {
-        return null;
-      }
-
-      const stdout = execFileSync(
-        javaExe,
-        ['-jar', runnerJar, '--search-broker', cleanQuery, '--apk', apkPath, '--workdir', workDir],
-        {
-          cwd: cloudSyncRoot,
-          encoding: 'utf8',
-          stdio: ['ignore', 'pipe', 'pipe'],
-          maxBuffer: 16 * 1024 * 1024,
-          timeout: 25000,
-          windowsHide: true
-        }
-      );
-
-      const startMarker = '__MT5_BROKER_JSON_START__';
-      const endMarker = '__MT5_BROKER_JSON_END__';
-      const sIdx = stdout.indexOf(startMarker);
-      const eIdx = stdout.indexOf(endMarker);
-      if (sIdx === -1 || eIdx === -1 || eIdx <= sIdx) {
-        return null;
-      }
-
-      const outer = JSON.parse(stdout.slice(sIdx + startMarker.length, eIdx).trim());
-      const rawParsed = outer.rawBody ? JSON.parse(outer.rawBody) : { result: [] };
-      const normalized = {
-        ...outer,
-        rawParsed
-      };
-      return normalized;
-    } catch {
+    if (!fs.existsSync(runnerJar) || !fs.existsSync(apkPath)) {
       return null;
     }
+
+    return enqueueNativeRun(workDir, async (slotWorkDir) => {
+      try {
+        const stdout = await execJavaAsync(
+          javaExe,
+          ['-jar', runnerJar, '--search-broker', cleanQuery, '--apk', apkPath, '--workdir', slotWorkDir],
+          {
+            cwd: cloudSyncRoot,
+            maxBuffer: 16 * 1024 * 1024,
+            timeout: 25000
+          }
+        );
+
+        const startMarker = '__MT5_BROKER_JSON_START__';
+        const endMarker = '__MT5_BROKER_JSON_END__';
+        const sIdx = stdout.indexOf(startMarker);
+        const eIdx = stdout.indexOf(endMarker);
+        if (sIdx === -1 || eIdx === -1 || eIdx <= sIdx) {
+          return null;
+        }
+
+        const outer = JSON.parse(stdout.slice(sIdx + startMarker.length, eIdx).trim());
+        const rawParsed = outer.rawBody ? JSON.parse(outer.rawBody) : { result: [] };
+        return {
+          ...outer,
+          rawParsed
+        };
+      } catch {
+        return null;
+      }
+    });
   }
 
   /**
@@ -139,7 +137,7 @@ class BrokerInfoAPI {
     const dnsEntry = DNSManager.resolveApiPoint();
 
     // 1. Live MetaQuotes mobile CDN search via libcommon.so (BrokerInfoAPI.a / BrokerInfoAPI.c)
-    const liveNative = this._runNativeBrokerSearch(cleanQuery);
+    const liveNative = await this._runNativeBrokerSearch(cleanQuery);
     const liveResultItems =
       liveNative && liveNative.rawParsed && Array.isArray(liveNative.rawParsed.result)
         ? liveNative.rawParsed.result

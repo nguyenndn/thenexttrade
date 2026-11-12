@@ -1,6 +1,6 @@
 # Operations
 
-Last reviewed: 2026-10-26
+Last reviewed: 2026-11-11
 
 This file covers environment, self-hosting, storage, deploy, monitoring, and release operations.
 
@@ -77,15 +77,16 @@ SMTP_FROM_NAME=TheNextTrade
 MAILTRAP_API_TOKEN=
 ```
 
-GitHub License Backup & MT5 Cloud Worker:
+GitHub License Backup & MT5 Cloud Sync (`mt5-cloud-sync`):
 
 ```env
 GITHUB_TOKEN=
 GITHUB_LICENSE_REPO=
 GITHUB_LICENSE_PATH=accounts.csv
-MT5_WORKER_SHARED_SECRET=
 CREDENTIAL_ENCRYPTION_KEY=
 ```
+
+*(Note: `CREDENTIAL_ENCRYPTION_KEY` is required in production for AES-256-GCM `v1` encryption of `TradingAccountCredential` MT5 passwords. No separate Windows worker machine or `MT5_WORKER_SHARED_SECRET` is needed for `mt5-cloud-sync`.)*
 
 Optional analytics/security:
 
@@ -126,20 +127,21 @@ Rules:
 
 ## Production Stack
 
-Recommended services:
+Recommended services (**100% Linux — NO Windows VPS required**):
 
-- Deploy/control panel: Coolify.
+- Deploy/control panel: **Coolify on a Linux Cloud VPS** (Hetzner / Vultr) or **Docker container on Railway**.
+  - **Runtime requirement for `mt5-cloud-sync`**: The same Linux container/host running Next.js must have **Node.js 20+** and **OpenJDK 17+ JRE (`java`)** installed so `mt5-cloud-sync/bin/mt5-native-runner.jar` (UniDBG ARM64 Android APK emulator for `metatrader5.apk`) can execute in-process, plus writable disk storage for `mt5-cloud-sync/bases/` and `mt5-cloud-sync/servers.cache.json`. Pure serverless hosts (like Vercel Serverless Functions) cannot spawn a JVM or persist `mt5-cloud-sync/bases/`.
 - DNS/CDN/WAF: Cloudflare.
 - Object storage and backups: Cloudflare R2.
 - Transactional email: Brevo or Postmark.
-- Monitoring: Better Stack.
+- Monitoring: Better Stack / Sentry.
 - Auth: Supabase Auth, while the app owns user profile/reporting data.
-- Database: Postgres on managed service or a carefully backed-up VPS database.
+- Database: Postgres on managed service (Supabase / Neon / Railway) or a carefully backed-up VPS database.
 
-VPS baseline:
+Linux VPS / Container baseline:
 
 - Preferred: 6 vCPU, 12 GB RAM, 100 GB NVMe, 300 Mbit/s port, 2 snapshots.
-- Smaller 4 vCPU/8 GB is acceptable for early traffic, but leaves less room for database, image ops, and background work.
+- Smaller 4 vCPU / 8 GB Linux instance is acceptable for early traffic (comfortable for Next.js + OpenJDK UniDBG runner), though leaves less headroom if co-locating PostgreSQL on the same box.
 
 ## Backup Rules
 

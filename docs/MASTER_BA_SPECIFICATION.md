@@ -1,8 +1,8 @@
 # TÀI LIỆU ĐẶC TẢ NGHIỆP VỤ TỔNG THỂ (MASTER BA SPECIFICATION / SRS)
 **Dự án:** TheNextTrade (Hệ sinh thái Quản trị Giao dịch, Phân tích Hành vi & Tự động hóa MT5 — GoldScalperNinja Ecosystem)  
-**Phiên bản:** 3.5 (World-Class BA Specification — Fully Codebase-Aligned & BDD-Ready)  
-**Cập nhật lần cuối:** 2026-10-29  
-**Stack công nghệ:** Next.js 15 (App Router), React 19, TypeScript, Tailwind CSS v4, Prisma ORM (PostgreSQL / Supabase), Supabase Auth, Nodemailer (SMTP/Mailtrap), OpenRouter AI Gateway, .NET MT5 Direct Socket Bridge microservice (Port 5055).
+**Phiên bản:** 3.6 (World-Class BA Specification — Fully Codebase-Aligned & BDD-Ready)  
+**Cập nhật lần cuối:** 2026-11-11  
+**Stack công nghệ:** Next.js 15 (App Router), React 19, TypeScript, Tailwind CSS v4, Prisma ORM (PostgreSQL / Supabase), Supabase Auth, Nodemailer (SMTP/Mailtrap), OpenRouter AI Gateway, `mt5-cloud-sync` (Node.js + Java UniDBG MT5 Android APK Emulation), .NET MT5 Direct Socket Bridge microservice (Port 5055).
 
 ---
 
@@ -63,7 +63,7 @@ Khác với các phần mềm SaaS thu phí thuê bao tháng, **TheNextTrade mi�
 | **Trial Trader (`USER`)** | `Profile.role = USER`, trong vòng 7 ngày kể từ `User.createdAt` | Trải nghiệm toàn bộ quyền lợi Partner Pro: không giới hạn tài khoản, mở khóa 3 EA trên môi trường Demo/Live, truy cập AI Intelligence, không yêu cầu thẻ tín dụng. |
 | **Partner Pro Trader (`USER`)** | `Profile.role = USER` + `ProEntitlement.status = ACTIVE` (được xác thực IB hoặc Admin cấp thủ công) | Không giới hạn số tài khoản kết nối, 1 License Key mở khóa cả 3 EA, điều khiển từ xa qua Mobile Remote, phân tích AI chuyên sâu, tham gia Loyalty Rewards. |
 | **Content Editor (`EDITOR`)** | `Profile.role = EDITOR` (thuộc enum `UserRole { USER, EDITOR, ADMIN }`) | Quản lý biên tập bài viết chuẩn SEO (`/admin/articles/*`), danh mục, thẻ phân loại (`/admin/taxonomy`) và tài liệu học viện. |
-| **Administrator (`ADMIN`)** | `Profile.role = ADMIN` (bảo vệ bởi `requireAdminPageAccess()`) | Toàn quyền kiểm soát `/admin/*`: Quản lý người dùng, đóng vai Trader (Impersonate), duyệt IB/VIP, cấp/thu hồi EA License, kiểm tra tin nhắn khách hàng (`/admin/messages`), vận hành MT5 Cloud Fleet, AI Gateway, Security Logs. |
+| **Administrator (`ADMIN`)** | `Profile.role = ADMIN` (bảo vệ bởi `requireAdminPageAccess()`) | Toàn quyền kiểm soát `/admin/*`: Quản lý người dùng, đóng vai Trader (Impersonate), duyệt IB/VIP, cấp/thu hồi EA License, kiểm tra tin nhắn khách hàng (`/admin/messages`), giám sát MT5 Cloud Sync (`/admin/ib/sync-requests`), AI Gateway, Security Logs. |
 
 *(Lưu ý về lược đồ Prisma: Không tồn tại thuộc tính `User.isVip` hay giá trị enum `UserRole.INSTRUCTOR`. Toàn bộ trạng thái Pro/VIP được quản lý thông qua model `ProEntitlement` và enum `UserRole` chỉ gồm 3 giá trị: `USER`, `EDITOR`, `ADMIN`).*
 
@@ -339,10 +339,12 @@ Cung cấp giải pháp điều khiển lệnh khẩn cấp từ Web/Mobile (`/d
    - Dành cho các thiết lập VPS cá nhân độc lập không kết nối Socket Bridge.
    - Web ghi nhận `EaCommand` với trạng thái `PENDING`. Trade Manager EA quét lệnh qua `GET /api/ea/commands/pending`, thực thi trên MT5 và cập nhật trạng thái `EXECUTED` hoặc `FAILED`.
 
-### 6.3. Hạ tầng Máy chủ Đồng bộ MT5 Cloud Worker (`Mt5Worker`)
-- Quản lý cụm máy chủ Windows Worker chạy đa tiến trình MT5 Terminal qua mã kết nối `Mt5EnrollmentToken`.
-- Tự động ngủ thông minh (**Smart Auto-Sleep**) khi hết lịch trình để tiết kiệm tài nguyên máy chủ.
-- Thông tin mật khẩu Investor được mã hóa chuẩn **AES-256-GCM** trong `TradingAccountCredential`. Mọi truy cập giải mã của Admin đều bắt buộc lưu vết kiểm toán vào `AdminAuditLog` (`ADMIN_VIEW_CREDENTIAL`).
+### 6.3. Hạ tầng Đồng bộ Đám mây Đa nền tảng MT5 Cloud Sync (`mt5-cloud-sync` — Giả lập MT5 Android)
+- **Kiến trúc Không dùng Windows Worker:** Hệ thống loại bỏ hoàn toàn mô hình VPS Windows tách rời chạy `terminal64.exe` / Python worker. Toàn bộ luồng Cloud Sync chạy trực tiếp bên trong tiến trình Node.js đa nền tảng (Linux Cloud / Docker) thông qua module nội bộ `mt5-cloud-sync/` (`CloudSyncService.js` + `src/actions/cloud-sync.ts`).
+- **Giả lập Giao thức MT5 Android (`metatrader5.apk` + Java UniDBG):**
+  - Sử dụng bộ xử lý giao thức MT5 Mobile (`mt5-cloud-sync/apk/*`) kết hợp trình thực thi gốc ARM64 `UniDBG` (`mt5-cloud-sync/bin/mt5-native-runner.jar` chạy trên OpenJDK 17+) để đăng nhập trực tiếp tới máy chủ Broker giống ứng dụng MT5 trên điện thoại Android.
+  - Hỗ trợ tìm kiếm trực tiếp danh bạ Broker & Server (`/api/mt5/brokers/search`, lưu đệm tại `mt5-cloud-sync/servers.cache.json`), đăng nhập bằng mật khẩu Investor (Passview) hoặc Master Password (`step1Login`), tải container lịch sử nhị phân `.dat` (`mt5-cloud-sync/bases/<Server>/trades/<login>/`), chuẩn hóa tài khoản Cent/Lot, khử trùng lặp theo ticket và đồng bộ vào `JournalEntry` (`syncSource = "CLOUD_WORKER"` để tương thích lược đồ), `SyncHistory`, `Mt5ImportJob`.
+- **Bảo mật & Tra cứu Mật khẩu (`AES-256-GCM`):** Thông tin mật khẩu MT5 được mã hóa chuẩn **AES-256-GCM (`keyVersion = "v1"`)** trong `TradingAccountCredential` (có tương thích ngược khi đọc dữ liệu cũ). Chủ tài khoản có thể xem/chỉnh sửa/sao chép trên cùng 1 ô nhập tại Dashboard, và Admin có thể xem/sao chép phục vụ hỗ trợ kỹ thuật — mọi thao tác giải mã của Admin đều bắt buộc ghi vết bất biến vào `SecurityLog` (`ADMIN_VIEW_CREDENTIAL`).
 
 ---
 

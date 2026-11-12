@@ -1,6 +1,6 @@
 # TheNextTrade Docs
 
-Last reviewed: 2026-10-26
+Last reviewed: 2026-11-11
 
 This folder is the active source of truth for the product, system, operations, design, and email behavior. Old sprint plans, completed QA reports, and stale implementation notes should not live here.
 
@@ -8,7 +8,7 @@ This folder is the active source of truth for the product, system, operations, d
 
 | File | Purpose |
 | --- | --- |
-| [MASTER_BA_SPECIFICATION.md](MASTER_BA_SPECIFICATION.md) | **Master BA / SRS Specification (Vietnamese)**: Full end-to-end functional specification across all 10 domains (Public, Auth, Trader Workspace, EA Ecosystem, Remote Control, Cloud Worker, Academy, Gamification, and 100% Admin Portal + 128 APIs & 79 Prisma models) |
+| [MASTER_BA_SPECIFICATION.md](MASTER_BA_SPECIFICATION.md) | **Master BA / SRS Specification (Vietnamese)**: Full end-to-end functional specification across all 10 domains (Public, Auth, Trader Workspace, EA Ecosystem, Remote Control, MT5 Cloud Sync via Android APK emulation, Academy, Gamification, and 100% Admin Portal + 128 APIs & 79 Prisma models) |
 | [SYSTEM.md](SYSTEM.md) | Architecture, data flow, database areas, routes, APIs, security |
 | [PRODUCT.md](PRODUCT.md) | User-facing modules, admin modules, product rules, current behavior |
 | [PROJECT_HANDOFF.md](PROJECT_HANDOFF.md) | Practical handoff for new developers: what exists, what matters, where to work |
@@ -25,7 +25,7 @@ This folder is the active source of truth for the product, system, operations, d
 
 ## Admin Growth & Revenue Docs
 
-These four specs (plus the sync support fallback) cover the admin tooling that turns user telemetry into revenue and support decisions. All are shipped; treat them as reference, not as pending work.
+These four specs cover the admin tooling that turns user telemetry into revenue and support decisions. All are shipped; treat them as reference, not as pending work.
 
 | File | Covers |
 | --- | --- |
@@ -33,18 +33,17 @@ These four specs (plus the sync support fallback) cover the admin tooling that t
 | [features/admin-user-behavior-segmentation-plan.md](features/admin-user-behavior-segmentation-plan.md) | Behaviour segmentation console at `/admin/users/behavior` |
 | [features/admin-user-narrative-summary-plan.md](features/admin-user-narrative-summary-plan.md) | Template-generated narrative summary on `/admin/users/[id]` |
 | [features/admin-revenue-pipeline-plan.md](features/admin-revenue-pipeline-plan.md) | IB revenue pipeline and eligible volume |
-| [features/admin-sync-cloud-support-plan.md](features/admin-sync-cloud-support-plan.md) | Cloud Sync jobs and the manual sync support ticket fallback |
 
 ## Current Snapshot
 
 - App: Next.js App Router, React, TypeScript, Tailwind CSS, Lucide icons.
 - Database: PostgreSQL through Prisma.
 - Auth: Supabase Auth plus app-owned `User`, `Profile`, role, session, and security records. Supports custom 8-digit OTP signup verification via `supabaseAdmin.auth.admin.generateLink` + SMTP/Mailtrap delivery.
-- Deploy target: VPS with Coolify behind Cloudflare / Vercel.
+- Deploy target: Linux Cloud Server / VPS (Coolify or Docker on Railway) with Node.js + OpenJDK 17+ JRE behind Cloudflare (no Windows VPS required).
 - Storage: Cloudflare R2 for generated assets, uploads, article media, and backups.
 - Email: SMTP-compatible service (`SMTP_HOST` / Mailtrap in local dev; Brevo or Postmark recommended for production).
 - Analytics: internal Postgres analytics plus optional GA4.
-- Trade sync: Trade Manager EA is the supported automated sync path via the streamlined **3-step `TradeSyncWizard`** (env-driven WebRequest URL from `NEXT_PUBLIC_SYNC_SERVER_URL || NEXT_PUBLIC_APP_URL` + 4-step MT5 guide). Manual Journal remains the fallback, and **MT5 Cloud Worker** (`/admin/mt5-cloud`, Multi-Instance & Smart Auto-Sleep) supports automated cloud imports. Main account resolution follows a 4-tier fallback (`resolveDefaultAccountId`) with 1-year cookie persistence.
+- Trade sync: Trade Manager EA is the primary real-time sync path via the streamlined **3-step `TradeSyncWizard`** (env-driven WebRequest URL from `NEXT_PUBLIC_SYNC_SERVER_URL || NEXT_PUBLIC_APP_URL` + 4-step MT5 guide). **MT5 Cloud Sync** (`mt5-cloud-sync/`, emulating the official `metatrader5.apk` Android app via Node.js + Java UniDBG directly in-process without any Windows VPS, using AES-256-GCM `v1` encrypted credentials and monitored at `/admin/ib/sync-requests`) provides no-PC automated history imports, while Manual Journal and Support-Sync tickets remain the fallbacks. Main account resolution follows a 4-tier fallback (`resolveDefaultAccountId`) with 1-year cookie persistence.
 - Trade Manager Remote Control: Web & mobile remote execution console (`/dashboard/trade-manager`, `/api/remote/*` ↔ `/api/ea/commands/*`) operating on a **Hybrid Architecture**: primary C# .NET MT5 Direct Socket Bridge microservice (TCP port 5055, 10–50ms latency) with secondary asynchronous `EaCommand` database polling fallback.
 - Trading Style Assessment: 14-question psychology engine with 8 Archetypes across 6 skill dimensions, integrated into `/trading-style`, `/dashboard/settings/trading-style`, `/dashboard/settings/profile`, and Live Trading Card preview modal.
 - Community Hub: Telegram signal showcase (`/community`) with 10 curated posts/tab, randomizer, and image lightbox.

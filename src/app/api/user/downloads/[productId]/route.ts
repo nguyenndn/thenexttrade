@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
+import { isR2Configured } from "@/lib/storage/object-storage";
 import {
     createErrorResponse,
     createSuccessResponse,
@@ -109,6 +110,7 @@ export async function GET(
         }
 
         // 3. Resolve Download URL
+        const filename = filePath.split("/").pop() || "download.ex5";
         let downloadUrl: string;
         let logDirectlyHere = true;
 
@@ -117,11 +119,16 @@ export async function GET(
             filePath.startsWith("https://")
         ) {
             downloadUrl = filePath;
+        } else if (isR2Configured) {
+            // Product files are uploaded to R2. Use the protected streaming
+            // endpoint, which sends Content-Disposition and logs the download.
+            downloadUrl = `/api/trading-systems/${product.id}/download?platform=${platform}`;
+            logDirectlyHere = false;
         } else {
             const { data: signedUrlData, error: signError } =
                 await supabase.storage
                     .from("ea-products")
-                    .createSignedUrl(filePath, 60 * 5); // 5 minutes expiration
+                    .createSignedUrl(filePath, 60 * 5, { download: filename }); // 5 minutes expiration
 
             if (!signError && signedUrlData?.signedUrl) {
                 downloadUrl = signedUrlData.signedUrl;
@@ -153,7 +160,9 @@ export async function GET(
             });
         }
 
-        return NextResponse.json(createSuccessResponse({ url: downloadUrl }));
+        return NextResponse.json(
+            createSuccessResponse({ url: downloadUrl, filename })
+        );
     } catch (error) {
         console.error("Download API Error:", error);
         return NextResponse.json(

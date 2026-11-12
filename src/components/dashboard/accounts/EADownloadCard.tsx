@@ -5,6 +5,7 @@ import { Download, Bot } from "lucide-react";
 import { toast } from "sonner";
 import { EAProduct } from "@/types/ea-license";
 import { Button } from "@/components/ui/Button";
+import { htmlToPlainText } from "@/lib/sanitize";
 
 interface EADownloadCardProps {
     product: EAProduct;
@@ -75,7 +76,7 @@ export function EADownloadCard({ product }: EADownloadCardProps) {
                         </span>
                     </div>
                     <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
-                        {product.description ||
+                        {htmlToPlainText(product.description) ||
                             "Professional automatic trading system."}
                     </p>
                 </div>
