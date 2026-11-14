@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 COPY package.json package-lock.json ./
 COPY prisma ./prisma
-RUN npm ci
+RUN npm ci --legacy-peer-deps
 
 # 2. Build Next.js standalone bundle
 FROM base AS builder
