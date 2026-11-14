@@ -80,6 +80,25 @@
 - **Component size:** UI > 150 lines → split into subcomponents.
 - **Prisma scripts:** write CommonJS (`.cjs`) and run with `node` — never ts-node (repo has `noImplicitAny` → TS7006).
 
+## KNOWLEDGE GRAPH (graphify) — auto-trigger
+
+The repo carries a prebuilt code graph at `graphify-out/graph.json` (20k+ nodes). Consulting it is the
+**default first step** for codebase questions, not an optional tool. The same rule lives in
+`.agents/rules/graphify.md` (`trigger: always_on`) for Antigravity/Gemini, and the full command reference
+is in `.agents/skills/graphify/SKILL.md`.
+
+- **Before answering or planning** — "where does X live", "how does Y work", "what breaks if I change Z",
+  or locating a symbol/route/model: run `graphify query "<question>"`. Use `graphify explain "<concept>"`
+  for a focused concept and `graphify path "<A>" "<B>"` for relationships between two things.
+  These return a scoped subgraph, far smaller than `GRAPH_REPORT.md` or raw grep output.
+  If `path` reports no directed path, retry with `--undirected`, then fall back to `query`.
+- Read `graphify-out/GRAPH_REPORT.md` only for broad architecture review, or when query/path/explain did
+  not surface enough context. Read source files when implementing or debugging specific code.
+- **After a structural change** — new/renamed/deleted files, exports, API routes, Prisma models — run
+  `graphify update .` (AST-only, no API cost). Dirty `graphify-out/` files are expected and are never a
+  reason to skip the graph.
+- If `graphify-out/graph.json` is missing or stale, run `graphify update .` once, then continue.
+
 ## PRIORITY WHEN RULES CONFLICT
 
 ```
@@ -98,6 +117,7 @@ Never drop an item from the plan to "improve" something else. Every plan item mu
 | Lint | `npm run lint` |
 | Prisma schema changed | `npx prisma generate` (+ `migrate`/`db push` if the plan says so) |
 | Academy content / publish scripts | `node prisma/*.cjs` (CommonJS — run with **node**, never ts-node) |
+| Graph structure changed (files/exports/routes/models) | `graphify update .` |
 | Large change (production sanity) | `npm run build` |
 | Tests (if present) | `npx vitest run` |
 
