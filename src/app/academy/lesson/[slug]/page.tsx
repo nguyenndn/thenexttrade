@@ -3,18 +3,22 @@ import { notFound } from "next/navigation";
 import { PublicLessonView } from "@/components/academy/PublicLessonView";
 import type { Metadata } from "next";
 
-// SSG for public lessons
+// SSG for public lessons (gracefully falls back to on-demand rendering if DB is unreachable at build time)
 export async function generateStaticParams() {
-    const lessons = await prisma.lesson.findMany({
-        where: {
-            module: {
-                level: { accessLevel: "PUBLIC" },
+    try {
+        const lessons = await prisma.lesson.findMany({
+            where: {
+                module: {
+                    level: { accessLevel: "PUBLIC" },
+                },
+                status: "published",
             },
-            status: "published",
-        },
-        select: { slug: true },
-    });
-    return lessons.map((l) => ({ slug: l.slug }));
+            select: { slug: true },
+        });
+        return lessons.map((l) => ({ slug: l.slug }));
+    } catch {
+        return [];
+    }
 }
 
 export async function generateMetadata({

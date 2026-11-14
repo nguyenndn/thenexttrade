@@ -3,14 +3,13 @@
 FROM node:22-bookworm-slim AS base
 WORKDIR /app
 ENV NEXT_TELEMETRY_DISABLED=1
-
-# 1. Install dependencies (Debian bookworm-slim ensures glibc compatibility for Prisma & Unidbg)
-FROM base AS deps
 RUN apt-get update && apt-get install -y --no-install-recommends \
     openssl \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
+# 1. Install dependencies (Debian bookworm-slim ensures glibc compatibility for Prisma & Unidbg)
+FROM base AS deps
 COPY package.json package-lock.json ./
 COPY prisma ./prisma
 RUN npm ci --legacy-peer-deps
