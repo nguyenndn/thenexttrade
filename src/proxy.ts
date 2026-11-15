@@ -172,17 +172,21 @@ function isMaliciousBot(userAgent: string | null): boolean {
 // SECURITY HEADERS (Production only)
 // =============================================================================
 
-function addSecurityHeaders(response: NextResponse, isDev: boolean): void {
+function addSecurityHeaders(
+    response: NextResponse,
+    isDev: boolean,
+    isHttps: boolean
+): void {
     if (isDev) {
         // Dev: clear HSTS to prevent browser caching issues
         response.headers.set("Strict-Transport-Security", "max-age=0");
         return;
     }
 
-    // HSTS — 2 years with preload
+    // HSTS — only enforce on HTTPS origins; clear cached HSTS on HTTP staging URLs
     response.headers.set(
         "Strict-Transport-Security",
-        "max-age=63072000; includeSubDomains; preload"
+        isHttps ? "max-age=63072000; includeSubDomains; preload" : "max-age=0"
     );
 
     // Prevent clickjacking
@@ -203,12 +207,12 @@ function addSecurityHeaders(response: NextResponse, isDev: boolean): void {
         "camera=(), microphone=(), geolocation=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()"
     );
 
-    // CSP — Content Security Policy
+    // CSP — Content Security Policy (only add upgrade-insecure-requests over HTTPS)
     const csp = [
         "default-src 'self'",
         "script-src 'self' 'unsafe-inline' https://*.supabase.co https://*.google.com https://*.googleapis.com https://*.googletagmanager.com https://challenges.cloudflare.com",
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-        "img-src 'self' blob: data: https://*.supabase.co https://*.unsplash.com https://flagcdn.com https://images.unsplash.com https://cdn.jsdelivr.net https://*.r2.dev https://*.thenexttrade.io",
+        "img-src 'self' blob: data: https://*.supabase.co https://*.unsplash.com https://flagcdn.com https://images.unsplash.com https://cdn.jsdelivr.net https://*.r2.dev https://*.thenexttrade.com https://*.thenexttrade.io",
         "font-src 'self' data: https://fonts.gstatic.com",
         "connect-src 'self' https://*.supabase.co https://*.google-analytics.com https://*.googleapis.com wss://*.supabase.co https://challenges.cloudflare.com https://cdn.jsdelivr.net",
         "frame-src https://challenges.cloudflare.com",
@@ -217,7 +221,7 @@ function addSecurityHeaders(response: NextResponse, isDev: boolean): void {
         "base-uri 'self'",
         "form-action 'self'",
         "frame-ancestors 'none'",
-        "upgrade-insecure-requests",
+        ...(isHttps ? ["upgrade-insecure-requests"] : []),
     ].join("; ");
 
     response.headers.set("Content-Security-Policy", csp);
@@ -384,7 +388,15 @@ export async function proxy(request: NextRequest) {
     const response = await updateSession(request);
 
     // 5. Security Headers
-    addSecurityHeaders(response, isDev);
+    const forwardedProto = request.headers
+        .get("x-forwarded-proto")
+        ?.split(",")[0]
+        ?.trim()
+        ?.toLowerCase();
+    const isHttps = forwardedProto
+        ? forwardedProto === "https"
+        : request.nextUrl.protocol === "https:";
+    addSecurityHeaders(response, isDev, isHttps);
 
     // 6. Rate limit headers for API routes
     if (rateLimitResult && rateLimitCategory) {

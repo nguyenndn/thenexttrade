@@ -9,6 +9,7 @@ import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { FeedbackCarousel } from "@/components/community/FeedbackCarousel";
 import { TelegramShowcaseMockup } from "@/components/community/TelegramShowcaseMockup";
+import { pickServerRandomIndices } from "@/components/community/showcase-data/shuffle-deck";
 import { BrokerSetupGuide } from "@/components/community/BrokerSetupGuide";
 import { WhatYouFindInsideGrid } from "@/components/community/WhatYouFindInsideGrid";
 import { TELEGRAM_CHANNEL_URL } from "@/config/telegram";
@@ -33,8 +34,6 @@ import {
 } from "lucide-react";
 import fs from "fs";
 import path from "path";
-
-export const revalidate = 86400;
 
 export const metadata: Metadata = {
     title: "GoldScalperNinja Official Community — Free XAUUSD Signals & Gold Analysis",
@@ -299,7 +298,10 @@ export default async function CommunityPage() {
 
                             {/* Right Column: Interactive Telegram Interface Showcase */}
                             <div className="lg:col-span-6 flex min-w-0">
-                                <TelegramShowcaseMockup telegramUrl={TELEGRAM_URL} />
+                                <TelegramShowcaseMockup
+                                    telegramUrl={TELEGRAM_URL}
+                                    initialIndices={pickServerRandomIndices()}
+                                />
                             </div>
 
                         </div>

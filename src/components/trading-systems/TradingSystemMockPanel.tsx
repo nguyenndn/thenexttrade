@@ -5,6 +5,7 @@ import Image from "next/image";
 import { GoldScalperNinjaMockPanel } from "./mockup/GoldScalperNinjaMockPanel";
 import { TradeManagerMockPanel } from "./trade-manager-panel/TradeManagerMockPanel";
 import { ShadowMatrixMockPanel } from "./shadow-matrix-panel/ShadowMatrixMockPanel";
+import { SnrSystemMockPanel } from "./snr-system-panel/SnrSystemMockPanel";
 
 interface MockPanelProps {
     slug: string;
@@ -27,6 +28,10 @@ export function TradingSystemMockPanel({
 
     if (slug === "gsn-shadown-matrix" || slug === "gsn-phoenix-grid") {
         return <ShadowMatrixMockPanel />;
+    }
+
+    if (slug === "snr-system") {
+        return <SnrSystemMockPanel />;
     }
 
     if (fallbackImage) {
