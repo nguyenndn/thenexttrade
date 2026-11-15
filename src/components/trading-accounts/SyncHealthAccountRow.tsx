@@ -9,7 +9,10 @@ import {
     Cable,
 } from "lucide-react";
 import { SyncRecoveryAction } from "./SyncRecoveryAction";
-import { getSyncSourceLabel } from "@/lib/sync/sync-source";
+import {
+    getSyncSourceLabel,
+    normalizeSyncSource,
+} from "@/lib/sync/sync-source";
 
 interface SyncHealthAccountRowProps {
     account: {
@@ -80,7 +83,7 @@ export function SyncHealthAccountRow({
         }
     };
 
-    const sourceLabel = getSyncSourceLabel(account.source as any);
+    const sourceLabel = getSyncSourceLabel(normalizeSyncSource(account.source));
 
     return (
         <div

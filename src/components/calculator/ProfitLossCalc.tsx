@@ -3,11 +3,15 @@
 import { useState } from "react";
 import { ArrowUp, ArrowDown } from "lucide-react";
 import { motion } from "framer-motion";
-import { calculateProfitLoss } from "@/lib/calculators";
+import {
+    calculatePipValue,
+    calculateProfitLoss,
+    DEFAULT_PAIR_PRICES,
+} from "@/lib/calculators";
 import { CurrencyPairSelect } from "./CurrencyPairSelect";
 import {
     AccountCurrencySelect,
-    getCurrencySymbol,
+    formatAccountCurrencyAmount,
 } from "./AccountCurrencySelect";
 import { CalcInput } from "./CalcInput";
 import { CalcResultCard } from "./CalcResult";
@@ -26,6 +30,14 @@ export function ProfitLossCalc() {
 
     const result = calculateProfitLoss(inputs);
     const isProfit = result.profitLoss >= 0;
+    const pipValueInAccountCurrency =
+        Math.abs(result.pips) > 0
+            ? Math.abs(result.profitLoss) / Math.abs(result.pips)
+            : calculatePipValue({
+                  pair: inputs.pair,
+                  lotSize: inputs.lotSize,
+                  accountCurrency: inputs.accountCurrency,
+              });
 
     return (
         <div className="grid lg:grid-cols-12 gap-8">
@@ -124,7 +136,20 @@ export function ProfitLossCalc() {
                         </label>
                         <CurrencyPairSelect
                             value={inputs.pair}
-                            onChange={(v) => setInputs({ ...inputs, pair: v })}
+                            onChange={(v) => {
+                                const defaults =
+                                    DEFAULT_PAIR_PRICES[v.toUpperCase()];
+                                setInputs({
+                                    ...inputs,
+                                    pair: v,
+                                    entryPrice: defaults
+                                        ? defaults.price
+                                        : inputs.entryPrice,
+                                    exitPrice: defaults
+                                        ? defaults.exitLong
+                                        : inputs.exitPrice,
+                                });
+                            }}
                         />
                     </div>
                 </div>
@@ -145,33 +170,39 @@ export function ProfitLossCalc() {
             <div className="lg:col-span-5">
                 <div
                     className={cn(
-                        "border p-6 rounded-lg h-full flex flex-col justify-center text-center shadow-lg transition-colors duration-300",
+                        "border p-6 rounded-xl h-full flex flex-col justify-center text-center shadow-lg transition-colors duration-300",
                         isProfit
                             ? "bg-green-500/10 border-green-500/20 dark:bg-green-900/10"
                             : "bg-red-500/10 border-red-500/20 dark:bg-red-900/10"
                     )}
                 >
                     <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2">
-                        Projected P/L
+                        Projected P/L ({inputs.accountCurrency})
                     </p>
                     <p
                         className={cn(
-                            "text-4xl sm:text-5xl font-black mb-2",
+                            "text-4xl sm:text-5xl font-black font-mono tabular-nums mb-2",
                             isProfit
                                 ? "text-green-600 dark:text-green-400"
                                 : "text-red-600 dark:text-red-400"
                         )}
                     >
-                        ${result.profitLoss.toFixed(2)}
+                        {formatAccountCurrencyAmount(
+                            result.profitLoss,
+                            inputs.accountCurrency
+                        )}
                     </p>
-                    <p className="text-lg font-medium text-gray-600 dark:text-gray-300">
+                    <p className="text-lg font-medium font-mono tabular-nums text-gray-600 dark:text-gray-300">
                         {result.pips} pips
                     </p>
 
                     <div className="mt-4 pt-4 border-t border-dashboard grid grid-cols-2 gap-3">
                         <CalcResultCard
                             label="Pip Value"
-                            value={`$${(Math.abs(result.profitLoss) / Math.max(Math.abs(result.pips), 1)).toFixed(2)}`}
+                            value={formatAccountCurrencyAmount(
+                                pipValueInAccountCurrency,
+                                inputs.accountCurrency
+                            )}
                         />
                         <CalcResultCard
                             label="Price Change"

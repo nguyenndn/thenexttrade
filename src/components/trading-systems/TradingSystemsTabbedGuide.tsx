@@ -16,7 +16,7 @@ interface StepItem {
     step: string;
     title: string;
     description: string;
-    icon?: React.ComponentType<any>;
+    icon?: React.ComponentType<{ size?: number; className?: string }>;
 }
 
 const ACCESS_STEPS: StepItem[] = [
@@ -83,7 +83,7 @@ export function TradingSystemsTabbedGuide({ primaryCtaUrl }: TabbedGuideProps) {
     const steps = activeTab === "access" ? ACCESS_STEPS : INSTALLATION_STEPS;
 
     return (
-        <section className="mb-12 rounded-lg border border-gold/15 bg-white/80 p-6 shadow-lg shadow-gold/[0.02] dark:border-white/10 dark:bg-[#111318]/45 sm:p-10 relative overflow-hidden">
+        <section className="mb-12 rounded-xl border border-gold/15 bg-white/80 p-6 shadow-lg shadow-gold/[0.02] dark:border-white/10 dark:bg-[#111318]/45 sm:p-10 relative overflow-hidden">
             <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-gold/5 rounded-full blur-[100px] pointer-events-none" />
             <div className="absolute -top-20 -right-20 w-80 h-80 bg-gold/5 rounded-full blur-[100px] pointer-events-none" />
 
@@ -97,7 +97,7 @@ export function TradingSystemsTabbedGuide({ primaryCtaUrl }: TabbedGuideProps) {
                     <h2 className="font-heading text-2xl sm:text-3xl font-black text-gray-900 dark:text-white leading-tight">
                         How to Access & Install
                     </h2>
-                    <p className="mt-2 text-xs sm:text-sm font-semibold leading-relaxed text-gray-550 dark:text-gray-400">
+                    <p className="mt-2 text-xs sm:text-sm font-semibold leading-relaxed text-slate-500 dark:text-slate-400">
                         {activeTab === "access"
                             ? "Expert Advisors are free to unlock for eligible partner accounts. Follow the steps below to verify your account."
                             : "Follow these standardized technical steps to deploy the downloaded Expert Advisors or manual panels on MT5."}
@@ -108,7 +108,9 @@ export function TradingSystemsTabbedGuide({ primaryCtaUrl }: TabbedGuideProps) {
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 shrink-0">
                     <Tabs
                         value={activeTab}
-                        onValueChange={(val) => setActiveTab(val as any)}
+                        onValueChange={(val) =>
+                            setActiveTab(val as "access" | "install")
+                        }
                         tabsId="trading-systems-guide-tabs"
                         className="w-full sm:w-auto"
                     >
@@ -179,7 +181,7 @@ export function TradingSystemsTabbedGuide({ primaryCtaUrl }: TabbedGuideProps) {
                                 <h3 className="text-xs font-black text-gray-900 dark:text-white uppercase tracking-wider leading-tight">
                                     {item.title}
                                 </h3>
-                                <p className="mt-2 text-[11px] font-semibold leading-relaxed text-gray-505 dark:text-gray-400">
+                                <p className="mt-2 text-[11px] font-semibold leading-relaxed text-slate-500 dark:text-slate-400">
                                     {item.description}
                                 </p>
                             </div>

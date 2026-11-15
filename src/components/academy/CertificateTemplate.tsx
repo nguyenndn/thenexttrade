@@ -402,7 +402,7 @@ export function CertificateTemplate({
                         fontWeight: 400,
                     }}
                 >
-                    TheNextTrade.com — Professional Forex Trading Education
+                    thenexttrade.app — Professional Forex Trading Education
                 </div>
             </div>
 

@@ -113,13 +113,21 @@ export async function generateMetadata({
         };
     }
 
+    const resolvedTitle = article.metaTitle?.trim()
+        ? article.metaTitle.trim()
+        : `${article.title} | TheNextTrade`;
+    const resolvedSocialTitle = article.metaTitle?.trim() || article.title;
+    const resolvedDescription =
+        article.metaDescription?.trim() ||
+        article.excerpt ||
+        `Read ${article.title} on TheNextTrade.`;
+
     return {
-        title: `${article.title} | TheNextTrade`,
-        description:
-            article.excerpt || `Read ${article.title} on TheNextTrade.`,
+        title: resolvedTitle,
+        description: resolvedDescription,
         openGraph: {
-            title: article.title,
-            description: article.excerpt || undefined,
+            title: resolvedSocialTitle,
+            description: resolvedDescription,
             type: "article",
             images: article.thumbnail ? [article.thumbnail] : undefined,
             publishedTime: article.publishedAt
@@ -130,8 +138,8 @@ export async function generateMetadata({
         },
         twitter: {
             card: "summary_large_image",
-            title: article.title,
-            description: article.excerpt || undefined,
+            title: resolvedSocialTitle,
+            description: resolvedDescription,
             images: article.thumbnail ? [article.thumbnail] : undefined,
         },
         alternates: {
@@ -149,25 +157,9 @@ export default async function ArticlePage({
 }) {
     const { slug } = await params;
 
-    // Parallel Fetching: Article, Related Articles & Auth User
-    const [article, relatedArticles, user] = await Promise.all([
+    // Parallel Fetching: Article & Auth User
+    const [article, user] = await Promise.all([
         getCachedArticle(slug),
-        prisma.article.findMany({
-            where: {
-                status: "PUBLISHED",
-                slug: { not: slug },
-            },
-            take: 3,
-            orderBy: { views: "desc" },
-            select: {
-                id: true,
-                title: true,
-                slug: true,
-                excerpt: true,
-                thumbnail: true,
-                createdAt: true,
-            },
-        }),
         getAuthUser(),
     ]);
 
@@ -222,7 +214,7 @@ export default async function ArticlePage({
                     dateModified: new Date(article.updatedAt).toISOString(),
                     author: {
                         name: article.author.name || "TheNextTrade Team",
-                        url: `${process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.io"}/about`,
+                        url: `${process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.app"}/about`,
                     },
                 }}
             />
@@ -541,7 +533,6 @@ export default async function ArticlePage({
                             <RelatedArticlesBottom
                                 categoryId={article.categoryId}
                                 currentArticleId={article.id}
-                                initialArticles={relatedArticles}
                             />
                         </Suspense>
 
@@ -633,6 +624,7 @@ async function ArticleComments({
                 include: {
                     user: { select: { id: true, name: true, image: true } },
                 },
+                orderBy: { createdAt: "asc" },
             },
         },
         orderBy: { createdAt: "desc" },

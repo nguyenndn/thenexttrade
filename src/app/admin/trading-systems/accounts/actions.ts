@@ -217,7 +217,7 @@ export async function approveAccount(
             try {
                 const appUrl =
                     process.env.NEXT_PUBLIC_APP_URL ||
-                    "https://thenexttrade.vercel.app";
+                    "https://thenexttrade.app";
                 const emailHtml = buildEALicenseEmailHtml({
                     userName: license.user.name || "Trader",
                     eaName: "GoldScalperNinja Pro MT5",

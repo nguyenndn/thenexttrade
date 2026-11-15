@@ -1,10 +1,17 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
+import { rateLimit } from "@/lib/rate-limit";
 import { validateImageFile, MAX_FILE_SIZE } from "@/lib/storage/image-validation";
 import { uploadPublicAsset, isR2Configured } from "@/lib/storage/object-storage";
 
 const ALLOWED_PURPOSES = ["journal", "avatar"] as const;
 type UploadPurpose = (typeof ALLOWED_PURPOSES)[number];
+
+const MAX_INPUT_PIXELS = 25_000_000;
+const uploadRateLimiter = rateLimit({
+    interval: 5 * 60 * 1000,
+    uniqueTokenPerInterval: 500,
+});
 
 // Sharp resize config per purpose
 const SHARP_CONFIG: Record<UploadPurpose, { width: number; height?: number; fit: "cover" | "inside" }> = {
@@ -26,6 +33,16 @@ export async function POST(request: Request) {
     } = await supabase.auth.getUser();
     if (!user) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // Per-user rate limit: 30 uploads per 5 minutes (memory fallback rejects at >= limit)
+    try {
+        await uploadRateLimiter.check(31, `upload:${user.id}`);
+    } catch {
+        return NextResponse.json(
+            { error: "Too many uploads. Please wait a few minutes before trying again." },
+            { status: 429 }
+        );
     }
 
     try {
@@ -75,12 +92,15 @@ export async function POST(request: Request) {
             );
         }
 
-        // 7. Process image with sharp (resize + convert to WebP)
+        // 7. Process image with sharp (resize + convert to WebP, guard pixel bomb DoS)
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
         const sharp = require("sharp");
         const config = SHARP_CONFIG[purpose as UploadPurpose];
         let processedBuffer: Buffer;
         try {
-            let pipeline = sharp(buffer).rotate(); // Auto-rotate based on EXIF
+            let pipeline = sharp(buffer, {
+                limitInputPixels: MAX_INPUT_PIXELS,
+            }).rotate(); // Auto-rotate based on EXIF
             if (config.height) {
                 pipeline = pipeline.resize({
                     width: config.width,

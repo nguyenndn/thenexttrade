@@ -1,5 +1,6 @@
+import type { ArticleSchemaType, ArticleStatus, Prisma } from "@prisma/client";
 import { createClient } from "@/lib/supabase/server";
-import { prisma } from "@/lib/prisma"; // Assuming prisma client is exported here, need to verify
+import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { cache } from "@/lib/cache";
@@ -20,8 +21,12 @@ const articleSchema = z.object({
 
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get("page") || "1");
-    const limit = parseInt(searchParams.get("limit") || "10");
+    const parsedPage = parseInt(searchParams.get("page") || "1", 10);
+    const parsedLimit = parseInt(searchParams.get("limit") || "10", 10);
+    const page = Number.isFinite(parsedPage) ? Math.max(1, parsedPage) : 1;
+    const limit = Number.isFinite(parsedLimit)
+        ? Math.min(50, Math.max(1, parsedLimit))
+        : 10;
     const status = searchParams.get("status");
     const categoryId = searchParams.get("categoryId");
 
@@ -43,9 +48,19 @@ export async function GET(request: Request) {
 
     const skip = (page - 1) * limit;
 
-    const where: any = {};
-    if (isAdmin && status) {
-        where.status = status;
+    const VALID_STATUSES: ArticleStatus[] = [
+        "DRAFT",
+        "PUBLISHED",
+        "PENDING",
+        "ARCHIVED",
+    ];
+    const where: Prisma.ArticleWhereInput = {};
+    if (
+        isAdmin &&
+        status &&
+        VALID_STATUSES.includes(status as ArticleStatus)
+    ) {
+        where.status = status as ArticleStatus;
     } else {
         where.status = "PUBLISHED";
     }
@@ -246,32 +261,39 @@ export async function POST(request: Request) {
             finalSlug = `${finalSlug}-${maxNumber + 1}`;
         }
 
-        const data: any = {
+        const data: Prisma.ArticleUncheckedCreateInput = {
             title,
             slug: finalSlug,
             content: content || "", // Allow empty content for draft
             excerpt,
             thumbnail,
-            status: status || "DRAFT",
-            categoryId, // Category is still required for relationship integrity, but UI can default it.
+            status: (status as ArticleStatus) || "DRAFT",
+            categoryId,
             isFeatured: isFeatured || false,
             metaTitle,
             metaDescription,
             focusKeyword,
-            schemaType: schemaType || "ARTICLE",
+            schemaType:
+                typeof schemaType === "string" &&
+                (
+                    [
+                        "ARTICLE",
+                        "HOWTO",
+                        "FAQ",
+                        "TECH_ARTICLE",
+                        "COURSE",
+                    ] as string[]
+                ).includes(schemaType.trim().toUpperCase())
+                    ? (schemaType.trim().toUpperCase() as ArticleSchemaType)
+                    : "ARTICLE",
             estimatedTime: parsedEstimatedTime,
             publishedAt:
                 parsedPublishedAt ??
                 (status === "PUBLISHED" ? new Date() : null),
             authorId: user.id,
-            // AI Content Pipeline metadata
             tone: body.tone || null,
             sourceUrls: Array.isArray(body.sourceUrls) ? body.sourceUrls : [],
         };
-
-        // For Drafts, allow missing category/content if we make schema optional?
-        // Schema says categoryId is required. So we must ensure it's sent.
-        // Frontend handles defaulting.
 
         if (status === "PUBLISHED") {
             if (!content || !categoryId) {

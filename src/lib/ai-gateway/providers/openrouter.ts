@@ -32,7 +32,7 @@ export const OpenRouterAdapter: AiGatewayProviderAdapter = {
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${input.decryptedSecret}`,
-                        "HTTP-Referer": "https://thenexttrade.io",
+                        "HTTP-Referer": "https://thenexttrade.app",
                         "X-Title": "TheNextTrade AI Gateway",
                     },
                     body: JSON.stringify({

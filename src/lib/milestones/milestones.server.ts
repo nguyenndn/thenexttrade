@@ -23,7 +23,7 @@ export interface MilestoneDefinition {
 export const MILESTONES: MilestoneDefinition[] = [
     {
         id: "FIRST_ACCOUNT_CONNECTED",
-        title: "Account Connected! 🎉",
+        title: "Account Connected",
         message:
             "Your MT5 account is linked. Trades will start syncing automatically.",
         icon: "Cable",
@@ -31,49 +31,49 @@ export const MILESTONES: MilestoneDefinition[] = [
     },
     {
         id: "FIRST_TRADE_LOGGED",
-        title: "First Trade Logged! 🚀",
+        title: "First Trade Logged",
         message:
-            "Your dashboard just came alive! Performance charts, Trade Score, and AI insights are now active.",
+            "Your dashboard is now active with live performance charts, Trade Score, and execution telemetry.",
         icon: "Rocket",
         link: "/dashboard",
     },
     {
         id: "FIRST_WEEKLY_REPORT",
-        title: "First Report Ready! 📊",
+        title: "First Report Ready",
         message:
-            "Your first weekly review is here. Discover patterns and insights from your trading week.",
+            "Your first weekly review is ready. Review execution patterns and risk metrics from your trading week.",
         icon: "FileText",
         link: "/dashboard/reports",
     },
     {
         id: "TEN_TRADES",
-        title: "10 Trades Milestone! 🏆",
+        title: "10 Trades Milestone",
         message:
-            "You've logged 10 trades. Trading Intelligence radar is now powered with enough data for meaningful insights.",
+            "You've logged 10 trades. Your behavioral leak radar now has enough execution telemetry for baseline insights.",
         icon: "Trophy",
         link: "/dashboard/intelligence",
     },
     {
         id: "FIRST_ACADEMY_LESSON",
-        title: "First Lesson Complete! 🎓",
+        title: "First Lesson Complete",
         message:
-            "Knowledge is your edge! Keep learning to sharpen your trading skills.",
+            "Risk discipline is built one lesson at a time. Keep studying to sharpen your execution rules.",
         icon: "GraduationCap",
         link: "/dashboard/academy",
     },
     {
         id: "FIFTY_TRADES",
-        title: "50 Trades! 🔥",
+        title: "50 Trades Logged",
         message:
-            "Half a century of trades logged. Your analytics are now statistically significant.",
+            "50 trades recorded. Your expectancy and drawdown metrics now carry stronger statistical weight.",
         icon: "TrendingUp",
         link: "/dashboard/analytics",
     },
     {
         id: "FIRST_STRATEGY_CREATED",
-        title: "Strategy Created! 🎯",
+        title: "Strategy Created",
         message:
-            "You've defined your first strategy. Now tag trades to track which strategies perform best.",
+            "You've defined your first strategy. Tag trades to measure positive expectancy per setup.",
         icon: "Target",
         link: "/dashboard/strategies",
     },

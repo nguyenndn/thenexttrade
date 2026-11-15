@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -22,24 +23,28 @@ type FormData = z.infer<typeof schema>;
 interface CommentFormProps {
     articleId: string;
     parentId?: string | null;
+    replyToName?: string | null;
     onSuccess?: () => void;
     onCancel?: () => void;
-    placeholder?: string;
     autoFocus?: boolean;
     userName?: string | null;
     userImage?: string | null;
+    isAuthenticated?: boolean;
 }
 
 export function CommentForm({
     articleId,
     parentId = null,
+    replyToName = null,
     onSuccess,
     onCancel,
-    placeholder = "Add to the discussion...",
     autoFocus = false,
     userName = null,
     userImage = null,
+    isAuthenticated = true,
 }: CommentFormProps) {
+    const router = useRouter();
+    const pathname = usePathname();
     const [isLoading, setIsLoading] = useState(false);
 
     const {
@@ -57,7 +62,19 @@ export function CommentForm({
 
     const contentVal = watch("content") || "";
 
+    const redirectToLogin = () => {
+        const nextTarget = encodeURIComponent(
+            `${pathname || `/articles/${articleId}`}#comment-form-box`
+        );
+        router.push(`/auth/login?next=${nextTarget}`);
+    };
+
     const onSubmit = async (data: FormData) => {
+        if (!isAuthenticated) {
+            redirectToLogin();
+            return;
+        }
+
         setIsLoading(true);
         try {
             const res = await fetch(`/api/articles/${articleId}/comments`, {
@@ -70,26 +87,28 @@ export function CommentForm({
             });
 
             if (res.status === 401) {
-                toast.error("Please login to comment");
-                window.location.href = "/auth/login";
+                toast.error("Please log in to post a comment");
+                redirectToLogin();
                 return;
             }
 
             if (!res.ok) {
-                const error = await res.json();
-                throw new Error(error.message || "Failed to post comment");
+                const errPayload: { error?: string; message?: string } | null =
+                    await res.json().catch(() => null);
+                throw new Error(
+                    errPayload?.error ||
+                        errPayload?.message ||
+                        "Failed to post comment"
+                );
             }
 
             toast.success("Comment posted!");
             reset();
             onSuccess?.();
-        } catch (error: any) {
+        } catch (error: unknown) {
             toast.error(
-                error instanceof Error
-                    ? error.message
-                    : error?.message || "Something went wrong"
+                error instanceof Error ? error.message : "Something went wrong"
             );
-            console.error(error);
         } finally {
             setIsLoading(false);
         }
@@ -97,10 +116,10 @@ export function CommentForm({
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="w-full">
-            <div className="bg-white dark:bg-[#12141c] border border-dashboard rounded-lg shadow-sm focus-within:border-gold/50 focus-within:ring-2 focus-within:ring-gold/15 transition-all duration-200 overflow-hidden">
+            <div className="bg-white dark:bg-[#12141c] border border-dashboard rounded-xl shadow-sm focus-within:border-gold/50 focus-within:ring-2 focus-within:ring-gold/15 transition-all duration-200 overflow-hidden">
                 {/* Header Bar: User Identity & Character Counter */}
-                {userName && (
-                    <div className="flex items-center justify-between px-4 sm:px-5 py-3 bg-slate-50/80 dark:bg-white/[0.02] border-b border-dashboard">
+                <div className="flex items-center justify-between px-4 sm:px-5 py-3 bg-slate-50/80 dark:bg-white/[0.02] border-b border-dashboard">
+                    {userName ? (
                         <div className="flex items-center gap-2.5 min-w-0">
                             <div className="relative w-7 h-7 rounded-full overflow-hidden ring-1 ring-gold/40 bg-gray-100 dark:bg-white/10 shrink-0">
                                 {userImage ? (
@@ -126,28 +145,42 @@ export function CommentForm({
                                 </span>
                             </div>
                         </div>
-
-                        <span className="text-[11px] font-mono text-gray-400 dark:text-gray-500 shrink-0">
-                            {contentVal.length} / 2000
+                    ) : (
+                        <span className="text-xs font-bold text-gray-700 dark:text-gray-200">
+                            {replyToName
+                                ? `Reply to ${replyToName}`
+                                : "Your Comment"}
                         </span>
-                    </div>
-                )}
+                    )}
+
+                    <span className="text-[11px] font-mono tabular-nums text-gray-400 dark:text-gray-500 shrink-0">
+                        {contentVal.length} / 2000
+                    </span>
+                </div>
 
                 {/* Textarea: Seamless inside card without double borders */}
-                <div className="p-4 sm:p-5">
+                <div className="p-4 sm:p-5 space-y-1.5">
+                    <label
+                        htmlFor={`comment-input-${parentId || "root"}`}
+                        className="block text-[11px] font-semibold text-gray-500 dark:text-gray-400"
+                    >
+                        {replyToName
+                            ? `Replying to ${replyToName}`
+                            : "Share your trading perspective, risk math, or question"}
+                    </label>
                     <textarea
+                        id={`comment-input-${parentId || "root"}`}
                         {...register("content")}
-                        className="w-full min-h-[90px] sm:min-h-[110px] bg-transparent border-0 resize-none outline-none focus:ring-0 text-sm text-gray-800 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 leading-relaxed"
-                        placeholder={
-                            parentId
-                                ? placeholder
-                                : "Share your trading perspective, risk analysis, or ask a question..."
-                        }
+                        className="w-full min-h-[90px] sm:min-h-[110px] bg-transparent border-0 resize-none outline-none focus:ring-0 text-sm text-gray-800 dark:text-gray-100 leading-relaxed"
                         autoFocus={autoFocus}
                         disabled={isLoading}
                         onKeyDown={(e) => {
                             if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
                                 e.preventDefault();
+                                if (!isAuthenticated) {
+                                    redirectToLogin();
+                                    return;
+                                }
                                 handleSubmit(onSubmit)();
                             }
                         }}
@@ -181,23 +214,42 @@ export function CommentForm({
                             </Button>
                         )}
 
-                        <Button
-                            type="submit"
-                            variant="gold"
-                            size="smd"
-                            disabled={isLoading || contentVal.trim().length < 2}
-                            isLoading={isLoading}
-                        >
-                            <span>
-                                {parentId ? "Reply" : "Post Comment"}
-                            </span>
-                            {!isLoading && (
+                        {isAuthenticated ? (
+                            <Button
+                                type="submit"
+                                variant="gold"
+                                size="smd"
+                                disabled={
+                                    isLoading || contentVal.trim().length < 2
+                                }
+                                isLoading={isLoading}
+                            >
+                                <span>
+                                    {parentId ? "Reply" : "Post Comment"}
+                                </span>
+                                {!isLoading && (
+                                    <SendHorizontal
+                                        size={14}
+                                        className="stroke-[2.5]"
+                                    />
+                                )}
+                            </Button>
+                        ) : (
+                            <Button
+                                type="button"
+                                variant="gold"
+                                size="smd"
+                                onClick={redirectToLogin}
+                            >
+                                <span>
+                                    {parentId ? "Reply" : "Post Comment"}
+                                </span>
                                 <SendHorizontal
                                     size={14}
                                     className="stroke-[2.5]"
                                 />
-                            )}
-                        </Button>
+                            </Button>
+                        )}
                     </div>
                 </div>
             </div>

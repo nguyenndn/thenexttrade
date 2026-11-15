@@ -19,7 +19,7 @@ export default async function CertificatesPage() {
 
     const userId = user.id;
     const baseUrl =
-        process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.io";
+        process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.app";
 
     const [levels, certificates, userName] = await Promise.all([
         prisma.level.findMany({

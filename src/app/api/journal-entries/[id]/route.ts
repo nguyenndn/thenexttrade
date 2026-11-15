@@ -3,6 +3,19 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { onUserTradesUpdated } from "@/lib/experiments/progress.server";
+
+const httpsImageArraySchema = z
+    .array(
+        z
+            .string()
+            .url()
+            .refine(
+                (u) => u.startsWith("https://"),
+                "Only HTTPS image URLs are allowed"
+            )
+    )
+    .max(5);
 
 // Partial validation for updates
 const journalEntryUpdateSchema = z.object({
@@ -37,7 +50,7 @@ const journalEntryUpdateSchema = z.object({
     notes: z.string().optional(),
     entryReason: z.string().optional().nullable(),
     exitReason: z.string().optional().nullable(),
-    images: z.array(z.string()).optional(),
+    images: httpsImageArraySchema.optional(),
     strategy: z.string().optional().nullable(),
     mistakes: z.array(z.string()).optional(),
     tags: z.array(z.string()).optional(),
@@ -269,6 +282,18 @@ export async function PUT(
             }
         }
 
+        try {
+            await onUserTradesUpdated(user.id, updated.accountId || undefined);
+            if (
+                existing.accountId &&
+                existing.accountId !== updated.accountId
+            ) {
+                await onUserTradesUpdated(user.id, existing.accountId);
+            }
+        } catch {
+            /* Experiment progress sync failure should not block entry update */
+        }
+
         revalidateTag("dashboard-stats", "max");
         revalidatePath("/dashboard");
         revalidatePath("/dashboard/journal");
@@ -278,7 +303,7 @@ export async function PUT(
     } catch (error) {
         if (error instanceof z.ZodError) {
             return NextResponse.json(
-                { error: "Validation Error", details: (error as any).errors },
+                { error: "Validation Error", details: error.issues },
                 { status: 400 }
             );
         }
@@ -335,6 +360,12 @@ export async function DELETE(
                 where: { id: existing.accountId },
                 data: { totalTrades: Math.max(0, remainingCount) },
             });
+        }
+
+        try {
+            await onUserTradesUpdated(user.id, existing.accountId || undefined);
+        } catch {
+            /* Experiment progress sync failure should not block entry deletion */
         }
 
         revalidateTag("dashboard-stats", "max");

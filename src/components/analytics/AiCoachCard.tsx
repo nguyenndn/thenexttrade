@@ -65,14 +65,14 @@ export function AiCoachCard({
         const cached = localStorage.getItem(cacheKey);
         if (cached) {
             try {
-                const parsed = JSON.parse(cached);
+                const parsed = JSON.parse(cached) as AiCoachInsight;
                 // Check if it's less than 24 hours old
                 const generatedTime = new Date(parsed.generatedAt).getTime();
                 if (Date.now() - generatedTime < 24 * 60 * 60 * 1000) {
                     setInsight(parsed);
                 }
-            } catch (e) {
-                console.error("Failed to parse cached insight", e);
+            } catch {
+                localStorage.removeItem(cacheKey);
             }
         }
     }, [cacheKey]);
@@ -105,7 +105,10 @@ export function AiCoachCard({
                 return;
             }
 
-            if ((res as any).isProRequired || res.error?.includes("Pro feature")) {
+            if (
+                ("isProRequired" in res && res.isProRequired) ||
+                res.error?.includes("Pro feature")
+            ) {
                 setIsProRequired(true);
                 setIsCollapsed(false);
                 return;
@@ -122,8 +125,10 @@ export function AiCoachCard({
                 setIsCollapsed(false);
                 localStorage.setItem("ai_coach_collapsed", "false");
             }
-        } catch (err: any) {
-            setError(err.message || "Something went wrong.");
+        } catch (err: unknown) {
+            setError(
+                err instanceof Error ? err.message : "Something went wrong."
+            );
         } finally {
             setIsLoading(false);
         }
@@ -131,7 +136,7 @@ export function AiCoachCard({
 
     if (!insight && !isLoading && !error && !insufficientData && !isProRequired) {
         return (
-            <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-amber-200/50 dark:border-dashboard shadow-sm overflow-hidden relative">
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-amber-200/50 dark:border-dashboard shadow-sm overflow-hidden relative">
                 <div className="px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-6 relative z-10">
                     <div className="flex items-center gap-4">
                         <div className="w-12 h-12 rounded-lg bg-amber-100 dark:bg-amber-500/20 border border-amber-200 dark:border-amber-500/30 flex items-center justify-center shrink-0">
@@ -168,7 +173,7 @@ export function AiCoachCard({
     }
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-amber-200 dark:border-amber-500/30 shadow-[0_4px_20px_-4px_rgba(245,158,11,0.1)] overflow-hidden">
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-amber-200 dark:border-amber-500/30 shadow-[0_4px_20px_-4px_rgba(245,158,11,0.1)] overflow-hidden">
             {/* Header */}
             <div
                 onClick={insight ? toggleCollapse : undefined}

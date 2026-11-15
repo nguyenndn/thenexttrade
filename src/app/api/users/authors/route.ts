@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
-export async function GET(request: Request) {
+export async function GET() {
     const supabase = await createClient();
     const {
         data: { user },
@@ -12,14 +12,39 @@ export async function GET(request: Request) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const { data: aal, error: aalError } =
+        await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+    if (
+        aalError ||
+        (aal && aal.currentLevel === "aal1" && aal.nextLevel === "aal2")
+    ) {
+        return NextResponse.json(
+            { error: "Forbidden — MFA verification required" },
+            { status: 403 }
+        );
+    }
+
     try {
-        // Fetch users who have a profile with role ADMIN or MANAGER (assuming these roles exist in schema)
-        // Adjust based on your 'Profile' model and 'UserRole' enum
+        const callerProfile = await prisma.profile.findUnique({
+            where: { userId: user.id },
+            select: { role: true },
+        });
+
+        if (
+            callerProfile?.role !== "ADMIN" &&
+            callerProfile?.role !== "EDITOR"
+        ) {
+            return NextResponse.json(
+                { error: "Forbidden — admin or editor access required" },
+                { status: 403 }
+            );
+        }
+
         const authors = await prisma.user.findMany({
             where: {
                 profile: {
                     role: {
-                        in: ["ADMIN", "EDITOR"], // Adjust if roles are different
+                        in: ["ADMIN", "EDITOR"],
                     },
                 },
             },
@@ -31,7 +56,7 @@ export async function GET(request: Request) {
         });
 
         return NextResponse.json(authors);
-    } catch (error) {
+    } catch {
         return NextResponse.json(
             { error: "Failed to fetch authors" },
             { status: 500 }

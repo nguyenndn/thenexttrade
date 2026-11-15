@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Calendar, RotateCcw } from "lucide-react";
 import { ARCHETYPES, type ArchetypeId } from "@/config/trading-style-data";
@@ -22,6 +22,10 @@ export function TradingStyleDashboard({
 }: TradingStyleDashboardProps) {
     const [result, setResult] = useState<TradingStyleSaved | null>(initialResult);
     const [isRetaking, setIsRetaking] = useState(false);
+
+    useEffect(() => {
+        setResult(initialResult);
+    }, [initialResult]);
 
     const archetype = useMemo(() => {
         if (!result) return null;

@@ -42,6 +42,8 @@ interface MobileSidebarProps {
 const ACCOUNT_SCOPED_ROUTES = new Set([
     "/dashboard",
     "/dashboard/journal",
+    "/dashboard/strategies",
+    "/dashboard/rules",
     "/dashboard/analytics",
     "/dashboard/sessions",
     "/dashboard/intelligence",
@@ -170,7 +172,7 @@ function MobileSidebarItem({
                         "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm nav-menu-text transition-colors mb-0.5",
                         isActive
                             ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold"
-                            : "text-gray-600 dark:text-gray-550 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-700 dark:hover:text-white"
+                            : "text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-700 dark:hover:text-white"
                     )}
                 >
                     {Icon && (

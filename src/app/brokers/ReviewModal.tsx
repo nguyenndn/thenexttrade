@@ -63,7 +63,13 @@ function StarRating({ rating }: { rating: number }) {
     );
 }
 
-export function ReviewBadge({ item }: { item: ReviewItem }) {
+export function ReviewBadge({
+    item,
+    onTrackClick,
+}: {
+    item: ReviewItem;
+    onTrackClick?: () => void;
+}) {
     const [open, setOpen] = useState(false);
     const [mounted, setMounted] = useState(false);
 
@@ -92,6 +98,7 @@ export function ReviewBadge({ item }: { item: ReviewItem }) {
                             <ReviewModal
                                 item={item}
                                 onClose={() => setOpen(false)}
+                                onTrackClick={onTrackClick}
                             />
                         )}
                     </AnimatePresence>,
@@ -104,9 +111,11 @@ export function ReviewBadge({ item }: { item: ReviewItem }) {
 function ReviewModal({
     item,
     onClose,
+    onTrackClick,
 }: {
     item: ReviewItem;
     onClose: () => void;
+    onTrackClick?: () => void;
 }) {
     const hasUrl = item.url && item.url !== "#";
 
@@ -272,6 +281,9 @@ function ReviewModal({
                             href={item.url!}
                             target="_blank"
                             rel="noopener noreferrer"
+                            onClick={() => {
+                                onTrackClick?.();
+                            }}
                             className={buttonVariants({
                                 variant: "gold",
                                 size: "smd",

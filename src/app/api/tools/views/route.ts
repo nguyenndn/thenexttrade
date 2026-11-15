@@ -1,22 +1,28 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { ALL_TOOLS } from "@/config/tools-data";
+
+const VALID_TOOL_SLUGS = new Set(ALL_TOOLS.map((tool) => tool.slug));
 
 // POST: Track a tool view (increment view count)
 export async function POST(request: Request) {
     try {
-        const { slug } = await request.json();
+        const body = (await request.json().catch(() => null)) as {
+            slug?: unknown;
+        } | null;
+        const rawSlug = typeof body?.slug === "string" ? body.slug.trim() : "";
 
-        if (!slug || typeof slug !== "string") {
+        if (!rawSlug || !VALID_TOOL_SLUGS.has(rawSlug)) {
             return NextResponse.json(
-                { success: false, error: "Invalid slug" },
+                { success: false, error: "Invalid tool slug" },
                 { status: 400 }
             );
         }
 
         await prisma.toolView.upsert({
-            where: { slug },
+            where: { slug: rawSlug },
             update: { viewCount: { increment: 1 } },
-            create: { slug, viewCount: 1 },
+            create: { slug: rawSlug, viewCount: 1 },
         });
 
         return NextResponse.json({ success: true });
@@ -30,9 +36,16 @@ export async function POST(request: Request) {
 export async function GET(request: Request) {
     try {
         const { searchParams } = new URL(request.url);
-        const limit = parseInt(searchParams.get("limit") || "6", 10);
+        const rawLimit = Number.parseInt(
+            searchParams.get("limit") || "6",
+            10
+        );
+        const limit = Number.isNaN(rawLimit)
+            ? 6
+            : Math.min(50, Math.max(1, rawLimit));
 
         const popular = await prisma.toolView.findMany({
+            where: { slug: { in: Array.from(VALID_TOOL_SLUGS) } },
             orderBy: { viewCount: "desc" },
             take: limit,
         });

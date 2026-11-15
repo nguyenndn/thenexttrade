@@ -143,7 +143,7 @@ export function TwoFactorSetup({ isEnabled, onUpdate }: TwoFactorSetupProps) {
                                 onChange={(e) => setDisableCode(e.target.value)}
                                 maxLength={6}
                                 aria-label="6-digit verification code to disable 2FA"
-                                className="w-full max-w-[200px] px-4 py-2 bg-white dark:bg-[#1E2028] border border-dashboard rounded-lg focus:outline-none focus:border-red-500 font-mono tabular-nums text-center tracking-widest text-lg"
+                                className="w-full max-w-[200px] px-4 py-2 bg-white dark:bg-[#0B0E14] text-gray-800 dark:text-white border border-dashboard rounded-lg focus:outline-none focus:border-red-500 font-mono tabular-nums text-center tracking-widest text-lg"
                             />
                             <Button
                                 variant="destructive"
@@ -238,7 +238,7 @@ export function TwoFactorSetup({ isEnabled, onUpdate }: TwoFactorSetupProps) {
                                     Manual Entry Code
                                 </label>
                                 <div className="flex items-center gap-2">
-                                    <code className="bg-white dark:bg-[#1E2028] border border-dashboard px-3 py-1.5 rounded-lg text-sm font-mono tabular-nums text-gray-800 dark:text-gray-200 tracking-wider">
+                                    <code className="bg-white dark:bg-[#0B0E14] border border-dashboard px-3 py-1.5 rounded-lg text-sm font-mono tabular-nums text-gray-800 dark:text-gray-200 tracking-wider break-all">
                                         {secret}
                                     </code>
                                     <Button
@@ -276,7 +276,7 @@ export function TwoFactorSetup({ isEnabled, onUpdate }: TwoFactorSetupProps) {
                                         }
                                         maxLength={6}
                                         aria-label="6-digit verification code"
-                                        className="w-full max-w-[200px] px-4 py-2 bg-white dark:bg-[#1E2028] border border-dashboard rounded-lg focus:outline-none focus:border-gold font-mono tabular-nums text-center tracking-widest text-lg"
+                                        className="w-full max-w-[200px] px-4 py-2 bg-white dark:bg-[#0B0E14] text-gray-800 dark:text-white border border-dashboard rounded-lg focus:outline-none focus:border-gold font-mono tabular-nums text-center tracking-widest text-lg"
                                     />
                                     <Button
                                         size="smd"

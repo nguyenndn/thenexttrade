@@ -32,19 +32,18 @@ export default async function MonthlyReviewPage({
 
     const [reportRes, targetAcc] = await Promise.all([
         getReports("MONTHLY", 1, 20),
-        prisma.tradingAccount.findFirst({
-            where: {
-                userId: user.id,
-                ...(accountId !== "all" ? { id: accountId } : {}),
-            },
-            select: { currency: true, server: true },
-        }),
+        accountId !== "all"
+            ? prisma.tradingAccount.findFirst({
+                  where: { userId: user.id, id: accountId },
+                  select: { currency: true, server: true },
+              })
+            : Promise.resolve(null),
     ]);
     const { reports, total } = reportRes;
-    const accountCurrency = normalizeCurrencyCode(
-        targetAcc?.currency,
-        targetAcc?.server
-    );
+    const accountCurrency =
+        accountId === "all"
+            ? "USD"
+            : normalizeCurrencyCode(targetAcc?.currency, targetAcc?.server);
 
     return (
         <div className="space-y-4">

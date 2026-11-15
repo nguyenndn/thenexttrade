@@ -291,7 +291,7 @@ export default function SettingsClient() {
     }
 
     return (
-        <div className="w-full space-y-5">
+        <div className="w-full min-w-0 space-y-5">
             {/* ── Unified Profile Card ── */}
             <form onSubmit={handleSubmit} className="space-y-5">
             <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard overflow-hidden shadow-sm">
@@ -306,8 +306,8 @@ export default function SettingsClient() {
                     />
                 </div>
 
-                <div className="px-6 pb-5">
-                    <div className="flex items-end gap-5 -mt-12 mb-3">
+                <div className="px-4 sm:px-6 pb-5">
+                    <div className="flex items-end gap-4 sm:gap-5 -mt-12 mb-3 min-w-0">
                         <div className="relative flex-shrink-0">
                             <div className="w-[100px] h-[100px] rounded-lg overflow-hidden bg-gray-100 dark:bg-[#151925] border-4 border-white dark:border-[#1E2028] shadow-lg">
                                 {formData.image ? (
@@ -370,11 +370,11 @@ export default function SettingsClient() {
                                 />
                             </label>
                         </div>
-                        <div className="pb-1">
-                            <p className="text-sm font-bold text-gray-700 dark:text-white">
+                        <div className="pb-1 min-w-0">
+                            <p className="text-sm font-bold text-gray-700 dark:text-white truncate">
                                 {formData.name || "Your Name"}
                             </p>
-                            <p className="text-xs text-gray-500 mt-0.5">
+                            <p className="text-xs text-gray-500 mt-0.5 truncate">
                                 {formData.email || ""}
                             </p>
                         </div>
@@ -385,7 +385,7 @@ export default function SettingsClient() {
                 </div>
 
                 {/* Personal Information Section */}
-                <div className="border-t border-dashboard px-6 py-5 space-y-4">
+                <div className="border-t border-dashboard px-4 sm:px-6 py-5 space-y-4">
                     <div className="flex items-center gap-2.5 mb-1">
                         <div className="w-7 h-7 rounded-lg bg-gold/10 border border-gold/20 flex items-center justify-center">
                             <User size={14} className="text-amber-600 dark:text-gold" />
@@ -400,6 +400,7 @@ export default function SettingsClient() {
                         </label>
                         <input
                             type="text"
+                            maxLength={100}
                             value={formData.name}
                             onChange={(e) =>
                                 setFormData((prev) => ({
@@ -505,17 +506,17 @@ export default function SettingsClient() {
                                 }))
                             }
                             rows={3}
-                            maxLength={200}
+                            maxLength={500}
                             className="w-full px-4 py-2.5 bg-gray-50/80 dark:bg-[#151925] border border-dashboard rounded-lg text-sm text-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-gold resize-none transition-all"
                         />
                         <p className="text-xs text-gray-400 mt-1 font-mono tabular-nums">
-                            {formData.bio.length}/200 characters
+                            {formData.bio.length}/500 characters
                         </p>
                     </div>
                 </div>
 
                 {/* Main Trading Goal Section */}
-                <div className="border-t border-dashboard px-6 py-5 space-y-4">
+                <div className="border-t border-dashboard px-4 sm:px-6 py-5 space-y-4">
                     <div className="flex items-center gap-2.5 mb-1">
                         <div className="w-7 h-7 rounded-lg bg-amber-500/10 dark:bg-amber-500/20 flex items-center justify-center">
                             <Target size={14} className="text-amber-500" />
@@ -603,13 +604,13 @@ export default function SettingsClient() {
                 onSubmit={handlePayoutWalletSubmit}
                 className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm overflow-hidden scroll-mt-24"
             >
-                <div className="px-6 py-5 space-y-4">
-                    <div className="flex items-center justify-between gap-4">
-                        <div className="flex items-center gap-2.5">
-                            <div className="w-7 h-7 rounded-lg bg-gold/10 border border-gold/20 flex items-center justify-center">
+                <div className="px-4 sm:px-6 py-5 space-y-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                            <div className="w-7 h-7 shrink-0 rounded-lg bg-gold/10 border border-gold/20 flex items-center justify-center">
                                 <Wallet size={14} className="text-amber-600 dark:text-gold" />
                             </div>
-                            <div>
+                            <div className="min-w-0">
                                 <h2 className="text-sm font-bold text-gray-700 dark:text-white">
                                     Payout & Milestone Rewards Wallet (USDT)
                                 </h2>
@@ -620,12 +621,12 @@ export default function SettingsClient() {
                         </div>
 
                         {payoutWallet.address ? (
-                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                            <span className="inline-flex self-start sm:self-auto shrink-0 items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                                 <CheckCircle2 size={12} />
                                 Destination Active
                             </span>
                         ) : (
-                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-gold/10 text-amber-600 dark:text-gold border border-gold/20">
+                            <span className="inline-flex self-start sm:self-auto shrink-0 items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-gold/10 text-amber-600 dark:text-gold border border-gold/20">
                                 Not Configured
                             </span>
                         )}
@@ -719,8 +720,8 @@ export default function SettingsClient() {
                             </div>
                             <p className="text-[11px] text-gray-400">
                                 {payoutWallet.network === "TRC20"
-                                    ? "Must begin with 'T' (e.g. Txyz...987)."
-                                    : "Must begin with '0x' (e.g. 0x71c3...B39)."}
+                                    ? "Must begin with 'T'."
+                                    : "Must begin with '0x'."}
                             </p>
                         </div>
                     </div>
@@ -733,7 +734,7 @@ export default function SettingsClient() {
                     </div>
                 </div>
 
-                <div className="px-6 py-4 border-t border-dashboard flex items-center justify-between">
+                <div className="px-4 sm:px-6 py-4 border-t border-dashboard flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <p className="text-xs text-gray-400">
                         Make sure your address matches the selected network to prevent loss of funds.
                     </p>
@@ -742,6 +743,7 @@ export default function SettingsClient() {
                         variant="gold"
                         size="smd"
                         disabled={isSavingWallet}
+                        className="shrink-0 self-end sm:self-auto"
                     >
                         {isSavingWallet ? (
                             <Loader2 className="animate-spin" size={16} />

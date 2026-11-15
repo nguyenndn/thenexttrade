@@ -203,7 +203,7 @@ export default async function MasterCertificatePage({
 
                         <div className="mt-4 flex items-center gap-2 rounded-lg bg-gold/10 border border-gold/20 px-4 py-3 text-xs font-bold text-amber-700 dark:text-gold">
                             <CheckCircle2 size={14} />
-                            Verified — issued by TheNextTrade.com
+                            Verified — issued by thenexttrade.app
                         </div>
                     </div>
                 </div>

@@ -256,8 +256,8 @@ export default function JournalList({
                     }
                     setVisibleColumns(new Set(parsed));
                 }
-            } catch (e) {
-                console.error("Failed to parse saved columns", e);
+            } catch {
+                // Ignore corrupted localStorage column preferences
             }
         }
         setIsColumnsLoaded(true);
@@ -397,13 +397,12 @@ export default function JournalList({
         try {
             const res = await updateJournalEntry(id, data);
             if (res.error) throw new Error(res.error);
-        } catch (error: any) {
-            console.error("Update failed", error);
+        } catch (error: unknown) {
             setEntries(previousEntries);
             toast.error(
                 error instanceof Error
                     ? error.message
-                    : error?.message || "Failed to update entry"
+                    : "Failed to update entry"
             );
         }
     };
@@ -1195,6 +1194,14 @@ export default function JournalList({
                         onClose={() => {
                             setIsDetailOpen(false);
                             setSelectedDetailEntry(null);
+                        }}
+                        onDeleted={(deletedId) => {
+                            setEntries((prev) =>
+                                prev.filter((item) => item.id !== deletedId)
+                            );
+                            setIsDetailOpen(false);
+                            setSelectedDetailEntry(null);
+                            router.refresh();
                         }}
                         onNext={handleNextEntry}
                         onPrev={handlePrevEntry}

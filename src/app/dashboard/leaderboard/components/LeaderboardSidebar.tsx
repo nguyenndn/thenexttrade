@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import {
     Globe,
     Lock,
@@ -32,6 +32,11 @@ export function LeaderboardSidebar({ initialData }: LeaderboardSidebarProps) {
     const [isPending, startTransition] = useTransition();
     const [togglingAccount, setTogglingAccount] = useState<string | null>(null);
 
+    useEffect(() => {
+        setShowOnLeaderboard(initialData.showOnLeaderboard);
+        setAccounts(initialData.accounts);
+    }, [initialData]);
+
     const handleGlobalVisibilityToggle = () => {
         startTransition(async () => {
             try {
@@ -59,7 +64,9 @@ export function LeaderboardSidebar({ initialData }: LeaderboardSidebarProps) {
                     prev.map((acc) =>
                         acc.id === accountId
                             ? { ...acc, useForLeaderboard: result }
-                            : acc
+                            : result
+                              ? { ...acc, useForLeaderboard: false }
+                              : acc
                     )
                 );
             } catch {

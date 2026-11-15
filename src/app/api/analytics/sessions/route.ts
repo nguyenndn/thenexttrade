@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthUser } from "@/lib/auth-cache";
 import { prisma } from "@/lib/prisma";
-import { startOfMonth, endOfMonth, parseISO, endOfDay } from "date-fns";
-import { normalizeCurrencyCode } from "@/lib/utils/cent-account";
+import { parseISO, endOfDay, isValid } from "date-fns";
+import {
+    convertToUsdEquivalent,
+    normalizeCurrencyCode,
+} from "@/lib/utils/cent-account";
 
 interface SessionStats {
     session: string;
@@ -87,53 +90,62 @@ export async function GET(request: NextRequest) {
                   select: { id: true, currency: true, server: true },
               })
             : [];
+        const accountMap = new Map(
+            userAccounts.map((acc) => [acc.id, acc])
+        );
 
-        const now = new Date();
-        const startDate = startDateParam
-            ? parseISO(startDateParam)
-            : startOfMonth(now);
+        const parsedStart = startDateParam ? parseISO(startDateParam) : null;
+        const startDate =
+            parsedStart && isValid(parsedStart) ? parsedStart : undefined;
+
         // A date-only endDate param (e.g. "2026-08-13") parses to midnight;
         // extend it to end of day ONLY when it is not already a full ISO timestamp.
-        const endDate = endDateParam
-            ? endDateParam.includes("T")
-                ? parseISO(endDateParam)
-                : endOfDay(parseISO(endDateParam))
-            : endOfMonth(now);
+        const parsedEndRaw = endDateParam ? parseISO(endDateParam) : null;
+        const endDate =
+            parsedEndRaw && isValid(parsedEndRaw)
+                ? endDateParam?.includes("T")
+                    ? parsedEndRaw
+                    : endOfDay(parsedEndRaw)
+                : undefined;
 
         const whereClause: {
             userId: string;
             status: "CLOSED";
-            exitDate: { gte: Date; lte: Date };
+            exitDate?: { gte?: Date; lte?: Date };
             accountId?: string;
         } = {
             userId: user.id,
             status: "CLOSED", // Only closed trades for PnL analysis
-            exitDate: { gte: startDate, lte: endDate },
         };
+
+        if (startDate || endDate) {
+            whereClause.exitDate = {
+                ...(startDate ? { gte: startDate } : {}),
+                ...(endDate ? { lte: endDate } : {}),
+            };
+        }
 
         if (normalizedAccountId) whereClause.accountId = normalizedAccountId;
 
         const targetAcc = normalizedAccountId
             ? userAccounts.find((acc) => acc.id === normalizedAccountId)
-            : userAccounts[0];
-        const uniqueCurrencies = new Set(
-            userAccounts.map((acc) =>
-                normalizeCurrencyCode(acc.currency, acc.server)
-            )
-        );
-        const currency =
-            !normalizedAccountId && uniqueCurrencies.size > 1
-                ? "USD"
-                : normalizeCurrencyCode(
-                      targetAcc?.currency,
-                      targetAcc?.server
-                  );
+            : undefined;
+        const currency = !normalizedAccountId
+            ? "USD"
+            : normalizeCurrencyCode(targetAcc?.currency, targetAcc?.server);
 
         // Fetch trades
         const trades = await prisma.journalEntry.findMany({
             where: whereClause,
             select: {
                 id: true,
+                accountId: true,
+                account: {
+                    select: {
+                        currency: true,
+                        server: true,
+                    },
+                },
                 pnl: true,
                 commission: true,
                 swap: true,
@@ -147,15 +159,28 @@ export async function GET(request: NextRequest) {
 
         // Calculate session for trades without session field
         const tradesWithSession = trades.map((trade) => {
-            const netPnl =
+            const rawNetPnl =
                 trade.pnl !== null
                     ? Number(
                           (
                               trade.pnl +
                               (trade.commission || 0) +
                               (trade.swap || 0)
-                          ).toFixed(2)
+                          ).toFixed(4)
                       )
+                    : null;
+            const tradeAcc =
+                trade.account ??
+                (trade.accountId ? accountMap.get(trade.accountId) : undefined);
+            const netPnl =
+                rawNetPnl !== null
+                    ? !normalizedAccountId && tradeAcc
+                        ? convertToUsdEquivalent(
+                              rawNetPnl,
+                              tradeAcc.currency,
+                              tradeAcc.server
+                          )
+                        : Number(rawNetPnl.toFixed(2))
                     : null;
             const isWin = netPnl !== null && netPnl > 0;
             const isLoss = netPnl !== null && netPnl < 0;

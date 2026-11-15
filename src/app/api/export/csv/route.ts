@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
 import { getAuthUser } from "@/lib/auth-cache";
 import { prisma } from "@/lib/prisma";
 import { startOfDay, endOfDay, parseISO } from "date-fns";
@@ -7,16 +8,18 @@ export const dynamic = "force-dynamic";
 
 /**
  * Quote and escape a CSV cell, neutralizing spreadsheet formula injection
- * (OWASP): values that begin with = + @ tab or CR can be interpreted as
- * formulas by Excel/Sheets. A "-" prefix is only dangerous when it is not
- * part of a plain number, so negative PnL/prices stay numeric.
+ * (OWASP): values (or trimmed values) that begin with = + @ tab CR LF can be
+ * interpreted as formulas by Excel/Sheets. A "-" prefix is allowed ONLY when
+ * the trimmed value is a strict plain negative number (/^-\d+(\.\d+)?$/).
  */
 function sanitizeCsvCell(value: unknown): string {
     const str = value === null || value === undefined ? "" : String(value);
     const escaped = str.replace(/"/g, '""');
+    const trimmed = str.trimStart();
     const dangerous =
-        /^[=+@\t\r]/.test(str) ||
-        (str.startsWith("-") && !/^-\d/.test(str));
+        /^[\t\r\n]/.test(str) ||
+        /^[=+@\t\r\n]/.test(trimmed) ||
+        (trimmed.startsWith("-") && !/^-\d+(\.\d+)?$/.test(trimmed));
     return dangerous ? `"'${escaped}"` : `"${escaped}"`;
 }
 
@@ -37,33 +40,42 @@ export async function GET(request: NextRequest) {
         const startDateParam = searchParams.get("startDate");
         const endDateParam = searchParams.get("endDate");
         const accountIdParam = searchParams.get("accountId");
+        const isTaxExport = searchParams.get("type") === "tax";
 
-        const where: Record<string, unknown> = { userId: user.id };
+        const where: Prisma.JournalEntryWhereInput = { userId: user.id };
         if (accountIdParam && accountIdParam !== "all") {
             where.accountId = accountIdParam;
         }
+
+        const dateRange: Prisma.DateTimeFilter = {};
+        let hasDateBound = false;
         if (startDateParam) {
             const start = parseISO(startDateParam);
             if (!isNaN(start.getTime())) {
-                where.entryDate = {
-                    ...((where.entryDate as object) || {}),
-                    gte: startOfDay(start),
-                };
+                dateRange.gte = startOfDay(start);
+                hasDateBound = true;
             }
         }
         if (endDateParam) {
             const end = parseISO(endDateParam);
             if (!isNaN(end.getTime())) {
-                where.entryDate = {
-                    ...((where.entryDate as object) || {}),
-                    lte: endOfDay(end),
-                };
+                dateRange.lte = endOfDay(end);
+                hasDateBound = true;
             }
+        }
+
+        if (isTaxExport) {
+            where.status = "CLOSED";
+            where.exitDate = hasDateBound
+                ? { ...dateRange, not: null }
+                : { not: null };
+        } else if (hasDateBound) {
+            where.entryDate = dateRange;
         }
 
         const trades = await prisma.journalEntry.findMany({
             where,
-            orderBy: { entryDate: "desc" },
+            orderBy: isTaxExport ? { exitDate: "desc" } : { entryDate: "desc" },
         });
 
         const headers = [

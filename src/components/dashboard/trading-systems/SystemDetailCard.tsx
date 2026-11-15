@@ -131,11 +131,12 @@ export function SystemDetailCard({
                 ? "SEMI AUTO"
                 : "EXPERT ADVISOR";
 
-    const tierLabel = Boolean((product as any).isFree) ? "Free" : "Premium";
+    const tierLabel = product.isFree ? "Free" : "Premium";
+    const normalizedVersion = product.version.replace(/^v/i, "");
 
     return (
         <>
-            <div className="group relative bg-white dark:bg-[#14161E] rounded-lg overflow-hidden border border-dashboard dark:border-white/[0.08] hover:border-gold/40 hover:shadow-xl transition-all duration-300 shadow-sm flex flex-col justify-between">
+            <div className="group relative bg-white dark:bg-[#14161E] rounded-xl overflow-hidden border border-dashboard dark:border-white/[0.08] hover:border-gold/40 hover:shadow-xl transition-all duration-300 shadow-sm flex flex-col justify-between">
                 {/* Top Image / Chart Preview Area */}
                 <div
                     role="button"
@@ -312,13 +313,13 @@ export function SystemDetailCard({
 
                         {/* Metadata Row: v1.1 · MT5 · Free/Premium */}
                         <div className="text-[11px] text-gray-500 dark:text-gray-400 font-mono tracking-wide mt-0.5 mb-2 flex items-center gap-1.5">
-                            <span>v{product.version}</span>
+                            <span>v{normalizedVersion}</span>
                             <span>•</span>
                             <span>MT5</span>
                             <span>•</span>
                             <span
                                 className={
-                                    Boolean((product as any).isFree)
+                                    product.isFree
                                         ? "text-emerald-500 font-semibold"
                                         : "text-amber-500 font-semibold"
                                 }

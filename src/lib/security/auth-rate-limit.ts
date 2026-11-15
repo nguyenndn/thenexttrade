@@ -6,14 +6,17 @@ import { Redis } from "@upstash/redis";
 // Falls back to in-memory Map when Redis is not configured (local dev).
 // =============================================================================
 
-type AuthRateLimitAction =
+export type AuthRateLimitAction =
     | "login"
     | "signup"
     | "magic_link"
     | "forgot_password"
     | "verify_otp"
     | "resend_otp"
-    | "verify_2fa";
+    | "verify_2fa"
+    | "update_password"
+    | "disable_2fa"
+    | "feedback";
 
 interface RateLimitRule {
     limit: number;
@@ -28,6 +31,9 @@ const limits: Record<AuthRateLimitAction, RateLimitRule> = {
     verify_otp: { limit: 5, windowMs: 10 * 60 * 1000 },
     resend_otp: { limit: 3, windowMs: 15 * 60 * 1000 },
     verify_2fa: { limit: 5, windowMs: 10 * 60 * 1000 },
+    update_password: { limit: 5, windowMs: 10 * 60 * 1000 },
+    disable_2fa: { limit: 5, windowMs: 10 * 60 * 1000 },
+    feedback: { limit: 5, windowMs: 10 * 60 * 1000 },
 };
 
 // In-memory fallback store
@@ -61,13 +67,16 @@ async function checkWithRedis(
 
     for (const key of keysToVerify) {
         const redisKey = `auth_rl:${key}`;
-        const results = await redis
+        const [currentCount, currentTtl] = await redis
             .pipeline()
             .incr(redisKey)
-            .expire(redisKey, windowSec)
+            .ttl(redisKey)
             .exec<[number, number]>();
 
-        const currentCount = results[0];
+        if (currentCount === 1 || currentTtl < 0) {
+            await redis.expire(redisKey, windowSec);
+        }
+
         if (currentCount > rule.limit) {
             return true; // blocked
         }

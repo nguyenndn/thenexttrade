@@ -179,15 +179,20 @@ export function computeSyncHealth(input: SyncHealthInput): SyncHealth {
         };
     }
 
-    // Missing trade data: sync occurred but imported 0
+    // Missing trade data: sync occurred but imported 0 and none were skipped as already-synced duplicates
     if (input.latestSyncHistory) {
-        const { tradesReceived, tradesImported } = input.latestSyncHistory;
-        if (tradesReceived > 0 && tradesImported === 0) {
+        const { tradesReceived, tradesImported, tradesSkipped } =
+            input.latestSyncHistory;
+        if (
+            tradesReceived > 0 &&
+            tradesImported === 0 &&
+            (tradesSkipped ?? 0) === 0
+        ) {
             return {
                 ...base,
                 status: "missing_trade_data",
                 label: "Sync Issue",
-                description: `Received ${tradesReceived} trades but none were imported. They may be duplicates or have missing data.`,
+                description: `Received ${tradesReceived} trades but none were imported. They may have missing data.`,
                 primaryAction: {
                     label: "View Dashboard",
                     action: "view_dashboard",

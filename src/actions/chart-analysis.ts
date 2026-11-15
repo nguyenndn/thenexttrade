@@ -1,6 +1,7 @@
 "use server";
 
 import { getAuthUser } from "@/lib/auth-cache";
+import { prisma } from "@/lib/prisma";
 import { reserveAiRequest } from "@/lib/ai-gateway/quota-service";
 import { executeAiGateway } from "@/lib/ai-gateway/provider-router";
 import {
@@ -81,18 +82,21 @@ export async function analyzeChartImage(
         };
     }
 
-    // 2. Extract inputs
+    // 2. Extract & sanitize inputs
     const imageFile = formData.get("image") as File | null;
-    const userPrompt = (formData.get("prompt") as string) || "";
+    const rawPrompt = formData.get("prompt");
+    const userPrompt =
+        typeof rawPrompt === "string" ? rawPrompt.trim().slice(0, 1000) : "";
     const symbol = (formData.get("symbol") as string) || "OANDA:XAUUSD";
     const timeframe = (formData.get("timeframe") as string) || "60";
-    const theme = ((formData.get("theme") as string) || "dark") as "dark" | "light";
+    const theme = ((formData.get("theme") as string) || "dark") as
+        | "dark"
+        | "light";
 
-    let imageBase64: string;
-    let imageMimeType: string;
+    const hasUploadedImage = Boolean(imageFile && imageFile.size > 0);
 
-    if (imageFile && imageFile.size > 0) {
-        // Validation for user-uploaded/pasted file
+    // 2b. Validate uploaded image file synchronously BEFORE reserving quota
+    if (hasUploadedImage && imageFile) {
         if (!ALLOWED_MIME_TYPES.includes(imageFile.type)) {
             return {
                 ok: false,
@@ -108,32 +112,10 @@ export async function analyzeChartImage(
                 errorCode: "IMAGE_TOO_LARGE",
             };
         }
-
-        const arrayBuffer = await imageFile.arrayBuffer();
-        imageBase64 = Buffer.from(arrayBuffer).toString("base64");
-        imageMimeType = imageFile.type;
-    } else {
-        // Zero-click server-side auto capture
-        try {
-            const pngBuffer = await captureTradingViewChartServerSide({
-                symbol,
-                interval: timeframe,
-                theme,
-            });
-            imageBase64 = pngBuffer.toString("base64");
-            imageMimeType = "image/png";
-        } catch (err: any) {
-            return {
-                ok: false,
-                error:
-                    err?.message ||
-                    "Could not capture chart automatically. Please upload a screenshot.",
-                errorCode: "CAPTURE_FAILED",
-            };
-        }
     }
 
-    // 3. Reserve quota
+    // 3. Reserve quota BEFORE headless browser chart capture so over-quota callers
+    // cannot trigger expensive server-side Puppeteer/Playwright captures for free.
     const requestId = randomUUID();
     const reservation = await reserveAiRequest({
         requestId,
@@ -155,7 +137,56 @@ export async function analyzeChartImage(
     }
 
     if (reservation.status === "DUPLICATE") {
-        return { ok: false, error: "Duplicate request.", errorCode: "DUPLICATE" };
+        return {
+            ok: false,
+            error: "Duplicate request.",
+            errorCode: "DUPLICATE",
+        };
+    }
+
+    // 4. Load uploaded image or run server-side auto capture (releasing quota slot on capture failure)
+    let imageBase64: string;
+    let imageMimeType: string;
+
+    if (hasUploadedImage && imageFile) {
+        const arrayBuffer = await imageFile.arrayBuffer();
+        imageBase64 = Buffer.from(arrayBuffer).toString("base64");
+        imageMimeType = imageFile.type;
+    } else {
+        try {
+            const pngBuffer = await captureTradingViewChartServerSide({
+                symbol,
+                interval: timeframe,
+                theme,
+            });
+            imageBase64 = pngBuffer.toString("base64");
+            imageMimeType = "image/png";
+        } catch (err: unknown) {
+            // Release reserved quota slot (FAILED with zero attempts is excluded by quotaConsumingFilter)
+            await prisma.aiRequest
+                .updateMany({
+                    where: {
+                        requestId,
+                        userId: user.id,
+                        status: "ROUTING",
+                    },
+                    data: {
+                        status: "FAILED",
+                        errorCode: "CAPTURE_FAILED",
+                        completedAt: new Date(),
+                    },
+                })
+                .catch(() => {});
+
+            return {
+                ok: false,
+                error:
+                    err instanceof Error && err.message
+                        ? err.message
+                        : "Could not capture chart automatically. Please upload a screenshot.",
+                errorCode: "CAPTURE_FAILED",
+            };
+        }
     }
 
     // 4. Build prompt

@@ -15,6 +15,8 @@ import { VipStatusWidget } from "@/components/dashboard/VipStatusWidget";
 const ACCOUNT_SCOPED_ROUTES = new Set([
     "/dashboard",
     "/dashboard/journal",
+    "/dashboard/strategies",
+    "/dashboard/rules",
     "/dashboard/analytics",
     "/dashboard/sessions",
     "/dashboard/intelligence",
@@ -131,6 +133,7 @@ function SidebarItemComponent({
                     {item.href !== "#" && (
                         <Link
                             href={resolvedItemHref}
+                            aria-label={item.name}
                             className="absolute inset-0 z-0"
                         />
                     )}
@@ -377,6 +380,7 @@ export function Sidebar({
             <div className="p-4 border-t border-dashboard m-4 mt-auto">
                 <Button
                     variant="ghost"
+                    aria-label="Logout"
                     onClick={() => signout()}
                     className={cn(
                         "flex items-center gap-3 w-full px-3 py-2.5 h-auto rounded-lg text-gray-600 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors text-left group justify-start font-normal",

@@ -1,7 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { format, startOfMonth, endOfMonth, subMonths, isSameDay } from "date-fns";
+import {
+    format,
+    startOfMonth,
+    endOfMonth,
+    subMonths,
+    isSameDay,
+    parseISO,
+    isValid,
+} from "date-fns";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import {
@@ -10,30 +18,37 @@ import {
     FileSpreadsheet,
     Calendar,
     TrendingUp,
-    Trash2,
     CalendarDays,
     CalendarRange,
     AlertTriangle,
     Trophy,
     PenLine,
+    RefreshCw,
+    type LucideIcon,
 } from "lucide-react";
-import { ReportPreview } from "./ReportPreview";
+import { ReportPreview, type ReportPreviewData } from "./ReportPreview";
 import { ReportView } from "./ReportView";
 import { GenerateReportButton } from "./GenerateReportButton";
-import { DraggablePreviewTable } from "./DraggablePreviewTable";
+import {
+    DraggablePreviewTable,
+    type PreviewData,
+} from "./DraggablePreviewTable";
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 import type { GenerateReportResult } from "./report-generate-types";
+import type { getReports } from "@/actions/reports";
 
-interface ReportType {
+type ReviewReportItem = Awaited<ReturnType<typeof getReports>>["reports"][number];
+
+interface ReportTypeOption {
     id: string;
     name: string;
     description: string;
     format: "pdf" | "csv" | "auto" | "json";
-    icon: any;
+    icon: LucideIcon;
 }
 
-const REPORT_TYPES: ReportType[] = [
+const REPORT_TYPES: ReportTypeOption[] = [
     {
         id: "weekly-review",
         name: "Weekly Review",
@@ -72,7 +87,7 @@ const REPORT_TYPES: ReportType[] = [
 ];
 
 const parseCSVLine = (line: string) => {
-    const result = [];
+    const result: string[] = [];
     let current = "";
     let inQuotes = false;
     for (let i = 0; i < line.length; i++) {
@@ -94,20 +109,29 @@ const parseCSVLine = (line: string) => {
     return result;
 };
 
-export function ReportsDashboard() {
+function resolveReportTypeParam(rawType?: string | null): string {
+    if (!rawType) return "weekly-review";
+    const normalized = rawType.trim().toLowerCase();
+    if (normalized === "weekly") return "weekly-review";
+    const validTypes = REPORT_TYPES.map((t) => t.id);
+    return validTypes.includes(normalized) ? normalized : "weekly-review";
+}
+
+export function ReportsDashboard({
+    initialType: initialTypeProp,
+}: {
+    initialType?: string;
+} = {}) {
     const now = new Date();
 
-    // Read ?type= from URL to auto-select tab (e.g. from mission CTA)
+    // Read ?type= from server prop or URL to auto-select tab (e.g. from mission CTA or deep link)
     const searchParamsHook =
         typeof window !== "undefined"
             ? new URLSearchParams(window.location.search)
             : null;
-    const typeParam = searchParamsHook?.get("type");
-    const validTypes = REPORT_TYPES.map((t) => t.id);
-    const initialType =
-        typeParam && validTypes.includes(typeParam)
-            ? typeParam
-            : "weekly-review";
+    const initialType = resolveReportTypeParam(
+        initialTypeProp ?? searchParamsHook?.get("type")
+    );
 
     const [selectedType, setSelectedType] = useState<string>(initialType);
     const [dateRange, setDateRange] = useState({
@@ -115,12 +139,14 @@ export function ReportsDashboard() {
         end: endOfMonth(subMonths(now, 1)),
     });
     const [isGenerating, setIsGenerating] = useState(false);
-    const [previewData, setPreviewData] = useState<any>(null);
-    const [csvPreview, setCsvPreview] = useState<{
-        headers: string[];
-        rows: string[][];
-    } | null>(null);
-    const [reviewReports, setReviewReports] = useState<any[]>([]);
+    const [previewData, setPreviewData] = useState<ReportPreviewData | null>(
+        null
+    );
+    const [csvPreview, setCsvPreview] = useState<PreviewData | null>(null);
+    const [csvEditedData, setCsvEditedData] = useState<PreviewData | null>(
+        null
+    );
+    const [reviewReports, setReviewReports] = useState<ReviewReportItem[]>([]);
     const [reviewTotal, setReviewTotal] = useState(0);
     const [reviewLoading, setReviewLoading] = useState(false);
     const [reviewLoaded, setReviewLoaded] = useState<string | null>(null);
@@ -135,30 +161,53 @@ export function ReportsDashboard() {
         selectedType === "tax" ||
         selectedType === "backup";
 
-    // Auto-load weekly review on mount
+    // Auto-load initial report type on mount (respecting ?type= query param)
     useEffect(() => {
-        handleSelectType("weekly-review");
+        const urlType =
+            typeof window !== "undefined"
+                ? new URLSearchParams(window.location.search).get("type")
+                : null;
+        const targetType = resolveReportTypeParam(initialTypeProp ?? urlType);
+        handleSelectType(targetType, true);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const handleSelectType = async (id: string) => {
+    const handleSelectType = async (id: string, forceReload = false) => {
+        const isTargetReview =
+            id === "weekly-review" || id === "monthly-review";
+
+        if (!forceReload && id === selectedType) {
+            if (!isTargetReview || reviewLoaded === id) {
+                return;
+            }
+        }
+
         setSelectedType(id);
-        setPreviewData(null);
-        setCsvPreview(null);
+        if (!forceReload) {
+            setPreviewData(null);
+            setCsvPreview(null);
+            setCsvEditedData(null);
+        }
 
         // Auto-load review reports
-        if (id === "weekly-review" || id === "monthly-review") {
-            if (reviewLoaded === id) return; // Already loaded
+        if (isTargetReview) {
+            if (!forceReload && reviewLoaded === id) return;
             setReviewLoading(true);
             try {
-                const { getReports } = await import("@/actions/reports");
-                const type = id === "weekly-review" ? "WEEKLY" : "MONTHLY";
-                const { reports, total } = await getReports(type as any, 1, 20);
+                const { getReports: fetchReports } = await import(
+                    "@/actions/reports"
+                );
+                const reportKind =
+                    id === "weekly-review" ? "WEEKLY" : "MONTHLY";
+                const { reports, total } = await fetchReports(
+                    reportKind,
+                    1,
+                    20
+                );
                 setReviewReports(reports);
                 setReviewTotal(total);
                 setReviewLoaded(id);
-            } catch (error) {
-                console.error("Failed to load reports:", error);
+            } catch {
                 toast.error("Failed to load reports");
             } finally {
                 setReviewLoading(false);
@@ -206,7 +255,9 @@ export function ReportsDashboard() {
                 if (lines.length > 0) {
                     const headers = parseCSVLine(lines[0]);
                     const rows = lines.slice(1).map(parseCSVLine);
-                    setCsvPreview({ headers, rows });
+                    const parsedCsv: PreviewData = { headers, rows };
+                    setCsvPreview(parsedCsv);
+                    setCsvEditedData(parsedCsv);
                     toast.success("Ready to preview");
                 } else {
                     toast.error("No data found for this period");
@@ -227,16 +278,15 @@ export function ReportsDashboard() {
                 if (!response.ok)
                     throw new Error("Failed to fetch report data");
 
-                const data = await response.json();
+                const data: ReportPreviewData = await response.json();
                 setPreviewData(data);
                 toast.success("Ready to preview");
             }
-        } catch (error: any) {
-            console.error(error);
+        } catch (error: unknown) {
             toast.error(
                 error instanceof Error
                     ? error.message
-                    : error?.message || "Failed to generate report"
+                    : "Failed to generate report"
             );
         } finally {
             setIsGenerating(false);
@@ -249,52 +299,24 @@ export function ReportsDashboard() {
             const { generatePDF } = await import("@/lib/pdf-utils");
             await generatePDF(previewData);
             toast.success("PDF Downloaded");
-        } catch (e: any) {
-            console.error(e);
+        } catch (e: unknown) {
             toast.error(
-                e instanceof Error
-                    ? e.message
-                    : e?.message || "Failed to generate PDF"
+                e instanceof Error ? e.message : "Failed to generate PDF"
             );
         }
     };
 
-    const removeColumn = (indexToRemove: number) => {
-        if (!csvPreview) return;
-
-        setCsvPreview((prev) => {
-            if (!prev) return prev;
-
-            const newHeaders = [...prev.headers];
-            newHeaders.splice(indexToRemove, 1);
-
-            const newRows = prev.rows.map((row) => {
-                const newRow = [...row];
-                newRow.splice(indexToRemove, 1);
-                return newRow;
-            });
-
-            return { headers: newHeaders, rows: newRows };
-        });
-    };
-
     const handleDownloadCustomCSV = () => {
-        if (!csvPreview) return;
+        const exportTarget = csvEditedData ?? csvPreview;
+        if (!exportTarget) return;
 
-        const escapeCSV = (cell: string) => {
+        const escapeCSV = (cell: string | number) => {
             const strCell = String(cell);
-            if (
-                strCell.includes(",") ||
-                strCell.includes('"') ||
-                strCell.includes("\n")
-            ) {
-                return `"${strCell.replace(/"/g, '""')}"`;
-            }
             return `"${strCell.replace(/"/g, '""')}"`;
         };
 
-        const headerLine = csvPreview.headers.map(escapeCSV).join(",");
-        const rowLines = csvPreview.rows.map((row) =>
+        const headerLine = exportTarget.headers.map(escapeCSV).join(",");
+        const rowLines = exportTarget.rows.map((row) =>
             row.map(escapeCSV).join(",")
         );
         const csvContent = [headerLine, ...rowLines].join("\n");
@@ -384,7 +406,7 @@ export function ReportsDashboard() {
             {isReviewType && (
                 <div className="animate-in fade-in duration-500 space-y-4">
                     {/* Generate Report Button */}
-                    <div className="flex items-center justify-between bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-4 shadow-sm">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-4 shadow-sm">
                         <div>
                             <p className="text-sm font-bold text-gray-700 dark:text-white">
                                 {selectedType === "weekly-review"
@@ -396,20 +418,39 @@ export function ReportsDashboard() {
                                 data.
                             </p>
                         </div>
-                        <GenerateReportButton
-                            type={
-                                selectedType === "weekly-review"
-                                    ? "WEEKLY"
-                                    : "MONTHLY"
-                            }
-                            onResult={(result) => {
-                                setLastGenerateResult(result);
-                                if (result.success && !result.alreadyExists) {
-                                    handleSelectType(selectedType); // Refresh reports
-                                    setReviewLoaded(null); // Force reload
+                        <div className="flex items-center gap-2">
+                            <Button
+                                type="button"
+                                variant="outline"
+                                size="smd"
+                                onClick={() =>
+                                    handleSelectType(selectedType, true)
                                 }
-                            }}
-                        />
+                                disabled={reviewLoading}
+                                aria-label="Refresh reports"
+                            >
+                                <RefreshCw
+                                    size={15}
+                                    className={
+                                        reviewLoading ? "animate-spin" : ""
+                                    }
+                                />
+                                Refresh
+                            </Button>
+                            <GenerateReportButton
+                                type={
+                                    selectedType === "weekly-review"
+                                        ? "WEEKLY"
+                                        : "MONTHLY"
+                                }
+                                onResult={(result) => {
+                                    setLastGenerateResult(result);
+                                    if (result.success) {
+                                        handleSelectType(selectedType, true);
+                                    }
+                                }}
+                            />
+                        </div>
                     </div>
 
                     {/* No-data inline notice */}
@@ -476,7 +517,7 @@ export function ReportsDashboard() {
                         </div>
                     ) : (
                         <ReportView
-                            reports={reviewReports as any}
+                            reports={reviewReports as unknown as Parameters<typeof ReportView>[0]["reports"]}
                             total={reviewTotal}
                             type={
                                 selectedType === "weekly-review"
@@ -507,16 +548,26 @@ export function ReportsDashboard() {
                                     </label>
                                     <input
                                         type="date"
-                                        value={format(
-                                            dateRange.start,
-                                            "yyyy-MM-dd"
-                                        )}
-                                        onChange={(e) =>
-                                            setDateRange({
-                                                ...dateRange,
-                                                start: new Date(e.target.value),
-                                            })
+                                        aria-label="Start Date"
+                                        value={
+                                            isValid(dateRange.start)
+                                                ? format(
+                                                      dateRange.start,
+                                                      "yyyy-MM-dd"
+                                                  )
+                                                : ""
                                         }
+                                        onChange={(e) => {
+                                            if (!e.target.value) return;
+                                            const parsed = parseISO(
+                                                e.target.value
+                                            );
+                                            if (!isValid(parsed)) return;
+                                            setDateRange((prev) => ({
+                                                ...prev,
+                                                start: parsed,
+                                            }));
+                                        }}
                                         className="w-full h-11 rounded-lg border border-dashboard bg-gray-50/70 dark:bg-[#151925] px-4 text-sm font-mono tabular-nums outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-all font-bold text-gray-700 dark:text-white"
                                     />
                                 </div>
@@ -526,16 +577,26 @@ export function ReportsDashboard() {
                                     </label>
                                     <input
                                         type="date"
-                                        value={format(
-                                            dateRange.end,
-                                            "yyyy-MM-dd"
-                                        )}
-                                        onChange={(e) =>
-                                            setDateRange({
-                                                ...dateRange,
-                                                end: new Date(e.target.value),
-                                            })
+                                        aria-label="End Date"
+                                        value={
+                                            isValid(dateRange.end)
+                                                ? format(
+                                                      dateRange.end,
+                                                      "yyyy-MM-dd"
+                                                  )
+                                                : ""
                                         }
+                                        onChange={(e) => {
+                                            if (!e.target.value) return;
+                                            const parsed = parseISO(
+                                                e.target.value
+                                            );
+                                            if (!isValid(parsed)) return;
+                                            setDateRange((prev) => ({
+                                                ...prev,
+                                                end: parsed,
+                                            }));
+                                        }}
                                         className="w-full h-11 rounded-lg border border-dashboard bg-gray-50/70 dark:bg-[#151925] px-4 text-sm font-mono tabular-nums outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-all font-bold text-gray-700 dark:text-white"
                                     />
                                 </div>
@@ -665,7 +726,7 @@ export function ReportsDashboard() {
 
                                 <DraggablePreviewTable
                                     initialData={csvPreview}
-                                    onChange={setCsvPreview}
+                                    onChange={setCsvEditedData}
                                 />
                             </div>
                         )}

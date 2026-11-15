@@ -21,7 +21,18 @@ const updateTradePlanSchema = z.object({
     confidenceLevel: z.number().int().min(1).max(5).nullable().optional(),
     ruleChecklist: z.unknown().optional(),
     tags: z.array(z.string()).optional(),
-    images: z.array(z.string()).optional(),
+    images: z
+        .array(
+            z
+                .string()
+                .url()
+                .refine(
+                    (u) => u.startsWith("https://"),
+                    "Only HTTPS image URLs are allowed"
+                )
+        )
+        .max(5)
+        .optional(),
     accountId: z.string().nullable().optional(),
     status: z
         .enum(["PLANNED", "ACTIVE", "MATCHED", "REVIEWED", "CANCELLED"])

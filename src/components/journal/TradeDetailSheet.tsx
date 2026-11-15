@@ -2,6 +2,8 @@
 
 import * as React from "react";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { utcTime } from "@/lib/utils";
 import { ShareTradeModal } from "./ShareTradeModal";
 import {
@@ -24,7 +26,7 @@ import {
     Scale,
     Calendar,
     BookOpen,
-    Layers,
+    Trash2,
 } from "lucide-react";
 import { PlaybookLightbox } from "@/components/strategies/PlaybookLightbox";
 import { cn } from "@/lib/utils";
@@ -37,15 +39,57 @@ import {
     SheetClose,
 } from "@/components/ui/Sheet";
 import { Button } from "@/components/ui/Button";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/Tabs";
 import { getMistakeByCode } from "@/lib/mistakes";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { deleteJournalEntry } from "@/actions/journal";
 
 import { PlanVsActualPanel } from "./PlanVsActualPanel";
 import { formatDashboardCurrency, normalizeCurrencyCode } from "@/lib/utils/cent-account";
 
-interface JournalEntry {
+function isSafeImageUrl(url: unknown): url is string {
+    return (
+        typeof url === "string" &&
+        (url.startsWith("https://") ||
+            (url.startsWith("/") && !url.startsWith("//")))
+    );
+}
+
+interface EntryAccountInfo {
+    currency?: string | null;
+    server?: string | null;
+    initialBalance?: number | null;
+    balance?: number | null;
+}
+
+interface StrategyReference {
+    id?: string;
+    name: string;
+    color?: string | null;
+    isPlaybook?: boolean;
+    setupType?: string | null;
+    idealEntry?: string | null;
+    idealStopLoss?: string | null;
+    riskRewardMin?: number | null;
+    referenceImages?: string[];
+}
+
+interface CoachPlanSummary {
+    keepDoing?: string | null;
+    fixNext?: string | null;
+}
+
+interface MarketEventItem {
+    id: string;
+    currency: string;
+    impact: string;
+    title: string;
+    date: string | Date;
+}
+
+export interface JournalDetailEntry {
     id: string;
     entryDate: string;
     exitDate: string | null;
@@ -53,7 +97,7 @@ interface JournalEntry {
     type: "BUY" | "SELL";
     pnl: number | null;
     status: "OPEN" | "CLOSED";
-    result: "WIN" | "LOSS" | "BREAK_EVEN" | null;
+    result: "WIN" | "LOSS" | "BREAK_EVEN" | "BE_PLUS" | null;
     entryPrice: number;
     exitPrice: number | null;
     stopLoss: number | null;
@@ -63,13 +107,23 @@ interface JournalEntry {
     tags: string[];
     mistakes: string[];
     emotionBefore: string | null;
+    emotionAfter?: string | null;
+    confidenceLevel?: number | null;
+    notesPsychology?: string | null;
+    entryReason?: string | null;
+    exitReason?: string | null;
+    shareDescription?: string | null;
+    shareMode?: string | null;
+    syncSource?: string | null;
+    externalTicket?: string | null;
     accountId: string | null;
-    notes?: string;
-    mindset?: string;
+    account?: EntryAccountInfo | null;
+    notes?: string | null;
+    mindset?: string | null;
     images?: string[];
-    tradePlan?: any;
-    ruleChecks?: any[];
-    autopilotStatus?: string;
+    tradePlan?: React.ComponentProps<typeof PlanVsActualPanel>["plan"] | null;
+    ruleChecks?: React.ComponentProps<typeof PlanVsActualPanel>["entry"]["ruleChecks"];
+    autopilotStatus?: string | null;
     followedPlan?: boolean | null;
     playbookGrade?: string | null;
     playbookComplianceScore?: number | null;
@@ -79,10 +133,11 @@ interface JournalEntry {
 }
 
 interface TradeDetailSheetProps {
-    entry: JournalEntry | null;
-    strategies?: any[];
+    entry: JournalDetailEntry | null;
+    strategies?: StrategyReference[];
     isOpen: boolean;
     onClose: () => void;
+    onDeleted?: (deletedId: string) => void;
     onNext?: () => void;
     onPrev?: () => void;
     hasNext?: boolean;
@@ -95,19 +150,24 @@ export function TradeDetailSheet({
     strategies = [],
     isOpen,
     onClose,
+    onDeleted,
     onNext,
     onPrev,
     hasNext,
     hasPrev,
     currency = "USD",
 }: TradeDetailSheetProps) {
+    const router = useRouter();
     const [showShareModal, setShowShareModal] = useState(false);
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
     const [sheetLightboxIndex, setSheetLightboxIndex] = useState<number | null>(null);
-    const [activeCoachPlan, setActiveCoachPlan] = useState<any>(null);
-    const [marketEvents, setMarketEvents] = useState<any[]>([]);
+    const [activeCoachPlan, setActiveCoachPlan] = useState<CoachPlanSummary | null>(null);
+    const [marketEvents, setMarketEvents] = useState<MarketEventItem[]>([]);
 
     useEffect(() => {
-        if (isOpen && entry) {
+        setShowDeleteConfirm(false);
+        if (isOpen && entry && !entry.id.startsWith("sample-")) {
             import("@/actions/ai-coach").then(({ getActiveCoachPlan }) => {
                 getActiveCoachPlan().then((res) => {
                     if (res && res.success && res.data) {
@@ -119,21 +179,60 @@ export function TradeDetailSheet({
             import("@/actions/journal").then(({ getTradeMarketContext }) => {
                 getTradeMarketContext(entry.symbol, entry.entryDate).then((res) => {
                     if (res && res.success) {
-                        setMarketEvents(res.events || []);
+                        setMarketEvents((res.events as MarketEventItem[]) || []);
                     }
                 });
             });
         }
-    }, [isOpen, entry?.id]);
+    }, [isOpen, entry]);
 
     if (!entry) return null;
 
     const entryCurrency = normalizeCurrencyCode(
-        (entry as any).account?.currency || currency,
-        (entry as any).account?.server
+        entry.account?.currency || currency,
+        entry.account?.server
     );
 
-    const isWin = entry.pnl && entry.pnl > 0;
+    const baseBalance =
+        entry.account?.initialBalance && entry.account.initialBalance > 0
+            ? entry.account.initialBalance
+            : entry.account?.balance && entry.account.balance > 0
+              ? entry.account.balance
+              : null;
+
+    const percentGain =
+        baseBalance !== null && entry.pnl !== null && entry.pnl !== undefined
+            ? Number(((entry.pnl / baseBalance) * 100).toFixed(2))
+            : null;
+
+    const canDeleteManualTrade =
+        !entry.id.startsWith("sample-") &&
+        entry.syncSource !== "EA" &&
+        entry.syncSource !== "WEBHOOK";
+
+    const handleDeleteTrade = async () => {
+        setIsDeleting(true);
+        try {
+            const res = await deleteJournalEntry(entry.id);
+            if (res?.error) {
+                toast.error(res.error);
+                return;
+            }
+            toast.success("Trade deleted");
+            setShowDeleteConfirm(false);
+            onDeleted?.(entry.id);
+            onClose();
+            router.refresh();
+        } catch {
+            toast.error("Failed to delete trade");
+        } finally {
+            setIsDeleting(false);
+        }
+    };
+
+    const safeEntryImages = (entry.images ?? []).filter(isSafeImageUrl);
+
+    const isWin = Boolean(entry.pnl && entry.pnl > 0);
     const pnlColor =
         entry.pnl && entry.pnl > 0
             ? "text-primary"
@@ -141,7 +240,6 @@ export function TradeDetailSheet({
               ? "text-red-500"
               : "text-gray-600";
     const typeColor = entry.type === "BUY" ? "bg-emerald-500" : "bg-red-500";
-    // const statusColor = entry.status === "OPEN" ? "bg-yellow-500/20 text-yellow-500" : "bg-gray-500/20 text-gray-600";
 
     const currentStrategy = entry.strategy
         ? strategies.find(
@@ -149,6 +247,9 @@ export function TradeDetailSheet({
           )
         : null;
     const strategyColor = currentStrategy?.color || "#6B7280";
+    const safeReferenceImages = (currentStrategy?.referenceImages ?? []).filter(
+        isSafeImageUrl
+    );
 
     // Hit Logic calculations (only if trade is closed)
     const isBuy = entry.type === "BUY";
@@ -186,13 +287,26 @@ export function TradeDetailSheet({
 
                 {/* Header Section */}
                 <div className="sticky top-0 z-10 bg-white/95 dark:bg-[#0D111C]/95 backdrop-blur-md border-b border-dashboard px-6 py-4">
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between gap-2">
                         <div className="flex items-center gap-4">
                             <h2 className="text-lg font-bold text-gray-700 dark:text-white">
                                 Trade Details
                             </h2>
                         </div>
                         <div className="flex items-center gap-2">
+                            {canDeleteManualTrade && (
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="smd"
+                                    aria-label="Delete trade"
+                                    onClick={() => setShowDeleteConfirm(true)}
+                                    className="rounded-lg font-bold text-red-600 dark:text-red-400 border-red-500/30 hover:bg-red-500/10 hover:border-red-500/50 flex items-center gap-1.5 transition-colors"
+                                >
+                                    <Trash2 size={15} strokeWidth={2.2} />
+                                    <span className="hidden sm:inline">Delete</span>
+                                </Button>
+                            )}
                             <Button
                                 size="smd"
                                 onClick={() => setShowShareModal(true)}
@@ -201,7 +315,10 @@ export function TradeDetailSheet({
                                 <Share2 size={15} strokeWidth={2.5} />
                                 Share
                             </Button>
-                            <SheetClose className="rounded-lg h-10 w-10 p-0 border border-dashboard bg-white dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 flex items-center justify-center text-gray-600 dark:text-white transition-colors">
+                            <SheetClose
+                                aria-label="Close trade details"
+                                className="rounded-lg h-10 w-10 p-0 border border-dashboard bg-white dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 flex items-center justify-center text-gray-600 dark:text-white transition-colors"
+                            >
                                 <X size={20} />
                             </SheetClose>
                         </div>
@@ -282,13 +399,9 @@ export function TradeDetailSheet({
                                         })}
                                     </div>
                                     <div className="text-gray-500 font-mono tabular-nums text-xs font-black uppercase tracking-widest mt-2">
-                                        {entry.pnl
-                                            ? (
-                                                  (entry.pnl / 10000) *
-                                                  100
-                                              ).toFixed(2)
-                                            : "0.00"}
-                                        % Gain
+                                        {percentGain !== null
+                                            ? `${percentGain > 0 ? "+" : ""}${percentGain.toFixed(2)}% Gain`
+                                            : "—"}
                                     </div>
                                 </div>
 
@@ -297,6 +410,7 @@ export function TradeDetailSheet({
                                     size="icon"
                                     onClick={onNext}
                                     disabled={!hasNext}
+                                    aria-label="Next Trade"
                                     className="h-10 w-10 rounded-lg bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-600 dark:text-gray-300 disabled:opacity-30 disabled:cursor-not-allowed transition-all hover:scale-105 active:scale-95"
                                 >
                                     <ArrowRight size={18} strokeWidth={2} />
@@ -662,19 +776,14 @@ export function TradeDetailSheet({
                                                             <span
                                                                 className={cn(
                                                                     "text-xl font-black font-mono tabular-nums",
-                                                                    pnlColor
+                                                                    percentGain !== null
+                                                                        ? pnlColor
+                                                                        : "text-gray-500"
                                                                 )}
                                                             >
-                                                                {entry.pnl
-                                                                    ? (
-                                                                          (entry.pnl /
-                                                                              10000) *
-                                                                          100
-                                                                      ).toFixed(
-                                                                          2
-                                                                      )
-                                                                    : "0.00"}
-                                                                %
+                                                                {percentGain !== null
+                                                                    ? `${percentGain > 0 ? "+" : ""}${percentGain.toFixed(2)}%`
+                                                                    : "—"}
                                                             </span>
                                                         </div>
                                                     </div>
@@ -841,13 +950,13 @@ export function TradeDetailSheet({
                                                 </div>
 
                                                 {/* Reference Charts Lightbox trigger */}
-                                                {currentStrategy.referenceImages && currentStrategy.referenceImages.length > 0 && (
+                                                {safeReferenceImages.length > 0 && (
                                                     <div>
                                                         <span className="text-[10px] uppercase font-bold text-gray-400 block mb-1.5">
-                                                            Reference Charts ({currentStrategy.referenceImages.length})
+                                                            Reference Charts ({safeReferenceImages.length})
                                                         </span>
-                                                        <div className="flex gap-2">
-                                                            {currentStrategy.referenceImages.map((url: string, idx: number) => (
+                                                        <div className="flex gap-2 flex-wrap">
+                                                            {safeReferenceImages.map((url: string, idx: number) => (
                                                                 <Button
                                                                     type="button"
                                                                     variant="ghost"
@@ -867,10 +976,9 @@ export function TradeDetailSheet({
                                     </div>
 
                                     {/* Entry Reason & Exit Reason */}
-                                    {((entry as any).entryReason ||
-                                        (entry as any).exitReason) && (
+                                    {(entry.entryReason || entry.exitReason) && (
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                            {(entry as any).entryReason && (
+                                            {entry.entryReason && (
                                                 <div className="bg-gray-50/80 dark:bg-[#151925] p-4 rounded-lg border border-dashboard">
                                                     <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 flex items-center gap-2">
                                                         <MessageSquare
@@ -880,14 +988,11 @@ export function TradeDetailSheet({
                                                         Entry Reason
                                                     </h4>
                                                     <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
-                                                        {
-                                                            (entry as any)
-                                                                .entryReason
-                                                        }
+                                                        {entry.entryReason}
                                                     </p>
                                                 </div>
                                             )}
-                                            {(entry as any).exitReason && (
+                                            {entry.exitReason && (
                                                 <div className="bg-gray-50/80 dark:bg-[#151925] p-4 rounded-lg border border-dashboard">
                                                     <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 flex items-center gap-2">
                                                         <MessageSquare
@@ -897,10 +1002,7 @@ export function TradeDetailSheet({
                                                         Exit Reason
                                                     </h4>
                                                     <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
-                                                        {
-                                                            (entry as any)
-                                                                .exitReason
-                                                        }
+                                                        {entry.exitReason}
                                                     </p>
                                                 </div>
                                             )}
@@ -920,80 +1022,48 @@ export function TradeDetailSheet({
                                             Psychological State
                                         </h4>
                                         <div className="relative z-10">
-                                            {(entry as any).emotionBefore ||
-                                            (entry as any).emotionAfter ||
-                                            (entry as any).confidenceLevel ? (
+                                            {entry.emotionBefore ||
+                                            entry.emotionAfter ||
+                                            entry.confidenceLevel ? (
                                                 <div className="space-y-3">
                                                     <div className="flex flex-wrap gap-2">
-                                                        {(entry as any)
-                                                            .emotionBefore && (
+                                                        {entry.emotionBefore && (
                                                             <span className="px-4 py-2 bg-gold/10 text-amber-600 dark:text-gold rounded-lg text-xs font-black uppercase tracking-wider border border-gold/20">
                                                                 Before:{" "}
-                                                                {
-                                                                    (
-                                                                        entry as any
-                                                                    )
-                                                                        .emotionBefore
-                                                                }
+                                                                {entry.emotionBefore}
                                                             </span>
                                                         )}
-                                                        {(entry as any)
-                                                            .emotionAfter && (
+                                                        {entry.emotionAfter && (
                                                             <span className="px-4 py-2 bg-gold/10 text-amber-600 dark:text-gold rounded-lg text-xs font-black uppercase tracking-wider border border-gold/20">
                                                                 After:{" "}
-                                                                {
-                                                                    (
-                                                                        entry as any
-                                                                    )
-                                                                        .emotionAfter
-                                                                }
+                                                                {entry.emotionAfter}
                                                             </span>
                                                         )}
-                                                        {(entry as any)
-                                                            .confidenceLevel && (
+                                                        {entry.confidenceLevel && (
                                                             <span className="px-4 py-2 bg-amber-500/10 text-amber-600 dark:text-gold rounded-lg text-xs font-mono tabular-nums font-black uppercase tracking-wider border border-amber-500/20">
                                                                 Confidence:{" "}
-                                                                {
-                                                                    (
-                                                                        entry as any
-                                                                    )
-                                                                        .confidenceLevel
-                                                                }
+                                                                {entry.confidenceLevel}
                                                                 /5
                                                             </span>
                                                         )}
-                                                        {(entry as any)
-                                                            .followedPlan !==
-                                                            null &&
-                                                            (entry as any)
-                                                                .followedPlan !==
-                                                                undefined && (
+                                                        {entry.followedPlan !== null &&
+                                                            entry.followedPlan !== undefined && (
                                                                 <span
                                                                     className={`px-4 py-2 rounded-lg text-xs font-black uppercase tracking-wider border ${
-                                                                        (
-                                                                            entry as any
-                                                                        )
-                                                                            .followedPlan
+                                                                        entry.followedPlan
                                                                             ? "bg-green-500/10 text-green-500 border-green-500/20"
                                                                             : "bg-red-500/10 text-red-500 border-red-500/20"
                                                                     }`}
                                                                 >
-                                                                    {(
-                                                                        entry as any
-                                                                    )
-                                                                        .followedPlan
+                                                                    {entry.followedPlan
                                                                         ? (<><Check size={12} className="inline-block mr-1 align-[-1px]" /> Followed Plan</>)
                                                                         : (<><X size={12} className="inline-block mr-1 align-[-1px]" /> Deviated</>)}
                                                                 </span>
                                                             )}
                                                     </div>
-                                                    {(entry as any)
-                                                        .notesPsychology && (
+                                                    {entry.notesPsychology && (
                                                         <p className="text-sm text-gray-600 dark:text-gray-400 italic border-l-2 border-gold/30 pl-3">
-                                                            {
-                                                                (entry as any)
-                                                                    .notesPsychology
-                                                            }
+                                                            {entry.notesPsychology}
                                                         </p>
                                                     )}
                                                 </div>
@@ -1115,14 +1185,14 @@ export function TradeDetailSheet({
                     </Tabs>
 
                     {/* Screenshots - Always visible at bottom */}
-                    {entry.images && entry.images.length > 0 && (
+                    {safeEntryImages.length > 0 && (
                         <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-dashboard">
                             <h4 className="text-xs font-bold text-gray-600 uppercase tracking-widest mb-4 flex items-center gap-2">
                                 <div className="w-1.5 h-3 bg-gold rounded-full"></div>
                                 Trade Screenshots
                             </h4>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                {entry.images.map((imgUrl, idx) => (
+                                {safeEntryImages.map((imgUrl, idx) => (
                                         <a
                                             key={idx}
                                             href={imgUrl}
@@ -1136,7 +1206,7 @@ export function TradeDetailSheet({
                                                 className="w-full h-full object-cover"
                                             />
                                             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
-                                                <div className="bg-white/90 text-gray-700 text-xs font-bold px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all">
+                                                <div className="bg-white/90 text-gray-700 text-xs font-bold px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
                                                     View Full Size
                                                 </div>
                                             </div>
@@ -1154,11 +1224,23 @@ export function TradeDetailSheet({
                 entry={entry}
             />
 
+            <ConfirmDialog
+                isOpen={showDeleteConfirm}
+                title="Delete Trade"
+                description={`Permanently delete this ${entry.symbol} ${entry.type} trade from your journal? This action cannot be undone.`}
+                confirmText="Delete Trade"
+                cancelText="Cancel"
+                variant="danger"
+                isLoading={isDeleting}
+                onConfirm={handleDeleteTrade}
+                onCancel={() => setShowDeleteConfirm(false)}
+            />
+
             {/* Playbook Reference Chart Lightbox */}
             {sheetLightboxIndex !== null && (
                 <PlaybookLightbox
                     isOpen={sheetLightboxIndex !== null}
-                    images={currentStrategy?.referenceImages || []}
+                    images={safeReferenceImages}
                     initialIndex={sheetLightboxIndex}
                     title={`${currentStrategy?.name || entry.strategy} — Reference Chart`}
                     onClose={() => setSheetLightboxIndex(null)}

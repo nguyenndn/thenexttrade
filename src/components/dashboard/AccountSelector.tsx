@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback, useRef } from "react";
-import { Check, ChevronsUpDown, Plus, Wallet } from "lucide-react";
+import { Check, ChevronsUpDown, Layers, Wallet } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
     Command,
@@ -10,7 +10,6 @@ import {
     CommandInput,
     CommandItem,
     CommandList,
-    CommandSeparator,
 } from "@/components/ui/command";
 import { Button } from "@/components/ui/Button";
 import {
@@ -20,7 +19,6 @@ import {
 } from "@/components/ui/popover";
 import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
-import { formatAccountLabel } from "@/lib/utils";
 
 // Helper component for colored rendering
 function AccountLabelDisplay({ account }: { account: TradingAccount }) {
@@ -92,6 +90,9 @@ export function AccountSelector({
     const [accounts, setAccounts] = useState<TradingAccount[]>([]);
     const [selectedAccount, setSelectedAccount] =
         useState<TradingAccount | null>(null);
+    const [isAllSelected, setIsAllSelected] = useState<boolean>(
+        currentAccountId === "all"
+    );
     const [isLoading, setIsLoading] = useState(true);
 
     // Fetch accounts - Run Once (singleton cache)
@@ -100,11 +101,11 @@ export function AccountSelector({
             .then((accs) => {
                 setAccounts(accs);
             })
-            .catch((error) => {
+            .catch((error: unknown) => {
                 toast.error(
                     error instanceof Error
                         ? error.message
-                        : error?.message || "Could not load trading accounts"
+                        : "Could not load trading accounts"
                 );
             })
             .finally(() => {
@@ -123,6 +124,45 @@ export function AccountSelector({
     useEffect(() => {
         if (accounts.length === 0) return;
 
+        const getCookie = (name: string) => {
+            if (typeof document === "undefined") return null;
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop()?.split(";").shift() || null;
+            return null;
+        };
+
+        const savedAccountId = getCookie("last_account_id");
+        const wantsAllAccounts =
+            urlAccountId === "all" ||
+            (!urlAccountId && savedAccountId === "all");
+
+        if (wantsAllAccounts) {
+            setIsAllSelected(true);
+            setSelectedAccount(null);
+
+            if (typeof window !== "undefined") {
+                const event = new CustomEvent("tnt_account_changed", {
+                    detail: "all",
+                });
+                window.dispatchEvent(event);
+            }
+
+            if (rawUrlAccountId !== "all" && !hasSetAccount.current) {
+                hasSetAccount.current = true;
+                const liveQuery =
+                    typeof window !== "undefined"
+                        ? window.location.search
+                        : searchParams?.toString() || "";
+                const params = new URLSearchParams(liveQuery);
+                params.set("accountId", "all");
+                document.cookie =
+                    "last_account_id=all; path=/; max-age=31536000; SameSite=Lax";
+                router.replace(`?${params.toString()}`);
+            }
+            return;
+        }
+
         let active: TradingAccount | undefined;
 
         if (urlAccountId && urlAccountId !== "all") {
@@ -135,19 +175,8 @@ export function AccountSelector({
         if (!active && accounts.length > 0) {
             active = accounts.find((a) => a.isMain || a.isDefault);
 
-            if (!active) {
-                const getCookie = (name: string) => {
-                    const value = `; ${document.cookie}`;
-                    const parts = value.split(`; ${name}=`);
-                    if (parts.length === 2)
-                        return parts.pop()?.split(";").shift();
-                    return null;
-                };
-
-                const savedAccountId = getCookie("last_account_id");
-                if (savedAccountId) {
-                    active = accounts.find((a) => a.id === savedAccountId);
-                }
+            if (!active && savedAccountId && savedAccountId !== "all") {
+                active = accounts.find((a) => a.id === savedAccountId);
             }
 
             if (!active) {
@@ -156,6 +185,7 @@ export function AccountSelector({
         }
 
         if (active) {
+            setIsAllSelected(false);
             setSelectedAccount(active);
 
             // Dispatch event to sync sidebar widget immediately on resolve
@@ -187,8 +217,35 @@ export function AccountSelector({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [rawUrlAccountId, urlAccountId, accounts]);
 
+    const handleSelectAll = useCallback(() => {
+        setIsAllSelected(true);
+        setSelectedAccount(null);
+        setOpen(false);
+        hasSetAccount.current = true;
+
+        document.cookie =
+            "last_account_id=all; path=/; max-age=31536000; SameSite=Lax";
+
+        if (typeof window !== "undefined") {
+            const event = new CustomEvent("tnt_account_changed", {
+                detail: "all",
+            });
+            window.dispatchEvent(event);
+        }
+
+        const liveQuery =
+            typeof window !== "undefined"
+                ? window.location.search
+                : searchParams?.toString() || "";
+        const params = new URLSearchParams(liveQuery);
+        params.set("accountId", "all");
+
+        router.push(`?${params.toString()}`);
+    }, [router, searchParams]);
+
     const handleSelect = useCallback(
         (account: TradingAccount) => {
+            setIsAllSelected(false);
             setSelectedAccount(account);
             setOpen(false);
             hasSetAccount.current = true; // Prevent sync effect from re-navigating
@@ -224,16 +281,30 @@ export function AccountSelector({
                     variant="ghost"
                     role="combobox"
                     aria-expanded={open}
+                    aria-label="Select trading account"
                     className={cn(
                         "flex items-center h-10 gap-2 px-3 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-[#151925] border border-dashboard rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors w-full",
                         className
                     )}
                 >
                     <div className="p-1.5 bg-gold/10 text-gold dark:bg-amber-500/15 dark:text-amber-400 rounded-lg">
-                        <Wallet size={16} />
+                        {isAllSelected ? (
+                            <Layers size={16} />
+                        ) : (
+                            <Wallet size={16} />
+                        )}
                     </div>
                     <span className="flex-1 text-left font-medium overflow-hidden">
-                        {selectedAccount ? (
+                        {isAllSelected ? (
+                            <span className="inline-flex items-center gap-1.5 truncate">
+                                <span className="text-primary font-bold">
+                                    ALL ACCOUNTS
+                                </span>
+                                <span className="text-gray-500 font-mono tabular-nums text-xs">
+                                    (USD)
+                                </span>
+                            </span>
+                        ) : selectedAccount ? (
                             <AccountLabelDisplay account={selectedAccount} />
                         ) : isLoading ? (
                             "Loading..."
@@ -254,6 +325,31 @@ export function AccountSelector({
                     <CommandList>
                         <CommandEmpty>No account found.</CommandEmpty>
                         <CommandGroup heading="My Accounts">
+                            {accounts.length > 0 && (
+                                <CommandItem
+                                    value="all accounts usd combined portfolio"
+                                    onSelect={handleSelectAll}
+                                    onClick={handleSelectAll}
+                                    className="cursor-pointer data-[disabled]:pointer-events-auto data-[disabled]:opacity-100"
+                                >
+                                    <Check
+                                        className={cn(
+                                            "mr-2 h-4 w-4",
+                                            isAllSelected
+                                                ? "opacity-100"
+                                                : "opacity-0"
+                                        )}
+                                    />
+                                    <div className="flex flex-col text-left overflow-hidden">
+                                        <span className="font-bold text-sm text-primary truncate">
+                                            All Accounts (USD)
+                                        </span>
+                                        <span className="text-xs text-gray-600 dark:text-gray-300 mt-0.5 truncate">
+                                            Combined portfolio normalized to USD
+                                        </span>
+                                    </div>
+                                </CommandItem>
+                            )}
                             {accounts.map((account) => (
                                 <CommandItem
                                     key={account.id}
@@ -266,7 +362,9 @@ export function AccountSelector({
                                     <Check
                                         className={cn(
                                             "mr-2 h-4 w-4",
-                                            selectedAccount?.id === account.id
+                                            !isAllSelected &&
+                                                selectedAccount?.id ===
+                                                    account.id
                                                 ? "opacity-100"
                                                 : "opacity-0"
                                         )}

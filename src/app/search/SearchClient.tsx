@@ -20,7 +20,7 @@ import { AuthUser } from "@/lib/auth-types";
 
 interface SearchResult {
     id: string;
-    type: "article" | "lesson";
+    type: "article" | "lesson" | "tool" | "system" | "strategy";
     title: string;
     slug: string;
     description: string;
@@ -75,8 +75,8 @@ export default function SearchClient({
                 );
                 const data = await res.json();
                 setResults(data.data || []);
-            } catch (error) {
-                console.error("Search error", error);
+            } catch {
+                setResults([]);
             } finally {
                 setIsLoading(false);
             }

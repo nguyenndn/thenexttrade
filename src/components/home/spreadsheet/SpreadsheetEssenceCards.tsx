@@ -18,7 +18,7 @@ const essenceCards: EssenceCard[] = [
         icon: PlugZap,
         label: "Zero Manual Entry",
         copy: "Live MT5 EA streams entries, exits, and slippage automatically. No manual CSV exports or ticket copy-pasting.",
-        hoverAnim: "group-hover:-translate-y-1",
+        hoverAnim: "group-hover:scale-110",
     },
     {
         icon: Brain,

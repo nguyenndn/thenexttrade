@@ -17,6 +17,8 @@ const customRemotePatterns = [
   { protocol: 'https', hostname: '*.gravatar.com' },
   { protocol: 'https', hostname: 'cdn.jsdelivr.net' },
   { protocol: 'https', hostname: '*.r2.dev' },
+  { protocol: 'https', hostname: 'thenexttrade.app' },
+  { protocol: 'https', hostname: '*.thenexttrade.app' },
 ];
 
 if (assetHostname) {
@@ -92,7 +94,7 @@ const nextConfig = {
       "default-src 'self'",
       "script-src 'self' 'unsafe-inline' https://*.supabase.co https://*.google.com https://*.googleapis.com https://*.googletagmanager.com https://challenges.cloudflare.com",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-      "img-src 'self' blob: data: https://*.supabase.co https://*.unsplash.com https://flagcdn.com https://images.unsplash.com https://*.r2.dev https://*.thenexttrade.com https://*.thenexttrade.io https://cdn.jsdelivr.net",
+      "img-src 'self' blob: data: https://*.supabase.co https://*.unsplash.com https://flagcdn.com https://images.unsplash.com https://*.r2.dev https://*.thenexttrade.app https://*.thenexttrade.com https://*.thenexttrade.io https://cdn.jsdelivr.net",
       "font-src 'self' data: https://fonts.gstatic.com",
       "connect-src 'self' https://*.supabase.co https://*.google-analytics.com https://*.googleapis.com wss://*.supabase.co https://challenges.cloudflare.com https://cdn.jsdelivr.net",
       "frame-src https://challenges.cloudflare.com",

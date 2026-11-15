@@ -3,6 +3,20 @@ import { getAuthUser } from "@/lib/auth-cache";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { onUserTradesUpdated } from "@/lib/experiments/progress.server";
+import { convertToUsdEquivalent } from "@/lib/utils/cent-account";
+
+const httpsImageArraySchema = z
+    .array(
+        z
+            .string()
+            .url()
+            .refine(
+                (u) => u.startsWith("https://"),
+                "Only HTTPS image URLs are allowed"
+            )
+    )
+    .max(5);
 
 // --- VALIDATION SCHEMA ---
 const journalEntrySchema = z.object({
@@ -36,7 +50,7 @@ const journalEntrySchema = z.object({
     notes: z.string().optional(),
     entryReason: z.string().optional().nullable(),
     exitReason: z.string().optional().nullable(),
-    images: z.array(z.string()).optional().default([]),
+    images: httpsImageArraySchema.optional().default([]),
     accountId: z.string().optional().nullable(),
     strategy: z.string().optional().nullable(),
     // Phase 45
@@ -108,6 +122,7 @@ export async function POST(request: Request) {
         const entry = await prisma.journalEntry.create({
             data: {
                 userId: user.id,
+                shareMode: "private",
                 ...rest,
             },
         });
@@ -185,6 +200,12 @@ export async function POST(request: Request) {
             /* XP failure should not block entry creation */
         }
 
+        try {
+            await onUserTradesUpdated(user.id, entry.accountId || undefined);
+        } catch {
+            /* Experiment progress sync failure should not block entry creation */
+        }
+
         revalidateTag("dashboard-stats", "max");
         revalidatePath("/dashboard");
         revalidatePath("/dashboard/journal");
@@ -198,7 +219,7 @@ export async function POST(request: Request) {
         console.error("Create Journal Error:", error);
         if (error instanceof z.ZodError) {
             return NextResponse.json(
-                { error: "Validation Error", details: (error as any).errors },
+                { error: "Validation Error", details: error.issues },
                 { status: 400 }
             );
         }
@@ -277,41 +298,87 @@ export async function GET(request: Request) {
     }
 
     try {
-        const [entries, total, pnlStat, closedTradesCount, winCount, lossCount] =
-            await Promise.all([
-                prisma.journalEntry.findMany({
-                    where,
-                    orderBy: { [orderBy]: sortOrder },
-                    skip,
-                    take: limit,
-                    include: {
-                        account: {
-                            select: { accountType: true },
+        const isSingleAccount = Boolean(accountId && accountId !== "all");
+        const [
+            entries,
+            total,
+            pnlStat,
+            multiAccountClosed,
+            closedTradesCount,
+            winCount,
+            lossCount,
+        ] = await Promise.all([
+            prisma.journalEntry.findMany({
+                where,
+                orderBy: { [orderBy]: sortOrder },
+                skip,
+                take: limit,
+                include: {
+                    account: {
+                        select: {
+                            accountType: true,
+                            currency: true,
+                            server: true,
+                            initialBalance: true,
+                            balance: true,
                         },
                     },
-                }),
-                prisma.journalEntry.count({ where }),
-                prisma.journalEntry.aggregate({
-                    where: { ...where, status: "CLOSED" },
-                    _sum: { pnl: true, commission: true, swap: true },
-                }),
-                prisma.journalEntry.count({
-                    where: { ...where, status: "CLOSED" },
-                }),
-                prisma.journalEntry.count({
-                    where: { ...where, status: "CLOSED", result: "WIN" },
-                }),
-                prisma.journalEntry.count({
-                    where: { ...where, status: "CLOSED", result: "LOSS" },
-                }),
-            ]);
+                },
+            }),
+            prisma.journalEntry.count({ where }),
+            isSingleAccount
+                ? prisma.journalEntry.aggregate({
+                      where: { ...where, status: "CLOSED" },
+                      _sum: { pnl: true, commission: true, swap: true },
+                  })
+                : Promise.resolve(null),
+            !isSingleAccount
+                ? prisma.journalEntry.findMany({
+                      where: { ...where, status: "CLOSED" },
+                      select: {
+                          pnl: true,
+                          commission: true,
+                          swap: true,
+                          account: {
+                              select: { currency: true, server: true },
+                          },
+                      },
+                  })
+                : Promise.resolve([]),
+            prisma.journalEntry.count({
+                where: { ...where, status: "CLOSED" },
+            }),
+            prisma.journalEntry.count({
+                where: { ...where, status: "CLOSED", result: "WIN" },
+            }),
+            prisma.journalEntry.count({
+                where: { ...where, status: "CLOSED", result: "LOSS" },
+            }),
+        ]);
 
         const winRate =
             closedTradesCount > 0 ? (winCount / closedTradesCount) * 100 : 0;
         const totalPnL =
-            (pnlStat._sum.pnl || 0) +
-            (pnlStat._sum.commission || 0) +
-            (pnlStat._sum.swap || 0);
+            isSingleAccount && pnlStat
+                ? (pnlStat._sum.pnl || 0) +
+                  (pnlStat._sum.commission || 0) +
+                  (pnlStat._sum.swap || 0)
+                : Number(
+                      multiAccountClosed
+                          .reduce(
+                              (sum, t) =>
+                                  sum +
+                                  convertToUsdEquivalent(
+                                      (t.pnl || 0) +
+                                          (t.commission || 0) +
+                                          (t.swap || 0),
+                                      t.account?.currency,
+                                      t.account?.server
+                                  ),
+                              0
+                          )
+                          .toFixed(2)
+                  );
 
         return NextResponse.json({
             data: entries,

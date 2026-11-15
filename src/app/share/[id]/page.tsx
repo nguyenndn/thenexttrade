@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { TradeShareCard } from "@/components/journal/TradeShareCard";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { cn } from "@/lib/utils";
+import { normalizeCurrencyCode } from "@/lib/utils/cent-account";
 import Link from "next/link";
 import { ArrowRight, CheckCircle2, Medal } from "lucide-react";
 import Image from "next/image";
@@ -44,6 +45,10 @@ const getSharedTrade = cache(async (id: string) => {
                     accountType: true,
                     name: true,
                     accountNumber: true,
+                    initialBalance: true,
+                    balance: true,
+                    currency: true,
+                    server: true,
                 },
             },
         },
@@ -127,8 +132,26 @@ export default async function SharePage({ params }: SharePageProps) {
     const profile = trade.user?.profile;
     const showRealName = profile?.showRealName ?? false;
     const showMoney = profile?.showMoney ?? false;
+    const showPercentMetrics = profile?.showPercentMetrics !== false;
     const showBroker = profile?.showBroker ?? false;
     const showAccountNumber = profile?.showAccountNumber ?? false;
+
+    const rawNetPnl =
+        (trade.pnl ?? 0) + (trade.commission ?? 0) + (trade.swap ?? 0);
+    const baseBalance =
+        trade.account?.initialBalance && trade.account.initialBalance > 0
+            ? trade.account.initialBalance
+            : trade.account?.balance && trade.account.balance > 0
+              ? trade.account.balance
+              : null;
+    const rawPercentGain =
+        baseBalance !== null
+            ? Number(((rawNetPnl / baseBalance) * 100).toFixed(2))
+            : null;
+    const resolvedCurrency = normalizeCurrencyCode(
+        trade.account?.currency,
+        trade.account?.server
+    );
 
     // Sanitize name
     const displayName = showRealName
@@ -137,10 +160,11 @@ export default async function SharePage({ params }: SharePageProps) {
           ? `@${profile.username}`
           : "Trader";
 
-    // Sanitize account info according to privacy settings
+    // Sanitize account info according to privacy settings (never expose raw balance/initialBalance)
     const safeAccount = trade.account
         ? {
-              ...trade.account,
+              accountType: trade.account.accountType,
+              currency: resolvedCurrency,
               name: !showBroker
                   ? trade.account.accountType === "DEMO"
                       ? "Demo Account"
@@ -164,14 +188,25 @@ export default async function SharePage({ params }: SharePageProps) {
         postTradeLesson: _postTradeLesson,
         entryReason: _entryReason,
         exitReason: _exitReason,
+        pnl: _pnl,
+        commission: _commission,
+        swap: _swap,
         ...safeTrade
     } = trade;
 
     // Attach sanitized fields / overrides
     const sanitizedTrade = {
         ...safeTrade,
+        pnl: showMoney ? trade.pnl : null,
+        commission: showMoney ? trade.commission : null,
+        swap: showMoney ? trade.swap : null,
+        netPnl: showMoney ? rawNetPnl : null,
+        percentGain: showPercentMetrics ? rawPercentGain : null,
+        isWin: rawNetPnl > 0,
+        isLoss: rawNetPnl < 0,
         account: safeAccount,
         showMoney,
+        showPercentMetrics,
         showRealName,
         showBroker,
         showAccountNumber,

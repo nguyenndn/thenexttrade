@@ -3,7 +3,11 @@
 import { useState, useEffect } from "react";
 import { Info, Wallet, Percent as PercentIcon, TrendingUp } from "lucide-react";
 import { CurrencyPairSelect } from "./CurrencyPairSelect";
-import { AccountCurrencySelect } from "./AccountCurrencySelect";
+import {
+    AccountCurrencySelect,
+    formatAccountCurrencyAmount,
+    getCurrencySymbol,
+} from "./AccountCurrencySelect";
 import { calculatePositionSize } from "@/lib/calculators";
 import { CalcInput } from "./CalcInput";
 import {
@@ -31,26 +35,38 @@ export function PositionSizeCalc() {
     } | null>(null);
 
     useEffect(() => {
-        if (inputs.accountBalance > 0 && inputs.stopLossPips > 0) {
+        if (
+            inputs.accountBalance > 0 &&
+            inputs.stopLossPips > 0 &&
+            inputs.riskPercent > 0
+        ) {
             const calc = calculatePositionSize(inputs);
             setResult(calc);
+        } else {
+            setResult(null);
         }
     }, [inputs]);
+
+    const currSymbol = getCurrencySymbol(inputs.accountCurrency);
+    const previewRiskAmount =
+        inputs.accountBalance > 0 && inputs.riskPercent > 0
+            ? (inputs.accountBalance * inputs.riskPercent) / 100
+            : 0;
 
     return (
         <div className="grid lg:grid-cols-12 gap-8">
             {/* Input Section */}
             <div className="lg:col-span-7 space-y-6">
-                <div className="bg-blue-50 dark:bg-blue-500/10 p-4 rounded-lg flex items-start gap-3 border border-blue-100 dark:border-blue-500/20">
+                <div className="bg-blue-50 dark:bg-blue-500/10 p-4 rounded-xl flex items-start gap-3 border border-blue-100 dark:border-blue-500/20">
                     <Info className="text-blue-500 shrink-0 mt-0.5" size={18} />
                     <p className="text-sm text-blue-700 dark:text-blue-300">
-                        Calculate optimal lot size to risk exactly{" "}
+                        Calculate optimal lot size to risk{" "}
                         <span className="font-bold">{inputs.riskPercent}%</span>{" "}
-                        (${" "}
-                        {(
-                            (inputs.accountBalance * inputs.riskPercent) /
-                            100
-                        ).toFixed(2)}
+                        (
+                        {formatAccountCurrencyAmount(
+                            previewRiskAmount,
+                            inputs.accountCurrency
+                        )}
                         ) of your equity.
                     </p>
                 </div>
@@ -66,7 +82,7 @@ export function PositionSizeCalc() {
                             })
                         }
                         icon={Wallet}
-                        suffix="$"
+                        suffix={currSymbol}
                     />
                     <CalcInput
                         label="Risk"
@@ -128,22 +144,28 @@ export function PositionSizeCalc() {
                 <CalcResultGrid>
                     <CalcResultCard
                         label="Risk Amount"
-                        value={`$${result?.riskAmount.toFixed(2) || "0.00"}`}
+                        value={formatAccountCurrencyAmount(
+                            result ? result.riskAmount : 0,
+                            inputs.accountCurrency
+                        )}
                         valueColor="text-red-600 dark:text-red-400"
                     />
                     <CalcResultCard
                         label="Units"
-                        value={result?.units.toLocaleString() || "0"}
+                        value={result ? result.units.toLocaleString() : "0"}
                     />
                 </CalcResultGrid>
 
-                <div className="bg-white dark:bg-white/5 rounded-lg p-3 border border-dashboard hover:border-primary/30 transition-colors">
+                <div className="bg-white dark:bg-white/5 rounded-xl p-3 border border-dashboard hover:border-primary/30 transition-colors">
                     <div className="flex justify-between text-sm">
                         <span className="text-gray-600 dark:text-gray-300">
                             Pip Value (Standard)
                         </span>
-                        <span className="font-bold text-gray-700 dark:text-white">
-                            ${result ? result.pipValue.toFixed(2) : "0.00"}
+                        <span className="font-bold font-mono tabular-nums text-gray-700 dark:text-white">
+                            {formatAccountCurrencyAmount(
+                                result ? result.pipValue : 0,
+                                inputs.accountCurrency
+                            )}
                         </span>
                     </div>
                 </div>

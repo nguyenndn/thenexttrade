@@ -79,6 +79,7 @@ export function Header({
                         <Button
                             variant="ghost"
                             size="icon"
+                            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
                             onClick={() => setCollapsed?.(!collapsed)}
                             className="hidden lg:flex p-1.5 rounded-lg text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
                         >
@@ -88,6 +89,7 @@ export function Header({
                         <Button
                             variant="ghost"
                             size="icon"
+                            aria-label="Open navigation menu"
                             onClick={onMobileMenuClick}
                             className="flex lg:hidden p-1.5 rounded-lg text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
                         >

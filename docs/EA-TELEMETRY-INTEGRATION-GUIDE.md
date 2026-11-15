@@ -207,7 +207,7 @@ GITHUB_LICENSE_BRANCH="main"
 ```
 
 Trong MT5 (`Tools` $\rightarrow$ `Options` $\rightarrow$ `Expert Advisors` $\rightarrow$ `Allow WebRequest for listed URL`), thêm 3 URL:
-1. `https://thenexttrade.com` *(hoặc `http://localhost:3500` khi test dưới local)*
+1. `https://thenexttrade.app` *(hoặc `http://localhost:3500` khi test dưới local)*
 2. `https://api.github.com`
 3. `https://raw.githubusercontent.com`
 

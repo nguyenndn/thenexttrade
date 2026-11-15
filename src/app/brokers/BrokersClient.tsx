@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import {
@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/Button";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { ReviewBadge } from "./ReviewModal";
 import { BrokerSpecsMatrix } from "@/components/home/broker-rankings/BrokerSpecsMatrix";
+import { trackBrokerClick } from "@/actions/ib-lead";
 import partnersData from "@/config/partners.json";
 
 interface PartnerReview {
@@ -91,10 +92,12 @@ function PartnerCard({
     item,
     ctaLabel,
     categoryKey,
+    onTrackClick,
 }: {
     item: PartnerItem;
     ctaLabel: string;
     categoryKey: string;
+    onTrackClick: (item: PartnerItem) => void;
 }) {
     const hasUrl = item.url && item.url !== "#";
     const isCrypto = categoryKey === "cryptoExchanges";
@@ -153,6 +156,7 @@ function PartnerCard({
                                     ...item,
                                     review: item.review,
                                 }}
+                                onTrackClick={() => onTrackClick(item)}
                             />
                         )}
                     </div>
@@ -205,6 +209,7 @@ function PartnerCard({
                         href={item.url!}
                         target="_blank"
                         rel="noopener noreferrer"
+                        onClick={() => onTrackClick(item)}
                         className={buttonVariants({
                             variant: "gold",
                             size: "smd",
@@ -236,6 +241,47 @@ export default function BrokersClient() {
     const tabFromUrl = searchParams.get("tab");
     const [activeTab, setActiveTab] = useState(
         tabFromUrl && validTabs.includes(tabFromUrl) ? tabFromUrl : "brokers"
+    );
+    const sessionIdRef = useRef<string>("");
+
+    useEffect(() => {
+        try {
+            const existing = sessionStorage.getItem("tnt_broker_sid");
+            if (existing) {
+                sessionIdRef.current = existing;
+                return;
+            }
+            const generated =
+                typeof crypto !== "undefined" && "randomUUID" in crypto
+                    ? crypto.randomUUID()
+                    : `sid_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
+            sessionStorage.setItem("tnt_broker_sid", generated);
+            sessionIdRef.current = generated;
+        } catch {
+            sessionIdRef.current = `sid_${Date.now()}`;
+        }
+    }, []);
+
+    const utmSource = searchParams.get("utm_source") || undefined;
+    const utmMedium = searchParams.get("utm_medium") || undefined;
+    const utmCampaign = searchParams.get("utm_campaign") || undefined;
+
+    const handleTrackBrokerClick = useCallback(
+        (item: PartnerItem) => {
+            if (!item.url || item.url === "#") return;
+            const sessionId =
+                sessionIdRef.current || `sid_${Date.now()}`;
+            void trackBrokerClick({
+                broker: item.name,
+                affiliateUrl: item.url,
+                source: "BROKER_PAGE",
+                sessionId,
+                utmSource,
+                utmMedium,
+                utmCampaign,
+            }).catch(() => {});
+        },
+        [utmSource, utmMedium, utmCampaign]
     );
 
     return (
@@ -291,6 +337,7 @@ export default function BrokersClient() {
                                         item={item}
                                         ctaLabel={cat.cta}
                                         categoryKey={cat.key}
+                                        onTrackClick={handleTrackBrokerClick}
                                     />
                                 ))}
                         </div>

@@ -168,6 +168,10 @@ function SignupPageContent() {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        if (step < 3) {
+            goNext();
+            return;
+        }
         if (!validateCurrentStep()) return;
 
         setLoading(true);

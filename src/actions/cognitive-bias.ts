@@ -6,6 +6,10 @@ import { getUserProAccess } from "@/lib/pro-access";
 import { executeAiGateway } from "@/lib/ai-gateway/provider-router";
 import { reserveAiRequest } from "@/lib/ai-gateway/quota-service";
 import { randomUUID } from "node:crypto";
+import {
+    convertToUsdEquivalent,
+    normalizeLotSize,
+} from "@/lib/utils/cent-account";
 
 // Map biases to lessons in the academy (fallback default values)
 const BIAS_LESSON_MAP = {
@@ -31,10 +35,44 @@ const BIAS_LESSON_MAP = {
     },
 };
 
-function cleanAndParseAIResponse(content: string) {
+interface BiasScores {
+    lossAversion: number;
+    fomo: number;
+    overconfidence: number;
+    emotionalContagion: number;
+}
+
+type DominantBiasKey =
+    | "LOSS_AVERSION"
+    | "FOMO"
+    | "OVERCONFIDENCE"
+    | "EMOTIONAL_CONTAGION";
+
+interface ParsedBiasResponse {
+    biases: BiasScores;
+    dominantBias: DominantBiasKey;
+    assessment: string;
+    actionPlan: string;
+}
+
+function stripMarkdownBold(text: string): string {
+    return text.replace(/\*\*([^*]+)\*\*/g, "$1").replace(/\*\*/g, "").trim();
+}
+
+function toClampedScore(val: unknown): number {
+    const num =
+        typeof val === "number"
+            ? Math.round(val)
+            : typeof val === "string"
+              ? parseInt(val, 10)
+              : NaN;
+    if (Number.isNaN(num)) return 50;
+    return Math.min(100, Math.max(0, num));
+}
+
+function cleanAndParseAIResponse(content: string): ParsedBiasResponse {
     let clean = content.trim();
 
-    // Strip markdown code fences if present
     if (clean.startsWith("```")) {
         const firstNewline = clean.indexOf("\n");
         if (firstNewline !== -1) {
@@ -46,16 +84,18 @@ function cleanAndParseAIResponse(content: string) {
         clean = clean.trim();
     }
 
-    let parsed: any = null;
+    let rawObj: Record<string, unknown> | null = null;
     try {
-        parsed = JSON.parse(clean);
+        const candidate = JSON.parse(clean);
+        if (candidate && typeof candidate === "object") {
+            rawObj = candidate as Record<string, unknown>;
+        }
     } catch (parseError) {
         console.warn(
             "[JSON Clean Parse Failed - Attempting Fallback Parsing]:",
             parseError
         );
 
-        // Fallback: Use Regex to extract keys
         let dominantBias = "LOSS_AVERSION";
         const domMatch = clean.match(/"dominantBias"\s*:\s*"([^"]+)"/i);
         if (domMatch && domMatch[1]) {
@@ -72,7 +112,7 @@ function cleanAndParseAIResponse(content: string) {
             }
         }
 
-        const biases = {
+        const biases: BiasScores = {
             lossAversion: 50,
             fomo: 50,
             overconfidence: 50,
@@ -80,29 +120,16 @@ function cleanAndParseAIResponse(content: string) {
         };
 
         const laMatch = clean.match(/"lossAversion"\s*:\s*(\d+)/i);
-        if (laMatch)
-            biases.lossAversion = Math.min(
-                100,
-                Math.max(0, parseInt(laMatch[1]))
-            );
+        if (laMatch) biases.lossAversion = toClampedScore(laMatch[1]);
 
         const fomoMatch = clean.match(/"fomo"\s*:\s*(\d+)/i);
-        if (fomoMatch)
-            biases.fomo = Math.min(100, Math.max(0, parseInt(fomoMatch[1])));
+        if (fomoMatch) biases.fomo = toClampedScore(fomoMatch[1]);
 
         const ocMatch = clean.match(/"overconfidence"\s*:\s*(\d+)/i);
-        if (ocMatch)
-            biases.overconfidence = Math.min(
-                100,
-                Math.max(0, parseInt(ocMatch[1]))
-            );
+        if (ocMatch) biases.overconfidence = toClampedScore(ocMatch[1]);
 
         const ecMatch = clean.match(/"emotionalContagion"\s*:\s*(\d+)/i);
-        if (ecMatch)
-            biases.emotionalContagion = Math.min(
-                100,
-                Math.max(0, parseInt(ecMatch[1]))
-            );
+        if (ecMatch) biases.emotionalContagion = toClampedScore(ecMatch[1]);
 
         let assessment =
             "You are exhibiting moderate behavioral biases that are impacting your trading plan consistency. Focus on following your predefined rules strictly.";
@@ -122,7 +149,7 @@ function cleanAndParseAIResponse(content: string) {
             actionPlan = actionMatch[1].replace(/\\"/g, '"').trim();
         }
 
-        parsed = {
+        rawObj = {
             biases,
             dominantBias,
             assessment,
@@ -130,91 +157,78 @@ function cleanAndParseAIResponse(content: string) {
         };
     }
 
-    // --- Strict Normalization Layer ---
-    if (!parsed || typeof parsed !== "object") {
-        parsed = {};
-    }
+    const parsed = rawObj || {};
+    const nestedBiases =
+        parsed.biases && typeof parsed.biases === "object"
+            ? (parsed.biases as Record<string, unknown>)
+            : null;
 
-    if (!parsed.biases || typeof parsed.biases !== "object") {
-        parsed.biases = {
-            lossAversion: parsed.lossAversion ?? parsed.loss_aversion ?? 50,
-            fomo: parsed.fomo ?? 50,
-            overconfidence:
-                parsed.overconfidence ?? parsed.over_confidence ?? 50,
-            emotionalContagion:
-                parsed.emotionalContagion ?? parsed.emotional_contagion ?? 50,
-        };
-    } else {
-        parsed.biases = {
-            lossAversion:
-                parsed.biases.lossAversion ??
-                parsed.biases.loss_aversion ??
-                parsed.biases.lossAversionLevel ??
-                50,
-            fomo: parsed.biases.fomo ?? parsed.biases.fomoLevel ?? 50,
-            overconfidence:
-                parsed.biases.overconfidence ??
-                parsed.biases.over_confidence ??
-                parsed.biases.overconfidenceLevel ??
-                50,
-            emotionalContagion:
-                parsed.biases.emotionalContagion ??
-                parsed.biases.emotional_contagion ??
-                parsed.biases.emotionalContagionLevel ??
-                50,
-        };
-    }
+    const biases: BiasScores = nestedBiases
+        ? {
+              lossAversion: toClampedScore(
+                  nestedBiases.lossAversion ??
+                      nestedBiases.loss_aversion ??
+                      nestedBiases.lossAversionLevel
+              ),
+              fomo: toClampedScore(
+                  nestedBiases.fomo ?? nestedBiases.fomoLevel
+              ),
+              overconfidence: toClampedScore(
+                  nestedBiases.overconfidence ??
+                      nestedBiases.over_confidence ??
+                      nestedBiases.overconfidenceLevel
+              ),
+              emotionalContagion: toClampedScore(
+                  nestedBiases.emotionalContagion ??
+                      nestedBiases.emotional_contagion ??
+                      nestedBiases.emotionalContagionLevel
+              ),
+          }
+        : {
+              lossAversion: toClampedScore(
+                  parsed.lossAversion ?? parsed.loss_aversion
+              ),
+              fomo: toClampedScore(parsed.fomo),
+              overconfidence: toClampedScore(
+                  parsed.overconfidence ?? parsed.over_confidence
+              ),
+              emotionalContagion: toClampedScore(
+                  parsed.emotionalContagion ?? parsed.emotional_contagion
+              ),
+          };
 
-    // Clamp values between 0 and 100
-    parsed.biases.lossAversion = Math.min(
-        100,
-        Math.max(0, parseInt(parsed.biases.lossAversion) || 50)
-    );
-    parsed.biases.fomo = Math.min(
-        100,
-        Math.max(0, parseInt(parsed.biases.fomo) || 50)
-    );
-    parsed.biases.overconfidence = Math.min(
-        100,
-        Math.max(0, parseInt(parsed.biases.overconfidence) || 50)
-    );
-    parsed.biases.emotionalContagion = Math.min(
-        100,
-        Math.max(0, parseInt(parsed.biases.emotionalContagion) || 50)
-    );
-
-    // Normalize assessment
-    parsed.assessment =
-        parsed.assessment ??
-        parsed.coaching_feedback ??
-        parsed.coaching ??
+    const rawAssessment =
+        (typeof parsed.assessment === "string" && parsed.assessment) ||
+        (typeof parsed.coaching_feedback === "string" &&
+            parsed.coaching_feedback) ||
+        (typeof parsed.coaching === "string" && parsed.coaching) ||
         "You are exhibiting moderate behavioral biases that are impacting your trading plan consistency. Focus on following your predefined rules strictly.";
 
-    // Normalize actionPlan
-    parsed.actionPlan =
-        parsed.actionPlan ??
-        parsed.action_plan ??
+    const rawActionPlan =
+        (typeof parsed.actionPlan === "string" && parsed.actionPlan) ||
+        (typeof parsed.action_plan === "string" && parsed.action_plan) ||
         "Enforce a mandatory cooldown after any trade outcome and stick to a 1% risk limit per trade.";
 
-    // Normalize dominantBias
-    let dominantBias = (
-        parsed.dominantBias ??
-        parsed.dominant_bias ??
-        "LOSS_AVERSION"
+    const rawDominant = String(
+        parsed.dominantBias ?? parsed.dominant_bias ?? "LOSS_AVERSION"
     ).toUpperCase();
-    if (
-        ![
+    const dominantBias: DominantBiasKey = (
+        [
             "LOSS_AVERSION",
             "FOMO",
             "OVERCONFIDENCE",
             "EMOTIONAL_CONTAGION",
-        ].includes(dominantBias)
-    ) {
-        dominantBias = "LOSS_AVERSION";
-    }
-    parsed.dominantBias = dominantBias;
+        ] as const
+    ).includes(rawDominant as DominantBiasKey)
+        ? (rawDominant as DominantBiasKey)
+        : "LOSS_AVERSION";
 
-    return parsed;
+    return {
+        biases,
+        dominantBias,
+        assessment: stripMarkdownBold(rawAssessment),
+        actionPlan: stripMarkdownBold(rawActionPlan),
+    };
 }
 
 export async function analyzeCognitiveBiases(accountId?: string) {
@@ -230,20 +244,24 @@ export async function analyzeCognitiveBiases(accountId?: string) {
         };
     }
 
-    // Check cache in User settings to avoid redundant DeepSeek calls
+    const normalizedAccountId =
+        accountId && accountId !== "all" ? accountId : undefined;
+
+    // Check cache in User settings to avoid redundant AI calls
     const dbUser = await prisma.user.findUnique({
         where: { id: user.id },
         select: { settings: true },
     });
 
-    const existingSettings = (dbUser?.settings as Record<string, any>) || {};
+    const existingSettings =
+        (dbUser?.settings as Record<string, unknown>) || {};
 
     // Construct cache key based on trades count and last trade timestamp
     const cacheCheck = await prisma.journalEntry.findFirst({
         where: {
             userId: user.id,
             status: "CLOSED",
-            ...(accountId ? { accountId } : {}),
+            ...(normalizedAccountId ? { accountId: normalizedAccountId } : {}),
         },
         orderBy: { entryDate: "desc" },
         select: { id: true, entryDate: true },
@@ -253,23 +271,28 @@ export async function analyzeCognitiveBiases(accountId?: string) {
         where: {
             userId: user.id,
             status: "CLOSED",
-            ...(accountId ? { accountId } : {}),
+            ...(normalizedAccountId ? { accountId: normalizedAccountId } : {}),
         },
     });
 
     const lastTradeTime = cacheCheck?.entryDate
         ? new Date(cacheCheck.entryDate).getTime()
         : 0;
-    const currentCacheKey = `bias_${totalClosedCount}_${lastTradeTime}_${accountId || "all"}`;
+    const currentCacheKey = `bias_${totalClosedCount}_${lastTradeTime}_${normalizedAccountId || "all"}`;
 
     const cachedData = existingSettings.cachedBiasProfile as
         | {
               cacheKey: string;
-              biases: any;
-              dominantBias: string;
+              biases: BiasScores;
+              dominantBias: DominantBiasKey;
               assessment: string;
               actionPlan: string;
-              recommendedLesson: any;
+              recommendedLesson: {
+                  id: string;
+                  title: string;
+                  slug: string;
+                  path: string;
+              };
               generatedAt: string;
           }
         | undefined;
@@ -279,8 +302,8 @@ export async function analyzeCognitiveBiases(accountId?: string) {
             success: true,
             biases: cachedData.biases,
             dominantBias: cachedData.dominantBias,
-            assessment: cachedData.assessment,
-            actionPlan: cachedData.actionPlan,
+            assessment: stripMarkdownBold(cachedData.assessment || ""),
+            actionPlan: stripMarkdownBold(cachedData.actionPlan || ""),
             recommendedLesson: cachedData.recommendedLesson,
             generatedAt: cachedData.generatedAt,
             isCached: true,
@@ -293,10 +316,12 @@ export async function analyzeCognitiveBiases(accountId?: string) {
             where: {
                 userId: user.id,
                 status: "CLOSED",
-                ...(accountId ? { accountId } : {}),
+                ...(normalizedAccountId
+                    ? { accountId: normalizedAccountId }
+                    : {}),
             },
             orderBy: { entryDate: "desc" },
-            take: 50, // Analyze recent 50 trades for high relevancy
+            take: 50,
             select: {
                 id: true,
                 pnl: true,
@@ -311,6 +336,12 @@ export async function analyzeCognitiveBiases(accountId?: string) {
                 confidenceLevel: true,
                 followedPlan: true,
                 symbol: true,
+                account: {
+                    select: {
+                        currency: true,
+                        server: true,
+                    },
+                },
             },
         });
 
@@ -345,12 +376,27 @@ export async function analyzeCognitiveBiases(accountId?: string) {
                 new Date(b.entryDate).getTime()
         );
 
+        const isMultiAccount = !normalizedAccountId;
+        const getEffectiveLotSize = (t: (typeof sortedTrades)[number]) =>
+            isMultiAccount
+                ? normalizeLotSize(t.lotSize || 0, {
+                      symbol: t.symbol,
+                      currency: t.account?.currency,
+                      server: t.account?.server,
+                  })
+                : t.lotSize || 0;
+
         for (let i = 0; i < sortedTrades.length; i++) {
             const t = sortedTrades[i];
-            const netTradePnl =
-                (t.pnl || 0) +
-                (t.commission || 0) +
-                (t.swap || 0);
+            const rawNetPnl =
+                (t.pnl || 0) + (t.commission || 0) + (t.swap || 0);
+            const netTradePnl = isMultiAccount
+                ? convertToUsdEquivalent(
+                      rawNetPnl,
+                      t.account?.currency,
+                      t.account?.server
+                  )
+                : rawNetPnl;
             totalPnL += netTradePnl;
             if (t.result === "WIN") wins++;
             if (t.result === "LOSS") losses++;
@@ -394,7 +440,9 @@ export async function analyzeCognitiveBiases(accountId?: string) {
             // Martingale detection (sizing up after loss)
             if (i > 0) {
                 const prev = sortedTrades[i - 1];
-                if (prev.result === "LOSS" && t.lotSize > prev.lotSize * 1.3) {
+                const prevLots = getEffectiveLotSize(prev);
+                const curLots = getEffectiveLotSize(t);
+                if (prev.result === "LOSS" && prevLots > 0 && curLots > prevLots * 1.3) {
                     sizeUpAfterLoss++;
                 }
             }
@@ -466,7 +514,7 @@ Ensure your response is valid raw JSON, with no markdown code blocks (\`\`\`json
         const reservation = await reserveAiRequest({
             requestId,
             userId: user.id,
-            symbol: accountId || "MULTI",
+            symbol: normalizedAccountId || "MULTI",
             timeframe: "ANALYSIS",
             analysisMode: "COGNITIVE_BIAS",
             promptVersion: "cognitive-bias-v1",
@@ -532,12 +580,14 @@ Ensure your response is valid raw JSON, with no markdown code blocks (\`\`\`json
         await prisma.user.update({
             where: { id: user.id },
             data: {
-                settings: {
-                    ...existingSettings,
-                    aiRecommendedLessonId: finalLesson.id,
-                    aiRecommendedLessonSlug: finalLesson.slug,
-                    cachedBiasProfile: finalCachedProfile,
-                },
+                settings: JSON.parse(
+                    JSON.stringify({
+                        ...existingSettings,
+                        aiRecommendedLessonId: finalLesson.id,
+                        aiRecommendedLessonSlug: finalLesson.slug,
+                        cachedBiasProfile: finalCachedProfile,
+                    })
+                ),
             },
         });
 
@@ -550,10 +600,11 @@ Ensure your response is valid raw JSON, with no markdown code blocks (\`\`\`json
             recommendedLesson: finalLesson,
             generatedAt: finalCachedProfile.generatedAt,
         };
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("[AI Cognitive Bias Error]:", error);
+        const msg = error instanceof Error ? error.message : String(error);
         return {
-            error: `Failed to generate AI Bias Profile: ${error.message || error}. Please try again.`,
+            error: `Failed to generate AI Bias Profile: ${msg}. Please try again.`,
         };
     }
 }

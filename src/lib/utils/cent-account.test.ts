@@ -3,12 +3,15 @@ import { isCentAccount, isCentSymbol, normalizeLotSize } from "./cent-account";
 
 describe("cent-account utilities", () => {
     describe("isCentAccount", () => {
-        it("detects cent account by currency USC or CENT", () => {
+        it("detects cent account by currency USC or CENT while excluding USDC/crypto", () => {
             expect(isCentAccount({ currency: "USC" })).toBe(true);
             expect(isCentAccount({ currency: "usc" })).toBe(true);
             expect(isCentAccount({ currency: "CENT" })).toBe(true);
             expect(isCentAccount({ currency: "EU_CENT" })).toBe(true);
             expect(isCentAccount({ currency: "USD" })).toBe(false);
+            expect(isCentAccount({ currency: "USDC" })).toBe(false);
+            expect(isCentAccount({ currency: "USDT" })).toBe(false);
+            expect(isCentAccount({ currency: "BTC" })).toBe(false);
         });
 
         it("detects cent account by server name containing cent", () => {
@@ -32,11 +35,14 @@ describe("cent-account utilities", () => {
             expect(isCentSymbol("USDJPY_c")).toBe(true);
         });
 
-        it("does not falsely identify non-cent symbols", () => {
+        it("does not falsely identify non-cent or crypto USDC symbols", () => {
             expect(isCentSymbol("XAUUSD")).toBe(false);
             expect(isCentSymbol("EURUSD")).toBe(false);
             expect(isCentSymbol("USDC")).toBe(false);
             expect(isCentSymbol("USDCUSD")).toBe(false);
+            expect(isCentSymbol("BTCUSDC")).toBe(false);
+            expect(isCentSymbol("ETHUSDC")).toBe(false);
+            expect(isCentSymbol("BTCUSDc")).toBe(true);
             expect(isCentSymbol(null)).toBe(false);
             expect(isCentSymbol("")).toBe(false);
         });

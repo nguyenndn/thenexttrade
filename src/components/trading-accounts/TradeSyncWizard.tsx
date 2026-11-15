@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import {
     Dialog,
     DialogContent,
@@ -70,6 +71,7 @@ export function TradeSyncWizard({
     defaultMethod,
     onOpenAddAccount,
 }: TradeSyncWizardProps) {
+    const router = useRouter();
     const [step, setStep] = useState<1 | 2 | 3>(1);
     const [syncMethod, setSyncMethod] = useState<SyncMethod>(
         defaultMethod || "EA_SYNC"
@@ -164,8 +166,10 @@ export function TradeSyncWizard({
                 createdAt: new Date().toISOString(),
             });
             toast.success("Sync API key generated!");
-        } catch (e: any) {
-            toast.error(e.message || "Failed to generate key");
+        } catch (e: unknown) {
+            const msg =
+                e instanceof Error ? e.message : "Failed to generate key";
+            toast.error(msg);
         } finally {
             setIsGenerating(false);
         }
@@ -182,7 +186,7 @@ export function TradeSyncWizard({
     };
 
     const handleCopyUrl = () => {
-        const urlToCopy = syncServerUrl || "https://thenexttrade.io";
+        const urlToCopy = syncServerUrl || "https://thenexttrade.app";
         navigator.clipboard.writeText(urlToCopy);
         setCopiedUrl(true);
         toast.success("WebRequest URL copied to clipboard!");
@@ -213,6 +217,7 @@ export function TradeSyncWizard({
             setIsConfirmed(false);
             setSyncStatus(null);
             toast.success("Setup wizard completed!");
+            router.push("/dashboard");
         }
     };
 
@@ -406,7 +411,7 @@ export function TradeSyncWizard({
                                     </div>
                                 ) : (
                                     <div className="space-y-3">
-                                        <div className="flex gap-2">
+                                        <div className="flex gap-2 min-w-0">
                                             <input
                                                 type="text"
                                                 readOnly
@@ -417,7 +422,7 @@ export function TradeSyncWizard({
                                                           keyData.key ||
                                                           ""
                                                 }
-                                                className="flex-1 px-3 py-2 bg-white dark:bg-black/30 border border-dashboard rounded-lg text-xs font-mono text-gray-700 dark:text-gray-300 select-all focus:outline-none"
+                                                className="flex-1 min-w-0 px-3 py-2 bg-white dark:bg-black/30 border border-dashboard rounded-lg text-xs font-mono text-gray-700 dark:text-gray-300 select-all focus:outline-none"
                                             />
                                             <Button
                                                 onClick={handleCopyKey}
@@ -509,21 +514,56 @@ export function TradeSyncWizard({
                                         {accounts.map((acc) => (
                                             <div
                                                 key={acc.id}
-                                                className="flex justify-between items-center px-3 py-2 rounded-lg bg-gray-50 dark:bg-white/[0.02] border border-dashboard"
+                                                className="flex justify-between items-center gap-2 px-3 py-2 rounded-lg bg-gray-50 dark:bg-white/[0.02] border border-dashboard min-w-0"
                                             >
-                                                <div className="flex items-center gap-2">
-                                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                                                    <span className="text-xs font-bold text-gray-700 dark:text-gray-300">
+                                                <div className="flex items-center gap-2 min-w-0">
+                                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                                                    <span className="text-xs font-bold text-gray-700 dark:text-gray-300 truncate">
                                                         {acc.name}
                                                     </span>
                                                 </div>
-                                                <span className="text-xs font-mono font-bold text-primary bg-primary/10 dark:bg-primary/20 px-2 py-0.5 rounded-lg border border-primary/20">
+                                                <span className="text-xs font-mono font-bold text-primary bg-primary/10 dark:bg-primary/20 px-2 py-0.5 rounded-lg border border-primary/20 shrink-0">
                                                     {acc.accountNumber}
                                                 </span>
                                             </div>
                                         ))}
                                     </div>
                                 )}
+                            </div>
+
+                            {/* EA Download Panel */}
+                            <div className="rounded-xl border border-amber-500/20 bg-amber-500/[0.04] dark:bg-amber-500/[0.08] p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                <div className="flex items-start gap-2.5 min-w-0">
+                                    <Download
+                                        size={16}
+                                        className="text-amber-500 shrink-0 mt-0.5"
+                                    />
+                                    <div className="min-w-0">
+                                        <p className="text-xs font-bold text-gray-800 dark:text-white">
+                                            Trade Manager EA Required
+                                        </p>
+                                        <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5 leading-relaxed">
+                                            Download the latest compiled{" "}
+                                            <span className="font-mono font-semibold">.ex5</span>{" "}
+                                            file from Trading Systems before configuring MT5.
+                                        </p>
+                                    </div>
+                                </div>
+                                <Link
+                                    href="/dashboard/trading-systems"
+                                    onClick={onClose}
+                                    className={cn(
+                                        buttonVariants({
+                                            variant: "outline",
+                                            size: "sm",
+                                        }),
+                                        "shrink-0 text-xs font-bold h-8 px-3 border-amber-500/30 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10 inline-flex items-center justify-center gap-1.5"
+                                    )}
+                                >
+                                    <Download size={13} className="shrink-0" />
+                                    <span>Download EA</span>
+                                    <ExternalLink size={12} className="shrink-0" />
+                                </Link>
                             </div>
                         </div>
                     )}
@@ -669,9 +709,9 @@ export function TradeSyncWizard({
                                                     , double-click the green <strong className="text-emerald-600 dark:text-emerald-400">+</strong> row (&quot;add new URL&quot;), paste this exact URL, and click <strong className="text-gray-700 dark:text-gray-200">OK</strong>:
                                                 </p>
                                             </div>
-                                            <div className="flex items-center gap-2">
-                                                <code className="flex-1 bg-white dark:bg-black/40 px-2.5 py-2 rounded-lg border border-dashboard font-mono text-[11px] text-primary break-all">
-                                                    {syncServerUrl || "https://thenexttrade.io"}
+                                            <div className="flex items-center gap-2 min-w-0">
+                                                <code className="flex-1 min-w-0 bg-white dark:bg-black/40 px-2.5 py-2 rounded-lg border border-dashboard font-mono text-[11px] text-primary break-all">
+                                                    {syncServerUrl || "https://thenexttrade.app"}
                                                 </code>
                                                 <Button
                                                     type="button"
@@ -699,15 +739,27 @@ export function TradeSyncWizard({
                                         <span className="w-5 h-5 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">
                                             3
                                         </span>
-                                        <div className="space-y-0.5">
-                                            <p className="font-bold text-gray-800 dark:text-gray-200">
-                                                Enable Algo Trading &amp; Attach Trade Manager EA
-                                            </p>
-                                            <p className="text-gray-500 dark:text-gray-400 leading-relaxed">
-                                                Ensure <strong className="text-gray-700 dark:text-gray-200">Algo Trading</strong> is enabled (green play icon on the top toolbar), then drag{" "}
-                                                <strong className="text-gray-700 dark:text-gray-200">Trade Manager EA</strong> from{" "}
-                                                <span className="font-mono text-[11px]">Navigator &rarr; Expert Advisors</span> onto any active chart.
-                                            </p>
+                                        <div className="space-y-2 flex-1 min-w-0">
+                                            <div className="space-y-0.5">
+                                                <p className="font-bold text-gray-800 dark:text-gray-200">
+                                                    Enable Algo Trading &amp; Attach Trade Manager EA
+                                                </p>
+                                                <p className="text-gray-500 dark:text-gray-400 leading-relaxed">
+                                                    Ensure <strong className="text-gray-700 dark:text-gray-200">Algo Trading</strong> is enabled (green play icon on the top toolbar), then drag{" "}
+                                                    <strong className="text-gray-700 dark:text-gray-200">Trade Manager EA</strong> from{" "}
+                                                    <span className="font-mono text-[11px]">Navigator &rarr; Expert Advisors</span> onto any active chart.
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <Link
+                                                    href="/dashboard/trading-systems"
+                                                    onClick={onClose}
+                                                    className="inline-flex items-center gap-1.5 text-[11px] font-bold text-amber-600 dark:text-amber-400 hover:underline"
+                                                >
+                                                    <Download size={12} className="shrink-0" />
+                                                    <span>Download Trade Manager EA (.ex5)</span>
+                                                </Link>
+                                            </div>
                                         </div>
                                     </div>
 

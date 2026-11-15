@@ -50,13 +50,109 @@ export async function POST(request: Request) {
 
         const lesson = await prisma.lesson.findFirst({
             where: { id: lessonId, status: "published" },
-            select: { id: true },
+            select: {
+                id: true,
+                module: {
+                    select: {
+                        level: {
+                            select: {
+                                order: true,
+                                modules: {
+                                    orderBy: { order: "asc" },
+                                    select: {
+                                        lessons: {
+                                            where: { status: "published" },
+                                            orderBy: { order: "asc" },
+                                            select: { id: true },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
         });
         if (!lesson) {
             return NextResponse.json(
                 { error: "Lesson not found" },
                 { status: 404 }
             );
+        }
+
+        if (isCompleted) {
+            const [existing, profile] = await Promise.all([
+                prisma.userProgress.findUnique({
+                    where: {
+                        userId_lessonId: {
+                            userId: user.id,
+                            lessonId,
+                        },
+                    },
+                    select: { isCompleted: true },
+                }),
+                prisma.profile.findUnique({
+                    where: { userId: user.id },
+                    select: { role: true },
+                }),
+            ]);
+
+            const isAdmin = profile?.role === "ADMIN";
+            if (!existing?.isCompleted && !isAdmin) {
+                const priorLevelsLessons =
+                    lesson.module.level.order > 1
+                        ? await prisma.lesson.findMany({
+                              where: {
+                                  status: "published",
+                                  module: {
+                                      level: {
+                                          order: {
+                                              lt: lesson.module.level.order,
+                                          },
+                                      },
+                                  },
+                              },
+                              select: { id: true },
+                          })
+                        : [];
+
+                const allLessonsInLevel =
+                    lesson.module.level.modules.flatMap((m) => m.lessons);
+                const lessonIndex = allLessonsInLevel.findIndex(
+                    (l) => l.id === lessonId
+                );
+                const previousInLevelIds =
+                    lessonIndex > 0
+                        ? allLessonsInLevel
+                              .slice(0, lessonIndex)
+                              .map((l) => l.id)
+                        : [];
+
+                const requiredPriorIds = Array.from(
+                    new Set([
+                        ...priorLevelsLessons.map((l) => l.id),
+                        ...previousInLevelIds,
+                    ])
+                );
+
+                if (requiredPriorIds.length > 0) {
+                    const completedPrev = await prisma.userProgress.count({
+                        where: {
+                            userId: user.id,
+                            lessonId: { in: requiredPriorIds },
+                            isCompleted: true,
+                        },
+                    });
+                    if (completedPrev < requiredPriorIds.length) {
+                        return NextResponse.json(
+                            {
+                                error: "Complete all previous lessons and prior levels first",
+                            },
+                            { status: 403 }
+                        );
+                    }
+                }
+            }
         }
 
         const progress = await prisma.userProgress.upsert({

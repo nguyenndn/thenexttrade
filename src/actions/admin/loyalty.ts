@@ -259,7 +259,7 @@ export async function processAdminClaim(input: ProcessClaimInput): Promise<{
     if (existing.user?.email) {
       try {
         const appUrl =
-          process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.vercel.app";
+          process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.app";
         const userName = existing.user.name || "Trader";
         const isCompleted = action === "COMPLETE";
         const isRejected = action === "REJECT";

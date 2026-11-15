@@ -13,6 +13,44 @@ import { SyncHealthAccountRow } from "./SyncHealthAccountRow";
 import { RefreshCw, Activity } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
+interface SyncHealthSummary {
+    totalAccounts: number;
+    healthy: number;
+    needsAttention: number;
+    neverSynced: number;
+    stale: number;
+    disconnected: number;
+}
+
+interface SyncHealthAccountItem {
+    accountId: string;
+    accountNumber: string | null;
+    broker: string | null;
+    name: string;
+    source: "TNT_CONNECT" | "EA_SYNC" | "MANUAL" | "UNKNOWN";
+    health: {
+        status: string;
+        label: string;
+        description: string;
+        lastHeartbeatAt: string | null;
+        lastSyncAt: string | null;
+    };
+    nextAction?: {
+        label: string;
+        href?: string;
+        action?:
+            | "open_sync_setup"
+            | "sync_first_trades"
+            | "reconnect"
+            | "contact_support";
+    };
+}
+
+interface SyncHealthResponse {
+    summary: SyncHealthSummary;
+    accounts: SyncHealthAccountItem[];
+}
+
 interface SyncHealthCenterProps {
     isOpen: boolean;
     onOpenChange: (open: boolean) => void;
@@ -24,7 +62,7 @@ export function SyncHealthCenter({
     onOpenChange,
     onActionTrigger,
 }: SyncHealthCenterProps) {
-    const [data, setData] = useState<any>(null);
+    const [data, setData] = useState<SyncHealthResponse | null>(null);
     const [loading, setLoading] = useState(true);
     const [isPending, startTransition] = useTransition();
 
@@ -33,11 +71,11 @@ export function SyncHealthCenter({
         try {
             const res = await fetch("/api/sync/health");
             if (res.ok) {
-                const json = await res.json();
+                const json = (await res.json()) as SyncHealthResponse;
                 setData(json);
             }
-        } catch (err) {
-            console.error("Failed to fetch sync health:", err);
+        } catch {
+            setData(null);
         } finally {
             setLoading(false);
         }
@@ -117,7 +155,7 @@ export function SyncHealthCenter({
                                     Account Connection Details
                                 </h3>
                                 <div className="space-y-3">
-                                    {data.accounts.map((account: any) => (
+                                    {data.accounts.map((account) => (
                                         <SyncHealthAccountRow
                                             key={account.accountId}
                                             account={account}

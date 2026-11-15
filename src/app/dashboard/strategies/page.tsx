@@ -29,10 +29,14 @@ export default async function StrategiesPage({
         typeof resolvedParams.limit === "string"
             ? parseInt(resolvedParams.limit) || 12
             : 12;
+    const rawAccountId =
+        typeof resolvedParams.accountId === "string"
+            ? resolvedParams.accountId
+            : undefined;
 
     const [{ strategies, meta }, perfResult] = await Promise.all([
         getStrategies(page, limit),
-        getStrategyPerformance(),
+        getStrategyPerformance(rawAccountId),
     ]);
 
     return (

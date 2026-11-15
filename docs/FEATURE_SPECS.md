@@ -1197,7 +1197,7 @@ Expected behavior:
   - **Strict 1-to-1 Live Account Binding**: On live trading accounts (`isDemo: false`), license activation strictly validates that the terminal's `AccountNumber()` matches the exact registered account number in the database/GitHub whitelist. For demo accounts (`isDemo: true`), binding verification is bypassed to allow frictionless testing across any demo account number.
   - **Masked Key Display & Clipboard Copy**: License keys are rendered with a mask toggle (`••••••••` vs plain text) and a 1-click clipboard copy button with transient toast/tooltip confirmation.
   - **3 Required MT5 WebRequest URLs**: To prevent MetaTrader runtime errors `4014` (ERR_WEBREQUEST_CANNOT_CONNECT) and `4060` (ERR_WEBREQUEST_URL_NOT_ALLOWED), the panel explicitly displays the 3 mandatory URLs that must be whitelisted in MT5 (`Tools -> Options -> Expert Advisors -> Allow WebRequest for listed URL`):
-    1. `https://thenexttrade.com` (Primary API license verification & telemetry heartbeat)
+    1. `https://thenexttrade.app` (Primary API license verification & telemetry heartbeat)
     2. `https://api.github.com` (Secondary high-availability GitHub license backup check)
     3. `https://raw.githubusercontent.com` (Secondary raw content fallback verification)
 - **Pro Gating & Access Control**:

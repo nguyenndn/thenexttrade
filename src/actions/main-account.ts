@@ -98,6 +98,11 @@ export async function resolveDefaultAccountId(
     userId: string,
     cookieAccountId?: string
 ): Promise<string | undefined> {
+    const authUser = await getAuthUser();
+    if (!authUser || authUser.id !== userId) {
+        return undefined;
+    }
+
     const [profileMain, userAccounts] = await Promise.all([
         prisma.profile.findUnique({
             where: { userId },

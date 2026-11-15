@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import useSWR from "swr";
+import useSWR, { useSWRConfig } from "swr";
 
 export interface Notification {
     id: string;
@@ -10,7 +10,7 @@ export interface Notification {
     createdAt: string;
     link?: string;
     onClick?: () => void;
-    metadata?: Record<string, any> | null;
+    metadata?: Record<string, unknown> | null;
     priority?: string;
     dedupeKey?: string | null;
 }
@@ -104,6 +104,7 @@ export const localNotificationStore = {
 // ---------------------------------
 
 export function useNotifications(limit = 5) {
+    const { mutate: globalMutate } = useSWRConfig();
     const { data, error, isLoading, mutate } = useSWR<NotificationsResponse>(
         `/api/user/notifications?limit=${limit}`,
         fetcher,
@@ -127,28 +128,54 @@ export function useNotifications(limit = 5) {
         });
     }, []);
 
+    const serverNotifs = data?.data?.notifications || [];
+
     const markAsRead = async (id?: string) => {
+        const isClientOnlyId =
+            Boolean(id) &&
+            id !== "ALL" &&
+            (id!.startsWith("local-") ||
+                id!.startsWith("local_") ||
+                (localNotificationStore
+                    .getSnapshot()
+                    .some((n) => n.id === id) &&
+                    !serverNotifs.some((n) => n.id === id)));
+
         // 1. Mark local notifications as read
         localNotificationStore.markAsRead(id);
+
+        // Skip server PATCH for purely client-generated notification IDs
+        if (isClientOnlyId) {
+            return;
+        }
+
+        // If marking ALL and there are zero unread server notifications, avoid redundant PATCH
+        if ((!id || id === "ALL") && (data?.data?.unreadCount ?? 0) === 0) {
+            return;
+        }
 
         // 2. Mark server notifications as read
         try {
             const res = await fetch("/api/user/notifications", {
                 method: "PATCH",
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ id: id || "ALL" }),
             });
 
             if (res.ok) {
-                // Revalidate immediately
                 mutate();
+                globalMutate(
+                    (key) =>
+                        typeof key === "string" &&
+                        key.startsWith("/api/user/notifications")
+                );
             }
-        } catch (e) {
-            console.error("Failed to mark read");
+        } catch {
+            // Silent network failure; next poll or focus revalidates
         }
     };
 
     // Merge SWR notifications with local notifications
-    const serverNotifs = data?.data?.notifications || [];
     const mergedNotifications = [...localNotifs, ...serverNotifs].sort(
         (a, b) =>
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()

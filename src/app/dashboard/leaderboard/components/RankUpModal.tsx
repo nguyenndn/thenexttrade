@@ -12,10 +12,12 @@ import type { LeaderboardResponse } from "../actions";
 
 interface RankUpModalProps {
     myRank: LeaderboardResponse["myRank"];
+    userId?: string | null;
+    type?: string;
+    period?: string;
 }
 
 const STORAGE_KEY = "leaderboard_previous_rank";
-const TIER_STORAGE_KEY = "leaderboard_previous_tier";
 
 interface StoredRankData {
     rank: number;
@@ -23,7 +25,12 @@ interface StoredRankData {
     timestamp: number;
 }
 
-export function RankUpModal({ myRank }: RankUpModalProps) {
+export function RankUpModal({
+    myRank,
+    userId,
+    type = "trading",
+    period = "30D",
+}: RankUpModalProps) {
     const [showModal, setShowModal] = useState(false);
     const [rankChange, setRankChange] = useState<{
         from: number;
@@ -33,7 +40,7 @@ export function RankUpModal({ myRank }: RankUpModalProps) {
         from: string;
         to: string;
     } | null>(null);
-    const hasChecked = useRef(false);
+    const lastCheckedKey = useRef<string | null>(null);
 
     const fireConfetti = useCallback(async () => {
         const confetti = (await import("canvas-confetti")).default;
@@ -62,10 +69,12 @@ export function RankUpModal({ myRank }: RankUpModalProps) {
     }, []);
 
     useEffect(() => {
-        if (!myRank || hasChecked.current) return;
-        hasChecked.current = true;
+        if (!myRank || !userId) return;
+        const storageKey = `${STORAGE_KEY}:${userId}:${type}:${period}`;
+        if (lastCheckedKey.current === storageKey) return;
+        lastCheckedKey.current = storageKey;
 
-        const stored = localStorage.getItem(STORAGE_KEY);
+        const stored = localStorage.getItem(storageKey);
         let previousData: StoredRankData | null = null;
 
         if (stored) {
@@ -85,7 +94,7 @@ export function RankUpModal({ myRank }: RankUpModalProps) {
             tier: currentTier,
             timestamp: Date.now(),
         };
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(newData));
+        localStorage.setItem(storageKey, JSON.stringify(newData));
 
         if (!previousData) return; // First visit — no comparison
 
@@ -115,7 +124,7 @@ export function RankUpModal({ myRank }: RankUpModalProps) {
             // Delay confetti slightly for visual effect
             setTimeout(fireConfetti, 300);
         }
-    }, [myRank, fireConfetti]);
+    }, [myRank, userId, type, period, fireConfetti]);
 
     // Body scroll lock: lock while open, release on exit complete, safety net on unmount.
     useEffect(() => {

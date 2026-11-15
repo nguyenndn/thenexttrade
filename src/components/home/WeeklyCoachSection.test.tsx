@@ -41,7 +41,7 @@ describe("WeeklyCoachSection (Retention Hook #1)", () => {
         // Spec EC-09/EC-10: Sample badge prevents visitor deception
         expect(text).toContain("Sample Report");
         expect(text).toContain("Week 42");
-        expect(text).toContain("audit.thenexttrade.io");
+        expect(text).toContain("audit.thenexttrade.app");
 
         // Dominant Mistake names behavioral fault, not profit claim
         expect(text).toContain("Dominant Mistake");

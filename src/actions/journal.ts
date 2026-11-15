@@ -5,8 +5,27 @@ import { getAuthUser } from "@/lib/auth-cache";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { onUserTradesUpdated } from "@/lib/experiments/progress.server";
 import { z } from "zod";
-import { TradeType, TradeStatus, TradeResult } from "@prisma/client";
+import { TradeType, TradeStatus, TradeResult, Prisma } from "@prisma/client";
 import { buildDateRangeFilter } from "@/lib/utils";
+import {
+    CENT_LOT_DIVISOR,
+    convertToUsdEquivalent,
+    isCentAccount,
+    normalizeCurrencyCode,
+    normalizeLotSize,
+} from "@/lib/utils/cent-account";
+
+const httpsImageArraySchema = z
+    .array(
+        z
+            .string()
+            .url()
+            .refine(
+                (u) => u.startsWith("https://"),
+                "Only HTTPS image URLs are allowed"
+            )
+    )
+    .max(5);
 
 function revalidateJournalDependencies() {
     revalidateTag("dashboard-stats", "max");
@@ -32,7 +51,7 @@ const journalSchema = z.object({
     entryDate: z.string().or(z.date()),
     exitDate: z.string().or(z.date()).optional(),
     notes: z.string().optional(),
-    images: z.array(z.string()).optional(),
+    images: httpsImageArraySchema.optional(),
     mistakes: z.array(z.string()).optional(), // JSON in DB
     accountId: z.string().min(1),
     strategy: z.string().optional().nullable(), // String field
@@ -241,7 +260,34 @@ export async function getJournalEntries(
         }
     }
 
-    const [entries, total, pnlResult, resultsGrouped, statsTotal] = await Promise.all([
+    const isSingleAccount = Boolean(accountId && accountId !== "all");
+    const userAccounts =
+        !isSingleAccount && prisma.tradingAccount?.findMany
+            ? await prisma.tradingAccount.findMany({
+                  where: { userId: user.id },
+                  select: {
+                      id: true,
+                      currency: true,
+                      server: true,
+                      accountType: true,
+                  },
+              })
+            : [];
+    const hasNonUsdAccount = userAccounts.some(
+        (acc) =>
+            normalizeCurrencyCode(acc.currency, acc.server) !== "USD" ||
+            isCentAccount(acc)
+    );
+    const useSingleAggregate = isSingleAccount || !hasNonUsdAccount;
+
+    const [
+        entries,
+        total,
+        singlePnlResult,
+        perAccountAggregates,
+        resultsGrouped,
+        statsTotal,
+    ] = await Promise.all([
         prisma.journalEntry.findMany({
             where,
             orderBy,
@@ -254,6 +300,8 @@ export async function getJournalEntries(
                         timezone: true,
                         currency: true,
                         server: true,
+                        initialBalance: true,
+                        balance: true,
                     },
                 },
                 tradePlan: {
@@ -271,10 +319,71 @@ export async function getJournalEntries(
             take: limit,
         }),
         prisma.journalEntry.count({ where }),
-        prisma.journalEntry.aggregate({
-            where: statsWhere,
-            _sum: { pnl: true, swap: true, commission: true, lotSize: true },
-        }),
+        useSingleAggregate
+            ? prisma.journalEntry.aggregate({
+                  where: statsWhere,
+                  _sum: {
+                      pnl: true,
+                      swap: true,
+                      commission: true,
+                      lotSize: true,
+                  },
+              })
+            : Promise.resolve(null),
+        !useSingleAggregate
+            ? Promise.all([
+                  ...userAccounts.map(async (acc) => {
+                      const [baseAgg, manualCentAgg] = await Promise.all([
+                          prisma.journalEntry.aggregate({
+                              where: { AND: [statsWhere, { accountId: acc.id }] },
+                              _sum: {
+                                  pnl: true,
+                                  swap: true,
+                                  commission: true,
+                                  lotSize: true,
+                              },
+                          }),
+                          isCentAccount(acc)
+                              ? prisma.journalEntry.aggregate({
+                                    where: {
+                                        AND: [
+                                            statsWhere,
+                                            { accountId: acc.id },
+                                            {
+                                                OR: [
+                                                    { syncSource: "MANUAL" },
+                                                    { syncSource: null },
+                                                ],
+                                            },
+                                        ],
+                                    },
+                                    _sum: { lotSize: true },
+                                })
+                              : Promise.resolve(null),
+                      ]);
+                      return {
+                          acc,
+                          baseAgg,
+                          manualCentLots: manualCentAgg?._sum.lotSize || 0,
+                      };
+                  }),
+                  prisma.journalEntry
+                      .aggregate({
+                          where: { AND: [statsWhere, { accountId: null }] },
+                          _sum: {
+                              pnl: true,
+                              swap: true,
+                              commission: true,
+                              lotSize: true,
+                          },
+                      })
+                      .then((baseAgg) => ({
+                          acc: null,
+                          baseAgg,
+                          manualCentLots: 0,
+                      })),
+              ])
+            : Promise.resolve([]),
         prisma.journalEntry.groupBy({
             by: ["result"],
             where: statsWhere,
@@ -291,7 +400,8 @@ export async function getJournalEntries(
     resultsGrouped.forEach((g) => {
         if (g.result === "WIN") winCount += g._count;
         if (g.result === "LOSS") lossCount += g._count;
-        if (g.result === "BREAK_EVEN" || g.result === "BE_PLUS") breakEvenCount += g._count;
+        if (g.result === "BREAK_EVEN" || g.result === "BE_PLUS")
+            breakEvenCount += g._count;
     });
     // Win rate is computed against decided (closed) trades only — OPEN
     // positions have result null and are not in the groups, so dividing by
@@ -299,21 +409,66 @@ export async function getJournalEntries(
     const decided = winCount + lossCount + breakEvenCount;
     const winRate = decided > 0 ? (winCount / decided) * 100 : 0;
 
-    const stats = {
-        // B2: Never sum floating PnL of OPEN positions into realized P&L
-        totalPnL:
+    let totalPnL = 0;
+    let totalLots = 0;
+    let totalCommission = 0;
+    let totalSwap = 0;
+
+    if (useSingleAggregate && singlePnlResult) {
+        totalCommission = singlePnlResult._sum.commission || 0;
+        totalSwap = singlePnlResult._sum.swap || 0;
+        totalLots = singlePnlResult._sum.lotSize || 0;
+        totalPnL =
             status === "OPEN"
                 ? 0
-                : (pnlResult._sum.pnl || 0) +
-                  (pnlResult._sum.swap || 0) +
-                  (pnlResult._sum.commission || 0),
+                : (singlePnlResult._sum.pnl || 0) +
+                  totalSwap +
+                  totalCommission;
+    } else {
+        for (const item of perAccountAggregates) {
+            const acctCurrency = item.acc?.currency;
+            const acctServer = item.acc?.server;
+            const rawPnl = item.baseAgg._sum.pnl || 0;
+            const rawComm = item.baseAgg._sum.commission || 0;
+            const rawSwap = item.baseAgg._sum.swap || 0;
+            const rawLots = item.baseAgg._sum.lotSize || 0;
+
+            totalCommission += convertToUsdEquivalent(
+                rawComm,
+                acctCurrency,
+                acctServer
+            );
+            totalSwap += convertToUsdEquivalent(
+                rawSwap,
+                acctCurrency,
+                acctServer
+            );
+            const syncedLots = Math.max(0, rawLots - item.manualCentLots);
+            totalLots +=
+                syncedLots +
+                (item.manualCentLots > 0
+                    ? item.manualCentLots / CENT_LOT_DIVISOR
+                    : 0);
+            if (status !== "OPEN") {
+                totalPnL += convertToUsdEquivalent(
+                    rawPnl + rawSwap + rawComm,
+                    acctCurrency,
+                    acctServer
+                );
+            }
+        }
+    }
+
+    const stats = {
+        // B2: Never sum floating PnL of OPEN positions into realized P&L
+        totalPnL: Number(totalPnL.toFixed(2)),
         totalTrades: status === "OPEN" ? total : statsTotal,
         winCount,
         lossCount,
         winRate,
-        totalLots: pnlResult._sum.lotSize || 0,
-        totalCommission: pnlResult._sum.commission || 0,
-        totalSwap: pnlResult._sum.swap || 0,
+        totalLots: Number(totalLots.toFixed(2)),
+        totalCommission: Number(totalCommission.toFixed(2)),
+        totalSwap: Number(totalSwap.toFixed(2)),
     };
 
     const formattedEntries = entries.map((entry) => {
@@ -376,6 +531,7 @@ export async function createJournalEntry(data: z.infer<typeof journalSchema>) {
             data: {
                 ...validation.data,
                 userId: user.id,
+                shareMode: "private",
                 entryDate: new Date(validation.data.entryDate),
                 exitDate: validation.data.exitDate
                     ? new Date(validation.data.exitDate)
@@ -522,6 +678,15 @@ export async function deleteJournalEntry(id: string) {
             });
         }
 
+        try {
+            await onUserTradesUpdated(
+                user.id,
+                deletedEntry.accountId || undefined
+            );
+        } catch {
+            /* Experiment progress update should not block journal deletion */
+        }
+
         revalidateJournalDependencies();
         return { success: true };
     } catch (error) {
@@ -572,6 +737,12 @@ export async function bulkDeleteJournalEntries(ids: string[]) {
                     data: { totalTrades: exactTotalTrades },
                 });
             }
+        }
+
+        try {
+            await onUserTradesUpdated(user.id);
+        } catch {
+            /* Experiment progress update should not block bulk deletion */
         }
 
         revalidateJournalDependencies();
@@ -628,6 +799,12 @@ export async function deleteAllJournalEntries(accountId?: string) {
                     data: { totalTrades: exactTotalTrades },
                 });
             }
+        }
+
+        try {
+            await onUserTradesUpdated(user.id);
+        } catch {
+            /* Experiment progress update should not block bulk deletion */
         }
 
         revalidateJournalDependencies();
@@ -703,30 +880,62 @@ export async function getDailyPnlForCalendar(accountId?: string) {
     const user = await getAuthUser();
     if (!user) return [];
 
-    const { Prisma } = await import("@prisma/client");
+    const validAccountId =
+        accountId && accountId !== "all" ? accountId : undefined;
 
-    const result = await prisma.$queryRaw`
- SELECT 
- DATE("exitDate") as "date",
- SUM(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0))::float as "pnl",
- COUNT(*)::int as "tradeCount"
- FROM "journal_entries"
- WHERE "userId" = ${user.id}::uuid
- AND "status" = 'CLOSED'
- AND "exitDate" IS NOT NULL
- AND (${accountId || "1"} = '1' OR "accountId" = ${accountId || ""})
- GROUP BY DATE("exitDate")
- ORDER BY "date" ASC
- `;
+    const trades = await prisma.journalEntry.findMany({
+        where: {
+            userId: user.id,
+            status: "CLOSED",
+            exitDate: { not: null },
+            ...(validAccountId ? { accountId: validAccountId } : {}),
+        },
+        select: {
+            exitDate: true,
+            pnl: true,
+            commission: true,
+            swap: true,
+            account: {
+                select: {
+                    currency: true,
+                    server: true,
+                },
+            },
+        },
+        orderBy: { exitDate: "asc" },
+    });
 
-    return (result as any[]).map((row) => ({
-        date:
-            row.date instanceof Date
-                ? row.date.toISOString().split("T")[0]
-                : String(row.date).split("T")[0],
-        pnl: Number(row.pnl || 0),
-        tradeCount: Number(row.tradeCount || 0),
-    }));
+    const dailyMap = new Map<string, { pnl: number; tradeCount: number }>();
+
+    for (const trade of trades) {
+        if (!trade.exitDate) continue;
+        const dateKey = trade.exitDate.toISOString().split("T")[0];
+        const rawNetPnl =
+            (trade.pnl || 0) + (trade.commission || 0) + (trade.swap || 0);
+        const netPnl = validAccountId
+            ? rawNetPnl
+            : convertToUsdEquivalent(
+                  rawNetPnl,
+                  trade.account?.currency,
+                  trade.account?.server
+              );
+
+        const existing = dailyMap.get(dateKey);
+        if (existing) {
+            existing.pnl += netPnl;
+            existing.tradeCount += 1;
+        } else {
+            dailyMap.set(dateKey, { pnl: netPnl, tradeCount: 1 });
+        }
+    }
+
+    return Array.from(dailyMap.entries())
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([date, data]) => ({
+            date,
+            pnl: Number(data.pnl.toFixed(2)),
+            tradeCount: data.tradeCount,
+        }));
 }
 
 export async function exportJournalEntries(filters: {
@@ -955,7 +1164,7 @@ export async function getDayDetails(
         resolvedTimezone || "Etc/UTC"
     );
 
-    const where: any = {
+    const where: Prisma.JournalEntryWhereInput = {
         userId: user.id,
         status: "CLOSED",
         ...(dateFilter ? { exitDate: dateFilter } : {}),
@@ -978,6 +1187,14 @@ export async function getDayDetails(
                 entryDate: true,
                 exitDate: true,
                 lotSize: true,
+                syncSource: true,
+                account: {
+                    select: {
+                        currency: true,
+                        server: true,
+                        accountType: true,
+                    },
+                },
             },
         });
 
@@ -996,6 +1213,14 @@ export async function getDayDetails(
         let lossCount = 0;
         let breakEvenCount = 0;
 
+        const normalizeAmount = (
+            amount: number,
+            acct?: { currency?: string | null; server?: string | null } | null
+        ) =>
+            validAccountId
+                ? amount
+                : convertToUsdEquivalent(amount, acct?.currency, acct?.server);
+
         // Simulate intraday equity curve to compute Max Drawdown
         // Sort trades by exit time ascending (ASC) to reconstruct curve
         const sortedTradesAsc = [...trades].sort((a, b) => {
@@ -1008,11 +1233,24 @@ export async function getDayDetails(
         let runningPnl = 0;
 
         const formattedTrades = trades.map((t) => {
-            const netPnl = (t.pnl || 0) + (t.commission || 0) + (t.swap || 0);
+            const rawNetPnl =
+                (t.pnl || 0) + (t.commission || 0) + (t.swap || 0);
+            const netPnl = Number(normalizeAmount(rawNetPnl, t.account).toFixed(2));
+            const normComm = normalizeAmount(t.commission || 0, t.account);
+            const normSwap = normalizeAmount(t.swap || 0, t.account);
+            const normLots =
+                validAccountId || (t.syncSource && t.syncSource !== "MANUAL")
+                    ? t.lotSize || 0
+                    : normalizeLotSize(t.lotSize || 0, {
+                          currency: t.account?.currency,
+                          server: t.account?.server,
+                          accountType: t.account?.accountType,
+                          symbol: t.symbol,
+                      });
 
             if (t.type === "BUY") buys++;
             if (t.type === "SELL") sells++;
-            totalLots += t.lotSize || 0;
+            totalLots += normLots;
 
             if (netPnl > bestTrade) bestTrade = netPnl;
             if (netPnl < worstTrade) worstTrade = netPnl;
@@ -1021,9 +1259,9 @@ export async function getDayDetails(
                 totalHoldTimeMs += t.exitDate.getTime() - t.entryDate.getTime();
             }
 
-            totalCommission += t.commission || 0;
-            totalSwap += t.swap || 0;
-            totalCommissions += (t.commission || 0) + (t.swap || 0);
+            totalCommission += normComm;
+            totalSwap += normSwap;
+            totalCommissions += normComm + normSwap;
 
             if (netPnl > 0) {
                 grossProfit += netPnl;
@@ -1047,6 +1285,9 @@ export async function getDayDetails(
 
             return {
                 ...t,
+                commission: Number(normComm.toFixed(2)),
+                swap: Number(normSwap.toFixed(2)),
+                lotSize: Number(normLots.toFixed(2)),
                 netPnl,
                 entryDate: t.entryDate.toISOString(),
                 exitDate: t.exitDate?.toISOString() || null,
@@ -1055,7 +1296,9 @@ export async function getDayDetails(
 
         // Calculate max drawdown intraday
         sortedTradesAsc.forEach((t) => {
-            const netPnl = (t.pnl || 0) + (t.commission || 0) + (t.swap || 0);
+            const rawNetPnl =
+                (t.pnl || 0) + (t.commission || 0) + (t.swap || 0);
+            const netPnl = normalizeAmount(rawNetPnl, t.account);
             runningPnl += netPnl;
             if (runningPnl > peak) {
                 peak = runningPnl;

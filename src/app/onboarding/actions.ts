@@ -13,6 +13,28 @@ import { normalizeCountryCode } from "@/lib/country-utils";
 
 const MAX_AVATAR_BYTES = 2 * 1024 * 1024; // 2 MB
 
+const RESERVED_USERNAMES = new Set([
+    "admin",
+    "api",
+    "auth",
+    "dashboard",
+    "settings",
+    "support",
+    "thenexttrade",
+    "system",
+    "null",
+    "undefined",
+    "onboarding",
+    "trader",
+    "legal",
+    "tools",
+    "academy",
+    "community",
+    "knowledge",
+]);
+
+const USERNAME_REGEX = /^[a-z0-9_]{3,25}$/;
+
 const MIME_TO_AVATAR_EXT: Record<string, "jpg" | "png" | "webp" | "gif"> = {
     "image/jpeg": "jpg",
     "image/png": "png",
@@ -118,10 +140,40 @@ export async function updateProfile(formData: FormData) {
         return redirect("/auth/login");
     }
 
-    const username = formData.get("username") as string;
-    const bio = formData.get("bio") as string;
+    const rawUsername = (formData.get("username") as string) || "";
+    const username = rawUsername.trim().toLowerCase();
+    const rawBio = (formData.get("bio") as string) || "";
+    const bio = rawBio.trim();
     const country = normalizeCountryCode(formData.get("country") as string);
     const avatarFile = formData.get("avatar") as File | null;
+
+    if (!USERNAME_REGEX.test(username)) {
+        return {
+            error: "Username must be 3–25 characters and contain only lowercase letters, numbers, and underscores.",
+        };
+    }
+
+    if (RESERVED_USERNAMES.has(username)) {
+        return {
+            error: "This username is reserved. Please choose a different username.",
+        };
+    }
+
+    if (bio.length > 500) {
+        return { error: "Bio must be 500 characters or fewer." };
+    }
+
+    const existingUsernameOwner = await prisma.profile.findFirst({
+        where: {
+            username,
+            userId: { not: user.id },
+        },
+        select: { userId: true },
+    });
+
+    if (existingUsernameOwner) {
+        return { error: "Username is already taken. Please choose another." };
+    }
 
     let avatarUrl: string | null = null;
 
@@ -218,7 +270,7 @@ export async function updateProfile(formData: FormData) {
                 country,
             },
         });
-    } catch (err: any) {
+    } catch (err: unknown) {
         console.error("Profile Upsert Error:", err);
         return { error: "Failed to update profile. Username might be taken." };
     }

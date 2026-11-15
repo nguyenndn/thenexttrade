@@ -55,6 +55,7 @@ export default async function AcademyPage() {
                         id: true,
                         title: true,
                         lessons: {
+                            where: { status: "published" },
                             orderBy: { order: "asc" },
                             select: {
                                 id: true,
@@ -63,7 +64,11 @@ export default async function AcademyPage() {
                                 duration: true,
                             },
                         },
-                        _count: { select: { lessons: true } },
+                        _count: {
+                            select: {
+                                lessons: { where: { status: "published" } },
+                            },
+                        },
                     },
                 },
             },

@@ -98,8 +98,7 @@ export function CertificateCard({
             link.click();
             document.body.removeChild(link);
             toast.success("Certificate downloaded!");
-        } catch (err) {
-            console.error("Download error:", err);
+        } catch {
             toast.error("Failed to download certificate");
         }
         setDownloading(false);
@@ -121,8 +120,8 @@ export function CertificateCard({
         }
         // Fallback: no share URL — copy the legacy share text.
         const text = isMaster
-            ? `🏆 I just completed the entire TheNextTrade Academy program with a ${score}% average score! Master Trader Certified! #ForexTrading #TheNextTrade`
-            : `🎓 I just earned my Level ${levelOrder}: ${levelTitle} certificate on TheNextTrade Academy with a ${score}% score! #ForexTrading #TheNextTrade`;
+            ? `I just completed the entire TheNextTrade Academy program with a ${score}% average score! Master Trader Certified! #ForexTrading #TheNextTrade`
+            : `I just earned my Level ${levelOrder}: ${levelTitle} certificate on TheNextTrade Academy with a ${score}% score! #ForexTrading #TheNextTrade`;
         if (navigator.share) {
             navigator.share({ text }).catch(() => {});
         } else {
@@ -138,7 +137,7 @@ export function CertificateCard({
         const progress =
             totalQuizzes > 0 ? (passedQuizzes / totalQuizzes) * 100 : 0;
         return (
-            <div className="relative bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard shadow-sm p-6 opacity-70">
+            <div className="relative bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-6 opacity-70">
                 <div className="absolute top-4 right-4">
                     <Lock size={18} className="text-gray-400" />
                 </div>
@@ -193,7 +192,7 @@ export function CertificateCard({
     return (
         <>
             <div
-                className="relative rounded-lg overflow-hidden shadow-lg group select-none cursor-pointer"
+                className="relative rounded-xl overflow-hidden shadow-lg group select-none cursor-pointer"
                 style={{
                     background: `linear-gradient(to bottom right, ${gradient.from}, ${gradient.to})`,
                     transform: tilt.isHovered ? "scale(1.02)" : "scale(1)",
@@ -237,7 +236,7 @@ export function CertificateCard({
                     <div className="text-center mb-4">
                         <span className="text-[10px] font-bold uppercase tracking-widest opacity-80 block">
                             {isMaster
-                                ? "★ ALL LEVELS COMPLETED ★"
+                                ? "ALL LEVELS COMPLETED"
                                 : `Level ${levelOrder}`}
                         </span>
                         <h3
@@ -293,6 +292,7 @@ export function CertificateCard({
                         <Button
                             variant="ghost"
                             onClick={handleShare}
+                            aria-label="Share certificate"
                             className="py-2.5 px-4 rounded-lg bg-white/10 hover:bg-white/20 backdrop-blur-sm text-sm self-stretch"
                         >
                             <Share2 size={14} />

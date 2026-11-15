@@ -1,15 +1,26 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
-import { Loader2, FileText, BookOpen, AlertCircle } from "lucide-react";
+import { useEffect, useState, FormEvent } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import {
+    Loader2,
+    FileText,
+    BookOpen,
+    AlertCircle,
+    Search,
+    X,
+    Calculator,
+    Cpu,
+    Target,
+} from "lucide-react";
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { Button } from "@/components/ui/Button";
 
 interface SearchResult {
     id: string;
-    type: "article" | "lesson";
+    type: "article" | "lesson" | "tool" | "system" | "strategy";
     title: string;
     slug: string;
     description: string;
@@ -19,17 +30,25 @@ interface SearchResult {
 }
 
 export default function SearchClient() {
+    const router = useRouter();
     const searchParams = useSearchParams();
-    const query = searchParams.get("q");
+    const query = searchParams.get("q") || "";
 
+    const [inputValue, setInputValue] = useState(query);
     const [results, setResults] = useState<SearchResult[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [hasSearched, setHasSearched] = useState(false);
 
     useEffect(() => {
+        setInputValue(query);
+    }, [query]);
+
+    useEffect(() => {
+        const activeTerm = inputValue.trim();
         const fetchResults = async () => {
-            if (!query) {
+            if (!activeTerm) {
                 setResults([]);
+                setHasSearched(false);
                 return;
             }
 
@@ -37,7 +56,7 @@ export default function SearchClient() {
             setHasSearched(true);
             try {
                 const res = await fetch(
-                    `/api/search?q=${encodeURIComponent(query)}`
+                    `/api/search?q=${encodeURIComponent(activeTerm)}`
                 );
                 const data = await res.json();
                 setResults(data.data || []);
@@ -48,9 +67,28 @@ export default function SearchClient() {
             }
         };
 
-        const timeout = setTimeout(fetchResults, 300);
+        const timeout = setTimeout(fetchResults, 250);
         return () => clearTimeout(timeout);
-    }, [query]);
+    }, [inputValue]);
+
+    const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const trimmed = inputValue.trim();
+        if (trimmed) {
+            router.push(`/dashboard/search?q=${encodeURIComponent(trimmed)}`);
+        } else {
+            router.push("/dashboard/search");
+        }
+    };
+
+    const handleClear = () => {
+        setInputValue("");
+        setResults([]);
+        setHasSearched(false);
+        router.push("/dashboard/search");
+    };
+
+    const activeQuery = inputValue.trim();
 
     // Helper to highlight text
     const HighlightText = ({
@@ -93,11 +131,65 @@ export default function SearchClient() {
             <PageHeader
                 title="Search Results"
                 description={
-                    query
-                        ? `Found ${results.length} results for "${query}"`
-                        : "Search across platform guides and documentation"
+                    activeQuery
+                        ? `Found ${results.length} results for "${activeQuery}"`
+                        : "Search across Academy lessons, risk calculators, trading systems, playbooks, and articles"
                 }
             />
+
+            {/* Interactive Search Bar */}
+            <form
+                onSubmit={handleFormSubmit}
+                className="rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 p-5 shadow-sm"
+            >
+                <label
+                    htmlFor="dashboard-search-query"
+                    className="block text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-2"
+                >
+                    Search Platform Index
+                </label>
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                    <div className="relative flex-1 flex items-center rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 focus-within:border-gold focus-within:ring-2 focus-within:ring-gold/15 transition-all px-3.5 py-2">
+                        <Search
+                            size={18}
+                            className="text-gray-400 dark:text-gray-500 shrink-0 mr-2.5"
+                        />
+                        <input
+                            id="dashboard-search-query"
+                            type="search"
+                            value={inputValue}
+                            onChange={(e) => setInputValue(e.target.value)}
+                            aria-describedby="dashboard-search-helper"
+                            className="w-full bg-transparent text-sm font-medium text-gray-900 dark:text-white outline-none"
+                        />
+                        {inputValue && (
+                            <Button
+                                type="button"
+                                variant="outline"
+                                size="icon"
+                                onClick={handleClear}
+                                aria-label="Clear search query"
+                                className="h-6 w-6 rounded-lg border-gray-200 dark:border-white/10 text-gray-500 hover:text-gray-800 dark:hover:text-white ml-2 shrink-0 p-0"
+                            >
+                                <X size={13} />
+                            </Button>
+                        )}
+                    </div>
+                    <Button
+                        type="submit"
+                        variant="primary"
+                        className="rounded-lg bg-gold hover:bg-amber-600 !text-white font-bold px-6 py-2.5 h-auto shrink-0"
+                    >
+                        Search
+                    </Button>
+                </div>
+                <p
+                    id="dashboard-search-helper"
+                    className="mt-2 text-xs text-gray-500 dark:text-gray-400"
+                >
+                    Filter across Academy curriculum, Forex calculators, trading systems, playbooks, and research articles.
+                </p>
+            </form>
 
             {/* Results Area */}
             <div className="space-y-4">
@@ -108,7 +200,7 @@ export default function SearchClient() {
                             size={32}
                         />
                     </div>
-                ) : hasSearched && query ? (
+                ) : hasSearched && activeQuery ? (
                     <>
                         {results.length > 0 ? (
                             <div className="grid gap-3">
@@ -123,23 +215,37 @@ export default function SearchClient() {
                                                 className={`p-3 rounded-lg border shrink-0 ${
                                                     result.type === "article"
                                                         ? "bg-gold/10 text-amber-600 dark:text-gold border-gold/20"
-                                                        : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
+                                                        : result.type === "tool"
+                                                          ? "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20"
+                                                          : result.type === "system" || result.type === "strategy"
+                                                            ? "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20"
+                                                            : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
                                                 }`}
                                             >
                                                 {result.type === "article" ? (
                                                     <FileText size={24} />
+                                                ) : result.type === "tool" ? (
+                                                    <Calculator size={24} />
+                                                ) : result.type === "system" ? (
+                                                    <Cpu size={24} />
+                                                ) : result.type === "strategy" ? (
+                                                    <Target size={24} />
                                                 ) : (
                                                     <BookOpen size={24} />
                                                 )}
                                             </div>
-                                            <div className="flex-1 space-y-2">
+                                            <div className="flex-1 space-y-2 min-w-0">
                                                 <div className="flex items-center gap-2 mb-1">
                                                     <span
                                                         className={`text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-lg border ${
                                                             result.type ===
                                                             "article"
                                                                 ? "bg-gold/10 text-amber-600 dark:text-gold border-gold/20"
-                                                                : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
+                                                                : result.type === "tool"
+                                                                  ? "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20"
+                                                                  : result.type === "system" || result.type === "strategy"
+                                                                    ? "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20"
+                                                                    : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
                                                         }`}
                                                     >
                                                         {result.type}
@@ -159,7 +265,7 @@ export default function SearchClient() {
                                                 <h3 className="text-lg font-bold text-gray-700 dark:text-white group-hover:text-amber-600 dark:group-hover:text-gold transition-colors line-clamp-1">
                                                     <HighlightText
                                                         text={result.title}
-                                                        highlight={query || ""}
+                                                        highlight={activeQuery}
                                                     />
                                                 </h3>
                                                 <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
@@ -167,7 +273,7 @@ export default function SearchClient() {
                                                         text={
                                                             result.description
                                                         }
-                                                        highlight={query || ""}
+                                                        highlight={activeQuery}
                                                     />
                                                 </p>
                                             </div>
@@ -192,9 +298,9 @@ export default function SearchClient() {
                         )}
                     </>
                 ) : (
-                    !query && (
+                    !activeQuery && (
                         <div className="text-center py-20 opacity-50">
-                            Type keywords above to start searching...
+                            Enter keywords in the search bar above to begin.
                         </div>
                     )
                 )}

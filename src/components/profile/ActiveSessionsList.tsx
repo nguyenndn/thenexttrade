@@ -9,8 +9,6 @@ import {
     Loader2,
     Smartphone,
     Monitor,
-    Globe,
-    Trash2,
     LogOut,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -18,8 +16,16 @@ import { formatDistanceToNow } from "date-fns";
 import { Button } from "@/components/ui/Button";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
+interface UserSessionItem {
+    id: string;
+    device: string | null;
+    ip: string | null;
+    userAgent: string | null;
+    lastActive: Date | string;
+}
+
 export function ActiveSessionsList() {
-    const [sessions, setSessions] = useState<any[]>([]);
+    const [sessions, setSessions] = useState<UserSessionItem[]>([]);
     const [loading, setLoading] = useState(true);
     const [revokingId, setRevokingId] = useState<string | null>(null);
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
@@ -29,8 +35,8 @@ export function ActiveSessionsList() {
         try {
             const data = await fetchUserSessions();
             setSessions(data);
-        } catch (error) {
-            console.error("Failed to load sessions", error);
+        } catch {
+            toast.error("Failed to load active sessions");
         } finally {
             setLoading(false);
         }
@@ -64,7 +70,7 @@ export function ActiveSessionsList() {
     };
 
     // Helper to categorize device icon
-    const getDeviceIcon = (device: string) => {
+    const getDeviceIcon = (device: string | null) => {
         const d = device?.toLowerCase() || "";
         if (
             d.includes("mobile") ||
@@ -156,6 +162,7 @@ export function ActiveSessionsList() {
                                     isLoading={revokingId === session.id}
                                     className="text-gray-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10"
                                     title="Revoke Session"
+                                    aria-label={`Revoke session on ${session.device || "Unknown Device"}`}
                                 >
                                     {revokingId !== session.id && (
                                         <LogOut size={18} />

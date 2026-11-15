@@ -11,7 +11,7 @@ const CURRENCIES = [
     { code: "JPY", symbol: "¥", name: "Japanese Yen" },
     { code: "AUD", symbol: "A$", name: "Australian Dollar" },
     { code: "CAD", symbol: "C$", name: "Canadian Dollar" },
-    { code: "CHF", symbol: "Fr", name: "Swiss Franc" },
+    { code: "CHF", symbol: "CHF", name: "Swiss Franc" },
     { code: "NZD", symbol: "NZ$", name: "New Zealand Dollar" },
 ];
 
@@ -49,4 +49,22 @@ export function AccountCurrencySelect({
 
 export function getCurrencySymbol(code: string): string {
     return CURRENCIES.find((c) => c.code === code)?.symbol || "$";
+}
+
+export function formatAccountCurrencyAmount(
+    amount: number,
+    code: string,
+    decimals = 2
+): string {
+    const safeAmount = Number.isFinite(amount) ? amount : 0;
+    const sign = safeAmount < 0 ? "-" : "";
+    const absFormatted = Math.abs(safeAmount).toLocaleString("en-US", {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals,
+    });
+    const symbol = getCurrencySymbol(code);
+    if (symbol === "CHF") {
+        return `${sign}CHF ${absFormatted}`;
+    }
+    return `${sign}${symbol}${absFormatted}`;
 }

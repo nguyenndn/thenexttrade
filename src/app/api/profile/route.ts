@@ -12,22 +12,88 @@ import {
 
 export const dynamic = "force-dynamic";
 
+const RESERVED_USERNAMES = new Set([
+    "admin",
+    "api",
+    "auth",
+    "dashboard",
+    "settings",
+    "support",
+    "thenexttrade",
+    "system",
+    "null",
+    "undefined",
+    "onboarding",
+    "trader",
+    "legal",
+    "tools",
+    "academy",
+    "community",
+    "knowledge",
+]);
+
+const httpsAvatarSchema = z.union([
+    z
+        .string()
+        .trim()
+        .max(500, "Avatar URL must be at most 500 characters")
+        .url("Invalid avatar URL")
+        .refine((val) => {
+            try {
+                return new URL(val).protocol === "https:";
+            } catch {
+                return false;
+            }
+        }, "Avatar URL must use https://"),
+    z.literal(""),
+]);
+
 const updateProfileSchema = z
     .object({
-        name: z.string().min(2, "Name must be at least 2 characters"),
+        name: z
+            .string()
+            .trim()
+            .min(2, "Name must be at least 2 characters")
+            .max(100, "Name must be at most 100 characters")
+            .optional(),
+        fullName: z
+            .string()
+            .trim()
+            .min(2, "Full name must be at least 2 characters")
+            .max(100, "Full name must be at most 100 characters")
+            .optional(),
         username: z
             .string()
             .trim()
+            .toLowerCase()
             .min(3, "Username must be at least 3 characters")
-            .max(30, "Username must be at most 30 characters")
+            .max(25, "Username must be at most 25 characters")
             .regex(
-                /^[a-zA-Z0-9_]+$/,
-                "Username can only contain letters, numbers, and underscores"
+                /^[a-z0-9_]+$/,
+                "Username can only contain lowercase letters, numbers, and underscores"
             )
+            .refine((val) => !RESERVED_USERNAMES.has(val), {
+                message: "This username is reserved",
+            })
             .optional()
             .or(z.literal("")),
-        bio: z.string().optional(),
-        telegramId: z.string().optional(),
+        bio: z
+            .string()
+            .max(500, "Bio must be at most 500 characters")
+            .optional(),
+        telegramId: z
+            .union([
+                z
+                    .string()
+                    .trim()
+                    .max(64, "Telegram handle must be at most 64 characters")
+                    .regex(
+                        /^@?[a-zA-Z0-9_]{3,60}$/,
+                        "Telegram handle can only contain letters, numbers, and underscores"
+                    ),
+                z.literal(""),
+            ])
+            .optional(),
         country: z
             .union([
                 z
@@ -40,15 +106,21 @@ const updateProfileSchema = z
                 z.literal(""),
             ])
             .optional(),
-        image: z
-            .union([
-                z.string().url().startsWith("https://"),
-                z.literal(""),
-            ])
+        image: httpsAvatarSchema.optional(),
+        avatarUrl: httpsAvatarSchema.optional(),
+        tradingGoal: z
+            .string()
+            .max(50, "Trading goal must be at most 50 characters")
             .optional(),
-        tradingGoal: z.string().optional(),
     })
-    .strict();
+    .strict()
+    .refine(
+        (data) => data.name !== undefined || data.fullName !== undefined,
+        {
+            path: ["name"],
+            message: "Display name is required",
+        }
+    );
 
 const NO_STORE_HEADERS = {
     "Cache-Control": "no-store, no-cache, must-revalidate, private",
@@ -120,8 +192,8 @@ export async function PUT(request: Request) {
     try {
         const body = await request.json();
 
-        // Sanitize bio
-        if (body.bio) {
+        // Sanitize bio (only when within reasonable pre-validation length)
+        if (typeof body.bio === "string" && body.bio.length <= 1000) {
             body.bio = sanitizeInput(body.bio);
         }
 
@@ -132,6 +204,11 @@ export async function PUT(request: Request) {
         }
 
         const validatedData = updateProfileSchema.parse(body);
+        const resolvedName = validatedData.name ?? validatedData.fullName;
+        const resolvedImage =
+            validatedData.image !== undefined
+                ? validatedData.image
+                : validatedData.avatarUrl;
         const hasCountry = Object.prototype.hasOwnProperty.call(
             validatedData,
             "country"
@@ -174,8 +251,8 @@ export async function PUT(request: Request) {
         await prisma.user.update({
             where: { id: user.id },
             data: {
-                name: validatedData.name,
-                image: validatedData.image,
+                name: resolvedName,
+                image: resolvedImage,
             },
         });
 
@@ -183,8 +260,8 @@ export async function PUT(request: Request) {
         try {
             await supabase.auth.updateUser({
                 data: {
-                    ...(validatedData.image !== undefined ? { avatar_url: validatedData.image } : {}),
-                    ...(validatedData.name !== undefined ? { full_name: validatedData.name } : {}),
+                    ...(resolvedImage !== undefined ? { avatar_url: resolvedImage } : {}),
+                    ...(resolvedName !== undefined ? { full_name: resolvedName } : {}),
                 },
             });
         } catch {

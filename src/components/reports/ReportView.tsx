@@ -15,13 +15,39 @@ import {
     Minus,
     Crosshair,
     Clock,
+    type LucideIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { WeeklyCoachPlan } from "@/components/coach/WeeklyCoachPlan";
 import { EmptyStateCTAs } from "@/components/ui/EmptyStateCTAs";
 import { formatDashboardCurrency } from "@/lib/utils/cent-account";
 
-interface ReportData {
+interface ReportBreakdownRow {
+    name: string;
+    trades: number;
+    winRate?: number;
+    pnl: number;
+}
+
+interface ReportEmotionRow {
+    emotion: string;
+    count: number;
+}
+
+interface ReportMistakeRow {
+    name: string;
+    count: number;
+}
+
+interface ReportTradeRow {
+    symbol: string;
+    date?: string;
+    pnl?: number;
+}
+
+type CoachPlanProp = Parameters<typeof WeeklyCoachPlan>[0]["plan"];
+
+export interface ReportData {
     id: string;
     type: string;
     periodLabel: string;
@@ -42,19 +68,19 @@ interface ReportData {
     prevPnL: number | null;
     prevWinRate: number | null;
     prevTrades: number | null;
-    bySymbol: any[] | null;
-    byStrategy: any[] | null;
-    bySession: any[] | null;
-    byDirection: any[] | null;
-    byDay: any[] | null;
+    bySymbol: ReportBreakdownRow[] | null;
+    byStrategy: ReportBreakdownRow[] | null;
+    bySession: ReportBreakdownRow[] | null;
+    byDirection: ReportBreakdownRow[] | null;
+    byDay: ReportBreakdownRow[] | null;
     avgConfidence: number | null;
     planCompliance: number | null;
-    topEmotions: any[] | null;
-    topMistakes: any[] | null;
-    bestTrades: any[] | null;
-    worstTrades: any[] | null;
+    topEmotions: ReportEmotionRow[] | null;
+    topMistakes: ReportMistakeRow[] | null;
+    bestTrades: ReportTradeRow[] | null;
+    worstTrades: ReportTradeRow[] | null;
     createdAt: string;
-    coachPlan?: any;
+    coachPlan?: CoachPlanProp | null;
 }
 
 interface ReportViewProps {
@@ -119,7 +145,7 @@ function StatCard({
 }: {
     label: string;
     value: string;
-    icon: any;
+    icon: LucideIcon;
     color: string;
     iconBg: string;
     delta?: number;
@@ -167,9 +193,9 @@ function BreakdownTable({
     iconColor,
     currency = "USD",
 }: {
-    data: any[] | null;
+    data: ReportBreakdownRow[] | null;
     title: string;
-    icon: any;
+    icon: LucideIcon;
     iconColor: string;
     currency?: string;
 }) {
@@ -240,8 +266,8 @@ function PsychologySection({
 }: {
     confidence: number | null;
     compliance: number | null;
-    emotions: any[] | null;
-    mistakes: any[] | null;
+    emotions: ReportEmotionRow[] | null;
+    mistakes: ReportMistakeRow[] | null;
 }) {
     const hasData =
         confidence !== null ||
@@ -315,7 +341,7 @@ function PsychologySection({
                             Top Emotions
                         </p>
                         <div className="flex flex-wrap gap-1.5">
-                            {emotions.map((e: any, i: number) => (
+                            {emotions.map((e, i: number) => (
                                 <span
                                     key={i}
                                     className="px-2.5 py-1 bg-gray-50/80 dark:bg-[#151925] border border-dashboard rounded-lg text-xs font-medium text-gray-600 dark:text-gray-300"
@@ -336,7 +362,7 @@ function PsychologySection({
                             Top Mistakes
                         </p>
                         <div className="space-y-1.5">
-                            {mistakes.map((m: any, i: number) => (
+                            {mistakes.map((m, i: number) => (
                                 <div
                                     key={i}
                                     className="flex items-center justify-between py-1.5"
@@ -365,9 +391,9 @@ function TradesList({
     pnlColor,
     currency = "USD",
 }: {
-    trades: any[] | null;
+    trades: ReportTradeRow[] | null;
     title: string;
-    icon: any;
+    icon: LucideIcon;
     iconColor: string;
     pnlColor: string;
     currency?: string;
@@ -395,7 +421,7 @@ function TradesList({
 
             {/* Rows */}
             <div>
-                {trades.map((t: any, i: number) => (
+                {trades.map((t, i: number) => (
                     <div
                         key={i}
                         className="grid grid-cols-12 gap-2 items-center px-5 h-[52px] hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors border-b border-gray-50 dark:border-white/[0.04] last:border-0"

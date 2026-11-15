@@ -11,7 +11,10 @@ import {
     endOfDay,
 } from "date-fns";
 import { utcTime } from "@/lib/utils";
-import { normalizeCurrencyCode } from "@/lib/utils/cent-account";
+import {
+    convertToUsdEquivalent,
+    normalizeCurrencyCode,
+} from "@/lib/utils/cent-account";
 
 export async function GET(request: NextRequest) {
     try {
@@ -56,26 +59,32 @@ export async function GET(request: NextRequest) {
             );
         }
 
-        const targetAcc = await prisma.tradingAccount.findFirst({
-            where: {
-                userId: user.id,
-                ...(accountIdParam && accountIdParam !== "all"
-                    ? { id: accountIdParam }
-                    : {}),
-            },
-            select: { currency: true, server: true },
-        });
-        const currency = normalizeCurrencyCode(
-            targetAcc?.currency,
-            targetAcc?.server
-        );
+        const normalizedAccountId =
+            accountIdParam && accountIdParam !== "all"
+                ? accountIdParam
+                : undefined;
+
+        let currency = "USD";
+        if (normalizedAccountId) {
+            const targetAcc = await prisma.tradingAccount.findFirst({
+                where: {
+                    userId: user.id,
+                    id: normalizedAccountId,
+                },
+                select: { currency: true, server: true },
+            });
+            currency = normalizeCurrencyCode(
+                targetAcc?.currency,
+                targetAcc?.server
+            );
+        }
 
         // Fetch trades
         const trades = await prisma.journalEntry.findMany({
             where: {
                 userId: user.id,
-                ...(accountIdParam && accountIdParam !== "all"
-                    ? { accountId: accountIdParam }
+                ...(normalizedAccountId
+                    ? { accountId: normalizedAccountId }
                     : {}),
                 status: "CLOSED",
                 entryDate: { gte: startDate, lte: endDate },
@@ -88,9 +97,13 @@ export async function GET(request: NextRequest) {
                 commission: true,
                 swap: true,
                 result: true,
-                // @ts-ignore
                 strategy: true,
-                // riskReward: true, // Assuming this field might exist or be calculated, currently not in basics
+                account: {
+                    select: {
+                        currency: true,
+                        server: true,
+                    },
+                },
             },
             orderBy: { entryDate: "desc" },
         });
@@ -99,7 +112,20 @@ export async function GET(request: NextRequest) {
             pnl: number | null;
             commission?: number | null;
             swap?: number | null;
-        }) => (t.pnl || 0) + (t.commission || 0) + (t.swap || 0);
+            account?: {
+                currency?: string | null;
+                server?: string | null;
+            } | null;
+        }) => {
+            const rawNet = (t.pnl || 0) + (t.commission || 0) + (t.swap || 0);
+            return !normalizedAccountId
+                ? convertToUsdEquivalent(
+                      rawNet,
+                      t.account?.currency,
+                      t.account?.server
+                  )
+                : rawNet;
+        };
 
         // Calculate summary stats
         const wins = trades.filter((t) => t.result === "WIN");
@@ -165,7 +191,7 @@ export async function GET(request: NextRequest) {
             { pnl: number; wins: number; total: number }
         >();
         for (const trade of trades) {
-            const name = (trade as any).strategy || "No Strategy";
+            const name = trade.strategy || "No Strategy";
             const current = stratMap.get(name) || { pnl: 0, wins: 0, total: 0 };
             current.pnl += getNetPnl(trade);
             current.total++;

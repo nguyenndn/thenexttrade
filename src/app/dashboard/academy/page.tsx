@@ -59,6 +59,7 @@ export default async function UserAcademyDashboard() {
         prisma.level.findMany({
             include: {
                 modules: {
+                    orderBy: { order: "asc" },
                     select: {
                         id: true,
                         title: true,

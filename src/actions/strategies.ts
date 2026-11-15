@@ -38,8 +38,16 @@ const strategySchema = z.object({
     idealTakeProfit: z.string().max(500).optional().nullable(),
     riskRewardMin: z.number().min(0).max(100).optional().nullable(),
     referenceImages: z
-        .array(z.string().url().startsWith("https://"))
-        .max(3)
+        .array(
+            z
+                .string()
+                .url()
+                .refine(
+                    (u) => u.startsWith("https://"),
+                    "Only HTTPS image URLs are allowed"
+                )
+        )
+        .max(5)
         .optional(),
 });
 
@@ -253,12 +261,7 @@ export async function getStrategyPerformance(accountId?: string) {
                 ? normalizedAccountId
                 : undefined;
         const accountMap = new Map(userAccounts.map((acc) => [acc.id, acc]));
-        const uniqueCurrencies = new Set(
-            userAccounts.map((acc) =>
-                normalizeCurrencyCode(acc.currency, acc.server)
-            )
-        );
-        const shouldConvertToUsd = !validAccountId && uniqueCurrencies.size > 1;
+        const shouldConvertToUsd = !validAccountId;
 
         const normalizeTradePnl = (
             rawPnl: number,

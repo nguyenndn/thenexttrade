@@ -266,6 +266,8 @@ export async function generateAiCoachInsights(
     }
 
     try {
+        const normalizedAccountId =
+            accountId && accountId !== "all" ? accountId : undefined;
         const startDate = parseLocalStartOfDay(dateFrom, timezone);
         const endDate = parseLocalEndOfDay(dateTo, timezone);
 
@@ -276,14 +278,16 @@ export async function generateAiCoachInsights(
         });
 
         const existingSettings =
-            (dbUser?.settings as Record<string, any>) || {};
+            (dbUser?.settings as Record<string, unknown>) || {};
 
         // Construct cache key based on closed trades count and last trade timestamp
         const cacheCheck = await prisma.journalEntry.findFirst({
             where: {
                 userId: user.id,
                 status: "CLOSED",
-                ...(accountId ? { accountId } : {}),
+                ...(normalizedAccountId
+                    ? { accountId: normalizedAccountId }
+                    : {}),
             },
             orderBy: { entryDate: "desc" },
             select: { id: true, entryDate: true },
@@ -293,7 +297,9 @@ export async function generateAiCoachInsights(
             where: {
                 userId: user.id,
                 status: "CLOSED",
-                ...(accountId ? { accountId } : {}),
+                ...(normalizedAccountId
+                    ? { accountId: normalizedAccountId }
+                    : {}),
             },
         });
 
@@ -316,7 +322,9 @@ export async function generateAiCoachInsights(
             where: {
                 userId: user.id,
                 status: "CLOSED",
-                ...(accountId ? { accountId } : {}),
+                ...(normalizedAccountId
+                    ? { accountId: normalizedAccountId }
+                    : {}),
             },
             _max: { updatedAt: true },
         });
@@ -327,7 +335,7 @@ export async function generateAiCoachInsights(
         const lastUpdatedTime = latestEntryUpdate._max.updatedAt
             ? new Date(latestEntryUpdate._max.updatedAt).getTime()
             : 0;
-        const currentCacheKey = `coach_${AI_COACH_PROMPT_VERSION}_${totalClosedCount}_${lastTradeTime}_${lastUpdatedTime}_${accountId || "all"}_${dateFrom || "all"}_${dateTo || "all"}_${timezone || "UTC"}`;
+        const currentCacheKey = `coach_${AI_COACH_PROMPT_VERSION}_${totalClosedCount}_${lastTradeTime}_${lastUpdatedTime}_${normalizedAccountId || "all"}_${dateFrom || "all"}_${dateTo || "all"}_${timezone || "UTC"}`;
 
         const cachedData = existingSettings.cachedCoachInsights as
             | {
@@ -347,7 +355,7 @@ export async function generateAiCoachInsights(
         // Fetch Intelligence Data
         const data = await getIntelligenceData(
             user.id,
-            accountId,
+            normalizedAccountId,
             startDate,
             endDate,
             timezone
@@ -364,23 +372,31 @@ export async function generateAiCoachInsights(
             };
         }
 
-        const targetAcc = await prisma.tradingAccount.findFirst({
-            where: {
-                userId: user.id,
-                ...(accountId && accountId !== "all" ? { id: accountId } : {}),
-            },
-            select: { currency: true, server: true },
-        });
-        const accountCurrency = normalizeCurrencyCode(
-            targetAcc?.currency,
-            targetAcc?.server
-        );
+        let accountCurrency = "USD";
+        if (normalizedAccountId) {
+            const targetAcc = await prisma.tradingAccount.findFirst({
+                where: {
+                    userId: user.id,
+                    id: normalizedAccountId,
+                },
+                select: { currency: true, server: true },
+            });
+            accountCurrency = normalizeCurrencyCode(
+                targetAcc?.currency,
+                targetAcc?.server
+            );
+        }
 
         // Format data for prompt
         const catalog = buildEvidenceCatalog(data, accountCurrency);
+        const onboardingSettings = existingSettings.onboarding as
+            | Record<string, unknown>
+            | undefined;
         const tradingGoal =
-            existingSettings.tradingGoal ||
-            existingSettings.onboarding?.tradingGoal ||
+            (typeof existingSettings.tradingGoal === "string" &&
+                existingSettings.tradingGoal) ||
+            (typeof onboardingSettings?.tradingGoal === "string" &&
+                onboardingSettings.tradingGoal) ||
             "Not specified";
         const configuredLanguage =
             existingSettings.language || existingSettings.preferredLanguage;
@@ -391,7 +407,7 @@ export async function generateAiCoachInsights(
             : "English";
         const promptData = {
             selectedContext: {
-                accountId: accountId || "all",
+                accountId: normalizedAccountId || "all",
                 dateFrom: dateFrom || "all",
                 dateTo: dateTo || "all",
                 timezone: timezone || "UTC",
@@ -420,7 +436,7 @@ export async function generateAiCoachInsights(
                 accountCurrency
             ),
             avgHoldTime: data.quickStats.avgHoldMinutes.toFixed(1) + " minutes",
-            mainTradingGoal: existingSettings.tradingGoal || "Not specified",
+            mainTradingGoal: tradingGoal,
             verifiedEvidence: catalog,
         };
 
@@ -501,10 +517,12 @@ END_VERIFIED_DATA`;
         await prisma.user.update({
             where: { id: user.id },
             data: {
-                settings: {
-                    ...existingSettings,
-                    cachedCoachInsights: finalCachedInsights,
-                },
+                settings: JSON.parse(
+                    JSON.stringify({
+                        ...existingSettings,
+                        cachedCoachInsights: finalCachedInsights,
+                    })
+                ),
             },
         });
 
@@ -512,7 +530,7 @@ END_VERIFIED_DATA`;
             success: true,
             insight: finalInsight,
         };
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("[AI Coach Insight Error]:", error);
         return { error: "Failed to generate AI insights. Please try again." };
     }

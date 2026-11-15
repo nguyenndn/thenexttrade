@@ -1,8 +1,9 @@
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
+import { convertToUsdEquivalent } from "@/lib/utils/cent-account";
 import { NextResponse } from "next/server";
 
-export async function GET(request: Request) {
+export async function GET() {
     const supabase = await createClient();
     const {
         data: { user },
@@ -17,6 +18,14 @@ export async function GET(request: Request) {
             where: {
                 userId: user.id,
                 status: "CLOSED",
+            },
+            include: {
+                account: {
+                    select: {
+                        currency: true,
+                        server: true,
+                    },
+                },
             },
             orderBy: {
                 entryDate: "asc",
@@ -43,8 +52,8 @@ export async function GET(request: Request) {
             });
         }
 
-        let totalWinPnL = 0;
-        let totalLossPnL = 0;
+        let grossProfit = 0;
+        let grossLoss = 0;
         let winCount = 0;
         let lossCount = 0;
         let breakEvenCount = 0;
@@ -61,19 +70,28 @@ export async function GET(request: Request) {
         const equityMap: Record<string, number> = {};
 
         entries.forEach((entry) => {
-            const pnl =
+            const rawPnl =
                 (entry.pnl || 0) +
                 (entry.commission || 0) +
                 (entry.swap || 0);
-            netProfit += pnl;
+            const pnl = convertToUsdEquivalent(
+                rawPnl,
+                entry.account?.currency,
+                entry.account?.server
+            );
+            netProfit = Number((netProfit + pnl).toFixed(2));
+
+            if (pnl > 0) {
+                grossProfit += pnl;
+            } else if (pnl < 0) {
+                grossLoss += pnl; // negative sum
+            }
 
             // Basic Counts
             if (entry.result === "WIN") {
                 winCount++;
-                totalWinPnL += pnl;
             } else if (entry.result === "LOSS") {
                 lossCount++;
-                totalLossPnL += Math.abs(pnl); // Keep valid positive number for Factor Calc
             } else {
                 breakEvenCount++;
             }
@@ -82,24 +100,28 @@ export async function GET(request: Request) {
             if (!pairStatsMap[entry.symbol]) {
                 pairStatsMap[entry.symbol] = { pnl: 0, wins: 0, total: 0 };
             }
-            pairStatsMap[entry.symbol].pnl += pnl;
+            pairStatsMap[entry.symbol].pnl = Number(
+                (pairStatsMap[entry.symbol].pnl + pnl).toFixed(2)
+            );
             pairStatsMap[entry.symbol].total += 1;
             if (entry.result === "WIN") pairStatsMap[entry.symbol].wins += 1;
 
             // Equity Curve Preparation: Group by Day
-            const dateStr = new Date(entry.entryDate)
+            const dateStr = new Date(entry.exitDate ?? entry.entryDate)
                 .toISOString()
                 .split("T")[0];
             if (!equityMap[dateStr]) equityMap[dateStr] = 0;
-            equityMap[dateStr] += pnl;
+            equityMap[dateStr] = Number((equityMap[dateStr] + pnl).toFixed(2));
         });
 
         // --- Calculations ---
         const winRate = (winCount / totalTrades) * 100;
         const profitFactor =
-            totalLossPnL === 0 ? totalWinPnL : totalWinPnL / totalLossPnL;
-        const avgWin = winCount > 0 ? totalWinPnL / winCount : 0;
-        const avgLoss = lossCount > 0 ? (totalLossPnL / lossCount) * -1 : 0; // Negative value for display
+            grossLoss !== 0
+                ? Number((grossProfit / Math.abs(grossLoss)).toFixed(2))
+                : 0;
+        const avgWin = winCount > 0 ? grossProfit / winCount : 0;
+        const avgLoss = lossCount > 0 ? grossLoss / lossCount : 0; // Negative value for display
 
         // Find Best/Worst Pair
         const pairsArr = Object.entries(pairStatsMap).map(

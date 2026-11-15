@@ -137,6 +137,7 @@ export interface DashboardPageData {
 
 export interface ResolvedParams {
     accountId?: string;
+    currentAccountId?: string;
     fromParam: string;
     toParam: string;
     accountFilter: { userId: string; id?: string };
@@ -174,7 +175,7 @@ export async function resolveAccountAndDates(
         typeof searchParams?.accountId === "string"
             ? searchParams.accountId
             : undefined;
-    const isExplicitAllAccounts = rawAccountId === "all";
+    let isExplicitAllAccounts = rawAccountId === "all";
     let normalizedAccountId =
         rawAccountId && rawAccountId !== "all" ? rawAccountId : undefined;
 
@@ -196,17 +197,22 @@ export async function resolveAccountAndDates(
     // Resolve accountId if missing and user did not explicitly request "all"
     let accountId = normalizedAccountId;
     if (!rawAccountId) {
-        const { resolveDefaultAccountId } = await import(
-            "@/actions/main-account"
-        );
-        const targetId = await resolveDefaultAccountId(
-            userId,
-            validLastAccountId
-        );
-
-        if (targetId && userAccounts.some((acc) => acc.id === targetId)) {
-            accountId = targetId;
+        if (rawLastAccountId === "all") {
+            isExplicitAllAccounts = true;
             needsRedirect = true;
+        } else {
+            const { resolveDefaultAccountId } = await import(
+                "@/actions/main-account"
+            );
+            const targetId = await resolveDefaultAccountId(
+                userId,
+                validLastAccountId
+            );
+
+            if (targetId && userAccounts.some((acc) => acc.id === targetId)) {
+                accountId = targetId;
+                needsRedirect = true;
+            }
         }
     }
 
@@ -255,6 +261,8 @@ export async function resolveAccountAndDates(
         const acc = userAccounts.find((a) => a.id === accountId);
         accountTimezone = acc?.timezone || undefined;
         accountCurrency = normalizeCurrencyCode(acc?.currency, acc?.server);
+    } else {
+        accountCurrency = "USD";
     }
 
     const startDate = parseLocalStartOfDay(fromParam, accountTimezone);
@@ -307,6 +315,7 @@ export async function resolveAccountAndDates(
 
     return {
         accountId,
+        currentAccountId: isExplicitAllAccounts ? "all" : accountId,
         fromParam: fromParam!,
         toParam: toParam!,
         accountFilter,
@@ -325,7 +334,8 @@ export async function getEmptyDashboardData(
     accountId: string | undefined,
     fromParam: string,
     toParam: string,
-    accountCurrency?: string
+    accountCurrency?: string,
+    currentAccountId?: string
 ): Promise<DashboardPageData> {
     const [
         userData,
@@ -371,15 +381,9 @@ export async function getEmptyDashboardData(
         /* silent */
     });
 
-    const uniqueEmptyCurrencies = new Set(
-        selectedAccount.map((acc) =>
-            normalizeCurrencyCode(acc.currency, acc.server)
-        )
-    );
-    const hasMixedEmptyCurrencies = uniqueEmptyCurrencies.size > 1;
     const resolvedCurrency =
         accountCurrency ||
-        (!accountId && hasMixedEmptyCurrencies
+        (!accountId
             ? "USD"
             : selectedAccount[0]
               ? normalizeCurrencyCode(
@@ -387,19 +391,18 @@ export async function getEmptyDashboardData(
                     selectedAccount[0].server
                 )
               : "USD");
-    const emptyTotalBalance =
-        !accountId && (hasMixedEmptyCurrencies || resolvedCurrency === "USD")
-            ? selectedAccount.reduce(
-                  (sum, acc) =>
-                      sum +
-                      convertToUsdEquivalent(
-                          acc.balance || 0,
-                          acc.currency,
-                          acc.server
-                      ),
-                  0
-              )
-            : selectedAccount.reduce((sum, acc) => sum + (acc.balance || 0), 0);
+    const emptyTotalBalance = !accountId
+        ? selectedAccount.reduce(
+              (sum, acc) =>
+                  sum +
+                  convertToUsdEquivalent(
+                      acc.balance || 0,
+                      acc.currency,
+                      acc.server
+                  ),
+              0
+          )
+        : selectedAccount.reduce((sum, acc) => sum + (acc.balance || 0), 0);
 
     return {
         userName: userData?.name || "Trader",
@@ -428,7 +431,7 @@ export async function getEmptyDashboardData(
         chartData: [],
         recentTrades: [],
         symbolPerformance: [],
-        currentAccountId: accountId,
+        currentAccountId: currentAccountId ?? accountId,
         monthlyAnalytics: [],
         dailyWinRates: Array.from({ length: 7 }, (_, i) => ({
             date: format(subDays(new Date(), 6 - i), "yyyy-MM-dd"),
@@ -562,6 +565,11 @@ export async function getFullDashboardData(
                         },
                     ],
                 },
+                include: {
+                    account: {
+                        select: { currency: true, server: true },
+                    },
+                },
                 orderBy: [{ exitDate: "desc" }, { entryDate: "desc" }],
                 take: 10,
             }),
@@ -648,30 +656,25 @@ export async function getFullDashboardData(
     const insightData = buildInsightData(intelligenceData);
 
     // Balances & Currency
-    const uniqueCurrencies = new Set(
-        accounts.map((acc) => normalizeCurrencyCode(acc.currency, acc.server))
-    );
-    const hasMixedCurrencies = uniqueCurrencies.size > 1;
     const resolvedCurrency =
         params.accountCurrency ||
-        (!accountId && hasMixedCurrencies
+        (!accountId
             ? "USD"
             : accounts.length > 0
               ? normalizeCurrencyCode(accounts[0].currency, accounts[0].server)
               : "USD");
-    const totalBalance =
-        !accountId && (hasMixedCurrencies || resolvedCurrency === "USD")
-            ? accounts.reduce(
-                  (sum, acc) =>
-                      sum +
-                      convertToUsdEquivalent(
-                          acc.balance || 0,
-                          acc.currency,
-                          acc.server
-                      ),
-                  0
-              )
-            : accounts.reduce((sum, acc) => sum + (acc.balance || 0), 0);
+    const totalBalance = !accountId
+        ? accounts.reduce(
+              (sum, acc) =>
+                  sum +
+                  convertToUsdEquivalent(
+                      acc.balance || 0,
+                      acc.currency,
+                      acc.server
+                  ),
+              0
+          )
+        : accounts.reduce((sum, acc) => sum + (acc.balance || 0), 0);
 
     // Chart data
     const chartData = await buildChartData(
@@ -838,24 +841,58 @@ export async function getFullDashboardData(
         initialDashboards: userDashboards,
         dashboardData,
         chartData,
-        recentTrades: recentTrades.map((t) => ({
-            ...t,
-            grossProfit: t.pnl,
-            pnl:
+        recentTrades: recentTrades.map((t) => {
+            const rawNetPnl =
                 t.pnl != null
+                    ? t.pnl + (t.commission || 0) + (t.swap || 0)
+                    : null;
+            const normNetPnl =
+                rawNetPnl != null
                     ? Number(
-                          (
-                              t.pnl +
-                              (t.commission || 0) +
-                              (t.swap || 0)
+                          (accountId
+                              ? rawNetPnl
+                              : convertToUsdEquivalent(
+                                    rawNetPnl,
+                                    t.account?.currency,
+                                    t.account?.server
+                                )
                           ).toFixed(2)
                       )
-                    : null,
-            commission: t.commission || 0,
-            swap: t.swap || 0,
-        })),
+                    : null;
+            const normGross =
+                t.pnl != null
+                    ? accountId
+                        ? t.pnl
+                        : convertToUsdEquivalent(
+                              t.pnl,
+                              t.account?.currency,
+                              t.account?.server
+                          )
+                    : null;
+            const normComm = accountId
+                ? t.commission || 0
+                : convertToUsdEquivalent(
+                      t.commission || 0,
+                      t.account?.currency,
+                      t.account?.server
+                  );
+            const normSwap = accountId
+                ? t.swap || 0
+                : convertToUsdEquivalent(
+                      t.swap || 0,
+                      t.account?.currency,
+                      t.account?.server
+                  );
+            return {
+                ...t,
+                grossProfit: normGross,
+                pnl: normNetPnl,
+                commission: normComm,
+                swap: normSwap,
+            };
+        }),
         symbolPerformance,
-        currentAccountId: accountId,
+        currentAccountId: params.currentAccountId ?? accountId,
         monthlyAnalytics: monthly.map((m) => ({
             date: m.date,
             value: m.profit,

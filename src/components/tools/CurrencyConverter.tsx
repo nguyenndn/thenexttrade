@@ -9,33 +9,34 @@ import {
     DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/Button";
+import { CurrencyFlag } from "@/components/tools/CurrencyFlag";
 import { cn } from "@/lib/utils";
 
 const CURRENCIES = [
     // ── Major Currencies ──
-    { code: "USD", name: "US Dollar", flag: "🇺🇸", group: "Major" },
-    { code: "EUR", name: "Euro", flag: "🇪🇺", group: "Major" },
-    { code: "GBP", name: "British Pound", flag: "🇬🇧", group: "Major" },
-    { code: "JPY", name: "Japanese Yen", flag: "🇯🇵", group: "Major" },
-    { code: "CHF", name: "Swiss Franc", flag: "🇨🇭", group: "Major" },
+    { code: "USD", name: "US Dollar", group: "Major" },
+    { code: "EUR", name: "Euro", group: "Major" },
+    { code: "GBP", name: "British Pound", group: "Major" },
+    { code: "JPY", name: "Japanese Yen", group: "Major" },
+    { code: "CHF", name: "Swiss Franc", group: "Major" },
     // ── Minor Currencies ──
-    { code: "AUD", name: "Australian Dollar", flag: "🇦🇺", group: "Minor" },
-    { code: "CAD", name: "Canadian Dollar", flag: "🇨🇦", group: "Minor" },
-    { code: "NZD", name: "New Zealand Dollar", flag: "🇳🇿", group: "Minor" },
+    { code: "AUD", name: "Australian Dollar", group: "Minor" },
+    { code: "CAD", name: "Canadian Dollar", group: "Minor" },
+    { code: "NZD", name: "New Zealand Dollar", group: "Minor" },
     // ── Exotic Currencies ──
-    { code: "SGD", name: "Singapore Dollar", flag: "🇸🇬", group: "Exotic" },
-    { code: "HKD", name: "Hong Kong Dollar", flag: "🇭🇰", group: "Exotic" },
-    { code: "SEK", name: "Swedish Krona", flag: "🇸🇪", group: "Exotic" },
-    { code: "NOK", name: "Norwegian Krone", flag: "🇳🇴", group: "Exotic" },
-    { code: "DKK", name: "Danish Krone", flag: "🇩🇰", group: "Exotic" },
-    { code: "PLN", name: "Polish Zloty", flag: "🇵🇱", group: "Exotic" },
-    { code: "TRY", name: "Turkish Lira", flag: "🇹🇷", group: "Exotic" },
-    { code: "MXN", name: "Mexican Peso", flag: "🇲🇽", group: "Exotic" },
-    { code: "ZAR", name: "South African Rand", flag: "🇿🇦", group: "Exotic" },
-    { code: "BRL", name: "Brazilian Real", flag: "🇧🇷", group: "Exotic" },
-    { code: "CNH", name: "Chinese Yuan", flag: "🇨🇳", group: "Exotic" },
-    { code: "INR", name: "Indian Rupee", flag: "🇮🇳", group: "Exotic" },
-    { code: "KRW", name: "South Korean Won", flag: "🇰🇷", group: "Exotic" },
+    { code: "SGD", name: "Singapore Dollar", group: "Exotic" },
+    { code: "HKD", name: "Hong Kong Dollar", group: "Exotic" },
+    { code: "SEK", name: "Swedish Krona", group: "Exotic" },
+    { code: "NOK", name: "Norwegian Krone", group: "Exotic" },
+    { code: "DKK", name: "Danish Krone", group: "Exotic" },
+    { code: "PLN", name: "Polish Zloty", group: "Exotic" },
+    { code: "TRY", name: "Turkish Lira", group: "Exotic" },
+    { code: "MXN", name: "Mexican Peso", group: "Exotic" },
+    { code: "ZAR", name: "South African Rand", group: "Exotic" },
+    { code: "BRL", name: "Brazilian Real", group: "Exotic" },
+    { code: "CNH", name: "Chinese Yuan", group: "Exotic" },
+    { code: "INR", name: "Indian Rupee", group: "Exotic" },
+    { code: "KRW", name: "South Korean Won", group: "Exotic" },
 ];
 
 function getCurrencyInfo(code: string) {
@@ -48,15 +49,15 @@ function getCurrencySymbol(code: string) {
         EUR: "€",
         GBP: "£",
         JPY: "¥",
-        CHF: "Fr",
+        CHF: "CHF ",
         AUD: "A$",
         CAD: "C$",
         NZD: "NZ$",
         SGD: "S$",
         HKD: "HK$",
-        SEK: "kr",
-        NOK: "kr",
-        DKK: "kr",
+        SEK: "kr ",
+        NOK: "kr ",
+        DKK: "kr ",
         PLN: "zł",
         TRY: "₺",
         MXN: "MX$",
@@ -66,7 +67,7 @@ function getCurrencySymbol(code: string) {
         INR: "₹",
         KRW: "₩",
     };
-    return symbols[code] || code;
+    return symbols[code] || `${code} `;
 }
 
 function CurrencyDropdown({
@@ -91,8 +92,11 @@ function CurrencyDropdown({
                         variant="ghost"
                         className="w-full px-4 py-3.5 h-auto rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 hover:bg-gray-100/80 dark:hover:bg-white/[0.06] focus:border-gold focus:ring-2 focus:ring-gold/20 transition-all text-gray-700 dark:text-white flex items-center justify-between"
                     >
-                        <span className="font-bold text-base flex items-center gap-2">
-                            {info?.flag} {info?.code} - {info?.name}
+                        <span className="font-bold text-base flex items-center gap-2.5">
+                            {info && <CurrencyFlag code={info.code} />}
+                            <span>
+                                {info?.code} - {info?.name}
+                            </span>
                         </span>
                         <ChevronDown
                             size={16}
@@ -124,8 +128,11 @@ function CurrencyDropdown({
                                                 "bg-gold/10 text-amber-600 dark:text-gold font-semibold"
                                         )}
                                     >
-                                        <span>
-                                            {c.flag} {c.code} — {c.name}
+                                        <span className="flex items-center gap-2.5">
+                                            <CurrencyFlag code={c.code} size="sm" />
+                                            <span>
+                                                {c.code} — {c.name}
+                                            </span>
                                         </span>
                                         {value === c.code && (
                                             <Check
@@ -156,8 +163,14 @@ export function CurrencyConverter() {
     const [error, setError] = useState("");
 
     const convert = useCallback(async () => {
+        if (!Number.isFinite(amount) || amount <= 0) {
+            setResult(null);
+            setError("");
+            return;
+        }
         if (from === to) {
             setResult({ rate: 1, converted: amount });
+            setError("");
             return;
         }
         setLoading(true);

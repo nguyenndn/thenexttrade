@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus } from "lucide-react";
+import { Plus, Smile, Meh, AlertTriangle } from "lucide-react";
 import {
     Popover,
     PopoverContent,
@@ -8,23 +8,54 @@ import {
 import psychologyData from "@/data/psychology.json";
 import { Button } from "@/components/ui/Button";
 
+type EmotionTone = "positive" | "neutral" | "negative";
+
+interface EmotionItem {
+    label: string;
+    tone: EmotionTone;
+}
+
+interface MindsetEntry {
+    id: string;
+    emotionBefore?: string | null;
+}
+
 interface MindsetCellProps {
-    entry: any;
-    onUpdate: (id: string, data: any) => Promise<void>;
+    entry: MindsetEntry;
+    onUpdate: (id: string, data: { emotionBefore: string }) => Promise<void>;
+}
+
+function renderToneIcon(tone: EmotionTone, size = 13) {
+    if (tone === "positive") {
+        return <Smile size={size} className="text-emerald-500 shrink-0" />;
+    }
+    if (tone === "negative") {
+        return <AlertTriangle size={size} className="text-amber-500 shrink-0" />;
+    }
+    return <Meh size={size} className="text-slate-400 shrink-0" />;
 }
 
 export function MindsetCell({ entry, onUpdate }: MindsetCellProps) {
     const [isOpen, setIsOpen] = useState(false);
 
-    // Flatten all "before" emotions for lookup
-    const allEmotions = [
-        ...(psychologyData.before.positive || []),
-        ...(psychologyData.before.neutral || []),
-        ...(psychologyData.before.negative || []),
+    const positiveEmotions: EmotionItem[] = (
+        psychologyData.before.positive || []
+    ).map((item) => ({ label: item.label, tone: "positive" as const }));
+    const neutralEmotions: EmotionItem[] = (
+        psychologyData.before.neutral || []
+    ).map((item) => ({ label: item.label, tone: "neutral" as const }));
+    const negativeEmotions: EmotionItem[] = (
+        psychologyData.before.negative || []
+    ).map((item) => ({ label: item.label, tone: "negative" as const }));
+
+    const allEmotions: EmotionItem[] = [
+        ...positiveEmotions,
+        ...neutralEmotions,
+        ...negativeEmotions,
     ];
 
     const currentEmotion = allEmotions.find(
-        (e: any) => e.label === entry.emotionBefore
+        (e) => e.label === entry.emotionBefore
     );
 
     const handleSelect = async (emotionLabel: string) => {
@@ -32,7 +63,7 @@ export function MindsetCell({ entry, onUpdate }: MindsetCellProps) {
         setIsOpen(false);
     };
 
-    const renderEmotionItem = (e: any) => (
+    const renderEmotionItem = (e: EmotionItem) => (
         <Button
             key={e.label}
             variant="outline"
@@ -40,9 +71,9 @@ export function MindsetCell({ entry, onUpdate }: MindsetCellProps) {
                 ev.stopPropagation();
                 handleSelect(e.label);
             }}
-            className="w-full flex items-center justify-start px-2 py-1.5 text-sm hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg cursor-pointer transition-colors text-left font-normal"
+            className="w-full flex items-center justify-start gap-2 px-2 py-1.5 text-sm border-transparent hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg cursor-pointer transition-colors text-left font-normal"
         >
-            <span className="mr-2 text-lg">{e.icon}</span>
+            {renderToneIcon(e.tone, 14)}
             <span className="text-gray-700 dark:text-gray-200">{e.label}</span>
         </Button>
     );
@@ -56,12 +87,10 @@ export function MindsetCell({ entry, onUpdate }: MindsetCellProps) {
                 >
                     {currentEmotion ? (
                         <div
-                            className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-yellow-50 dark:bg-yellow-500/10 border border-yellow-200 dark:border-yellow-500/20 hover:bg-yellow-100 dark:hover:bg-yellow-500/20 transition-colors"
+                            className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-yellow-50 dark:bg-yellow-500/10 border border-yellow-200 dark:border-yellow-500/20 hover:bg-yellow-100 dark:hover:bg-yellow-500/20 transition-colors"
                             title="Mindset before entry"
                         >
-                            <span className="text-sm">
-                                {currentEmotion.icon}
-                            </span>
+                            {renderToneIcon(currentEmotion.tone, 12)}
                             <span className="text-xs font-bold text-yellow-700 dark:text-yellow-400 whitespace-nowrap">
                                 {currentEmotion.label}
                             </span>
@@ -71,7 +100,7 @@ export function MindsetCell({ entry, onUpdate }: MindsetCellProps) {
                             variant="outline"
                             size="icon"
                             aria-label="Set Mindset"
-                            className="w-6 h-6 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors hover:bg-gray-200 dark:hover:bg-white/10"
+                            className="w-6 h-6 rounded-lg bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors hover:bg-gray-200 dark:hover:bg-white/10"
                         >
                             <Plus size={12} />
                         </Button>
@@ -80,7 +109,7 @@ export function MindsetCell({ entry, onUpdate }: MindsetCellProps) {
             </PopoverTrigger>
             <PopoverContent
                 align="center"
-                className="w-[200px] p-0"
+                className="w-[200px] p-0 rounded-xl"
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className="px-3 py-2 border-b border-dashboard bg-gray-50/50 dark:bg-white/5">
@@ -92,21 +121,21 @@ export function MindsetCell({ entry, onUpdate }: MindsetCellProps) {
                     <div className="px-2 py-1.5 text-xs font-semibold text-gray-600 dark:text-gray-300">
                         Positive
                     </div>
-                    {psychologyData.before.positive.map(renderEmotionItem)}
+                    {positiveEmotions.map(renderEmotionItem)}
 
                     <div className="h-px bg-gray-100 dark:bg-white/5 my-1" />
 
                     <div className="px-2 py-1.5 text-xs font-semibold text-gray-600 dark:text-gray-300">
                         Neutral
                     </div>
-                    {psychologyData.before.neutral.map(renderEmotionItem)}
+                    {neutralEmotions.map(renderEmotionItem)}
 
                     <div className="h-px bg-gray-100 dark:bg-white/5 my-1" />
 
                     <div className="px-2 py-1.5 text-xs font-semibold text-gray-600 dark:text-gray-300">
                         Negative
                     </div>
-                    {psychologyData.before.negative.map(renderEmotionItem)}
+                    {negativeEmotions.map(renderEmotionItem)}
                 </div>
             </PopoverContent>
         </Popover>

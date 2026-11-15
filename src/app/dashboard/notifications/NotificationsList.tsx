@@ -3,12 +3,15 @@
 import { useState, useTransition, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useSWRConfig } from "swr";
 import { format } from "date-fns";
 import { enUS } from "date-fns/locale";
 import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { localNotificationStore } from "@/hooks/useNotifications";
 import {
     getNotificationConfig,
     cleanNotificationTitle,
@@ -44,13 +47,54 @@ function getRelativeTime(dateStr: string): string {
     return format(date, "dd MMM yyyy", { locale: enUS });
 }
 
+function getSafeNotificationLink(
+    rawLink: string | null
+): { href: string; isExternal: boolean } | null {
+    if (!rawLink) return null;
+    const trimmed = rawLink.trim();
+    if (!trimmed || trimmed === "/dashboard") return null;
+
+    if (
+        trimmed.startsWith("/") &&
+        !trimmed.startsWith("//") &&
+        !trimmed.includes("\\")
+    ) {
+        return { href: trimmed, isExternal: false };
+    }
+
+    try {
+        const parsed = new URL(trimmed);
+        if (parsed.protocol === "https:") {
+            return { href: parsed.toString(), isExternal: true };
+        }
+    } catch {
+        return null;
+    }
+
+    return null;
+}
+
 export function NotificationsList({ initialNotifications }: Props) {
     const [notifications, setNotifications] = useState(initialNotifications);
     const [expandedIds, setExpandedIds] = useState<Record<string, boolean>>({});
+    const [isClearConfirmOpen, setIsClearConfirmOpen] = useState(false);
     const [isPending, startTransition] = useTransition();
     const router = useRouter();
+    const { mutate } = useSWRConfig();
+
+    const syncNotificationsCache = () => {
+        mutate("/api/user/notifications");
+        mutate(
+            (key) =>
+                typeof key === "string" &&
+                key.startsWith("/api/user/notifications")
+        );
+    };
 
     useEffect(() => {
+        // Server page marks unread notifications as read on load; sync header badge immediately
+        syncNotificationsCache();
+
         if (typeof window !== "undefined") {
             const params = new URLSearchParams(window.location.search);
             const focusId = params.get("id");
@@ -70,6 +114,7 @@ export function NotificationsList({ initialNotifications }: Props) {
                 }, 200);
             }
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const toggleExpand = (id: string) => {
@@ -85,7 +130,10 @@ export function NotificationsList({ initialNotifications }: Props) {
                     method: "DELETE",
                 });
                 if (!res.ok) throw new Error("Failed to delete");
+                localNotificationStore.markAsRead("ALL");
                 setNotifications([]);
+                setIsClearConfirmOpen(false);
+                syncNotificationsCache();
                 toast.success("All notifications cleared");
                 router.refresh();
             } catch {
@@ -106,7 +154,7 @@ export function NotificationsList({ initialNotifications }: Props) {
                     <Button
                         variant="outline"
                         size="smd"
-                        onClick={handleDeleteAll}
+                        onClick={() => setIsClearConfirmOpen(true)}
                         disabled={isPending}
                         className="text-red-600 dark:text-red-400 border-red-200 dark:border-red-800/50 hover:bg-red-50 dark:hover:bg-red-900/20 font-bold gap-2"
                     >
@@ -183,30 +231,36 @@ export function NotificationsList({ initialNotifications }: Props) {
                                             </p>
 
                                             <div className="flex items-center gap-4 mt-2">
-                                                {n.link &&
-                                                    n.link !== "/dashboard" && (
-                                                        n.link.startsWith("/") ? (
-                                                            <Link
-                                                                href={n.link}
-                                                                onClick={(e) =>
-                                                                    e.stopPropagation()
-                                                                }
-                                                                className="inline-flex items-center text-xs font-semibold text-primary hover:text-primary/80 transition-colors"
-                                                            >
-                                                                Take Action →
-                                                            </Link>
-                                                        ) : (
-                                                            <a
-                                                                href={n.link}
-                                                                onClick={(e) =>
-                                                                    e.stopPropagation()
-                                                                }
-                                                                className="inline-flex items-center text-xs font-semibold text-primary hover:text-primary/80 transition-colors"
-                                                            >
-                                                                Take Action →
-                                                            </a>
-                                                        )
-                                                    )}
+                                                {(() => {
+                                                    const safeLink =
+                                                        getSafeNotificationLink(
+                                                            n.link
+                                                        );
+                                                    if (!safeLink) return null;
+                                                    return safeLink.isExternal ? (
+                                                        <a
+                                                            href={safeLink.href}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            onClick={(e) =>
+                                                                e.stopPropagation()
+                                                            }
+                                                            className="inline-flex items-center text-xs font-semibold text-primary hover:text-primary/80 transition-colors"
+                                                        >
+                                                            Take Action →
+                                                        </a>
+                                                    ) : (
+                                                        <Link
+                                                            href={safeLink.href}
+                                                            onClick={(e) =>
+                                                                e.stopPropagation()
+                                                            }
+                                                            className="inline-flex items-center text-xs font-semibold text-primary hover:text-primary/80 transition-colors"
+                                                        >
+                                                            Take Action →
+                                                        </Link>
+                                                    );
+                                                })()}
                                                 <Button
                                                     variant="ghost"
                                                     size="sm"
@@ -230,6 +284,18 @@ export function NotificationsList({ initialNotifications }: Props) {
                     </div>
                 )}
             </div>
+
+            <ConfirmDialog
+                isOpen={isClearConfirmOpen}
+                title="Clear All Notifications"
+                description="Are you sure you want to clear all notifications? This action cannot be undone."
+                confirmText="Clear All"
+                cancelText="Cancel"
+                variant="danger"
+                isLoading={isPending}
+                onConfirm={handleDeleteAll}
+                onCancel={() => setIsClearConfirmOpen(false)}
+            />
         </>
     );
 }

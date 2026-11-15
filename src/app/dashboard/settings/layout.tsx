@@ -67,7 +67,7 @@ export default function SettingsLayout({
         : baseNavItems;
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-4 min-w-0">
             {/* ── Page Header — consistent with other dashboard pages ── */}
             <PageHeader
                 title="Settings"
@@ -76,6 +76,7 @@ export default function SettingsLayout({
 
             {/* ── Horizontal Tab Nav (Pill Style) ── */}
             <TabBar
+                className="max-w-full"
                 tabs={navItems.map((item) => ({
                     label: item.title,
                     href: item.href,
@@ -84,7 +85,7 @@ export default function SettingsLayout({
             />
 
             {/* ── Content ── */}
-            <div>{children}</div>
+            <div className="min-w-0">{children}</div>
         </div>
     );
 }

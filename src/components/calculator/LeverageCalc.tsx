@@ -1,20 +1,11 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { calculateMargin, DEFAULT_PAIR_PRICES } from "@/lib/calculators";
 import { CurrencyPairSelect } from "./CurrencyPairSelect";
 import { CalcInput } from "./CalcInput";
 import { CalcResultCard, CalcResultGrid } from "./CalcResult";
 import { cn } from "@/lib/utils";
-
-function getPairContractSize(pair: string): number {
-    const p = pair.toUpperCase();
-    if (p.includes("XAU") || p.includes("GOLD")) return 100;
-    if (p.includes("XAG") || p.includes("SILVER")) return 5000;
-    if (p.includes("US30") || p.includes("US100") || p.includes("US500"))
-        return 1;
-    if (p.includes("BTC")) return 1;
-    return 100000;
-}
 
 export function LeverageCalc() {
     const [inputs, setInputs] = useState({
@@ -25,9 +16,13 @@ export function LeverageCalc() {
     });
 
     const results = useMemo(() => {
-        const contractSize = getPairContractSize(inputs.pair);
-        const notionalValue =
-            inputs.lotSize * contractSize * inputs.currentPrice;
+        const { positionValue: notionalValue } = calculateMargin({
+            lotSize: inputs.lotSize,
+            pair: inputs.pair,
+            leverage: 1,
+            currentPrice: inputs.currentPrice,
+            accountCurrency: "USD",
+        });
         const effectiveLeverage =
             inputs.accountBalance > 0
                 ? notionalValue / inputs.accountBalance
@@ -99,7 +94,17 @@ export function LeverageCalc() {
                         </label>
                         <CurrencyPairSelect
                             value={inputs.pair}
-                            onChange={(v) => setInputs({ ...inputs, pair: v })}
+                            onChange={(v) => {
+                                const defaults =
+                                    DEFAULT_PAIR_PRICES[v.toUpperCase()];
+                                setInputs({
+                                    ...inputs,
+                                    pair: v,
+                                    currentPrice: defaults
+                                        ? defaults.price
+                                        : inputs.currentPrice,
+                                });
+                            }}
                         />
                     </div>
                     <CalcInput
@@ -119,7 +124,7 @@ export function LeverageCalc() {
             <div className="space-y-4">
                 <div
                     className={cn(
-                        "border p-6 rounded-lg text-center shadow-lg",
+                        "border p-6 rounded-xl text-center shadow-lg",
                         risk.bg
                     )}
                 >

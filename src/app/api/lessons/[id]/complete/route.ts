@@ -42,6 +42,7 @@ export async function POST(
                         select: {
                             level: {
                                 select: {
+                                    order: true,
                                     modules: {
                                         orderBy: { order: "asc" },
                                         select: {
@@ -71,27 +72,71 @@ export async function POST(
                 );
             }
 
-            const allLessonsInLevel =
-                lessonRow.module.level.modules.flatMap((m) => m.lessons);
-            const lessonIndex = allLessonsInLevel.findIndex(
-                (l) => l.id === id
-            );
-            if (lessonIndex > 0) {
-                const previousIds = allLessonsInLevel
-                    .slice(0, lessonIndex)
-                    .map((l) => l.id);
-                const completedPrev = await prisma.userProgress.count({
-                    where: {
-                        userId,
-                        lessonId: { in: previousIds },
-                        isCompleted: true,
-                    },
-                });
-                if (completedPrev < previousIds.length) {
-                    return NextResponse.json(
-                        { error: "Complete the previous lessons first" },
-                        { status: 403 }
-                    );
+            const isAdmin =
+                user.profile?.role === "ADMIN" ||
+                (prisma.profile
+                    ? (
+                          await prisma.profile.findUnique({
+                              where: { userId },
+                              select: { role: true },
+                          })
+                      )?.role === "ADMIN"
+                    : false);
+
+            if (!isAdmin) {
+                const currentLevelOrder = lessonRow.module?.level?.order ?? 1;
+                const priorLevelsLessons =
+                    currentLevelOrder > 1 && prisma.lesson.findMany
+                        ? await prisma.lesson.findMany({
+                              where: {
+                                  status: "published",
+                                  module: {
+                                      level: {
+                                          order: {
+                                              lt: currentLevelOrder,
+                                          },
+                                      },
+                                  },
+                              },
+                              select: { id: true },
+                          })
+                        : [];
+
+                const allLessonsInLevel =
+                    lessonRow.module.level.modules.flatMap((m) => m.lessons);
+                const lessonIndex = allLessonsInLevel.findIndex(
+                    (l) => l.id === id
+                );
+                const previousInLevelIds =
+                    lessonIndex > 0
+                        ? allLessonsInLevel
+                              .slice(0, lessonIndex)
+                              .map((l) => l.id)
+                        : [];
+
+                const requiredPriorIds = Array.from(
+                    new Set([
+                        ...priorLevelsLessons.map((l) => l.id),
+                        ...previousInLevelIds,
+                    ])
+                );
+
+                if (requiredPriorIds.length > 0) {
+                    const completedPrev = await prisma.userProgress.count({
+                        where: {
+                            userId,
+                            lessonId: { in: requiredPriorIds },
+                            isCompleted: true,
+                        },
+                    });
+                    if (completedPrev < requiredPriorIds.length) {
+                        return NextResponse.json(
+                            {
+                                error: "Complete all previous lessons and prior levels first",
+                            },
+                            { status: 403 }
+                        );
+                    }
                 }
             }
         }
@@ -116,7 +161,7 @@ export async function POST(
         });
 
         let xpAmount = 0;
-        let xpResult: any = null;
+        let xpResult: Awaited<ReturnType<typeof addXP>> | null = null;
         let mindsetMasterGranted = false;
         let bonusXpEarned = 0;
 
@@ -129,7 +174,7 @@ export async function POST(
                 select: { settings: true },
             });
             const userSettings =
-                (dbUser?.settings as Record<string, any>) || {};
+                (dbUser?.settings as Record<string, unknown>) || {};
             const recommendedLessonId = userSettings.aiRecommendedLessonId;
 
             if (recommendedLessonId === id) {

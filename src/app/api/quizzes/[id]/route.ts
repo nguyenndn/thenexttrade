@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
-import { requireAdminAuth } from "@/lib/auth-cache";
+import { getAuthUser, requireAdminAuth } from "@/lib/auth-cache";
 
 export async function GET(
     request: Request,
@@ -11,6 +11,19 @@ export async function GET(
         const quiz = await prisma.quiz.findUnique({
             where: { id: params.id },
             include: {
+                module: {
+                    select: {
+                        id: true,
+                        title: true,
+                        level: {
+                            select: {
+                                id: true,
+                                title: true,
+                                accessLevel: true,
+                            },
+                        },
+                    },
+                },
                 questions: {
                     orderBy: { order: "asc" },
                     select: {
@@ -32,8 +45,19 @@ export async function GET(
         if (!quiz)
             return NextResponse.json({ error: "Not found" }, { status: 404 });
 
+        const accessLevel = quiz.module?.level?.accessLevel ?? "PRIVATE";
+        if (accessLevel !== "PUBLIC") {
+            const user = await getAuthUser();
+            if (!user) {
+                return NextResponse.json(
+                    { error: "Unauthorized" },
+                    { status: 401 }
+                );
+            }
+        }
+
         return NextResponse.json(quiz);
-    } catch (error) {
+    } catch {
         return NextResponse.json(
             { error: "Failed to fetch quiz" },
             { status: 500 }

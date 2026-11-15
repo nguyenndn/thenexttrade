@@ -2,12 +2,23 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { usePathname, useRouter } from "next/navigation";
 import { formatDistanceToNow } from "date-fns";
-import { Reply, Trash2, MessageSquareCode, ShieldAlert } from "lucide-react";
+import { Reply, Trash2, MessageSquareCode } from "lucide-react";
 import { CommentForm } from "./CommentForm";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/Button";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+
+function decodeCommentText(text: string): string {
+    if (!text) return "";
+    return text
+        .replace(/&quot;/g, '"')
+        .replace(/&#x27;|&#39;|&apos;/gi, "'")
+        .replace(/&lt;/g, "<")
+        .replace(/&gt;/g, ">")
+        .replace(/&amp;/g, "&");
+}
 
 interface User {
     id: string;
@@ -39,7 +50,7 @@ export function CommentList({
 }: CommentListProps) {
     if (comments.length === 0) {
         return (
-            <div className="flex flex-col items-center justify-center text-center py-14 px-6 border-2 border-dashed border-dashboard rounded-lg bg-gray-50/20 dark:bg-[#0b0d14]/20 relative overflow-hidden transition-all duration-300">
+            <div className="flex flex-col items-center justify-center text-center py-14 px-6 border-2 border-dashed border-dashboard rounded-xl bg-gray-50/20 dark:bg-[#0b0d14]/20 relative overflow-hidden transition-all duration-300">
                 {/* Glowing subtle circles in empty state */}
                 <div className="absolute w-36 h-36 bg-gold/5 rounded-full blur-2xl top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
 
@@ -87,14 +98,28 @@ function CommentItem({
     currentUser?: User | null;
     onRefresh: () => void;
 }) {
+    const router = useRouter();
+    const pathname = usePathname();
     const [isReplying, setIsReplying] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
     const isAuthor = currentUser?.id === comment.user.id;
+    const rootParentId = comment.parentId || comment.id;
 
     const confirmDelete = () => {
         setIsConfirmOpen(true);
+    };
+
+    const handleReplyToggle = () => {
+        if (!currentUser) {
+            const nextTarget = encodeURIComponent(
+                `${pathname || `/articles/${articleId}`}#comments`
+            );
+            router.push(`/auth/login?next=${nextTarget}`);
+            return;
+        }
+        setIsReplying((prev) => !prev);
     };
 
     const handleDelete = async () => {
@@ -108,11 +133,11 @@ function CommentItem({
 
             toast.success("Comment deleted");
             onRefresh();
-        } catch (error: any) {
+        } catch (error: unknown) {
             toast.error(
                 error instanceof Error
                     ? error.message
-                    : error?.message || "Could not delete comment"
+                    : "Could not delete comment"
             );
         } finally {
             setIsDeleting(false);
@@ -162,15 +187,15 @@ function CommentItem({
                 </div>
 
                 {/* Content body */}
-                <div className="text-[14px] text-gray-600 dark:text-gray-300 leading-relaxed font-sans pr-2">
-                    {comment.content}
+                <div className="text-[14px] text-gray-600 dark:text-gray-300 leading-relaxed font-sans pr-2 whitespace-pre-line">
+                    {decodeCommentText(comment.content)}
                 </div>
 
                 {/* Interaction actions */}
                 <div className="flex items-center gap-4 mt-2.5">
                     <Button
                         variant="ghost"
-                        onClick={() => setIsReplying(!isReplying)}
+                        onClick={handleReplyToggle}
                         className="flex items-center gap-1.5 h-auto px-2.5 py-1 text-xs font-bold text-gray-400 hover:text-gold hover:bg-gold/10 rounded-full transition-all duration-200"
                     >
                         <Reply size={12} className="stroke-[2.5]" />
@@ -191,12 +216,12 @@ function CommentItem({
                 </div>
 
                 {isReplying && (
-                    <div className="mt-4 pl-4 border-l-2 border-gold/30 bg-gray-50/30 dark:bg-white/[0.01] p-4 rounded-lg shadow-inner animate-in slide-in-from-top-2 fade-in duration-300">
+                    <div className="mt-4 pl-4 border-l-2 border-gold/30 bg-gray-50/30 dark:bg-white/[0.01] p-4 rounded-xl shadow-inner animate-in slide-in-from-top-2 fade-in duration-300">
                         <CommentForm
                             articleId={articleId}
-                            parentId={comment.id}
+                            parentId={rootParentId}
+                            replyToName={comment.user.name || "Trader"}
                             autoFocus
-                            placeholder={`Replying to ${comment.user.name}...`}
                             onSuccess={() => {
                                 setIsReplying(false);
                                 onRefresh();
@@ -204,6 +229,7 @@ function CommentItem({
                             onCancel={() => setIsReplying(false)}
                             userName={currentUser?.name}
                             userImage={currentUser?.image}
+                            isAuthenticated={Boolean(currentUser)}
                         />
                     </div>
                 )}

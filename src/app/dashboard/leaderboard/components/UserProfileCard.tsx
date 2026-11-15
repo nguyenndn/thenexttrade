@@ -43,8 +43,15 @@ export function UserProfileCard({ entry, onClose }: UserProfileCardProps) {
     const stats = [
         {
             icon: Star,
-            label: "Edge",
-            value: entry.value.toLocaleString(),
+            label: entry.label === "Hidden" ? "Metric" : entry.label === "%" ? "Win Rate" : entry.label === "$" ? "Profit" : "Edge",
+            value:
+                entry.label === "Hidden"
+                    ? "Hidden"
+                    : entry.label === "%"
+                      ? `${entry.value.toFixed(1)}%`
+                      : entry.label === "$"
+                        ? `${entry.value >= 0 ? "+" : "-"}$${Math.abs(entry.value).toFixed(2)}`
+                        : entry.value.toLocaleString(),
             color: "text-amber-600 dark:text-gold",
         },
         {

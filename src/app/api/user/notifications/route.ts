@@ -23,8 +23,18 @@ export async function GET(request: NextRequest) {
         }
 
         const { searchParams } = new URL(request.url);
-        const limit = parseInt(searchParams.get("limit") || "10");
-        const page = parseInt(searchParams.get("page") || "1");
+        const parsedLimit = Number.parseInt(
+            searchParams.get("limit") || "10",
+            10
+        );
+        const parsedPage = Number.parseInt(
+            searchParams.get("page") || "1",
+            10
+        );
+        const limit = Number.isFinite(parsedLimit)
+            ? Math.min(50, Math.max(1, parsedLimit))
+            : 10;
+        const page = Number.isFinite(parsedPage) ? Math.max(1, parsedPage) : 1;
         const skip = (page - 1) * limit;
 
         const [notifications, unreadCount, total] = await Promise.all([

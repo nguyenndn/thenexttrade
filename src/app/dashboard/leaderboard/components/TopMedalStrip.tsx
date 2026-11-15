@@ -156,14 +156,14 @@ function getMainValue(
         case "sprint":
         case "trading": {
             if (sortBy === "percentage") {
-                const winRateVal =
-                    entry.winRate !== undefined ? entry.winRate : entry.value;
-                return `${winRateVal.toFixed(1)}% Win Rate`;
+                return entry.winRate != null
+                    ? `${entry.winRate.toFixed(1)}% Win Rate`
+                    : "Hidden";
             }
             if (entry.pnl === null) {
-                return entry.winRate !== undefined
+                return entry.winRate != null
                     ? `${entry.winRate.toFixed(1)}% Win Rate`
-                    : "—";
+                    : "Hidden";
             }
             const pnl =
                 entry.pnl >= 0
@@ -222,8 +222,10 @@ function get2x2Stats(entry: LeaderboardEntry, type: LeaderboardType) {
                 { label: "Level", value: `Level ${entry.level}` },
             ];
         case "sprint": {
-            const winRateVal =
-                entry.winRate !== undefined ? entry.winRate : entry.value;
+            const winRateDisplay =
+                entry.winRate != null
+                    ? `${entry.winRate.toFixed(1)}%`
+                    : "Hidden";
             const prizeLabel =
                 entry.rank === 1
                     ? "$500 Cash"
@@ -232,7 +234,7 @@ function get2x2Stats(entry: LeaderboardEntry, type: LeaderboardType) {
                       : "$200 Cash";
             return [
                 { label: "Sprint Prize", value: prizeLabel },
-                { label: "Win Rate", value: `${winRateVal}%` },
+                { label: "Win Rate", value: winRateDisplay },
                 { label: "Total Trades", value: `${entry.totalTrades}` },
                 {
                     label: "Total PnL",
@@ -246,10 +248,12 @@ function get2x2Stats(entry: LeaderboardEntry, type: LeaderboardType) {
             ];
         }
         case "trading": {
-            const winRateVal =
-                entry.winRate !== undefined ? entry.winRate : entry.value;
+            const winRateDisplay =
+                entry.winRate != null
+                    ? `${entry.winRate.toFixed(1)}%`
+                    : "Hidden";
             return [
-                { label: "Win Rate", value: `${winRateVal}%` },
+                { label: "Win Rate", value: winRateDisplay },
                 { label: "Total Trades", value: `${entry.totalTrades}` },
                 {
                     label: "Total PnL",

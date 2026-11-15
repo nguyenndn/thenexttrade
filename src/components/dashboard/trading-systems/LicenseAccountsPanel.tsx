@@ -40,10 +40,12 @@ import { maskSyncApiKey } from "@/lib/utils/api-key";
 export interface AccountLicenseItem {
     id: string;
     licenseId: string | null;
+    tradingAccountId?: string | null;
     accountNumber: string;
     broker: string;
     status: "APPROVED" | "PENDING" | "REJECTED" | "EXPIRED" | "SUSPENDED";
     licenseKey: string | null;
+    maskedLicenseKey?: string | null;
     rejectReason?: string | null;
 }
 
@@ -85,6 +87,10 @@ export function LicenseAccountsPanel({
     const [busyId, setBusyId] = useState<string | null>(null);
     const [copiedId, setCopiedId] = useState<string | null>(null);
     const [revealedIds, setRevealedIds] = useState<Record<string, boolean>>({});
+    const [revealedKeys, setRevealedKeys] = useState<Record<string, string>>(
+        {}
+    );
+    const [loadingKeyId, setLoadingKeyId] = useState<string | null>(null);
     const [editingAccountId, setEditingAccountId] = useState<string | null>(
         null
     );
@@ -118,6 +124,41 @@ export function LicenseAccountsPanel({
         }
     };
 
+    const resolveFullLicenseKey = async (
+        item: AccountLicenseItem
+    ): Promise<string | null> => {
+        if (revealedKeys[item.id]) {
+            return revealedKeys[item.id];
+        }
+        if (item.licenseKey) {
+            setRevealedKeys((prev) => ({ ...prev, [item.id]: item.licenseKey! }));
+            return item.licenseKey;
+        }
+        if (!item.tradingAccountId) {
+            return null;
+        }
+        setLoadingKeyId(item.id);
+        try {
+            const res = await fetch(
+                `/api/trading-accounts/${encodeURIComponent(item.tradingAccountId)}/reveal-key`,
+                { cache: "no-store" }
+            );
+            if (!res.ok) {
+                return null;
+            }
+            const data = (await res.json()) as { apiKey?: string };
+            if (!data.apiKey) {
+                return null;
+            }
+            setRevealedKeys((prev) => ({ ...prev, [item.id]: data.apiKey! }));
+            return data.apiKey;
+        } catch {
+            return null;
+        } finally {
+            setLoadingKeyId(null);
+        }
+    };
+
     const handleCopy = async (id: string, key: string) => {
         try {
             await navigator.clipboard.writeText(key);
@@ -127,6 +168,28 @@ export function LicenseAccountsPanel({
         } catch {
             toast.error("Failed to copy License Key");
         }
+    };
+
+    const handleToggleRevealLicenseKey = async (item: AccountLicenseItem) => {
+        if (revealedIds[item.id]) {
+            setRevealedIds((prev) => ({ ...prev, [item.id]: false }));
+            return;
+        }
+        const fullKey = await resolveFullLicenseKey(item);
+        if (!fullKey) {
+            toast.error("Failed to reveal License Key");
+            return;
+        }
+        setRevealedIds((prev) => ({ ...prev, [item.id]: true }));
+    };
+
+    const handleCopyLicenseItem = async (item: AccountLicenseItem) => {
+        const fullKey = await resolveFullLicenseKey(item);
+        if (!fullKey) {
+            toast.error("Failed to fetch License Key");
+            return;
+        }
+        await handleCopy(item.id, fullKey);
     };
 
     const handleSubmitSelected = async (e: React.FormEvent) => {
@@ -339,7 +402,8 @@ export function LicenseAccountsPanel({
                     </ol>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                         {[
-                            "https://thenexttrade.io",
+                            process.env.NEXT_PUBLIC_APP_URL?.trim().replace(/\/+$/, "") ||
+                                "https://thenexttrade.app",
                             "https://api.github.com",
                             "https://raw.githubusercontent.com",
                         ].map((url) => (
@@ -728,35 +792,50 @@ export function LicenseAccountsPanel({
                                     </div>
                                 </div>
 
-                                <div className="flex items-center gap-2 flex-wrap">
+                                <div className="flex items-center gap-2 flex-wrap min-w-0">
                                     {item.status === "APPROVED" &&
-                                    item.licenseKey ? (
+                                    Boolean(
+                                        item.maskedLicenseKey ||
+                                            item.licenseKey ||
+                                            item.tradingAccountId
+                                    ) ? (
                                         <>
-                                            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-dashboard dark:border-white/10 font-mono tabular-nums text-xs font-bold text-amber-600 dark:text-gold">
-                                                <Shield size={12} />
-                                                <span>
-                                                    {isRevealed
-                                                        ? item.licenseKey
-                                                        : maskSyncApiKey(
-                                                              item.licenseKey
-                                                          )}
+                                            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-dashboard dark:border-white/10 font-mono tabular-nums text-xs font-bold text-amber-600 dark:text-gold min-w-0">
+                                                <Shield
+                                                    size={12}
+                                                    className="shrink-0"
+                                                />
+                                                <span className="break-all">
+                                                    {isRevealed &&
+                                                    (revealedKeys[item.id] ||
+                                                        item.licenseKey)
+                                                        ? revealedKeys[
+                                                              item.id
+                                                          ] || item.licenseKey
+                                                        : item.maskedLicenseKey ||
+                                                          (item.licenseKey
+                                                              ? maskSyncApiKey(
+                                                                    item.licenseKey
+                                                                )
+                                                              : "TNT-••••-••••-••••")}
                                                 </span>
                                             </div>
                                             <Button
                                                 type="button"
                                                 variant="outline"
                                                 size="sm"
+                                                disabled={
+                                                    loadingKeyId === item.id
+                                                }
                                                 aria-label={
                                                     isRevealed
                                                         ? "Hide license key"
                                                         : "Show license key"
                                                 }
                                                 onClick={() =>
-                                                    setRevealedIds((prev) => ({
-                                                        ...prev,
-                                                        [item.id]:
-                                                            !prev[item.id],
-                                                    }))
+                                                    handleToggleRevealLicenseKey(
+                                                        item
+                                                    )
                                                 }
                                                 className="rounded-lg h-8 w-8 p-0"
                                             >
@@ -770,11 +849,11 @@ export function LicenseAccountsPanel({
                                                 type="button"
                                                 variant="gold"
                                                 size="sm"
+                                                disabled={
+                                                    loadingKeyId === item.id
+                                                }
                                                 onClick={() =>
-                                                    handleCopy(
-                                                        item.id,
-                                                        item.licenseKey!
-                                                    )
+                                                    handleCopyLicenseItem(item)
                                                 }
                                                 className="rounded-lg h-8 text-xs font-bold !text-white"
                                             >

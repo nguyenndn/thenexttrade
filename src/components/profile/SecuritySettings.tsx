@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Key, Lock, Shield, Monitor, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import {
     updatePassword,
     getTwoFactorStatus,
 } from "@/app/dashboard/settings/security/actions";
+import { passwordSchema } from "@/lib/validations/auth";
 import { TwoFactorSetup } from "./TwoFactorSetup";
 import { ActiveSessionsList } from "./ActiveSessionsList";
 import { Button } from "@/components/ui/Button";
@@ -14,6 +15,7 @@ import { Button } from "@/components/ui/Button";
 export function SecuritySettings() {
     const [isLoading, setIsLoading] = useState(false);
     const [is2FAEnabled, setIs2FAEnabled] = useState(false);
+    const passwordFormRef = useRef<HTMLFormElement>(null);
 
     useEffect(() => {
         getTwoFactorStatus().then((res) => setIs2FAEnabled(res.isEnabled));
@@ -72,18 +74,37 @@ export function SecuritySettings() {
 
                 <div className="px-6 py-5">
                     <form
+                        ref={passwordFormRef}
                         action={async (formData) => {
+                            const newPassword = String(
+                                formData.get("newPassword") || ""
+                            );
+                            const confirmPassword = String(
+                                formData.get("confirmPassword") || ""
+                            );
+
+                            if (newPassword !== confirmPassword) {
+                                toast.error("New passwords do not match");
+                                return;
+                            }
+
+                            const parsed =
+                                passwordSchema.safeParse(newPassword);
+                            if (!parsed.success) {
+                                toast.error(
+                                    parsed.error.issues[0]?.message ||
+                                        "Password must be at least 10 characters"
+                                );
+                                return;
+                            }
+
                             setIsLoading(true);
                             try {
                                 const res = await updatePassword(formData);
                                 if (res.error) toast.error(res.error);
                                 else {
                                     toast.success(res.message);
-                                    (
-                                        document.querySelector(
-                                            "form"
-                                        ) as HTMLFormElement
-                                    )?.reset();
+                                    passwordFormRef.current?.reset();
                                 }
                             } catch (e: unknown) {
                                 const message =
@@ -124,12 +145,17 @@ export function SecuritySettings() {
                                         aria-label={field.label}
                                         minLength={
                                             field.name !== "currentPassword"
-                                                ? 6
+                                                ? 10
                                                 : undefined
                                         }
-                                        className="w-full pl-9 pr-4 py-2.5 bg-gray-50/80 dark:bg-[#151925] border border-dashboard rounded-lg text-sm text-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-gold transition-all"
+                                        className="w-full pl-9 pr-4 py-2.5 bg-gray-50/80 dark:bg-[#0B0E14] border border-dashboard rounded-lg text-sm text-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-gold transition-all"
                                     />
                                 </div>
+                                {field.name === "newPassword" && (
+                                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                        Minimum 10 characters with at least one uppercase letter, lowercase letter, and number.
+                                    </p>
+                                )}
                             </div>
                         ))}
 

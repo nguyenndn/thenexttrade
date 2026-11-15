@@ -127,6 +127,17 @@ export async function resolveSyncAuth(
             });
 
             if (found) {
+                if (
+                    accountNumber &&
+                    found.accountNumber &&
+                    found.accountNumber.trim() !== String(accountNumber).trim()
+                ) {
+                    return {
+                        success: false,
+                        error: "ACCOUNT_MISMATCH",
+                        status: 403,
+                    };
+                }
                 account = found;
             } else if (requireAccount) {
                 return {
@@ -243,6 +254,27 @@ export async function resolveSyncAuth(
         });
 
         if (legacyAccount) {
+            if (accountId && legacyAccount.id !== accountId) {
+                return {
+                    success: false,
+                    error: "ACCOUNT_MISMATCH",
+                    status: 403,
+                };
+            }
+
+            if (
+                accountNumber &&
+                legacyAccount.accountNumber &&
+                legacyAccount.accountNumber.trim() !==
+                    String(accountNumber).trim()
+            ) {
+                return {
+                    success: false,
+                    error: "ACCOUNT_MISMATCH",
+                    status: 403,
+                };
+            }
+
             return {
                 success: true,
                 data: {

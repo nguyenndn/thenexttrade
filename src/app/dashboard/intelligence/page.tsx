@@ -186,19 +186,23 @@ async function IntelligenceDataLoader({
                 prevDateTo={prevEndDate?.toISOString().split("T")[0]}
             />
 
-            {/* Pro-gated: Edge Leak Detector */}
-            <div className="mt-6 bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-5">
-                <EdgeLeakDetector
-                    issues={data.hasEnoughData ? data.issues : []}
-                    strengths={data.hasEnoughData ? data.strengths : []}
-                    accountId={accountId}
-                />
-            </div>
+            {/* Pro-gated: Edge Leak Detector (only when sample threshold met so 0-trade/low-sample never claims zero leaks) */}
+            {data.hasEnoughData && (
+                <div className="mt-6 bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-5">
+                    <EdgeLeakDetector
+                        issues={data.issues}
+                        strengths={data.strengths}
+                        accountId={accountId}
+                    />
+                </div>
+            )}
 
-            {/* Pro-gated: Rule Violation Tracker */}
-            <div className="mt-4 bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-5">
-                <RuleViolationTracker accountId={accountId} />
-            </div>
+            {/* Pro-gated: Rule Violation Tracker (only when closed trades exist so 0-trade accounts never display 100% compliance praise) */}
+            {data.totalAnalyzed > 0 && (
+                <div className="mt-4 bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-5">
+                    <RuleViolationTracker accountId={accountId} />
+                </div>
+            )}
         </>
     );
 }

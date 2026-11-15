@@ -11,18 +11,20 @@ import {
     Cell,
 } from "recharts";
 
+interface ConfidencePoint {
+    level: number;
+    winRate: number;
+    avgPnL: number;
+    tradeCount: number;
+}
+
 interface ConfidenceCorrelationProps {
-    data: Array<{
-        level: number;
-        winRate: number;
-        avgPnL: number;
-        tradeCount: number;
-    }>;
+    data: ConfidencePoint[];
 }
 
 export function ConfidenceCorrelation({ data }: ConfidenceCorrelationProps) {
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-5 rounded-lg border border-dashboard shadow-sm hover:shadow-md transition-shadow cursor-pointer group flex flex-col h-full">
+        <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-dashboard shadow-sm hover:shadow-md transition-shadow cursor-pointer group flex flex-col h-full">
             <h3 className="text-sm font-bold text-gray-700 dark:text-white mb-4">
                 Confidence vs. Performance
             </h3>
@@ -82,12 +84,47 @@ export function ConfidenceCorrelation({ data }: ConfidenceCorrelationProps) {
                             }}
                         />
                         <Tooltip
-                            contentStyle={{
-                                backgroundColor: "#1F2937",
-                                border: "none",
-                                borderRadius: "8px",
-                                color: "#F3F4F6",
+                            content={({ active, payload }) => {
+                                if (!active || !payload?.length) return null;
+                                const point = payload[0]
+                                    .payload as ConfidencePoint;
+                                return (
+                                    <div className="bg-white dark:bg-[#1E2028] text-gray-800 dark:text-gray-100 p-3 rounded-lg border border-dashboard shadow-xl text-xs">
+                                        <p className="font-bold text-gray-900 dark:text-white mb-1 text-sm">
+                                            Confidence {point.level}/5
+                                        </p>
+                                        <div className="space-y-1">
+                                            <div className="flex justify-between gap-4">
+                                                <span className="text-gray-500 dark:text-gray-400">
+                                                    Win Rate:
+                                                </span>
+                                                <span className="font-mono tabular-nums font-bold text-emerald-600 dark:text-[#00C888]">
+                                                    {point.winRate.toFixed(1)}%
+                                                </span>
+                                            </div>
+                                            <div className="flex justify-between gap-4">
+                                                <span className="text-gray-500 dark:text-gray-400">
+                                                    Avg P&L:
+                                                </span>
+                                                <span
+                                                    className={`font-mono tabular-nums font-bold ${point.avgPnL >= 0 ? "text-emerald-600 dark:text-primary" : "text-red-500"}`}
+                                                >
+                                                    ${point.avgPnL.toFixed(2)}
+                                                </span>
+                                            </div>
+                                            <div className="flex justify-between gap-4">
+                                                <span className="text-gray-500 dark:text-gray-400">
+                                                    Trades:
+                                                </span>
+                                                <span className="font-mono tabular-nums">
+                                                    {point.tradeCount}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
                             }}
+                            cursor={{ fill: "transparent" }}
                         />
                         <Bar
                             yAxisId="left"

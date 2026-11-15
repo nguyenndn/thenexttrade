@@ -59,11 +59,28 @@ export function WinLossChart({ data }: WinLossProps) {
                         ))}
                     </Pie>
                     <Tooltip
-                        contentStyle={{
-                            backgroundColor: "#fff",
-                            borderRadius: "12px",
-                            border: "none",
-                            boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+                        content={({ active, payload }) => {
+                            if (!active || !payload?.length) return null;
+                            const item = payload[0];
+                            const total =
+                                data.WIN + data.LOSS + data.BREAK_EVEN;
+                            const pct =
+                                total > 0
+                                    ? (
+                                          (Number(item.value || 0) / total) *
+                                          100
+                                      ).toFixed(1)
+                                    : "0.0";
+                            return (
+                                <div className="bg-white dark:bg-[#1E2028] text-gray-800 dark:text-gray-100 px-3 py-2 rounded-lg border border-dashboard shadow-xl text-xs">
+                                    <p className="font-bold text-gray-900 dark:text-white mb-0.5">
+                                        {item.name}
+                                    </p>
+                                    <p className="font-mono tabular-nums text-gray-600 dark:text-gray-300">
+                                        {item.value} trades ({pct}%)
+                                    </p>
+                                </div>
+                            );
                         }}
                     />
                     <Legend

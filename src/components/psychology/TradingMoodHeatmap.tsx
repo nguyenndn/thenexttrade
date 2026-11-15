@@ -1,6 +1,26 @@
 "use client";
 
-import { Grid3x3 } from "lucide-react";
+import {
+    Grid3x3,
+    ShieldCheck,
+    Smile,
+    Crosshair,
+    Clock,
+    Zap,
+    Minus,
+    Moon,
+    HelpCircle,
+    AlertCircle,
+    ShieldAlert,
+    Flame,
+    Frown,
+    Timer,
+    Swords,
+    TrendingUp,
+    Sparkles,
+    Activity,
+    type LucideIcon,
+} from "lucide-react";
 import { ChartEmptyState } from "@/components/ui/ChartEmptyState";
 
 interface HeatmapSlot {
@@ -19,23 +39,23 @@ interface TradingMoodHeatmapProps {
     data: HeatmapRow[];
 }
 
-const EMOTION_EMOJI: Record<string, string> = {
-    Confident: "😎",
-    Calm: "😌",
-    Focused: "🎯",
-    Patient: "⏳",
-    Excited: "🤩",
-    Neutral: "😐",
-    Tired: "😴",
-    Uncertain: "🤷",
-    Anxious: "😰",
-    Fearful: "😨",
-    Greedy: "🤑",
-    Frustrated: "😤",
-    Impatient: "⏰",
-    Revenge: "😡",
-    FOMO: "🏃",
-    Overconfident: "🧸",
+const EMOTION_ICON_MAP: Record<string, LucideIcon> = {
+    Confident: ShieldCheck,
+    Calm: Smile,
+    Focused: Crosshair,
+    Patient: Clock,
+    Excited: Zap,
+    Neutral: Minus,
+    Tired: Moon,
+    Uncertain: HelpCircle,
+    Anxious: AlertCircle,
+    Fearful: ShieldAlert,
+    Greedy: Flame,
+    Frustrated: Frown,
+    Impatient: Timer,
+    Revenge: Swords,
+    FOMO: TrendingUp,
+    Overconfident: Sparkles,
 };
 
 const POSITIVE_EMOTIONS = new Set([
@@ -85,7 +105,7 @@ export function TradingMoodHeatmap({ data }: TradingMoodHeatmapProps) {
     const hasTrades = data.some((row) => row.slots.some((s) => s.trades > 0));
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard shadow-sm h-auto sm:h-[530px] flex flex-col overflow-hidden">
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm h-auto sm:h-[530px] flex flex-col overflow-hidden">
             <div className="px-3 sm:px-5 pt-4 sm:pt-5 pb-3 shrink-0">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <div className="flex items-center gap-3">
@@ -160,37 +180,59 @@ export function TradingMoodHeatmap({ data }: TradingMoodHeatmapProps) {
                                         {row.day}
                                     </span>
                                 </div>
-                                {row.slots.map((slot) => (
-                                    <div
-                                        key={slot.slot}
-                                        className={`rounded-lg border flex flex-col items-center justify-center gap-0.5 transition-all hover:shadow-md cursor-default ${getCellStyle(slot)}`}
-                                        title={
-                                            slot.trades > 0
-                                                ? `${slot.dominantEmotion} (${slot.trades} trades, ${slot.winRate.toFixed(0)}% WR)`
-                                                : "No trades"
-                                        }
-                                    >
-                                        {slot.trades === 0 ? (
-                                            <span className="text-gray-300 dark:text-gray-700 text-xs">
-                                                —
-                                            </span>
-                                        ) : (
-                                            <>
-                                                <span className="text-base sm:text-lg leading-none">
-                                                    {EMOTION_EMOJI[
-                                                        slot.dominantEmotion
-                                                    ] || "•"}
+                                {row.slots.map((slot) => {
+                                    const EmotionIcon =
+                                        EMOTION_ICON_MAP[
+                                            slot.dominantEmotion
+                                        ] || Activity;
+                                    const iconColorClass =
+                                        POSITIVE_EMOTIONS.has(
+                                            slot.dominantEmotion
+                                        )
+                                            ? "text-emerald-600 dark:text-emerald-400"
+                                            : NEGATIVE_EMOTIONS.has(
+                                                    slot.dominantEmotion
+                                                )
+                                              ? "text-red-500 dark:text-red-400"
+                                              : "text-gray-500 dark:text-gray-300";
+
+                                    return (
+                                        <div
+                                            key={slot.slot}
+                                            className={`rounded-lg border flex flex-col items-center justify-center gap-0.5 transition-all hover:shadow-md cursor-default ${getCellStyle(slot)}`}
+                                            title={
+                                                slot.trades > 0
+                                                    ? `${slot.dominantEmotion} (${slot.trades} trades, ${slot.winRate.toFixed(0)}% WR)`
+                                                    : "No trades"
+                                            }
+                                        >
+                                            {slot.trades === 0 ? (
+                                                <span className="text-gray-300 dark:text-gray-700 text-xs">
+                                                    —
                                                 </span>
-                                                <span className="text-[10px] font-bold text-gray-600 dark:text-gray-300">
-                                                    {slot.winRate.toFixed(0)}%
-                                                </span>
-                                                <span className="text-[9px] text-gray-400">
-                                                    {slot.trades}t
-                                                </span>
-                                            </>
-                                        )}
-                                    </div>
-                                ))}
+                                            ) : (
+                                                <>
+                                                    <EmotionIcon
+                                                        size={16}
+                                                        className={
+                                                            iconColorClass
+                                                        }
+                                                        aria-hidden="true"
+                                                    />
+                                                    <span className="text-[10px] font-bold font-mono tabular-nums text-gray-600 dark:text-gray-300">
+                                                        {slot.winRate.toFixed(
+                                                            0
+                                                        )}
+                                                        %
+                                                    </span>
+                                                    <span className="text-[9px] font-mono tabular-nums text-gray-400">
+                                                        {slot.trades}t
+                                                    </span>
+                                                </>
+                                            )}
+                                        </div>
+                                    );
+                                })}
                             </div>
                         ))}
                     </div>

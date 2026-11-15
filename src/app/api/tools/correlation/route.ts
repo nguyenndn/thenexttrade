@@ -1,7 +1,28 @@
 import { NextResponse } from "next/server";
 import YahooFinance from "yahoo-finance2";
 
-const yf = new (YahooFinance as any)();
+interface YahooChartQuote {
+    close?: number | null;
+}
+
+interface YahooChartResult {
+    quotes?: YahooChartQuote[];
+}
+
+interface YahooFinanceClient {
+    chart(
+        symbol: string,
+        options: {
+            period1: Date;
+            period2: Date;
+            interval: "1h" | "1d";
+            return: "array";
+        }
+    ): Promise<YahooChartResult>;
+}
+
+const YahooFinanceCtor = YahooFinance as unknown as new () => YahooFinanceClient;
+const yf = new YahooFinanceCtor();
 
 const PAIR_TO_YAHOO: Record<string, string> = {
     "EUR/USD": "EURUSD=X",
@@ -96,10 +117,13 @@ export async function GET(request: Request) {
                         return: "array",
                     });
 
-                    const quotes = (result as any)?.quotes || [];
+                    const quotes = result?.quotes || [];
                     const closes: number[] = quotes
-                        .map((q: any) => q.close)
-                        .filter((c: any) => c != null && !isNaN(c));
+                        .map((q) => q.close)
+                        .filter(
+                            (c): c is number =>
+                                typeof c === "number" && Number.isFinite(c)
+                        );
 
                     const returns: number[] = [];
                     for (let i = 1; i < closes.length; i++) {

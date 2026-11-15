@@ -32,14 +32,14 @@ export async function requireAuth(): Promise<AuthResult | NextResponse> {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Role is stored in Supabase auth metadata, not in DB
-    const role = user.app_metadata?.role || user.user_metadata?.role || "USER";
+    // Only trust server-controlled app_metadata (never client-editable user_metadata)
+    const role = (user.app_metadata?.role as string | undefined) || "USER";
 
     return {
         user: {
             id: user.id,
             email: user.email || "",
-            role: role as string,
+            role,
         },
     };
 }

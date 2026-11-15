@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/api-auth";
+import { getAuthUser } from "@/lib/auth-cache";
 import { z } from "zod";
 
 const levelUpdateSchema = z.object({
@@ -16,6 +17,16 @@ export async function GET(
 ) {
     try {
         const { id } = await props.params;
+        const user = await getAuthUser();
+        let isAdmin = user?.profile?.role === "ADMIN";
+        if (user && !isAdmin && !user.profile) {
+            const profile = await prisma.profile.findUnique({
+                where: { userId: user.id },
+                select: { role: true },
+            });
+            isAdmin = profile?.role === "ADMIN";
+        }
+
         const level = await prisma.level.findUnique({
             where: { id },
             include: {
@@ -23,6 +34,7 @@ export async function GET(
                     orderBy: { order: "asc" },
                     include: {
                         lessons: {
+                            ...(isAdmin ? {} : { where: { status: "published" } }),
                             select: {
                                 id: true,
                                 title: true,

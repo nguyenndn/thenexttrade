@@ -293,7 +293,7 @@ export async function previewReleaseAnnouncement(input: {
             "@/lib/services/email.service"
         );
         const appUrl =
-            process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.vercel.app";
+            process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.app";
 
         const html = buildEAUpdateEmailHtml({
             userName: "Alex Trader",
@@ -369,7 +369,7 @@ export async function sendReleaseAnnouncementBroadcast(
             "@/lib/services/email.service"
         );
         const appUrl =
-            process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.vercel.app";
+            process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.app";
 
         const subject =
             input.subject?.trim() ||

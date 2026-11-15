@@ -2,6 +2,7 @@
 // EDGE MISSIONS SERVICE — Progress tracking & claim flow
 // ============================================================================
 
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import {
     EDGE_MISSIONS,
@@ -48,15 +49,15 @@ export function getCurrentWeekPeriodKey(date = new Date()) {
 }
 
 export function getCurrentDayPeriodKey(date = new Date()) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
+    const year = date.getUTCFullYear();
+    const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+    const day = String(date.getUTCDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
 }
 
-export function getMissionPeriodKey(def: MissionDef) {
-    if (def.cadence === "DAILY") return getCurrentDayPeriodKey();
-    if (def.cadence === "WEEKLY") return getCurrentWeekPeriodKey();
+export function getMissionPeriodKey(def: MissionDef, date = new Date()) {
+    if (def.cadence === "DAILY") return getCurrentDayPeriodKey(date);
+    if (def.cadence === "WEEKLY") return getCurrentWeekPeriodKey(date);
     return "lifetime";
 }
 
@@ -74,9 +75,11 @@ export function getCurrentWeekRange(date = new Date()) {
 }
 
 export function getCurrentDayRange(date = new Date()) {
-    const start = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    const start = new Date(
+        Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate())
+    );
     const end = new Date(start);
-    end.setDate(start.getDate() + 1);
+    end.setUTCDate(start.getUTCDate() + 1);
 
     return { start, end };
 }
@@ -87,6 +90,8 @@ export function getCurrentDayRange(date = new Date()) {
 export async function getUserMissions(
     userId: string
 ): Promise<MissionProgressItem[]> {
+    const now = new Date();
+
     // Fetch existing progress and feature flag in parallel
     const [existing, academyEnabled] = await Promise.all([
         prisma.userMissionProgress.findMany({
@@ -110,49 +115,80 @@ export async function getUserMissions(
     const results: MissionProgressItem[] = [];
 
     for (const def of activeMissionDefs) {
-        const periodKey = getMissionPeriodKey(def);
-        const record = progressMap.get(`${def.id}:${periodKey}`);
+        const periodKey = getMissionPeriodKey(def, now);
+        let record = progressMap.get(`${def.id}:${periodKey}`);
 
         // Auto-calculate progress from EdgeEvents for unclaimed missions
         let progress = record?.progress ?? 0;
 
         if (!record || (!record.claimed && !record.completedAt)) {
-            // Count matching events
-            const where: any = { userId, eventType: def.eventType };
+            const where: Prisma.EdgeEventWhereInput = {
+                userId,
+                eventType: def.eventType,
+            };
             if (def.cadence === "DAILY") {
-                const { start, end } = getCurrentDayRange();
+                const { start, end } = getCurrentDayRange(now);
                 where.createdAt = { gte: start, lt: end };
             } else if (def.cadence === "WEEKLY") {
-                const { start, end } = getCurrentWeekRange();
+                const { start, end } = getCurrentWeekRange(now);
                 where.createdAt = { gte: start, lt: end };
             }
 
             const eventCount = await prisma.edgeEvent.count({ where });
             progress = Math.min(eventCount, def.target);
 
-            // Upsert progress record
-            if (!record) {
-                await prisma.userMissionProgress.create({
-                    data: {
-                        userId,
-                        missionId: def.id,
-                        periodKey,
-                        progress,
-                        target: def.target,
-                        completedAt: progress >= def.target ? new Date() : null,
-                    },
-                });
-            } else if (progress !== record.progress) {
-                await prisma.userMissionProgress.update({
-                    where: { id: record.id },
-                    data: {
-                        progress,
-                        completedAt:
-                            progress >= def.target && !record.completedAt
-                                ? new Date()
-                                : record.completedAt,
-                    },
-                });
+            // Atomic upsert (with P2002 fallback for concurrent requests)
+            const completedAt =
+                progress >= def.target
+                    ? (record?.completedAt ?? now)
+                    : (record?.completedAt ?? null);
+
+            if (!record || progress !== record.progress) {
+                try {
+                    record = await prisma.userMissionProgress.upsert({
+                        where: {
+                            userId_missionId_periodKey: {
+                                userId,
+                                missionId: def.id,
+                                periodKey,
+                            },
+                        },
+                        create: {
+                            userId,
+                            missionId: def.id,
+                            periodKey,
+                            progress,
+                            target: def.target,
+                            completedAt,
+                        },
+                        update: {
+                            progress,
+                            completedAt,
+                        },
+                    });
+                } catch (err) {
+                    if (
+                        err instanceof Prisma.PrismaClientKnownRequestError &&
+                        err.code === "P2002"
+                    ) {
+                        const concurrentRecord =
+                            await prisma.userMissionProgress.findUnique({
+                                where: {
+                                    userId_missionId_periodKey: {
+                                        userId,
+                                        missionId: def.id,
+                                        periodKey,
+                                    },
+                                },
+                            });
+                        if (concurrentRecord) {
+                            record = concurrentRecord;
+                            progress = Math.max(progress, concurrentRecord.progress);
+                        }
+                    } else {
+                        throw err;
+                    }
+                }
             }
         }
 
@@ -172,7 +208,7 @@ export async function getUserMissions(
 }
 
 /**
- * Claim XP reward for a completed mission.
+ * Claim XP reward for a completed mission (concurrency-safe via conditional updateMany).
  */
 export async function claimMissionReward(
     userId: string,
@@ -183,37 +219,60 @@ export async function claimMissionReward(
 
     const periodKey = getMissionPeriodKey(def);
 
-    const record = await prisma.userMissionProgress.findUnique({
+    const row = await prisma.userMissionProgress.findUnique({
         where: { userId_missionId_periodKey: { userId, missionId, periodKey } },
     });
 
-    if (!record)
+    if (!row)
         return { success: false, xpAwarded: 0, error: "Mission not started" };
-    if (record.claimed)
+    if (row.claimed)
         return { success: false, xpAwarded: 0, error: "Already claimed" };
-    if (record.progress < def.target)
+    if (row.progress < def.target)
         return { success: false, xpAwarded: 0, error: "Not yet completed" };
 
-    // Award XP and mark claimed
-    await prisma.$transaction([
-        prisma.userMissionProgress.update({
-            where: { id: record.id },
-            data: { claimed: true, claimedAt: new Date() },
-        }),
-        prisma.user.update({
-            where: { id: userId },
-            data: { xp: { increment: def.xpReward } },
-        }),
-        prisma.edgeEvent.create({
-            data: {
-                userId,
-                eventType: `MISSION_CLAIM_${missionId}`,
-                sourceType: "Mission",
-                sourceId: `${missionId}:${periodKey}`,
-                xpAwarded: def.xpReward,
-            },
-        }),
-    ]);
+    try {
+        await prisma.$transaction(async (tx) => {
+            const updated = await tx.userMissionProgress.updateMany({
+                where: {
+                    id: row.id,
+                    userId,
+                    claimed: false,
+                    progress: { gte: def.target },
+                },
+                data: {
+                    claimed: true,
+                    claimedAt: new Date(),
+                },
+            });
 
-    return { success: true, xpAwarded: def.xpReward };
+            if (updated.count !== 1) {
+                throw new Error("Mission already claimed or incomplete");
+            }
+
+            await tx.user.update({
+                where: { id: userId },
+                data: { xp: { increment: def.xpReward } },
+            });
+
+            await tx.edgeEvent.create({
+                data: {
+                    userId,
+                    eventType: `MISSION_CLAIM_${missionId}`,
+                    sourceType: "Mission",
+                    sourceId: `${missionId}:${periodKey}`,
+                    xpAwarded: def.xpReward,
+                },
+            });
+        });
+
+        return { success: true, xpAwarded: def.xpReward };
+    } catch (err) {
+        if (
+            err instanceof Error &&
+            err.message === "Mission already claimed or incomplete"
+        ) {
+            return { success: false, xpAwarded: 0, error: "Already claimed" };
+        }
+        throw err;
+    }
 }

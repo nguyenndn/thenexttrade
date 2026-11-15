@@ -12,7 +12,12 @@ import {
 import { normalizeBrokerKey } from "@/lib/pro-access";
 import { rateLimit } from "@/lib/rate-limit";
 
-const legacyVerifyIpLimiter = rateLimit({
+const verifyIpLimiter = rateLimit({
+    interval: 60_000,
+    uniqueTokenPerInterval: 500,
+});
+
+const verifyKeyLimiter = rateLimit({
     interval: 60_000,
     uniqueTokenPerInterval: 500,
 });
@@ -51,6 +56,39 @@ async function handleVerifyLicense(
     request: NextRequest,
     payload: VerifyLicensePayload
 ) {
+    const headerKey =
+        request.headers.get("X-License-Key") ||
+        request.headers.get("X-API-Key") ||
+        request.headers.get("X-Sync-Key");
+    const rawKey = headerKey || payload.licenseKey || payload.apiKey || null;
+    const normalizedKey = normalizeSyncApiKey(rawKey);
+    const clientIp = getRequestClientIp(request);
+
+    // Enforce IP + licenseKey rate limits BEFORE running any Prisma DB queries
+    try {
+        await verifyIpLimiter.check(
+            normalizedKey ? 60 : 15,
+            normalizedKey
+                ? `ea-verify-ip:${clientIp}`
+                : `ea-verify-legacy:${clientIp}`
+        );
+        if (normalizedKey) {
+            await verifyKeyLimiter.check(60, `ea-verify-key:${normalizedKey}`);
+        }
+    } catch {
+        return NextResponse.json(
+            {
+                success: false,
+                valid: false,
+                state: "UNKNOWN",
+                code: "RATE_LIMIT_EXCEEDED",
+                message:
+                    "Too many license verification requests. Please try again shortly.",
+            },
+            { status: 429 }
+        );
+    }
+
     const rawAccount =
         payload.accountNumber !== undefined && payload.accountNumber !== null
             ? String(payload.accountNumber).trim()
@@ -69,19 +107,11 @@ async function handleVerifyLicense(
         );
     }
 
-    const headerKey =
-        request.headers.get("X-License-Key") ||
-        request.headers.get("X-API-Key") ||
-        request.headers.get("X-Sync-Key");
-    const rawKey = headerKey || payload.licenseKey || payload.apiKey || null;
-    const normalizedKey = normalizeSyncApiKey(rawKey);
-
-    const isDemo = isNonLiveTradingPayload({
+    const payloadIsDemo = isNonLiveTradingPayload({
         accountTradeMode: payload.accountTradeMode,
         server: payload.server,
         broker: payload.broker,
     });
-    const resolvedAccountType = isDemo ? "DEMO" : "REAL";
     const detectedBroker = detectBroker(
         payload.server || "",
         payload.broker || ""
@@ -92,13 +122,29 @@ async function handleVerifyLicense(
     const safeBalance = parseBrokerNumber(payload.balance) ?? undefined;
     const safeEquity = parseBrokerNumber(payload.equity) ?? undefined;
 
-    // 1. Look up EALicense rows for this accountNumber. Licenses are unique
-    // per (broker, accountNumber), so the broker must match too — the same
+    // 1. Look up EALicense rows for this accountNumber (and check known REAL accounts if payload claims DEMO).
+    // Licenses are unique per (broker, accountNumber), so the broker must match too — the same
     // login at another broker is a different account.
-    const allEaLicenses = await prisma.eALicense.findMany({
-        where: { accountNumber: rawAccount },
-        orderBy: { updatedAt: "desc" },
-    });
+    const [allEaLicenses, knownRealAccount] = await Promise.all([
+        prisma.eALicense.findMany({
+            where: { accountNumber: rawAccount },
+            orderBy: { updatedAt: "desc" },
+        }),
+        payloadIsDemo
+            ? prisma.tradingAccount.findFirst({
+                  where: {
+                      accountNumber: rawAccount,
+                      accountType: { equals: "REAL", mode: "insensitive" },
+                  },
+                  select: {
+                      id: true,
+                      broker: true,
+                      server: true,
+                      accountType: true,
+                  },
+              })
+            : Promise.resolve(null),
+    ]);
     const eaLicenses = requestedBrokerKey
         ? allEaLicenses.filter(
               (lic) =>
@@ -121,6 +167,21 @@ async function handleVerifyLicense(
                 lic.expiryDate &&
                 lic.expiryDate < now)
     );
+    const hasRejectedOrSuspendedLicense = allEaLicenses.some(
+        (lic) =>
+            lic.status === AccountStatus.REJECTED ||
+            lic.status === AccountStatus.SUSPENDED
+    );
+    const matchesKnownRealAccount = Boolean(
+        knownRealAccount && !isDemoTradingAccount(knownRealAccount)
+    );
+
+    // Block isDemo: true spoofing if accountNumber matches a known REAL account or REJECTED/SUSPENDED license
+    let isDemo =
+        payloadIsDemo &&
+        !matchesKnownRealAccount &&
+        !hasRejectedOrSuspendedLicense;
+    let resolvedAccountType: "DEMO" | "REAL" = isDemo ? "DEMO" : "REAL";
 
     // 2. If a License Key was provided, resolve the key owner & enforce 1-Account-1-License
     if (normalizedKey) {
@@ -145,6 +206,16 @@ async function handleVerifyLicense(
         });
 
         if (accountByKey) {
+            if (
+                isDemo &&
+                String(accountByKey.accountType || "").toUpperCase() ===
+                    "REAL" &&
+                !isDemoTradingAccount(accountByKey)
+            ) {
+                isDemo = false;
+                resolvedAccountType = "REAL";
+            }
+
             const accountBrokerKey = normalizeBrokerKey(
                 accountByKey.broker || detectedBroker || payload.broker
             );
@@ -182,9 +253,8 @@ async function handleVerifyLicense(
                         valid: false,
                         state: "REVOKED",
                         code: "ACCOUNT_MISMATCH",
-                        expectedAccount: accountByKey.accountNumber,
                         actualAccount: rawAccount,
-                        message: `This License Key belongs exclusively to trading account #${accountByKey.accountNumber} and cannot be used on #${rawAccount}. Please register account #${rawAccount} under our IB on Trading Systems to receive its own License Key.`,
+                        message: `This License Key belongs to a different trading account and cannot be used on #${rawAccount}. Please register account #${rawAccount} under our IB on Trading Systems to receive its own License Key.`,
                     },
                     { status: 403 }
                 );
@@ -448,24 +518,7 @@ async function handleVerifyLicense(
         );
     }
 
-    // 3. No License Key provided (Legacy account-number-only validation)
-    const clientIp = getRequestClientIp(request);
-    try {
-        await legacyVerifyIpLimiter.check(15, `ea-verify-legacy:${clientIp}`);
-    } catch {
-        return NextResponse.json(
-            {
-                success: false,
-                valid: false,
-                state: "UNKNOWN",
-                code: "RATE_LIMIT_EXCEEDED",
-                message:
-                    "Too many unauthenticated license verification requests. Please try again shortly.",
-            },
-            { status: 429 }
-        );
-    }
-
+    // 3. No License Key provided (Legacy account-number-only validation — rate-limited at top)
     if (isDemo) {
         return NextResponse.json({
             success: true,

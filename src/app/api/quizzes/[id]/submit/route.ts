@@ -129,10 +129,12 @@ export async function POST(
                     .filter((id): id is string => !!id);
 
                 if (quizIds.length > 0) {
-                    // Check if user has passed ALL quizzes in this level
-                    // Get best attempt per quiz
-                    const passedQuizzes = await prisma.userQuizAttempt.findMany(
-                        {
+                    const [
+                        passedQuizzes,
+                        totalPublishedLessonsInLevel,
+                        completedLessonsInLevel,
+                    ] = await Promise.all([
+                        prisma.userQuizAttempt.findMany({
                             where: {
                                 userId,
                                 quizId: { in: quizIds },
@@ -140,10 +142,33 @@ export async function POST(
                             },
                             distinct: ["quizId"],
                             select: { quizId: true, score: true },
-                        }
-                    );
+                        }),
+                        prisma.lesson.count({
+                            where: {
+                                status: "published",
+                                module: { levelId },
+                            },
+                        }),
+                        prisma.userProgress.count({
+                            where: {
+                                userId,
+                                isCompleted: true,
+                                lesson: {
+                                    status: "published",
+                                    module: { levelId },
+                                },
+                            },
+                        }),
+                    ]);
 
-                    if (passedQuizzes.length === quizIds.length) {
+                    const allLevelLessonsCompleted =
+                        totalPublishedLessonsInLevel > 0 &&
+                        completedLessonsInLevel >= totalPublishedLessonsInLevel;
+
+                    if (
+                        allLevelLessonsCompleted &&
+                        passedQuizzes.length === quizIds.length
+                    ) {
                         // All quizzes passed! Calculate average score
                         // Get best score per quiz
                         const bestScores = await Promise.all(

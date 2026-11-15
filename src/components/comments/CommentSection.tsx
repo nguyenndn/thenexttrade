@@ -75,12 +75,17 @@ export function CommentSection({
                 const data = await res.json();
                 setComments(data);
             }
-        } catch (error) {
-            console.error("Failed to fetch comments", error);
+        } catch {
+            // Silently ignore network error while preserving current comment list
         } finally {
             setIsLoading(false);
         }
     };
+
+    const totalCommentsCount = comments.reduce(
+        (sum, c) => sum + 1 + (c.replies?.length || 0),
+        0
+    );
 
     useEffect(() => {
         if (initialComments.length > 0) {
@@ -93,7 +98,7 @@ export function CommentSection({
     return (
         <section
             id="comments"
-            className="py-12 px-6 sm:px-10 bg-white/70 dark:bg-[#12141c]/80 backdrop-blur-xl border border-dashboard rounded-lg shadow-xl dark:shadow-[0_20px_50px_rgba(0,0,0,0.3)] relative overflow-hidden transition-all duration-300"
+            className="py-12 px-6 sm:px-10 bg-white/70 dark:bg-[#12141c]/80 backdrop-blur-xl border border-dashboard rounded-xl shadow-xl dark:shadow-[0_20px_50px_rgba(0,0,0,0.3)] relative overflow-hidden transition-all duration-300"
         >
             {/* Soft background glow */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-gold/5 dark:bg-gold/10 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none" />
@@ -108,13 +113,11 @@ export function CommentSection({
                         <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-gray-800 dark:text-white font-sans">
                             Discussion
                         </h2>
-                        <span className="inline-flex items-center justify-center px-3 py-0.5 text-xs font-extrabold rounded-full bg-gold/10 dark:bg-gold/20 text-gold border border-gold/20 dark:border-gold/30">
-                            {comments.length}
+                        <span className="inline-flex items-center justify-center px-3 py-0.5 text-xs font-extrabold tabular-nums rounded-full bg-gold/10 dark:bg-gold/20 text-gold border border-gold/20 dark:border-gold/30">
+                            {totalCommentsCount}
                         </span>
                     </div>
                 </div>
-
-
             </div>
 
             {/* Comments List */}
@@ -147,9 +150,10 @@ export function CommentSection({
                         onSuccess={fetchComments}
                         userName={currentUser.name}
                         userImage={currentUser.image}
+                        isAuthenticated
                     />
                 ) : (
-                    <div className="bg-white/80 dark:bg-[#12141c] border border-dashboard p-8 sm:p-10 rounded-lg shadow-sm text-center flex flex-col items-center max-w-md mx-auto">
+                    <div className="bg-white/80 dark:bg-[#12141c] border border-dashboard p-8 sm:p-10 rounded-xl shadow-sm text-center flex flex-col items-center max-w-md mx-auto">
                         <div className="w-12 h-12 rounded-full bg-gold/10 border border-gold/20 flex items-center justify-center mb-4 text-gold">
                             <MessageSquare size={20} className="stroke-[2.5]" />
                         </div>

@@ -5,10 +5,10 @@ import {
     DialogContent,
     DialogTitle,
     DialogDescription,
-} from "@/components/ui/Dialog"; // Assuming we have a base Dialog or use Radix defaults
+} from "@/components/ui/Dialog";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import { useState, useRef } from "react";
-import { TradeShareCard } from "./TradeShareCard";
+import { useState, useRef, useEffect } from "react";
+import { TradeShareCard, type ShareCardEntry } from "./TradeShareCard";
 import {
     Copy,
     Check,
@@ -17,43 +17,64 @@ import {
     Download,
     Loader2,
     ExternalLink,
+    Lock,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { toast } from "sonner";
+import {
+    updateShareSettings,
+    type ShareMode,
+} from "@/actions/journal-share-actions";
+import { useDebounce } from "use-debounce";
+
+interface ProfilePrivacySettings {
+    showMoney?: boolean;
+    showPercentMetrics?: boolean;
+}
 
 interface ShareTradeModalProps {
     open: boolean;
     onClose: () => void;
-    entry: any;
+    entry: ShareCardEntry | null;
+    onUpdated?: (updates: {
+        shareMode: ShareMode;
+        shareDescription: string;
+    }) => void;
 }
 
-import { updateShareSettings } from "@/actions/journal-share-actions";
-import { useEffect } from "react";
-import { useDebounce } from "use-debounce";
-
-// ... inside component ...
+function normalizeShareMode(raw?: string | null): ShareMode {
+    const lower = raw?.toLowerCase();
+    if (lower === "basic" || lower === "full") {
+        return lower;
+    }
+    return "private";
+}
 
 export function ShareTradeModal({
     open,
     onClose,
     entry,
+    onUpdated,
 }: ShareTradeModalProps) {
-    const [profileSettings, setProfileSettings] = useState<any>(null);
+    const [profileSettings, setProfileSettings] =
+        useState<ProfilePrivacySettings | null>(null);
 
     useEffect(() => {
         if (open) {
             fetch("/api/profile/settings")
-                .then((res) => res.json())
-                .then((data) => {
-                    setProfileSettings(data);
+                .then((res) => (res.ok ? res.json() : null))
+                .then((data: ProfilePrivacySettings | null) => {
+                    if (data) setProfileSettings(data);
                 })
-                .catch((err) => console.error("Error fetching settings:", err));
+                .catch(() => {
+                    // Fallback to safe defaults if profile settings request fails
+                });
         }
     }, [open]);
 
-    const [mode, setMode] = useState<"basic" | "full">(
-        (entry?.shareMode as "basic" | "full") || "full"
-    );
+    const initialMode = normalizeShareMode(entry?.shareMode);
+
+    const [mode, setMode] = useState<ShareMode>(initialMode);
     const [description, setDescription] = useState(
         entry?.shareDescription || ""
     );
@@ -68,10 +89,8 @@ export function ShareTradeModal({
     const [isSaving, setIsSaving] = useState(false);
     const [lastSaved, setLastSaved] = useState<Date | null>(null);
 
-    // Track what was last saved to detect real changes (fixes Full→Basic→Full not saving)
-    const savedModeRef = useRef<"basic" | "full">(
-        (entry?.shareMode as "basic" | "full") || "full"
-    );
+    // Track what was last saved to detect real changes
+    const savedModeRef = useRef<ShareMode>(initialMode);
     const savedDescRef = useRef<string>(entry?.shareDescription || "");
     const activeEntryIdRef = useRef<string | null>(entry?.id || null);
 
@@ -79,7 +98,7 @@ export function ShareTradeModal({
     useEffect(() => {
         if (!entry?.id) return;
         if (activeEntryIdRef.current !== entry.id) {
-            const nextMode = (entry.shareMode as "basic" | "full") || "full";
+            const nextMode = normalizeShareMode(entry.shareMode);
             const nextDesc = entry.shareDescription || "";
             activeEntryIdRef.current = entry.id;
             savedModeRef.current = nextMode;
@@ -122,12 +141,11 @@ export function ShareTradeModal({
             document.body.removeChild(link);
 
             toast.success("Trade image saved successfully!");
-        } catch (error: any) {
-            console.error("Screenshot error:", error);
+        } catch (error: unknown) {
             toast.error(
                 error instanceof Error
                     ? error.message
-                    : error?.message || "Failed to capture image"
+                    : "Failed to capture image"
             );
         } finally {
             setIsCapturing(false);
@@ -147,23 +165,38 @@ export function ShareTradeModal({
             updateShareSettings(entry.id, {
                 mode,
                 description: debouncedDescription,
-            }).then(() => {
-                savedModeRef.current = mode;
-                savedDescRef.current = debouncedDescription;
+            }).then((res) => {
                 setIsSaving(false);
-                setLastSaved(new Date());
+                if (res.success) {
+                    savedModeRef.current = mode;
+                    savedDescRef.current = debouncedDescription;
+                    setLastSaved(new Date());
+                    onUpdated?.({
+                        shareMode: mode,
+                        shareDescription: debouncedDescription,
+                    });
+                } else {
+                    toast.error(res.error || "Failed to update share settings");
+                }
             });
         }
-    }, [mode, debouncedDescription, entry?.id, open]);
+    }, [mode, debouncedDescription, entry?.id, open, onUpdated]);
 
     if (!entry) return null;
 
+    const isPrivate = mode === "private";
+    const previewVariant: "basic" | "full" = mode === "basic" ? "basic" : "full";
+
     const shareUrl =
-        typeof window !== "undefined"
+        typeof window !== "undefined" && entry.id
             ? `${window.location.origin}/share/${entry.id}`
             : "";
 
     const handleCopy = () => {
+        if (isPrivate) {
+            toast.error("Select Basic or Full mode to enable share link.");
+            return;
+        }
         navigator.clipboard.writeText(shareUrl);
         setCopied(true);
         toast.success("Link copied to clipboard!");
@@ -172,11 +205,7 @@ export function ShareTradeModal({
 
     return (
         <Dialog open={open} onOpenChange={onClose}>
-            <DialogContent className="max-w-4xl rounded-2xl bg-white dark:bg-[#0D111C] border border-dashboard p-0 overflow-hidden">
-                {/* 
-        A11y Requirement: Radix DialogContent requires a DialogTitle. 
-        Since we build our own visual header below, we hide the official one for screen readers.
-        */}
+            <DialogContent className="max-w-4xl rounded-xl bg-white dark:bg-[#0D111C] border border-dashboard p-0 overflow-hidden">
                 <VisuallyHidden>
                     <DialogTitle>Share Trade</DialogTitle>
                     <DialogDescription>
@@ -189,22 +218,21 @@ export function ShareTradeModal({
                     <h2 className="text-lg font-bold text-gray-700 dark:text-white">
                         Share Your Trade
                     </h2>
-                    {/* Close button handled by DialogContent usually, but we can have custom header actions */}
                 </div>
 
                 <div className="p-6 space-y-6 max-h-[85vh] overflow-y-auto">
                     {/* Controls Row */}
-                    <div className="flex items-center justify-between mb-4">
+                    <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
                         <span className="text-sm font-bold text-gray-600 uppercase tracking-wider">
-                            Preview
+                            Visibility &amp; Preview
                         </span>
-                        <div className="flex items-center gap-3">
+                        <div className="flex flex-wrap items-center gap-3">
                             <Button
                                 variant="outline"
                                 size="smd"
                                 onClick={handleDownload}
                                 disabled={isCapturing}
-                                className="font-bold text-gray-700 dark:text-gray-300 border-dashboard hover:bg-gray-100 dark:hover:bg-white/5 transition-all flex items-center gap-2"
+                                className="font-bold text-gray-700 dark:text-gray-300 border-dashboard hover:bg-gray-100 dark:hover:bg-white/5 transition-all flex items-center gap-2 rounded-lg"
                             >
                                 {isCapturing ? (
                                     <Loader2
@@ -216,18 +244,26 @@ export function ShareTradeModal({
                                 )}
                                 Download
                             </Button>
-                            <div className="flex items-center justify-center gap-1.5 bg-gray-50/80 dark:bg-[#151925] border border-dashboard p-1.5 rounded-lg w-[180px]">
+                            <div className="flex items-center justify-center gap-1 bg-gray-50/80 dark:bg-[#151925] border border-dashboard p-1 rounded-lg">
+                                <Button
+                                    variant="outline"
+                                    onClick={() => setMode("private")}
+                                    className={`rounded-lg font-bold transition-all h-8 px-3 text-xs flex items-center gap-1.5 ${mode === "private" ? "bg-slate-800 dark:bg-slate-700 !text-white shadow-sm border-transparent hover:bg-slate-900 hover:!text-white" : "text-gray-600 dark:text-gray-300 hover:text-gray-800 border-transparent dark:hover:text-white hover:bg-transparent"}`}
+                                >
+                                    <Lock size={12} />
+                                    Private (Link Disabled)
+                                </Button>
                                 <Button
                                     variant="outline"
                                     onClick={() => setMode("basic")}
-                                    className={`flex-1 rounded-lg font-bold transition-all h-8 !px-0 ${mode === "basic" ? "bg-gold !text-white shadow-sm border-transparent hover:bg-amber-600 hover:!text-white" : "text-gray-600 hover:text-gray-700 border-transparent dark:hover:text-white hover:bg-transparent"}`}
+                                    className={`rounded-lg font-bold transition-all h-8 px-3 text-xs ${mode === "basic" ? "bg-gold !text-white shadow-sm border-transparent hover:bg-amber-600 hover:!text-white" : "text-gray-600 dark:text-gray-300 hover:text-gray-800 border-transparent dark:hover:text-white hover:bg-transparent"}`}
                                 >
                                     Basic
                                 </Button>
                                 <Button
                                     variant="outline"
                                     onClick={() => setMode("full")}
-                                    className={`flex-1 rounded-lg font-bold transition-all h-8 !px-0 ${mode === "full" ? "bg-gold !text-white shadow-sm border-transparent hover:bg-amber-600 hover:!text-white" : "text-gray-600 hover:text-gray-700 border-transparent dark:hover:text-white hover:bg-transparent"}`}
+                                    className={`rounded-lg font-bold transition-all h-8 px-3 text-xs ${mode === "full" ? "bg-gold !text-white shadow-sm border-transparent hover:bg-amber-600 hover:!text-white" : "text-gray-600 dark:text-gray-300 hover:text-gray-800 border-transparent dark:hover:text-white hover:bg-transparent"}`}
                                 >
                                     Full
                                 </Button>
@@ -244,10 +280,13 @@ export function ShareTradeModal({
                             entry={{
                                 ...entry,
                                 showMoney: profileSettings
-                                    ? profileSettings.showMoney
+                                    ? Boolean(profileSettings.showMoney)
                                     : false,
+                                showPercentMetrics: profileSettings
+                                    ? profileSettings.showPercentMetrics !== false
+                                    : true,
                             }}
-                            variant={mode}
+                            variant={previewVariant}
                             className="max-w-none shadow-xl"
                         />
                     </div>
@@ -307,52 +346,78 @@ export function ShareTradeModal({
                     </div>
 
                     {/* Share Link Section */}
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                         <label className="text-sm font-bold text-gray-700 dark:text-gray-300">
                             Share Link
                         </label>
-                        <div className="relative group">
-                            <input
-                                readOnly
-                                aria-label="Share link URL"
-                                value={shareUrl}
-                                className="w-full bg-gray-50/80 dark:bg-[#151925] border border-dashboard rounded-lg pl-4 pr-24 py-3 text-sm text-gray-600 font-mono tabular-nums focus:outline-none focus:border-gold transition-colors"
-                            />
-                            <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1.5">
-                                <Button
-                                    onClick={handleCopy}
-                                    variant="outline"
-                                    aria-label="Copy link"
-                                    className="h-9 w-9 p-0 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-600 dark:text-gray-300"
-                                    title="Copy link"
-                                >
-                                    {copied ? (
-                                        <Check
-                                            size={16}
-                                            className="text-green-500"
-                                        />
-                                    ) : (
-                                        <Copy size={16} />
-                                    )}
-                                </Button>
-                                <Button
-                                    onClick={() =>
-                                        window.open(shareUrl, "_blank")
-                                    }
-                                    variant="outline"
-                                    aria-label="Preview share link"
-                                    className="h-9 w-9 p-0 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-600 dark:text-gray-300"
-                                    title="Preview"
-                                >
-                                    <ExternalLink size={16} />
-                                </Button>
+                        {isPrivate ? (
+                            <div className="flex items-center justify-between gap-3 rounded-xl border border-dashboard bg-gray-50/80 dark:bg-[#151925] px-4 py-3 text-sm text-gray-600 dark:text-gray-300">
+                                <div className="flex items-center gap-2">
+                                    <Lock
+                                        size={16}
+                                        className="text-gray-500 shrink-0"
+                                    />
+                                    <span>
+                                        This trade is currently{" "}
+                                        <strong className="font-semibold text-gray-800 dark:text-white">
+                                            Private
+                                        </strong>
+                                        . Select{" "}
+                                        <strong className="font-semibold text-gray-800 dark:text-white">
+                                            Basic
+                                        </strong>{" "}
+                                        or{" "}
+                                        <strong className="font-semibold text-gray-800 dark:text-white">
+                                            Full
+                                        </strong>{" "}
+                                        above to enable a public share link.
+                                    </span>
+                                </div>
                             </div>
-                        </div>
+                        ) : (
+                            <div className="relative group">
+                                <input
+                                    readOnly
+                                    aria-label="Share link URL"
+                                    value={shareUrl}
+                                    className="w-full bg-gray-50/80 dark:bg-[#151925] border border-dashboard rounded-lg pl-4 pr-24 py-3 text-sm text-gray-600 dark:text-gray-300 font-mono tabular-nums focus:outline-none focus:border-gold transition-colors"
+                                />
+                                <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1.5">
+                                    <Button
+                                        onClick={handleCopy}
+                                        variant="outline"
+                                        aria-label="Copy link"
+                                        className="h-9 w-9 p-0 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-600 dark:text-gray-300"
+                                        title="Copy link"
+                                    >
+                                        {copied ? (
+                                            <Check
+                                                size={16}
+                                                className="text-green-500"
+                                            />
+                                        ) : (
+                                            <Copy size={16} />
+                                        )}
+                                    </Button>
+                                    <Button
+                                        onClick={() =>
+                                            window.open(shareUrl, "_blank")
+                                        }
+                                        variant="outline"
+                                        aria-label="Preview share link"
+                                        className="h-9 w-9 p-0 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-600 dark:text-gray-300"
+                                        title="Preview"
+                                    >
+                                        <ExternalLink size={16} />
+                                    </Button>
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                     {/* Footer Actions */}
                     <div className="flex items-center justify-between pt-4 border-t border-dashboard">
-                        <div className="text-sm text-gray-600 italic">
+                        <div className="text-sm text-gray-600 dark:text-gray-400 italic">
                             {isSaving
                                 ? "Saving changes..."
                                 : lastSaved
@@ -362,7 +427,7 @@ export function ShareTradeModal({
                         <Button
                             onClick={onClose}
                             size="smd"
-                            className="font-bold"
+                            className="font-bold rounded-lg"
                         >
                             Done
                         </Button>

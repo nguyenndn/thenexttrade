@@ -19,6 +19,7 @@ export interface ParsedTrade {
     // Status
     status: "OPEN" | "CLOSED";
     result?: "WIN" | "LOSS" | "BREAK_EVEN" | "BE_PLUS";
+    shareMode?: "private" | "basic" | "full";
 }
 
 export interface ParseResult {

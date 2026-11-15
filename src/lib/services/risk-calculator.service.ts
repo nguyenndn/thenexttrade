@@ -1,9 +1,11 @@
+import { ACCOUNT_CURRENCY_USD_RATES } from "@/lib/calculators";
+
 export interface RiskCalculationInput {
     accountBalance: number;
     riskPercentage: number;
     stopLossPips: number;
     currencyPair: string;
-    openPrice?: number; // Optional, helpful for more accurate pip value on cross pairs
+    openPrice?: number;
 }
 
 export interface RiskCalculationResult {
@@ -26,59 +28,93 @@ export class RiskCalculatorService {
             openPrice,
         } = input;
 
-        // 1. Calculate Risk Amount ($)
+        if (
+            !Number.isFinite(accountBalance) ||
+            accountBalance <= 0 ||
+            !Number.isFinite(riskPercentage) ||
+            riskPercentage <= 0 ||
+            !Number.isFinite(stopLossPips) ||
+            stopLossPips <= 0
+        ) {
+            return {
+                riskAmount: 0,
+                positionSize: 0,
+                pipValue: 0,
+                units: 0,
+            };
+        }
+
         const riskAmount = accountBalance * (riskPercentage / 100);
+        const cleanPair = currencyPair
+            .toUpperCase()
+            .replace(/[^A-Z0-9]/g, "");
 
-        // 2. Determine Method & Pip Value
-        // Note: For a real production app, we need live exchange rates to calculate Pip Value accurately for all pairs.
-        // Here we use standard approximations for MVP.
+        let contractSize = 100000;
+        let pipValuePerStandardLot = 10;
 
-        let pipValuePerStandardLot = 10; // Default for XXX/USD pairs (EURUSD, GBPUSD, AUDUSD, etc.)
-
-        const pairUpper = currencyPair.toUpperCase();
-
-        if (pairUpper.endsWith("USD")) {
-            // EURUSD, GBPUSD, AUDUSD, NZDUSD
-            pipValuePerStandardLot = 10;
-        } else if (pairUpper.includes("JPY")) {
-            // USDJPY, EURJPY, GBPJPY
-            // For JPY pairs, pip is 0.01.
-            // Pip Value = (0.01 / Exchange Rate) * 100,000
-            // Without live rate, we approximate. USDJPY ~ 140-150.
-            // If rate is 150, Pip Value = (0.01/150)*100000 = $6.66
-            // If openPrice is provided, use it. Else default to approx ~145
-            const rate = openPrice || 145;
-            pipValuePerStandardLot = (0.01 / rate) * 100000;
-        } else if (pairUpper.startsWith("USD") && !pairUpper.includes("JPY")) {
-            // USDCAD, USDCHF
-            // Pip Value = 10 / Exchange Rate
-            // If openPrice is provided, use it. Else default to approx 1.35 (CAD) or 0.90 (CHF)
-            const rate = openPrice || (pairUpper.includes("CAD") ? 1.35 : 0.9);
-            pipValuePerStandardLot = 10 / rate;
+        if (cleanPair.startsWith("XAU") || cleanPair.includes("GOLD")) {
+            // Gold: 1 standard lot = 100 troy oz; 1 pip (0.01) = $1.00 per standard lot
+            contractSize = 100;
+            pipValuePerStandardLot = 1;
+        } else if (cleanPair.startsWith("XAG") || cleanPair.includes("SILVER")) {
+            // Silver: 1 standard lot = 5,000 oz; 1 pip (0.01) = $50.00 per standard lot
+            contractSize = 5000;
+            pipValuePerStandardLot = 50;
+        } else if (cleanPair.startsWith("BTC") || cleanPair.startsWith("ETH")) {
+            // Crypto CFD: 1 standard lot = 1 coin; 1 point ($1.00 move) = $1.00
+            contractSize = 1;
+            pipValuePerStandardLot = 1;
+        } else if (
+            cleanPair === "US30" ||
+            cleanPair === "US100" ||
+            cleanPair === "US500" ||
+            cleanPair.includes("DJI") ||
+            cleanPair.includes("NAS") ||
+            cleanPair.includes("SPX")
+        ) {
+            contractSize = 1;
+            pipValuePerStandardLot = 1;
         } else {
-            // Cross pairs (EURGBP, etc.) - Complex without base currency conversion.
-            // Fallback to standard $10 for safety/estimation in MVP or use user provided if we had a field.
-            // For MVP, keep $10 as rough estimate or slightly lower.
-            pipValuePerStandardLot = 10;
+            const base = cleanPair.slice(0, 3);
+            const quote = cleanPair.slice(3, 6);
+
+            if (quote === "USD") {
+                // EURUSD, GBPUSD, AUDUSD, NZDUSD: 0.0001 * 100,000 = $10
+                pipValuePerStandardLot = 10;
+            } else if (base === "USD" && quote === "JPY") {
+                // USDJPY: 1 pip (0.01) = 1,000 JPY -> divide by USDJPY rate
+                const usdJpyRate =
+                    openPrice && openPrice > 0 ? openPrice : 155.0;
+                pipValuePerStandardLot = 1000 / usdJpyRate;
+            } else if (quote === "JPY") {
+                // Cross-JPY pairs (EURJPY, GBPJPY, AUDJPY, etc.):
+                // 1 pip (0.01) on 100,000 base units = 1,000 JPY -> convert JPY to USD via USDJPY rate (~155)
+                const jpyUsdRate = ACCOUNT_CURRENCY_USD_RATES.JPY || 1 / 155.0;
+                pipValuePerStandardLot = 1000 * jpyUsdRate;
+            } else if (base === "USD") {
+                // USDCAD, USDCHF: 10 quote units / USDXXX rate
+                const fallbackRate =
+                    quote === "CAD" ? 1.36 : quote === "CHF" ? 0.885 : 1.0;
+                const rate =
+                    openPrice && openPrice > 0 ? openPrice : fallbackRate;
+                pipValuePerStandardLot = 10 / rate;
+            } else {
+                // Non-JPY cross pairs (EURGBP, AUDCAD, GBPCHF, etc.):
+                // 1 pip (0.0001) on 100,000 units = 10 quote currency units -> convert quote currency to USD
+                const quoteUsdRate = ACCOUNT_CURRENCY_USD_RATES[quote] ?? 1;
+                pipValuePerStandardLot = 10 * quoteUsdRate;
+            }
         }
 
-        // 3. Calculate Position Size (Lots)
-        // Formula: Lots = RiskAmount / (StopLoss * PipValue)
-        let positionSize = 0;
-        if (stopLossPips > 0 && pipValuePerStandardLot > 0) {
-            positionSize = riskAmount / (stopLossPips * pipValuePerStandardLot);
-        }
-
-        // Rounding
-        // Standard lots usually 2 decimal places (0.01)
+        const positionSize = riskAmount / (stopLossPips * pipValuePerStandardLot);
         const roundedLots = Math.floor(positionSize * 100) / 100;
-        const units = Math.floor(positionSize * 100000);
+        const units = Math.floor(positionSize * contractSize);
 
         return {
             riskAmount: parseFloat(riskAmount.toFixed(2)),
             positionSize: roundedLots,
             pipValue: parseFloat(pipValuePerStandardLot.toFixed(2)),
-            units: units,
+            units,
         };
     }
 }

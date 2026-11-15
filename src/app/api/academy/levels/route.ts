@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/api-auth";
+import { getAuthUser } from "@/lib/auth-cache";
 import { z } from "zod";
 
 const levelSchema = z.object({
@@ -11,6 +12,16 @@ const levelSchema = z.object({
 
 export async function GET() {
     try {
+        const user = await getAuthUser();
+        let isAdmin = user?.profile?.role === "ADMIN";
+        if (user && !isAdmin && !user.profile) {
+            const profile = await prisma.profile.findUnique({
+                where: { userId: user.id },
+                select: { role: true },
+            });
+            isAdmin = profile?.role === "ADMIN";
+        }
+
         const levels = await prisma.level.findMany({
             orderBy: { order: "asc" },
             include: {
@@ -18,6 +29,7 @@ export async function GET() {
                     orderBy: { order: "asc" },
                     include: {
                         lessons: {
+                            ...(isAdmin ? {} : { where: { status: "published" } }),
                             orderBy: { order: "asc" },
                             select: {
                                 id: true,
@@ -31,7 +43,7 @@ export async function GET() {
             },
         });
         return NextResponse.json(levels);
-    } catch (error) {
+    } catch {
         return NextResponse.json(
             { error: "Failed to fetch levels" },
             { status: 500 }

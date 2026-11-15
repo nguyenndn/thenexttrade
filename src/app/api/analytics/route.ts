@@ -80,31 +80,78 @@ export async function GET(request: NextRequest) {
             whereClause.accountId = normalizedAccountId;
         }
 
-        // 4. Fetch all closed trades in date range
-        const trades = await prisma.journalEntry.findMany({
-            where: whereClause,
-            orderBy: { exitDate: "asc" }, // Order by exitDate
-            select: {
-                id: true,
-                symbol: true,
-                type: true,
-                pnl: true,
-                commission: true,
-                swap: true,
-                entryDate: true,
-                exitDate: true,
-                result: true,
-                lotSize: true,
-                entryPrice: true,
-                exitPrice: true,
-            },
-        });
+        // 4. Fetch closed trades in date range + any post-endDate closed trades for historical equity backtracking
+        const [trades, postEndTrades] = await Promise.all([
+            prisma.journalEntry.findMany({
+                where: whereClause,
+                orderBy: { exitDate: "asc" },
+                select: {
+                    id: true,
+                    symbol: true,
+                    type: true,
+                    pnl: true,
+                    commission: true,
+                    swap: true,
+                    entryDate: true,
+                    exitDate: true,
+                    result: true,
+                    lotSize: true,
+                    entryPrice: true,
+                    exitPrice: true,
+                    account: {
+                        select: {
+                            currency: true,
+                            server: true,
+                        },
+                    },
+                },
+            }),
+            endDate < now
+                ? prisma.journalEntry.findMany({
+                      where: {
+                          userId: user.id,
+                          status: "CLOSED",
+                          ...(normalizedAccountId
+                              ? { accountId: normalizedAccountId }
+                              : {}),
+                          exitDate: { gt: endDate },
+                      },
+                      select: {
+                          pnl: true,
+                          commission: true,
+                          swap: true,
+                          account: {
+                              select: {
+                                  currency: true,
+                                  server: true,
+                              },
+                          },
+                      },
+                  })
+                : Promise.resolve([]),
+        ]);
+
+        const isMultiAccount = !normalizedAccountId;
+        const scaleAmount = (
+            val: number,
+            acc?: { currency?: string | null; server?: string | null } | null
+        ) =>
+            isMultiAccount
+                ? convertToUsdEquivalent(val, acc?.currency, acc?.server)
+                : val;
 
         const getNetPnl = (t: {
             pnl: number | null;
             commission: number | null;
             swap: number | null;
-        }) => (t.pnl || 0) + (t.commission || 0) + (t.swap || 0);
+            account?: {
+                currency?: string | null;
+                server?: string | null;
+            } | null;
+        }) => {
+            const rawNet = (t.pnl || 0) + (t.commission || 0) + (t.swap || 0);
+            return scaleAmount(rawNet, t.account);
+        };
 
         // 5. Calculate summary
         const totalTrades = trades.length;
@@ -177,42 +224,39 @@ export async function GET(request: NextRequest) {
             }
         }
 
-        // 5.5 Compute current balance for accurate equity curve (normalize USC/mixed in multi-account mode)
+        // 5.5 Compute current balance for accurate equity curve (normalize USC/FX to USD in multi-account mode)
         const accounts = normalizedAccountId
             ? userAccounts.filter((acc) => acc.id === normalizedAccountId)
             : userAccounts;
-        const uniqueCurrencies = new Set(
-            accounts.map((acc) =>
-                normalizeCurrencyCode(acc.currency, acc.server)
-            )
+        const displayCurrency = isMultiAccount
+            ? "USD"
+            : normalizeCurrencyCode(
+                  accounts[0]?.currency,
+                  accounts[0]?.server
+              );
+        const currentBalance = isMultiAccount
+            ? accounts.reduce(
+                  (sum, acc) =>
+                      sum +
+                      convertToUsdEquivalent(
+                          acc.balance || 0,
+                          acc.currency,
+                          acc.server
+                      ),
+                  0
+              )
+            : accounts.reduce((sum, acc) => sum + (acc.balance || 0), 0);
+
+        const postEndPnL = postEndTrades.reduce(
+            (sum, t) => sum + getNetPnl(t),
+            0
         );
-        const hasMixedCurrencies = uniqueCurrencies.size > 1;
-        const displayCurrency =
-            !normalizedAccountId && hasMixedCurrencies
-                ? "USD"
-                : normalizeCurrencyCode(
-                      accounts[0]?.currency,
-                      accounts[0]?.server
-                  );
-        const currentBalance =
-            !normalizedAccountId &&
-            (hasMixedCurrencies || displayCurrency === "USD")
-                ? accounts.reduce(
-                      (sum, acc) =>
-                          sum +
-                          convertToUsdEquivalent(
-                              acc.balance || 0,
-                              acc.currency,
-                              acc.server
-                          ),
-                      0
-                  )
-                : accounts.reduce((sum, acc) => sum + (acc.balance || 0), 0);
+        const periodEndBalance = currentBalance - postEndPnL;
 
         // 6. Calculate equity curve
-        // Backtrack from current balance to get starting balance of the period
+        // Backtrack from period-end balance to get starting balance of the period
         const totalPeriodPnL = trades.reduce((sum, t) => sum + getNetPnl(t), 0);
-        let runningBalance = currentBalance - totalPeriodPnL;
+        let runningBalance = periodEndBalance - totalPeriodPnL;
 
         const equityCurve: Array<{
             date: string;
@@ -271,14 +315,14 @@ export async function GET(request: NextRequest) {
 
                 return {
                     date,
-                    pnl,
+                    pnl: Number(pnl.toFixed(2)),
                     growth: dailyGrowthMap.get(date) || 0,
                     tradeCount: tradesOnDate.length,
                     trades: tradesOnDate.map((t) => ({
                         id: t.id,
                         symbol: t.symbol,
                         type: t.type,
-                        pnl: t.pnl || 0,
+                        pnl: Number(getNetPnl(t).toFixed(2)),
                         result: t.result,
                     })),
                 };
@@ -352,16 +396,21 @@ export async function GET(request: NextRequest) {
                 symbol: t.symbol,
                 type: t.type,
                 pnl: Number(getNetPnl(t).toFixed(2)),
-                grossProfit: Number((t.pnl || 0).toFixed(2)),
-                commission: Number((t.commission || 0).toFixed(2)),
-                swap: Number((t.swap || 0).toFixed(2)),
-                entryDate: t.entryDate.toISOString(), // Keep original timestamp
+                grossProfit: Number(
+                    scaleAmount(t.pnl || 0, t.account).toFixed(2)
+                ),
+                commission: Number(
+                    scaleAmount(t.commission || 0, t.account).toFixed(2)
+                ),
+                swap: Number(scaleAmount(t.swap || 0, t.account).toFixed(2)),
+                entryDate: t.entryDate.toISOString(),
                 exitDate: t.exitDate?.toISOString(),
                 result: t.result || "BREAK_EVEN",
             }));
 
         // 11. Return response
         return NextResponse.json({
+            currency: displayCurrency,
             summary: {
                 totalTrades,
                 winCount,

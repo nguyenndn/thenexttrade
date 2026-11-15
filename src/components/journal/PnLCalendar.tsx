@@ -101,39 +101,39 @@ export function PnLCalendar({
     };
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-dashboard shadow-sm hover:shadow-md transition-shadow duration-200 group mt-6">
-            <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-2.5">
-                    <div className="p-2 bg-primary/10 rounded-lg text-primary">
+        <div className="bg-white dark:bg-[#1E2028] p-3 sm:p-6 rounded-xl border border-dashboard shadow-sm hover:shadow-md transition-shadow duration-200 group mt-6 min-w-0">
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-4 sm:mb-6">
+                <div className="flex items-center gap-2.5 min-w-0">
+                    <div className="p-2 bg-primary/10 rounded-lg text-primary shrink-0">
                         <CalendarIcon size={18} />
                     </div>
-                    <div>
-                        <h3 className="font-bold text-gray-700 dark:text-white text-sm">
+                    <div className="min-w-0">
+                        <h3 className="font-bold text-gray-700 dark:text-white text-sm truncate">
                             P&L Calendar
                         </h3>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-gray-500 truncate">
                             Daily session notes & overview
                         </p>
                     </div>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 sm:gap-3">
                     <Button
                         variant="outline"
                         size="icon"
                         onClick={handlePrevMonth}
-                        className="rounded-lg border-0 bg-gray-50 dark:bg-white/5"
+                        className="h-8 w-8 sm:h-9 sm:w-9 rounded-lg border-0 bg-gray-50 dark:bg-white/5"
                         aria-label="Previous month"
                     >
                         <ChevronLeft size={18} />
                     </Button>
-                    <span className="text-[15px] font-medium text-gray-700 dark:text-gray-300 min-w-[120px] text-center">
+                    <span className="text-xs sm:text-[15px] font-semibold text-gray-700 dark:text-gray-300 min-w-[100px] sm:min-w-[120px] text-center">
                         {format(currentMonth, "MMMM yyyy")}
                     </span>
                     <Button
                         variant="outline"
                         size="icon"
                         onClick={handleNextMonth}
-                        className="rounded-lg border-0 bg-gray-50 dark:bg-white/5"
+                        className="h-8 w-8 sm:h-9 sm:w-9 rounded-lg border-0 bg-gray-50 dark:bg-white/5"
                         aria-label="Next month"
                     >
                         <ChevronRight size={18} />
@@ -141,8 +141,8 @@ export function PnLCalendar({
                 </div>
             </div>
 
-            <div className="w-full overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-800">
-                <div className="min-w-[700px] relative">
+            <div className="w-full min-w-0 pb-2">
+                <div className="min-w-0 relative">
                     {isLoading && (
                         <div className="absolute inset-0 bg-white/50 dark:bg-[#1E2028]/50 flex items-center justify-center z-20 backdrop-blur-sm rounded-lg">
                             <span className="font-bold text-gray-500 flex items-center gap-2">
@@ -152,12 +152,12 @@ export function PnLCalendar({
                         </div>
                     )}
 
-                    <div className="grid grid-cols-7 gap-2 mb-2">
+                    <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-1.5 sm:mb-2">
                         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(
                             (day) => (
                                 <div
                                     key={day}
-                                    className="text-center text-[10px] font-bold text-gray-500 uppercase tracking-wider"
+                                    className="text-center text-[9px] sm:text-[10px] font-bold text-gray-500 uppercase tracking-wider truncate"
                                 >
                                     {day}
                                 </div>
@@ -165,7 +165,7 @@ export function PnLCalendar({
                         )}
                     </div>
 
-                    <div className="grid grid-cols-7 gap-2">
+                    <div className="grid grid-cols-7 gap-1 sm:gap-2">
                         {daysInMonth.map((date) => {
                             const dateStr = format(date, "yyyy-MM-dd");
                             const dayData = data.get(dateStr);
@@ -195,14 +195,14 @@ export function PnLCalendar({
                                 <div
                                     key={date.toISOString()}
                                     className={cn(
-                                        "rounded-lg p-3 min-h-[90px] relative group transition-all duration-200 flex flex-col",
+                                        "rounded-lg p-1.5 sm:p-3 min-h-[62px] sm:min-h-[90px] min-w-0 overflow-hidden relative group transition-all duration-200 flex flex-col",
                                         bgClass
                                     )}
                                 >
-                                    <div className="flex items-start justify-between mb-2">
+                                    <div className="flex items-start justify-between mb-1 sm:mb-2">
                                         <span
                                             className={cn(
-                                                "text-[11px] font-mono tabular-nums font-bold w-5 h-5 flex items-center justify-center rounded-lg",
+                                                "text-[10px] sm:text-[11px] font-mono tabular-nums font-bold w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center rounded-md sm:rounded-lg",
                                                 isToday(date)
                                                     ? "bg-primary text-white"
                                                     : ""
@@ -213,22 +213,22 @@ export function PnLCalendar({
 
                                         {dayData?.note && (
                                             <div
-                                                className="text-amber-600 dark:text-gold"
+                                                className="text-amber-600 dark:text-gold shrink-0"
                                                 title="Has Note"
                                             >
-                                                <FileText className="w-3.5 h-3.5" />
+                                                <FileText className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                                             </div>
                                         )}
                                     </div>
 
                                     {dayData && dayData.tradesCount > 0 ? (
-                                        <div className="flex flex-col gap-1 mt-auto">
-                                            <div className="font-semibold text-sm">
+                                        <div className="flex flex-col gap-0.5 sm:gap-1 mt-auto min-w-0">
+                                            <div className="font-semibold text-[10px] sm:text-sm truncate">
                                                 <PnLDisplay
                                                     value={dayData.pnl}
                                                 />
                                             </div>
-                                            <div className="text-[10px] font-mono tabular-nums text-gray-500 dark:text-gray-400 flex items-center gap-1.5 font-medium">
+                                            <div className="hidden sm:flex text-[10px] font-mono tabular-nums text-gray-500 dark:text-gray-400 items-center gap-1.5 font-medium">
                                                 <span className="text-green-600 dark:text-green-400">
                                                     {dayData.wins}W
                                                 </span>
@@ -241,8 +241,8 @@ export function PnLCalendar({
                                                     </span>
                                                 )}
                                             </div>
-                                            <div className="text-[10px] font-mono tabular-nums text-gray-400">
-                                                {dayData.tradesCount} trades
+                                            <div className="text-[9px] sm:text-[10px] font-mono tabular-nums text-gray-400 truncate">
+                                                {dayData.tradesCount}t
                                             </div>
                                         </div>
                                     ) : null}

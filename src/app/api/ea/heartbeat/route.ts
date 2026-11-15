@@ -119,8 +119,8 @@ export async function POST(request: NextRequest) {
                 return NextResponse.json(
                     {
                         error: "Account mismatch",
-                        message: `This API key is linked to account #${account.accountNumber}, but EA is running on #${accountNumber}. Please use correct API key.`,
-                        expectedAccount: account.accountNumber,
+                        code: "ACCOUNT_MISMATCH",
+                        message: `This API key is linked to a different trading account, not #${accountNumber}. Please use the matching API key.`,
                         actualAccount: String(accountNumber),
                     },
                     { status: 403 }

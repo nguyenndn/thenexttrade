@@ -178,8 +178,8 @@ export function LiveMarketRates() {
                 setRates(map);
                 setLastUpdate(new Date());
             }
-        } catch (err) {
-            console.error("Failed to fetch rates:", err);
+        } catch {
+            // Keep last available rates on transient fetch failure
         } finally {
             setLoading(false);
         }

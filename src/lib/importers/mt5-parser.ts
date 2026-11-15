@@ -1,5 +1,5 @@
 import { ParsedTrade, ParseResult, TradeParser, ParseError } from "./types";
-import { parse as parseHTML } from "node-html-parser";
+import { parse as parseHTML, type HTMLElement } from "node-html-parser";
 
 export class MT5Parser implements TradeParser {
     name = "MetaTrader 5";
@@ -26,7 +26,7 @@ export class MT5Parser implements TradeParser {
             errors.push({
                 row: 0,
                 message:
-                    "This file looks like a CSV/plain-text export. Please export your MT5 History as HTML (History tab → Report → Open as HTML / Save as Report).",
+                    "This file looks like a CSV/plain-text export. Please export your MT5 History as HTML (History tab -> Report -> Open as HTML / Save as Report).",
             });
             return { trades, errors, metadata: { source: "MT5" } };
         }
@@ -36,12 +36,12 @@ export class MT5Parser implements TradeParser {
 
             // Find deals/positions table
             const tables = root.querySelectorAll("table");
-            let dealsTable: any = null;
+            let dealsTable: HTMLElement | null = null;
 
             for (const table of tables) {
                 const headers = table.querySelectorAll("th, td");
                 const headerText = headers
-                    .map((h: any) => h.text.toLowerCase())
+                    .map((h) => h.text.toLowerCase())
                     .join(" ");
 
                 if (
@@ -64,7 +64,7 @@ export class MT5Parser implements TradeParser {
             for (let i = 0; i < rows.length; i++) {
                 const row = rows[i];
                 const cells = row.querySelectorAll("td, th");
-                const cellValues = cells.map((c: any) => c.text.trim());
+                const cellValues = cells.map((c) => c.text.trim());
 
                 // Header row
                 if (i === 0 || cellValues[0]?.toLowerCase() === "ticket") {
@@ -83,12 +83,12 @@ export class MT5Parser implements TradeParser {
                 }
 
                 try {
-                    const trade = this.parseRow(headerRow, cellValues, i);
+                    const trade = this.parseRow(headerRow, cellValues);
                     if (trade) {
                         trades.push(trade);
                     }
-                } catch (err: any) {
-                    // Silent skip for non-trade rows, or log
+                } catch {
+                    // Silent skip for non-trade rows
                 }
             }
 
@@ -105,16 +105,16 @@ export class MT5Parser implements TradeParser {
                     broker: brokerMatch?.[1]?.trim(),
                 },
             };
-        } catch (err: any) {
-            errors.push({ row: 0, message: `Parse failed: ${err.message}` });
+        } catch (err: unknown) {
+            const message = err instanceof Error ? err.message : "Unknown error";
+            errors.push({ row: 0, message: `Parse failed: ${message}` });
             return { trades, errors, metadata: { source: "MT5" } };
         }
     }
 
     private parseRow(
         headers: string[],
-        values: string[],
-        rowIndex: number
+        values: string[]
     ): ParsedTrade | null {
         // Resolve all matching column indices, prioritizing exact header match
         // and falling back to a loose "includes" match (e.g. "Open Time").
@@ -204,6 +204,7 @@ export class MT5Parser implements TradeParser {
             externalTicket: ticket,
             status: isClosed ? "CLOSED" : "OPEN",
             result,
+            shareMode: "private",
         };
     }
 

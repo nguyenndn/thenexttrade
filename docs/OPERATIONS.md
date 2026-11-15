@@ -38,7 +38,7 @@ Core env:
 ```env
 NODE_ENV=development
 NEXT_PUBLIC_APP_URL=http://localhost:3500
-NEXT_PUBLIC_SYNC_SERVER_URL=https://thenexttrade.com
+NEXT_PUBLIC_SYNC_SERVER_URL=https://thenexttrade.app
 DATABASE_URL=
 DIRECT_URL=
 NEXT_PUBLIC_SUPABASE_URL=
@@ -72,7 +72,7 @@ SMTP_PORT=587
 SMTP_USER=
 SMTP_PASS=
 SMTP_SECURE=false
-SMTP_FROM_EMAIL=noreply@thenexttrade.com
+SMTP_FROM_EMAIL=noreply@thenexttrade.app
 SMTP_FROM_NAME=TheNextTrade
 MAILTRAP_API_TOKEN=
 ```

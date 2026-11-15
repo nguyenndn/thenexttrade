@@ -19,7 +19,18 @@ const updateSchema = z.object({
     idealStopLoss: z.string().nullable().optional(),
     idealTakeProfit: z.string().nullable().optional(),
     riskRewardMin: z.number().min(0).nullable().optional(),
-    referenceImages: z.array(z.string()).optional(),
+    referenceImages: z
+        .array(
+            z
+                .string()
+                .url()
+                .refine(
+                    (u) => u.startsWith("https://"),
+                    "Only HTTPS image URLs are allowed"
+                )
+        )
+        .max(5)
+        .optional(),
 });
 
 export async function GET(

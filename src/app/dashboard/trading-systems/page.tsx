@@ -6,6 +6,7 @@ import { AccountStatus } from "@prisma/client";
 import { TradingSystemsClient } from "@/components/dashboard/trading-systems/TradingSystemsClient";
 import { getMyVipRequest, getVipLink } from "@/actions/vip-request";
 import { ensureTradingAccountLicenseKey } from "@/lib/ea/github-license-sync.server";
+import { maskSyncApiKey } from "@/lib/utils/api-key";
 import type {
     AccountLicenseItem,
     SelectableTradingAccount,
@@ -141,11 +142,13 @@ export default async function TradingSystemsPage() {
         const matchedAcc =
             accountByNumber.get(key) ||
             (!brokerNorm ? accountByNumberFallback.get(acctNum) : undefined);
-        let licenseKey: string | null = null;
+        let maskedLicenseKey: string | null = null;
+        let resolvedTradingAccountId: string | null = matchedAcc?.id ?? null;
 
         if (isApproved) {
             if (matchedAcc?.apiKey) {
-                licenseKey = matchedAcc.apiKey;
+                maskedLicenseKey = maskSyncApiKey(matchedAcc.apiKey);
+                resolvedTradingAccountId = matchedAcc.id;
             } else {
                 const ensured = await ensureTradingAccountLicenseKey({
                     userId: user.id,
@@ -153,7 +156,8 @@ export default async function TradingSystemsPage() {
                     accountNumber: acctNum,
                     isApproved: true,
                 });
-                licenseKey = ensured.licenseKey;
+                maskedLicenseKey = maskSyncApiKey(ensured.licenseKey);
+                resolvedTradingAccountId = ensured.tradingAccountId;
             }
         }
 
@@ -166,10 +170,12 @@ export default async function TradingSystemsPage() {
         const licenseItem: AccountLicenseItem = {
             id: lic.id,
             licenseId: lic.id,
+            tradingAccountId: resolvedTradingAccountId,
             accountNumber: acctNum,
             broker: lic.broker,
             status: resolvedStatus,
-            licenseKey,
+            licenseKey: null,
+            maskedLicenseKey,
             rejectReason: lic.rejectReason,
         };
 
@@ -208,23 +214,27 @@ export default async function TradingSystemsPage() {
             hasActivePro;
 
         if (isIbApproved) {
-            let licenseKey = acc.apiKey;
-            if (!licenseKey) {
+            let rawLicenseKey = acc.apiKey;
+            let resolvedTradingAccountId = acc.id;
+            if (!rawLicenseKey) {
                 const ensured = await ensureTradingAccountLicenseKey({
                     userId: user.id,
                     broker: acc.broker || "Partner Broker",
                     accountNumber: acctNum,
                     isApproved: true,
                 });
-                licenseKey = ensured.licenseKey;
+                rawLicenseKey = ensured.licenseKey;
+                resolvedTradingAccountId = ensured.tradingAccountId;
             }
             const licenseItem: AccountLicenseItem = {
                 id: acc.id,
                 licenseId: null,
+                tradingAccountId: resolvedTradingAccountId,
                 accountNumber: acctNum,
                 broker: acc.broker || "Partner Broker",
                 status: "APPROVED",
-                licenseKey,
+                licenseKey: null,
+                maskedLicenseKey: maskSyncApiKey(rawLicenseKey),
             };
             accountLicensesMap.set(key, licenseItem);
             if (!licenseFallbackByAcctNum.has(acctNum)) {

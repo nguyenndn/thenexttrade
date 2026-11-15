@@ -52,7 +52,9 @@ async function DashboardLoader({
                 user.id,
                 params.accountId,
                 params.fromParam,
-                params.toParam
+                params.toParam,
+                params.accountCurrency,
+                params.currentAccountId
             ),
             getUserDashboards(),
         ]);

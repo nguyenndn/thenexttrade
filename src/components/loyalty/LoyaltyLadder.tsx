@@ -25,7 +25,7 @@ export function LoyaltyLadder({ progress, onOpenClaim, claimingLevel }: LoyaltyL
   const sortedTiers = [...tiers].sort((a, b) => a.level - b.level);
 
   return (
-    <div className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-5 sm:p-7 shadow-sm relative overflow-hidden">
+    <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-5 sm:p-7 shadow-sm relative overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between gap-3 mb-6 pb-4 border-b border-gray-100 dark:border-white/10">
         <div>
@@ -33,7 +33,7 @@ export function LoyaltyLadder({ progress, onOpenClaim, claimingLevel }: LoyaltyL
             Roadmap Ladder
           </span>
           <h2 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">
-            Reach the Top to Unlock Full Potential
+            Volume Milestones &amp; Cash Rebate Tiers
           </h2>
         </div>
         <div className="text-right hidden sm:block">

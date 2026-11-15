@@ -70,8 +70,11 @@ export function SessionClock({ data, currency = "USD" }: SessionClockProps) {
         },
     ];
 
+    const normalizeSessionId = (value: string) =>
+        value.trim().toUpperCase().replace(/[\s-]+/g, "_");
+
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-lg border border-dashboard shadow-sm h-full transition-shadow hover:shadow-md">
+        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-dashboard shadow-sm h-full transition-shadow hover:shadow-md">
             <div className="flex justify-between items-start mb-6">
                 <div>
                     <h3 className="font-bold text-gray-700 dark:text-white mb-2">
@@ -90,9 +93,10 @@ export function SessionClock({ data, currency = "USD" }: SessionClockProps) {
             <div className="space-y-4">
                 {sessions.map((session) => {
                     const isActive = getSessionStatus(session.id);
-                    const stats = data.find((d) =>
-                        d.session.includes(session.id)
-                    ); // Loose match for overlaps
+                    const normalizedTarget = normalizeSessionId(session.id);
+                    const stats = data.find(
+                        (d) => normalizeSessionId(d.session) === normalizedTarget
+                    );
 
                     return (
                         <div

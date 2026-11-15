@@ -95,11 +95,11 @@ export function CalendarHeatmap({
     }
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard overflow-hidden">
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard overflow-hidden min-w-0">
             {/* Header — Month Navigation + Summary */}
-            <div className="p-4 sm:p-5 border-b border-dashboard">
-                <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-3">
+            <div className="p-3 sm:p-5 border-b border-dashboard">
+                <div className="flex items-center justify-between gap-2 mb-3 sm:mb-4">
+                    <div className="flex items-center gap-1.5 sm:gap-3 min-w-0">
                         <Button
                             variant="outline"
                             size="icon"
@@ -107,11 +107,11 @@ export function CalendarHeatmap({
                             onClick={() =>
                                 setCurrentMonth((prev) => subMonths(prev, 1))
                             }
-                            className="h-8 w-8 rounded-lg border-transparent hover:bg-gray-100 dark:hover:bg-white/10 text-gray-500 hover:text-gray-700 dark:hover:text-white transition-colors"
+                            className="h-8 w-8 rounded-lg border-transparent hover:bg-gray-100 dark:hover:bg-white/10 text-gray-500 hover:text-gray-700 dark:hover:text-white transition-colors shrink-0"
                         >
                             <ChevronLeft size={18} />
                         </Button>
-                        <h3 className="text-lg font-bold text-gray-700 dark:text-white min-w-[160px] text-center">
+                        <h3 className="text-sm sm:text-lg font-bold text-gray-700 dark:text-white min-w-[115px] sm:min-w-[160px] text-center truncate">
                             {format(currentMonth, "MMMM yyyy")}
                         </h3>
                         <Button
@@ -121,7 +121,7 @@ export function CalendarHeatmap({
                             onClick={() =>
                                 setCurrentMonth((prev) => addMonths(prev, 1))
                             }
-                            className="h-8 w-8 rounded-lg border-transparent hover:bg-gray-100 dark:hover:bg-white/10 text-gray-500 hover:text-gray-700 dark:hover:text-white transition-colors"
+                            className="h-8 w-8 rounded-lg border-transparent hover:bg-gray-100 dark:hover:bg-white/10 text-gray-500 hover:text-gray-700 dark:hover:text-white transition-colors shrink-0"
                         >
                             <ChevronRight size={18} />
                         </Button>
@@ -177,13 +177,13 @@ export function CalendarHeatmap({
             </div>
 
             {/* Calendar Grid */}
-            <div className="p-3 sm:p-5">
+            <div className="p-2.5 sm:p-5 min-w-0">
                 {/* Weekday Headers */}
-                <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-2">
+                <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-1.5 sm:mb-2">
                     {weekDays.map((day) => (
                         <div
                             key={day}
-                            className="text-center text-xs font-medium text-gray-600 dark:text-gray-300 py-1"
+                            className="text-center text-[10px] sm:text-xs font-medium text-gray-600 dark:text-gray-300 py-1 truncate"
                         >
                             {day}
                         </div>
@@ -206,7 +206,7 @@ export function CalendarHeatmap({
                                 onClick={() => data && onDayClick?.(dateStr)}
                                 disabled={!data}
                                 className={`
- relative p-0 h-auto aspect-square rounded-lg flex flex-col items-center justify-center transition-all duration-150 group
+ relative p-0.5 sm:p-1 h-auto min-w-0 overflow-hidden aspect-square rounded-lg flex flex-col items-center justify-center transition-all duration-150 group
  ${!inMonth ? "opacity-30" : ""}
  ${today ? "ring-2 ring-primary ring-offset-1 dark:ring-offset-[#1E2028]" : ""}
  ${data ? getCellStyle(data.pnl) + " cursor-pointer hover:scale-105 hover:shadow-md" : "bg-gray-50 dark:bg-white/[0.02] border border-transparent"}
@@ -214,7 +214,7 @@ export function CalendarHeatmap({
                             >
                                 {/* Day Number */}
                                 <span
-                                    className={`text-xs font-medium ${
+                                    className={`text-[10px] sm:text-xs font-medium ${
                                         data && data.pnl > 0
                                             ? "text-emerald-900 dark:text-emerald-100"
                                             : data && data.pnl < 0
@@ -228,7 +228,7 @@ export function CalendarHeatmap({
                                 {/* PnL Value */}
                                 {data && (
                                     <span
-                                        className={`text-[10px] font-bold leading-tight ${
+                                        className={`text-[9px] sm:text-[10px] font-bold leading-tight truncate max-w-full ${
                                             data.pnl > 0
                                                 ? "text-emerald-800 dark:text-emerald-200"
                                                 : data.pnl < 0

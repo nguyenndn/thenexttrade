@@ -15,6 +15,10 @@ vi.mock("@/lib/prisma", () => ({
         },
         lesson: {
             findUnique: vi.fn(),
+            findMany: vi.fn(),
+        },
+        profile: {
+            findUnique: vi.fn(),
         },
         user: {
             findUnique: vi.fn(),
@@ -51,6 +55,7 @@ const levelWithThreeLessons = {
     status: "published",
     module: {
         level: {
+            order: 1,
             modules: [
                 {
                     lessons: [{ id: "l1" }, { id: "l2" }, { id: "l3" }],
@@ -133,6 +138,7 @@ describe("POST /api/lessons/[id]/complete", () => {
                         select: {
                             level: {
                                 select: {
+                                    order: true,
                                     modules: {
                                         orderBy: { order: "asc" },
                                         select: {
@@ -177,5 +183,28 @@ describe("POST /api/lessons/[id]/complete", () => {
         expect(prisma.userProgress.upsert).toHaveBeenCalledOnce();
         expect(addXP).not.toHaveBeenCalled();
         expect(body.gamification.xpEarned).toBe(0);
+    });
+
+    it("blocks completing Lesson 1 of Level 2 when prior Level 1 lessons are incomplete", async () => {
+        vi.mocked(prisma.lesson.findUnique).mockResolvedValue({
+            status: "published",
+            module: {
+                level: {
+                    order: 2,
+                    modules: [{ lessons: [{ id: "lvl2-l1" }] }],
+                },
+            },
+        } as any);
+        vi.mocked(prisma.lesson.findMany).mockResolvedValue([
+            { id: "lvl1-l1" },
+            { id: "lvl1-l2" },
+        ] as any);
+        vi.mocked(prisma.userProgress.count).mockResolvedValue(1);
+
+        const [req, params] = makeRequest("lvl2-l1");
+        const res = await POST(req, params);
+
+        expect(res.status).toBe(403);
+        expect(prisma.userProgress.upsert).not.toHaveBeenCalled();
     });
 });

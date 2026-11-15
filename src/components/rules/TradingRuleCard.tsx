@@ -15,10 +15,23 @@ import { toast } from "sonner";
 import { Switch } from "@/components/ui/switch";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
+export interface TradingRuleItem {
+    id: string;
+    title: string;
+    description?: string | null;
+    category: string;
+    severity: string;
+    isActive: boolean;
+    accountId?: string | null;
+    strategyId?: string | null;
+    account?: { name: string } | null;
+    strategy?: { name: string } | null;
+}
+
 interface TradingRuleCardProps {
-    rule: any;
+    rule: TradingRuleItem;
     onUpdate: () => void;
-    onEdit: (rule: any) => void;
+    onEdit: (rule: TradingRuleItem) => void;
 }
 
 export function TradingRuleCard({
@@ -125,6 +138,7 @@ export function TradingRuleCard({
                         checked={localActive}
                         onCheckedChange={handleToggleActive}
                         disabled={isUpdating || isDeleting}
+                        aria-label={`Toggle rule ${rule.title}`}
                     />
                 </div>
 

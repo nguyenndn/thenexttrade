@@ -115,7 +115,7 @@ export function renderWelcomeEmailHtml(
     userName = "Email Lab Trader"
 ): string {
     const appUrl =
-        process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.vercel.app";
+        process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.app";
     const btnStyles = `${GOLD_CTA_BUTTON_STYLE} margin: 16px 0;`;
 
     // Format paragraph breaks and bullets

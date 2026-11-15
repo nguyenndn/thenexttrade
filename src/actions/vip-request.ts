@@ -349,7 +349,7 @@ export async function approveVipRequest(requestId: string) {
                     } = await import("@/lib/services/email.service");
                     const appUrl =
                         process.env.NEXT_PUBLIC_APP_URL ||
-                        "https://thenexttrade.vercel.app";
+                        "https://thenexttrade.app";
                     const emailHtml = buildEALicenseEmailHtml({
                         userName: vipRequest.fullName || "Trader",
                         eaName: "Partner Pro & GoldScalperNinja MT5",
@@ -360,7 +360,7 @@ export async function approveVipRequest(requestId: string) {
                     });
                     await sendEmailWithDetails({
                         to: targetEmail,
-                        subject: `VIP Partner Pro Approved & Lifetime EA License Key 🔑`,
+                        subject: "VIP Partner Pro Approved & Lifetime EA License Key",
                         html: emailHtml,
                     });
                 } catch (emailErr) {
@@ -446,7 +446,7 @@ export async function rejectVipRequest(requestId: string, reason?: string) {
             } = await import("@/lib/services/email.service");
             const appUrl =
                 process.env.NEXT_PUBLIC_APP_URL ||
-                "https://thenexttrade.vercel.app";
+                "https://thenexttrade.app";
             const subject = `Update on your Partner Pro Verification (${vipRequest.broker} #${vipRequest.accountNumber})`;
             const bodyHtml = `
               <div style="padding: 6px 0;">

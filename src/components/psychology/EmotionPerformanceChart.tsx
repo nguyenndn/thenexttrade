@@ -9,17 +9,18 @@ import {
     Tooltip,
     ResponsiveContainer,
     Cell,
-    ReferenceLine,
 } from "recharts";
 
+interface EmotionStatRow {
+    emotion: string;
+    totalTrades: number;
+    winRate: number;
+    totalPnL: number;
+    avgPnL?: number;
+}
+
 interface EmotionPerformanceChartProps {
-    data: Array<{
-        emotion: string;
-        totalTrades: number;
-        winRate: number;
-        totalPnL: number;
-        avgPnL: number;
-    }>;
+    data: EmotionStatRow[];
     title: string;
 }
 
@@ -31,7 +32,7 @@ export function EmotionPerformanceChart({
     const sortedData = [...data].sort((a, b) => b.winRate - a.winRate);
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-5 rounded-lg border border-dashboard shadow-sm hover:shadow-md transition-shadow cursor-pointer group flex flex-col h-full">
+        <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-dashboard shadow-sm hover:shadow-md transition-shadow cursor-pointer group flex flex-col h-full">
             <h3 className="text-sm font-bold text-gray-700 dark:text-white mb-4">
                 {title}
             </h3>
@@ -61,20 +62,50 @@ export function EmotionPerformanceChart({
                             width={80}
                         />
                         <Tooltip
-                            contentStyle={{
-                                backgroundColor: "#1F2937",
-                                border: "none",
-                                borderRadius: "8px",
-                                color: "#F3F4F6",
+                            content={({ active, payload }) => {
+                                if (!active || !payload?.length) return null;
+                                const item = payload[0]
+                                    .payload as EmotionStatRow;
+                                return (
+                                    <div className="bg-white dark:bg-[#1E2028] text-gray-800 dark:text-gray-100 p-3 rounded-lg border border-dashboard shadow-xl text-xs">
+                                        <p className="font-bold text-gray-900 dark:text-white mb-1 text-sm">
+                                            {item.emotion}
+                                        </p>
+                                        <div className="space-y-1">
+                                            <div className="flex justify-between gap-4">
+                                                <span className="text-gray-500 dark:text-gray-400">
+                                                    Win Rate:
+                                                </span>
+                                                <span className="font-mono tabular-nums font-bold">
+                                                    {item.winRate.toFixed(1)}%
+                                                </span>
+                                            </div>
+                                            <div className="flex justify-between gap-4">
+                                                <span className="text-gray-500 dark:text-gray-400">
+                                                    Total P&L:
+                                                </span>
+                                                <span
+                                                    className={`font-mono tabular-nums font-bold ${item.totalPnL >= 0 ? "text-emerald-600 dark:text-primary" : "text-red-500"}`}
+                                                >
+                                                    {item.totalPnL >= 0
+                                                        ? "+"
+                                                        : ""}
+                                                    ${item.totalPnL.toFixed(2)}
+                                                </span>
+                                            </div>
+                                            <div className="flex justify-between gap-4">
+                                                <span className="text-gray-500 dark:text-gray-400">
+                                                    Trades:
+                                                </span>
+                                                <span className="font-mono tabular-nums">
+                                                    {item.totalTrades}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
                             }}
-                            formatter={(value: any, name: any) => {
-                                if (name === "Win Rate")
-                                    return [
-                                        `${Number(value).toFixed(1)}%`,
-                                        name,
-                                    ];
-                                return [value, name];
-                            }}
+                            cursor={{ fill: "transparent" }}
                         />
                         <Bar
                             dataKey="winRate"

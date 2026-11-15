@@ -5,17 +5,15 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import {
     Clock,
-    Globe,
     Sun,
     Moon,
     TrendingUp,
     TrendingDown,
-    Loader2,
+    type LucideIcon,
 } from "lucide-react";
 import dynamic from "next/dynamic";
 import { SessionRecommendations } from "./SessionRecommendations";
 import { useSearchParams } from "next/navigation";
-import { EmptyState } from "@/components/ui/EmptyState";
 import { EmptyStateCTAs } from "@/components/ui/EmptyStateCTAs";
 
 const SessionPerformance = dynamic(
@@ -105,13 +103,17 @@ export function SessionDashboard({
 
             const json = await res.json();
             setData(json);
-        } catch (error: any) {
-            if (error.name === "AbortError") return;
-            console.error(error);
+        } catch (error: unknown) {
+            if (error instanceof DOMException && error.name === "AbortError") {
+                return;
+            }
+            if (error instanceof Error && error.name === "AbortError") {
+                return;
+            }
             toast.error(
                 error instanceof Error
                     ? error.message
-                    : error?.message || "Failed to load session data"
+                    : "Failed to load session data"
             );
         } finally {
             setIsLoading(false);
@@ -132,7 +134,7 @@ export function SessionDashboard({
             {isLoading ? (
                 <SessionLoadingSkeleton />
             ) : !data || data.sessionStats.length === 0 ? (
-                <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-lg border-2 border-dashed border-dashboard mt-8">
+                <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-xl border-2 border-dashed border-dashboard mt-8">
                     {/* Animated Clock Icon */}
                     <div className="relative w-20 h-20 mb-6 mx-auto">
                         <div className="absolute inset-0 rounded-full bg-primary/10 dark:bg-primary/5 animate-[session-ping_3s_cubic-bezier(0,0,0.2,1)_infinite]" />
@@ -302,11 +304,11 @@ function QuickStatCard({
 }: {
     label: string;
     value: string;
-    icon: any;
+    icon: LucideIcon;
     color: string;
 }) {
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-4 rounded-lg border border-dashboard shadow-sm transition-shadow hover:shadow-md">
+        <div className="bg-white dark:bg-[#1E2028] p-4 rounded-xl border border-dashboard shadow-sm transition-shadow hover:shadow-md">
             <div className="flex items-center gap-2 mb-2">
                 <div
                     className={`p-1.5 rounded-lg bg-gray-50 dark:bg-white/5 ${color}`}

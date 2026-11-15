@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { calculateMargin } from "@/lib/calculators";
+import { calculateMargin, DEFAULT_PAIR_PRICES } from "@/lib/calculators";
 import { CurrencyPairSelect } from "./CurrencyPairSelect";
 import { ChevronDown, Check } from "lucide-react";
 import {
@@ -12,7 +12,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
-import { AccountCurrencySelect } from "./AccountCurrencySelect";
+import {
+    AccountCurrencySelect,
+    formatAccountCurrencyAmount,
+} from "./AccountCurrencySelect";
 import { CalcInput } from "./CalcInput";
 import { CalcResultPrimary } from "./CalcResult";
 
@@ -39,7 +42,17 @@ export function MarginCalc() {
                         </label>
                         <CurrencyPairSelect
                             value={inputs.pair}
-                            onChange={(v) => setInputs({ ...inputs, pair: v })}
+                            onChange={(v) => {
+                                const defaults =
+                                    DEFAULT_PAIR_PRICES[v.toUpperCase()];
+                                setInputs({
+                                    ...inputs,
+                                    pair: v,
+                                    currentPrice: defaults
+                                        ? defaults.price
+                                        : inputs.currentPrice,
+                                });
+                            }}
                         />
                     </div>
 
@@ -138,21 +151,25 @@ export function MarginCalc() {
 
             <div className="lg:col-span-5 flex flex-col gap-4">
                 <CalcResultPrimary
-                    label="Required Margin"
-                    value={`$${requiredMargin.toFixed(2)}`}
+                    label={`Required Margin (${inputs.accountCurrency})`}
+                    value={formatAccountCurrencyAmount(
+                        requiredMargin,
+                        inputs.accountCurrency
+                    )}
                     className="flex-1 flex flex-col justify-center"
                 />
 
                 <div className="space-y-3">
-                    <div className="bg-white dark:bg-white/5 rounded-lg p-3 flex justify-between items-center border border-dashboard hover:border-primary/30 transition-colors">
+                    <div className="bg-white dark:bg-white/5 rounded-xl p-3 flex justify-between items-center border border-dashboard hover:border-primary/30 transition-colors">
                         <span className="text-xs font-semibold text-gray-600 dark:text-gray-500">
                             Position Value
                         </span>
-                        <span className="text-sm font-bold text-gray-700 dark:text-white">
-                            $
-                            {positionValue.toLocaleString("en-US", {
-                                maximumFractionDigits: 0,
-                            })}
+                        <span className="text-sm font-bold font-mono tabular-nums text-gray-700 dark:text-white">
+                            {formatAccountCurrencyAmount(
+                                positionValue,
+                                inputs.accountCurrency,
+                                0
+                            )}
                         </span>
                     </div>
                     <div className="bg-white dark:bg-white/5 rounded-lg p-3 border border-dashboard hover:border-primary/30 transition-colors">

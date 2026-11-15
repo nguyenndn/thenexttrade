@@ -1,8 +1,22 @@
 "use server";
 
+import { createClient as createStatelessSupabaseClient } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
+import { headers } from "next/headers";
 import { getActiveSessions, revokeSession } from "@/lib/session";
+import { passwordSchema } from "@/lib/validations/auth";
+import { checkAuthRateLimit } from "@/lib/security/auth-rate-limit";
+import { AUTH_ERRORS } from "@/lib/security/auth-errors";
+
+async function getClientIP(): Promise<string> {
+    const h = await headers();
+    const realIp = h.get("x-real-ip")?.trim();
+    if (realIp) return realIp;
+    const vercelIp = h.get("x-vercel-forwarded-for")?.split(",")[0]?.trim();
+    if (vercelIp) return vercelIp;
+    return h.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "127.0.0.1";
+}
 
 // ==========================================
 // PASSWORD MANAGEMENT
@@ -20,6 +34,11 @@ export async function updatePassword(formData: FormData) {
         return { error: "Unauthorized" };
     }
 
+    const ip = await getClientIP();
+    if (await checkAuthRateLimit("update_password", ip, user.email)) {
+        return { error: AUTH_ERRORS.RATE_LIMIT_GENERIC };
+    }
+
     const currentPassword = formData.get("currentPassword") as string;
     const newPassword = formData.get("newPassword") as string;
     const confirmPassword = formData.get("confirmPassword") as string;
@@ -32,12 +51,29 @@ export async function updatePassword(formData: FormData) {
         return { error: "New passwords do not match" };
     }
 
-    if (newPassword.length < 6) {
-        return { error: "Password must be at least 6 characters" };
+    const parsedPassword = passwordSchema.safeParse(newPassword);
+    if (!parsedPassword.success) {
+        return {
+            error:
+                parsedPassword.error.issues[0]?.message ||
+                "Password does not meet security requirements",
+        };
     }
 
-    // 2. Verify Current Password
-    const { error: signInError } = await supabase.auth.signInWithPassword({
+    // 2. Verify Current Password using a non-persisting client so aal2 session cookies are untouched
+    const verifyClient = createStatelessSupabaseClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        {
+            auth: {
+                persistSession: false,
+                autoRefreshToken: false,
+                detectSessionInUrl: false,
+            },
+        }
+    );
+
+    const { error: signInError } = await verifyClient.auth.signInWithPassword({
         email: user.email,
         password: currentPassword,
     });
@@ -46,7 +82,7 @@ export async function updatePassword(formData: FormData) {
         return { error: "Current password is incorrect" };
     }
 
-    // 3. Update Password
+    // 3. Update Password on the authenticated SSR client (preserving aal2 session)
     const { error: updateError } = await supabase.auth.updateUser({
         password: newPassword,
     });
@@ -145,12 +181,21 @@ export async function startTwoFactorSetup() {
 
 export async function verifyTwoFactorSetup(factorId: string, code: string) {
     const supabase = await createClient();
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return { error: "Unauthorized" };
+
+    const ip = await getClientIP();
+    if (await checkAuthRateLimit("verify_2fa", ip, user.email)) {
+        return { error: AUTH_ERRORS.RATE_LIMIT_GENERIC };
+    }
 
     const { data: challenge, error: challengeErr } =
         await supabase.auth.mfa.challenge({ factorId });
     if (challengeErr) return { error: challengeErr.message };
 
-    const { data, error } = await supabase.auth.mfa.verify({
+    const { error } = await supabase.auth.mfa.verify({
         factorId,
         challengeId: challenge.id,
         code,
@@ -169,6 +214,11 @@ export async function disableTwoFactor(code?: string) {
         data: { user },
     } = await supabase.auth.getUser();
     if (!user) return { error: "Unauthorized" };
+
+    const ip = await getClientIP();
+    if (await checkAuthRateLimit("disable_2fa", ip, user.email)) {
+        return { error: AUTH_ERRORS.RATE_LIMIT_GENERIC };
+    }
 
     const factors = user.factors || [];
     const totpFactor = factors.find(

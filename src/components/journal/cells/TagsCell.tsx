@@ -7,9 +7,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/Button";
 
+interface TagsEntry {
+    id: string;
+    tags?: string[] | null;
+}
+
 interface TagsCellProps {
-    entry: any;
-    onUpdate: (id: string, data: any) => Promise<void>;
+    entry: TagsEntry;
+    onUpdate: (id: string, data: { tags: string[] }) => Promise<void>;
 }
 
 export function TagsCell({ entry, onUpdate }: TagsCellProps) {
@@ -81,6 +86,7 @@ export function TagsCell({ entry, onUpdate }: TagsCellProps) {
                             type="button"
                             variant="primary"
                             size="icon"
+                            aria-label="Add tag"
                             onClick={() => handleAddTag()}
                             className="w-8 h-8 rounded-lg"
                             disabled={!newTag.trim()}

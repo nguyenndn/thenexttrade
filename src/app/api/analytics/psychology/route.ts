@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { getAuthUser } from "@/lib/auth-cache";
 import { prisma } from "@/lib/prisma";
 import { startOfMonth, endOfMonth, parseISO, endOfDay } from "date-fns";
+import {
+    convertToUsdEquivalent,
+    normalizeLotSize,
+} from "@/lib/utils/cent-account";
 
 interface EmotionStats {
     emotion: string;
@@ -26,6 +30,9 @@ export async function GET(request: NextRequest) {
         const searchParams = request.nextUrl.searchParams;
         const startDateParam = searchParams.get("startDate");
         const endDateParam = searchParams.get("endDate");
+        const rawAccountId = searchParams.get("accountId");
+        const normalizedAccountId =
+            rawAccountId && rawAccountId !== "all" ? rawAccountId : undefined;
 
         const now = new Date();
         const startDate = startDateParam
@@ -40,26 +47,70 @@ export async function GET(request: NextRequest) {
             where: {
                 userId: user.id,
                 status: "CLOSED",
+                ...(normalizedAccountId
+                    ? { accountId: normalizedAccountId }
+                    : {}),
                 entryDate: { gte: startDate, lte: endDate },
             },
             orderBy: { entryDate: "asc" },
             select: {
                 id: true,
+                symbol: true,
                 pnl: true,
                 commission: true,
                 swap: true,
                 result: true,
                 entryDate: true,
                 lotSize: true,
+                syncSource: true,
                 emotionBefore: true,
                 emotionAfter: true,
                 confidenceLevel: true,
                 followedPlan: true,
+                account: {
+                    select: {
+                        currency: true,
+                        server: true,
+                    },
+                },
             },
         });
 
-        const getNetPnl = (t: any) =>
-            (t.pnl || 0) + (t.commission || 0) + (t.swap || 0);
+        const getNetPnl = (t: {
+            pnl: number | null;
+            commission: number | null;
+            swap: number | null;
+            account?: {
+                currency?: string | null;
+                server?: string | null;
+            } | null;
+        }) => {
+            const rawNet = (t.pnl || 0) + (t.commission || 0) + (t.swap || 0);
+            return !normalizedAccountId
+                ? convertToUsdEquivalent(
+                      rawNet,
+                      t.account?.currency,
+                      t.account?.server
+                  )
+                : rawNet;
+        };
+
+        const getEffectiveLotSize = (t: {
+            lotSize: number;
+            symbol: string;
+            syncSource?: string | null;
+            account?: {
+                currency?: string | null;
+                server?: string | null;
+            } | null;
+        }) =>
+            !normalizedAccountId && (!t.syncSource || t.syncSource === "MANUAL")
+                ? normalizeLotSize(t.lotSize || 0, {
+                      symbol: t.symbol,
+                      currency: t.account?.currency,
+                      server: t.account?.server,
+                  })
+                : t.lotSize || 0;
 
         // Calculate emotion before stats
         const emotionBeforeMap = new Map<
@@ -222,9 +273,9 @@ export async function GET(request: NextRequest) {
                 new Date(b.entryDate).getTime()
         );
 
-        // Calculate average lot size
+        // Calculate average lot size (normalized in multi-account mode)
         const totalLots = sortedTrades.reduce(
-            (sum, t) => sum + (t.lotSize || 0),
+            (sum, t) => sum + getEffectiveLotSize(t),
             0
         );
         const avgLotSize =
@@ -244,6 +295,7 @@ export async function GET(request: NextRequest) {
 
         for (let i = 0; i < sortedTrades.length; i++) {
             const trade = sortedTrades[i];
+            const curLots = getEffectiveLotSize(trade);
 
             // Streak calculation
             if (trade.result === "LOSS") {
@@ -267,26 +319,18 @@ export async function GET(request: NextRequest) {
             // Martingale detection (check if previous trade was loss, and current size is significantly larger)
             if (i > 0) {
                 const prevTrade = sortedTrades[i - 1];
-                if (prevTrade.result === "LOSS") {
-                    const sizeIncrease =
-                        (trade.lotSize || 0) / (prevTrade.lotSize || 1);
-                    // If size increased by > 50% AND is significantly above average
-                    if (
-                        sizeIncrease > 1.5 &&
-                        (trade.lotSize || 0) > avgLotSize
-                    ) {
+                const prevLots = getEffectiveLotSize(prevTrade);
+                if (prevTrade.result === "LOSS" && prevLots > 0) {
+                    const sizeIncrease = curLots / prevLots;
+                    if (sizeIncrease > 1.5 && curLots > avgLotSize) {
                         sizingUpCount++;
                     }
                 }
 
                 // Overconfidence: sizing up after consecutive wins
-                if (prevTrade.result === "WIN") {
-                    const sizeIncrease =
-                        (trade.lotSize || 0) / (prevTrade.lotSize || 1);
-                    if (
-                        sizeIncrease > 1.5 &&
-                        (trade.lotSize || 0) > avgLotSize
-                    ) {
+                if (prevTrade.result === "WIN" && prevLots > 0) {
+                    const sizeIncrease = curLots / prevLots;
+                    if (sizeIncrease > 1.5 && curLots > avgLotSize) {
                         winStreakSizeUp++;
                     }
                 }

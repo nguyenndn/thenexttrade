@@ -154,10 +154,10 @@ export function buildUnifiedEmailHtml(options: UnifiedEmailOptions): string {
     const appUrl =
         options.appUrl ||
         process.env.NEXT_PUBLIC_APP_URL ||
-        "https://thenexttrade.vercel.app";
+        "https://thenexttrade.app";
     const assetBaseUrl =
         appUrl.includes("localhost") || appUrl.includes("127.0.0.1")
-            ? "https://thenexttrade.vercel.app"
+            ? "https://thenexttrade.app"
             : appUrl.replace(/\/$/, "");
     const brainLogoUrl = `${assetBaseUrl}/images/logo_thenexttrade_brain.png`;
     const preheaderHtml = options.preheader
@@ -388,7 +388,7 @@ export function buildNudgeEmailHtml(
 ): string {
     const typeLabel = type === "WEEKLY" ? "week" : "month";
     const appUrl =
-        process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.vercel.app";
+        process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.app";
 
     const bodyHtml = `
   <div style="text-align:center; padding: 12px 0;">
@@ -425,7 +425,7 @@ export interface EALicenseEmailData {
 
 export function buildEALicenseEmailHtml(data: EALicenseEmailData): string {
     const appUrl =
-        process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.vercel.app";
+        process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.app";
 
     const bodyHtml = `
   <div style="padding: 6px 0;">
@@ -495,7 +495,7 @@ export interface EAUpdateEmailData {
 
 export function buildEAUpdateEmailHtml(data: EAUpdateEmailData): string {
     const appUrl =
-        process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.vercel.app";
+        process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.app";
 
     const highlightsList = data.releaseHighlights
         .map(
@@ -560,7 +560,7 @@ export function buildAcademyCertificateEmailHtml(
     data: AcademyCertificateEmailData
 ): string {
     const appUrl =
-        process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.vercel.app";
+        process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.app";
 
     const bodyHtml = `
   <div style="padding: 6px 0; text-align: center;">
@@ -612,7 +612,7 @@ export function buildMilestoneAchievementEmailHtml(
     data: MilestoneEmailData
 ): string {
     const appUrl =
-        process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.vercel.app";
+        process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.app";
 
     const bodyHtml = `
   <div style="padding: 6px 0; text-align: center;">
@@ -654,7 +654,7 @@ export interface AuthOtpEmailData {
 
 export function buildSignupOtpEmailHtml(data: AuthOtpEmailData): string {
     const appUrl =
-        process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.vercel.app";
+        process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.app";
 
     const bodyHtml = `
   <div style="padding: 6px 0; text-align: center;">
@@ -687,7 +687,7 @@ export function buildSignupOtpEmailHtml(data: AuthOtpEmailData): string {
 
 export function buildResendOtpEmailHtml(data: AuthOtpEmailData): string {
     const appUrl =
-        process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.vercel.app";
+        process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.app";
 
     const bodyHtml = `
   <div style="padding: 6px 0; text-align: center;">
@@ -725,7 +725,7 @@ export interface MagicLinkEmailData {
 
 export function buildMagicLinkEmailHtml(data: MagicLinkEmailData): string {
     const appUrl =
-        process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.vercel.app";
+        process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.app";
 
     const bodyHtml = `
   <div style="padding: 6px 0; text-align: center;">
@@ -767,7 +767,7 @@ export function buildForgotPasswordEmailHtml(
     data: ForgotPasswordEmailData
 ): string {
     const appUrl =
-        process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.vercel.app";
+        process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.app";
 
     const bodyHtml = `
   <div style="padding: 6px 0; text-align: center;">
@@ -810,7 +810,7 @@ export function buildAdminResetPasswordEmailHtml(
     data: AdminResetPasswordEmailData
 ): string {
     const appUrl =
-        process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.vercel.app";
+        process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.app";
 
     const bodyHtml = `
   <div style="padding: 6px 0; text-align: center;">

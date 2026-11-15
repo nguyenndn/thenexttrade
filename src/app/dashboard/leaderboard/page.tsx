@@ -162,6 +162,7 @@ export default async function LeaderboardPage({ searchParams }: PageProps) {
                   percentile: leaderboard.myRank.percentile,
                   totalTrades: leaderboard.myRank.totalTrades ?? 0,
                   pnl: leaderboard.myRank.pnl ?? null,
+                  winRate: leaderboard.myRank.winRate ?? null,
               }
             : null;
 
@@ -235,7 +236,12 @@ export default async function LeaderboardPage({ searchParams }: PageProps) {
             </div>
 
             {/* Rank-Up Celebration */}
-            <RankUpModal myRank={leaderboard.myRank} />
+            <RankUpModal
+                myRank={leaderboard.myRank}
+                userId={user?.id ?? null}
+                type={type}
+                period={period}
+            />
         </div>
     );
 }

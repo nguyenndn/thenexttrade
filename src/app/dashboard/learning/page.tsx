@@ -1,7 +1,7 @@
 import { getAuthUser } from "@/lib/auth-cache";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
-import { BookOpen, CheckCircle, Clock, PlayCircle } from "lucide-react";
+import { BookOpen, CheckCircle, Clock, Lock, PlayCircle } from "lucide-react";
 import Link from "next/link";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { isAcademyEnabled } from "@/app/admin/academy/actions";
@@ -18,19 +18,17 @@ export default async function MyLearningPage() {
         redirect("/auth/login?next=/dashboard/learning");
     }
 
-    if (!academyEnabled) {
-        const isAdmin =
-            user.profile?.role === "ADMIN" ||
-            (
-                await prisma.profile.findUnique({
-                    where: { userId: user.id },
-                    select: { role: true },
-                })
-            )?.role === "ADMIN";
+    const isAdmin =
+        user.profile?.role === "ADMIN" ||
+        (
+            await prisma.profile.findUnique({
+                where: { userId: user.id },
+                select: { role: true },
+            })
+        )?.role === "ADMIN";
 
-        if (!isAdmin) {
-            redirect("/dashboard");
-        }
+    if (!academyEnabled && !isAdmin) {
+        redirect("/dashboard");
     }
 
     // OPTIMIZED: Fetch levels and user progress in parallel
@@ -70,7 +68,8 @@ export default async function MyLearningPage() {
 
     const completedLessonIds = new Set(userProgress.map((p) => p.lessonId));
 
-    // Calculate stats per level
+    // Calculate stats per level with cross-level sequential gating
+    let priorLevelsCompleted = true;
     const courses = levels.map((level) => {
         const allLessons = level.modules.flatMap((m) => m.lessons);
         const totalLessons = allLessons.length;
@@ -86,6 +85,11 @@ export default async function MyLearningPage() {
         const nextLesson = allLessons.find(
             (l) => !completedLessonIds.has(l.id)
         );
+        const isLocked = !isAdmin && !priorLevelsCompleted;
+
+        if (totalLessons > 0 && completedCount < totalLessons) {
+            priorLevelsCompleted = false;
+        }
 
         return {
             ...level,
@@ -93,6 +97,7 @@ export default async function MyLearningPage() {
             completedCount,
             progress,
             nextLesson,
+            isLocked,
         };
     });
 
@@ -150,7 +155,12 @@ export default async function MyLearningPage() {
                             </div>
 
                             {/* Action Button */}
-                            {course.nextLesson ? (
+                            {course.isLocked ? (
+                                <div className="w-full py-2.5 bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 border border-dashboard font-bold rounded-lg flex items-center justify-center gap-2 cursor-not-allowed">
+                                    <Lock size={16} />
+                                    Complete Previous Level
+                                </div>
+                            ) : course.nextLesson ? (
                                 <Link
                                     href={`/dashboard/academy/lessons/${course.nextLesson.slug}`}
                                     className="w-full py-2.5 bg-gold hover:bg-amber-600 !text-white font-bold rounded-lg flex items-center justify-center gap-2 transition-all active:scale-95 shadow-sm shadow-amber-500/20"

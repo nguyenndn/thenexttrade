@@ -593,6 +593,14 @@ export async function updateTradingAccountLoginNumber(
             select: {
                 id: true,
                 broker: true,
+                accountNumber: true,
+                ibAttribution: true,
+                proEntitlement: {
+                    select: {
+                        id: true,
+                        status: true,
+                    },
+                },
             },
         });
 
@@ -600,19 +608,74 @@ export async function updateTradingAccountLoginNumber(
             return { error: "Trading account not found." };
         }
 
-        const cleanBroker = (account.broker || "").trim();
-        const duplicateOtherUser = await prisma.eALicense.findFirst({
-            where: {
-                accountNumber: cleanNumber,
-                ...(cleanBroker
-                    ? { broker: { equals: cleanBroker, mode: "insensitive" } }
-                    : {}),
-                userId: { not: user.id },
-            },
-            select: { id: true },
-        });
+        const normalizedAttribution = (account.ibAttribution || "UNVERIFIED")
+            .trim()
+            .toUpperCase();
+        const isAttributionLocked =
+            normalizedAttribution !== "UNVERIFIED" &&
+            normalizedAttribution !== "UNKNOWN";
+        const hasActiveProEntitlement = Boolean(
+            account.proEntitlement &&
+                (account.proEntitlement.status === "ACTIVE" ||
+                    account.proEntitlement.status === "GRACE")
+        );
 
-        if (duplicateOtherUser) {
+        if (
+            (account.accountNumber &&
+                account.accountNumber.trim().length > 0) ||
+            isAttributionLocked ||
+            hasActiveProEntitlement
+        ) {
+            return {
+                error: "Login number is already locked for this account. Add a new MT5 account instead.",
+            };
+        }
+
+        const cleanBroker = (account.broker || "").trim();
+        const [duplicateTradingAccount, duplicateOtherUserLicense] =
+            await Promise.all([
+                prisma.tradingAccount.findFirst({
+                    where: {
+                        accountNumber: cleanNumber,
+                        ...(cleanBroker
+                            ? {
+                                  broker: {
+                                      equals: cleanBroker,
+                                      mode: "insensitive",
+                                  },
+                              }
+                            : { broker: account.broker }),
+                        id: { not: account.id },
+                    },
+                    select: { id: true, userId: true },
+                }),
+                prisma.eALicense.findFirst({
+                    where: {
+                        accountNumber: cleanNumber,
+                        ...(cleanBroker
+                            ? {
+                                  broker: {
+                                      equals: cleanBroker,
+                                      mode: "insensitive",
+                                  },
+                              }
+                            : {}),
+                        userId: { not: user.id },
+                    },
+                    select: { id: true },
+                }),
+            ]);
+
+        if (duplicateTradingAccount) {
+            return {
+                error:
+                    duplicateTradingAccount.userId === user.id
+                        ? `Account #${cleanNumber} already exists in your Trading Accounts.`
+                        : `Account #${cleanNumber} is already registered by another user.`,
+            };
+        }
+
+        if (duplicateOtherUserLicense) {
             return {
                 error: `Account #${cleanNumber} is already registered by another user.`,
             };

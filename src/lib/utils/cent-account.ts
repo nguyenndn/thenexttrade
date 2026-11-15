@@ -23,6 +23,33 @@ const CENT_CURRENCIES = new Set([
     "GBC",
     "GBPC",
     "GBPCENT",
+    "JPC",
+    "JPYC",
+    "JPYCENT",
+    "AUC",
+    "AUDC",
+    "AUDCENT",
+    "CAC",
+    "CADC",
+    "CADCENT",
+    "CHC",
+    "CHFC",
+    "CHFCENT",
+    "NZC",
+    "NZDC",
+    "NZDCENT",
+]);
+
+const NON_CENT_C_CURRENCIES = new Set([
+    "USDC",
+    "USDT",
+    "BUSD",
+    "USTC",
+    "BTC",
+    "LTC",
+    "ETC",
+    "ZEC",
+    "XDC",
 ]);
 
 export interface CurrencyDisplayInfo {
@@ -35,16 +62,23 @@ export interface CurrencyDisplayInfo {
 
 const CURRENCY_METADATA: Record<string, CurrencyDisplayInfo> = {
     USD: { code: "USD", symbol: "$", label: "USD ($)", isCent: false, usdRate: 1.0 },
+    USDT: { code: "USDT", symbol: "$", label: "USDT ($)", isCent: false, usdRate: 1.0 },
+    USDC: { code: "USDC", symbol: "$", label: "USDC ($)", isCent: false, usdRate: 1.0 },
     USC: { code: "USC", symbol: "USC", label: "USC (Cent)", isCent: true, usdRate: 0.01 },
     EUR: { code: "EUR", symbol: "€", label: "EUR (€)", isCent: false, usdRate: 1.08 },
     EUC: { code: "EUC", symbol: "EUC", label: "EUC (EUR Cent)", isCent: true, usdRate: 0.0108 },
     GBP: { code: "GBP", symbol: "£", label: "GBP (£)", isCent: false, usdRate: 1.28 },
     GBC: { code: "GBC", symbol: "GBC", label: "GBC (GBP Cent)", isCent: true, usdRate: 0.0128 },
     JPY: { code: "JPY", symbol: "¥", label: "JPY (¥)", isCent: false, usdRate: 0.0067 },
+    JPC: { code: "JPC", symbol: "JPC", label: "JPC (JPY Cent)", isCent: true, usdRate: 0.000067 },
     AUD: { code: "AUD", symbol: "A$", label: "AUD (A$)", isCent: false, usdRate: 0.65 },
+    AUC: { code: "AUC", symbol: "AUC", label: "AUC (AUD Cent)", isCent: true, usdRate: 0.0065 },
     CAD: { code: "CAD", symbol: "C$", label: "CAD (C$)", isCent: false, usdRate: 0.73 },
+    CAC: { code: "CAC", symbol: "CAC", label: "CAC (CAD Cent)", isCent: true, usdRate: 0.0073 },
     CHF: { code: "CHF", symbol: "CHF", label: "CHF", isCent: false, usdRate: 1.13 },
+    CHC: { code: "CHC", symbol: "CHC", label: "CHC (CHF Cent)", isCent: true, usdRate: 0.0113 },
     NZD: { code: "NZD", symbol: "NZ$", label: "NZD (NZ$)", isCent: false, usdRate: 0.60 },
+    NZC: { code: "NZC", symbol: "NZC", label: "NZC (NZD Cent)", isCent: true, usdRate: 0.006 },
     SGD: { code: "SGD", symbol: "S$", label: "SGD (S$)", isCent: false, usdRate: 0.76 },
 };
 
@@ -90,7 +124,9 @@ export function normalizeCurrencyCode(
         return "GBC";
     }
 
-    if (cleaned.length >= 3) {
+    if (cleaned === "USDC" || cleaned === "USDT") {
+        baseCode = cleaned;
+    } else if (cleaned.length >= 3) {
         baseCode = cleaned.slice(0, 3);
     }
 
@@ -103,7 +139,7 @@ export function normalizeCurrencyCode(
     if (serverIndicatesCent || symbolsIndicateCent) {
         if (baseCode === "EUR") return "EUC";
         if (baseCode === "GBP") return "GBC";
-        if (baseCode === "USD" || !rawCurrency) return "USC";
+        if (baseCode === "USD" || baseCode === "USDC" || baseCode === "USDT" || !rawCurrency) return "USC";
     }
 
     return baseCode || "USD";
@@ -270,8 +306,10 @@ export function isCentAccount(
 
     if (currency) {
         const cur = currency.trim().toUpperCase();
-        if (CENT_CURRENCIES.has(cur) || cur.includes("CENT") || cur.endsWith("C")) {
-            return true;
+        if (!NON_CENT_C_CURRENCIES.has(cur)) {
+            if (CENT_CURRENCIES.has(cur) || cur.includes("CENT") || (cur.length <= 4 && cur.endsWith("C"))) {
+                return true;
+            }
         }
     }
 
@@ -292,16 +330,53 @@ export function isCentAccount(
     return false;
 }
 
+const CRYPTO_USDC_BASES = new Set([
+    "BTC",
+    "ETH",
+    "SOL",
+    "BNB",
+    "XRP",
+    "ADA",
+    "DOGE",
+    "LTC",
+    "AVAX",
+    "LINK",
+    "DOT",
+    "TRX",
+    "TON",
+    "SUI",
+    "UNI",
+    "ATOM",
+    "NEAR",
+    "APT",
+    "ARB",
+]);
+
 /**
  * Checks if a trading symbol represents a Cent micro lot contract (e.g. XAUUSDc, EURUSDc, GBPUSDc).
- * Excludes crypto symbols that naturally contain 'c' like USDC, BTC, etc.
+ * Excludes crypto symbols that naturally contain 'c' like USDC, BTCUSDC, etc.
  */
 export function isCentSymbol(symbol?: string | null): boolean {
     if (!symbol) return false;
-    const sym = symbol.trim().toUpperCase();
+    const trimmed = symbol.trim();
+    const sym = trimmed.toUpperCase();
 
     // Specific known crypto/fiats that end in C
-    if (sym === "USDC" || sym.startsWith("USDC") || sym === "BUSD") {
+    if (
+        sym === "USDC" ||
+        sym.startsWith("USDC") ||
+        sym === "BUSD" ||
+        NON_CENT_C_CURRENCIES.has(sym)
+    ) {
+        return false;
+    }
+
+    // Crypto pairs quoted in uppercase USDC (e.g. BTCUSDC, ETHUSDC) — unless trailing 'c' is explicitly lowercase (e.g. BTCUSDc)
+    if (
+        sym.endsWith("USDC") &&
+        !trimmed.endsWith("c") &&
+        CRYPTO_USDC_BASES.has(sym.slice(0, -4))
+    ) {
         return false;
     }
 

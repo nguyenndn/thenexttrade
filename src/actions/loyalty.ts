@@ -89,7 +89,7 @@ export async function submitClaimReward(input: ClaimRewardInput): Promise<{
         where: { id: user.id },
         select: { settings: true },
       });
-      const userSettings = (dbUser?.settings as Record<string, any>) || {};
+      const userSettings = (dbUser?.settings as Record<string, unknown>) || {};
       const saved = userSettings?.payoutWallet as { network?: UsdtNetwork; address?: string } | undefined;
 
       if (saved?.address) {
@@ -139,47 +139,7 @@ export async function submitClaimReward(input: ClaimRewardInput): Promise<{
       };
     }
 
-    // 4. Ensure legacy (user_id, level) unique index is dropped so per-account claims work seamlessly,
-    //    then check if already claimed or pending on THIS specific IB account
-    await prisma
-      .$executeRawUnsafe(
-        "DROP INDEX IF EXISTS loyalty_claims_user_id_level_key"
-      )
-      .catch(() => {});
-
-    const userLevelClaims = await prisma.loyaltyClaim.findMany({
-      where: {
-        userId: user.id,
-        level,
-      },
-      orderBy: { claimedAt: "desc" },
-    });
-
-    const existingForAccount = userLevelClaims.find((claim) => {
-      const details =
-        (claim.payoutDetails as Record<string, unknown> | null) || {};
-      return details.accountId === lotData.accountId;
-    });
-
-    if (existingForAccount) {
-      if (existingForAccount.status === "PENDING") {
-        return {
-          success: false,
-          error: `Your claim for Level ${level} on account #${lotData.accountNumber} is currently pending admin review.`,
-        };
-      }
-      if (
-        existingForAccount.status === "COMPLETED" ||
-        existingForAccount.status === "APPROVED"
-      ) {
-        return {
-          success: false,
-          error: `Account #${lotData.accountNumber} has already claimed the Level ${level} milestone reward.`,
-        };
-      }
-    }
-
-    // 5. Create or Re-Submit Claim Record with IB Account & XAUUSD/GOLD metadata
+    // 4. Atomically lock per (userId, accountId, level) and create/re-submit claim record
     const claimPayload = {
       tierId: targetTier.id || null,
       tierName: targetTier.name,
@@ -206,19 +166,53 @@ export async function submitClaimReward(input: ClaimRewardInput): Promise<{
       processedAt: null,
     };
 
-    let savedClaimId: string;
-    if (existingForAccount) {
-      const updatedClaim = await prisma.loyaltyClaim.update({
-        where: { id: existingForAccount.id },
-        data: {
-          ...claimPayload,
-          claimedAt: new Date(),
+    const lockKey = `${user.id}:${lotData.accountId}:${level}`;
+    const txResult = await prisma.$transaction(async (tx) => {
+      await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${lockKey}))`;
+
+      const userLevelClaims = await tx.loyaltyClaim.findMany({
+        where: {
+          userId: user.id,
+          level,
         },
-        select: { id: true },
+        orderBy: { claimedAt: "desc" },
       });
-      savedClaimId = updatedClaim.id;
-    } else {
-      const createdClaim = await prisma.loyaltyClaim.create({
+
+      const existingForAccount = userLevelClaims.find((claim) => {
+        const details =
+          (claim.payoutDetails as Record<string, unknown> | null) || {};
+        return details.accountId === lotData.accountId;
+      });
+
+      if (existingForAccount) {
+        if (existingForAccount.status === "PENDING") {
+          return {
+            ok: false as const,
+            error: `Your claim for Level ${level} on account #${lotData.accountNumber} is currently pending admin review.`,
+          };
+        }
+        if (
+          existingForAccount.status === "COMPLETED" ||
+          existingForAccount.status === "APPROVED"
+        ) {
+          return {
+            ok: false as const,
+            error: `Account #${lotData.accountNumber} has already claimed the Level ${level} milestone reward.`,
+          };
+        }
+
+        const updatedClaim = await tx.loyaltyClaim.update({
+          where: { id: existingForAccount.id },
+          data: {
+            ...claimPayload,
+            claimedAt: new Date(),
+          },
+          select: { id: true },
+        });
+        return { ok: true as const, claimId: updatedClaim.id };
+      }
+
+      const createdClaim = await tx.loyaltyClaim.create({
         data: {
           userId: user.id,
           level: targetTier.level,
@@ -226,8 +220,14 @@ export async function submitClaimReward(input: ClaimRewardInput): Promise<{
         },
         select: { id: true },
       });
-      savedClaimId = createdClaim.id;
+      return { ok: true as const, claimId: createdClaim.id };
+    });
+
+    if (!txResult.ok) {
+      return { success: false, error: txResult.error };
     }
+
+    const savedClaimId = txResult.claimId;
 
     // 6. Notify user of claim receipt & notify all admins of new claim
     try {

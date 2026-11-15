@@ -72,7 +72,7 @@ Caps:
 The public contact form (`/contact`) delivers two emails using `buildUnifiedEmailHtml`:
 
 1. **Admin Alert (`contact_admin_notification`)**:
-   - Delivered to `SUPPORT_NOTIFICATION_EMAIL` (or `admin@thenexttrade.com`).
+   - Delivered to `SUPPORT_NOTIFICATION_EMAIL` (or `admin@thenexttrade.app`).
    - Includes sender name, email, subject, and sanitized message body.
    - Features a 1-click `mailto:` reply button.
 2. **Sender Acknowledgment Receipt (`contact_sender_receipt`)**:

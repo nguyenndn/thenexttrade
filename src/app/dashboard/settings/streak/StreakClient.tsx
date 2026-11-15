@@ -7,9 +7,6 @@ import {
     startOfMonth,
     endOfMonth,
     eachDayOfInterval,
-    isSameDay,
-    isToday,
-    isFuture,
 } from "date-fns";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -24,8 +21,14 @@ export default function StreakClient() {
     const [isLoading, setIsLoading] = useState(true);
     const [isCheckingIn, setIsCheckingIn] = useState(false);
 
-    // Calendar State: Always current month
-    const currentDate = new Date();
+    // Calendar State: Aligned to UTC day boundary matching server check-in
+    const now = new Date();
+    const todayUtc = now.toISOString().slice(0, 10);
+    const currentDate = new Date(
+        now.getUTCFullYear(),
+        now.getUTCMonth(),
+        now.getUTCDate()
+    );
 
     useEffect(() => {
         fetchStreakData();
@@ -100,8 +103,10 @@ export default function StreakClient() {
         end: monthEnd,
     });
 
-    // Check if user has checked in today
-    const isCheckedInToday = lastCheckIn && isSameDay(new Date(), lastCheckIn);
+    // Check if user has checked in today (UTC boundary matching server)
+    const isCheckedInToday = Boolean(
+        lastCheckIn && lastCheckIn.toISOString().slice(0, 10) === todayUtc
+    );
 
     if (isLoading) {
         return (
@@ -175,7 +180,7 @@ export default function StreakClient() {
                         </Button>
                         {!isCheckedInToday && (
                             <p className="mt-4 text-xs text-gray-500">
-                                Check in before midnight
+                                Check in before midnight UTC
                             </p>
                         )}
                     </div>
@@ -299,11 +304,14 @@ export default function StreakClient() {
                         ))}
 
                         {calendarDays.map((day) => {
-                            const isCheckedIn = checkInHistory.some((h) =>
-                                isSameDay(new Date(h), day)
+                            const dayUtcKey = format(day, "yyyy-MM-dd");
+                            const isCheckedIn = checkInHistory.some(
+                                (h) =>
+                                    new Date(h).toISOString().slice(0, 10) ===
+                                    dayUtcKey
                             );
-                            const isCurrentDay = isToday(day);
-                            const isPast = !isFuture(day) && !isCurrentDay;
+                            const isCurrentDay = dayUtcKey === todayUtc;
+                            const isPast = dayUtcKey < todayUtc;
                             const isMissed = isPast && !isCheckedIn;
 
                             return (

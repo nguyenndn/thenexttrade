@@ -6,6 +6,7 @@ import {
     CheckCircle2,
     AlertTriangle,
     XCircle,
+    type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -20,7 +21,13 @@ interface SessionRecommendationsProps {
 
 const configMap: Record<
     RecommendationType,
-    { icon: any; bg: string; border: string; text: string; iconColor: string }
+    {
+        icon: LucideIcon;
+        bg: string;
+        border: string;
+        text: string;
+        iconColor: string;
+    }
 > = {
     positive: {
         icon: CheckCircle2,
@@ -58,7 +65,7 @@ export function SessionRecommendations({
     if (recommendations.length === 0) return null;
 
     return (
-        <div className="bg-white dark:bg-[#151925] p-5 sm:p-6 rounded-lg border border-gray-200 dark:border-white/10 shadow-xs">
+        <div className="bg-white dark:bg-[#151925] p-5 sm:p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-xs">
             <div className="flex items-center gap-3 mb-5">
                 <div className="w-9 h-9 rounded-lg bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/20 text-amber-500 flex items-center justify-center">
                     <Lightbulb size={18} />

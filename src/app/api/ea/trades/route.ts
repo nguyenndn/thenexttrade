@@ -230,7 +230,8 @@ export async function POST(request: NextRequest) {
                 return NextResponse.json(
                     {
                         error: "Account mismatch",
-                        message: `API key is for account #${account.accountNumber}, not #${accountNumber}`,
+                        code: "ACCOUNT_MISMATCH",
+                        message: `This API key is not authorized for account #${accountNumber}.`,
                     },
                     { status: 403 }
                 );
@@ -523,6 +524,7 @@ export async function POST(request: NextRequest) {
                         externalTicket: trade.ticket,
                         syncSource: "EA_SYNC",
                         syncedAt: new Date(),
+                        shareMode: "private",
                     };
                 });
 

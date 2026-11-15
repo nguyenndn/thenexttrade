@@ -42,14 +42,14 @@ describe("Session Analytics API Route - Backend Logic & Edge Case Stress Testing
 
     beforeEach(() => {
         vi.clearAllMocks();
-        (getAuthUser as any).mockResolvedValue(mockUser);
-        (prisma.journalEntry.findMany as any).mockResolvedValue(mockTrades);
-        (resolveDefaultAccountId as any).mockResolvedValue("acc-default-primary");
+        vi.mocked(getAuthUser).mockResolvedValue(mockUser as never);
+        vi.mocked(prisma.journalEntry.findMany).mockResolvedValue(mockTrades as never);
+        vi.mocked(resolveDefaultAccountId).mockResolvedValue("acc-default-primary");
     });
 
     describe("Authentication & Authorization", () => {
         it("returns 401 Unauthorized when session is unauthenticated", async () => {
-            (getAuthUser as any).mockResolvedValue(null);
+            vi.mocked(getAuthUser).mockResolvedValue(null);
 
             const req = new NextRequest("http://localhost:3000/api/analytics/sessions");
             const res = await GET(req);
@@ -87,58 +87,103 @@ describe("Session Analytics API Route - Backend Logic & Edge Case Stress Testing
             expect(res.status).toBe(200);
             expect(json.sessionStats).toBeDefined();
 
-            const callArgs = (prisma.journalEntry.findMany as any).mock.calls[0][0];
-            expect(callArgs.where.userId).toBe(mockUser.id);
-            expect(callArgs.where.status).toBe("CLOSED");
-            expect(callArgs.where.accountId).toBeUndefined();
+            const callArgs = vi.mocked(prisma.journalEntry.findMany).mock.calls[0][0];
+            expect(callArgs?.where?.userId).toBe(mockUser.id);
+            expect(callArgs?.where?.status).toBe("CLOSED");
+            expect(callArgs?.where?.accountId).toBeUndefined();
+            expect(callArgs?.where?.exitDate).toBeUndefined();
             // Should NOT call resolveDefaultAccountId when explicit "all" is requested
             expect(resolveDefaultAccountId).not.toHaveBeenCalled();
         });
 
+        it("scales Cent (USC) trades to USD equivalent when accountId='all'", async () => {
+            vi.mocked(prisma.journalEntry.findMany).mockResolvedValueOnce([
+                {
+                    id: "cent-trade-1",
+                    accountId: "acc-cent",
+                    account: { currency: "USC", server: "Exness-MT5Cent" },
+                    pnl: 10000,
+                    commission: 0,
+                    swap: 0,
+                    status: "CLOSED",
+                    exitPrice: 1.105,
+                    entryDate: new Date("2026-10-15T08:30:00Z"),
+                    exitDate: new Date("2026-10-15T09:30:00Z"),
+                    tradingSession: "LONDON",
+                },
+                {
+                    id: "usd-trade-1",
+                    accountId: "acc-usd",
+                    account: { currency: "USD", server: "ICMarkets-Live" },
+                    pnl: 50,
+                    commission: 0,
+                    swap: 0,
+                    status: "CLOSED",
+                    exitPrice: 1.106,
+                    entryDate: new Date("2026-10-15T09:00:00Z"),
+                    exitDate: new Date("2026-10-15T10:00:00Z"),
+                    tradingSession: "LONDON",
+                },
+            ] as never);
+
+            const req = new NextRequest("http://localhost:3000/api/analytics/sessions?accountId=all");
+            const res = await GET(req);
+            const json = await res.json();
+
+            expect(res.status).toBe(200);
+            expect(json.currency).toBe("USD");
+            const london = json.sessionStats.find(
+                (s: { session: string }) => s.session === "LONDON"
+            );
+            // 10,000 USC ($100) + $50 USD = $150 USD (not $10,050)
+            expect(london.totalPnL).toBeCloseTo(150, 2);
+        });
+
         it("falls back to default account resolution when accountId is omitted (undefined)", async () => {
-            (resolveDefaultAccountId as any).mockResolvedValue("acc-resolved-default");
+            vi.mocked(resolveDefaultAccountId).mockResolvedValue("acc-resolved-default");
 
             const req = new NextRequest("http://localhost:3000/api/analytics/sessions");
             const res = await GET(req);
             expect(res.status).toBe(200);
 
             expect(resolveDefaultAccountId).toHaveBeenCalledWith(mockUser.id, undefined);
-            const callArgs = (prisma.journalEntry.findMany as any).mock.calls[0][0];
-            expect(callArgs.where.accountId).toBe("acc-resolved-default");
+            const callArgs = vi.mocked(prisma.journalEntry.findMany).mock.calls[0][0];
+            expect(callArgs?.where?.accountId).toBe("acc-resolved-default");
+            expect(callArgs?.where?.exitDate).toBeUndefined();
         });
 
         it("falls back to default account resolution when accountId is empty string", async () => {
-            (resolveDefaultAccountId as any).mockResolvedValue("acc-resolved-from-empty");
+            vi.mocked(resolveDefaultAccountId).mockResolvedValue("acc-resolved-from-empty");
 
             const req = new NextRequest("http://localhost:3000/api/analytics/sessions?accountId=");
             const res = await GET(req);
             expect(res.status).toBe(200);
 
             expect(resolveDefaultAccountId).toHaveBeenCalledWith(mockUser.id, undefined);
-            const callArgs = (prisma.journalEntry.findMany as any).mock.calls[0][0];
-            expect(callArgs.where.accountId).toBe("acc-resolved-from-empty");
+            const callArgs = vi.mocked(prisma.journalEntry.findMany).mock.calls[0][0];
+            expect(callArgs?.where?.accountId).toBe("acc-resolved-from-empty");
         });
 
         it("leaves accountId omitted if default account resolver returns null (no accounts registered)", async () => {
-            (resolveDefaultAccountId as any).mockResolvedValue(null);
+            vi.mocked(resolveDefaultAccountId).mockResolvedValue(null as never);
 
             const req = new NextRequest("http://localhost:3000/api/analytics/sessions");
             const res = await GET(req);
             expect(res.status).toBe(200);
 
-            const callArgs = (prisma.journalEntry.findMany as any).mock.calls[0][0];
-            expect(callArgs.where.accountId).toBeUndefined();
+            const callArgs = vi.mocked(prisma.journalEntry.findMany).mock.calls[0][0];
+            expect(callArgs?.where?.accountId).toBeUndefined();
         });
 
         it("leaves accountId omitted if default account resolver returns 'all'", async () => {
-            (resolveDefaultAccountId as any).mockResolvedValue("all");
+            vi.mocked(resolveDefaultAccountId).mockResolvedValue("all");
 
             const req = new NextRequest("http://localhost:3000/api/analytics/sessions");
             const res = await GET(req);
             expect(res.status).toBe(200);
 
-            const callArgs = (prisma.journalEntry.findMany as any).mock.calls[0][0];
-            expect(callArgs.where.accountId).toBeUndefined();
+            const callArgs = vi.mocked(prisma.journalEntry.findMany).mock.calls[0][0];
+            expect(callArgs?.where?.accountId).toBeUndefined();
         });
 
         it("filters by valid CUID without invoking default account resolver", async () => {
@@ -150,8 +195,8 @@ describe("Session Analytics API Route - Backend Logic & Edge Case Stress Testing
             expect(res.status).toBe(200);
 
             expect(resolveDefaultAccountId).not.toHaveBeenCalled();
-            const callArgs = (prisma.journalEntry.findMany as any).mock.calls[0][0];
-            expect(callArgs.where.accountId).toBe(validCuid);
+            const callArgs = vi.mocked(prisma.journalEntry.findMany).mock.calls[0][0];
+            expect(callArgs?.where?.accountId).toBe(validCuid);
         });
 
         it("safely binds SQL injection attempts as literal accountId without query corruption", async () => {
@@ -162,10 +207,10 @@ describe("Session Analytics API Route - Backend Logic & Edge Case Stress Testing
             const res = await GET(req);
             expect(res.status).toBe(200);
 
-            const callArgs = (prisma.journalEntry.findMany as any).mock.calls[0][0];
-            expect(callArgs.where.accountId).toBe(sqlInjection);
-            expect(callArgs.where.userId).toBe(mockUser.id);
-            expect(callArgs.where.status).toBe("CLOSED");
+            const callArgs = vi.mocked(prisma.journalEntry.findMany).mock.calls[0][0];
+            expect(callArgs?.where?.accountId).toBe(sqlInjection);
+            expect(callArgs?.where?.userId).toBe(mockUser.id);
+            expect(callArgs?.where?.status).toBe("CLOSED");
         });
 
         it("safely binds XSS payload strings as literal accountId strings", async () => {
@@ -176,8 +221,8 @@ describe("Session Analytics API Route - Backend Logic & Edge Case Stress Testing
             const res = await GET(req);
             expect(res.status).toBe(200);
 
-            const callArgs = (prisma.journalEntry.findMany as any).mock.calls[0][0];
-            expect(callArgs.where.accountId).toBe(xssPayload);
+            const callArgs = vi.mocked(prisma.journalEntry.findMany).mock.calls[0][0];
+            expect(callArgs?.where?.accountId).toBe(xssPayload);
         });
     });
 

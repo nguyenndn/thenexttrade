@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { EconomicEvent } from "@prisma/client";
 import { EventRow } from "@/components/tools/economic-calendar/EventRow";
 import {
@@ -9,9 +9,10 @@ import {
     RefreshCw,
     TriangleAlert,
     Home,
+    ChevronLeft,
     ChevronRight,
 } from "lucide-react";
-import { format, addDays, startOfWeek, isSameDay } from "date-fns";
+import { format, addDays, startOfWeek } from "date-fns";
 
 import { useTheme } from "@/components/providers/ThemeProvider";
 
@@ -35,6 +36,16 @@ const DEFAULT_FILTERS: CalendarFilters = {
     remember: false,
 };
 
+const SESSION_WINDOWS: Record<
+    string,
+    { ianaZone: string; openHour: number; closeHour: number }
+> = {
+    Sydney: { ianaZone: "Australia/Sydney", openHour: 8, closeHour: 17 },
+    Tokyo: { ianaZone: "Asia/Tokyo", openHour: 9, closeHour: 18 },
+    London: { ianaZone: "Europe/London", openHour: 8, closeHour: 17 },
+    "New York": { ianaZone: "America/New_York", openHour: 8, closeHour: 17 },
+};
+
 type CalendarMetadata = {
     status: "LIVE" | "CACHED" | "FALLBACK" | "UNAVAILABLE";
     source: { provider: string; name: string; url: string } | null;
@@ -51,6 +62,61 @@ function getBrowserTimezone() {
         : "Asia/Bangkok";
 }
 
+function getDateKeyInTimezone(date: Date | string, timeZone: string): string {
+    try {
+        const parts = new Intl.DateTimeFormat("en-CA", {
+            timeZone,
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+        }).formatToParts(new Date(date));
+        const y = parts.find((p) => p.type === "year")?.value ?? "1970";
+        const m = parts.find((p) => p.type === "month")?.value ?? "01";
+        const d = parts.find((p) => p.type === "day")?.value ?? "01";
+        return `${y}-${m}-${d}`;
+    } catch {
+        return format(new Date(date), "yyyy-MM-dd");
+    }
+}
+
+function parseDateKeyToLocalNoon(dateKey: string): Date {
+    const [y, m, d] = dateKey.split("-").map((v) => Number.parseInt(v, 10));
+    if (!y || !m || !d) return new Date();
+    return new Date(y, m - 1, d, 12, 0, 0, 0);
+}
+
+function getLocalHourInTimezone(date: Date | string, timeZone: string): number {
+    try {
+        const parts = new Intl.DateTimeFormat("en-US", {
+            timeZone,
+            hour: "2-digit",
+            hourCycle: "h23",
+        }).formatToParts(new Date(date));
+        const raw = Number.parseInt(
+            parts.find((p) => p.type === "hour")?.value || "0",
+            10
+        );
+        return ((raw % 24) + 24) % 24;
+    } catch {
+        return new Date(date).getUTCHours();
+    }
+}
+
+function doesEventMatchSessions(
+    eventDate: Date | string,
+    sessions: string[]
+): boolean {
+    if (sessions.length >= 4) return true;
+    if (sessions.length === 0) return false;
+
+    return sessions.some((sessionName) => {
+        const cfg = SESSION_WINDOWS[sessionName];
+        if (!cfg) return false;
+        const localHour = getLocalHourInTimezone(eventDate, cfg.ianaZone);
+        return localHour >= cfg.openHour && localHour < cfg.closeHour;
+    });
+}
+
 export function EconomicCalendarClient() {
     const { theme } = useTheme();
     const isDark = theme === "dark";
@@ -63,10 +129,22 @@ export function EconomicCalendarClient() {
     const [filters, setFilters] = useState<CalendarFilters>(DEFAULT_FILTERS);
     const [mounted, setMounted] = useState(false);
 
-    const fetchEvents = async () => {
+    const startOfCurrentWeek = startOfWeek(selectedDate, { weekStartsOn: 1 });
+    const weekStartKey = format(startOfCurrentWeek, "yyyy-MM-dd");
+
+    const fetchEvents = useCallback(async (weekStartIso?: string) => {
         setIsLoading(true);
         try {
-            const res = await fetch("/api/economic-events");
+            const baseMonday = weekStartIso
+                ? parseDateKeyToLocalNoon(weekStartIso)
+                : startOfWeek(new Date(), { weekStartsOn: 1 });
+            const rangeStart = addDays(baseMonday, -2).toISOString();
+            const rangeEnd = addDays(baseMonday, 9).toISOString();
+            const params = new URLSearchParams({
+                startDate: rangeStart,
+                endDate: rangeEnd,
+            });
+            const res = await fetch(`/api/economic-events?${params.toString()}`);
             const data = await res.json();
             if (!res.ok) throw new Error(data?.error || "Failed to fetch events");
             setEvents(Array.isArray(data) ? data : data.events || []);
@@ -82,33 +160,39 @@ export function EconomicCalendarClient() {
                               "Calendar data is currently unavailable.",
                       }
             );
-        } catch (error) {
-            console.error("Failed to fetch events", error);
+        } catch {
             setEvents([]);
             setMetadata({
                 status: "UNAVAILABLE",
                 source: null,
                 lastSyncedAt: null,
-                message: "Calendar data is currently unavailable.",
+                message:
+                    "Economic calendar feed is currently unavailable. Please retry shortly.",
             });
         } finally {
             setIsLoading(false);
         }
-    };
+    }, []);
 
     useEffect(() => {
         setMounted(true);
-        fetchEvents();
         async function loadSettings() {
             const { getCalendarSettings } = await import("./actions");
             const savedSettings = await getCalendarSettings();
             if (savedSettings) {
                 setFilters({ ...DEFAULT_FILTERS, ...savedSettings });
             }
-            setSelectedTimezone(savedSettings?.timezone || getBrowserTimezone());
+            const resolvedTz = savedSettings?.timezone || getBrowserTimezone();
+            setSelectedTimezone(resolvedTz);
+            const todayKey = getDateKeyInTimezone(new Date(), resolvedTz);
+            setSelectedDate(parseDateKeyToLocalNoon(todayKey));
         }
         loadSettings();
     }, []);
+
+    useEffect(() => {
+        fetchEvents(weekStartKey);
+    }, [fetchEvents, weekStartKey]);
 
     const handleApplyFilters = async (newFilters: CalendarFilters) => {
         setFilters(newFilters);
@@ -144,21 +228,42 @@ export function EconomicCalendarClient() {
         }
     };
 
+    const selectedDateKey = format(selectedDate, "yyyy-MM-dd");
+    const todayDateKey = mounted
+        ? getDateKeyInTimezone(new Date(), selectedTimezone)
+        : selectedDateKey;
+
+    const jumpToToday = () => {
+        const key = getDateKeyInTimezone(new Date(), selectedTimezone);
+        setSelectedDate(parseDateKeyToLocalNoon(key));
+    };
+
     const filteredEvents = events.filter((e) => {
-        // Date Filter
-        const eventDate = new Date(e.date);
-        if (!isSameDay(eventDate, selectedDate)) return false;
+        // Date Filter in selectedTimezone
+        if (getDateKeyInTimezone(e.date, selectedTimezone) !== selectedDateKey) {
+            return false;
+        }
 
         // Currency Filter
         if (
-            filters.currencies.length > 0 &&
+            filters.currencies.length === 0 ||
             !filters.currencies.includes(e.currency)
-        )
+        ) {
             return false;
+        }
 
         // Impact Filter
-        if (filters.impact.length > 0 && !filters.impact.includes(e.impact))
+        if (
+            filters.impact.length === 0 ||
+            !filters.impact.includes(e.impact)
+        ) {
             return false;
+        }
+
+        // Session Filter
+        if (!doesEventMatchSessions(e.date, filters.sessions)) {
+            return false;
+        }
 
         return true;
     });
@@ -166,10 +271,18 @@ export function EconomicCalendarClient() {
     const groupedEvents = filteredEvents;
 
     // Weekly Navigation Helper
-    const startOfCurrentWeek = startOfWeek(selectedDate, { weekStartsOn: 1 }); // Monday
     const weekDays = Array.from({ length: 7 }).map((_, i) =>
         addDays(startOfCurrentWeek, i)
     );
+    const endOfCurrentWeek = weekDays[6];
+    const isCurrentWeek =
+        weekStartKey ===
+        format(
+            startOfWeek(parseDateKeyToLocalNoon(todayDateKey), {
+                weekStartsOn: 1,
+            }),
+            "yyyy-MM-dd"
+        );
 
     return (
         <ToolsPageShell maxWidth="max-w-7xl">
@@ -284,7 +397,61 @@ export function EconomicCalendarClient() {
             </div>
 
             {/* Controls Toolbar */}
-            <div className="flex justify-end mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+                <div className="flex flex-wrap items-center gap-1.5">
+                    <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() =>
+                            setSelectedDate((prev) => addDays(prev, -7))
+                        }
+                        className={`rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 h-9 px-3 ${
+                            isDark
+                                ? "bg-[#1E2028] border-white/10 hover:border-gold/40 text-gray-200"
+                                : "bg-white border-gray-200 hover:border-gold/40 text-gray-700"
+                        }`}
+                    >
+                        <ChevronLeft size={14} />
+                        <span>Previous Week</span>
+                    </Button>
+
+                    <Button
+                        type="button"
+                        variant="outline"
+                        onClick={jumpToToday}
+                        className={`rounded-lg text-xs font-bold transition-all h-9 px-3 ${
+                            isCurrentWeek
+                                ? "bg-gold/10 border-gold/30 text-amber-600 dark:text-gold"
+                                : isDark
+                                  ? "bg-[#1E2028] border-white/10 hover:border-gold/40 text-gray-200"
+                                  : "bg-white border-gray-200 hover:border-gold/40 text-gray-700"
+                        }`}
+                    >
+                        This Week
+                    </Button>
+
+                    <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() =>
+                            setSelectedDate((prev) => addDays(prev, 7))
+                        }
+                        className={`rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 h-9 px-3 ${
+                            isDark
+                                ? "bg-[#1E2028] border-white/10 hover:border-gold/40 text-gray-200"
+                                : "bg-white border-gray-200 hover:border-gold/40 text-gray-700"
+                        }`}
+                    >
+                        <span>Next Week</span>
+                        <ChevronRight size={14} />
+                    </Button>
+
+                    <span className="hidden lg:inline-block ml-2 text-xs font-mono tabular-nums font-bold text-gray-500 dark:text-gray-400">
+                        {format(startOfCurrentWeek, "MMM d")} –{" "}
+                        {format(endOfCurrentWeek, "MMM d, yyyy")}
+                    </span>
+                </div>
+
                 <div className="flex flex-wrap items-center justify-end gap-2">
                     <TimezoneSelector
                         value={selectedTimezone}
@@ -301,20 +468,18 @@ export function EconomicCalendarClient() {
                         }`}
                     >
                         <Filter size={15} className="text-gray-500" />
-                        Filters
+                        <span>Filters</span>
+                        {filters.sessions.length < 4 && (
+                            <span className="px-1.5 py-0.5 rounded bg-gold/15 text-amber-600 dark:text-gold text-[10px] font-mono">
+                                {filters.sessions.length}S
+                            </span>
+                        )}
                     </Button>
 
                     <Button
                         variant="outline"
-                        onClick={async () => {
-                            setIsLoading(true);
-                            try {
-                                await fetchEvents();
-                            } catch (e) {
-                                console.error(e);
-                            } finally {
-                                setIsLoading(false);
-                            }
+                        onClick={() => {
+                            void fetchEvents(weekStartKey);
                         }}
                         className={`rounded-lg text-xs font-bold transition-all flex items-center gap-2 ${
                             isDark
@@ -336,36 +501,38 @@ export function EconomicCalendarClient() {
                 </div>
             </div>
 
-            {metadata?.status === ("__removed__" as CalendarMetadata["status"]) && (
-                <div
-                    className={`mb-6 rounded-lg border px-4 py-3 text-xs ${
-                        metadata.status === "FALLBACK" || metadata.status === "UNAVAILABLE"
-                            ? "border-amber-200 bg-amber-50 text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200"
-                            : "border-emerald-200 bg-emerald-50 text-emerald-900 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-200"
-                    }`}
-                >
-                    <div className="flex flex-wrap items-center justify-between gap-2">
-                        <span className="font-semibold">{metadata.message}</span>
-                        <span className="text-[11px] opacity-80">
-                            {metadata.source?.url ? (
-                                <a
-                                    href={metadata.source.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="underline underline-offset-2 hover:opacity-100"
-                                >
-                                    {metadata.source.name}
-                                </a>
-                            ) : (
-                                metadata.source?.name || "No provider"
-                            )}
-                            {metadata.lastSyncedAt
-                                ? ` · Synced ${format(new Date(metadata.lastSyncedAt), "MMM d, HH:mm")}`
-                                : ""}
-                        </span>
+            {metadata &&
+                (metadata.status === "FALLBACK" ||
+                    metadata.status === "UNAVAILABLE") && (
+                    <div className="mb-6 rounded-xl border border-amber-300/60 bg-amber-50/90 text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200 px-4 py-3 text-xs">
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                            <span className="font-semibold flex items-center gap-2">
+                                <TriangleAlert
+                                    size={15}
+                                    className="text-amber-600 dark:text-amber-400 shrink-0"
+                                />
+                                <span>{metadata.message}</span>
+                            </span>
+                            <span className="text-[11px] opacity-80 font-mono tabular-nums">
+                                {metadata.source?.url ? (
+                                    <a
+                                        href={metadata.source.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="underline underline-offset-2 hover:opacity-100"
+                                    >
+                                        {metadata.source.name}
+                                    </a>
+                                ) : (
+                                    metadata.source?.name || "Fallback Feed"
+                                )}
+                                {metadata.lastSyncedAt
+                                    ? ` · Synced ${format(new Date(metadata.lastSyncedAt), "MMM d, HH:mm")}`
+                                    : ""}
+                            </span>
+                        </div>
                     </div>
-                </div>
-            )}
+                )}
 
             {/* Toolbar with Week View */}
             <div className="mb-6 space-y-4">
@@ -375,14 +542,17 @@ export function EconomicCalendarClient() {
                 >
                     <div className="flex-1 grid grid-cols-7 gap-0.5 md:gap-1 text-center">
                         {weekDays.map((day) => {
-                            const isSelected = isSameDay(day, selectedDate);
-                            const isToday = mounted ? isSameDay(day, new Date()) : false;
+                            const dayKey = format(day, "yyyy-MM-dd");
+                            const isSelected = dayKey === selectedDateKey;
+                            const isToday = mounted
+                                ? dayKey === todayDateKey
+                                : false;
 
                             return (
                                 <Button
                                     type="button"
                                     variant="ghost"
-                                    key={day.toISOString()}
+                                    key={dayKey}
                                     onClick={() => setSelectedDate(day)}
                                     className={`
                     relative flex flex-col items-center justify-center py-1.5 md:py-2 rounded-lg transition-all h-auto
@@ -449,10 +619,10 @@ export function EconomicCalendarClient() {
                         <Calendar size={18} className="text-amber-600 dark:text-gold" />
                         {format(selectedDate, "EEEE, d MMMM yyyy")}
                     </h2>
-                    {isSameDay(selectedDate, new Date()) || (
+                    {selectedDateKey === todayDateKey || (
                         <Button
                             variant="ghost"
-                            onClick={() => setSelectedDate(new Date())}
+                            onClick={jumpToToday}
                             className="text-xs font-bold text-amber-600 dark:text-gold hover:text-gold/90 hover:bg-gold/10 px-3 py-1.5 rounded-lg"
                         >
                             Jump to Today
@@ -514,7 +684,7 @@ export function EconomicCalendarClient() {
                         </p>
                         <Button
                             variant="link"
-                            onClick={() => setSelectedDate(new Date())}
+                            onClick={jumpToToday}
                             className="mt-4 text-sm font-bold text-gold hover:text-gold/90 p-0"
                         >
                             Go to Today

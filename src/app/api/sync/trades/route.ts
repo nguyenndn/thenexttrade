@@ -415,6 +415,7 @@ export async function POST(request: NextRequest) {
                                 result,
                                 syncSource: "APP",
                                 syncedAt: nowDate,
+                                shareMode: "private",
                                 entryReason: "Synced from Trade Manager",
                                 notes: trade.comment || null,
                                 magicNumber:

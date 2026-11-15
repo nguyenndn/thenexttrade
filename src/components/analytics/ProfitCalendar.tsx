@@ -153,12 +153,11 @@ export function ProfitCalendar({
             document.body.removeChild(link);
 
             toast.success("Screenshot saved successfully!");
-        } catch (error: any) {
-            console.error("Screenshot error:", error);
+        } catch (error: unknown) {
             toast.error(
                 error instanceof Error
                     ? error.message
-                    : error?.message || "Failed to capture screenshot"
+                    : "Failed to capture screenshot"
             );
         } finally {
             setIsCapturing(false);

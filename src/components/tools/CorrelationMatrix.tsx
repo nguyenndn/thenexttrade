@@ -90,8 +90,7 @@ export function CorrelationMatrix() {
                         "Unable to calculate correlation matrix. Please try again."
                 );
             }
-        } catch (err) {
-            console.error("Correlation error:", err);
+        } catch {
             setError(
                 "Failed to fetch correlation data. Please check your network and try again."
             );

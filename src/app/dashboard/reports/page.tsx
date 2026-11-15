@@ -11,11 +11,21 @@ export const metadata: Metadata = {
     description: "Export execution logs, comprehensive audit reports, and trade history in PDF and CSV formats.",
 };
 
-export default async function ReportsPage() {
+export default async function ReportsPage({
+    searchParams,
+}: {
+    searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
     const user = await getAuthUser();
     if (!user) {
         redirect("/auth/login");
     }
+
+    const resolvedParams = searchParams ? await searchParams : undefined;
+    const typeParam =
+        typeof resolvedParams?.type === "string"
+            ? resolvedParams.type
+            : undefined;
 
     return (
         <div className="space-y-4">
@@ -27,7 +37,7 @@ export default async function ReportsPage() {
                 <TabBar tabs={ANALYTICS_TABS} />
             </div>
 
-            <ReportsDashboard />
+            <ReportsDashboard initialType={typeParam} />
         </div>
     );
 }

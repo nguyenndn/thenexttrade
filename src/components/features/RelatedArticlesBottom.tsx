@@ -27,40 +27,42 @@ export default async function RelatedArticlesBottom({
     let articles = initialArticles;
 
     if (!articles) {
-        // Primary: same category articles
-        const sameCategoryArticles = await prisma.article.findMany({
-            where: {
-                categoryId: categoryId,
-                id: { not: currentArticleId },
-                status: "PUBLISHED",
-            },
-            take: 6, // Fetch extra to have fallback
-            orderBy: [{ views: "desc" }, { createdAt: "desc" }],
-            select: {
-                id: true,
-                title: true,
-                slug: true,
-                excerpt: true,
-                thumbnail: true,
-                createdAt: true,
-            },
-        });
+        // Primary: same category articles first
+        const sameCategoryArticles = categoryId
+            ? await prisma.article.findMany({
+                  where: {
+                      categoryId,
+                      id: { not: currentArticleId },
+                      status: "PUBLISHED",
+                  },
+                  take: 3,
+                  orderBy: { createdAt: "desc" },
+                  select: {
+                      id: true,
+                      title: true,
+                      slug: true,
+                      excerpt: true,
+                      thumbnail: true,
+                      createdAt: true,
+                  },
+              })
+            : [];
 
         if (sameCategoryArticles.length >= 3) {
             articles = sameCategoryArticles.slice(0, 3);
         } else {
-            // Fallback: supplement with popular articles from other categories
+            // Fallback: supplement with recent published articles from other categories
             const existingIds = [
                 currentArticleId,
                 ...sameCategoryArticles.map((a) => a.id),
             ];
-            const popular = await prisma.article.findMany({
+            const recentFallback = await prisma.article.findMany({
                 where: {
                     id: { notIn: existingIds },
                     status: "PUBLISHED",
                 },
                 take: 3 - sameCategoryArticles.length,
-                orderBy: { views: "desc" },
+                orderBy: { createdAt: "desc" },
                 select: {
                     id: true,
                     title: true,
@@ -70,7 +72,7 @@ export default async function RelatedArticlesBottom({
                     createdAt: true,
                 },
             });
-            articles = [...sameCategoryArticles, ...popular];
+            articles = [...sameCategoryArticles, ...recentFallback];
         }
     }
 
@@ -87,7 +89,7 @@ export default async function RelatedArticlesBottom({
                     <Link
                         key={article.id}
                         href={`/articles/${article.slug}`}
-                        className="group bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard shadow-sm hover:shadow-md transition-shadow overflow-hidden"
+                        className="group bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm hover:shadow-md transition-shadow overflow-hidden"
                     >
                         <div className="relative aspect-[16/9] w-full overflow-hidden bg-gray-200 dark:bg-gray-800">
                             {article.thumbnail ? (

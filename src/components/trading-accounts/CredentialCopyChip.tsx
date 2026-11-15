@@ -37,18 +37,18 @@ export function CredentialCopyChip({
         <div
             onClick={(e) => e.stopPropagation()}
             className={cn(
-                "inline-flex h-8 items-center gap-2 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] pl-2.5 pr-1.5 shadow-2xs",
+                "inline-flex h-8 max-w-full min-w-0 items-center gap-2 rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] pl-2.5 pr-1.5 shadow-2xs",
                 className
             )}
         >
-            <div className="flex min-w-0 items-center gap-1.5">
+            <div className="flex min-w-0 flex-1 items-center gap-1.5">
                 {Icon && <Icon size={13} className="shrink-0 text-gray-400" />}
                 {label && (
                     <span className="shrink-0 text-[11px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
                         {label}:
                     </span>
                 )}
-                <span className="max-w-[180px] truncate font-mono tabular-nums text-xs font-bold text-gray-800 dark:text-gray-200 select-all">
+                <span className="max-w-[180px] min-w-0 truncate font-mono tabular-nums text-xs font-bold text-gray-800 dark:text-gray-200 select-all">
                     {displayValue ?? value}
                 </span>
             </div>

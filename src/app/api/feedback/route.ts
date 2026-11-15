@@ -1,8 +1,32 @@
 import { NextResponse } from "next/server";
+import { headers } from "next/headers";
+import { z } from "zod";
 import { getAuthUser } from "@/lib/auth-cache";
 import { prisma } from "@/lib/prisma";
 import { NotificationType, NotificationPriority } from "@prisma/client";
 import { NOTIFICATION_ROUTES } from "@/lib/notification-routes";
+import { checkAuthRateLimit } from "@/lib/security/auth-rate-limit";
+import { AUTH_ERRORS } from "@/lib/security/auth-errors";
+
+const createFeedbackSchema = z.object({
+    type: z.enum(["BUG", "FEATURE"], {
+        message: "Invalid type. Must be BUG or FEATURE",
+    }),
+    message: z
+        .string()
+        .trim()
+        .min(5, "Message must be at least 5 characters")
+        .max(1000, "Message must be at most 1000 characters"),
+});
+
+async function getClientIP(): Promise<string> {
+    const h = await headers();
+    const realIp = h.get("x-real-ip")?.trim();
+    if (realIp) return realIp;
+    const vercelIp = h.get("x-vercel-forwarded-for")?.split(",")[0]?.trim();
+    if (vercelIp) return vercelIp;
+    return h.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "127.0.0.1";
+}
 
 export async function POST(req: Request) {
     const user = await getAuthUser();
@@ -10,27 +34,35 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const ip = await getClientIP();
+    if (await checkAuthRateLimit("feedback", ip, user.email ?? undefined)) {
+        return NextResponse.json(
+            { error: AUTH_ERRORS.RATE_LIMIT_GENERIC },
+            { status: 429 }
+        );
+    }
+
     try {
-        const { type, message } = await req.json();
+        const body = await req.json();
+        const parsed = createFeedbackSchema.safeParse(body);
 
-        if (!type || !message?.trim()) {
+        if (!parsed.success) {
             return NextResponse.json(
-                { error: "Type and message are required" },
+                {
+                    error:
+                        parsed.error.issues[0]?.message ||
+                        "Type and message (5–1000 characters) are required",
+                },
                 { status: 400 }
             );
         }
 
-        if (!["BUG", "FEATURE"].includes(type)) {
-            return NextResponse.json(
-                { error: "Invalid type. Must be BUG or FEATURE" },
-                { status: 400 }
-            );
-        }
+        const { type, message } = parsed.data;
 
         const feedback = await prisma.feedback.create({
             data: {
                 type,
-                message: message.trim(),
+                message,
                 userId: user.id,
             },
         });
@@ -45,9 +77,9 @@ export async function POST(req: Request) {
             const label =
                 type === "BUG" ? "Bug Report" : "Feature Request";
             const preview =
-                message.trim().length > 80
-                    ? message.trim().slice(0, 80) + "…"
-                    : message.trim();
+                message.length > 80
+                    ? message.slice(0, 80) + "…"
+                    : message;
 
             await prisma.notification.createMany({
                 data: admins.map((admin) => ({

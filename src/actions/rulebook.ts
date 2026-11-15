@@ -235,6 +235,25 @@ export async function deleteTradingRule(id: string) {
 
 // --- TRADER GOALS ACTIONS ---
 
+function getGoalPeriodBounds(period: string, referenceDate: Date) {
+    if (period === "DAILY") {
+        const start = startOfDay(referenceDate);
+        const end = endOfDay(referenceDate);
+        const periodKey = `D-${start.getFullYear()}-${String(start.getMonth() + 1).padStart(2, "0")}-${String(start.getDate()).padStart(2, "0")}`;
+        return { start, end, periodKey };
+    }
+    if (period === "WEEKLY") {
+        const start = startOfWeek(referenceDate, { weekStartsOn: 1 });
+        const end = endOfWeek(referenceDate, { weekStartsOn: 1 });
+        const periodKey = `W-${start.getFullYear()}-${String(start.getMonth() + 1).padStart(2, "0")}-${String(start.getDate()).padStart(2, "0")}`;
+        return { start, end, periodKey };
+    }
+    const start = startOfMonth(referenceDate);
+    const end = endOfMonth(referenceDate);
+    const periodKey = `M-${start.getFullYear()}-${String(start.getMonth() + 1).padStart(2, "0")}`;
+    return { start, end, periodKey };
+}
+
 export async function getTraderGoalsList() {
     const user = await getAuthUser();
     if (!user) return [];
@@ -247,30 +266,59 @@ export async function getTraderGoalsList() {
         },
     });
 
-    // Dynamically calculate progress for each active goal
+    const now = new Date();
+
+    // Dynamically calculate progress for each goal within its current DAILY/WEEKLY/MONTHLY window
     const enrichedGoals = await Promise.all(
         goals.map(async (goal) => {
-            if (goal.status !== "ACTIVE") {
-                return { ...goal, progressValue: goal.targetValue || 0 };
+            if (goal.status === "CANCELLED") {
+                return { ...goal, progressValue: 0 };
             }
 
-            const now = new Date();
-            let start = goal.startsAt || now;
-            let end = goal.endsAt || now;
+            const {
+                start: periodStart,
+                end: periodEnd,
+                periodKey,
+            } = getGoalPeriodBounds(goal.period, now);
 
-            // If no explicit range, determine by period
-            if (!goal.startsAt) {
-                if (goal.period === "DAILY") {
-                    start = startOfDay(now);
-                    end = endOfDay(now);
-                } else if (goal.period === "WEEKLY") {
-                    start = startOfWeek(now, { weekStartsOn: 1 });
-                    end = endOfWeek(now, { weekStartsOn: 1 });
-                } else {
-                    start = startOfMonth(now);
-                    end = endOfMonth(now);
+            const metadata =
+                typeof goal.metadata === "object" && goal.metadata !== null
+                    ? (goal.metadata as Record<string, unknown>)
+                    : null;
+
+            const hasBoundedCampaignEnded = Boolean(
+                goal.endsAt && now > goal.endsAt
+            );
+
+            // Recurring goals (or active bounded goals) completed/tripped in a prior period
+            // reset automatically when the DAILY/WEEKLY/MONTHLY window rolls over.
+            const completedInCurrentPeriod =
+                metadata?.completedPeriodKey === periodKey ||
+                (!metadata?.completedPeriodKey && goal.updatedAt >= periodStart);
+
+            if (goal.status === "COMPLETED") {
+                if (hasBoundedCampaignEnded || completedInCurrentPeriod) {
+                    return {
+                        ...goal,
+                        progressValue: goal.targetValue || 0,
+                    };
                 }
             }
+
+            const effectiveStatus =
+                goal.status === "COMPLETED" &&
+                !hasBoundedCampaignEnded &&
+                !completedInCurrentPeriod
+                    ? "ACTIVE"
+                    : goal.status;
+
+            const start = hasBoundedCampaignEnded
+                ? goal.startsAt
+                : periodStart;
+            const end =
+                goal.endsAt && goal.endsAt < periodEnd
+                    ? goal.endsAt
+                    : periodEnd;
 
             let progressValue = 0;
 
@@ -278,6 +326,7 @@ export async function getTraderGoalsList() {
                 progressValue = await prisma.journalEntry.count({
                     where: {
                         userId: user.id,
+                        ...(goal.accountId ? { accountId: goal.accountId } : {}),
                         createdAt: { gte: start, lte: end },
                     },
                 });
@@ -285,6 +334,7 @@ export async function getTraderGoalsList() {
                 progressValue = await prisma.journalEntry.count({
                     where: {
                         userId: user.id,
+                        ...(goal.accountId ? { accountId: goal.accountId } : {}),
                         result: "LOSS",
                         followedPlan: { not: null },
                         exitDate: { gte: start, lte: end },
@@ -297,16 +347,52 @@ export async function getTraderGoalsList() {
                         checkedAt: { gte: start, lte: end },
                     },
                 });
-            } else {
-                const metadata = goal.metadata as Record<string, any> | null;
-                progressValue =
-                    typeof metadata === "object" && metadata !== null
-                        ? metadata.progress || 0
+            } else if (goal.type === "STOP_AFTER_LOSSES") {
+                const periodTrades = await prisma.journalEntry.findMany({
+                    where: {
+                        userId: user.id,
+                        ...(goal.accountId ? { accountId: goal.accountId } : {}),
+                        status: "CLOSED",
+                        exitDate: { gte: start, lte: end },
+                    },
+                    orderBy: { exitDate: "asc" },
+                    select: { result: true },
+                });
+
+                let currentStreak = 0;
+                let maxStreak = 0;
+                for (const t of periodTrades) {
+                    if (t.result === "LOSS") {
+                        currentStreak += 1;
+                        if (currentStreak > maxStreak) maxStreak = currentStreak;
+                    } else {
+                        currentStreak = 0;
+                    }
+                }
+
+                const manualInCurrentPeriod =
+                    metadata?.periodKey === periodKey &&
+                    typeof metadata?.progress === "number"
+                        ? metadata.progress
                         : 0;
+
+                progressValue = Math.max(maxStreak, manualInCurrentPeriod);
+            } else {
+                const manualInCurrentPeriod =
+                    metadata?.periodKey === periodKey &&
+                    typeof metadata?.progress === "number"
+                        ? metadata.progress
+                        : !metadata?.periodKey &&
+                            goal.updatedAt >= periodStart &&
+                            typeof metadata?.progress === "number"
+                          ? metadata.progress
+                          : 0;
+                progressValue = manualInCurrentPeriod;
             }
 
             return {
                 ...goal,
+                status: effectiveStatus,
                 progressValue,
             };
         })
@@ -385,14 +471,24 @@ export async function updateTraderGoalProgress(id: string, progress: number) {
         });
         if (!goal) return { error: "Goal not found" };
 
-        const currentMeta = (goal.metadata as Record<string, any>) || {};
-        const newMeta = { ...currentMeta, progress: parsed.data.progress };
+        const { periodKey } = getGoalPeriodBounds(goal.period, new Date());
+        const currentMeta =
+            typeof goal.metadata === "object" && goal.metadata !== null
+                ? (goal.metadata as Record<string, unknown>)
+                : {};
 
         // Automatically mark as COMPLETED if progress meets or exceeds targetValue
         const isCompleted = goal.targetValue
             ? parsed.data.progress >= goal.targetValue
             : false;
         const status = isCompleted ? "COMPLETED" : "ACTIVE";
+
+        const newMeta = {
+            ...currentMeta,
+            progress: parsed.data.progress,
+            periodKey,
+            completedPeriodKey: isCompleted ? periodKey : null,
+        };
 
         const updated = await prisma.traderGoal.update({
             where: { id: parsed.data.id, userId: user.id },

@@ -105,7 +105,7 @@ export async function checkQuestionAnswer(
         const [question, correctOption, selectedOption] = await Promise.all([
             prisma.question.findUnique({
                 where: { id: questionId },
-                select: { text: true },
+                select: { text: true, quizId: true },
             }),
             prisma.option.findFirst({
                 where: { questionId, isCorrect: true },
@@ -121,6 +121,23 @@ export async function checkQuestionAnswer(
 
         if (!question || !correctOption || !selectedOption) {
             return { error: "Question or Option not found" };
+        }
+
+        // Prevent pre-submission answer-key oracle scraping: require at least one
+        // submitted UserQuizAttempt on this quiz (unless caller is ADMIN).
+        const isAdmin = user.profile?.role === "ADMIN";
+        if (!isAdmin) {
+            const attemptCount = await prisma.userQuizAttempt.count({
+                where: {
+                    userId: user.id,
+                    quizId: question.quizId,
+                },
+            });
+            if (attemptCount === 0) {
+                return {
+                    error: "Submit your quiz attempt first before reviewing answer explanations.",
+                };
+            }
         }
 
         const isCorrect = correctOption.id === optionId;

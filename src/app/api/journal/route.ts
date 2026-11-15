@@ -2,6 +2,19 @@ import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { onUserTradesUpdated } from "@/lib/experiments/progress.server";
+
+const httpsImageArraySchema = z
+    .array(
+        z
+            .string()
+            .url()
+            .refine(
+                (u) => u.startsWith("https://"),
+                "Only HTTPS image URLs are allowed"
+            )
+    )
+    .max(5);
 
 const createEntrySchema = z.object({
     symbol: z.string().min(1, "Symbol is required"),
@@ -13,8 +26,12 @@ const createEntrySchema = z.object({
     commission: z.number().optional(),
     swap: z.number().optional(),
     status: z.enum(["OPEN", "CLOSED"]),
-    entryDate: z.string().transform((str) => new Date(str)),
+    entryDate: z
+        .string()
+        .transform((str) => new Date(str))
+        .refine((d) => !isNaN(d.getTime()), "Invalid entry date"),
     notes: z.string().optional(),
+    images: httpsImageArraySchema.optional().default([]),
 });
 
 export async function GET(request: Request) {
@@ -82,19 +99,25 @@ export async function POST(request: Request) {
         const entry = await prisma.journalEntry.create({
             data: {
                 userId: user.id,
-                images: [], // Explicitly empty array
+                shareMode: "private",
                 ...validatedData,
             },
         });
 
+        try {
+            await onUserTradesUpdated(user.id, entry.accountId || undefined);
+        } catch {
+            /* Experiment progress sync failure should not block entry creation */
+        }
+
         return NextResponse.json(entry);
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("JOURNAL POST ERROR:", error);
         if (error instanceof z.ZodError) {
             return NextResponse.json({ error: error.issues }, { status: 400 });
         }
         return NextResponse.json(
-            { error: "Internal Server Error", details: error.message },
+            { error: "Internal Server Error" },
             { status: 500 }
         );
     }

@@ -102,7 +102,7 @@ export function WhatYouFindInsideGrid({
         const Icon = chapter.icon;
 
         return (
-            <div className="flex h-full flex-col justify-between p-6 sm:p-8 md:pr-9 bg-white dark:bg-[#1E2028]">
+            <div className="flex h-full flex-col justify-between p-4 sm:p-8 md:pr-9 bg-white dark:bg-[#1E2028] min-w-0">
                 <div>
                     {/* Left Page Header */}
                     <div className="flex items-center justify-between text-[10px] tabular-nums font-bold uppercase tracking-widest text-gray-400 pb-3 mb-5 border-b border-gray-100 dark:border-white/10">
@@ -155,7 +155,7 @@ export function WhatYouFindInsideGrid({
                 </div>
 
                 {/* Left Page Footer */}
-                <div className="mt-6 pt-4 border-t border-gray-100 dark:border-white/10 flex items-center justify-between gap-3">
+                <div className="mt-6 pt-4 border-t border-gray-100 dark:border-white/10 flex flex-wrap items-center justify-between gap-2">
                     {chapterIdx > 0 ? (
                         <Button
                             type="button"
@@ -215,11 +215,11 @@ export function WhatYouFindInsideGrid({
                         triggerFlipTo(0);
                     }
                 }}
-                className="group/page relative flex h-full flex-col justify-between p-6 sm:p-8 md:pl-9 bg-white dark:bg-[#1E2028] cursor-pointer select-none"
+                className="group/page relative flex h-full flex-col justify-between p-4 sm:p-8 md:pl-9 bg-white dark:bg-[#1E2028] cursor-pointer select-none min-w-0"
             >
-                <div>
+                <div className="min-w-0">
                     {/* Right Page Header */}
-                    <div className="flex items-center justify-between text-[10px] tabular-nums font-bold uppercase tracking-widest text-gray-400 pb-3 mb-5 border-b border-gray-100 dark:border-white/10">
+                    <div className="flex flex-wrap items-center justify-between gap-1 text-[10px] tabular-nums font-bold uppercase tracking-widest text-gray-400 pb-3 mb-5 border-b border-gray-100 dark:border-white/10">
                         <span className="text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
                             <Sparkles size={11} /> LIVE FIELD SPECIMEN
                         </span>
@@ -227,20 +227,22 @@ export function WhatYouFindInsideGrid({
                     </div>
 
                     {/* Interactive Chapter Specimen */}
-                    <PlaybookSpecimen
-                        chapterIndex={chapterIdx}
-                        chapter={chapter}
-                    />
+                    <div className="min-w-0 overflow-x-auto">
+                        <PlaybookSpecimen
+                            chapterIndex={chapterIdx}
+                            chapter={chapter}
+                        />
+                    </div>
 
                     {/* Next Chapter Curiosity Teaser Box */}
                     <div className="mt-5 rounded-lg border border-amber-300/70 dark:border-gold/30 bg-amber-50/50 dark:bg-gold/[0.06] p-4 transition-all group-hover/page:border-gold">
                         {nextChap ? (
                             <>
-                                <div className="flex items-center justify-between text-[10px] tabular-nums font-black uppercase tracking-wider text-amber-700 dark:text-gold mb-1">
+                                <div className="flex flex-wrap items-center justify-between gap-1 text-[10px] tabular-nums font-black uppercase tracking-wider text-amber-700 dark:text-gold mb-1">
                                     <span>
                                         UP NEXT · CHAPTER {nextChap.chapterNumber}
                                     </span>
-                                    <span>CLICK TO FLIP PAGE ↷</span>
+                                    <span>CLICK TO FLIP PAGE</span>
                                 </div>
                                 <p className="text-xs sm:text-sm font-bold text-gray-900 dark:text-white leading-snug">
                                     {nextChap.teaserQuestion}
@@ -248,12 +250,12 @@ export function WhatYouFindInsideGrid({
                             </>
                         ) : (
                             <>
-                                <div className="flex items-center justify-between text-[10px] tabular-nums font-black uppercase tracking-wider text-emerald-600 dark:text-emerald-400 mb-1">
+                                <div className="flex flex-wrap items-center justify-between gap-1 text-[10px] tabular-nums font-black uppercase tracking-wider text-emerald-600 dark:text-emerald-400 mb-1">
                                     <span>PLAYBOOK COMPLETE (04 / 04)</span>
-                                    <span>FLIP TO CHAPTER 01 ↺</span>
+                                    <span>FLIP TO CHAPTER 01</span>
                                 </div>
                                 <p className="text-xs sm:text-sm font-bold text-gray-900 dark:text-white leading-snug">
-                                    You&apos;ve unlocked all 4 pillars of the GoldScalperNinja community. Click to flip back to Chapter 01.
+                                    You&apos;ve reviewed all 4 pillars of TheNextTrade community. Click to flip back to Chapter 01.
                                 </p>
                             </>
                         )}
@@ -261,8 +263,8 @@ export function WhatYouFindInsideGrid({
                 </div>
 
                 {/* Right Page Footer + Flip Action Button */}
-                <div className="mt-6 pt-4 border-t border-gray-100 dark:border-white/10 flex items-center justify-between gap-3 pr-8">
-                    <span className="text-[11px] tabular-nums font-semibold text-gray-400">
+                <div className="mt-6 pt-4 border-t border-gray-100 dark:border-white/10 flex flex-wrap items-center justify-between gap-2 pr-8 sm:pr-10">
+                    <span className="text-[11px] tabular-nums font-semibold text-gray-400 shrink-0">
                         Page {chapter.rightPageNum} of 08
                     </span>
 
@@ -280,14 +282,19 @@ export function WhatYouFindInsideGrid({
                                 triggerFlipTo(0);
                             }
                         }}
-                        className="h-8 px-3.5 text-xs font-black shadow-sm"
+                        className="h-8 px-3 sm:px-3.5 text-xs font-black shadow-sm max-w-full"
                     >
-                        <span>
+                        <span className="sm:hidden truncate">
+                            {nextChap
+                                ? `Flip to Chapter ${nextChap.chapterNumber}`
+                                : "Back to Chapter 01"}
+                        </span>
+                        <span className="hidden sm:inline truncate">
                             {nextChap
                                 ? `Flip to Chapter ${nextChap.chapterNumber}: ${nextChap.title}`
                                 : "Flip Back to Chapter 01"}
                         </span>
-                        <ArrowRight size={13} className="ml-1.5" />
+                        <ArrowRight size={13} className="ml-1.5 shrink-0" />
                     </Button>
                 </div>
 
@@ -361,7 +368,7 @@ export function WhatYouFindInsideGrid({
 
             {/* 3D Open Hardcover Book Container */}
             <div
-                className="relative rounded-xl p-2 sm:p-3.5 bg-gray-200/90 dark:bg-[#11141D] border border-gray-300 dark:border-white/15 shadow-[0_22px_55px_rgba(15,23,42,0.1)] dark:shadow-[0_26px_65px_rgba(0,0,0,0.45)]"
+                className="relative rounded-xl p-2 sm:p-3.5 bg-gray-200/90 dark:bg-[#11141D] border border-gray-300 dark:border-white/15 shadow-[0_22px_55px_rgba(15,23,42,0.1)] dark:shadow-[0_26px_65px_rgba(0,0,0,0.45)] overflow-hidden"
                 style={{ perspective: "2000px" }}
             >
                 {/* Stacked Paper Edges Illusion (Left & Right Rims) */}

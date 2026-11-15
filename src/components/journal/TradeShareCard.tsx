@@ -5,8 +5,47 @@ import { cn } from "@/lib/utils";
 import { TradingViewMiniChart } from "./TradingViewMiniChart";
 import { formatDashboardCurrency, normalizeCurrencyCode } from "@/lib/utils/cent-account";
 
+export interface ShareCardEntry {
+    id?: string;
+    symbol: string;
+    type: "BUY" | "SELL" | string;
+    status?: string;
+    entryPrice: number;
+    exitPrice?: number | null;
+    entryDate: Date | string;
+    exitDate?: Date | string | null;
+    stopLoss?: number | null;
+    takeProfit?: number | null;
+    lotSize?: number | null;
+    pnl?: number | null;
+    commission?: number | null;
+    swap?: number | null;
+    netPnl?: number | null;
+    percentGain?: number | null;
+    isWin?: boolean;
+    isLoss?: boolean;
+    showMoney?: boolean;
+    showPercentMetrics?: boolean;
+    shareMode?: string | null;
+    shareDescription?: string | null;
+    externalTicket?: string | null;
+    account?: {
+        accountType?: string | null;
+        currency?: string | null;
+        server?: string | null;
+        initialBalance?: number | null;
+        balance?: number | null;
+    } | null;
+    user?: {
+        profile?: {
+            showMoney?: boolean;
+            showPercentMetrics?: boolean;
+        } | null;
+    } | null;
+}
+
 interface TradeShareCardProps {
-    entry: any; // Using any for simplicity with existing JournalEntry type
+    entry: ShareCardEntry | null;
     variant: "basic" | "full";
     className?: string;
     currency?: string;
@@ -19,12 +58,21 @@ export function TradeShareCard({
     currency,
 }: TradeShareCardProps) {
     if (!entry) return null;
+
     const entryCurrency = normalizeCurrencyCode(
         entry.account?.currency || currency,
         entry.account?.server
     );
 
-    const isWin = entry.pnl && entry.pnl > 0;
+    const netPnl =
+        typeof entry.netPnl === "number"
+            ? entry.netPnl
+            : (entry.pnl ?? 0) + (entry.commission ?? 0) + (entry.swap ?? 0);
+
+    const isWin =
+        typeof entry.isWin === "boolean" ? entry.isWin : netPnl > 0;
+    const isLoss =
+        typeof entry.isLoss === "boolean" ? entry.isLoss : netPnl < 0;
 
     // Hit logic
     const isBuy = entry.type === "BUY";
@@ -41,21 +89,51 @@ export function TradeShareCard({
                 : entry.exitPrice >= entry.stopLoss
             : false;
 
-    // Theme Colors based on Result
-
     const bgGradient = isWin
         ? "from-emerald-500/10 to-transparent"
-        : "from-red-500/10 to-transparent";
-    const textColor = isWin ? "text-emerald-500" : "text-red-500";
-    const badgeBg = isWin ? "bg-emerald-500" : "bg-red-500";
+        : isLoss
+          ? "from-red-500/10 to-transparent"
+          : "from-slate-500/10 to-transparent";
+    const textColor = isWin
+        ? "text-emerald-500"
+        : isLoss
+          ? "text-red-500"
+          : "text-slate-500";
+    const badgeBg = isWin
+        ? "bg-emerald-500"
+        : isLoss
+          ? "bg-red-500"
+          : "bg-slate-500";
 
-    const percentGain = entry.pnl
-        ? ((entry.pnl / 10000) * 100).toFixed(2)
-        : "0.00";
     const showMoney =
         entry.showMoney !== undefined
             ? entry.showMoney
-            : (entry.user?.profile?.showMoney ?? true);
+            : (entry.user?.profile?.showMoney ?? false);
+
+    const showPercentMetrics =
+        entry.showPercentMetrics !== undefined
+            ? entry.showPercentMetrics
+            : (entry.user?.profile?.showPercentMetrics !== false);
+
+    const resolvedPercentGain: number | null = (() => {
+        if (!showPercentMetrics) return null;
+        if (entry.percentGain !== undefined) {
+            return entry.percentGain;
+        }
+        const baseBalance =
+            entry.account?.initialBalance && entry.account.initialBalance > 0
+                ? entry.account.initialBalance
+                : entry.account?.balance && entry.account.balance > 0
+                  ? entry.account.balance
+                  : null;
+        if (baseBalance === null) return null;
+        return Number(((netPnl / baseBalance) * 100).toFixed(2));
+    })();
+
+    const formattedPercentGain =
+        resolvedPercentGain !== null
+            ? `${resolvedPercentGain > 0 ? "+" : ""}${resolvedPercentGain.toFixed(2)}%`
+            : null;
 
     return (
         <div
@@ -124,7 +202,7 @@ export function TradeShareCard({
                                 {entry.type}
                             </span>
                             <span>|</span>
-                            <span className="font-mono tabular-nums">{Number(entry.lotSize)} Lots</span>
+                            <span className="font-mono tabular-nums">{Number(entry.lotSize || 0)} Lots</span>
                             <span>|</span>
                             <span>{entry.symbol}</span>
                         </div>
@@ -136,16 +214,17 @@ export function TradeShareCard({
                                 textColor
                             )}
                         >
-                            {showMoney ? (
-                                formatDashboardCurrency(entry.pnl || 0, entryCurrency, {
-                                    signDisplay: "always",
-                                })
-                            ) : (
-                                <>
-                                    {entry.pnl && entry.pnl > 0 ? "+" : ""}
-                                    {percentGain}%
-                                </>
-                            )}
+                            {showMoney
+                                ? formatDashboardCurrency(netPnl, entryCurrency, {
+                                      signDisplay: "always",
+                                  })
+                                : formattedPercentGain !== null
+                                  ? formattedPercentGain
+                                  : isWin
+                                    ? "WIN"
+                                    : isLoss
+                                      ? "LOSS"
+                                      : "BE"}
                         </div>
                     </div>
 
@@ -159,7 +238,13 @@ export function TradeShareCard({
                                 {Number(entry.entryPrice)}
                             </span>
                         </div>
-                        <div className="flex justify-between items-center pb-2 border-b border-dashboard">
+                        <div
+                            className={cn(
+                                "flex justify-between items-center",
+                                formattedPercentGain !== null &&
+                                    "pb-2 border-b border-dashboard"
+                            )}
+                        >
                             <span className="text-gray-500 font-bold text-xs uppercase tracking-wider">
                                 Exit Price
                             </span>
@@ -179,16 +264,21 @@ export function TradeShareCard({
                                 </span>
                             </div>
                         </div>
-                        <div className="flex justify-between items-center">
-                            <span className="text-gray-500 font-bold text-xs uppercase tracking-wider">
-                                Gain
-                            </span>
-                            <span
-                                className={cn("font-black font-mono tabular-nums text-lg", textColor)}
-                            >
-                                {percentGain}%
-                            </span>
-                        </div>
+                        {formattedPercentGain !== null && (
+                            <div className="flex justify-between items-center">
+                                <span className="text-gray-500 font-bold text-xs uppercase tracking-wider">
+                                    Gain
+                                </span>
+                                <span
+                                    className={cn(
+                                        "font-black font-mono tabular-nums text-lg",
+                                        textColor
+                                    )}
+                                >
+                                    {formattedPercentGain}
+                                </span>
+                            </div>
+                        )}
                     </div>
                 </div>
 
@@ -220,8 +310,16 @@ export function TradeShareCard({
                                 exitPrice={Number(
                                     entry.exitPrice || entry.entryPrice
                                 )}
-                                entryDate={entry.entryDate}
-                                exitDate={entry.exitDate}
+                                entryDate={
+                                    entry.entryDate instanceof Date
+                                        ? entry.entryDate.toISOString()
+                                        : entry.entryDate
+                                }
+                                exitDate={
+                                    entry.exitDate instanceof Date
+                                        ? entry.exitDate.toISOString()
+                                        : (entry.exitDate ?? undefined)
+                                }
                                 stopLoss={
                                     entry.stopLoss
                                         ? Number(entry.stopLoss)
@@ -232,7 +330,7 @@ export function TradeShareCard({
                                         ? Number(entry.takeProfit)
                                         : null
                                 }
-                                type={entry.type}
+                                type={entry.type === "SELL" ? "SELL" : "BUY"}
                                 isWin={!!isWin}
                                 tradeId={entry.id || "default"}
                             />

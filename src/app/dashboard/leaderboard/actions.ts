@@ -7,7 +7,7 @@ import { getTier, getPercentile, getTierProgress } from "@/lib/gamification";
 
 import { revalidatePath } from "next/cache";
 import { isRealTradingAccount } from "@/lib/loyalty/loyalty.server";
-import { normalizeUsdBalance } from "@/lib/utils/cent-account";
+import { convertToUsdEquivalent } from "@/lib/utils/cent-account";
 import { notifyAdminsOfCompetitionJoin } from "@/lib/admin/admin-notification.server";
 import { isCompetitionsEnabled as getCompetitionsEnabled } from "@/actions/admin/competitions";
 
@@ -28,7 +28,7 @@ export interface LeaderboardEntry {
     percentile: number;
     totalTrades: number;
     pnl: number | null;
-    winRate?: number;
+    winRate?: number | null;
 }
 
 export interface UserBadgeInfo {
@@ -52,6 +52,7 @@ export interface LeaderboardResponse {
         studyTimeMinutes?: number;
         totalTrades?: number;
         pnl?: number | null;
+        winRate?: number | null;
         badges?: UserBadgeInfo[];
         memberSince?: string;
     } | null;
@@ -395,6 +396,7 @@ interface ProfilePrivacyInfo {
     userId: string;
     showRealName: boolean;
     showMoney: boolean;
+    showPercentMetrics: boolean;
     username: string | null;
 }
 
@@ -409,6 +411,7 @@ async function getProfilePrivacyMap(
                 userId: true,
                 showRealName: true,
                 showMoney: true,
+                showPercentMetrics: true,
                 username: true,
             },
         });
@@ -443,6 +446,7 @@ function maskLeaderboardEntry(
     const isCurrentUser = isCallerLoggedIn && callerUserId === raw.userId;
     const showRealName = privacy?.showRealName ?? false;
     const showMoney = privacy?.showMoney ?? false;
+    const showPercentMetrics = privacy?.showPercentMetrics ?? true;
 
     // 1. Name masking:
     // If not caller's own entry, check privacy settings:
@@ -460,20 +464,27 @@ function maskLeaderboardEntry(
     // Mask internal user UUIDs for anonymous callers so private user IDs are not leaked
     const safeUserId = isCallerLoggedIn ? raw.userId : `trader_${raw.userId.slice(0, 8)}`;
 
-    // 3. PnL / Money masking:
-    // If showMoney is false or caller is not logged in, mask exact dollar PnL
+    // 3. PnL / Money & Percent Metrics masking:
+    // Never expose raw dollar totalPnl disguised as Win Rate / % when showPercentMetrics is false
     const canShowMoney = isCurrentUser || (isCallerLoggedIn && showMoney);
+    const canShowPercent = isCurrentUser || showPercentMetrics;
     const safePnl: number | null = canShowMoney ? raw.pnl : null;
+    const safeWinRate: number | null | undefined =
+        raw.winRate === undefined ? undefined : canShowPercent ? raw.winRate : null;
 
     let safeValue = raw.value;
     let safeLabel = raw.label;
     if (raw.label === "$" && !canShowMoney) {
-        if (raw.winRate !== undefined) {
+        if (canShowPercent && raw.winRate !== undefined) {
             safeValue = raw.winRate;
             safeLabel = "%";
         } else {
             safeValue = 0;
+            safeLabel = "Hidden";
         }
+    } else if (raw.label === "%" && !canShowPercent) {
+        safeValue = 0;
+        safeLabel = "Hidden";
     }
 
     // 4. Avatar: conceal for anonymous scrapers if name is hidden
@@ -487,6 +498,7 @@ function maskLeaderboardEntry(
         value: safeValue,
         label: safeLabel,
         pnl: safePnl,
+        winRate: safeWinRate,
     };
 }
 
@@ -857,58 +869,119 @@ async function getTradingLeaderboard(
               )})`
             : Prisma.empty;
 
-    const results = await prisma.$queryRaw<
+    const rawAccountRows = await prisma.$queryRaw<
         Array<{
             userId: string;
             name: string;
             image: string | null;
             xp: number;
             level: number;
-            winRate: number;
+            updatedAt: Date;
+            currency: string | null;
+            server: string | null;
+            wins: bigint;
+            winLossCount: bigint;
             totalTrades: bigint;
-            totalPnl: number | null;
+            rawNetPnl: number | null;
         }>
     >`
- SELECT u.id AS "userId", u.name, u.image, u.xp, u.level,
- COALESCE(
-   ROUND(
-     COUNT(CASE WHEN je.result = 'WIN' THEN 1 END) * 100.0
-     / NULLIF(COUNT(CASE WHEN je.result IN ('WIN', 'LOSS') THEN 1 END), 0),
-     1
-   ),
-   0
- ) AS "winRate",
+ SELECT u.id AS "userId", u.name, u.image, u.xp, u.level, u."updatedAt",
+ ta.currency AS "currency",
+ ta.server AS "server",
+ COUNT(CASE WHEN je.result = 'WIN' THEN 1 END) AS "wins",
+ COUNT(CASE WHEN je.result IN ('WIN', 'LOSS') THEN 1 END) AS "winLossCount",
  COUNT(*) AS "totalTrades",
  COALESCE(
-   SUM(
-     (COALESCE(je.pnl, 0) + COALESCE(je.commission, 0) + COALESCE(je.swap, 0))
-     * CASE
-         WHEN UPPER(COALESCE(ta.currency, 'USD')) IN ('USC', 'USCENT', 'USDCENT', 'CENT', 'US_CENT', 'USDT_CENT', 'EUC', 'EURC', 'EURCENT', 'EU_CENT', 'GBC', 'GBPC', 'GBPCENT', 'GB_CENT')
-           OR COALESCE(ta.server, '') ILIKE '%cent%'
-           OR COALESCE(ta.account_type, '') ILIKE '%cent%'
-         THEN 0.01
-         ELSE 1.0
-       END
-   ),
+   SUM(COALESCE(je.pnl, 0) + COALESCE(je.commission, 0) + COALESCE(je.swap, 0)),
    0
- ) AS "totalPnl"
+ ) AS "rawNetPnl"
  FROM "users" u
  ${sprintJoinSql}
  WHERE u."showOnLeaderboard" = true
  ${brokerFilterSql}
- -- A closed trade's PnL belongs to the period it was closed in, matching
- -- the exitDate-based date filters used everywhere else in analytics.
  AND je."exitDate" >= ${cutoffDate}
  AND je."exitDate" <= ${endDate}
  AND je.status = 'CLOSED'
  AND COALESCE(je.sync_source, 'MANUAL') <> 'MANUAL'
- GROUP BY u.id, u.name, u.image, u.xp, u.level
- HAVING COUNT(*) >= ${minTrades}
- ORDER BY ${sortBy === "percentage" ? Prisma.raw('"winRate" DESC NULLS LAST') : Prisma.raw('"totalPnl" DESC NULLS LAST')}, "totalTrades" DESC NULLS LAST, u."updatedAt" DESC NULLS LAST
- LIMIT ${limit}
+ GROUP BY u.id, u.name, u.image, u.xp, u.level, u."updatedAt", ta.id, ta.currency, ta.server
+ LIMIT 1000
  `;
 
-    const total = results.length;
+    const computeArenaMetrics = () => {
+        const byUser = new Map<
+            string,
+            {
+                userId: string;
+                name: string;
+                image: string | null;
+                xp: number;
+                level: number;
+                updatedAt: number;
+                wins: number;
+                winLossCount: number;
+                totalTrades: number;
+                totalPnl: number;
+            }
+        >();
+
+        for (const row of rawAccountRows) {
+            const usdPnl = convertToUsdEquivalent(
+                Number(row.rawNetPnl ?? 0),
+                row.currency,
+                row.server
+            );
+            const existing = byUser.get(row.userId);
+            const rowUpdated = row.updatedAt ? new Date(row.updatedAt).getTime() : 0;
+            if (existing) {
+                existing.wins += Number(row.wins);
+                existing.winLossCount += Number(row.winLossCount);
+                existing.totalTrades += Number(row.totalTrades);
+                existing.totalPnl = Number((existing.totalPnl + usdPnl).toFixed(2));
+                if (rowUpdated > existing.updatedAt) {
+                    existing.updatedAt = rowUpdated;
+                }
+            } else {
+                byUser.set(row.userId, {
+                    userId: row.userId,
+                    name: row.name,
+                    image: row.image,
+                    xp: row.xp,
+                    level: row.level,
+                    updatedAt: rowUpdated,
+                    wins: Number(row.wins),
+                    winLossCount: Number(row.winLossCount),
+                    totalTrades: Number(row.totalTrades),
+                    totalPnl: usdPnl,
+                });
+            }
+        }
+
+        const qualified = Array.from(byUser.values())
+            .filter((u) => u.totalTrades >= minTrades)
+            .map((u) => ({
+                ...u,
+                winRate:
+                    u.winLossCount > 0
+                        ? Number(((u.wins * 100) / u.winLossCount).toFixed(1))
+                        : 0,
+            }));
+
+        qualified.sort((a, b) => {
+            const primaryDiff =
+                sortBy === "percentage"
+                    ? b.winRate - a.winRate
+                    : b.totalPnl - a.totalPnl;
+            if (primaryDiff !== 0) return primaryDiff;
+            if (b.totalTrades !== a.totalTrades) return b.totalTrades - a.totalTrades;
+            return b.updatedAt - a.updatedAt;
+        });
+
+        return qualified;
+    };
+
+    const allRanked = computeArenaMetrics();
+    const results = allRanked.slice(0, limit);
+    const total = allRanked.length;
 
     const enrichedUserIds = results.map((r) => r.userId);
     const [enriched, privacyMap] = await Promise.all([
@@ -943,12 +1016,13 @@ async function getTradingLeaderboard(
     );
 
     let myRank = null;
-    let rivals = null;
+    const rivals = null;
 
     if (userId) {
-        const myStats = results.find((r) => r.userId === userId);
-        if (myStats) {
-            const rank = results.findIndex((r) => r.userId === userId) + 1;
+        const rankIdx = allRanked.findIndex((r) => r.userId === userId);
+        if (rankIdx !== -1) {
+            const myStats = allRanked[rankIdx];
+            const rank = rankIdx + 1;
 
             myRank = {
                 rank,
@@ -961,6 +1035,7 @@ async function getTradingLeaderboard(
                 level: myStats.level,
                 totalTrades: Number(myStats.totalTrades),
                 pnl: Number(myStats.totalPnl ?? 0),
+                winRate: Number(myStats.winRate),
             };
         }
     }
@@ -1105,40 +1180,6 @@ export async function getLeaderboardSidebarData(
         return { showOnLeaderboard: false, accounts: [] };
     }
 
-    const [user, rawAccounts] = await Promise.all([
-        prisma.user.findUnique({
-            where: { id: userId },
-            select: { showOnLeaderboard: true },
-        }),
-        prisma.tradingAccount.findMany({
-            where: { userId },
-            select: {
-                id: true,
-                name: true,
-                accountNumber: true,
-                broker: true,
-                currency: true,
-                accountType: true,
-                server: true,
-                useForLeaderboard: true,
-                journalEntries: {
-                    where: {
-                        status: "CLOSED",
-                        syncSource: { not: "MANUAL" },
-                    },
-                    select: {
-                        pnl: true,
-                        commission: true,
-                        swap: true,
-                        entryDate: true,
-                    },
-                },
-            },
-        }),
-    ]);
-
-    const accounts = rawAccounts.filter((acc) => isRealTradingAccount(acc));
-
     const now = new Date();
     const startOfDay = new Date(
         now.getFullYear(),
@@ -1149,28 +1190,77 @@ export async function getLeaderboardSidebarData(
     startOfWeek.setDate(now.getDate() - now.getDay());
     startOfWeek.setHours(0, 0, 0, 0);
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const earliestRangeStart =
+        startOfWeek < startOfMonth ? startOfWeek : startOfMonth;
+
+    const [user, rawAccounts] = await Promise.all([
+        prisma.user.findUnique({
+            where: { id: userId },
+            select: { showOnLeaderboard: true },
+        }),
+        prisma.tradingAccount.findMany({
+            where: { userId },
+            take: 25,
+            orderBy: { createdAt: "desc" },
+            select: {
+                id: true,
+                name: true,
+                accountNumber: true,
+                broker: true,
+                currency: true,
+                accountType: true,
+                server: true,
+                useForLeaderboard: true,
+                _count: {
+                    select: {
+                        journalEntries: {
+                            where: {
+                                status: "CLOSED",
+                                syncSource: { not: "MANUAL" },
+                            },
+                        },
+                    },
+                },
+                journalEntries: {
+                    where: {
+                        status: "CLOSED",
+                        syncSource: { not: "MANUAL" },
+                        OR: [
+                            { exitDate: { gte: earliestRangeStart } },
+                            {
+                                exitDate: null,
+                                entryDate: { gte: earliestRangeStart },
+                            },
+                        ],
+                    },
+                    take: 5000,
+                    select: {
+                        pnl: true,
+                        commission: true,
+                        swap: true,
+                        entryDate: true,
+                        exitDate: true,
+                    },
+                },
+            },
+        }),
+    ]);
+
+    const accounts = rawAccounts.filter((acc) => isRealTradingAccount(acc));
 
     const enrichedAccounts: UserTradingAccountInfo[] = accounts.map((acc) => {
         let daily = 0;
         let weekly = 0;
         let monthly = 0;
-        let hasData = false;
 
         acc.journalEntries.forEach((je) => {
             const pnl =
                 (je.pnl ?? 0) + (je.commission ?? 0) + (je.swap ?? 0);
-            const date = new Date(je.entryDate);
+            const date = new Date(je.exitDate ?? je.entryDate);
             if (date >= startOfDay) daily += pnl;
             if (date >= startOfWeek) weekly += pnl;
             if (date >= startOfMonth) monthly += pnl;
-            hasData = true;
         });
-
-        const normOpts = {
-            currency: acc.currency,
-            server: acc.server,
-            accountType: acc.accountType,
-        };
 
         return {
             id: acc.id,
@@ -1179,11 +1269,11 @@ export async function getLeaderboardSidebarData(
             broker: acc.broker,
             useForLeaderboard: acc.useForLeaderboard,
             pnl: {
-                daily: normalizeUsdBalance(daily, normOpts),
-                weekly: normalizeUsdBalance(weekly, normOpts),
-                monthly: normalizeUsdBalance(monthly, normOpts),
+                daily: convertToUsdEquivalent(daily, acc.currency, acc.server),
+                weekly: convertToUsdEquivalent(weekly, acc.currency, acc.server),
+                monthly: convertToUsdEquivalent(monthly, acc.currency, acc.server),
             },
-            hasData,
+            hasData: acc._count.journalEntries > 0,
         };
     });
 

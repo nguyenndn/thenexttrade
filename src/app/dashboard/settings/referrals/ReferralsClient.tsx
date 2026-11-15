@@ -53,14 +53,14 @@ export function ReferralsClient({ referralCode, data }: ReferralsClientProps) {
     ];
 
     return (
-        <div className="space-y-5">
+        <div className="space-y-5 min-w-0">
             <div className="overflow-hidden rounded-xl border border-dashboard bg-white dark:bg-[#1E2028] shadow-sm">
-                <div className="flex items-start justify-between gap-4 p-5">
-                    <div className="flex items-start gap-4">
-                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-gold/10 border border-gold/20">
-                            <Gift size={24} className="text-amber-600 dark:text-gold" />
+                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 p-4 sm:p-5">
+                    <div className="flex items-start gap-3.5 sm:gap-4 min-w-0">
+                        <div className="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-lg bg-gold/10 border border-gold/20">
+                            <Gift size={22} className="text-amber-600 dark:text-gold" />
                         </div>
-                        <div>
+                        <div className="min-w-0">
                             <h2 className="text-lg font-bold text-gray-700 dark:text-white">
                                 Referral Program
                             </h2>
@@ -68,24 +68,24 @@ export function ReferralsClient({ referralCode, data }: ReferralsClientProps) {
                                 Invite traders and earn Edge when they verify
                                 their account.
                             </p>
-                            <div className="mt-3 inline-flex items-center gap-2 rounded-lg border border-gold/20 bg-gold/10 px-3 py-2 text-xs font-semibold text-amber-800 dark:text-gold">
-                                <Info size={14} />
-                                {data.qualifiedDefinition}
+                            <div className="mt-3 inline-flex items-start gap-2 rounded-lg border border-gold/20 bg-gold/10 px-3 py-2 text-xs font-semibold text-amber-800 dark:text-gold">
+                                <Info size={14} className="shrink-0 mt-0.5" />
+                                <span>{data.qualifiedDefinition}</span>
                             </div>
                         </div>
                     </div>
-                    <span className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 text-xs font-bold font-mono tabular-nums text-emerald-600 dark:text-emerald-400">
+                    <span className="inline-flex self-start shrink-0 items-center gap-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 text-xs font-bold font-mono tabular-nums text-emerald-600 dark:text-emerald-400">
                         <Users size={14} />
                         {data.totalReferrals.toLocaleString()} qualified
                     </span>
                 </div>
 
-                <div className="border-t border-dashboard px-5 py-4">
+                <div className="border-t border-dashboard px-4 sm:px-5 py-4">
                     <div className="grid gap-3 md:grid-cols-3">
                         {stats.map((stat) => (
                             <div
                                 key={stat.label}
-                                className="flex items-center gap-3 rounded-lg border border-dashboard bg-gray-50/80 dark:bg-[#151925] p-3"
+                                className="flex items-center gap-3 rounded-lg border border-dashboard bg-gray-50/80 dark:bg-[#151925] p-3 min-w-0"
                             >
                                 <div
                                     className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${stat.bgColor}`}
@@ -111,19 +111,19 @@ export function ReferralsClient({ referralCode, data }: ReferralsClientProps) {
                     </div>
                 </div>
 
-                <div className="border-t border-dashboard px-5 py-4">
+                <div className="border-t border-dashboard px-4 sm:px-5 py-4">
                     <p className="mb-2 text-xs font-bold uppercase tracking-wide text-gray-600 dark:text-gray-300">
                         Your referral link
                     </p>
-                    <div className="flex items-stretch gap-0">
-                        <div className="flex flex-1 items-center truncate rounded-l-lg border border-r-0 border-dashboard bg-gray-50/80 dark:bg-[#151925] px-4 py-2.5 font-mono text-sm text-gray-600 dark:text-gray-300">
-                            {referralLink}
+                    <div className="flex items-stretch gap-0 min-w-0 w-full">
+                        <div className="flex flex-1 min-w-0 items-center overflow-hidden rounded-l-lg border border-r-0 border-dashboard bg-gray-50/80 dark:bg-[#0B0E14] px-3 sm:px-4 py-2.5 font-mono text-xs sm:text-sm text-gray-600 dark:text-gray-300">
+                            <span className="truncate min-w-0">{referralLink}</span>
                         </div>
                         <Button
                             type="button"
                             size="smd"
                             onClick={handleCopy}
-                            className="flex items-center gap-2 rounded-l-none rounded-r-lg border-none bg-gold px-5 font-bold !text-white transition-all hover:bg-amber-600 active:scale-95"
+                            className="shrink-0 flex items-center gap-1.5 sm:gap-2 rounded-l-none rounded-r-lg border-none bg-gold px-3.5 sm:px-5 font-bold !text-white transition-all hover:bg-amber-600 active:scale-95"
                         >
                             {copied ? (
                                 <>

@@ -9,7 +9,26 @@ import {
     Tooltip,
     ResponsiveContainer,
 } from "recharts";
-import { TrendingUp } from "lucide-react";
+import {
+    TrendingUp,
+    ShieldCheck,
+    Smile,
+    Crosshair,
+    Clock,
+    Zap,
+    Minus,
+    Moon,
+    HelpCircle,
+    AlertCircle,
+    ShieldAlert,
+    Flame,
+    Frown,
+    Timer,
+    Swords,
+    Sparkles,
+    Activity,
+    type LucideIcon,
+} from "lucide-react";
 import { format, parseISO } from "date-fns";
 import { ChartEmptyState } from "@/components/ui/ChartEmptyState";
 
@@ -25,29 +44,54 @@ interface EmotionTrendChartProps {
     data: TrendPoint[];
 }
 
-const EMOTION_EMOJI: Record<string, string> = {
-    Confident: "😎",
-    Calm: "😌",
-    Focused: "🎯",
-    Patient: "⏳",
-    Excited: "🤩",
-    Neutral: "😐",
-    Tired: "😴",
-    Uncertain: "🤷",
-    Anxious: "😰",
-    Fearful: "😨",
-    Greedy: "🤑",
-    Frustrated: "😤",
-    Impatient: "⏰",
-    Revenge: "😡",
-    FOMO: "🏃",
-    Overconfident: "🧸",
+const EMOTION_ICON_MAP: Record<string, LucideIcon> = {
+    Confident: ShieldCheck,
+    Calm: Smile,
+    Focused: Crosshair,
+    Patient: Clock,
+    Excited: Zap,
+    Neutral: Minus,
+    Tired: Moon,
+    Uncertain: HelpCircle,
+    Anxious: AlertCircle,
+    Fearful: ShieldAlert,
+    Greedy: Flame,
+    Frustrated: Frown,
+    Impatient: Timer,
+    Revenge: Swords,
+    FOMO: TrendingUp,
+    Overconfident: Sparkles,
 };
+
+const POSITIVE_EMOTIONS = new Set([
+    "Confident",
+    "Calm",
+    "Focused",
+    "Patient",
+    "Excited",
+]);
+
+const NEGATIVE_EMOTIONS = new Set([
+    "Anxious",
+    "Fearful",
+    "Greedy",
+    "Frustrated",
+    "Impatient",
+    "Revenge",
+    "FOMO",
+    "Overconfident",
+]);
+
+function getEmotionColor(emotion: string): string {
+    if (POSITIVE_EMOTIONS.has(emotion)) return "#10B981";
+    if (NEGATIVE_EMOTIONS.has(emotion)) return "#EF4444";
+    return "#6366F1";
+}
 
 export function EmotionTrendChart({ data }: EmotionTrendChartProps) {
     if (!data || data.length < 2) {
         return (
-            <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard shadow-sm h-auto sm:h-[530px] flex flex-col overflow-hidden">
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm h-auto sm:h-[530px] flex flex-col overflow-hidden">
                 <div className="px-5 pt-5 pb-3 shrink-0">
                     <div className="flex items-center gap-3">
                         <div className="p-2 bg-indigo-500/10 rounded-lg text-indigo-500">
@@ -76,11 +120,10 @@ export function EmotionTrendChart({ data }: EmotionTrendChartProps) {
     const chartData = data.map((d) => ({
         ...d,
         label: format(parseISO(d.weekStart), "MMM dd"),
-        emoji: EMOTION_EMOJI[d.dominantEmotion] || "•",
     }));
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard shadow-sm h-auto sm:h-[530px] flex flex-col overflow-hidden">
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm h-auto sm:h-[530px] flex flex-col overflow-hidden">
             <div className="px-5 pt-5 pb-3 shrink-0">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
@@ -151,30 +194,46 @@ export function EmotionTrendChart({ data }: EmotionTrendChartProps) {
                         <Tooltip
                             content={({ active, payload }) => {
                                 if (!active || !payload?.length) return null;
-                                const d = payload[0].payload;
+                                const d = payload[0].payload as TrendPoint & {
+                                    label: string;
+                                };
+                                const MoodIcon =
+                                    EMOTION_ICON_MAP[d.dominantEmotion] ||
+                                    Activity;
                                 return (
-                                    <div className="bg-white dark:bg-[#1E2028] p-3 border border-dashboard rounded-lg shadow-xl text-sm">
-                                        <p className="font-bold text-gray-700 dark:text-white mb-1">
+                                    <div className="bg-white dark:bg-[#1E2028] p-3 border border-dashboard rounded-lg shadow-xl text-xs">
+                                        <p className="font-bold text-gray-800 dark:text-white mb-1 text-sm">
                                             Week of {d.label}
                                         </p>
                                         <p className="text-gray-600 dark:text-gray-300">
                                             Win Rate:{" "}
-                                            <span className="font-bold text-primary">
+                                            <span className="font-bold font-mono tabular-nums text-primary">
                                                 {d.winRate.toFixed(0)}%
                                             </span>
                                         </p>
                                         <p className="text-gray-600 dark:text-gray-300">
                                             Avg P&L:{" "}
                                             <span
-                                                className={`font-bold ${d.avgPnL >= 0 ? "text-primary" : "text-red-500"}`}
+                                                className={`font-bold font-mono tabular-nums ${d.avgPnL >= 0 ? "text-primary" : "text-red-500"}`}
                                             >
                                                 ${d.avgPnL.toFixed(2)}
                                             </span>
                                         </p>
-                                        <p className="text-gray-600 dark:text-gray-300">
-                                            Mood: {d.emoji} {d.dominantEmotion}
-                                        </p>
-                                        <p className="text-gray-400 text-xs mt-1">
+                                        <div className="flex items-center gap-1.5 text-gray-600 dark:text-gray-300 mt-1">
+                                            <span>Mood:</span>
+                                            <MoodIcon
+                                                size={13}
+                                                style={{
+                                                    color: getEmotionColor(
+                                                        d.dominantEmotion
+                                                    ),
+                                                }}
+                                            />
+                                            <span className="font-semibold text-gray-800 dark:text-gray-100">
+                                                {d.dominantEmotion || "Neutral"}
+                                            </span>
+                                        </div>
+                                        <p className="text-gray-400 text-xs mt-1 font-mono tabular-nums">
                                             {d.tradeCount} trades
                                         </p>
                                     </div>
@@ -188,19 +247,29 @@ export function EmotionTrendChart({ data }: EmotionTrendChartProps) {
                             strokeWidth={2.5}
                             fillOpacity={1}
                             fill="url(#trendGradient)"
-                            dot={({ cx, cy, payload }: any) => (
-                                <text
-                                    key={payload.weekStart}
-                                    x={cx}
-                                    y={cy - 12}
-                                    textAnchor="middle"
-                                    fontSize={14}
-                                >
-                                    {payload.emoji}
-                                </text>
-                            )}
+                            dot={(dotProps: {
+                                cx?: number;
+                                cy?: number;
+                                payload?: TrendPoint;
+                            }) => {
+                                const { cx = 0, cy = 0, payload } = dotProps;
+                                const color = getEmotionColor(
+                                    payload?.dominantEmotion || ""
+                                );
+                                return (
+                                    <circle
+                                        key={payload?.weekStart || `${cx}-${cy}`}
+                                        cx={cx}
+                                        cy={cy}
+                                        r={4.5}
+                                        fill={color}
+                                        stroke="#ffffff"
+                                        strokeWidth={2}
+                                    />
+                                );
+                            }}
                             activeDot={{
-                                r: 5,
+                                r: 6,
                                 fill: "#6366F1",
                                 stroke: "#fff",
                                 strokeWidth: 2,

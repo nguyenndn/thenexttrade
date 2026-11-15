@@ -125,7 +125,7 @@ Mỗi chu kỳ xử lý của hàm `process_job()` tuân thủ nghiêm ngặt 7 
 * Được xây dựng trên nền tảng **Tkinter (Dark Theme)** tương thích tuyệt đối với mọi phiên bản Windows 10/11:
   - **Header & Telemetry Monitor**: Hiển thị trực quan tài khoản đang sync (`#1610076507`), Server (`STARTRADERFinancial-Demo`), Mật khẩu, Chế độ sync và Bước xử lý hiện tại.
   - **Form cấu hình trực tiếp**:
-    - `API_BASE_URL`: Địa chỉ web platform (ví dụ `https://thenexttrade.com` hoặc `http://localhost:3000`).
+    - `API_BASE_URL`: Địa chỉ web platform (ví dụ `https://thenexttrade.app` hoặc `http://localhost:3000`).
     - `WORKER_KEY`: Khóa bảo mật của Worker.
     - `WORKER_ID`: Tên định danh máy (ví dụ `laptop-kee-01`).
     - `POLL_INTERVAL`: Tần suất kiểm tra job (mặc định 10 giây).

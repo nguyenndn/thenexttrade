@@ -16,6 +16,8 @@ import {
     Mail,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { buttonVariants } from "@/components/ui/button-variants";
+import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { toast } from "sonner";
 import {
@@ -360,14 +362,13 @@ function StepConnectAccount({
                     <Link
                         href={addHref}
                         onClick={() => onCtaClick("CONNECT_ACCOUNT", addHref)}
+                        className="bg-gold hover:bg-amber-600 !text-white font-extrabold text-xs h-9 px-5 rounded-lg shadow-sm shadow-amber-500/20 hover:shadow-md active:scale-95 transition-all duration-200 inline-flex items-center justify-center gap-1.5 border-0 group"
                     >
-                        <Button className="bg-gold hover:bg-amber-600 !text-white font-extrabold text-xs h-9 px-5 rounded-lg shadow-sm shadow-amber-500/20 hover:shadow-md active:scale-95 transition-all duration-200 flex items-center gap-1.5 border-0 group">
-                            <span>Add Account</span>
-                            <ArrowRight
-                                size={14}
-                                className="transition-transform group-hover:translate-x-0.5"
-                            />
-                        </Button>
+                        <span>Add Account</span>
+                        <ArrowRight
+                            size={14}
+                            className="transition-transform group-hover:translate-x-0.5"
+                        />
                     </Link>
                 </div>
             </div>
@@ -562,14 +563,13 @@ function StepBringFirstData({
                 <Link
                     href={c.href}
                     onClick={() => onCtaClick("BRING_FIRST_DATA", c.href)}
+                    className="bg-gold hover:bg-amber-600 !text-white font-extrabold text-xs h-9 px-4 rounded-lg shadow-sm shadow-amber-500/20 hover:shadow-md active:scale-95 transition-all duration-200 inline-flex items-center justify-center gap-1.5 border-0 group mt-1"
                 >
-                    <Button className="bg-gold hover:bg-amber-600 !text-white font-extrabold text-xs h-9 px-4 rounded-lg shadow-sm shadow-amber-500/20 hover:shadow-md active:scale-95 transition-all duration-200 flex items-center gap-1.5 border-0 group mt-1">
-                        <span>{c.cta}</span>
-                        <ArrowRight
-                            size={14}
-                            className="transition-transform group-hover:translate-x-0.5"
-                        />
-                    </Button>
+                    <span>{c.cta}</span>
+                    <ArrowRight
+                        size={14}
+                        className="transition-transform group-hover:translate-x-0.5"
+                    />
                 </Link>
             </div>
 
@@ -617,23 +617,24 @@ function StepReviewDashboard({
                 </div>
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-1">
-                    <Link href="/dashboard" onClick={onComplete}>
-                        <Button className="bg-gold hover:bg-amber-600 !text-white font-extrabold text-xs h-9 px-5 rounded-lg shadow-sm shadow-amber-500/20 hover:shadow-md active:scale-95 transition-all duration-200 flex items-center gap-1.5 border-0 group">
-                            <BarChart3 size={14} />
-                            <span>Open Dashboard</span>
-                        </Button>
+                    <Link
+                        href="/dashboard"
+                        onClick={onComplete}
+                        className="bg-gold hover:bg-amber-600 !text-white font-extrabold text-xs h-9 px-5 rounded-lg shadow-sm shadow-amber-500/20 hover:shadow-md active:scale-95 transition-all duration-200 inline-flex items-center justify-center gap-1.5 border-0 group"
+                    >
+                        <BarChart3 size={14} />
+                        <span>Open Dashboard</span>
                     </Link>
                     {tradeCount >= 3 && (
                         <Link
                             href="/dashboard/reports/weekly"
                             onClick={onComplete}
+                            className={cn(
+                                buttonVariants({ variant: "outline" }),
+                                "font-extrabold text-xs h-9 px-4 rounded-lg border-gray-200 dark:border-white/10 hover:border-gold/30 transition-all"
+                            )}
                         >
-                            <Button
-                                variant="outline"
-                                className="font-extrabold text-xs h-9 px-4 rounded-lg border-gray-200 dark:border-white/10 hover:border-gold/30 transition-all"
-                            >
-                                Generate Weekly Review
-                            </Button>
+                            Generate Weekly Review
                         </Link>
                     )}
                 </div>

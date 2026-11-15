@@ -150,9 +150,9 @@ export function SystemDetailModal({
                                             {product.name}
                                         </DialogTitle>
                                         <span className="px-2 py-0.5 bg-black/5 dark:bg-white/5 text-gray-600 dark:text-gray-300 text-[10px] font-semibold rounded-lg font-mono">
-                                            v{product.version}
+                                            v{product.version.replace(/^v/i, "")}
                                         </span>
-                                        {(product as any).isFree ? (
+                                        {product.isFree ? (
                                             <span className="px-2 py-0.5 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-lg text-[10px] font-semibold border border-amber-500/20">
                                                 FREE
                                             </span>

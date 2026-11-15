@@ -201,7 +201,7 @@ export default async function CertificatePage({
 
                         <div className="mt-4 flex items-center gap-2 rounded-lg bg-emerald-50 dark:bg-emerald-500/5 border border-emerald-200/60 dark:border-emerald-500/20 px-4 py-3 text-xs font-bold text-emerald-700 dark:text-emerald-400">
                             <CheckCircle2 size={14} />
-                            Verified — issued by TheNextTrade.com
+                            Verified — issued by thenexttrade.app
                         </div>
                     </div>
                 </div>

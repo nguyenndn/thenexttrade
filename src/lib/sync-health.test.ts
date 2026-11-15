@@ -93,10 +93,32 @@ describe("computeSyncHealth", () => {
         expect(res.primaryAction.action).toBe("view_dashboard");
     });
 
-    it("should catch missing trade data connections (received > 0 but imported 0)", () => {
+    it("should catch missing trade data connections (received > 0, imported 0, skipped 0)", () => {
         const recentDate = new Date(
             Date.now() - 1000 * 60 * 60 * 2
         ).toISOString(); // 2 hours ago
+        const res = computeSyncHealth({
+            status: "APPROVED",
+            syncSource: "EA_SYNC",
+            lastHeartbeat: recentDate,
+            appLastHeartbeat: null,
+            lastSync: recentDate,
+            totalTrades: 42,
+            resyncRequest: null,
+            latestSyncHistory: {
+                tradesReceived: 5,
+                tradesImported: 0,
+                tradesSkipped: 0,
+                createdAt: recentDate,
+            },
+        });
+        expect(res.status).toBe("missing_trade_data");
+    });
+
+    it("should treat sync batches where all received trades were skipped as duplicates as healthy", () => {
+        const recentDate = new Date(
+            Date.now() - 1000 * 60 * 60 * 2
+        ).toISOString();
         const res = computeSyncHealth({
             status: "APPROVED",
             syncSource: "EA_SYNC",
@@ -112,6 +134,6 @@ describe("computeSyncHealth", () => {
                 createdAt: recentDate,
             },
         });
-        expect(res.status).toBe("missing_trade_data");
+        expect(res.status).toBe("healthy");
     });
 });

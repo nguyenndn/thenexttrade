@@ -64,7 +64,10 @@ export default async function LibraryPage(props: LibraryPageProps) {
     const query = params?.q || "";
     const categorySlug = params?.category;
     const tagSlug = params?.tag;
-    const currentPage = Number(params?.page) || 1;
+    const parsedPage = parseInt(params?.page || "1", 10);
+    const currentPage = Number.isFinite(parsedPage)
+        ? Math.max(1, parsedPage)
+        : 1;
     const sortBy = params?.sort || "newest";
     const ITEMS_PER_PAGE = 9;
 

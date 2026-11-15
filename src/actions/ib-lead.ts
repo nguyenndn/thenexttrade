@@ -335,7 +335,9 @@ export async function getIbOverviewStats(range: IbStatsFilter = "30d") {
 
     // Out-of-IB active trader ratio (Doc #3 Step 5)
     const activeConfirmedUsers = new Set(
-        monitoredAccounts.filter((a) => (a as any).ibAttribution === "CONFIRMED").map((a) => a.userId)
+        monitoredAccounts
+            .filter((a) => a.ibAttribution === "CONFIRMED")
+            .map((a) => a.userId)
     );
     const totalActiveUsers = new Set(monitoredAccounts.map((a) => a.userId)).size;
     const outOfIbActiveCount = Math.max(0, totalActiveUsers - activeConfirmedUsers.size);

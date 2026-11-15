@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { ArrowUp, ArrowDown } from "lucide-react";
+import { useState, useMemo } from "react";
+import { ArrowUp, ArrowDown, AlertCircle } from "lucide-react";
 import { motion } from "framer-motion";
-import { calculateRiskReward } from "@/lib/calculators";
+import { calculateRiskReward, DEFAULT_PAIR_PRICES } from "@/lib/calculators";
 import { CurrencyPairSelect } from "./CurrencyPairSelect";
 import { CalcInput } from "./CalcInput";
 import { cn } from "@/lib/utils";
@@ -18,20 +18,30 @@ export function RiskRewardCalc() {
         pair: "EURUSD",
     });
 
-    const [result, setResult] = useState<{
-        riskPips: number;
-        rewardPips: number;
-        rrRatio: number;
-        rrString: string;
-        winRateToBreakeven: number;
-    } | null>(null);
-
-    useEffect(() => {
-        if (inputs.entryPrice && inputs.stopLoss && inputs.takeProfit) {
-            const calc = calculateRiskReward(inputs);
-            setResult(calc);
+    const validationError = useMemo(() => {
+        const { entryPrice, stopLoss, takeProfit, direction } = inputs;
+        if (entryPrice <= 0 || stopLoss <= 0 || takeProfit <= 0) {
+            return "Entry Price, Stop Loss, and Take Profit must all be positive prices.";
         }
+        if (direction === "LONG") {
+            if (stopLoss >= entryPrice) {
+                return "For a LONG setup, Stop Loss must be placed strictly below Entry Price.";
+            }
+            if (takeProfit <= entryPrice) {
+                return "For a LONG setup, Take Profit must be placed strictly above Entry Price.";
+            }
+        } else {
+            if (stopLoss <= entryPrice) {
+                return "For a SHORT setup, Stop Loss must be placed strictly above Entry Price.";
+            }
+            if (takeProfit >= entryPrice) {
+                return "For a SHORT setup, Take Profit must be placed strictly below Entry Price.";
+            }
+        }
+        return null;
     }, [inputs]);
+
+    const result = useMemo(() => calculateRiskReward(inputs), [inputs]);
 
     return (
         <div className="grid lg:grid-cols-12 gap-8">
@@ -111,7 +121,50 @@ export function RiskRewardCalc() {
                         </label>
                         <CurrencyPairSelect
                             value={inputs.pair}
-                            onChange={(v) => setInputs({ ...inputs, pair: v })}
+                            onChange={(v) => {
+                                const defaults =
+                                    DEFAULT_PAIR_PRICES[v.toUpperCase()];
+                                if (defaults) {
+                                    const riskDelta = Math.abs(
+                                        defaults.exitLong - defaults.price
+                                    );
+                                    setInputs({
+                                        ...inputs,
+                                        pair: v,
+                                        entryPrice: defaults.price,
+                                        stopLoss:
+                                            inputs.direction === "LONG"
+                                                ? Number(
+                                                      (
+                                                          defaults.price -
+                                                          riskDelta
+                                                      ).toFixed(5)
+                                                  )
+                                                : Number(
+                                                      (
+                                                          defaults.price +
+                                                          riskDelta
+                                                      ).toFixed(5)
+                                                  ),
+                                        takeProfit:
+                                            inputs.direction === "LONG"
+                                                ? Number(
+                                                      (
+                                                          defaults.price +
+                                                          riskDelta * 2
+                                                      ).toFixed(5)
+                                                  )
+                                                : Number(
+                                                      (
+                                                          defaults.price -
+                                                          riskDelta * 2
+                                                      ).toFixed(5)
+                                                  ),
+                                    });
+                                } else {
+                                    setInputs({ ...inputs, pair: v });
+                                }
+                            }}
                         />
                     </div>
 
@@ -192,67 +245,90 @@ export function RiskRewardCalc() {
                             })}
                         </div>
                     </div>
+                    {validationError && (
+                        <div className="flex items-start gap-2.5 rounded-xl border border-red-500/25 bg-red-500/10 p-3.5 text-xs font-medium text-red-600 dark:text-red-400">
+                            <AlertCircle
+                                size={16}
+                                className="shrink-0 mt-0.5"
+                            />
+                            <span>{validationError}</span>
+                        </div>
+                    )}
                 </div>
             </div>
 
             <div className="lg:col-span-5">
-                <div className="bg-white dark:bg-[#151925] border border-dashboard p-6 rounded-lg h-full flex flex-col justify-center text-center shadow-lg relative overflow-hidden">
-                    {result && (
-                        <div className="relative z-10">
-                            <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2">
+                <div className="bg-white dark:bg-[#151925] border border-dashboard p-6 rounded-xl h-full flex flex-col justify-center text-center shadow-lg relative overflow-hidden">
+                    {validationError ? (
+                        <div className="relative z-10 space-y-2 py-8">
+                            <p className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                 Risk : Reward Ratio
                             </p>
-                            <p
-                                className={cn(
-                                    "text-5xl font-black mb-4",
-                                    result.rrRatio >= 2
-                                        ? "text-primary"
-                                        : result.rrRatio >= 1
-                                          ? "text-yellow-500"
-                                          : "text-red-500"
-                                )}
-                            >
-                                {result.rrString}
+                            <p className="text-4xl font-black font-mono text-red-500">
+                                Invalid Setup
                             </p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400 max-w-xs mx-auto leading-relaxed">
+                                {validationError}
+                            </p>
+                        </div>
+                    ) : (
+                        result && (
+                            <div className="relative z-10">
+                                <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2">
+                                    Risk : Reward Ratio
+                                </p>
+                                <p
+                                    className={cn(
+                                        "text-5xl font-black font-mono tabular-nums mb-4",
+                                        result.rrRatio >= 2
+                                            ? "text-primary"
+                                            : result.rrRatio >= 1
+                                              ? "text-yellow-500"
+                                              : "text-red-500"
+                                    )}
+                                >
+                                    {result.rrString}
+                                </p>
 
-                            <div className="flex items-center justify-center gap-2 mb-8">
-                                <span className="px-3 py-1 bg-red-100 dark:bg-red-500/10 text-red-600 dark:text-red-400 text-sm font-bold rounded-lg border border-red-200 dark:border-red-500/20">
-                                    {result.riskPips} pips
-                                </span>
-                                <span className="text-gray-500 dark:text-gray-300">
-                                    vs
-                                </span>
-                                <span className="px-3 py-1 bg-green-100 dark:bg-green-500/10 text-green-600 dark:text-green-400 text-sm font-bold rounded-lg border border-green-200 dark:border-green-500/20">
-                                    {result.rewardPips} pips
-                                </span>
-                            </div>
+                                <div className="flex items-center justify-center gap-2 mb-8">
+                                    <span className="px-3 py-1 bg-red-100 dark:bg-red-500/10 text-red-600 dark:text-red-400 text-sm font-bold font-mono tabular-nums rounded-lg border border-red-200 dark:border-red-500/20">
+                                        {result.riskPips} pips
+                                    </span>
+                                    <span className="text-gray-500 dark:text-gray-300">
+                                        vs
+                                    </span>
+                                    <span className="px-3 py-1 bg-green-100 dark:bg-green-500/10 text-green-600 dark:text-green-400 text-sm font-bold font-mono tabular-nums rounded-lg border border-green-200 dark:border-green-500/20">
+                                        {result.rewardPips} pips
+                                    </span>
+                                </div>
 
-                            {/* Visual R:R Bar */}
-                            <div className="mb-6">
-                                <div className="flex gap-1 h-6 rounded-lg overflow-hidden">
-                                    <div
-                                        className="bg-red-500 rounded-l-lg flex items-center justify-center text-[10px] font-bold text-white"
-                                        style={{
-                                            width: `${result.riskPips + result.rewardPips > 0 ? Math.min(50, (result.riskPips / (result.riskPips + result.rewardPips)) * 100) : 50}%`,
-                                        }}
-                                    >
-                                        SL
-                                    </div>
-                                    <div className="bg-green-500 rounded-r-lg flex items-center justify-center text-[10px] font-bold text-white flex-1">
-                                        TP
+                                {/* Visual R:R Bar */}
+                                <div className="mb-6">
+                                    <div className="flex gap-1 h-6 rounded-lg overflow-hidden">
+                                        <div
+                                            className="bg-red-500 rounded-l-lg flex items-center justify-center text-[10px] font-bold text-white"
+                                            style={{
+                                                width: `${result.riskPips + result.rewardPips > 0 ? Math.min(50, (result.riskPips / (result.riskPips + result.rewardPips)) * 100) : 50}%`,
+                                            }}
+                                        >
+                                            SL
+                                        </div>
+                                        <div className="bg-green-500 rounded-r-lg flex items-center justify-center text-[10px] font-bold text-white flex-1">
+                                            TP
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div className="pt-6 border-t border-dashboard">
-                                <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">
-                                    Win Rate to Breakeven
-                                </p>
-                                <p className="text-xl font-bold text-gray-700 dark:text-white">
-                                    {result.winRateToBreakeven}%
-                                </p>
+                                <div className="pt-6 border-t border-dashboard">
+                                    <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">
+                                        Win Rate to Breakeven
+                                    </p>
+                                    <p className="text-xl font-bold font-mono tabular-nums text-gray-700 dark:text-white">
+                                        {result.winRateToBreakeven}%
+                                    </p>
+                                </div>
                             </div>
-                        </div>
+                        )
                     )}
                 </div>
             </div>

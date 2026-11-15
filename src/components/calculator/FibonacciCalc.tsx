@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
+import { AlertCircle, ArrowUp, ArrowDown } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { CalcInput } from "./CalcInput";
 
@@ -18,6 +19,8 @@ export function FibonacciCalc() {
         trend: "uptrend" as "uptrend" | "downtrend",
     });
 
+    const isValidRange = inputs.swingHigh > inputs.swingLow;
+
     const levels = useMemo(() => {
         const diff = inputs.swingHigh - inputs.swingLow;
         const activeLevels =
@@ -26,6 +29,13 @@ export function FibonacciCalc() {
                 : EXTENSION_LEVELS;
 
         return activeLevels.map((level) => {
+            if (!isValidRange) {
+                return {
+                    level: `${(level * 100).toFixed(1)}%`,
+                    price: null as number | null,
+                    isKey: [0.382, 0.5, 0.618, 1.618].includes(level),
+                };
+            }
             let price: number;
             if (inputs.fibType === "retracement") {
                 price =
@@ -40,11 +50,11 @@ export function FibonacciCalc() {
             }
             return {
                 level: `${(level * 100).toFixed(1)}%`,
-                price: price,
+                price,
                 isKey: [0.382, 0.5, 0.618, 1.618].includes(level),
             };
         });
-    }, [inputs]);
+    }, [inputs, isValidRange]);
 
     const getLevelColor = (levelStr: string) => {
         if (levelStr === "0.0%" || levelStr === "100.0%")
@@ -144,7 +154,8 @@ export function FibonacciCalc() {
                                 }}
                             />
                         )}
-                        ↑ Uptrend
+                        <ArrowUp size={15} />
+                        <span>Uptrend</span>
                     </Button>
                     <Button
                         type="button"
@@ -171,7 +182,8 @@ export function FibonacciCalc() {
                                 }}
                             />
                         )}
-                        ↓ Downtrend
+                        <ArrowDown size={15} />
+                        <span>Downtrend</span>
                     </Button>
                 </div>
 
@@ -199,10 +211,20 @@ export function FibonacciCalc() {
                         step="0.0001"
                     />
                 </div>
+
+                {!isValidRange && (
+                    <div className="flex items-start gap-2.5 rounded-xl border border-red-500/25 bg-red-500/10 p-3.5 text-xs font-medium text-red-600 dark:text-red-400">
+                        <AlertCircle size={16} className="shrink-0 mt-0.5" />
+                        <span>
+                            Swing High must be strictly greater than Swing Low
+                            to project Fibonacci levels.
+                        </span>
+                    </div>
+                )}
             </div>
 
             {/* Fibonacci Levels Visual */}
-            <div className="bg-white dark:bg-white/5 rounded-lg border border-dashboard overflow-hidden">
+            <div className="bg-white dark:bg-white/5 rounded-xl border border-dashboard overflow-hidden">
                 <div className="px-4 py-3 border-b border-dashboard">
                     <p className="text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                         Fibonacci{" "}
@@ -236,14 +258,16 @@ export function FibonacciCalc() {
                                     {level.level}
                                 </span>
                             </div>
-                            <span className="font-mono font-bold text-gray-700 dark:text-white text-base">
-                                {level.price.toFixed(
-                                    inputs.swingHigh > 100
-                                        ? 2
-                                        : inputs.swingHigh > 10
-                                          ? 3
-                                          : 5
-                                )}
+                            <span className="font-mono tabular-nums font-bold text-gray-700 dark:text-white text-base">
+                                {level.price === null
+                                    ? "—"
+                                    : level.price.toFixed(
+                                          inputs.swingHigh > 100
+                                              ? 2
+                                              : inputs.swingHigh > 10
+                                                ? 3
+                                                : 5
+                                      )}
                             </span>
                         </div>
                     ))}

@@ -1,5 +1,6 @@
 import { cache } from "react";
 import { prisma } from "@/lib/prisma";
+import { convertToUsdEquivalent } from "@/lib/utils/cent-account";
 
 // ============================================================================
 // TYPES
@@ -167,43 +168,54 @@ async function getVerifiedPublicStats(
 
     const rows = await prisma.$queryRaw<
         Array<{
+            currency: string | null;
+            server: string | null;
             totalTrades: bigint;
-            winRate: number | null;
-            avgWin: number | null;
-            avgLoss: number | null;
+            wins: bigint;
+            winLossCount: bigint;
+            winPnlSum: number | null;
+            winPnlCount: bigint;
+            lossPnlSum: number | null;
+            lossPnlCount: bigint;
             latestExitDate: Date | null;
         }>
     >`
  SELECT
+   ta.currency AS "currency",
+   ta.server AS "server",
    COUNT(*) AS "totalTrades",
+   COUNT(CASE WHEN je.result = 'WIN' THEN 1 END) AS "wins",
+   COUNT(CASE WHEN je.result IN ('WIN', 'LOSS') THEN 1 END) AS "winLossCount",
    COALESCE(
-     ROUND(
-       COUNT(CASE WHEN je.result = 'WIN' THEN 1 END) * 100.0
-       / NULLIF(COUNT(CASE WHEN je.result IN ('WIN', 'LOSS') THEN 1 END), 0),
-       1
-     ),
-     0
-   ) AS "winRate",
-   COALESCE(
-     AVG(
+     SUM(
        CASE
          WHEN (COALESCE(je.pnl, 0) + COALESCE(je.commission, 0) + COALESCE(je.swap, 0)) > 0
          THEN (COALESCE(je.pnl, 0) + COALESCE(je.commission, 0) + COALESCE(je.swap, 0))
        END
      ),
      0
-   ) AS "avgWin",
-   ABS(
-     COALESCE(
-       AVG(
-         CASE
-           WHEN (COALESCE(je.pnl, 0) + COALESCE(je.commission, 0) + COALESCE(je.swap, 0)) < 0
-           THEN (COALESCE(je.pnl, 0) + COALESCE(je.commission, 0) + COALESCE(je.swap, 0))
-         END
-       ),
-       0
-     )
-   ) AS "avgLoss",
+   ) AS "winPnlSum",
+   COUNT(
+     CASE
+       WHEN (COALESCE(je.pnl, 0) + COALESCE(je.commission, 0) + COALESCE(je.swap, 0)) > 0
+       THEN 1
+     END
+   ) AS "winPnlCount",
+   COALESCE(
+     SUM(
+       CASE
+         WHEN (COALESCE(je.pnl, 0) + COALESCE(je.commission, 0) + COALESCE(je.swap, 0)) < 0
+         THEN ABS(COALESCE(je.pnl, 0) + COALESCE(je.commission, 0) + COALESCE(je.swap, 0))
+       END
+     ),
+     0
+   ) AS "lossPnlSum",
+   COUNT(
+     CASE
+       WHEN (COALESCE(je.pnl, 0) + COALESCE(je.commission, 0) + COALESCE(je.swap, 0)) < 0
+       THEN 1
+     END
+   ) AS "lossPnlCount",
    MAX(je."exitDate") AS "latestExitDate"
  FROM "journal_entries" je
  INNER JOIN "trading_accounts" ta ON ta.id = je."accountId"
@@ -214,15 +226,58 @@ async function getVerifiedPublicStats(
    AND COALESCE(je.sync_source, 'MANUAL') <> 'MANUAL'
    AND je."exitDate" >= ${startDate}
    AND je."exitDate" <= ${endDate}
+ GROUP BY ta.id, ta.currency, ta.server
  `;
 
-    const r = rows[0];
+    let totalTrades = 0;
+    let totalWins = 0;
+    let totalWinLosses = 0;
+    let totalUsdWinPnl = 0;
+    let totalWinPnlCount = 0;
+    let totalUsdLossPnl = 0;
+    let totalLossPnlCount = 0;
+    let latestExitDate: Date | null = null;
+
+    for (const r of rows) {
+        totalTrades += Number(r.totalTrades ?? 0);
+        totalWins += Number(r.wins ?? 0);
+        totalWinLosses += Number(r.winLossCount ?? 0);
+        totalUsdWinPnl += convertToUsdEquivalent(
+            Number(r.winPnlSum ?? 0),
+            r.currency,
+            r.server
+        );
+        totalWinPnlCount += Number(r.winPnlCount ?? 0);
+        totalUsdLossPnl += convertToUsdEquivalent(
+            Math.abs(Number(r.lossPnlSum ?? 0)),
+            r.currency,
+            r.server
+        );
+        totalLossPnlCount += Number(r.lossPnlCount ?? 0);
+
+        if (
+            r.latestExitDate &&
+            (!latestExitDate || r.latestExitDate > latestExitDate)
+        ) {
+            latestExitDate = r.latestExitDate;
+        }
+    }
+
+    const winRate =
+        totalWinLosses > 0
+            ? Number(((totalWins * 100) / totalWinLosses).toFixed(1))
+            : 0;
+    const avgWin =
+        totalWinPnlCount > 0 ? totalUsdWinPnl / totalWinPnlCount : 0;
+    const avgLoss =
+        totalLossPnlCount > 0 ? totalUsdLossPnl / totalLossPnlCount : 0;
+
     return {
-        totalTrades: Number(r?.totalTrades ?? 0),
-        winRate: Number(r?.winRate ?? 0),
-        avgWin: Number(r?.avgWin ?? 0),
-        avgLoss: Number(r?.avgLoss ?? 0),
-        latestExitDate: r?.latestExitDate ?? null,
+        totalTrades,
+        winRate,
+        avgWin,
+        avgLoss,
+        latestExitDate,
     };
 }
 
@@ -430,12 +485,17 @@ export const getPublicProfileData = cache(
             : null,
 
         tradingStyle: (() => {
-            const userSettings = (profile.user.settings as Record<string, any>) || {};
-            const showTradingStyle =
-                (profile as any).showTradingStyle ??
-                userSettings.profileSettings?.showTradingStyle ??
-                userSettings.showTradingStyle ??
-                true;
+            const userSettings =
+                (profile.user.settings as Record<string, unknown>) || {};
+            const profileSettings =
+                (userSettings.profileSettings as Record<string, unknown> | undefined) || {};
+            const profileExt = profile as unknown as { showTradingStyle?: boolean };
+            const showTradingStyle = Boolean(
+                profileExt.showTradingStyle ??
+                    profileSettings.showTradingStyle ??
+                    userSettings.showTradingStyle ??
+                    true
+            );
             const style = userSettings.tradingStyle as {
                 archetype: string;
                 archetypeTitle: string;
@@ -456,12 +516,16 @@ export const getPublicProfileData = cache(
             showPairStats: profile.showPairStats,
             showSessionStats: profile.showSessionStats,
             showTradingStyle: (() => {
-                const userSettings = (profile.user.settings as Record<string, any>) || {};
-                return (
-                    (profile as any).showTradingStyle ??
-                    userSettings.profileSettings?.showTradingStyle ??
-                    userSettings.showTradingStyle ??
-                    true
+                const userSettings =
+                    (profile.user.settings as Record<string, unknown>) || {};
+                const profileSettings =
+                    (userSettings.profileSettings as Record<string, unknown> | undefined) || {};
+                const profileExt = profile as unknown as { showTradingStyle?: boolean };
+                return Boolean(
+                    profileExt.showTradingStyle ??
+                        profileSettings.showTradingStyle ??
+                        userSettings.showTradingStyle ??
+                        true
                 );
             })(),
             showMoney: profile.showMoney,

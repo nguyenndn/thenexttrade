@@ -205,17 +205,23 @@ export function LeaderboardRow({
                         )}
                     </td>
                     <td className="py-3.5 px-3 hidden sm:table-cell">
-                        <div
-                            className={cn(
-                                "flex items-center gap-1 text-sm text-green-500 tabular-nums",
-                                sortBy === "percentage"
-                                    ? "font-black"
-                                    : "font-semibold opacity-75"
-                            )}
-                        >
-                            <Trophy size={14} />
-                            {(entry.winRate ?? entry.value).toFixed(1)}%
-                        </div>
+                        {entry.winRate == null ? (
+                            <span className="text-sm font-semibold text-gray-400 dark:text-gray-500 tabular-nums">
+                                Hidden
+                            </span>
+                        ) : (
+                            <div
+                                className={cn(
+                                    "flex items-center gap-1 text-sm text-green-500 tabular-nums",
+                                    sortBy === "percentage"
+                                        ? "font-black"
+                                        : "font-semibold opacity-75"
+                                )}
+                            >
+                                <Trophy size={14} />
+                                {entry.winRate.toFixed(1)}%
+                            </div>
+                        )}
                     </td>
                     <td className="py-3.5 px-3 hidden md:table-cell">
                         <div className="flex items-center gap-1 text-xs text-gray-600 dark:text-gray-300 tabular-nums">

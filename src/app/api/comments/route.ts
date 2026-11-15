@@ -3,14 +3,25 @@ import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { sanitizeInput } from "@/lib/sanitize";
+function sanitizeCommentPlainText(raw: string): string {
+    if (!raw) return "";
+    return raw
+        .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "")
+        .replace(/<[^>]*>/g, "")
+        .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "")
+        .trim();
+}
 
 const createCommentSchema = z
     .object({
-        content: z.string().min(1, "Comment cannot be empty"),
+        content: z
+            .string()
+            .trim()
+            .min(1, "Comment cannot be empty")
+            .max(2000, "Comment cannot exceed 2000 characters"),
         articleId: z.string().optional(),
         lessonId: z.string().optional(),
-        parentId: z.string().optional(),
+        parentId: z.string().optional().nullable(),
     })
     .refine((data) => data.articleId || data.lessonId, {
         message: "Either articleId or lessonId must be provided",
@@ -69,12 +80,28 @@ export async function POST(request: Request) {
     try {
         const body = await request.json();
 
-        // Sanitize content
-        if (body.content) {
-            body.content = sanitizeInput(body.content);
+        // Sanitize plain text without corrupting quotes/apostrophes into HTML entities
+        if (typeof body.content === "string") {
+            body.content = sanitizeCommentPlainText(body.content);
         }
 
         const validatedData = createCommentSchema.parse(body);
+
+        // Flatten depth-2+ replies onto the root parent comment so nested replies never vanish
+        let effectiveParentId: string | null = validatedData.parentId || null;
+        if (effectiveParentId) {
+            const parentComment = await prisma.comment.findUnique({
+                where: { id: effectiveParentId },
+                select: { id: true, parentId: true },
+            });
+            if (!parentComment) {
+                return NextResponse.json(
+                    { error: "Parent comment not found" },
+                    { status: 404 }
+                );
+            }
+            effectiveParentId = parentComment.parentId || parentComment.id;
+        }
 
         // Sync user if needed (reusing the logic from Journal for robustness)
         const userExists = await prisma.user.findUnique({
@@ -99,15 +126,15 @@ export async function POST(request: Request) {
                 content: validatedData.content,
                 articleId: validatedData.articleId,
                 lessonId: validatedData.lessonId,
-                parentId: validatedData.parentId,
+                parentId: effectiveParentId,
             },
             include: {
-                user: { select: { name: true, image: true } },
+                user: { select: { id: true, name: true, image: true } },
             },
         });
 
         return NextResponse.json(comment);
-    } catch (error: any) {
+    } catch (error: unknown) {
         if (error instanceof z.ZodError) {
             return NextResponse.json({ error: error.issues }, { status: 400 });
         }

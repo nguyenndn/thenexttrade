@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { RefreshCw } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
+import { CurrencyFlag } from "@/components/tools/CurrencyFlag";
 
 const CURRENCIES = ["USD", "EUR", "GBP", "JPY", "AUD", "CAD", "CHF", "NZD"];
 
@@ -101,8 +102,8 @@ export function CurrencyHeatMap() {
 
             setData(strengths);
             setLastUpdate(new Date());
-        } catch (err) {
-            console.error("Heat map error:", err);
+        } catch {
+            // Preserve last valid snapshot on transient fetch error
         } finally {
             setLoading(false);
         }
@@ -115,17 +116,6 @@ export function CurrencyHeatMap() {
     }, [fetchStrength]);
 
     const maxAbs = Math.max(...data.map((d) => Math.abs(d.strength)), 0.01);
-
-    const FLAGS: Record<string, string> = {
-        USD: "🇺🇸",
-        EUR: "🇪🇺",
-        GBP: "🇬🇧",
-        JPY: "🇯🇵",
-        AUD: "🇦🇺",
-        CAD: "🇨🇦",
-        CHF: "🇨🇭",
-        NZD: "🇳🇿",
-    };
 
     return (
         <div className="space-y-6">
@@ -157,9 +147,7 @@ export function CurrencyHeatMap() {
                         className="flex items-center gap-2 sm:gap-4"
                     >
                         <div className="w-16 flex items-center gap-2">
-                            <span className="text-lg">
-                                {FLAGS[item.currency]}
-                            </span>
+                            <CurrencyFlag code={item.currency} size="sm" />
                             <span className="font-bold text-sm text-gray-700 dark:text-white">
                                 {item.currency}
                             </span>

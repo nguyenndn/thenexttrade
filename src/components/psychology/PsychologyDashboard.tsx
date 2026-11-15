@@ -109,11 +109,11 @@ export function PsychologyDashboard({
 
             const json = await res.json();
             setData(json);
-        } catch (error: any) {
+        } catch (error: unknown) {
             toast.error(
                 error instanceof Error
                     ? error.message
-                    : error?.message || "Failed to load psychology data"
+                    : "Failed to load psychology data"
             );
         } finally {
             setIsLoading(false);
@@ -160,7 +160,7 @@ export function PsychologyDashboard({
                     <TabBar tabs={ANALYTICS_TABS} />
                 </div>
 
-                <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-lg border-2 border-dashed border-dashboard mt-8">
+                <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-xl border-2 border-dashed border-dashboard mt-8">
                     {/* Animated Brain Icon */}
                     <div className="relative w-20 h-20 mb-6 mx-auto">
                         <div className="absolute inset-0 rounded-full bg-indigo-500/10 dark:bg-indigo-500/5 animate-[psych-ping_3s_cubic-bezier(0,0,0.2,1)_infinite]" />
@@ -333,7 +333,7 @@ export function PsychologyDashboard({
                     return (
                         <div
                             key={stat.label}
-                            className="rounded-lg border border-dashboard bg-white dark:bg-[#1E2028] p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-default"
+                            className="rounded-xl border border-dashboard bg-white dark:bg-[#1E2028] p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-default"
                         >
                             <div className="flex items-center gap-3">
                                 <div

@@ -6,19 +6,18 @@
 // Silver (XAGUSD): 1 pip (0.01) on 50 oz = $0.50. Per Standard Lot (5,000 oz) = $50.00.
 
 export const PIP_VALUES: Record<string, number> = {
-    // Forex (Standard 100k units - Value per Micro lot of 1,000 units)
-    // Refined based on 2026 average baseline prices (USDJPY ~155, EURUSD ~1.08, USDCAD ~1.36, etc.)
+    // Forex (Standard 100k units - Value in USD per Micro lot of 1,000 units)
     EURUSD: 0.1,
     GBPUSD: 0.1,
     AUDUSD: 0.1,
     NZDUSD: 0.1,
-    USDJPY: 0.065,
-    USDCHF: 0.11,
-    USDCAD: 0.073,
-    EURJPY: 0.065,
-    GBPJPY: 0.065,
-    EURGBP: 0.126,
-    AUDCAD: 0.073,
+    USDJPY: 0.0645,
+    USDCHF: 0.113,
+    USDCAD: 0.0735,
+    EURJPY: 0.0645,
+    GBPJPY: 0.0645,
+    EURGBP: 0.128,
+    AUDCAD: 0.0735,
 
     // Metals (Gold 100oz, Silver 5000oz)
     XAUUSD: 0.01,
@@ -29,6 +28,79 @@ export const PIP_VALUES: Record<string, number> = {
     US100: 0.1,
     US500: 0.1,
 };
+
+/**
+ * Baseline USD value of 1 unit of each supported account/quote currency.
+ * Example: 1 EUR = 1.085 USD, 1 JPY = 1 / 155 USD.
+ */
+export const ACCOUNT_CURRENCY_USD_RATES: Record<string, number> = {
+    USD: 1,
+    EUR: 1.085,
+    GBP: 1.28,
+    JPY: 1 / 155.0,
+    AUD: 0.655,
+    CAD: 1 / 1.36,
+    CHF: 1 / 0.885,
+    NZD: 0.605,
+};
+
+export const DEFAULT_PAIR_PRICES: Record<
+    string,
+    { price: number; exitLong: number; step: string }
+> = {
+    EURUSD: { price: 1.085, exitLong: 1.09, step: "0.0001" },
+    GBPUSD: { price: 1.28, exitLong: 1.285, step: "0.0001" },
+    AUDUSD: { price: 0.655, exitLong: 0.66, step: "0.0001" },
+    NZDUSD: { price: 0.605, exitLong: 0.61, step: "0.0001" },
+    USDJPY: { price: 155.0, exitLong: 155.5, step: "0.01" },
+    USDCHF: { price: 0.885, exitLong: 0.89, step: "0.0001" },
+    USDCAD: { price: 1.36, exitLong: 1.365, step: "0.0001" },
+    EURJPY: { price: 168.18, exitLong: 168.68, step: "0.01" },
+    GBPJPY: { price: 198.4, exitLong: 198.9, step: "0.01" },
+    EURGBP: { price: 0.8477, exitLong: 0.8527, step: "0.0001" },
+    AUDCAD: { price: 0.8908, exitLong: 0.8958, step: "0.0001" },
+    XAUUSD: { price: 2900.0, exitLong: 2910.0, step: "0.01" },
+    XAGUSD: { price: 32.5, exitLong: 33.0, step: "0.01" },
+    US30: { price: 43500, exitLong: 43600, step: "1" },
+    US100: { price: 21000, exitLong: 21100, step: "1" },
+    US500: { price: 5950, exitLong: 5975, step: "1" },
+};
+
+export function convertUsdToAccountCurrency(
+    usdAmount: number,
+    accountCurrency = "USD"
+): number {
+    if (!Number.isFinite(usdAmount)) return 0;
+    const code = (accountCurrency || "USD").trim().toUpperCase();
+    const usdPerUnit = ACCOUNT_CURRENCY_USD_RATES[code] ?? 1;
+    return usdPerUnit > 0 ? usdAmount / usdPerUnit : usdAmount;
+}
+
+export function getPairBaseAndQuote(pair: string): {
+    base: string;
+    quote: string;
+    isIndex: boolean;
+} {
+    const clean = pair.toUpperCase().replace(/[^A-Z0-9]/g, "");
+    if (
+        clean === "US30" ||
+        clean === "US100" ||
+        clean === "US500" ||
+        clean.includes("DJI") ||
+        clean.includes("NAS") ||
+        clean.includes("SPX")
+    ) {
+        return { base: clean, quote: "USD", isIndex: true };
+    }
+    if (clean.length >= 6) {
+        return {
+            base: clean.slice(0, 3),
+            quote: clean.slice(3, 6),
+            isIndex: false,
+        };
+    }
+    return { base: clean, quote: "USD", isIndex: false };
+}
 
 export function getPairConfig(pair: string) {
     const p = pair.toUpperCase();
@@ -89,12 +161,19 @@ export function calculatePipValue(
         accountCurrency = inputOrPair.accountCurrency || "USD";
     }
 
-    const pipValuePerMicro = PIP_VALUES[pair.toUpperCase()] || 0.1;
-    const pipValuePerStandard = pipValuePerMicro * 100;
-    const safeLotSize = Math.max(0, isNaN(lotSize) ? 0 : Number(lotSize.toFixed(4)));
-    const totalValue = pipValuePerStandard * safeLotSize;
+    const pipValuePerMicroUsd = PIP_VALUES[pair.toUpperCase()] || 0.1;
+    const pipValuePerStandardUsd = pipValuePerMicroUsd * 100;
+    const safeLotSize = Math.max(
+        0,
+        isNaN(lotSize) ? 0 : Number(lotSize.toFixed(4))
+    );
+    const totalValueUsd = pipValuePerStandardUsd * safeLotSize;
+    const convertedValue = convertUsdToAccountCurrency(
+        totalValueUsd,
+        accountCurrency
+    );
 
-    return Number(totalValue.toFixed(4));
+    return Number(convertedValue.toFixed(4));
 }
 
 // --- 1. Position Size ---
@@ -107,23 +186,38 @@ export interface PositionSizeInput {
 }
 
 export function calculatePositionSize(input: PositionSizeInput) {
-    const { accountBalance, riskPercent, stopLossPips, pair } = input;
+    const {
+        accountBalance,
+        riskPercent,
+        stopLossPips,
+        pair,
+        accountCurrency = "USD",
+    } = input;
     const { contractSize } = getPairConfig(pair);
-    const pipValueMicro = PIP_VALUES[pair.toUpperCase()] || 0.1; // Value per Micro (1000 units forex)
+    const pipValueMicroUsd = PIP_VALUES[pair.toUpperCase()] || 0.1;
+    const pipValueStandardUsd = pipValueMicroUsd * 100;
+    const pipValueStandard = convertUsdToAccountCurrency(
+        pipValueStandardUsd,
+        accountCurrency
+    );
 
-    const riskAmount = accountBalance * (riskPercent / 100);
-    const pipValueStandard = pipValueMicro * 100;
-
-    if (pipValueStandard === 0 || stopLossPips === 0)
+    if (
+        accountBalance <= 0 ||
+        riskPercent <= 0 ||
+        stopLossPips <= 0 ||
+        pipValueStandard <= 0
+    ) {
         return {
             lotSize: 0,
             miniLots: 0,
             microLots: 0,
             units: 0,
             riskAmount: 0,
-            pipValue: 0,
+            pipValue: Number(pipValueStandard.toFixed(4)),
         };
+    }
 
+    const riskAmount = accountBalance * (riskPercent / 100);
     const lots = riskAmount / (stopLossPips * pipValueStandard);
 
     return {
@@ -131,8 +225,8 @@ export function calculatePositionSize(input: PositionSizeInput) {
         miniLots: Math.floor(lots * 10 * 10) / 10,
         microLots: Math.floor(lots * 100),
         units: Math.floor(lots * contractSize),
-        riskAmount,
-        pipValue: pipValueStandard, // Return per Standard Lot for clarity
+        riskAmount: Number(riskAmount.toFixed(2)),
+        pipValue: Number(pipValueStandard.toFixed(4)),
     };
 }
 
@@ -142,29 +236,48 @@ export interface RiskRewardInput {
     stopLoss: number;
     takeProfit: number;
     direction: "LONG" | "SHORT";
-    pair: string; // Added pair for accurate multiplier
+    pair: string;
 }
 
 export function calculateRiskReward(input: RiskRewardInput) {
     const { entryPrice, stopLoss, takeProfit, direction, pair } = input;
     const { multiplier } = getPairConfig(pair || "EURUSD");
 
-    const riskPips =
+    const rawRiskPips =
         direction === "LONG"
             ? (entryPrice - stopLoss) * multiplier
             : (stopLoss - entryPrice) * multiplier;
 
-    const rewardPips =
+    const rawRewardPips =
         direction === "LONG"
             ? (takeProfit - entryPrice) * multiplier
             : (entryPrice - takeProfit) * multiplier;
 
-    const rrRatio = riskPips <= 0 ? 0 : rewardPips / riskPips;
-    const winRateToBreakeven = rrRatio > 0 ? (1 / (1 + rrRatio)) * 100 : 0;
+    const isValid =
+        entryPrice > 0 &&
+        stopLoss > 0 &&
+        takeProfit > 0 &&
+        rawRiskPips > 0 &&
+        rawRewardPips > 0;
+
+    if (!isValid) {
+        return {
+            isValid: false,
+            riskPips: Math.max(0, Math.round(rawRiskPips * 10) / 10),
+            rewardPips: Math.max(0, Math.round(rawRewardPips * 10) / 10),
+            rrRatio: 0,
+            rrString: "—",
+            winRateToBreakeven: 0,
+        };
+    }
+
+    const rrRatio = rawRewardPips / rawRiskPips;
+    const winRateToBreakeven = (1 / (1 + rrRatio)) * 100;
 
     return {
-        riskPips: Math.abs(Math.round(riskPips * 10) / 10),
-        rewardPips: Math.abs(Math.round(rewardPips * 10) / 10),
+        isValid: true,
+        riskPips: Math.round(rawRiskPips * 10) / 10,
+        rewardPips: Math.round(rawRewardPips * 10) / 10,
         rrRatio: Math.round(rrRatio * 100) / 100,
         rrString: `1:${rrRatio.toFixed(2)}`,
         winRateToBreakeven: Math.round(winRateToBreakeven * 10) / 10,
@@ -177,10 +290,11 @@ export interface MarginInput {
     pair: string;
     leverage: number;
     currentPrice: number;
+    accountCurrency?: string;
 }
 
 export function calculateMargin(input: MarginInput) {
-    const { leverage, pair } = input;
+    const { leverage, pair, accountCurrency = "USD" } = input;
     const lotSize = Math.max(
         0,
         isNaN(input.lotSize) ? 0 : Number(Number(input.lotSize).toFixed(4))
@@ -192,48 +306,28 @@ export function calculateMargin(input: MarginInput) {
             : Number(Number(input.currentPrice).toFixed(5))
     );
     const { contractSize } = getPairConfig(pair);
-    const p = pair.toUpperCase();
+    const { base, quote, isIndex } = getPairBaseAndQuote(pair);
 
-    let requiredMargin = 0;
-    let positionValue = 0;
+    let positionValueUsd = 0;
 
-    if (p.startsWith("USD")) {
-        // USD is the base currency (e.g., USDJPY, USDCAD, USDCHF)
-        // Position value is in USD. So 1 lot = $100,000.
-        positionValue = lotSize * contractSize;
-        requiredMargin = leverage > 0 ? positionValue / leverage : 0;
-    } else if (
-        p.endsWith("USD") ||
-        p === "US30" ||
-        p === "US100" ||
-        p === "US500"
-    ) {
-        // USD is the quote currency (e.g., EURUSD, GBPUSD, XAUUSD)
-        // Position value in USD = Lot Size * Contract Size * currentPrice
-        positionValue = lotSize * contractSize * currentPrice;
-        requiredMargin = leverage > 0 ? positionValue / leverage : 0;
+    if (isIndex || quote === "USD") {
+        // USD is the quote currency (EURUSD, GBPUSD, XAUUSD, US30, BTCUSD)
+        positionValueUsd = lotSize * contractSize * currentPrice;
+    } else if (base === "USD") {
+        // USD is the base currency (USDJPY, USDCAD, USDCHF): 1 standard lot = $100,000 USD notional
+        positionValueUsd = lotSize * contractSize;
     } else {
-        // For cross pairs (e.g., EURJPY, GBPJPY, EURGBP)
-        // Position Value in Base Currency = Lot Size * Contract Size.
-        // We approximate the USD exchange rate of the base currency to determine USD value.
-        const positionValueInBase = lotSize * contractSize;
-
-        if (p.includes("JPY")) {
-            // Convert JPY quote to USD by dividing by USDJPY rate (~155.0)
-            positionValue = positionValueInBase * (currentPrice / 155.0);
-        } else if (p.includes("GBP")) {
-            // Convert GBP quote to USD by multiplying by GBPUSD rate (~1.26)
-            positionValue = positionValueInBase * (currentPrice * 1.26);
-        } else if (p.includes("CAD")) {
-            // Convert CAD quote to USD by dividing by USDCAD rate (~1.36)
-            positionValue = positionValueInBase * (currentPrice / 1.36);
-        } else {
-            // General Fallback
-            positionValue = positionValueInBase * (currentPrice / 1.5);
-        }
-
-        requiredMargin = leverage > 0 ? positionValue / leverage : 0;
+        // Cross pairs (EURJPY, GBPJPY, EURGBP, AUDCAD): convert quote notional to USD via quote currency rate
+        const notionalInQuote = lotSize * contractSize * currentPrice;
+        const quoteUsdRate = ACCOUNT_CURRENCY_USD_RATES[quote] ?? 1;
+        positionValueUsd = notionalInQuote * quoteUsdRate;
     }
+
+    const positionValue = convertUsdToAccountCurrency(
+        positionValueUsd,
+        accountCurrency
+    );
+    const requiredMargin = leverage > 0 ? positionValue / leverage : 0;
 
     return {
         requiredMargin: Number(requiredMargin.toFixed(4)),
@@ -248,12 +342,20 @@ export interface ProfitLossInput {
     lotSize: number;
     direction: "LONG" | "SHORT";
     pair: string;
+    accountCurrency?: string;
 }
 
 export function calculateProfitLoss(input: ProfitLossInput) {
-    const { entryPrice, exitPrice, lotSize, direction, pair } = input;
+    const {
+        entryPrice,
+        exitPrice,
+        lotSize,
+        direction,
+        pair,
+        accountCurrency = "USD",
+    } = input;
     const { multiplier, contractSize } = getPairConfig(pair);
-    const p = pair.toUpperCase();
+    const { base, quote, isIndex } = getPairBaseAndQuote(pair);
 
     const directionMultiplier = direction === "LONG" ? 1 : -1;
 
@@ -261,31 +363,21 @@ export function calculateProfitLoss(input: ProfitLossInput) {
     const profitLossInQuote =
         directionMultiplier * (exitPrice - entryPrice) * lotSize * contractSize;
 
-    let profitLoss = 0;
+    let profitLossUsd = 0;
 
-    if (p.endsWith("USD") || p === "US30" || p === "US100" || p === "US500") {
-        // YYY is USD, no conversion needed
-        profitLoss = profitLossInQuote;
-    } else if (p.startsWith("USD")) {
-        // XXX is USD, we convert by dividing the quote profit by the exitPrice (the exchange rate of XXX/YYY)
-        profitLoss = exitPrice > 0 ? profitLossInQuote / exitPrice : 0;
+    if (isIndex || quote === "USD") {
+        profitLossUsd = profitLossInQuote;
+    } else if (base === "USD") {
+        profitLossUsd = exitPrice > 0 ? profitLossInQuote / exitPrice : 0;
     } else {
-        // Crosses
-        if (p.includes("JPY")) {
-            // Convert JPY quote profit to USD by dividing by USDJPY rate (~155.0)
-            profitLoss = profitLossInQuote / 155.0;
-        } else if (p.includes("GBP")) {
-            // Convert GBP quote profit to USD by multiplying by GBPUSD rate (~1.26)
-            profitLoss = profitLossInQuote * 1.26;
-        } else if (p.includes("CAD")) {
-            // Convert CAD quote profit to USD by dividing by USDCAD rate (~1.36)
-            profitLoss = profitLossInQuote / 1.36;
-        } else {
-            // General Fallback
-            profitLoss = profitLossInQuote / 1.5;
-        }
+        const quoteUsdRate = ACCOUNT_CURRENCY_USD_RATES[quote] ?? 1;
+        profitLossUsd = profitLossInQuote * quoteUsdRate;
     }
 
+    const profitLoss = convertUsdToAccountCurrency(
+        profitLossUsd,
+        accountCurrency
+    );
     const pips = directionMultiplier * (exitPrice - entryPrice) * multiplier;
 
     return {

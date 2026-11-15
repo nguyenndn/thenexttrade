@@ -46,38 +46,66 @@ export async function GET(
             });
         }
 
-        // Check entitlement
+        // Check entitlement (honoring per-product EAProductAccess overrides)
+        const now = new Date();
+        const [profile, productAccessRows] = await Promise.all([
+            prisma.profile.findUnique({
+                where: { userId: user.id },
+                select: { role: true },
+            }),
+            prisma.eAProductAccess.findMany({
+                where: {
+                    userId: user.id,
+                    productId: product.id,
+                },
+                select: {
+                    status: true,
+                    expiresAt: true,
+                },
+            }),
+        ]);
+
+        const isAdmin = profile?.role === "ADMIN";
+        const hasGrantedProductAccess = productAccessRows.some(
+            (row) =>
+                row.status === "GRANTED" &&
+                (!row.expiresAt || row.expiresAt >= now)
+        );
+        const isExplicitlyRevoked =
+            !hasGrantedProductAccess &&
+            productAccessRows.some((row) => row.status === "REVOKED");
+
         let hasAccess = false;
 
-        // 1. If product is free
-        if (product.isFree) {
+        if (isAdmin) {
+            hasAccess = true;
+        } else if (isExplicitlyRevoked) {
+            hasAccess = false;
+        } else if (hasGrantedProductAccess) {
+            hasAccess = true;
+        } else if (product.isFree) {
             hasAccess = true;
         } else {
-            // 2. Check Pro Entitlement — ACTIVE or valid GRACE, honoring expiry.
-        //    GRACE users are told "EA Included" in the UI, so blocking them here
-        //    contradicts the account card. An expired GRACE is not Pro.
+            // Check Pro Entitlement — ACTIVE or valid GRACE, honoring expiry.
             const proEntitlement = await prisma.proEntitlement.findFirst({
                 where: {
                     userId: user.id,
                     status: { in: ["ACTIVE", "GRACE"] },
-                    OR: [{ expiresAt: null }, { expiresAt: { gte: new Date() } }],
+                    OR: [{ expiresAt: null }, { expiresAt: { gte: now } }],
                 },
             });
 
             if (proEntitlement) {
                 hasAccess = true;
             } else {
-                // 3. Check EA License — must also be unexpired. The daily
-                //    expire-licenses cron only flips APPROVED→EXPIRED on its next
-                //    tick, so a license that lapsed hours ago would otherwise
-                //    still authorize a paid download.
+                // Check EA License — must also be unexpired.
                 const eaLicense = await prisma.eALicense.findFirst({
                     where: {
                         userId: user.id,
                         status: AccountStatus.APPROVED,
                         OR: [
                             { expiryDate: null },
-                            { expiryDate: { gte: new Date() } },
+                            { expiryDate: { gte: now } },
                         ],
                     },
                 });
@@ -88,26 +116,20 @@ export async function GET(
             }
         }
 
-        // Admin check fallback
-        if (!hasAccess) {
-            const profile = await prisma.profile.findUnique({
-                where: { userId: user.id },
-                select: { role: true },
-            });
-            if (profile?.role === "ADMIN") {
-                hasAccess = true;
-            }
-        }
-
         if (!hasAccess) {
             return new NextResponse("Forbidden - No active license or Pro subscription", {
                 status: 403,
             });
         }
 
-        // Fetch stream from R2
-        const stream = await getProtectedAssetStream(filePath);
-        if (!stream) {
+        const isExternalUrl =
+            filePath.startsWith("https://") || filePath.startsWith("http://");
+
+        // If stored in R2/local storage, verify stream before logging download
+        const stream = isExternalUrl
+            ? null
+            : await getProtectedAssetStream(filePath);
+        if (!isExternalUrl && !stream) {
             return new NextResponse("File not found in storage", { status: 404 });
         }
 
@@ -152,6 +174,10 @@ export async function GET(
             console.error("[API] Error updating product download access telemetry:", err);
         }
 
+        if (isExternalUrl) {
+            return NextResponse.redirect(filePath);
+        }
+
         // Set response headers
         const filename = filePath.split("/").pop() || "download.ex5";
         const headers = new Headers();
@@ -161,7 +187,7 @@ export async function GET(
 
         // The SDK returns a Node stream; convert it to bytes so Next.js can
         // send a valid body (a raw Node stream is not a valid BodyInit).
-        const bytes = await stream.transformToByteArray();
+        const bytes = await stream!.transformToByteArray();
         headers.set("Content-Length", String(bytes.length));
 
         return new NextResponse(Buffer.from(bytes), { headers });

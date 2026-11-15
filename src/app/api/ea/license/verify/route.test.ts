@@ -15,6 +15,7 @@ vi.mock("@/lib/prisma", () => ({
         tradingAccount: {
             findUnique: vi.fn(),
             findFirst: vi.fn(),
+            findMany: vi.fn(),
             update: vi.fn(),
         },
         user: {
@@ -33,6 +34,7 @@ describe("POST /api/ea/license/verify & GitHub CSV Backup", () => {
         vi.mocked(prisma.eALicense.findMany).mockResolvedValue([]);
         vi.mocked(prisma.tradingAccount.findUnique).mockResolvedValue(null);
         vi.mocked(prisma.tradingAccount.findFirst).mockResolvedValue(null);
+        vi.mocked(prisma.tradingAccount.findMany).mockResolvedValue([]);
         vi.mocked(prisma.tradingAccount.update).mockResolvedValue({} as never);
         vi.mocked(prisma.user.findUnique).mockResolvedValue(null);
     });
@@ -70,8 +72,50 @@ describe("POST /api/ea/license/verify & GitHub CSV Backup", () => {
         expect(json.valid).toBe(false);
         expect(json.state).toBe("REVOKED");
         expect(json.code).toBe("ACCOUNT_MISMATCH");
-        expect(json.expectedAccount).toBe("1059283");
+        expect(json.expectedAccount).toBeUndefined();
+        expect(json.message).not.toContain("1059283");
         expect(json.actualAccount).toBe("9999999");
+    });
+
+    it("blocks isDemo spoofing when accountNumber belongs to a known REAL account or REJECTED license", async () => {
+        vi.mocked(prisma.tradingAccount.findFirst).mockResolvedValue({
+            id: "ta-real-1",
+            broker: "Exness",
+            server: "Exness-MT5Real14",
+            accountType: "REAL",
+        } as never);
+        vi.mocked(prisma.eALicense.findMany).mockResolvedValue([
+            {
+                id: "lic-rej",
+                userId: "user-1",
+                accountNumber: "5556667",
+                broker: "Exness",
+                status: "REJECTED",
+                startDate: null,
+                expiryDate: null,
+            } as never,
+        ]);
+
+        const req = new NextRequest("http://localhost:3500/api/ea/license/verify", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "x-real-ip": "10.0.0.51",
+            },
+            body: JSON.stringify({
+                accountNumber: "5556667",
+                broker: "Exness",
+                server: "Exness-Trial",
+                accountTradeMode: 0, // Spoofed DEMO mode
+            }),
+        });
+
+        const res = await POST(req);
+        const json = await res.json();
+
+        expect(res.status).toBe(403);
+        expect(json.valid).toBe(false);
+        expect(json.code).not.toBe("DEMO_AUTHORIZED");
     });
 
     it("rejects when License Key matches accountNumber but account is still PENDING IB approval", async () => {

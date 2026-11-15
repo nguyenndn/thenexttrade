@@ -4,8 +4,54 @@ import { Download } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { formatDashboardCurrency } from "@/lib/utils/cent-account";
 
+export interface ReportPreviewStrategy {
+    name: string;
+    trades: number;
+    pnl: number;
+    winRate: number;
+}
+
+export interface ReportPreviewPair {
+    symbol: string;
+    trades: number;
+    pnl: number;
+    winRate?: number;
+}
+
+export interface ReportPreviewTrade {
+    date: string;
+    symbol: string;
+    type: string;
+    entry: number;
+    exit: number | null;
+    pnl: number;
+    result: string;
+}
+
+export interface ReportPreviewData {
+    period: string;
+    generatedAt: string;
+    userName: string;
+    currency?: string;
+    summary: {
+        totalTrades: number;
+        winCount: number;
+        lossCount: number;
+        winRate: number;
+        netPnL: number;
+        profitFactor: number;
+        avgWin: number;
+        avgLoss: number;
+        largestWin: number;
+        largestLoss: number;
+    };
+    byStrategy: ReportPreviewStrategy[];
+    byPair: ReportPreviewPair[];
+    recentTrades: ReportPreviewTrade[];
+}
+
 interface ReportPreviewProps {
-    data: any;
+    data: ReportPreviewData | null;
     onDownload: () => void;
 }
 
@@ -14,7 +60,7 @@ export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
     const currency = data.currency || "USD";
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-lg border border-dashboard shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-dashboard shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="flex justify-between items-center mb-6">
                 <h3 className="font-bold text-gray-700 dark:text-white text-lg">
                     Report Preview
@@ -84,7 +130,7 @@ export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
                         By Strategy
                     </h4>
                     <div className="space-y-3">
-                        {data.byStrategy.slice(0, 5).map((strat: any) => (
+                        {data.byStrategy.slice(0, 5).map((strat) => (
                             <div
                                 key={strat.name}
                                 className="flex justify-between items-center p-4 bg-gray-50 dark:bg-white/5 rounded-lg border border-dashboard"
@@ -125,7 +171,7 @@ export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
                         Top Pairs
                     </h4>
                     <div className="space-y-3">
-                        {data.byPair.slice(0, 5).map((pair: any) => (
+                        {data.byPair.slice(0, 5).map((pair) => (
                             <div
                                 key={pair.symbol}
                                 className="flex justify-between items-center p-4 bg-gray-50 dark:bg-white/5 rounded-lg border border-dashboard"
@@ -186,7 +232,7 @@ export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
                             {data.recentTrades?.length > 0 ? (
                                 data.recentTrades
                                     .slice(0, 5)
-                                    .map((trade: any, i: number) => (
+                                    .map((trade, i: number) => (
                                         <tr
                                             key={i}
                                             className="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"

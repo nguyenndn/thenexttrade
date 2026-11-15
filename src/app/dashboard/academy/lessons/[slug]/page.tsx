@@ -105,22 +105,54 @@ export default async function DashboardLessonPage({
         (m) => m.lessons
     );
     const globalIndex = allLessonsInLevel.findIndex((l) => l.id === lesson.id);
-    const nextLesson = allLessonsInLevel[globalIndex + 1];
-    const prevLesson = allLessonsInLevel[globalIndex - 1];
+    const nextLesson = allLessonsInLevel[globalIndex + 1] ?? null;
+    const prevLesson = allLessonsInLevel[globalIndex - 1] ?? null;
     const isLastLesson = !nextLesson;
+    const isLastLessonInModule =
+        courseLessons.length > 0 &&
+        courseLessons[courseLessons.length - 1]?.id === lesson.id;
 
     // Pass completed lesson IDs so client can show progress
     const completedLessonIds = userProgress.map((p) => p.lessonId);
     const completedSet = new Set(completedLessonIds);
 
-    // Server-side sequential lock: all previous lessons must be completed
-    if (globalIndex > 0) {
-        const previousLessons = allLessonsInLevel.slice(0, globalIndex);
-        const allPreviousCompleted = previousLessons.every((l) =>
-            completedSet.has(l.id)
-        );
-        if (!allPreviousCompleted) {
-            redirect("/dashboard/academy?locked=1");
+    const isAdmin =
+        user.profile?.role === "ADMIN" ||
+        (
+            await prisma.profile.findUnique({
+                where: { userId: user.id },
+                select: { role: true },
+            })
+        )?.role === "ADMIN";
+
+    // Server-side cross-level + intra-level sequential lock (unless Admin)
+    if (!isAdmin) {
+        if (lesson.module.level.order > 1) {
+            const priorLevelLessons = await prisma.lesson.findMany({
+                where: {
+                    status: "published",
+                    module: {
+                        level: { order: { lt: lesson.module.level.order } },
+                    },
+                },
+                select: { id: true },
+            });
+            const allPriorLevelsCompleted = priorLevelLessons.every((l) =>
+                completedSet.has(l.id)
+            );
+            if (!allPriorLevelsCompleted) {
+                redirect("/dashboard/academy?locked=1");
+            }
+        }
+
+        if (globalIndex > 0) {
+            const previousLessons = allLessonsInLevel.slice(0, globalIndex);
+            const allPreviousCompleted = previousLessons.every((l) =>
+                completedSet.has(l.id)
+            );
+            if (!allPreviousCompleted) {
+                redirect("/dashboard/academy?locked=1");
+            }
         }
     }
 
@@ -132,6 +164,7 @@ export default async function DashboardLessonPage({
             prevLesson={prevLesson}
             quiz={quiz}
             isLastLesson={isLastLesson}
+            isLastLessonInModule={isLastLessonInModule}
             isDashboard
             completedLessonIds={completedLessonIds}
         />

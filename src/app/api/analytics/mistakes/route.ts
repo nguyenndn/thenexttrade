@@ -3,6 +3,7 @@ import { getAuthUser } from "@/lib/auth-cache";
 import { prisma } from "@/lib/prisma";
 import { startOfMonth, endOfMonth, parseISO, endOfDay } from "date-fns";
 import { getMistakeByCode } from "@/lib/mistakes";
+import { convertToUsdEquivalent } from "@/lib/utils/cent-account";
 
 interface MistakeStats {
     code: string;
@@ -29,6 +30,9 @@ export async function GET(request: NextRequest) {
         const searchParams = request.nextUrl.searchParams;
         const startDateParam = searchParams.get("startDate");
         const endDateParam = searchParams.get("endDate");
+        const rawAccountId = searchParams.get("accountId");
+        const normalizedAccountId =
+            rawAccountId && rawAccountId !== "all" ? rawAccountId : undefined;
 
         const now = new Date();
         const startDate = startDateParam
@@ -43,6 +47,9 @@ export async function GET(request: NextRequest) {
             where: {
                 userId: user.id,
                 status: "CLOSED",
+                ...(normalizedAccountId
+                    ? { accountId: normalizedAccountId }
+                    : {}),
                 entryDate: { gte: startDate, lte: endDate },
             },
             select: {
@@ -52,6 +59,12 @@ export async function GET(request: NextRequest) {
                 swap: true,
                 result: true,
                 mistakes: true,
+                account: {
+                    select: {
+                        currency: true,
+                        server: true,
+                    },
+                },
             },
         });
 
@@ -97,7 +110,20 @@ export async function GET(request: NextRequest) {
             pnl: number | null;
             commission?: number | null;
             swap?: number | null;
-        }) => (t.pnl || 0) + (t.commission || 0) + (t.swap || 0);
+            account?: {
+                currency?: string | null;
+                server?: string | null;
+            } | null;
+        }) => {
+            const rawNet = (t.pnl || 0) + (t.commission || 0) + (t.swap || 0);
+            return !normalizedAccountId
+                ? convertToUsdEquivalent(
+                      rawNet,
+                      t.account?.currency,
+                      t.account?.server
+                  )
+                : rawNet;
+        };
 
         for (const trade of tradesWithMistakes) {
             const mistakes = trade.mistakes as string[];
@@ -134,7 +160,7 @@ export async function GET(request: NextRequest) {
                     name: mistake?.name || code,
                     category: mistake?.category || "Other",
                     severity: mistake?.severity || "medium",
-                    emoji: mistake?.emoji || "❓",
+                    emoji: mistake?.emoji || "",
                     count: data.count,
                     totalPnL: data.totalPnL,
                     avgPnL: totalTrades > 0 ? data.totalPnL / totalTrades : 0,

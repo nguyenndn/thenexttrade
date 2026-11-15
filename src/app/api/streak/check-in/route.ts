@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { createClient } from "@/lib/supabase/server";
-import { isSameDay, isYesterday } from "date-fns";
 import { addXP, checkAndGrantBadge } from "@/lib/gamification";
 
-export async function POST(req: Request) {
+export async function POST() {
     const supabase = await createClient();
     const {
         data: { user },
@@ -15,50 +14,93 @@ export async function POST(req: Request) {
     }
 
     try {
-        const dbUser = await prisma.user.findUnique({
-            where: { id: user.id },
-            select: { streak: true, lastCheckIn: true, checkInHistory: true },
+        const now = new Date();
+        const startOfUtcDay = new Date(
+            Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())
+        );
+        const startOfUtcYesterday = new Date(
+            Date.UTC(
+                now.getUTCFullYear(),
+                now.getUTCMonth(),
+                now.getUTCDate() - 1
+            )
+        );
+
+        const txResult = await prisma.$transaction(async (tx) => {
+            const dbUser = await tx.user.findUnique({
+                where: { id: user.id },
+                select: {
+                    streak: true,
+                    lastCheckIn: true,
+                    checkInHistory: true,
+                },
+            });
+
+            if (!dbUser) {
+                return { status: "NOT_FOUND" as const };
+            }
+
+            const lastCheckIn = dbUser.lastCheckIn
+                ? new Date(dbUser.lastCheckIn)
+                : null;
+
+            if (lastCheckIn && lastCheckIn >= startOfUtcDay) {
+                return { status: "ALREADY_CHECKED_IN" as const };
+            }
+
+            const newStreak =
+                lastCheckIn &&
+                lastCheckIn >= startOfUtcYesterday &&
+                lastCheckIn < startOfUtcDay
+                    ? dbUser.streak + 1
+                    : 1;
+
+            const existingHistory = Array.isArray(dbUser.checkInHistory)
+                ? (dbUser.checkInHistory as string[])
+                : [];
+            const history = [...existingHistory, now.toISOString()].slice(-365);
+
+            const updated = await tx.user.updateMany({
+                where: {
+                    id: user.id,
+                    OR: [
+                        { lastCheckIn: null },
+                        { lastCheckIn: { lt: startOfUtcDay } },
+                    ],
+                },
+                data: {
+                    streak: newStreak,
+                    lastCheckIn: now,
+                    checkInHistory: history,
+                },
+            });
+
+            if (updated.count === 0) {
+                return { status: "ALREADY_CHECKED_IN" as const };
+            }
+
+            return {
+                status: "OK" as const,
+                streak: newStreak,
+                lastCheckIn: now,
+            };
         });
 
-        if (!dbUser) {
+        if (txResult.status === "NOT_FOUND") {
             return NextResponse.json(
                 { error: "User not found" },
                 { status: 404 }
             );
         }
 
-        const now = new Date();
-        const lastCheckIn = dbUser.lastCheckIn
-            ? new Date(dbUser.lastCheckIn)
-            : null;
-
-        // Check if already checked in today
-        if (lastCheckIn && isSameDay(now, lastCheckIn)) {
+        if (txResult.status === "ALREADY_CHECKED_IN") {
             return NextResponse.json(
                 { error: "Already checked in today" },
                 { status: 400 }
             );
         }
 
-        let newStreak = 1;
-        if (lastCheckIn && isYesterday(lastCheckIn)) {
-            newStreak = dbUser.streak + 1;
-        }
-
-        // Update history
-        const history = (dbUser.checkInHistory as string[]) || [];
-        history.push(now.toISOString());
-
-        // Keep history size manageable (Optional, e.g., last 365 days)
-
-        const updatedUser = await prisma.user.update({
-            where: { id: user.id },
-            data: {
-                streak: newStreak,
-                lastCheckIn: now,
-                checkInHistory: history,
-            },
-        });
+        const newStreak = txResult.streak;
 
         // --- GAMIFICATION LOGIC ---
         let rewardMessage = "Streak Updated! +10 Edge";
@@ -122,8 +164,8 @@ export async function POST(req: Request) {
         });
 
         return NextResponse.json({
-            streak: updatedUser.streak,
-            lastCheckIn: updatedUser.lastCheckIn,
+            streak: txResult.streak,
+            lastCheckIn: txResult.lastCheckIn,
             message: rewardMessage,
         });
     } catch (error) {

@@ -1,18 +1,118 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Clock, Info } from "lucide-react";
+import { Clock, Info, CalendarOff } from "lucide-react";
 import {
     TimezoneSelector,
     ALL_TIMEZONES,
 } from "@/components/tools/economic-calendar/TimezoneSelector";
 
-const MARKETS = [
-    { name: "Sydney", openUtc: 21, closeUtc: 6, color: "bg-amber-500" },
-    { name: "Tokyo", openUtc: 0, closeUtc: 9, color: "bg-amber-600" },
-    { name: "London", openUtc: 8, closeUtc: 17, color: "bg-red-500" },
-    { name: "New York", openUtc: 13, closeUtc: 22, color: "bg-emerald-500" },
+interface MarketSessionConfig {
+    name: string;
+    ianaZone: string;
+    openLocalHour: number;
+    closeLocalHour: number;
+    color: string;
+}
+
+const MARKETS: MarketSessionConfig[] = [
+    {
+        name: "Sydney",
+        ianaZone: "Australia/Sydney",
+        openLocalHour: 8,
+        closeLocalHour: 17,
+        color: "bg-amber-500",
+    },
+    {
+        name: "Tokyo",
+        ianaZone: "Asia/Tokyo",
+        openLocalHour: 9,
+        closeLocalHour: 18,
+        color: "bg-amber-600",
+    },
+    {
+        name: "London",
+        ianaZone: "Europe/London",
+        openLocalHour: 8,
+        closeLocalHour: 17,
+        color: "bg-red-500",
+    },
+    {
+        name: "New York",
+        ianaZone: "America/New_York",
+        openLocalHour: 8,
+        closeLocalHour: 17,
+        color: "bg-emerald-500",
+    },
 ];
+
+interface ZonedParts {
+    weekday: string;
+    year: number;
+    month: number;
+    day: number;
+    h: number;
+    m: number;
+    s: number;
+}
+
+function getZonedParts(date: Date, timeZone: string): ZonedParts {
+    const parts = new Intl.DateTimeFormat("en-US", {
+        weekday: "short",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hourCycle: "h23",
+        timeZone,
+    }).formatToParts(date);
+
+    const getNum = (type: string) =>
+        Number.parseInt(parts.find((p) => p.type === type)?.value || "0", 10);
+
+    const rawHour = getNum("hour");
+    const normalizedHour = ((rawHour % 24) + 24) % 24;
+
+    return {
+        weekday: parts.find((p) => p.type === "weekday")?.value || "Mon",
+        year: getNum("year"),
+        month: getNum("month"),
+        day: getNum("day"),
+        h: normalizedHour,
+        m: ((getNum("minute") % 60) + 60) % 60,
+        s: ((getNum("second") % 60) + 60) % 60,
+    };
+}
+
+function getTimezoneOffsetMinutes(date: Date, timeZone: string): number {
+    const z = getZonedParts(date, timeZone);
+    const zonedAsUtc = Date.UTC(z.year, z.month - 1, z.day, z.h, z.m, z.s);
+    const actualUtc = Date.UTC(
+        date.getUTCFullYear(),
+        date.getUTCMonth(),
+        date.getUTCDate(),
+        date.getUTCHours(),
+        date.getUTCMinutes(),
+        date.getUTCSeconds()
+    );
+    return Math.round((zonedAsUtc - actualUtc) / 60000);
+}
+
+/**
+ * Institutional Spot Forex closes Friday 17:00 America/New_York
+ * and reopens Sunday 17:00 America/New_York (Monday Asia-Pacific open).
+ */
+function checkIsWeekendMarketClosed(date: Date): boolean {
+    const ny = getZonedParts(date, "America/New_York");
+    const nyMinutes = ny.h * 60 + ny.m;
+
+    if (ny.weekday === "Sat") return true;
+    if (ny.weekday === "Fri" && nyMinutes >= 17 * 60) return true;
+    if (ny.weekday === "Sun" && nyMinutes < 17 * 60) return true;
+    return false;
+}
 
 export function MarketHoursMonitor() {
     const [currentTime, setCurrentTime] = useState<Date | null>(null);
@@ -23,7 +123,6 @@ export function MarketHoursMonitor() {
         setMounted(true);
         setCurrentTime(new Date());
 
-        // Try to auto-detect, if matches one of our options
         const detected = Intl.DateTimeFormat().resolvedOptions().timeZone;
         if (ALL_TIMEZONES.some((z) => z.value === detected)) {
             setUserTimezone(detected);
@@ -40,53 +139,44 @@ export function MarketHoursMonitor() {
             </div>
         );
 
-    // Helper to get hour/minute in selected timezone
-    const getZonedTime = (date: Date, timeZone: string) => {
-        const parts = new Intl.DateTimeFormat("en-US", {
-            hour: "numeric",
-            minute: "numeric",
-            hour12: false,
-            timeZone,
-        }).formatToParts(date);
-        const h = parseInt(parts.find((p) => p.type === "hour")?.value || "0");
-        const m = parseInt(
-            parts.find((p) => p.type === "minute")?.value || "0"
-        );
-        return { h, m };
-    };
-
-    const { h: currentHour, m: currentMinute } = getZonedTime(
+    const userZoned = getZonedParts(currentTime, userTimezone);
+    const currentPosition = ((userZoned.h + userZoned.m / 60) / 24) * 100;
+    const userOffsetMinutes = getTimezoneOffsetMinutes(
         currentTime,
         userTimezone
     );
-    const currentPosition = ((currentHour + currentMinute / 60) / 24) * 100;
+    const isWeekendClosed = checkIsWeekendMarketClosed(currentTime);
 
-    const renderMarketBar = (market: (typeof MARKETS)[0]) => {
-        // Find local Open/Close hours by converting UTC date to Zoned Date
-        // We use a reference date (today) to convert standard UTC hours to local
-        const utcDate = new Date();
-        utcDate.setUTCHours(market.openUtc, 0, 0, 0);
-        const openTime = getZonedTime(utcDate, userTimezone);
+    const renderMarketBar = (market: MarketSessionConfig) => {
+        // Dynamically compute live UTC open/close minutes from the session's real IANA zone (auto DST)
+        const sessionOffsetMinutes = getTimezoneOffsetMinutes(
+            currentTime,
+            market.ianaZone
+        );
+        const openUtcMinutes =
+            (((market.openLocalHour * 60 - sessionOffsetMinutes) % 1440) +
+                1440) %
+            1440;
+        const closeUtcMinutes =
+            (((market.closeLocalHour * 60 - sessionOffsetMinutes) % 1440) +
+                1440) %
+            1440;
 
-        const closeDate = new Date();
-        closeDate.setUTCHours(market.closeUtc, 0, 0, 0);
-        const closeTime = getZonedTime(closeDate, userTimezone);
+        // Convert UTC session boundaries into the user's selected timezone
+        const openUserMinutes =
+            (((openUtcMinutes + userOffsetMinutes) % 1440) + 1440) % 1440;
+        const closeUserMinutes =
+            (((closeUtcMinutes + userOffsetMinutes) % 1440) + 1440) % 1440;
 
-        const openLocal = openTime.h + openTime.m / 60;
-        const closeLocal = closeTime.h + closeTime.m / 60;
+        const openHour = Math.floor(openUserMinutes / 60) % 24;
+        const openMin = openUserMinutes % 60;
+        const closeHour = Math.floor(closeUserMinutes / 60) % 24;
+        const closeMin = closeUserMinutes % 60;
 
-        const bars = [];
+        const openLocal = openUserMinutes / 60;
+        const closeLocal = closeUserMinutes / 60;
 
-        // Handle wrapping (midnight) logic
-        // We need to compare if close comes before open in the day cycle *conceptually*?
-        // Or if the duration wraps midnight.
-        // E.g. Sydney Open 21 UTC -> Local might be 04:00 (Next Day) -> 13:00. No wrap.
-        // NY Open 13 UTC -> Local (Bangkok +7) 20:00 -> 05:00. Wraps.
-
-        // Calculations:
-        // Duration is fixed (9 hours).
-        // If closeLocal < openLocal, it wraps.
-
+        const bars: { left: number; width: number }[] = [];
         if (closeLocal < openLocal) {
             bars.push({
                 left: (openLocal / 24) * 100,
@@ -100,21 +190,20 @@ export function MarketHoursMonitor() {
             });
         }
 
-        // Check Open Status (Strict UTC check remains most accurate)
-        const currentUtcHour = currentTime.getUTCHours();
-        let isOpen = false;
-        if (market.closeUtc < market.openUtc) {
-            isOpen =
-                currentUtcHour >= market.openUtc ||
-                currentUtcHour < market.closeUtc;
-        } else {
-            isOpen =
-                currentUtcHour >= market.openUtc &&
-                currentUtcHour < market.closeUtc;
-        }
+        // Session is open only when global FX market is open AND session local clock is Mon-Fri within trading hours
+        const sessionNow = getZonedParts(currentTime, market.ianaZone);
+        const sessionNowMinutes = sessionNow.h * 60 + sessionNow.m;
+        const isSessionWeekday =
+            sessionNow.weekday !== "Sat" && sessionNow.weekday !== "Sun";
+        const isWithinSessionHours =
+            sessionNowMinutes >= market.openLocalHour * 60 &&
+            sessionNowMinutes < market.closeLocalHour * 60;
 
-        const openTimeString = `${openTime.h.toString().padStart(2, "0")}:${openTime.m.toString().padStart(2, "0")}`;
-        const closeTimeString = `${closeTime.h.toString().padStart(2, "0")}:${closeTime.m.toString().padStart(2, "0")}`;
+        const isOpen =
+            !isWeekendClosed && isSessionWeekday && isWithinSessionHours;
+
+        const openTimeString = `${openHour.toString().padStart(2, "0")}:${openMin.toString().padStart(2, "0")}`;
+        const closeTimeString = `${closeHour.toString().padStart(2, "0")}:${closeMin.toString().padStart(2, "0")}`;
 
         return (
             <div className="relative h-14 mb-4 bg-gray-50/80 dark:bg-[#151925] rounded-lg w-full overflow-hidden border border-gray-200 dark:border-white/10 group hover:border-gold/40 transition-colors">
@@ -135,7 +224,7 @@ export function MarketHoursMonitor() {
                 {bars.map((bar, idx) => (
                     <div
                         key={idx}
-                        className={`absolute top-0 bottom-0 ${market.color} opacity-20`}
+                        className={`absolute top-0 bottom-0 ${market.color} ${isWeekendClosed ? "opacity-10" : "opacity-20"}`}
                         style={{ left: `${bar.left}%`, width: `${bar.width}%` }}
                     />
                 ))}
@@ -143,7 +232,7 @@ export function MarketHoursMonitor() {
                 {bars.map((bar, idx) => (
                     <div
                         key={`solid-${idx}`}
-                        className={`absolute top-5 bottom-5 rounded-full ${market.color} shadow-sm backdrop-blur-sm`}
+                        className={`absolute top-5 bottom-5 rounded-full ${market.color} shadow-sm backdrop-blur-sm ${isWeekendClosed ? "opacity-40 grayscale" : ""}`}
                         style={{ left: `${bar.left}%`, width: `${bar.width}%` }}
                     />
                 ))}
@@ -153,28 +242,43 @@ export function MarketHoursMonitor() {
 
     return (
         <div className="w-full bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-5 sm:p-6 shadow-sm">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-6 border-b border-gray-200 dark:border-white/10 pb-6">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-6 border-b border-gray-200 dark:border-white/10 pb-6">
                 <div>
-                    <h2 className="text-lg font-extrabold text-gray-800 dark:text-white flex items-center gap-2">
-                        <Clock className="text-amber-600 dark:text-gold" />
-                        Forex Market Hours
-                    </h2>
+                    <div className="flex flex-wrap items-center gap-3">
+                        <h2 className="text-lg font-extrabold text-gray-800 dark:text-white flex items-center gap-2">
+                            <Clock className="text-amber-600 dark:text-gold" />
+                            Forex Market Hours
+                        </h2>
+                        {isWeekendClosed ? (
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-500/10 border border-amber-500/25 text-[11px] font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400">
+                                <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                                Weekend Market Closed
+                            </span>
+                        ) : (
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/25 text-[11px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                Market Active
+                            </span>
+                        )}
+                    </div>
                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                         Currently viewing in{" "}
                         <span className="font-semibold text-gray-800 dark:text-white">
                             {userTimezone}
                         </span>{" "}
-                        time.
+                        time ({userZoned.h.toString().padStart(2, "0")}:
+                        {userZoned.m.toString().padStart(2, "0")}) · DST shifts
+                        adjusted automatically.
                     </p>
                 </div>
 
                 <div className="flex flex-col sm:flex-row items-center gap-4 w-full md:w-auto">
                     <div className="flex gap-3 text-xs font-medium">
-                        <div className="flex items-center gap-1.5 text-gray-600 dark:text-gray-500">
+                        <div className="flex items-center gap-1.5 text-gray-600 dark:text-gray-400">
                             <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse"></div>{" "}
                             Open
                         </div>
-                        <div className="flex items-center gap-1.5 text-gray-600 dark:text-gray-500">
+                        <div className="flex items-center gap-1.5 text-gray-600 dark:text-gray-400">
                             <div className="w-2.5 h-2.5 bg-gray-300 dark:bg-gray-600 rounded-full"></div>{" "}
                             Closed
                         </div>
@@ -188,6 +292,23 @@ export function MarketHoursMonitor() {
                     </div>
                 </div>
             </div>
+
+            {isWeekendClosed && (
+                <div className="mb-6 p-4 rounded-xl bg-amber-500/10 border border-amber-500/25 flex items-start gap-3 text-amber-800 dark:text-amber-300">
+                    <CalendarOff className="shrink-0 mt-0.5 text-amber-600 dark:text-amber-400" size={18} />
+                    <div className="text-xs leading-relaxed">
+                        <p className="font-bold uppercase tracking-wider mb-0.5">
+                            Weekend Market Closed
+                        </p>
+                        <p className="text-amber-700/90 dark:text-amber-300/80">
+                            Global institutional Forex trading closes Friday at
+                            17:00 New York time and reopens Sunday at 17:00 New
+                            York time (Monday Sydney / Asia-Pacific open). All
+                            sessions below show scheduled weekday hours.
+                        </p>
+                    </div>
+                </div>
+            )}
 
             <div className="relative">
                 {/* Time Scale */}

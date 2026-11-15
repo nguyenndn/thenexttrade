@@ -297,7 +297,7 @@ Mỗi tài khoản MT5 được phê duyệt sẽ sở hữu **1 mã License Key
 
 #### E. Hướng dẫn Thiết lập MT5 WebRequest (Chống lỗi 4014 / 4060):
 Bảng hướng dẫn trực quan yêu cầu người dùng thêm đủ **3 URL bắt buộc** vào MT5 (Tools $\rightarrow$ Options $\rightarrow$ Expert Advisors $\rightarrow$ Allow WebRequest):
-1. `https://thenexttrade.com` (Cổng xác thực chính — Primary Verification API)
+1. `https://thenexttrade.app` (Cổng xác thực chính — Primary Verification API)
 2. `https://api.github.com` (Cổng API dự phòng — Backup Verification API)
 3. `https://raw.githubusercontent.com` (Cổng dữ liệu tĩnh dự phòng thảm họa — High-Availability Fallback)
 
@@ -641,7 +641,7 @@ Feature: Batch EA License Registration & WebRequest Configuration
     Then Hệ thống thực thi "submitMultipleAccountRequests"
     And Cả 3 tài khoản chuyển sang trạng thái "PENDING"
     And Thông báo hướng dẫn mở rộng hiển thị đủ 3 URL:
-      | URL 1 | https://thenexttrade.com |
+      | URL 1 | https://thenexttrade.app |
       | URL 2 | https://api.github.com |
       | URL 3 | https://raw.githubusercontent.com |
 ```

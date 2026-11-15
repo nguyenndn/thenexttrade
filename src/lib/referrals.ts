@@ -106,21 +106,28 @@ export async function recordQualifiedReferral(params: {
 }
 
 export async function getReferralDashboardData(userId: string) {
-    const events = await prisma.edgeEvent.findMany({
-        where: {
-            userId,
-            eventType: REFERRAL_EVENT_TYPE,
-            sourceType: REFERRAL_SOURCE_TYPE,
-        },
-        orderBy: { createdAt: "desc" },
-        take: 50,
-    });
+    const whereClause: Prisma.EdgeEventWhereInput = {
+        userId,
+        eventType: REFERRAL_EVENT_TYPE,
+        sourceType: REFERRAL_SOURCE_TYPE,
+    };
 
-    const edgeEarned = events.reduce((sum, event) => sum + event.xpAwarded, 0);
+    const [events, totals] = await Promise.all([
+        prisma.edgeEvent.findMany({
+            where: whereClause,
+            orderBy: { createdAt: "desc" },
+            take: 50,
+        }),
+        prisma.edgeEvent.aggregate({
+            where: whereClause,
+            _count: { _all: true },
+            _sum: { xpAwarded: true },
+        }),
+    ]);
 
     return {
-        totalReferrals: events.length,
-        edgeEarned,
+        totalReferrals: totals._count._all,
+        edgeEarned: totals._sum.xpAwarded ?? 0,
         rewardPerReferral: REFERRAL_EDGE_REWARD,
         qualifiedDefinition:
             "A referral is counted after the invited trader verifies their email and their account is created.",

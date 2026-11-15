@@ -10,13 +10,6 @@ import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { getAuthUser } from "@/lib/auth-cache";
 import { prisma } from "@/lib/prisma";
-import {
-    startOfMonth,
-    endOfMonth,
-    startOfDay,
-    endOfDay,
-    parseISO,
-} from "date-fns";
 import { parseLocalStartOfDay, parseLocalEndOfDay } from "@/lib/utils";
 import {
     convertToUsdEquivalent,
@@ -25,7 +18,6 @@ import {
 import { getUserTradingDataState } from "@/lib/trading-data-state";
 import {
     getKeyStats,
-    getMonthlyAnalytics,
     getDailyPerformance,
     getSymbolPerformance,
     getDayOfWeekPerformance,
@@ -43,6 +35,14 @@ export const metadata: Metadata = {
     description:
         "Comprehensive execution metrics, risk-reward ratios, expectancy curves, and behavioral leak analytics.",
 };
+
+interface AnalyticsWrapperProps {
+    user: { id: string };
+    accountId?: string;
+    startDate?: Date;
+    endDate?: Date;
+    timezone?: string;
+}
 
 export default async function AnalyticsPage({
     searchParams,
@@ -99,9 +99,13 @@ export default async function AnalyticsPage({
                 : undefined;
     }
 
-    // Date Range Logic (All-Time by default since Date Filter is removed)
-    const startDateParam = resolvedParams?.from as string;
-    const endDateParam = resolvedParams?.to as string;
+    // Date Range Logic (All-Time by default when omitted)
+    const startDateParam =
+        typeof resolvedParams?.from === "string"
+            ? resolvedParams.from
+            : undefined;
+    const endDateParam =
+        typeof resolvedParams?.to === "string" ? resolvedParams.to : undefined;
 
     // Resolve account timezone for date boundary alignment
     const accountTimezone = accountId
@@ -153,7 +157,17 @@ async function AnalyticsDataWrapper({
     startDate,
     endDate,
     timezone,
-}: any) {
+}: AnalyticsWrapperProps) {
+    const exitDateFilter =
+        startDate || endDate
+            ? {
+                  exitDate: {
+                      ...(startDate ? { gte: startDate } : {}),
+                      ...(endDate ? { lte: endDate } : {}),
+                  },
+              }
+            : {};
+
     // 2. Parallel Data Fetching — ALL queries in one Promise.all
     const [
         stats,
@@ -163,6 +177,7 @@ async function AnalyticsDataWrapper({
         streak,
         accounts,
         recentTradesRaw,
+        postEndTradesRaw,
     ] = await Promise.all([
         getKeyStats(user.id, accountId, startDate, endDate),
         getDailyPerformance(user.id, accountId, startDate, endDate, timezone),
@@ -177,7 +192,12 @@ async function AnalyticsDataWrapper({
         getCurrentStreak(user.id, accountId),
         prisma.tradingAccount.findMany({
             where: { userId: user.id, ...(accountId ? { id: accountId } : {}) },
-            select: { balance: true, lastSync: true, currency: true, server: true },
+            select: {
+                balance: true,
+                lastSync: true,
+                currency: true,
+                server: true,
+            },
             orderBy: { createdAt: "asc" },
         }),
         prisma.journalEntry.findMany({
@@ -185,7 +205,7 @@ async function AnalyticsDataWrapper({
                 userId: user.id,
                 status: "CLOSED",
                 ...(accountId ? { accountId } : {}),
-                exitDate: { gte: startDate, lte: endDate },
+                ...exitDateFilter,
             },
             orderBy: { exitDate: "desc" },
             take: 10,
@@ -199,53 +219,77 @@ async function AnalyticsDataWrapper({
                 entryDate: true,
                 exitDate: true,
                 result: true,
+                account: {
+                    select: {
+                        currency: true,
+                        server: true,
+                    },
+                },
             },
         }),
+        endDate
+            ? prisma.journalEntry.findMany({
+                  where: {
+                      userId: user.id,
+                      status: "CLOSED",
+                      ...(accountId ? { accountId } : {}),
+                      exitDate: { gt: endDate },
+                  },
+                  select: {
+                      pnl: true,
+                      commission: true,
+                      swap: true,
+                      account: {
+                          select: {
+                              currency: true,
+                              server: true,
+                          },
+                      },
+                  },
+              })
+            : Promise.resolve([]),
     ]);
 
-    // 3. Transform Data
-    const uniqueCurrencies = new Set(
-        accounts.map((acc: { currency?: string | null; server?: string | null }) =>
-            normalizeCurrencyCode(acc.currency, acc.server)
-        )
-    );
-    const hasMixedCurrencies = uniqueCurrencies.size > 1;
-    const resolvedCurrency =
-        !accountId && hasMixedCurrencies
-            ? "USD"
-            : normalizeCurrencyCode(
-                  accounts[0]?.currency,
-                  accounts[0]?.server
-              );
-    const currentBalance =
-        !accountId && (hasMixedCurrencies || resolvedCurrency === "USD")
-            ? accounts.reduce(
-                  (
-                      sum: number,
-                      acc: {
-                          balance?: number | null;
-                          currency?: string | null;
-                          server?: string | null;
-                      }
-                  ) =>
-                      sum +
-                      convertToUsdEquivalent(
-                          acc.balance || 0,
-                          acc.currency,
-                          acc.server
-                      ),
-                  0
-              )
-            : accounts.reduce(
-                  (sum: number, acc: { balance?: number | null }) =>
-                      sum + (acc.balance || 0),
-                  0
-              );
+    // 3. Transform Data (All-Accounts mode normalizes Cent/FX balances & trades to USD)
+    const isMultiAccount = !accountId;
+    const resolvedCurrency = isMultiAccount
+        ? "USD"
+        : normalizeCurrencyCode(accounts[0]?.currency, accounts[0]?.server);
+
+    const currentBalance = isMultiAccount
+        ? accounts.reduce(
+              (sum, acc) =>
+                  sum +
+                  convertToUsdEquivalent(
+                      acc.balance || 0,
+                      acc.currency,
+                      acc.server
+                  ),
+              0
+          )
+        : accounts.reduce((sum, acc) => sum + (acc.balance || 0), 0);
+
+    // Subtract closed trades realized AFTER endDate so historical date filters show accurate historical equity
+    const postPeriodPnL = postEndTradesRaw.reduce((sum, t) => {
+        const rawNet = (t.pnl || 0) + (t.commission || 0) + (t.swap || 0);
+        return (
+            sum +
+            (isMultiAccount
+                ? convertToUsdEquivalent(
+                      rawNet,
+                      t.account?.currency,
+                      t.account?.server
+                  )
+                : rawNet)
+        );
+    }, 0);
+
+    const periodEndBalance = currentBalance - postPeriodPnL;
     const totalPeriodPnL = stats.totalPnL;
 
-    // Equity Curve (backtracking from current balance)
-    let runningBalance = currentBalance - totalPeriodPnL;
-    const equityCurve = dailyPerformance.map((day: any) => {
+    // Equity Curve (backtracking from period-end balance)
+    let runningBalance = periodEndBalance - totalPeriodPnL;
+    const equityCurve = dailyPerformance.map((day) => {
         runningBalance += day.value;
         return {
             date: day.date,
@@ -254,28 +298,37 @@ async function AnalyticsDataWrapper({
         };
     });
 
-    const recentTrades = recentTradesRaw.map((t: any) => ({
-        id: t.id,
-        symbol: t.symbol,
-        type: t.type,
-        grossProfit: Number(t.pnl || 0),
-        commission: Number(t.commission || 0),
-        swap: Number(t.swap || 0),
-        pnl: Number(
-            (
-                (t.pnl || 0) +
-                (t.commission || 0) +
-                (t.swap || 0)
-            ).toFixed(2)
-        ),
-        entryDate: t.entryDate.toISOString(),
-        exitDate: t.exitDate ? t.exitDate.toISOString() : null,
-        result: t.result || "BREAK_EVEN",
-    }));
+    const recentTrades = recentTradesRaw.map((t) => {
+        const scaleVal = (val: number) =>
+            isMultiAccount
+                ? convertToUsdEquivalent(
+                      val,
+                      t.account?.currency,
+                      t.account?.server
+                  )
+                : Number(val.toFixed(2));
+        const rawGross = t.pnl || 0;
+        const rawComm = t.commission || 0;
+        const rawSwap = t.swap || 0;
+        const rawNet = rawGross + rawComm + rawSwap;
+
+        return {
+            id: t.id,
+            symbol: t.symbol,
+            type: t.type as "BUY" | "SELL",
+            grossProfit: scaleVal(rawGross),
+            commission: scaleVal(rawComm),
+            swap: scaleVal(rawSwap),
+            pnl: scaleVal(rawNet),
+            entryDate: t.entryDate.toISOString(),
+            exitDate: t.exitDate ? t.exitDate.toISOString() : null,
+            result: t.result || "BREAK_EVEN",
+        };
+    });
 
     // Daily PnL (Format match & Calculate Growth based on previous period balance)
-    let rBalance = currentBalance - totalPeriodPnL;
-    const dailyPnL = dailyPerformance.map((d: any) => {
+    let rBalance = periodEndBalance - totalPeriodPnL;
+    const dailyPnL = dailyPerformance.map((d) => {
         const prevBalance = rBalance;
         rBalance += d.value;
         const growth = prevBalance > 0 ? (d.value / prevBalance) * 100 : 0;
@@ -283,42 +336,20 @@ async function AnalyticsDataWrapper({
         return {
             date: d.date,
             pnl: d.value,
-            growth: growth,
+            growth,
             tradeCount: d.tradeCount,
-            trades: [], // We don't load nested trades for the calendar view in V1 to save size
+            trades: [],
         };
     });
 
-    // Pair Performance (Format match — winRate now comes from query)
-    const pairPerfFormatted = pairPerformance.map((p: any) => ({
+    const pairPerfFormatted = pairPerformance.map((p) => ({
         symbol: p.symbol,
         pnl: p.pnl,
         tradeCount: p.trades,
         winRate: p.winRate,
     }));
 
-    // 4. Calculate Psychology Diagnostic & Intraday Heatmap
-    const { calculatePsychologyDiagnostic } = await import("@/lib/analytics/psychology-engine.server");
-    const { computeDataConfidence } = await import("@/lib/insights/data-confidence");
-
-    const latestSyncAt = accounts.reduce((latest: Date | null, acc: any) => {
-        if (!acc.lastSync) return latest;
-        if (!latest) return acc.lastSync;
-        return new Date(acc.lastSync) > new Date(latest) ? acc.lastSync : latest;
-    }, null);
-
-    const confidence = computeDataConfidence({
-        usableClosedTradeCount: stats.totalTrades,
-        sampleSize: stats.totalTrades,
-        periodStart: startDate,
-        periodEnd: endDate,
-        latestSyncAt,
-        accountScope: accountId ? [accountId] : [],
-    });
-
-    const psychologyData = await calculatePsychologyDiagnostic(user.id, accountId);
-
-    // 5. Construct Final Data Object
+    // 4. Construct Final Data Object
     const data: AnalyticsData = {
         currency: resolvedCurrency,
         summary: {
@@ -339,12 +370,58 @@ async function AnalyticsDataWrapper({
         equityCurve,
         dailyPnL,
         pairPerformance: pairPerfFormatted,
-        dayOfWeekPerformance: dayOfWeekPerformance,
+        dayOfWeekPerformance,
         recentTrades,
     };
 
-    const { TradingPsychologyPanel } = await import("@/components/analytics/TradingPsychologyPanel");
-    const { IntradayHeatmapChart } = await import("@/components/analytics/IntradayHeatmapChart");
+    if (stats.totalTrades === 0) {
+        return (
+            <div className="space-y-6">
+                <AnalyticsDashboard
+                    data={data}
+                    accountId={accountId}
+                    dateRange={{ start: startDate, end: endDate }}
+                />
+            </div>
+        );
+    }
+
+    // 5. Calculate Psychology Diagnostic & Intraday Heatmap only when closed trades exist
+    const { calculatePsychologyDiagnostic } = await import(
+        "@/lib/analytics/psychology-engine.server"
+    );
+    const { computeDataConfidence } = await import(
+        "@/lib/insights/data-confidence"
+    );
+
+    const latestSyncAt = accounts.reduce<Date | null>((latest, acc) => {
+        if (!acc.lastSync) return latest;
+        if (!latest) return acc.lastSync;
+        return new Date(acc.lastSync) > new Date(latest)
+            ? acc.lastSync
+            : latest;
+    }, null);
+
+    const confidence = computeDataConfidence({
+        usableClosedTradeCount: stats.totalTrades,
+        sampleSize: stats.totalTrades,
+        periodStart: startDate,
+        periodEnd: endDate,
+        latestSyncAt,
+        accountScope: accountId ? [accountId] : [],
+    });
+
+    const psychologyData = await calculatePsychologyDiagnostic(
+        user.id,
+        accountId
+    );
+
+    const { TradingPsychologyPanel } = await import(
+        "@/components/analytics/TradingPsychologyPanel"
+    );
+    const { IntradayHeatmapChart } = await import(
+        "@/components/analytics/IntradayHeatmapChart"
+    );
 
     return (
         <div className="space-y-6">
@@ -353,7 +430,10 @@ async function AnalyticsDataWrapper({
                 accountId={accountId}
                 dateRange={{ start: startDate, end: endDate }}
             />
-            <TradingPsychologyPanel data={psychologyData} confidence={confidence} />
+            <TradingPsychologyPanel
+                data={psychologyData}
+                confidence={confidence}
+            />
             <IntradayHeatmapChart data={psychologyData.heatmap} />
         </div>
     );

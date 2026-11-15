@@ -429,7 +429,15 @@ export async function updateTradingAccount(
     try {
         const currentAccount = await prisma.tradingAccount.findFirst({
             where: { id, userId: user.id },
-            select: { id: true, accountNumber: true, platform: true },
+            select: {
+                id: true,
+                accountNumber: true,
+                platform: true,
+                ibAttribution: true,
+                proEntitlement: {
+                    select: { id: true, status: true },
+                },
+            },
         });
         if (!currentAccount) {
             return { error: "Account not found" };
@@ -437,6 +445,29 @@ export async function updateTradingAccount(
 
         const nextAccountNumber = validation.data.accountNumber?.trim();
         const prevAccountNumber = currentAccount.accountNumber?.trim() || "";
+        if (
+            validation.data.accountNumber !== undefined &&
+            (nextAccountNumber || "") !== prevAccountNumber
+        ) {
+            const normalizedAttribution = (
+                currentAccount.ibAttribution || "UNVERIFIED"
+            )
+                .trim()
+                .toUpperCase();
+            const isAttributionLocked =
+                normalizedAttribution !== "UNVERIFIED" &&
+                normalizedAttribution !== "UNKNOWN";
+            const hasActiveProEntitlement = Boolean(
+                currentAccount.proEntitlement &&
+                    (currentAccount.proEntitlement.status === "ACTIVE" ||
+                        currentAccount.proEntitlement.status === "GRACE")
+            );
+            if (isAttributionLocked || hasActiveProEntitlement) {
+                return {
+                    error: "Login number is already locked for this account. Add a new MT5 account instead.",
+                };
+            }
+        }
         if (nextAccountNumber && nextAccountNumber !== prevAccountNumber) {
             const targetPlatform =
                 validation.data.platform || currentAccount.platform || "MT5";

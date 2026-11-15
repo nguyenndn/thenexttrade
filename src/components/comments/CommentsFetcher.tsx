@@ -13,6 +13,7 @@ export async function CommentsFetcher({ articleId }: { articleId: string }) {
                 include: {
                     user: { select: { id: true, name: true, image: true } },
                 },
+                orderBy: { createdAt: "asc" },
             },
         },
         orderBy: { createdAt: "desc" },

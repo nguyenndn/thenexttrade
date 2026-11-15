@@ -3,11 +3,11 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/Button";
-import { PIP_VALUES, calculatePipValue } from "@/lib/calculators";
+import { calculatePipValue } from "@/lib/calculators";
 import { CurrencyPairSelect } from "./CurrencyPairSelect";
 import {
     AccountCurrencySelect,
-    getCurrencySymbol,
+    formatAccountCurrencyAmount,
 } from "./AccountCurrencySelect";
 import { CalcInput } from "./CalcInput";
 import { CalcResultPrimary } from "./CalcResult";
@@ -28,8 +28,6 @@ export function PipValueCalc() {
     });
 
     const isLotTypeActive = (val: number) => Math.abs(lotSize - val) < 0.0001;
-
-    const currSymbol = getCurrencySymbol(accountCurrency);
 
     const quickPips = [1, 5, 10, 50, 100];
 
@@ -109,7 +107,10 @@ export function PipValueCalc() {
             <div className="space-y-4">
                 <CalcResultPrimary
                     label={`Pip Value (${accountCurrency})`}
-                    value={`${currSymbol}${totalValue.toFixed(2)}`}
+                    value={formatAccountCurrencyAmount(
+                        totalValue,
+                        accountCurrency
+                    )}
                 />
                 <p className="text-center text-sm text-gray-600 dark:text-gray-300 -mt-1">
                     For{" "}
@@ -120,7 +121,7 @@ export function PipValueCalc() {
                 </p>
 
                 {/* Quick Reference Table */}
-                <div className="bg-white dark:bg-white/5 rounded-lg border border-dashboard overflow-hidden">
+                <div className="bg-white dark:bg-white/5 rounded-xl border border-dashboard overflow-hidden">
                     <div className="px-4 py-2.5 border-b border-dashboard">
                         <p className="text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                             Quick Reference
@@ -135,9 +136,11 @@ export function PipValueCalc() {
                                 <span className="text-sm text-gray-600 dark:text-gray-500">
                                     {pips} pip{pips > 1 ? "s" : ""}
                                 </span>
-                                <span className="font-bold text-sm text-gray-700 dark:text-white">
-                                    {currSymbol}
-                                    {(totalValue * pips).toFixed(2)}
+                                <span className="font-bold font-mono tabular-nums text-sm text-gray-700 dark:text-white">
+                                    {formatAccountCurrencyAmount(
+                                        totalValue * pips,
+                                        accountCurrency
+                                    )}
                                 </span>
                             </div>
                         ))}

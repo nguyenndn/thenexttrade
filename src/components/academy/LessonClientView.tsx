@@ -24,13 +24,41 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 import { PageHeader } from "@/components/ui/PageHeader";
 
+interface LessonSummaryItem {
+    id: string;
+    title: string;
+    slug: string;
+    duration?: number | null;
+}
+
+interface LessonQuizSummary {
+    id: string;
+    title?: string;
+}
+
+interface LessonDetail {
+    id: string;
+    title: string;
+    slug: string;
+    content: string;
+    videoUrl?: string | null;
+    module: {
+        title: string;
+        description?: string | null;
+        level?: {
+            title: string;
+        } | null;
+    };
+}
+
 interface Props {
-    lesson: any;
-    courseLessons: any[];
-    nextLesson: any;
-    prevLesson: any;
-    quiz: any;
+    lesson: LessonDetail;
+    courseLessons: LessonSummaryItem[];
+    nextLesson: LessonSummaryItem | null | undefined;
+    prevLesson: LessonSummaryItem | null | undefined;
+    quiz: LessonQuizSummary | null | undefined;
     isLastLesson: boolean;
+    isLastLessonInModule?: boolean;
     isDashboard?: boolean;
     completedLessonIds?: string[];
 }
@@ -42,6 +70,7 @@ export default function LessonClientView({
     prevLesson,
     quiz,
     isLastLesson,
+    isLastLessonInModule,
     isDashboard,
     completedLessonIds = [],
 }: Props) {
@@ -69,11 +98,12 @@ export default function LessonClientView({
     }, [completedLessonIds, isCompleted, lesson.id]);
 
     const currentIndex = courseLessons.findIndex(
-        (l: any) => l.id === lesson.id
+        (l) => l.id === lesson.id
     );
-    const completedInModule = courseLessons.filter((l: any) =>
+    const completedInModule = courseLessons.filter((l) =>
         effectiveCompletedIds.includes(l.id)
     ).length;
+    const isFinalModuleLesson = isLastLessonInModule ?? isLastLesson;
 
     // Precompute which lesson indexes are unlocked (O(n) instead of O(n²))
     const unlockedIndexes = useMemo(() => {
@@ -81,7 +111,7 @@ export default function LessonClientView({
         for (let i = 1; i < courseLessons.length; i++) {
             const allPrevDone = courseLessons
                 .slice(0, i)
-                .every((l: any) => effectiveCompletedIds.includes(l.id));
+                .every((l) => effectiveCompletedIds.includes(l.id));
             if (allPrevDone) set.add(i);
             else break; // Sequential: if one isn't done, none after are unlocked
         }
@@ -110,7 +140,7 @@ export default function LessonClientView({
                 });
 
                 setTimeout(() => {
-                    if (isLastLesson && quiz) {
+                    if (isFinalModuleLesson && quiz) {
                         router.push(
                             isDashboard
                                 ? `/dashboard/academy/quiz/${quiz.id}`
@@ -124,19 +154,18 @@ export default function LessonClientView({
                 const errData = await res.json().catch(() => null);
                 toast.error(errData?.error || "Failed to mark lesson complete.");
             }
-        } catch (error: any) {
-            console.error(error);
+        } catch (error: unknown) {
             toast.error(
                 error instanceof Error
                     ? error.message
-                    : error?.message || "Failed to save progress."
+                    : "Failed to save progress."
             );
         } finally {
             setCompleting(false);
         }
     };
 
-    const getVideoId = (url: string) => {
+    const getVideoId = (url?: string | null) => {
         if (!url) return null;
         if (url.includes("youtube.com") || url.includes("youtu.be")) {
             const match = url.match(
@@ -221,7 +250,7 @@ export default function LessonClientView({
                     </div>
 
                     {/* Completion + Navigation */}
-                    <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard shadow-sm p-6 flex items-center justify-between gap-4">
+                    <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-6 flex flex-wrap items-center justify-between gap-4">
                         {prevLesson ? (
                             <Link
                                 href={lessonPath(prevLesson.slug)}
@@ -238,7 +267,7 @@ export default function LessonClientView({
                             onClick={handleComplete}
                             disabled={isCompleted || completing}
                             className={cn(
-                                "group rounded-full font-bold px-8 shadow-lg transition-all",
+                                "group rounded-lg font-bold px-8 shadow-lg transition-all",
                                 isCompleted
                                     ? "bg-green-50 dark:bg-green-900/10 text-green-600 border-green-200 dark:border-green-800/30 cursor-default"
                                     : "bg-gold hover:bg-amber-600 text-white shadow-amber-500/20",
@@ -266,13 +295,50 @@ export default function LessonClientView({
                             )}
                         </Button>
 
-                        {nextLesson ? (
-                            <Link
-                                href={lessonPath(nextLesson.slug)}
-                                className="hover:text-primary flex items-center gap-2 transition-colors text-xs font-bold text-gray-500 uppercase tracking-wider"
-                            >
-                                Next Lesson <ChevronRight size={14} />
-                            </Link>
+                        {isFinalModuleLesson && quiz ? (
+                            isCompleted ? (
+                                <Link
+                                    href={
+                                        isDashboard
+                                            ? `/dashboard/academy/quiz/${quiz.id}`
+                                            : `/academy/quiz/${quiz.id}`
+                                    }
+                                    className="text-amber-600 dark:text-gold hover:underline flex items-center gap-2 transition-colors text-xs font-bold uppercase tracking-wider"
+                                >
+                                    Module Quiz <ChevronRight size={14} />
+                                </Link>
+                            ) : (
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    disabled
+                                    aria-label="Complete this lesson to unlock module quiz"
+                                    className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider opacity-60 cursor-not-allowed rounded-lg"
+                                >
+                                    <Lock size={13} /> Module Quiz
+                                </Button>
+                            )
+                        ) : nextLesson ? (
+                            isCompleted ? (
+                                <Link
+                                    href={lessonPath(nextLesson.slug)}
+                                    className="hover:text-primary flex items-center gap-2 transition-colors text-xs font-bold text-gray-500 uppercase tracking-wider"
+                                >
+                                    Next Lesson <ChevronRight size={14} />
+                                </Link>
+                            ) : (
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    disabled
+                                    aria-label="Mark current lesson complete to unlock next lesson"
+                                    className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider opacity-60 cursor-not-allowed rounded-lg"
+                                >
+                                    Next Lesson <Lock size={13} />
+                                </Button>
+                            )
                         ) : (
                             <span></span>
                         )}
@@ -333,7 +399,7 @@ export default function LessonClientView({
                             </span>
                         </div>
                         <div className="divide-y divide-gray-50">
-                            {courseLessons.map((l: any, idx: number) => {
+                            {courseLessons.map((l, idx) => {
                                 const isActive = l.id === lesson.id;
                                 const isLessonCompleted =
                                     effectiveCompletedIds.includes(l.id);
@@ -421,7 +487,7 @@ export default function LessonClientView({
                         {quiz &&
                             (() => {
                                 const allLessonsCompleted = courseLessons.every(
-                                    (l: any) =>
+                                    (l) =>
                                         effectiveCompletedIds.includes(l.id)
                                 );
                                 return (
@@ -494,7 +560,7 @@ export default function LessonClientView({
                             </Button>
                         </div>
                         <div className="space-y-1">
-                            {courseLessons.map((l: any, idx: number) => {
+                            {courseLessons.map((l, idx) => {
                                 const mobileUnlocked = unlockedIndexes.has(idx);
                                 const mobileCompleted =
                                     effectiveCompletedIds.includes(l.id);

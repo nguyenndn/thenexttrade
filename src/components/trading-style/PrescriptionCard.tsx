@@ -61,12 +61,12 @@ export function PrescriptionCard({
         {
             stepNum: "03",
             stepLabel: "BEHAVIORAL REWIRING",
-            badge: "Rulebook Protocol",
+            badge: rx.lesson?.badge || "Rulebook Protocol",
             name: rx.lesson.name,
             tagline: rx.lesson.tagline,
             why: rx.lesson.why,
-            href: "/dashboard/rules",
-            actionLabel: "Open Trading Rules",
+            href: rx.lesson?.href || "/dashboard/rules",
+            actionLabel: rx.lesson?.actionLabel || "Open Trading Rules",
         },
     ];
 

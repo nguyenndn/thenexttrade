@@ -2,7 +2,8 @@
 
 import { prisma as db } from "@/lib/prisma";
 import { getAuthUser as getCurrentUser } from "@/lib/auth-cache";
-import { startOfMonth, endOfMonth, parseISO, startOfDay } from "date-fns";
+import { parseISO, startOfDay } from "date-fns";
+import { convertToUsdEquivalent } from "@/lib/utils/cent-account";
 
 export interface DailyPerformance {
     date: string; // 'yyyy-MM-dd'
@@ -45,11 +46,13 @@ export async function getCalendarPerformance(
             Date.UTC(year, monthIndex + 1, 0, 23, 59, 59, 999)
         );
 
+        const isSingleAccount = Boolean(accountId && accountId !== "all");
+
         // Fetch all closed trades for the month
         const trades = await db.journalEntry.findMany({
             where: {
                 userId: user.id,
-                ...(accountId && accountId !== "all" ? { accountId } : {}),
+                ...(isSingleAccount ? { accountId } : {}),
                 status: "CLOSED",
                 exitDate: {
                     gte: start,
@@ -62,6 +65,12 @@ export async function getCalendarPerformance(
                 commission: true,
                 swap: true,
                 result: true,
+                account: {
+                    select: {
+                        currency: true,
+                        server: true,
+                    },
+                },
             },
         });
 
@@ -100,16 +109,27 @@ export async function getCalendarPerformance(
             }
 
             const dayPerf = performanceMap.get(dateStr)!;
-            const netTradePnl =
+            const rawNetPnl =
                 (trade.pnl || 0) +
                 (trade.commission || 0) +
                 (trade.swap || 0);
+            const netTradePnl = isSingleAccount
+                ? rawNetPnl
+                : convertToUsdEquivalent(
+                      rawNetPnl,
+                      trade.account?.currency,
+                      trade.account?.server
+                  );
             dayPerf.pnl = Number((dayPerf.pnl + netTradePnl).toFixed(2));
             dayPerf.tradesCount += 1;
 
             if (trade.result === "WIN") dayPerf.wins += 1;
             else if (trade.result === "LOSS") dayPerf.losses += 1;
-            else if (trade.result === "BREAK_EVEN") dayPerf.breakEvens += 1;
+            else if (
+                trade.result === "BREAK_EVEN" ||
+                trade.result === "BE_PLUS"
+            )
+                dayPerf.breakEvens += 1;
         }
 
         // Attach notes
@@ -144,7 +164,11 @@ export async function getCalendarPerformance(
 export async function saveDailyNote(
     dateStr: string,
     noteText: string
-): Promise<{ success: boolean; data?: any; error?: string }> {
+): Promise<{
+    success: boolean;
+    data?: { id: string; userId: string; date: Date; note: string };
+    error?: string;
+}> {
     try {
         const user = await getCurrentUser();
         if (!user) {

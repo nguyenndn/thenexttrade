@@ -34,7 +34,7 @@ const MAILTRAP_API_TOKEN =
     process.env.MAILTRAP_API_TOKEN || "de1154b87791878c688f80d8b70f8d92";
 const MAILTRAP_ACCOUNT_ID = process.env.MAILTRAP_ACCOUNT_ID || "2563227";
 const MAILTRAP_INBOX_ID = process.env.MAILTRAP_INBOX_ID || "4275781";
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.vercel.app";
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.app";
 
 const MAILTRAP_BASE_URL = `https://mailtrap.io/api/accounts/${MAILTRAP_ACCOUNT_ID}/inboxes/${MAILTRAP_INBOX_ID}`;
 

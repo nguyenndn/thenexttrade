@@ -78,6 +78,9 @@ describe("TC-00: VIP & Trial Constants & Whitelists", () => {
             "EA_SYNC",
             "EA_HISTORY",
             "CLOUD_WORKER",
+            "CLOUD_SYNC",
+            "METATRADER",
+            "APP",
         ]);
         expect(VIP_ELIGIBLE_BROKERS).toEqual(["VANTAGE", "EXNESS", "VTMARKETS", "ULTIMAMARKETS"]);
     });
@@ -1077,8 +1080,11 @@ describe("Cent Account Detection & Lot Size Normalization (100 Cent Lots = 1 Sta
         expect(normalizeLotSize(0, true)).toBe(0);
     });
 
-    it("normalizes cent volume in getAccountProAccess for VIP qualification", async () => {
-        // Mock Cent account with $500 balance (50,000 cents normalized to $500)
+    it("uses pre-normalized standard lots from JournalEntry.lotSize in getAccountProAccess (no double /100 division)", async () => {
+        const now = new Date("2026-09-02T12:00:00Z");
+        const fortyDaysAgo = new Date(now.getTime() - 40 * 24 * 60 * 60 * 1000);
+
+        // Mock Cent account past 30-day onboarding grace with $500 balance (50,000 USC)
         (prisma.tradingAccount.findFirst as any).mockResolvedValue({
             id: "acc-cent-1",
             broker: "EXNESS",
@@ -1086,9 +1092,10 @@ describe("Cent Account Detection & Lot Size Normalization (100 Cent Lots = 1 Sta
             server: "Exness-Cent",
             accountType: "CENT",
             balance: 50000,
-            fundingVerifiedAt: new Date(),
+            ibAttributionAt: fortyDaysAgo,
+            fundingVerifiedAt: fortyDaysAgo,
             fundingAmount: 50000,
-            fundingLastVerifiedAt: new Date(),
+            fundingLastVerifiedAt: now,
             fundingGraceUntil: null,
         });
 
@@ -1096,28 +1103,32 @@ describe("Cent Account Detection & Lot Size Normalization (100 Cent Lots = 1 Sta
             id: "ent-cent-1",
             status: "ACTIVE",
             source: "IB_VERIFIED",
+            startsAt: fortyDaysAgo,
+            createdAt: fortyDaysAgo,
             expiresAt: null,
         });
 
-        // 100 raw Cent lots traded in 30 days -> should normalize to 1.0 standard lot
+        // 100 Cent lots were already normalized on ingest to 1.0 standard lot in JournalEntry.lotSize
         (prisma.journalEntry.aggregate as any).mockResolvedValue({
-            _sum: { lotSize: 100 },
+            _sum: { lotSize: 1.0 },
         });
 
         (prisma.journalEntry.findFirst as any).mockResolvedValue({
-            exitDate: new Date(),
-            entryDate: new Date(),
+            exitDate: now,
+            entryDate: now,
         });
 
-        const result = await getAccountProAccess("user-cent-1", "acc-cent-1");
+        const result = await getAccountProAccess("user-cent-1", "acc-cent-1", now);
 
-        // 100 raw Cent lots traded in 30 days -> should normalize to 1.0 standard lot
         expect(result.activityInfo?.rolling30dLots).toBe(1.0);
         expect(result.policyState).toBe("PAUSED");
         expect(result.isPro).toBe(false);
     });
 
-    it("passes VIP volume qualification when cent volume reaches 200 Cent lots (2.0 Standard lots)", async () => {
+    it("passes VIP volume qualification when cent volume reaches 200 Cent lots (stored as 2.5 Standard lots)", async () => {
+        const now = new Date("2026-09-02T12:00:00Z");
+        const fortyDaysAgo = new Date(now.getTime() - 40 * 24 * 60 * 60 * 1000);
+
         (prisma.tradingAccount.findFirst as any).mockResolvedValue({
             id: "acc-cent-2",
             broker: "EXNESS",
@@ -1125,9 +1136,10 @@ describe("Cent Account Detection & Lot Size Normalization (100 Cent Lots = 1 Sta
             server: "Exness-Cent",
             accountType: "CENT",
             balance: 50000,
-            fundingVerifiedAt: new Date(),
+            ibAttributionAt: fortyDaysAgo,
+            fundingVerifiedAt: fortyDaysAgo,
             fundingAmount: 50000,
-            fundingLastVerifiedAt: new Date(),
+            fundingLastVerifiedAt: now,
             fundingGraceUntil: null,
         });
 
@@ -1135,24 +1147,64 @@ describe("Cent Account Detection & Lot Size Normalization (100 Cent Lots = 1 Sta
             id: "ent-cent-2",
             status: "ACTIVE",
             source: "IB_VERIFIED",
+            startsAt: fortyDaysAgo,
+            createdAt: fortyDaysAgo,
             expiresAt: null,
         });
 
-        // 250 raw Cent lots traded -> normalizes to 2.5 standard lots (>= 2.0 MIN_30D_LOTS)
+        // 250 Cent lots normalized on ingest -> 2.5 standard lots (>= 2.0 MIN_30D_LOTS)
         (prisma.journalEntry.aggregate as any).mockResolvedValue({
-            _sum: { lotSize: 250 },
+            _sum: { lotSize: 2.5 },
         });
 
         (prisma.journalEntry.findFirst as any).mockResolvedValue({
-            exitDate: new Date(),
-            entryDate: new Date(),
+            exitDate: now,
+            entryDate: now,
         });
 
-        const result = await getAccountProAccess("user-cent-2", "acc-cent-2");
+        const result = await getAccountProAccess("user-cent-2", "acc-cent-2", now);
 
         expect(result.activityInfo?.rolling30dLots).toBe(2.5);
         expect(result.policyState).toBe("ACTIVE");
         expect(result.isPro).toBe(true);
+    });
+
+    it("keeps newly approved IB_VERIFIED accounts ACTIVE during 30-day onboarding grace even with 0 lots", async () => {
+        const now = new Date("2026-09-02T12:00:00Z");
+        const twoDaysAgo = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000);
+
+        (prisma.tradingAccount.findFirst as any).mockResolvedValue({
+            id: "acc-new-ib",
+            broker: "Vantage",
+            currency: "USD",
+            server: "Vantage-Live",
+            accountType: "REAL",
+            balance: 500,
+            ibAttributionAt: twoDaysAgo,
+            fundingVerifiedAt: twoDaysAgo,
+            fundingAmount: 500,
+            fundingLastVerifiedAt: twoDaysAgo,
+            fundingGraceUntil: null,
+        });
+
+        (prisma.proEntitlement.findUnique as any).mockResolvedValue({
+            id: "ent-new-ib",
+            status: "ACTIVE",
+            source: "IB_VERIFIED",
+            startsAt: twoDaysAgo,
+            createdAt: twoDaysAgo,
+            expiresAt: null,
+        });
+
+        (prisma.journalEntry.aggregate as any).mockResolvedValue({
+            _sum: { lotSize: 0 },
+        });
+        (prisma.journalEntry.findFirst as any).mockResolvedValue(null);
+
+        const result = await getAccountProAccess("user-new-ib", "acc-new-ib", now);
+
+        expect(result.isPro).toBe(true);
+        expect(result.policyState).toBe("ACTIVE");
     });
 });
 

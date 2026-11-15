@@ -3,10 +3,6 @@
 
 import { prisma } from "@/lib/prisma";
 import type { ProStatus, ProSource } from "@prisma/client";
-import {
-    isCentAccount,
-    normalizeLotSize,
-} from "@/lib/utils/cent-account";
 import { isLiveTradingAccount } from "@/lib/trading-account-classification";
 
 // ============================================================================
@@ -14,6 +10,7 @@ import { isLiveTradingAccount } from "@/lib/trading-account-classification";
 // ============================================================================
 
 export const TRIAL_DURATION_DAYS = 7;
+export const ONBOARDING_GRACE_DAYS = 30;
 export const MIN_MONTHLY_LOTS = 2.0;
 export const MIN_30D_LOTS = MIN_MONTHLY_LOTS;
 export const INACTIVITY_WARN_DAYS = 7;
@@ -26,6 +23,9 @@ export const VALID_SYNC_SOURCES = [
     "EA_SYNC",
     "EA_HISTORY",
     "CLOUD_WORKER",
+    "CLOUD_SYNC",
+    "METATRADER",
+    "APP",
 ];
 export const VIP_ELIGIBLE_BROKERS = ["VANTAGE", "EXNESS", "VTMARKETS", "ULTIMAMARKETS"];
 
@@ -204,6 +204,7 @@ interface ActivityPolicyInput {
     daysSinceLastTrade: number | null;
     fundingInGrace: boolean;
     fundingExpired: boolean;
+    inOnboardingGrace?: boolean;
 }
 
 export function evaluateActivityPolicy(
@@ -223,25 +224,27 @@ export function evaluateActivityPolicy(
         };
     }
 
-    if (input.rolling30dLots < MIN_MONTHLY_LOTS) {
-        return {
-            policyState: "PAUSED",
-            reason: `Only ${input.rolling30dLots.toFixed(2)} verified lots in the last 30 days. At least ${MIN_MONTHLY_LOTS.toFixed(1)} lots are required.`,
-        };
-    }
+    if (!input.inOnboardingGrace) {
+        if (input.rolling30dLots < MIN_MONTHLY_LOTS) {
+            return {
+                policyState: "PAUSED",
+                reason: `Only ${input.rolling30dLots.toFixed(2)} verified lots in the last 30 days. At least ${MIN_MONTHLY_LOTS.toFixed(1)} lots are required.`,
+            };
+        }
 
-    if (input.daysSinceLastTrade === null) {
-        return {
-            policyState: "PAUSED",
-            reason: "No verified closed trades have been synced yet.",
-        };
-    }
+        if (input.daysSinceLastTrade === null) {
+            return {
+                policyState: "PAUSED",
+                reason: "No verified closed trades have been synced yet.",
+            };
+        }
 
-    if (input.daysSinceLastTrade > INACTIVITY_PAUSE_DAYS) {
-        return {
-            policyState: "PAUSED",
-            reason: `No verified trades for ${input.daysSinceLastTrade} trading days. The limit is ${INACTIVITY_PAUSE_DAYS}.`,
-        };
+        if (input.daysSinceLastTrade > INACTIVITY_PAUSE_DAYS) {
+            return {
+                policyState: "PAUSED",
+                reason: `No verified trades for ${input.daysSinceLastTrade} trading days. The limit is ${INACTIVITY_PAUSE_DAYS}.`,
+            };
+        }
     }
 
     if (input.fundingInGrace) {
@@ -251,7 +254,11 @@ export function evaluateActivityPolicy(
         };
     }
 
-    if (input.daysSinceLastTrade > INACTIVITY_WARN_DAYS) {
+    if (
+        !input.inOnboardingGrace &&
+        input.daysSinceLastTrade !== null &&
+        input.daysSinceLastTrade > INACTIVITY_WARN_DAYS
+    ) {
         return {
             policyState: "WARNED",
             reason: `No verified trades for ${input.daysSinceLastTrade} trading days.`,
@@ -294,6 +301,7 @@ export async function getAccountProAccess(
             server: true,
             accountType: true,
             status: true,
+            ibAttributionAt: true,
             fundingVerifiedAt: true,
             fundingAmount: true,
             fundingLastVerifiedAt: true,
@@ -311,6 +319,8 @@ export async function getAccountProAccess(
             id: true,
             status: true,
             source: true,
+            startsAt: true,
+            createdAt: true,
             expiresAt: true,
         },
     });
@@ -336,6 +346,8 @@ export async function getAccountProAccess(
                         broker: true,
                         status: true,
                         source: true,
+                        startsAt: true,
+                        createdAt: true,
                         expiresAt: true,
                     },
                 })) || [];
@@ -372,6 +384,8 @@ export async function getAccountProAccess(
                     id: true,
                     status: true,
                     source: true,
+                    startsAt: true,
+                    createdAt: true,
                     expiresAt: true,
                 },
                 orderBy: { createdAt: "desc" },
@@ -474,18 +488,27 @@ export async function getAccountProAccess(
     ]);
 
     const isLiveAccount = isLiveTradingAccount(account);
-    const isCent = isCentAccount(account.currency, account.server, account.accountType);
-    const rawLots = volumeAgg._sum.lotSize ?? 0;
+    // JournalEntry.lotSize is already normalized to standard lots on ingest
+    const rawLots = Math.max(0, Number(volumeAgg._sum.lotSize) || 0);
     const rolling30dLots =
-        isLiveAccount && isEligibleBrokerAccount
-            ? normalizeLotSize(rawLots, isCent)
-            : 0;
+        isLiveAccount && isEligibleBrokerAccount ? rawLots : 0;
     const lastTradeAt = isLiveAccount
         ? latestTrade?.exitDate ?? latestTrade?.entryDate ?? null
         : null;
     const daysSinceLastTrade = lastTradeAt
         ? countTradingDaysBetween(lastTradeAt, now)
         : null;
+
+    // 30-day onboarding grace period for newly approved Partner Pro accounts
+    const onboardingGraceMs = ONBOARDING_GRACE_DAYS * 24 * 60 * 60 * 1000;
+    const graceAnchor =
+        entitlement?.startsAt ??
+        account.ibAttributionAt ??
+        entitlement?.createdAt ??
+        null;
+    const inOnboardingGrace =
+        Boolean(graceAnchor) &&
+        now.getTime() - graceAnchor!.getTime() < onboardingGraceMs;
 
     // Funding verification state
     const fundingVerified = isLiveAccount && !!account.fundingVerifiedAt;
@@ -507,6 +530,7 @@ export async function getAccountProAccess(
                 daysSinceLastTrade,
                 fundingInGrace,
                 fundingExpired,
+                inOnboardingGrace,
             })
           : {
                 policyState: "PAUSED" as const,
@@ -578,6 +602,7 @@ export async function getUserProAccess(
                         server: true,
                         accountType: true,
                         status: true,
+                        ibAttributionAt: true,
                         fundingVerifiedAt: true,
                         fundingAmount: true,
                         fundingLastVerifiedAt: true,
@@ -599,6 +624,7 @@ export async function getUserProAccess(
                 server: true,
                 accountType: true,
                 status: true,
+                ibAttributionAt: true,
                 fundingVerifiedAt: true,
                 fundingAmount: true,
                 fundingLastVerifiedAt: true,
@@ -671,37 +697,11 @@ export async function getUserProAccess(
             : null,
     ]);
 
-    let totalRolling30dLots = 0;
-    if (eligibleAccountIds.length > 0) {
-        const hasAnyCentAccount = allTradingAccounts.some((ta) =>
-            isCentAccount(ta.currency, ta.server, ta.accountType)
-        );
-
-        if (!hasAnyCentAccount) {
-            totalRolling30dLots = volumeAgg._sum.lotSize ?? 0;
-        } else {
-            const volumeByAccount = await prisma.journalEntry.groupBy({
-                by: ["accountId"],
-                where: {
-                    userId,
-                    accountId: { in: eligibleAccountIds },
-                    status: "CLOSED",
-                    syncSource: { in: VALID_SYNC_SOURCES },
-                    OR: [
-                        { exitDate: { gte: period30dStart } },
-                        { exitDate: null, entryDate: { gte: period30dStart } },
-                    ],
-                },
-                _sum: { lotSize: true },
-            });
-
-            for (const item of volumeByAccount) {
-                const acc = allTradingAccounts.find((a) => a.id === item.accountId);
-                const isCent = isCentAccount(acc?.currency, acc?.server, acc?.accountType);
-                totalRolling30dLots += normalizeLotSize(item._sum.lotSize ?? 0, isCent);
-            }
-        }
-    }
+    // JournalEntry.lotSize is already normalized to standard lots on ingest
+    const totalRolling30dLots =
+        eligibleAccountIds.length > 0
+            ? Math.max(0, Number(volumeAgg._sum.lotSize) || 0)
+            : 0;
     const lastTradeAt = latestTrade?.exitDate ?? latestTrade?.entryDate ?? null;
     const daysSinceLastTrade = lastTradeAt
         ? countTradingDaysBetween(lastTradeAt, now)
@@ -930,6 +930,37 @@ export async function getUserProAccess(
     }
 
     // 2. Evaluate Activity Policy for users with Entitlement
+    const onboardingGraceMs = ONBOARDING_GRACE_DAYS * 24 * 60 * 60 * 1000;
+    const inOnboardingGrace = entitlements.some((e) => {
+        if (e.status !== "ACTIVE" && e.status !== "GRACE") return false;
+        const matchedAccount =
+            e.tradingAccount ??
+            (e.accountNumber && e.broker
+                ? allTradingAccounts.find(
+                      (ta) =>
+                          ta.accountNumber === e.accountNumber &&
+                          normalizeBrokerKey(ta.broker) ===
+                              normalizeBrokerKey(e.broker)
+                  )
+                : undefined);
+        if (
+            matchedAccount &&
+            (!isLiveTradingAccount(matchedAccount) ||
+                !isVipEligibleBrokerKey(
+                    matchedAccount.broker,
+                    eligibleBrokerKeys
+                ))
+        ) {
+            return false;
+        }
+        const anchor =
+            e.startsAt ?? matchedAccount?.ibAttributionAt ?? e.createdAt ?? null;
+        return (
+            Boolean(anchor) &&
+            now.getTime() - anchor!.getTime() < onboardingGraceMs
+        );
+    });
+
     const policy = hasManualAdminOverride
         ? {
               policyState: "ACTIVE" as const,
@@ -941,6 +972,7 @@ export async function getUserProAccess(
               daysSinceLastTrade,
               fundingInGrace,
               fundingExpired,
+              inOnboardingGrace,
           });
     const aggregatePolicyState = policy.policyState;
     const policyReason = policy.reason;

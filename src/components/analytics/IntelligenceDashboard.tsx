@@ -29,7 +29,8 @@ import type {
 import { format, parseISO } from "date-fns";
 import { BehavioralRadarChart } from "./BehavioralRadarChart";
 import { AiCoachCard } from "./AiCoachCard";
-import { BiasProfileWidget } from "@/components/dashboard/BiasProfileWidget";
+import { BiasProfileWidget } from "./BiasProfileWidget";
+import { EmptyStateCTAs } from "@/components/ui/EmptyStateCTAs";
 
 // ============================================================================
 // PERIOD COMPARISON BANNER
@@ -359,8 +360,19 @@ function ScoreHistoryChart({ data }: { data: ScoreHistoryPoint[] }) {
                             fillOpacity={1}
                             fill="url(#scoreGradient)"
                             animationDuration={1500}
-                            dot={(props: any) => {
+                            dot={(props: {
+                                cx?: number;
+                                cy?: number;
+                                payload?: ScoreHistoryPoint;
+                            }) => {
                                 const { cx, cy, payload } = props;
+                                if (
+                                    typeof cx !== "number" ||
+                                    typeof cy !== "number" ||
+                                    !payload
+                                ) {
+                                    return <g />;
+                                }
                                 return (
                                     <circle
                                         key={`dot-${payload.weekStart}`}
@@ -647,6 +659,7 @@ function ScoreAndRiskPanel({ data }: { data: IntelligenceData }) {
 // ============================================================================
 function EmptyState({ totalTrades }: { totalTrades: number }) {
     const progress = Math.min(100, (totalTrades / 20) * 100);
+    const isZeroTrades = totalTrades === 0;
     return (
         <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-xl border-2 border-dashed border-dashboard mt-8">
             <div className="w-16 h-16 mb-6 mx-auto bg-gold/10 border border-gold/20 rounded-xl flex items-center justify-center">
@@ -658,10 +671,14 @@ function EmptyState({ totalTrades }: { totalTrades: number }) {
             </div>
 
             <h3 className="text-xl font-bold text-gray-700 dark:text-white mb-2">
-                More Trades Needed
+                {isZeroTrades
+                    ? "No Closed Trades Recorded Yet"
+                    : "More Trades Needed"}
             </h3>
-            <p className="text-gray-600 dark:text-gray-300 px-6 max-w-sm mx-auto mb-6">
-                Log at least 20 closed trades to activate trade telemetry and execution leak detection.
+            <p className="text-gray-600 dark:text-gray-300 px-6 max-w-md mx-auto mb-6">
+                {isZeroTrades
+                    ? "Sync your MT5 account or log your first closed trades to activate behavioral leak radar and discipline telemetry."
+                    : "Log at least 20 closed trades to activate trade telemetry and execution leak detection."}
             </p>
             <div className="max-w-xs mx-auto mb-6">
                 <div className="flex items-center justify-between mb-2">
@@ -679,12 +696,25 @@ function EmptyState({ totalTrades }: { totalTrades: number }) {
                     />
                 </div>
             </div>
-            <Link
-                href="/dashboard/journal"
-                className="inline-flex items-center gap-2 px-5 py-2.5 bg-gold hover:bg-amber-600 text-white text-sm font-bold rounded-lg shadow-md shadow-amber-500/20 transition-all"
-            >
-                Log a Trade <ChevronRight size={16} />
-            </Link>
+            {isZeroTrades ? (
+                <EmptyStateCTAs
+                    primary={{
+                        label: "Connect MT5 Account",
+                        href: "/dashboard/accounts",
+                    }}
+                    secondary={{
+                        label: "Log First Trade",
+                        href: "/dashboard/journal",
+                    }}
+                />
+            ) : (
+                <Link
+                    href="/dashboard/journal"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-gold hover:bg-amber-600 text-white text-sm font-bold rounded-lg shadow-md shadow-amber-500/20 transition-all"
+                >
+                    Log a Trade <ChevronRight size={16} />
+                </Link>
+            )}
         </div>
     );
 }
@@ -793,7 +823,7 @@ export function IntelligenceDashboard({
             {/* Radar Charts Grid (50% / 50% split) */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <BehavioralRadarChart data={data} />
-                <BiasProfileWidget />
+                <BiasProfileWidget accountId={accountId} />
             </div>
 
             {/* Score History Chart — rendered below as full width if available */}

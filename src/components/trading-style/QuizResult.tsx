@@ -4,11 +4,9 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import Markdown from "react-markdown";
 import {
     ArrowRight,
     Award,
-    BookMarked,
     CheckCircle2,
     LogIn,
     RotateCcw,
@@ -17,11 +15,7 @@ import {
     UserPlus,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import {
-    buildReportMarkdown,
-    getArchetype,
-    type DimensionScores,
-} from "@/lib/trading-style/scoring";
+import type { DimensionScores } from "@/lib/trading-style/scoring";
 import { ARCHETYPES, type ArchetypeId } from "@/config/trading-style-data";
 import { saveTradingStyleResult } from "@/actions/trading-style";
 import { DimensionBars } from "@/components/trading-style/DimensionBars";
@@ -55,7 +49,6 @@ export function QuizResult({
     const archetype = ARCHETYPES[archetypeId];
     const [saving, setSaving] = useState(false);
     const [saved, setSaved] = useState(false);
-    const report = buildReportMarkdown(getArchetype(archetypeId), dimensions);
 
     // Automatically store pending trading style for guests to preserve their diagnosis
     useEffect(() => {
@@ -146,16 +139,6 @@ export function QuizResult({
             {/* Archetype Detailed Analysis Card (Strengths, Weaknesses, Mistakes, Focus, Moves) */}
             <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6 dark:border-white/10 dark:bg-[#1E2028]">
                 <ArchetypeCard archetype={archetype} showMoves={true} />
-            </div>
-
-            {/* Full Report Markdown */}
-            <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6 dark:border-white/10 dark:bg-[#1E2028]">
-                <h3 className="mb-3 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                    <BookMarked size={14} /> Your full report
-                </h3>
-                <div className="prose prose-sm max-w-none prose-headings:text-gray-900 prose-headings:dark:text-white prose-li:my-0.5 prose-p:text-gray-600 prose-p:dark:text-gray-300">
-                    <Markdown>{report}</Markdown>
-                </div>
             </div>
 
             {/* Conversion CTA Box (Prescription Model Activation) */}

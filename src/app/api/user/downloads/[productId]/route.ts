@@ -57,9 +57,43 @@ export async function GET(
             );
         }
 
-        // 2. Check Permission: Free product, Pro Entitlement (ACTIVE/GRACE), Approved EA License, or ADMIN
+        // 2. Check Permission: EAProductAccess override, Free product, Pro Entitlement, Approved EA License, or ADMIN
+        const now = new Date();
+        const [profile, productAccessRows] = await Promise.all([
+            prisma.profile.findUnique({
+                where: { userId: user.id },
+                select: { role: true },
+            }),
+            prisma.eAProductAccess.findMany({
+                where: {
+                    userId: user.id,
+                    productId: product.id,
+                },
+                select: {
+                    status: true,
+                    expiresAt: true,
+                },
+            }),
+        ]);
+
+        const isAdmin = profile?.role === "ADMIN";
+        const hasGrantedProductAccess = productAccessRows.some(
+            (row) =>
+                row.status === "GRANTED" &&
+                (!row.expiresAt || row.expiresAt >= now)
+        );
+        const isExplicitlyRevoked =
+            !hasGrantedProductAccess &&
+            productAccessRows.some((row) => row.status === "REVOKED");
+
         let hasAccess = false;
-        if (product.isFree) {
+        if (isAdmin) {
+            hasAccess = true;
+        } else if (isExplicitlyRevoked) {
+            hasAccess = false;
+        } else if (hasGrantedProductAccess) {
+            hasAccess = true;
+        } else if (product.isFree) {
             hasAccess = true;
         } else {
             const proEntitlement = await prisma.proEntitlement.findFirst({
@@ -68,7 +102,7 @@ export async function GET(
                     status: { in: ["ACTIVE", "GRACE"] },
                     OR: [
                         { expiresAt: null },
-                        { expiresAt: { gte: new Date() } },
+                        { expiresAt: { gte: now } },
                     ],
                 },
             });
@@ -82,23 +116,13 @@ export async function GET(
                         status: AccountStatus.APPROVED,
                         OR: [
                             { expiryDate: null },
-                            { expiryDate: { gte: new Date() } },
+                            { expiryDate: { gte: now } },
                         ],
                     },
                 });
                 if (approvedLicense) {
                     hasAccess = true;
                 }
-            }
-        }
-
-        if (!hasAccess) {
-            const profile = await prisma.profile.findUnique({
-                where: { userId: user.id },
-                select: { role: true },
-            });
-            if (profile?.role === "ADMIN") {
-                hasAccess = true;
             }
         }
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/Button";
@@ -8,12 +9,34 @@ import { CalcInput } from "./CalcInput";
 
 type PivotMethod = "classic" | "fibonacci" | "woodie" | "camarilla" | "demark";
 
+interface PivotLevelsResult {
+    r3: number | null;
+    r2: number | null;
+    r1: number | null;
+    pp: number | null;
+    s1: number | null;
+    s2: number | null;
+    s3: number | null;
+}
+
 function calcPivots(
     high: number,
     low: number,
     close: number,
     method: PivotMethod
-) {
+): PivotLevelsResult {
+    if (!Number.isFinite(high) || !Number.isFinite(low) || high <= low) {
+        return {
+            r3: null,
+            r2: null,
+            r1: null,
+            pp: null,
+            s1: null,
+            s2: null,
+            s3: null,
+        };
+    }
+
     const pp = (high + low + close) / 3;
     const range = high - low;
 
@@ -61,19 +84,20 @@ function calcPivots(
                 s3: close - (range * 1.1) / 4,
             };
         case "demark": {
+            // Tom DeMark's formula defines only PP, R1 (Upper), and S1 (Lower); R2/R3/S2/S3 do not exist.
             let x: number;
             if (close < low) x = high + 2 * low + close;
             else if (close > high) x = 2 * high + low + close;
             else x = high + low + 2 * close;
             const dPP = x / 4;
             return {
-                r3: dPP + (x / 2 - low),
-                r2: dPP + (high - low) * 0.618,
+                r3: null,
+                r2: null,
                 r1: x / 2 - low,
                 pp: dPP,
                 s1: x / 2 - high,
-                s2: dPP - (high - low) * 0.618,
-                s3: dPP - (x / 2 - high),
+                s2: null,
+                s3: null,
             };
         }
     }
@@ -94,6 +118,8 @@ export function PivotPointCalc() {
         close: 1.092,
         method: "classic" as PivotMethod,
     });
+
+    const isValidRange = inputs.high > inputs.low;
 
     const pivots = useMemo(() => {
         return calcPivots(inputs.high, inputs.low, inputs.close, inputs.method);
@@ -199,10 +225,20 @@ export function PivotPointCalc() {
                         step="0.0001"
                     />
                 </div>
+
+                {!isValidRange && (
+                    <div className="flex items-start gap-2.5 rounded-xl border border-red-500/25 bg-red-500/10 p-3.5 text-xs font-medium text-red-600 dark:text-red-400">
+                        <AlertCircle size={16} className="shrink-0 mt-0.5" />
+                        <span>
+                            Previous High must be strictly greater than Previous
+                            Low to calculate valid session pivot levels.
+                        </span>
+                    </div>
+                )}
             </div>
 
             {/* Pivot Levels */}
-            <div className="bg-white dark:bg-white/5 rounded-lg border border-dashboard overflow-hidden">
+            <div className="bg-white dark:bg-white/5 rounded-xl border border-dashboard overflow-hidden">
                 <div className="px-4 py-3 border-b border-dashboard">
                     <p className="text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                         {METHODS.find((m) => m.id === inputs.method)?.name}{" "}
@@ -242,11 +278,15 @@ export function PivotPointCalc() {
                             </div>
                             <span
                                 className={cn(
-                                    "font-mono font-bold text-base",
-                                    level.color
+                                    "font-mono tabular-nums font-bold text-base",
+                                    level.value === null
+                                        ? "text-gray-400 dark:text-gray-500"
+                                        : level.color
                                 )}
                             >
-                                {level.value.toFixed(decimals)}
+                                {level.value === null
+                                    ? "—"
+                                    : level.value.toFixed(decimals)}
                             </span>
                         </div>
                     ))}

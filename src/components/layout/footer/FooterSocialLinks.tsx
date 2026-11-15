@@ -56,10 +56,10 @@ export function FooterSocialLinks() {
                     ))}
                 </div>
                 <a
-                    href="mailto:support@thenexttrade.io"
+                    href="mailto:support@thenexttrade.app"
                     className="text-base font-semibold text-gray-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors flex items-center gap-2"
                 >
-                    <Mail size={16} /> support@thenexttrade.io
+                    <Mail size={16} /> support@thenexttrade.app
                 </a>
             </div>
         </div>

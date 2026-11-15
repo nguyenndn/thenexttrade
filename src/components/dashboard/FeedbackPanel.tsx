@@ -3,10 +3,21 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { X, Bug, Lightbulb, Send, CheckCircle } from "lucide-react";
+import { z } from "zod";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 
 type FeedbackType = "BUG" | "FEATURE";
+
+const feedbackSchema = z.object({
+    type: z.enum(["BUG", "FEATURE"]),
+    message: z
+        .string()
+        .trim()
+        .min(5, "Please enter at least 5 characters.")
+        .max(1000, "Feedback must be 1000 characters or fewer."),
+});
 
 interface FeedbackPanelProps {
     isOpen: boolean;
@@ -20,17 +31,26 @@ export function FeedbackPanel({ isOpen: _isOpen, onClose }: FeedbackPanelProps) 
     const [submitted, setSubmitted] = useState(false);
 
     const handleSubmit = async () => {
-        if (!message.trim() || isSubmitting) return;
+        if (isSubmitting) return;
+
+        const parsed = feedbackSchema.safeParse({
+            type: activeType,
+            message,
+        });
+        if (!parsed.success) {
+            toast.error(
+                parsed.error.issues[0]?.message ||
+                    "Please enter valid feedback details."
+            );
+            return;
+        }
 
         setIsSubmitting(true);
         try {
             const res = await fetch("/api/feedback", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    type: activeType,
-                    message: message.trim(),
-                }),
+                body: JSON.stringify(parsed.data),
             });
 
             if (res.ok) {
@@ -40,9 +60,16 @@ export function FeedbackPanel({ isOpen: _isOpen, onClose }: FeedbackPanelProps) 
                     setMessage("");
                     onClose();
                 }, 2000);
+            } else {
+                const errPayload = await res.json().catch(() => null);
+                const errMsg =
+                    typeof errPayload?.error === "string"
+                        ? errPayload.error
+                        : "Failed to submit feedback. Please try again.";
+                toast.error(errMsg);
             }
         } catch {
-            // silently fail
+            toast.error("Failed to submit feedback. Please check your network connection.");
         } finally {
             setIsSubmitting(false);
         }
@@ -73,7 +100,7 @@ export function FeedbackPanel({ isOpen: _isOpen, onClose }: FeedbackPanelProps) 
             animate={{ opacity: 1, x: 0, scale: 1 }}
             exit={{ opacity: 0, x: 20, scale: 0.95 }}
             transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed bottom-24 right-6 z-[9998] w-[calc(100vw-2rem)] sm:w-[380px] max-h-[calc(100vh-140px)] bg-white dark:bg-[#1E2028] rounded-2xl shadow-2xl shadow-black/20 border border-dashboard flex flex-col overflow-hidden"
+            className="fixed bottom-24 right-4 sm:right-6 z-[9998] w-[calc(100vw-2rem)] max-w-[calc(100vw-2rem)] sm:w-[380px] sm:max-w-[380px] max-h-[calc(100vh-140px)] bg-white dark:bg-[#1E2028] rounded-xl shadow-2xl shadow-black/20 border border-dashboard flex flex-col overflow-hidden"
         >
             {/* Header */}
             <div className="px-5 py-4 border-b border-dashboard flex items-center justify-between bg-gradient-to-r from-amber-500/10 to-transparent">
@@ -203,7 +230,7 @@ export function FeedbackPanel({ isOpen: _isOpen, onClose }: FeedbackPanelProps) 
                         <Button
                             variant="primary"
                             onClick={handleSubmit}
-                            disabled={!message.trim() || isSubmitting}
+                            disabled={message.trim().length < 5 || isSubmitting}
                             isLoading={isSubmitting}
                             className="w-full"
                         >

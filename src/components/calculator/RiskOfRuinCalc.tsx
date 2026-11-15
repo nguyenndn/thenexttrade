@@ -13,8 +13,8 @@ export function RiskOfRuinCalc() {
     });
 
     const results = useMemo(() => {
-        const W = inputs.winRate / 100;
-        const L = 1 - W;
+        const w = Math.min(1, Math.max(0, inputs.winRate / 100));
+        const lossRate = 1 - w;
         const r = inputs.riskPerTrade / 100;
         const rr = inputs.rewardRisk;
 
@@ -27,24 +27,41 @@ export function RiskOfRuinCalc() {
             };
         }
 
-        const expectancy = W * rr * r - L * r;
-        const edge = W * rr - L;
+        const edge = w * rr - lossRate;
+        const expectancy = edge * r;
         const capitalUnits = inputs.ruinThreshold / 100 / r;
 
         let ror: number;
-        if (edge <= 0) {
+        if (w >= 1) {
+            ror = 0;
+        } else if (expectancy <= 0 || rr <= 0) {
             ror = 100;
         } else {
-            const base = (1 - edge) / (1 + edge);
-            ror = Math.pow(Math.max(0, base), capitalUnits) * 100;
+            // Exact binary search root finding x in (0, 1) for:
+            // f(x) = w * x^(1 + rr) - x + (1 - w) = 0
+            let lo = 0;
+            let hi = 1 - 1e-12;
+            for (let i = 0; i < 80; i++) {
+                const mid = (lo + hi) / 2;
+                const fx = w * Math.pow(mid, 1 + rr) - mid + lossRate;
+                if (fx > 0) {
+                    lo = mid;
+                } else {
+                    hi = mid;
+                }
+            }
+            const xRoot = (lo + hi) / 2;
+            ror = Math.pow(xRoot, capitalUnits) * 100;
         }
 
-        const finalRor = isNaN(ror) ? 0 : Math.min(Math.max(0, ror), 100);
+        const finalRor = Number.isFinite(ror)
+            ? Math.min(Math.max(0, ror), 100)
+            : 0;
 
         return {
             ror: finalRor,
-            expectancy: isNaN(expectancy) ? 0 : expectancy * 100,
-            edge: isNaN(edge) ? 0 : edge,
+            expectancy: Number.isFinite(expectancy) ? expectancy * 100 : 0,
+            edge: Number.isFinite(edge) ? edge : 0,
             survival: 100 - finalRor,
         };
     }, [inputs]);
@@ -116,7 +133,7 @@ export function RiskOfRuinCalc() {
                     <input
                         type="range"
                         min="0.5"
-                        max="10"
+                        max="20"
                         step="0.5"
                         value={inputs.riskPerTrade}
                         onChange={(e) =>
@@ -129,8 +146,8 @@ export function RiskOfRuinCalc() {
                     />
                     <div className="flex justify-between text-xs text-gray-500">
                         <span>0.5%</span>
-                        <span>5%</span>
                         <span>10%</span>
+                        <span>20%</span>
                     </div>
                 </div>
 
@@ -194,15 +211,19 @@ export function RiskOfRuinCalc() {
             <div className="space-y-4">
                 <div
                     className={cn(
-                        "border p-6 rounded-lg text-center shadow-lg",
+                        "border p-6 rounded-xl text-center shadow-lg",
                         risk.bg
                     )}
                 >
                     <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2">
                         Probability of Ruin
                     </p>
-                    <p className={cn("text-5xl font-black mb-2", risk.color)}>
-                        {results.ror < 0.01 ? "< 0.01" : results.ror.toFixed(2)}
+                    <p className={cn("text-5xl font-black font-mono tabular-nums mb-2", risk.color)}>
+                        {results.ror === 0
+                            ? "0.00"
+                            : results.ror < 0.01
+                              ? "< 0.01"
+                              : results.ror.toFixed(2)}
                         %
                     </p>
                     <p className={cn("text-sm font-bold", risk.color)}>

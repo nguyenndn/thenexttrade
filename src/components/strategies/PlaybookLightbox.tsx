@@ -13,6 +13,14 @@ interface PlaybookLightboxProps {
     onClose: () => void;
 }
 
+function isSafeLightboxUrl(url: unknown): url is string {
+    return (
+        typeof url === "string" &&
+        (url.startsWith("https://") ||
+            (url.startsWith("/") && !url.startsWith("//")))
+    );
+}
+
 export function PlaybookLightbox({
     isOpen,
     images,
@@ -20,36 +28,51 @@ export function PlaybookLightbox({
     title,
     onClose,
 }: PlaybookLightboxProps) {
+    const safeImages = images.filter(isSafeLightboxUrl);
     const [currentIndex, setCurrentIndex] = useState(initialIndex);
     const [scale, setScale] = useState(1);
 
     useEffect(() => {
-        setCurrentIndex(initialIndex);
+        setCurrentIndex(
+            Math.min(initialIndex, Math.max(0, safeImages.length - 1))
+        );
         setScale(1);
-    }, [initialIndex, isOpen]);
+    }, [initialIndex, isOpen, safeImages.length]);
 
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
-            if (!isOpen) return;
+            if (!isOpen || safeImages.length === 0) return;
             if (e.key === "Escape") onClose();
-            if (e.key === "ArrowLeft") handlePrev();
-            if (e.key === "ArrowRight") handleNext();
+            if (e.key === "ArrowLeft") {
+                setCurrentIndex((prev) =>
+                    prev > 0 ? prev - 1 : safeImages.length - 1
+                );
+                setScale(1);
+            }
+            if (e.key === "ArrowRight") {
+                setCurrentIndex((prev) =>
+                    prev < safeImages.length - 1 ? prev + 1 : 0
+                );
+                setScale(1);
+            }
         };
         window.addEventListener("keydown", handleKeyDown);
         return () => window.removeEventListener("keydown", handleKeyDown);
-    }, [isOpen, currentIndex, images.length]);
+    }, [isOpen, onClose, safeImages.length]);
 
     const handlePrev = () => {
-        setCurrentIndex((prev) => (prev > 0 ? prev - 1 : images.length - 1));
+        setCurrentIndex((prev) => (prev > 0 ? prev - 1 : safeImages.length - 1));
         setScale(1);
     };
 
     const handleNext = () => {
-        setCurrentIndex((prev) => (prev < images.length - 1 ? prev + 1 : 0));
+        setCurrentIndex((prev) => (prev < safeImages.length - 1 ? prev + 1 : 0));
         setScale(1);
     };
 
-    if (!isOpen || images.length === 0) return null;
+    if (!isOpen || safeImages.length === 0) return null;
+
+    const activeSrc = safeImages[currentIndex] || safeImages[0];
 
     return (
         <AnimatePresence>
@@ -72,7 +95,7 @@ export function PlaybookLightbox({
                                 {title || "Reference Chart"}
                             </span>
                             <span className="text-xs text-gray-400 bg-white/10 px-2 py-0.5 rounded-full">
-                                {currentIndex + 1} / {images.length}
+                                {currentIndex + 1} / {safeImages.length}
                             </span>
                         </div>
                         <div className="flex items-center gap-2">
@@ -98,7 +121,7 @@ export function PlaybookLightbox({
                                 variant="outline"
                                 size="icon"
                                 onClick={onClose}
-                                className="h-8 w-8 bg-white/10 border-white/20 text-white hover:bg-white/20 rounded-full"
+                                className="h-8 w-8 bg-white/10 border-white/20 text-white hover:bg-white/20 rounded-lg"
                                 aria-label="Close preview"
                             >
                                 <X size={18} />
@@ -107,10 +130,10 @@ export function PlaybookLightbox({
                     </div>
 
                     {/* Image Area */}
-                    <div className="relative w-full aspect-video max-h-[75vh] flex items-center justify-center overflow-hidden rounded-lg bg-black/50 border border-white/10">
+                    <div className="relative w-full aspect-video max-h-[75vh] flex items-center justify-center overflow-hidden rounded-xl bg-black/50 border border-white/10">
                         <motion.img
-                            key={images[currentIndex]}
-                            src={images[currentIndex]}
+                            key={activeSrc}
+                            src={activeSrc}
                             alt={`Chart ${currentIndex + 1}`}
                             style={{ transform: `scale(${scale})` }}
                             transition={{ type: "spring", stiffness: 300, damping: 30 }}
@@ -118,7 +141,7 @@ export function PlaybookLightbox({
                         />
 
                         {/* Prev / Next Controls */}
-                        {images.length > 1 && (
+                        {safeImages.length > 1 && (
                             <>
                                 <Button
                                     type="button"

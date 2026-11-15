@@ -3,13 +3,26 @@ import { prisma } from "@/lib/prisma";
 import { createClient } from "@/lib/supabase/server";
 import { z } from "zod";
 
+function sanitizeCommentPlainText(raw: string): string {
+    if (!raw) return "";
+    return raw
+        .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "")
+        .replace(/<[^>]*>/g, "")
+        .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "")
+        .trim();
+}
+
 // Schema for creating a comment - enhanced for security and anti-spam
 const createCommentSchema = z.object({
     content: z
         .string()
-        .trim()
-        .min(2, "Comment must be at least 2 characters long")
-        .max(2000, "Comment cannot exceed 2000 characters"),
+        .transform((val) => sanitizeCommentPlainText(val))
+        .pipe(
+            z
+                .string()
+                .min(2, "Comment must be at least 2 characters long")
+                .max(2000, "Comment cannot exceed 2000 characters")
+        ),
     parentId: z.string().optional().nullable(),
 });
 
@@ -96,12 +109,28 @@ export async function POST(
         const params = await props.params;
         const articleId = params.id;
 
+        // Flatten depth-2+ replies onto the root parent comment so nested replies never disappear
+        let effectiveParentId: string | null = parentId || null;
+        if (effectiveParentId) {
+            const parentComment = await prisma.comment.findUnique({
+                where: { id: effectiveParentId },
+                select: { id: true, parentId: true, articleId: true },
+            });
+            if (!parentComment || parentComment.articleId !== articleId) {
+                return NextResponse.json(
+                    { error: "Parent comment not found" },
+                    { status: 404 }
+                );
+            }
+            effectiveParentId = parentComment.parentId || parentComment.id;
+        }
+
         const comment = await prisma.comment.create({
             data: {
                 content,
                 userId: user.id,
                 articleId,
-                parentId: parentId || null,
+                parentId: effectiveParentId,
             },
             include: {
                 user: {

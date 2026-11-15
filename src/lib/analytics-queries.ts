@@ -11,52 +11,131 @@ export interface AdvancedFilters {
     result?: "WIN" | "LOSS" | "BREAK_EVEN" | "BE_PLUS";
 }
 
+function normalizeAccountIdParam(accountId?: string): string | undefined {
+    return accountId && accountId !== "all" ? accountId : undefined;
+}
+
+function buildAccountFilterSql(normalizedAccountId?: string): Prisma.Sql {
+    return normalizedAccountId
+        ? Prisma.sql`AND je."accountId" = ${normalizedAccountId}`
+        : Prisma.empty;
+}
+
+function buildDateFilterSql(startDate?: Date, endDate?: Date): Prisma.Sql {
+    const parts: Prisma.Sql[] = [];
+    if (startDate) {
+        parts.push(Prisma.sql`AND je."exitDate" >= ${startDate}`);
+    }
+    if (endDate) {
+        parts.push(Prisma.sql`AND je."exitDate" <= ${endDate}`);
+    }
+    if (parts.length === 0) return Prisma.empty;
+    return Prisma.sql` ${Prisma.join(parts, " ")}`;
+}
+
+/**
+ * SQL FX/Cent multiplier matching `convertToUsdEquivalent` in `src/lib/utils/cent-account.ts`.
+ * Applied ONLY when `accountId` is NOT pinned to a single account (`!normalizedAccountId`).
+ */
+function buildPnlScaleSql(normalizedAccountId?: string): Prisma.Sql {
+    if (normalizedAccountId) {
+        return Prisma.sql`1.0`;
+    }
+    return Prisma.sql`(CASE
+        WHEN UPPER(COALESCE(ta."currency", '')) IN ('USC','USCENT','USDCENT','US_CENT','USDT_CENT','CENT') THEN 0.01
+        WHEN UPPER(COALESCE(ta."currency", '')) IN ('EUC','EURC','EURCENT','EU_CENT','EUR_CENT') THEN 0.0108
+        WHEN UPPER(COALESCE(ta."currency", '')) IN ('GBC','GBPC','GBPCENT','GB_CENT','GBP_CENT') THEN 0.0128
+        WHEN UPPER(COALESCE(ta."currency", '')) IN ('JPC','JPYC','JPYCENT') THEN 0.000067
+        WHEN UPPER(COALESCE(ta."currency", '')) IN ('AUC','AUDC','AUDCENT') THEN 0.0065
+        WHEN UPPER(COALESCE(ta."currency", '')) IN ('CAC','CADC','CADCENT') THEN 0.0073
+        WHEN UPPER(COALESCE(ta."currency", '')) IN ('CHC','CHFC','CHFCENT') THEN 0.0113
+        WHEN UPPER(COALESCE(ta."currency", '')) IN ('NZC','NZDC','NZDCENT') THEN 0.006
+        WHEN COALESCE(ta."server", '') ILIKE '%cent%' OR COALESCE(ta."account_type", '') ILIKE '%cent%' THEN
+            CASE
+                WHEN UPPER(COALESCE(ta."currency", '')) = 'EUR' THEN 0.0108
+                WHEN UPPER(COALESCE(ta."currency", '')) = 'GBP' THEN 0.0128
+                ELSE 0.01
+            END
+        WHEN UPPER(COALESCE(ta."currency", '')) = 'EUR' THEN 1.08
+        WHEN UPPER(COALESCE(ta."currency", '')) = 'GBP' THEN 1.28
+        WHEN UPPER(COALESCE(ta."currency", '')) = 'JPY' THEN 0.0067
+        WHEN UPPER(COALESCE(ta."currency", '')) = 'AUD' THEN 0.65
+        WHEN UPPER(COALESCE(ta."currency", '')) = 'CAD' THEN 0.73
+        WHEN UPPER(COALESCE(ta."currency", '')) = 'CHF' THEN 1.13
+        WHEN UPPER(COALESCE(ta."currency", '')) = 'NZD' THEN 0.60
+        WHEN UPPER(COALESCE(ta."currency", '')) = 'SGD' THEN 0.76
+        ELSE 1.0
+    END)`;
+}
+
+/**
+ * Synced trades (/api/ea/*, /api/sync/*, /api/mt5/*) already normalize Cent lotSize on ingest.
+ * Only unnormalized MANUAL rows on Cent accounts need 0.01 lot scaling.
+ */
+function buildLotScaleSql(normalizedAccountId?: string): Prisma.Sql {
+    if (normalizedAccountId) {
+        return Prisma.sql`1.0`;
+    }
+    return Prisma.sql`(CASE
+        WHEN COALESCE(je."sync_source", 'MANUAL') = 'MANUAL'
+             AND (
+                 UPPER(COALESCE(ta."currency", '')) IN ('USC','USCENT','USDCENT','US_CENT','USDT_CENT','CENT','EUC','EURC','EURCENT','EU_CENT','EUR_CENT','GBC','GBPC','GBPCENT','GB_CENT','GBP_CENT','JPC','JPYC','JPYCENT','AUC','AUDC','AUDCENT','CAC','CADC','CADCENT','CHC','CHFC','CHFCENT','NZC','NZDC','NZDCENT')
+                 OR COALESCE(ta."server", '') ILIKE '%cent%'
+                 OR COALESCE(ta."account_type", '') ILIKE '%cent%'
+             )
+        THEN 0.01
+        ELSE 1.0
+    END)`;
+}
+
 export function buildAdvancedFiltersSql(filters?: AdvancedFilters) {
     if (!filters) return Prisma.empty;
     const conditions: Prisma.Sql[] = [];
 
     if (filters.direction) {
         conditions.push(
-            Prisma.sql`AND "type" = ${filters.direction}::"TradeType"`
+            Prisma.sql`AND je."type" = ${filters.direction}::"TradeType"`
         );
     }
 
     if (filters.source) {
         if (filters.source === "MANUAL") {
             conditions.push(
-                Prisma.sql`AND ("syncSource" = 'MANUAL' OR ("syncSource" = 'APP' AND ("magicNumber" = 0 OR "magicNumber" IS NULL)))`
+                Prisma.sql`AND (je."sync_source" = 'MANUAL' OR (je."sync_source" = 'APP' AND (je."magic_number" = 0 OR je."magic_number" IS NULL)))`
             );
         } else if (filters.source === "AUTO") {
             conditions.push(
-                Prisma.sql`AND "syncSource" = 'APP' AND "magicNumber" > 0`
+                Prisma.sql`AND je."sync_source" = 'APP' AND je."magic_number" > 0`
             );
         }
     }
 
     if (filters.comment) {
         conditions.push(
-            Prisma.sql`AND "notes" ILIKE ${"%" + filters.comment + "%"}`
+            Prisma.sql`AND je."notes" ILIKE ${"%" + filters.comment + "%"}`
         );
     }
 
     if (filters.magicNumber !== undefined && filters.magicNumber !== null) {
-        conditions.push(Prisma.sql`AND "magicNumber" = ${filters.magicNumber}`);
+        conditions.push(
+            Prisma.sql`AND je."magic_number" = ${filters.magicNumber}`
+        );
     }
 
     if (filters.symbol) {
         conditions.push(
-            Prisma.sql`AND "symbol" ILIKE ${"%" + filters.symbol + "%"}`
+            Prisma.sql`AND je."symbol" ILIKE ${"%" + filters.symbol + "%"}`
         );
     }
 
     if (filters.result) {
         if (filters.result === "BREAK_EVEN") {
             conditions.push(
-                Prisma.sql`AND "result" IN ('BREAK_EVEN'::"TradeResult", 'BE_PLUS'::"TradeResult")`
+                Prisma.sql`AND je."result" IN ('BREAK_EVEN'::"TradeResult", 'BE_PLUS'::"TradeResult")`
             );
         } else {
             conditions.push(
-                Prisma.sql`AND "result" = ${filters.result}::"TradeResult"`
+                Prisma.sql`AND je."result" = ${filters.result}::"TradeResult"`
             );
         }
     }
@@ -66,16 +145,95 @@ export function buildAdvancedFiltersSql(filters?: AdvancedFilters) {
     return Prisma.sql` ${Prisma.join(conditions, " ")}`;
 }
 
+interface MonthlyAnalyticsRow {
+    date: string;
+    profit: number | bigint | null;
+    tradeCount: number | bigint | null;
+    winCount: number | bigint | null;
+}
+
+interface KeyStatsRow {
+    totalTrades: number | bigint | null;
+    totalPnL: number | null;
+    wins: number | bigint | null;
+    losses: number | bigint | null;
+    breakEvens: number | bigint | null;
+    positiveTrades: number | bigint | null;
+    negativeTrades: number | bigint | null;
+    grossProfit: number | null;
+    grossLoss: number | null;
+    commission: number | null;
+    swap: number | null;
+    maxWin: number | null;
+    maxLoss: number | null;
+    avgHoldMinutes: number | null;
+}
+
+interface DailyPerformanceRow {
+    date: string;
+    profit: number | null;
+    tradeCount: number | bigint | null;
+    winCount: number | bigint | null;
+    lossCount: number | bigint | null;
+    breakEvenCount: number | bigint | null;
+}
+
+interface IntradayPerformanceRow {
+    date: Date;
+    pnl: number | null;
+}
+
+interface SymbolPerformanceRow {
+    symbol: string;
+    tradeCount: number | bigint | null;
+    netProfit: number | null;
+    grossProfit: number | null;
+    winCount: number | bigint | null;
+    lossCount: number | bigint | null;
+    breakEvenCount: number | bigint | null;
+}
+
+interface TopTradeRow {
+    id: string;
+    symbol: string;
+    type: string;
+    pnl: number | null;
+    entryDate: Date;
+    exitDate: Date | null;
+    result: string | null;
+    lotSize: number | null;
+}
+
+interface LotDistributionRow {
+    symbol: string;
+    totalLots: number | null;
+}
+
+interface DayOfWeekRow {
+    dayIndex: number | string | bigint;
+    tradeCount: number | bigint | null;
+    netProfit: number | null;
+    winCount: number | bigint | null;
+    lossCount: number | bigint | null;
+    breakEvenCount: number | bigint | null;
+}
+
+interface SessionPerformanceRow {
+    session: string;
+    tradeCount: number | bigint | null;
+    netProfit: number | null;
+    winCount: number | bigint | null;
+    lossCount: number | bigint | null;
+    breakEvenCount: number | bigint | null;
+}
+
 // ============================================================================
 // RAW SQL ANALYTICS QUERIES
 // ============================================================================
-// Why Raw SQL?
-// Prisma's groupBy is good, but for time-series truncation (Month/Day) and
-// complex conditional aggregates (Win Rate in one go), Raw SQL is 100x faster.
 
 /**
  * Get aggregated Monthly Performance for a user
- * Returns { date, profit, tradeCount }
+ * Returns { date, profit, tradeCount, winRate }
  */
 export async function getMonthlyAnalytics(
     userId: string,
@@ -83,27 +241,30 @@ export async function getMonthlyAnalytics(
     timezone?: string,
     filters?: AdvancedFilters
 ) {
+    const normalizedAccountId = normalizeAccountIdParam(accountId);
     const tz = timezone || "Etc/UTC";
+    const accountFilter = buildAccountFilterSql(normalizedAccountId);
+    const scaleSql = buildPnlScaleSql(normalizedAccountId);
     const advancedFiltersSql = buildAdvancedFiltersSql(filters);
 
-    const result = await prisma.$queryRaw`
+    const result = await prisma.$queryRaw<MonthlyAnalyticsRow[]>`
   SELECT 
-  TO_CHAR("exitDate" AT TIME ZONE ${tz}, 'YYYY-MM') as "date",
-  SUM(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "profit",
-  COUNT(*) as "tradeCount",
-  SUM(CASE WHEN "result" = 'WIN' THEN 1 ELSE 0 END) as "winCount"
-  FROM "journal_entries"
-  WHERE "userId" = ${userId}::uuid
-  AND "status" = 'CLOSED'
-  AND (${accountId ? accountId : "1"} = '1' OR "accountId" = ${accountId})
-  AND "exitDate" >= NOW() - INTERVAL '12 months'
-  ${advancedFiltersSql}
+    TO_CHAR(je."exitDate" AT TIME ZONE ${tz}, 'YYYY-MM') as "date",
+    SUM((COALESCE(je."pnl", 0) + COALESCE(je."commission", 0) + COALESCE(je."swap", 0)) * ${scaleSql}) as "profit",
+    COUNT(*) as "tradeCount",
+    SUM(CASE WHEN je."result" = 'WIN' THEN 1 ELSE 0 END) as "winCount"
+  FROM "journal_entries" je
+  LEFT JOIN "trading_accounts" ta ON ta."id" = je."accountId"
+  WHERE je."userId" = ${userId}::uuid
+    AND je."status" = 'CLOSED'
+    ${accountFilter}
+    AND je."exitDate" >= NOW() - INTERVAL '12 months'
+    ${advancedFiltersSql}
   GROUP BY 1
   ORDER BY 1 ASC
   `;
 
-    // Cast BigInt to Number if necessary (Prisma returns BigInt for COUNT)
-    return (result as any[]).map((row) => ({
+    return result.map((row) => ({
         date: row.date,
         profit: Number(row.profit || 0),
         tradeCount: Number(row.tradeCount || 0),
@@ -125,58 +286,64 @@ export async function getKeyStats(
     endDate?: Date,
     filters?: AdvancedFilters
 ) {
-    const normalizedAccountId =
-        accountId && accountId !== "all" ? accountId : undefined;
-    // Build date filter
-    const dateFilter =
-        startDate && endDate
-            ? Prisma.sql`AND "exitDate" >= ${startDate} AND "exitDate" <= ${endDate}`
-            : Prisma.empty;
+    const normalizedAccountId = normalizeAccountIdParam(accountId);
+    const accountFilter = buildAccountFilterSql(normalizedAccountId);
+    const dateFilter = buildDateFilterSql(startDate, endDate);
+    const scaleSql = buildPnlScaleSql(normalizedAccountId);
     const advancedFiltersSql = buildAdvancedFiltersSql(filters);
 
-    const result = await prisma.$queryRaw`
+    const result = await prisma.$queryRaw<KeyStatsRow[]>`
+  WITH scoped AS (
+    SELECT
+      je."result",
+      je."entryDate",
+      je."exitDate",
+      (COALESCE(je."commission", 0) * ${scaleSql}) AS "scaledCommission",
+      (COALESCE(je."swap", 0) * ${scaleSql}) AS "scaledSwap",
+      ((COALESCE(je."pnl", 0) + COALESCE(je."commission", 0) + COALESCE(je."swap", 0)) * ${scaleSql}) AS "scaledNetPnl"
+    FROM "journal_entries" je
+    LEFT JOIN "trading_accounts" ta ON ta."id" = je."accountId"
+    WHERE je."userId" = ${userId}::uuid
+      AND je."status" = 'CLOSED'
+      ${accountFilter}
+      ${dateFilter}
+      ${advancedFiltersSql}
+  )
   SELECT 
-  COUNT(*) as "totalTrades",
-  SUM(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "totalPnL",
-  COUNT(*) FILTER (WHERE "result" = 'WIN') as "wins",
-  COUNT(*) FILTER (WHERE "result" = 'LOSS') as "losses",
-  COUNT(*) FILTER (WHERE "result" IN ('BREAK_EVEN', 'BE_PLUS')) as "breakEvens",
-  COUNT(*) FILTER (WHERE (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) > 0) as "positiveTrades",
-  COUNT(*) FILTER (WHERE (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) < 0) as "negativeTrades",
-  SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) > 0 THEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) ELSE 0 END) as "grossProfit",
-  SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) < 0 THEN ABS(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) ELSE 0 END) as "grossLoss",
-  SUM(COALESCE("commission", 0)) as "commission",
-  SUM(COALESCE("swap", 0)) as "swap",
-  MAX(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) > 0 THEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) ELSE 0 END) as "maxWin",
-  MIN(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) < 0 THEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) ELSE 0 END) as "maxLoss",
-  AVG(EXTRACT(EPOCH FROM ("exitDate" - "entryDate"))/60) as "avgHoldMinutes"
-  FROM "journal_entries"
-  WHERE "userId" = ${userId}::uuid
-  AND "status" = 'CLOSED'
-  AND (${normalizedAccountId ? normalizedAccountId : "1"} = '1' OR "accountId" = ${normalizedAccountId})
-  ${dateFilter}
-  ${advancedFiltersSql}
+    COUNT(*) as "totalTrades",
+    SUM("scaledNetPnl") as "totalPnL",
+    COUNT(*) FILTER (WHERE "result" = 'WIN') as "wins",
+    COUNT(*) FILTER (WHERE "result" = 'LOSS') as "losses",
+    COUNT(*) FILTER (WHERE "result" IN ('BREAK_EVEN', 'BE_PLUS')) as "breakEvens",
+    COUNT(*) FILTER (WHERE "scaledNetPnl" > 0) as "positiveTrades",
+    COUNT(*) FILTER (WHERE "scaledNetPnl" < 0) as "negativeTrades",
+    SUM(CASE WHEN "scaledNetPnl" > 0 THEN "scaledNetPnl" ELSE 0 END) as "grossProfit",
+    SUM(CASE WHEN "scaledNetPnl" < 0 THEN ABS("scaledNetPnl") ELSE 0 END) as "grossLoss",
+    SUM("scaledCommission") as "commission",
+    SUM("scaledSwap") as "swap",
+    MAX(CASE WHEN "scaledNetPnl" > 0 THEN "scaledNetPnl" ELSE 0 END) as "maxWin",
+    MIN(CASE WHEN "scaledNetPnl" < 0 THEN "scaledNetPnl" ELSE 0 END) as "maxLoss",
+    AVG(EXTRACT(EPOCH FROM ("exitDate" - "entryDate"))/60) as "avgHoldMinutes"
+  FROM scoped
   `;
 
-    const stats = (result as any[])[0] || {};
-    const totalTrades = Number(stats.totalTrades || 0);
-    const wins = Number(stats.wins || 0);
-    const losses = Number(stats.losses || 0);
-    const breakEvens = Number(stats.breakEvens || 0);
-    const positiveTrades = Number(stats.positiveTrades || 0);
-    const negativeTrades = Number(stats.negativeTrades || 0);
-    // Denominator = total closed trades (win + loss + break-even/BE_PLUS), matching the
-    // win-rate convention used across all analytics views.
+    const stats = result[0];
+    const totalTrades = Number(stats?.totalTrades || 0);
+    const wins = Number(stats?.wins || 0);
+    const losses = Number(stats?.losses || 0);
+    const breakEvens = Number(stats?.breakEvens || 0);
+    const positiveTrades = Number(stats?.positiveTrades || 0);
+    const negativeTrades = Number(stats?.negativeTrades || 0);
     const totalClosed = wins + losses + breakEvens;
-    const grossProfit = Number(stats.grossProfit || 0);
-    const grossLoss = Number(stats.grossLoss || 0);
+    const grossProfit = Number(stats?.grossProfit || 0);
+    const grossLoss = Number(stats?.grossLoss || 0);
 
     return {
         totalTrades,
         winCount: wins,
         lossCount: losses,
         winRate: totalClosed > 0 ? (wins / totalClosed) * 100 : 0,
-        totalPnL: Number(stats.totalPnL || 0),
+        totalPnL: Number(stats?.totalPnL || 0),
         profitFactor:
             grossLoss > 0
                 ? grossProfit / grossLoss
@@ -187,11 +354,11 @@ export async function getKeyStats(
         grossLoss,
         avgWin: positiveTrades > 0 ? grossProfit / positiveTrades : 0,
         avgLoss: negativeTrades > 0 ? grossLoss / negativeTrades : 0,
-        commission: Number(stats.commission || 0),
-        swap: Number(stats.swap || 0),
-        maxWin: Number(stats.maxWin || 0),
-        maxLoss: Number(stats.maxLoss || 0),
-        avgHoldMinutes: Number(stats.avgHoldMinutes || 0),
+        commission: Number(stats?.commission || 0),
+        swap: Number(stats?.swap || 0),
+        maxWin: Number(stats?.maxWin || 0),
+        maxLoss: Number(stats?.maxLoss || 0),
+        avgHoldMinutes: Number(stats?.avgHoldMinutes || 0),
     };
 }
 
@@ -221,7 +388,7 @@ export const getCachedDashboardStats = unstable_cache(
     },
     ["dashboard-stats"],
     {
-        revalidate: 60, // 60 Seconds Cache
+        revalidate: 60,
         tags: ["dashboard-stats"],
     }
 );
@@ -237,35 +404,33 @@ export async function getDailyPerformance(
     timezone?: string,
     filters?: AdvancedFilters
 ) {
-    const normalizedAccountId =
-        accountId && accountId !== "all" ? accountId : undefined;
+    const normalizedAccountId = normalizeAccountIdParam(accountId);
     const tz = timezone || "Etc/UTC";
-    // Build date filter
-    const dateFilter =
-        startDate && endDate
-            ? Prisma.sql`AND "exitDate" >= ${startDate} AND "exitDate" <= ${endDate}`
-            : Prisma.empty; // Default to all time if no date
+    const accountFilter = buildAccountFilterSql(normalizedAccountId);
+    const dateFilter = buildDateFilterSql(startDate, endDate);
+    const scaleSql = buildPnlScaleSql(normalizedAccountId);
     const advancedFiltersSql = buildAdvancedFiltersSql(filters);
 
-    const result = await prisma.$queryRaw`
+    const result = await prisma.$queryRaw<DailyPerformanceRow[]>`
   SELECT 
-  TO_CHAR("exitDate" AT TIME ZONE ${tz}, 'YYYY-MM-DD') as "date",
-  SUM(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "profit",
-  COUNT(*) as "tradeCount",
-  COUNT(*) FILTER (WHERE "result" = 'WIN') as "winCount",
-  COUNT(*) FILTER (WHERE "result" = 'LOSS') as "lossCount",
-  COUNT(*) FILTER (WHERE "result" IN ('BREAK_EVEN', 'BE_PLUS')) as "breakEvenCount"
-  FROM "journal_entries"
-  WHERE "userId" = ${userId}::uuid
-  AND "status" = 'CLOSED'
-  AND (${normalizedAccountId ? normalizedAccountId : "1"} = '1' OR "accountId" = ${normalizedAccountId})
-  ${dateFilter}
-  ${advancedFiltersSql}
+    TO_CHAR(je."exitDate" AT TIME ZONE ${tz}, 'YYYY-MM-DD') as "date",
+    SUM((COALESCE(je."pnl", 0) + COALESCE(je."commission", 0) + COALESCE(je."swap", 0)) * ${scaleSql}) as "profit",
+    COUNT(*) as "tradeCount",
+    COUNT(*) FILTER (WHERE je."result" = 'WIN') as "winCount",
+    COUNT(*) FILTER (WHERE je."result" = 'LOSS') as "lossCount",
+    COUNT(*) FILTER (WHERE je."result" IN ('BREAK_EVEN', 'BE_PLUS')) as "breakEvenCount"
+  FROM "journal_entries" je
+  LEFT JOIN "trading_accounts" ta ON ta."id" = je."accountId"
+  WHERE je."userId" = ${userId}::uuid
+    AND je."status" = 'CLOSED'
+    ${accountFilter}
+    ${dateFilter}
+    ${advancedFiltersSql}
   GROUP BY 1
   ORDER BY 1 ASC
   `;
 
-    return (result as any[]).map((row) => {
+    return result.map((row) => {
         const wins = Number(row.winCount || 0);
         const losses = Number(row.lossCount || 0);
         const breakEvens = Number(row.breakEvenCount || 0);
@@ -273,7 +438,7 @@ export async function getDailyPerformance(
 
         return {
             date: row.date,
-            value: Number(row.profit || 0), // Daily PnL
+            value: Number(row.profit || 0),
             winRate: totalClosed > 0 ? (wins / totalClosed) * 100 : 0,
             tradeCount: Number(row.tradeCount || 0),
             winCount: wins,
@@ -293,27 +458,29 @@ export async function getIntradayPerformance(
     endDate?: Date,
     filters?: AdvancedFilters
 ) {
-    const dateFilter =
-        startDate && endDate
-            ? Prisma.sql`AND "exitDate" >= ${startDate} AND "exitDate" <= ${endDate}`
-            : Prisma.empty;
+    const normalizedAccountId = normalizeAccountIdParam(accountId);
+    const accountFilter = buildAccountFilterSql(normalizedAccountId);
+    const dateFilter = buildDateFilterSql(startDate, endDate);
+    const scaleSql = buildPnlScaleSql(normalizedAccountId);
     const advancedFiltersSql = buildAdvancedFiltersSql(filters);
 
-    const result = await prisma.$queryRaw`
+    const result = await prisma.$queryRaw<IntradayPerformanceRow[]>`
   SELECT 
-  "exitDate" as "date",
-  (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "pnl"
-  FROM "journal_entries"
-  WHERE "userId" = ${userId}::uuid
-  AND "status" = 'CLOSED'
-  AND (${accountId ? accountId : "1"} = '1' OR "accountId" = ${accountId})
-  ${dateFilter}
-  ${advancedFiltersSql}
-  ORDER BY "exitDate" ASC
+    je."exitDate" as "date",
+    ((COALESCE(je."pnl", 0) + COALESCE(je."commission", 0) + COALESCE(je."swap", 0)) * ${scaleSql}) as "pnl"
+  FROM "journal_entries" je
+  LEFT JOIN "trading_accounts" ta ON ta."id" = je."accountId"
+  WHERE je."userId" = ${userId}::uuid
+    AND je."status" = 'CLOSED'
+    AND je."exitDate" IS NOT NULL
+    ${accountFilter}
+    ${dateFilter}
+    ${advancedFiltersSql}
+  ORDER BY je."exitDate" ASC
   `;
 
-    return (result as any[]).map((row) => ({
-        date: (row.date as Date).toISOString(),
+    return result.map((row) => ({
+        date: row.date.toISOString(),
         pnl: Number(row.pnl || 0),
     }));
 }
@@ -328,41 +495,44 @@ export async function getSymbolPerformance(
     endDate?: Date,
     filters?: AdvancedFilters
 ) {
-    const normalizedAccountId =
-        accountId && accountId !== "all" ? accountId : undefined;
-    // Build date filter
-    const dateFilter =
-        startDate && endDate
-            ? Prisma.sql`AND "exitDate" >= ${startDate} AND "exitDate" <= ${endDate}`
-            : Prisma.empty;
+    const normalizedAccountId = normalizeAccountIdParam(accountId);
+    const accountFilter = buildAccountFilterSql(normalizedAccountId);
+    const dateFilter = buildDateFilterSql(startDate, endDate);
+    const scaleSql = buildPnlScaleSql(normalizedAccountId);
     const advancedFiltersSql = buildAdvancedFiltersSql(filters);
 
-    const result = await prisma.$queryRaw`
+    const result = await prisma.$queryRaw<SymbolPerformanceRow[]>`
+  WITH scoped AS (
+    SELECT
+      je."symbol",
+      je."result",
+      ((COALESCE(je."pnl", 0) + COALESCE(je."commission", 0) + COALESCE(je."swap", 0)) * ${scaleSql}) AS "scaledNetPnl"
+    FROM "journal_entries" je
+    LEFT JOIN "trading_accounts" ta ON ta."id" = je."accountId"
+    WHERE je."userId" = ${userId}::uuid
+      AND je."status" = 'CLOSED'
+      ${accountFilter}
+      ${dateFilter}
+      ${advancedFiltersSql}
+  )
   SELECT 
-  "symbol",
-  COUNT(*) as "tradeCount",
-  SUM(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "netProfit",
-  SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) > 0 THEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) ELSE 0 END) as "grossProfit",
-  COUNT(*) FILTER (WHERE "result" = 'WIN') as "winCount",
-  COUNT(*) FILTER (WHERE "result" = 'LOSS') as "lossCount",
-  COUNT(*) FILTER (WHERE "result" IN ('BREAK_EVEN', 'BE_PLUS')) as "breakEvenCount"
-  FROM "journal_entries"
-  WHERE "userId" = ${userId}::uuid
-  AND "status" = 'CLOSED'
-  AND (${normalizedAccountId ? normalizedAccountId : "1"} = '1' OR "accountId" = ${normalizedAccountId})
-  ${dateFilter}
-  ${advancedFiltersSql}
+    "symbol",
+    COUNT(*) as "tradeCount",
+    SUM("scaledNetPnl") as "netProfit",
+    SUM(CASE WHEN "scaledNetPnl" > 0 THEN "scaledNetPnl" ELSE 0 END) as "grossProfit",
+    COUNT(*) FILTER (WHERE "result" = 'WIN') as "winCount",
+    COUNT(*) FILTER (WHERE "result" = 'LOSS') as "lossCount",
+    COUNT(*) FILTER (WHERE "result" IN ('BREAK_EVEN', 'BE_PLUS')) as "breakEvenCount"
+  FROM scoped
   GROUP BY "symbol"
   ORDER BY "netProfit" DESC
   LIMIT 10
   `;
 
-    return (result as any[]).map((row) => {
+    return result.map((row) => {
         const wins = Number(row.winCount || 0);
         const losses = Number(row.lossCount || 0);
         const breakEvens = Number(row.breakEvenCount || 0);
-        // Total closed denominator (win + loss + break-even/BE_PLUS) to match the
-        // rest of analytics, so per-symbol win rate agrees with the KPI.
         const totalClosed = wins + losses + breakEvens;
 
         return {
@@ -385,55 +555,71 @@ export async function getTopTrades(
     endDate?: Date,
     filters?: AdvancedFilters
 ) {
-    // Build date filter
-    const dateFilter =
-        startDate && endDate
-            ? Prisma.sql`AND "exitDate" >= ${startDate} AND "exitDate" <= ${endDate}`
-            : Prisma.empty;
+    const normalizedAccountId = normalizeAccountIdParam(accountId);
+    const accountFilter = buildAccountFilterSql(normalizedAccountId);
+    const dateFilter = buildDateFilterSql(startDate, endDate);
+    const scaleSql = buildPnlScaleSql(normalizedAccountId);
+    const lotScaleSql = buildLotScaleSql(normalizedAccountId);
     const advancedFiltersSql = buildAdvancedFiltersSql(filters);
 
     const [bestResult, worstResult] = await Promise.all([
-        // Best Trades: Highest Positive PnL
-        prisma.$queryRaw`
-  SELECT "id", "symbol", "type", (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "pnl", "entryDate", "exitDate", "result", "lotSize"
-  FROM "journal_entries"
-  WHERE "userId" = ${userId}::uuid
-  AND "status" = 'CLOSED'
-  AND (${accountId ? accountId : "1"} = '1' OR "accountId" = ${accountId})
-  ${dateFilter}
-  ${advancedFiltersSql}
-  AND (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) > 0
-  ORDER BY (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) DESC
+        prisma.$queryRaw<TopTradeRow[]>`
+  SELECT
+    je."id",
+    je."symbol",
+    je."type",
+    ((COALESCE(je."pnl", 0) + COALESCE(je."commission", 0) + COALESCE(je."swap", 0)) * ${scaleSql}) as "pnl",
+    je."entryDate",
+    je."exitDate",
+    je."result",
+    (COALESCE(je."lotSize", 0) * ${lotScaleSql}) as "lotSize"
+  FROM "journal_entries" je
+  LEFT JOIN "trading_accounts" ta ON ta."id" = je."accountId"
+  WHERE je."userId" = ${userId}::uuid
+    AND je."status" = 'CLOSED'
+    ${accountFilter}
+    ${dateFilter}
+    ${advancedFiltersSql}
+    AND ((COALESCE(je."pnl", 0) + COALESCE(je."commission", 0) + COALESCE(je."swap", 0)) * ${scaleSql}) > 0
+  ORDER BY ((COALESCE(je."pnl", 0) + COALESCE(je."commission", 0) + COALESCE(je."swap", 0)) * ${scaleSql}) DESC
   LIMIT 3
   `,
-        // Worst Trades: Lowest Negative PnL (Biggest Loss)
-        prisma.$queryRaw`
-  SELECT "id", "symbol", "type", (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "pnl", "entryDate", "exitDate", "result", "lotSize"
-  FROM "journal_entries"
-  WHERE "userId" = ${userId}::uuid
-  AND "status" = 'CLOSED'
-  AND (${accountId ? accountId : "1"} = '1' OR "accountId" = ${accountId})
-  ${dateFilter}
-  ${advancedFiltersSql}
-  AND (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) < 0
-  ORDER BY (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) ASC
+        prisma.$queryRaw<TopTradeRow[]>`
+  SELECT
+    je."id",
+    je."symbol",
+    je."type",
+    ((COALESCE(je."pnl", 0) + COALESCE(je."commission", 0) + COALESCE(je."swap", 0)) * ${scaleSql}) as "pnl",
+    je."entryDate",
+    je."exitDate",
+    je."result",
+    (COALESCE(je."lotSize", 0) * ${lotScaleSql}) as "lotSize"
+  FROM "journal_entries" je
+  LEFT JOIN "trading_accounts" ta ON ta."id" = je."accountId"
+  WHERE je."userId" = ${userId}::uuid
+    AND je."status" = 'CLOSED'
+    ${accountFilter}
+    ${dateFilter}
+    ${advancedFiltersSql}
+    AND ((COALESCE(je."pnl", 0) + COALESCE(je."commission", 0) + COALESCE(je."swap", 0)) * ${scaleSql}) < 0
+  ORDER BY ((COALESCE(je."pnl", 0) + COALESCE(je."commission", 0) + COALESCE(je."swap", 0)) * ${scaleSql}) ASC
   LIMIT 3
   `,
     ]);
 
-    const mapTrade = (t: any) => ({
+    const mapTrade = (t: TopTradeRow) => ({
         id: t.id,
         symbol: t.symbol,
         type: t.type,
-        pnl: Number(t.pnl),
+        pnl: Number(t.pnl || 0),
         lotSize: Number(t.lotSize || 0),
         date: t.exitDate,
         result: t.result,
     });
 
     return {
-        best: (bestResult as any[]).map(mapTrade),
-        worst: (worstResult as any[]).map(mapTrade),
+        best: bestResult.map(mapTrade),
+        worst: worstResult.map(mapTrade),
     };
 }
 
@@ -447,29 +633,29 @@ export async function getLotDistribution(
     endDate?: Date,
     filters?: AdvancedFilters
 ) {
-    // Build date filter
-    const dateFilter =
-        startDate && endDate
-            ? Prisma.sql`AND "exitDate" >= ${startDate} AND "exitDate" <= ${endDate}`
-            : Prisma.empty;
+    const normalizedAccountId = normalizeAccountIdParam(accountId);
+    const accountFilter = buildAccountFilterSql(normalizedAccountId);
+    const dateFilter = buildDateFilterSql(startDate, endDate);
+    const lotScaleSql = buildLotScaleSql(normalizedAccountId);
     const advancedFiltersSql = buildAdvancedFiltersSql(filters);
 
-    const result = await prisma.$queryRaw`
+    const result = await prisma.$queryRaw<LotDistributionRow[]>`
   SELECT 
-  "symbol",
-  SUM("lotSize") as "totalLots"
-  FROM "journal_entries"
-  WHERE "userId" = ${userId}::uuid
-  AND "status" = 'CLOSED'
-  AND (${accountId ? accountId : "1"} = '1' OR "accountId" = ${accountId})
-  ${dateFilter}
-  ${advancedFiltersSql}
-  GROUP BY "symbol"
+    je."symbol",
+    SUM(COALESCE(je."lotSize", 0) * ${lotScaleSql}) as "totalLots"
+  FROM "journal_entries" je
+  LEFT JOIN "trading_accounts" ta ON ta."id" = je."accountId"
+  WHERE je."userId" = ${userId}::uuid
+    AND je."status" = 'CLOSED'
+    ${accountFilter}
+    ${dateFilter}
+    ${advancedFiltersSql}
+  GROUP BY je."symbol"
   ORDER BY "totalLots" DESC
   LIMIT 5
   `;
 
-    return (result as any[]).map((row) => ({
+    return result.map((row) => ({
         name: row.symbol,
         value: Number(row.totalLots || 0),
     }));
@@ -487,30 +673,28 @@ export async function getDayOfWeekPerformance(
     timezone?: string,
     filters?: AdvancedFilters
 ) {
-    const normalizedAccountId =
-        accountId && accountId !== "all" ? accountId : undefined;
+    const normalizedAccountId = normalizeAccountIdParam(accountId);
     const tz = timezone || "Etc/UTC";
-    // Build date filter
-    const dateFilter =
-        startDate && endDate
-            ? Prisma.sql`AND "exitDate" >= ${startDate} AND "exitDate" <= ${endDate}`
-            : Prisma.empty;
+    const accountFilter = buildAccountFilterSql(normalizedAccountId);
+    const dateFilter = buildDateFilterSql(startDate, endDate);
+    const scaleSql = buildPnlScaleSql(normalizedAccountId);
     const advancedFiltersSql = buildAdvancedFiltersSql(filters);
 
-    const result = await prisma.$queryRaw`
+    const result = await prisma.$queryRaw<DayOfWeekRow[]>`
   SELECT 
-  EXTRACT(DOW FROM "exitDate" AT TIME ZONE ${tz}) as "dayIndex",
-  COUNT(*) as "tradeCount",
-  SUM(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "netProfit",
-  COUNT(*) FILTER (WHERE "result" = 'WIN') as "winCount",
-  COUNT(*) FILTER (WHERE "result" = 'LOSS') as "lossCount",
-  COUNT(*) FILTER (WHERE "result" IN ('BREAK_EVEN', 'BE_PLUS')) as "breakEvenCount"
-  FROM "journal_entries"
-  WHERE "userId" = ${userId}::uuid
-  AND "status" = 'CLOSED'
-  AND (${normalizedAccountId ? normalizedAccountId : "1"} = '1' OR "accountId" = ${normalizedAccountId})
-  ${dateFilter}
-  ${advancedFiltersSql}
+    EXTRACT(DOW FROM je."exitDate" AT TIME ZONE ${tz}) as "dayIndex",
+    COUNT(*) as "tradeCount",
+    SUM((COALESCE(je."pnl", 0) + COALESCE(je."commission", 0) + COALESCE(je."swap", 0)) * ${scaleSql}) as "netProfit",
+    COUNT(*) FILTER (WHERE je."result" = 'WIN') as "winCount",
+    COUNT(*) FILTER (WHERE je."result" = 'LOSS') as "lossCount",
+    COUNT(*) FILTER (WHERE je."result" IN ('BREAK_EVEN', 'BE_PLUS')) as "breakEvenCount"
+  FROM "journal_entries" je
+  LEFT JOIN "trading_accounts" ta ON ta."id" = je."accountId"
+  WHERE je."userId" = ${userId}::uuid
+    AND je."status" = 'CLOSED'
+    ${accountFilter}
+    ${dateFilter}
+    ${advancedFiltersSql}
   GROUP BY 1
   ORDER BY 1 ASC
   `;
@@ -525,12 +709,10 @@ export async function getDayOfWeekPerformance(
         "Saturday",
     ];
 
-    return (result as any[]).map((row) => {
+    return result.map((row) => {
         const wins = Number(row.winCount || 0);
         const losses = Number(row.lossCount || 0);
         const breakEvens = Number(row.breakEvenCount || 0);
-        // Total closed denominator (win + loss + break-even/BE_PLUS) to match the
-        // rest of analytics, so per-day win rate agrees with the KPI.
         const totalClosed = wins + losses + breakEvens;
 
         return {
@@ -551,20 +733,23 @@ export async function getCurrentStreak(
     userId: string,
     accountId?: string
 ): Promise<{ type: "win" | "loss" | "none"; count: number }> {
-    const result = (await prisma.$queryRaw`
-  SELECT "result"
-  FROM "journal_entries"
-  WHERE "userId" = ${userId}::uuid
-  AND "status" = 'CLOSED'
-  AND "result" IS NOT NULL
-  AND (${accountId ? accountId : "1"} = '1' OR "accountId" = ${accountId})
-  ORDER BY "exitDate" DESC
+    const normalizedAccountId = normalizeAccountIdParam(accountId);
+    const accountFilter = buildAccountFilterSql(normalizedAccountId);
+
+    const result = await prisma.$queryRaw<{ result: string }[]>`
+  SELECT je."result"
+  FROM "journal_entries" je
+  WHERE je."userId" = ${userId}::uuid
+    AND je."status" = 'CLOSED'
+    AND je."result" IS NOT NULL
+    ${accountFilter}
+  ORDER BY je."exitDate" DESC
   LIMIT 50
-  `) as { result: string }[];
+  `;
 
     if (!result.length) return { type: "none", count: 0 };
 
-    const firstResult = result[0].result; // WIN or LOSS
+    const firstResult = result[0].result;
     if (firstResult !== "WIN" && firstResult !== "LOSS")
         return { type: "none", count: 0 };
 
@@ -591,50 +776,47 @@ export async function getSessionPerformance(
     endDate?: Date,
     filters?: AdvancedFilters
 ) {
-    const normalizedAccountId =
-        accountId && accountId !== "all" ? accountId : undefined;
-    const dateFilter =
-        startDate && endDate
-            ? Prisma.sql`AND "exitDate" >= ${startDate} AND "exitDate" <= ${endDate}`
-            : Prisma.empty;
+    const normalizedAccountId = normalizeAccountIdParam(accountId);
+    const accountFilter = buildAccountFilterSql(normalizedAccountId);
+    const dateFilter = buildDateFilterSql(startDate, endDate);
+    const scaleSql = buildPnlScaleSql(normalizedAccountId);
     const advancedFiltersSql = buildAdvancedFiltersSql(filters);
 
-    const result = await prisma.$queryRaw`
+    const result = await prisma.$queryRaw<SessionPerformanceRow[]>`
   SELECT 
-  CASE 
-  WHEN EXTRACT(HOUR FROM "entryDate") >= 21 OR EXTRACT(HOUR FROM "entryDate") < 6 THEN 'Sydney'
-  WHEN EXTRACT(HOUR FROM "entryDate") >= 0 AND EXTRACT(HOUR FROM "entryDate") < 9 THEN 'Tokyo'
-  WHEN EXTRACT(HOUR FROM "entryDate") >= 8 AND EXTRACT(HOUR FROM "entryDate") < 17 THEN 'London'
-  WHEN EXTRACT(HOUR FROM "entryDate") >= 13 AND EXTRACT(HOUR FROM "entryDate") < 22 THEN 'New York'
-  ELSE 'Off-Hours'
-  END as "session",
-  COUNT(*) as "tradeCount",
-  SUM(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "netProfit",
-  COUNT(*) FILTER (WHERE "result" = 'WIN') as "winCount",
-  COUNT(*) FILTER (WHERE "result" = 'LOSS') as "lossCount",
-  COUNT(*) FILTER (WHERE "result" IN ('BREAK_EVEN', 'BE_PLUS')) as "breakEvenCount"
-  FROM "journal_entries"
-  WHERE "userId" = ${userId}::uuid
-  AND "status" = 'CLOSED'
-  AND "entryDate" IS NOT NULL
-  AND (${normalizedAccountId ? normalizedAccountId : "1"} = '1' OR "accountId" = ${normalizedAccountId})
-  ${dateFilter}
-  ${advancedFiltersSql}
+    CASE 
+      WHEN EXTRACT(HOUR FROM je."entryDate") >= 21 OR EXTRACT(HOUR FROM je."entryDate") < 6 THEN 'Sydney'
+      WHEN EXTRACT(HOUR FROM je."entryDate") >= 0 AND EXTRACT(HOUR FROM je."entryDate") < 9 THEN 'Tokyo'
+      WHEN EXTRACT(HOUR FROM je."entryDate") >= 8 AND EXTRACT(HOUR FROM je."entryDate") < 17 THEN 'London'
+      WHEN EXTRACT(HOUR FROM je."entryDate") >= 13 AND EXTRACT(HOUR FROM je."entryDate") < 22 THEN 'New York'
+      ELSE 'Off-Hours'
+    END as "session",
+    COUNT(*) as "tradeCount",
+    SUM((COALESCE(je."pnl", 0) + COALESCE(je."commission", 0) + COALESCE(je."swap", 0)) * ${scaleSql}) as "netProfit",
+    COUNT(*) FILTER (WHERE je."result" = 'WIN') as "winCount",
+    COUNT(*) FILTER (WHERE je."result" = 'LOSS') as "lossCount",
+    COUNT(*) FILTER (WHERE je."result" IN ('BREAK_EVEN', 'BE_PLUS')) as "breakEvenCount"
+  FROM "journal_entries" je
+  LEFT JOIN "trading_accounts" ta ON ta."id" = je."accountId"
+  WHERE je."userId" = ${userId}::uuid
+    AND je."status" = 'CLOSED'
+    AND je."entryDate" IS NOT NULL
+    ${accountFilter}
+    ${dateFilter}
+    ${advancedFiltersSql}
   GROUP BY 1
   ORDER BY "netProfit" DESC
   `;
 
     const sessionOrder = ["Sydney", "Tokyo", "London", "New York"];
-    const mapped = (result as any[]).map((row) => {
+    const mapped = result.map((row) => {
         const wins = Number(row.winCount || 0);
         const losses = Number(row.lossCount || 0);
         const breakEvens = Number(row.breakEvenCount || 0);
-        // Total closed denominator (win + loss + break-even/BE_PLUS) to match the
-        // rest of analytics, so per-session win rate agrees with the KPI.
         const totalClosed = wins + losses + breakEvens;
 
         return {
-            session: row.session as string,
+            session: row.session,
             trades: Number(row.tradeCount || 0),
             pnl: Number(row.netProfit || 0),
             winRate: totalClosed > 0 ? (wins / totalClosed) * 100 : 0,

@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/Button";
 const ONBOARDING_PREFIX = "onboarding-done-";
 
 export function OnboardingTrigger() {
-    const { startOnborda, closeOnborda } = useOnborda();
+    const { startOnborda } = useOnborda();
     const pathname = usePathname();
     const [hasMounted, setHasMounted] = useState(false);
 
@@ -52,6 +52,7 @@ export function OnboardingTrigger() {
             onClick={handleStart}
             className="flex items-center gap-2 text-xs font-semibold text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary hover:bg-primary/5"
             title="Start product tour"
+            aria-label="Start product tour"
         >
             <HelpCircle size={16} />
             <span className="hidden sm:inline">Tour</span>

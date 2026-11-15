@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { GripHorizontal, Trash2, PlusCircle, Columns } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import {
@@ -10,9 +10,11 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+export type PreviewCellValue = string | number;
+
 export interface PreviewData {
     headers: string[];
-    rows: any[][];
+    rows: PreviewCellValue[][];
 }
 
 interface DraggablePreviewTableProps {
@@ -26,8 +28,15 @@ export function DraggablePreviewTable({
 }: DraggablePreviewTableProps) {
     const [headers, setHeaders] = useState<string[]>(initialData.headers);
     const [hiddenHeaders, setHiddenHeaders] = useState<{ name: string }[]>([]);
-    const [rows, setRows] = useState<any[][]>(initialData.rows);
+    const [rows, setRows] = useState<PreviewCellValue[][]>(initialData.rows);
     const [draggedColIdx, setDraggedColIdx] = useState<number | null>(null);
+
+    useEffect(() => {
+        setHeaders(initialData.headers);
+        setRows(initialData.rows);
+        setHiddenHeaders([]);
+        setDraggedColIdx(null);
+    }, [initialData]);
 
     const handleDragStart = (e: React.DragEvent, index: number) => {
         setDraggedColIdx(index);
@@ -171,8 +180,9 @@ export function DraggablePreviewTable({
                                             variant="ghost"
                                             size="icon"
                                             onClick={() => removeColumn(index)}
-                                            className="h-7 w-7 text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg shrink-0"
-                                            title="Remove Column"
+                                            className="h-7 w-7 text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg shrink-0"
+                                            title={`Remove ${header} column`}
+                                            aria-label={`Remove ${header} column`}
                                         >
                                             <Trash2 size={14} />
                                         </Button>

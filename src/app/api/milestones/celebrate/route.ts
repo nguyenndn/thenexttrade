@@ -1,10 +1,13 @@
 import { NextResponse } from "next/server";
 import { getAuthUser } from "@/lib/auth-cache";
 import {
+    MILESTONES,
     getUncelebratedMilestones,
     markMilestonesCelebrated,
     type MilestoneId,
 } from "@/lib/milestones/milestones.server";
+
+const VALID_MILESTONE_IDS = new Set<string>(MILESTONES.map((m) => m.id));
 
 /**
  * GET /api/milestones/celebrate
@@ -32,15 +35,23 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json().catch(() => null);
-    const milestoneIds: MilestoneId[] = body?.milestoneIds;
+    const rawIds: unknown = body?.milestoneIds;
 
-    if (!Array.isArray(milestoneIds) || milestoneIds.length === 0) {
+    if (
+        !Array.isArray(rawIds) ||
+        rawIds.length === 0 ||
+        rawIds.length > MILESTONES.length ||
+        !rawIds.every(
+            (id): id is MilestoneId =>
+                typeof id === "string" && VALID_MILESTONE_IDS.has(id)
+        )
+    ) {
         return NextResponse.json(
-            { error: "milestoneIds must be a non-empty array" },
+            { error: "milestoneIds must be a non-empty array of valid milestone IDs" },
             { status: 400 }
         );
     }
 
-    await markMilestonesCelebrated(user.id, milestoneIds);
+    await markMilestonesCelebrated(user.id, rawIds);
     return NextResponse.json({ success: true });
 }

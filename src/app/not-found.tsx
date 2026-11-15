@@ -55,7 +55,7 @@ export default function NotFound() {
                 <p className="mt-10 text-sm text-gray-500">
                     Think this is a mistake?{" "}
                     <a
-                        href="mailto:support@thenexttrade.io"
+                        href="mailto:support@thenexttrade.app"
                         className="text-amber-600 dark:text-gold font-semibold hover:underline"
                     >
                         Let us know

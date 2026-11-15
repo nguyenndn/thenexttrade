@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { saveTradingStyleResult } from "@/actions/trading-style";
 
@@ -14,6 +15,7 @@ interface TradingStyleAutoSyncProps {
  * the diagnosis to the user profile and cleans up localStorage.
  */
 export function TradingStyleAutoSync({ userId }: TradingStyleAutoSyncProps) {
+    const router = useRouter();
     const isSyncingRef = useRef(false);
 
     useEffect(() => {
@@ -38,18 +40,19 @@ export function TradingStyleAutoSync({ userId }: TradingStyleAutoSyncProps) {
                         );
                         localStorage.removeItem("tnt_pending_trading_style");
                         localStorage.removeItem("tnt_signup_intent");
+                        router.refresh();
                     }
                 })
-                .catch((err) => {
-                    console.error("[TradingStyleAutoSync] Failed to sync:", err);
+                .catch(() => {
+                    // Silent fallback; user can retake or re-sync on next visit
                 })
                 .finally(() => {
                     isSyncingRef.current = false;
                 });
-        } catch (e) {
-            console.error("[TradingStyleAutoSync] Storage parse error:", e);
+        } catch {
+            // Ignore malformed localStorage payload
         }
-    }, [userId]);
+    }, [userId, router]);
 
     return null;
 }

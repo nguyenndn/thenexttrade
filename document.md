@@ -44,7 +44,7 @@
 ## 2. Đặc tả API Phía Server
 
 ### Endpoint Heartbeat
-- **URL:** `POST https://thenexttrade.com/api/ea/heartbeat` *(hoặc domain staging tương ứng)*
+- **URL:** `POST https://thenexttrade.app/api/ea/heartbeat` *(hoặc domain staging tương ứng)*
 - **Headers:**
   ```http
   Content-Type: application/json

@@ -36,7 +36,8 @@ interface EATrade {
 }
 
 interface SyncPayload {
-    accountId: string;
+    accountId?: string;
+    accountNumber?: string | number;
     trades: EATrade[];
 }
 
@@ -75,11 +76,11 @@ export async function POST(request: NextRequest) {
         }
 
         const body: SyncPayload = JSON.parse(rawBody);
-        const { accountId, trades } = body;
+        const { accountId, accountNumber, trades } = body;
 
         // 1. Validate Account — require the caller to authenticate and own
         //    the account (previously the DB id itself was treated as secret).
-        if (!accountId) {
+        if (!accountId && !accountNumber) {
             return NextResponse.json(
                 { error: "Missing Account ID" },
                 { status: 400 }
@@ -88,7 +89,11 @@ export async function POST(request: NextRequest) {
 
         const auth = await resolveSyncAuth({
             request,
-            accountId,
+            accountId: accountId || null,
+            accountNumber:
+                accountNumber !== undefined && accountNumber !== null
+                    ? String(accountNumber)
+                    : null,
             requireAccount: true,
         });
 
@@ -100,6 +105,7 @@ export async function POST(request: NextRequest) {
         }
 
         const account = auth.data.account!;
+        const authenticatedAccountId = account.id;
         const userId = account.userId;
 
         if (!Array.isArray(trades)) {
@@ -179,7 +185,7 @@ export async function POST(request: NextRequest) {
                 const existing = await prisma.journalEntry.findFirst({
                     where: {
                         userId,
-                        accountId,
+                        accountId: authenticatedAccountId,
                         externalTicket: ticket,
                     },
                 });
@@ -212,7 +218,7 @@ export async function POST(request: NextRequest) {
                         await prisma.journalEntry.create({
                             data: {
                                 userId,
-                                accountId,
+                                accountId: authenticatedAccountId,
                                 externalTicket: ticket,
                                 externalHash: hash,
                                 symbol: trade.symbol,
@@ -229,14 +235,21 @@ export async function POST(request: NextRequest) {
                                 takeProfit: trade.tp,
                                 status,
                                 result,
+                                syncSource: "EA_SYNC",
+                                syncedAt: new Date(),
+                                shareMode: "private",
                                 entryReason: "Synced from MT5",
                                 notes: trade.comment,
                             },
                         });
                         newCount++;
-                    } catch (err: any) {
+                    } catch (err: unknown) {
                         // Concurrent duplicate → treat as already imported
-                        if (err?.code === "P2002") {
+                        const prismaCode =
+                            err && typeof err === "object" && "code" in err
+                                ? (err as { code?: string }).code
+                                : undefined;
+                        if (prismaCode === "P2002") {
                             updatedCount++;
                         } else {
                             throw err;
@@ -244,7 +257,7 @@ export async function POST(request: NextRequest) {
                     }
                 }
                 processedCount++;
-            } catch (err: any) {
+            } catch (err: unknown) {
                 // Per-trade isolation: a bad row must not abort the whole batch
                 console.error("MT5 sync trade error:", err);
             }

@@ -21,7 +21,7 @@ export function buildVipTrialEndingSoonEmailHtml(
     const appUrl =
         data.appUrl ||
         process.env.NEXT_PUBLIC_APP_URL ||
-        "https://thenexttrade.vercel.app";
+        "https://thenexttrade.app";
 
     const bodyHtml = `
   <div style="padding: 4px 0; text-align: center;">
@@ -93,7 +93,7 @@ export function buildVipTrialEndedEmailHtml(
     const appUrl =
         data.appUrl ||
         process.env.NEXT_PUBLIC_APP_URL ||
-        "https://thenexttrade.vercel.app";
+        "https://thenexttrade.app";
 
     const bodyHtml = `
   <div style="padding: 4px 0; text-align: center;">
@@ -154,7 +154,7 @@ export function buildVipInactivityWarningEmailHtml(
     const appUrl =
         data.appUrl ||
         process.env.NEXT_PUBLIC_APP_URL ||
-        "https://thenexttrade.vercel.app";
+        "https://thenexttrade.app";
 
     const bodyHtml = `
   <div style="padding: 4px 0; text-align: center;">
@@ -221,7 +221,7 @@ export function buildVipPolicyPausedEmailHtml(
     const appUrl =
         data.appUrl ||
         process.env.NEXT_PUBLIC_APP_URL ||
-        "https://thenexttrade.vercel.app";
+        "https://thenexttrade.app";
 
     const bodyHtml = `
   <div style="padding: 4px 0; text-align: center;">
@@ -284,7 +284,7 @@ export function buildVipFundingGraceEmailHtml(
     const appUrl =
         data.appUrl ||
         process.env.NEXT_PUBLIC_APP_URL ||
-        "https://thenexttrade.vercel.app";
+        "https://thenexttrade.app";
 
     const bodyHtml = `
   <div style="padding: 4px 0; text-align: center;">

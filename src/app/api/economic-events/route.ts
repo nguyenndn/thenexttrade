@@ -1,30 +1,101 @@
 import { prisma } from "@/lib/prisma";
-import { ImpactLevel } from "@prisma/client";
+import { ImpactLevel, Prisma } from "@prisma/client";
 import { NextResponse } from "next/server";
+
+const VALID_IMPACTS = new Set<string>([
+    ImpactLevel.HIGH,
+    ImpactLevel.MEDIUM,
+    ImpactLevel.LOW,
+]);
+const CURRENCY_REGEX = /^[A-Z]{2,5}$/;
 
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
 
-    const impact =
-        (searchParams.get("impact")?.split(",") as ImpactLevel[]) || undefined;
-    const currency = searchParams.get("currency")?.split(",") || undefined;
+    const rawImpact = searchParams.get("impact");
+    const rawCurrency = searchParams.get("currency");
     const startDate = searchParams.get("startDate");
     const endDate = searchParams.get("endDate");
 
-    const where: any = {};
+    const where: Prisma.EconomicEventWhereInput = {};
 
-    if (impact && impact.length > 0) {
-        where.impact = { in: impact };
+    if (rawImpact !== null && rawImpact.trim() !== "") {
+        const impactList = rawImpact
+            .split(",")
+            .map((item) => item.trim().toUpperCase())
+            .filter(Boolean);
+
+        if (
+            impactList.length === 0 ||
+            impactList.some((item) => !VALID_IMPACTS.has(item))
+        ) {
+            return NextResponse.json(
+                {
+                    error: "Invalid impact parameter. Allowed values: HIGH, MEDIUM, LOW.",
+                },
+                { status: 400 }
+            );
+        }
+
+        where.impact = { in: impactList as ImpactLevel[] };
     }
 
-    if (currency && currency.length > 0) {
-        where.currency = { in: currency };
+    if (rawCurrency !== null && rawCurrency.trim() !== "") {
+        const currencyList = rawCurrency
+            .split(",")
+            .map((item) => item.trim().toUpperCase())
+            .filter(Boolean);
+
+        if (
+            currencyList.length === 0 ||
+            currencyList.some((code) => !CURRENCY_REGEX.test(code))
+        ) {
+            return NextResponse.json(
+                { error: "Invalid currency parameter." },
+                { status: 400 }
+            );
+        }
+
+        where.currency = { in: currencyList };
     }
 
     if (startDate || endDate) {
-        where.date = {};
-        if (startDate) where.date.gte = new Date(startDate);
-        if (endDate) where.date.lte = new Date(endDate);
+        const dateFilter: Prisma.DateTimeFilter = {};
+
+        if (startDate) {
+            const parsedStart = new Date(startDate);
+            if (Number.isNaN(parsedStart.getTime())) {
+                return NextResponse.json(
+                    { error: "Invalid startDate parameter." },
+                    { status: 400 }
+                );
+            }
+            dateFilter.gte = parsedStart;
+        }
+
+        if (endDate) {
+            const parsedEnd = new Date(endDate);
+            if (Number.isNaN(parsedEnd.getTime())) {
+                return NextResponse.json(
+                    { error: "Invalid endDate parameter." },
+                    { status: 400 }
+                );
+            }
+            dateFilter.lte = parsedEnd;
+        }
+
+        if (
+            dateFilter.gte instanceof Date &&
+            dateFilter.lte instanceof Date &&
+            dateFilter.gte > dateFilter.lte
+        ) {
+            return NextResponse.json(
+                { error: "startDate cannot be after endDate." },
+                { status: 400 }
+            );
+        }
+
+        where.date = dateFilter;
     }
 
     // Lazy Sync: Check if we have events for the upcoming week

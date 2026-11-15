@@ -183,6 +183,8 @@ export async function getAllAccountsProfitTargets(): Promise<
         monthlyTarget: a.monthlyTarget,
         monthlyTargetType: (a.monthlyTargetType as TargetType) || "USD",
         status: a.status,
+        currency: a.currency,
+        server: a.server,
       }))
     );
 

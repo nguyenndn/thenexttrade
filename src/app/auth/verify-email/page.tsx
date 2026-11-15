@@ -88,13 +88,13 @@ function VerifyEmailForm() {
     if (!email) return null; // Prevent rendering if redirecting
 
     return (
-        <div className="w-full max-w-[480px] mx-auto bg-white dark:bg-[#1E2028] p-8 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm transition-colors duration-300">
+        <div className="w-full max-w-[480px] mx-auto bg-white dark:bg-[#1E2028] p-5 sm:p-8 rounded-xl border border-gray-200 dark:border-white/10 shadow-sm transition-colors duration-300">
             <div className="flex justify-center mb-6">
                 <Logo />
             </div>
 
-            <div className="text-center mb-8">
-                <div className="w-16 h-16 bg-gold/10 rounded-lg flex items-center justify-center mx-auto mb-4 border border-gold/20">
+            <div className="text-center mb-6 sm:mb-8">
+                <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gold/10 rounded-lg flex items-center justify-center mx-auto mb-4 border border-gold/20">
                     <Mail className="text-amber-600 dark:text-gold" size={28} />
                 </div>
                 <h1 className="text-2xl sm:text-3xl font-black text-slate-950 dark:text-white mb-2 tracking-tight">
@@ -102,7 +102,7 @@ function VerifyEmailForm() {
                 </h1>
                 <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed tabular-nums">
                     We&apos;ve sent an 8-digit verification code to <br />
-                    <span className="font-bold text-slate-900 dark:text-white">
+                    <span className="font-bold text-slate-900 dark:text-white break-all">
                         {email}
                     </span>
                 </p>
@@ -130,12 +130,13 @@ function VerifyEmailForm() {
                     <input
                         id="otp-code"
                         type="text"
+                        inputMode="numeric"
                         maxLength={8}
                         value={otp}
                         onChange={(e) =>
                             setOtp(e.target.value.replace(/[^0-9]/g, ""))
                         }
-                        className="w-full text-center tracking-[0.5em] sm:tracking-[1em] font-mono tabular-nums text-2xl sm:text-3xl h-16 bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 text-slate-900 dark:text-white focus:bg-white dark:focus:bg-[#151925] focus:border-gold focus:ring-1 focus:ring-gold/30 rounded-lg transition-all outline-none"
+                        className="w-full px-2 text-center tracking-[0.28em] sm:tracking-[0.6em] font-mono tabular-nums text-xl sm:text-3xl h-14 sm:h-16 bg-gray-50/80 dark:bg-[#0B0E14] border border-gray-200 dark:border-white/10 text-slate-900 dark:text-white focus:bg-white dark:focus:bg-[#0B0E14] focus:border-gold focus:ring-1 focus:ring-gold/30 rounded-lg transition-all outline-none"
                         required
                         autoComplete="one-time-code"
                     />
