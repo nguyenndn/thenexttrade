@@ -1,6 +1,5 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import { buttonVariants } from "@/components/ui/button-variants";
 import {
     ArrowLeft,
     Activity,
@@ -96,11 +95,7 @@ export default function AuthLayout({
                     <div className="flex flex-row items-center justify-between gap-4 py-4">
                         <Link
                             href="/"
-                            className={buttonVariants({
-                                variant: "outline",
-                                className:
-                                    "group rounded-lg border-gray-200 bg-white px-3.5 sm:px-4 py-2 min-h-[40px] sm:min-h-[44px] text-xs sm:text-sm font-semibold text-slate-600 shadow-sm hover:border-gold/40 hover:text-slate-950 dark:border-white/10 dark:bg-[#1E2028] dark:text-slate-300 dark:hover:border-gold/40 dark:hover:text-white shrink-0 inline-flex items-center gap-2",
-                            })}
+                            className="group inline-flex items-center gap-1.5 py-1.5 text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white transition-colors shrink-0"
                         >
                             <ArrowLeft
                                 size={16}

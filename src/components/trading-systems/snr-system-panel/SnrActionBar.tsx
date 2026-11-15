@@ -4,61 +4,61 @@ import React from "react";
 import { Button } from "@/components/ui/Button";
 
 interface SnrActionBarProps {
-    onDeletePendingBuy: () => void;
-    onDeletePendingSell: () => void;
-    onCloseAllOpen: () => void;
+    onDeleteBuy: () => void;
+    onDeleteSell: () => void;
+    onCloseAll: () => void;
     onRescanChart: () => void;
-    onApplySettings: () => void;
+    onApplyConfig: () => void;
 }
 
 export function SnrActionBar({
-    onDeletePendingBuy,
-    onDeletePendingSell,
-    onCloseAllOpen,
+    onDeleteBuy,
+    onDeleteSell,
+    onCloseAll,
     onRescanChart,
-    onApplySettings,
+    onApplyConfig,
 }: SnrActionBarProps) {
     return (
-        <div className="border border-[#1e293b] bg-[#0c111b] p-1.5 grid grid-cols-2 sm:grid-cols-[1.18fr_1.18fr_0.98fr_0.95fr_0.98fr] gap-1.5">
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-1.5 pt-0.5">
             <Button
                 type="button"
                 variant="ghost"
-                onClick={onDeletePendingBuy}
-                className="h-auto rounded-[2px] border border-[#ef4444] bg-[#3b1219] px-1.5 py-2 text-[9px] sm:text-[9.5px] font-black uppercase tracking-tight text-[#fca5a5] hover:bg-[#4d1821] hover:text-white whitespace-nowrap"
+                onClick={onDeleteBuy}
+                className="h-auto rounded-none border border-[#b82830] bg-[#3a1216] px-1.5 py-2 text-[9.5px] font-black uppercase tracking-tight text-[#ff6b6b] hover:bg-[#4d171c] hover:text-white whitespace-nowrap"
             >
-                DELETE PENDING BUY
+                DELETE BUY
             </Button>
             <Button
                 type="button"
                 variant="ghost"
-                onClick={onDeletePendingSell}
-                className="h-auto rounded-[2px] border border-[#ef4444] bg-[#3b1219] px-1.5 py-2 text-[9px] sm:text-[9.5px] font-black uppercase tracking-tight text-[#fca5a5] hover:bg-[#4d1821] hover:text-white whitespace-nowrap"
+                onClick={onDeleteSell}
+                className="h-auto rounded-none border border-[#b82830] bg-[#3a1216] px-1.5 py-2 text-[9.5px] font-black uppercase tracking-tight text-[#ff6b6b] hover:bg-[#4d171c] hover:text-white whitespace-nowrap"
             >
-                DELETE PENDING SELL
+                DELETE SELL
             </Button>
             <Button
                 type="button"
                 variant="ghost"
-                onClick={onCloseAllOpen}
-                className="h-auto rounded-[2px] border border-[#b91c1c] bg-[#2a1217] px-1.5 py-2 text-[9px] sm:text-[9.5px] font-black uppercase tracking-tight text-[#f87171] hover:bg-[#3b181f] hover:text-white whitespace-nowrap"
+                onClick={onCloseAll}
+                className="h-auto rounded-none border border-[#8c232a] bg-[#260e12] px-1.5 py-2 text-[9.5px] font-black uppercase tracking-tight text-[#ff6b6b] hover:bg-[#38141a] hover:text-white whitespace-nowrap"
             >
-                CLOSE ALL OPEN
+                CLOSE ALL
             </Button>
             <Button
                 type="button"
                 variant="ghost"
                 onClick={onRescanChart}
-                className="h-auto rounded-[2px] border border-[#06b6d4] bg-[#0c3644] px-1.5 py-2 text-[9px] sm:text-[9.5px] font-black uppercase tracking-tight text-[#67e8f9] hover:bg-[#114a5c] hover:text-white whitespace-nowrap"
+                className="h-auto rounded-none border border-[#009ec2] bg-[#0b2e3d] px-1.5 py-2 text-[9.5px] font-black uppercase tracking-tight text-[#00d4ff] hover:bg-[#104054] hover:text-white whitespace-nowrap"
             >
                 RESCAN CHART
             </Button>
             <Button
                 type="button"
                 variant="ghost"
-                onClick={onApplySettings}
-                className="col-span-2 sm:col-span-1 h-auto rounded-[2px] border border-[#22c55e] bg-[#143821] px-1.5 py-2 text-[9px] sm:text-[9.5px] font-black uppercase tracking-tight text-white hover:bg-[#1b4b2c] whitespace-nowrap"
+                onClick={onApplyConfig}
+                className="col-span-2 sm:col-span-1 h-auto rounded-none border border-[#22c55e] bg-[#144327] px-1.5 py-2 text-[9.5px] font-black uppercase tracking-tight text-white hover:bg-[#1b5934] hover:text-white whitespace-nowrap"
             >
-                APPLY SETTINGS
+                APPLY CONFIG
             </Button>
         </div>
     );

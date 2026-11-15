@@ -2,31 +2,49 @@
 
 import React, { useEffect, useState } from "react";
 import {
-    DcaModuleState, INITIAL_DYNAMIC_SNR_STATE, INITIAL_EQUITY,
-    INITIAL_MSNR_STATE, INITIAL_OTE_STATE, MsnrModuleState,
-    SNR_STORIES, SNR_TIMEFRAMES, SnrStoryState, SnrTimeframe,
+    INITIAL_BALANCE,
+    INITIAL_ENGINE_UNIT,
+    INITIAL_ENTRY_CONFIG,
+    INITIAL_EQUITY_BASE,
+    SNR_TREND_STATES,
+    SnrEngineKey,
+    SnrEngineUnitState,
+    SnrEntryConfigState,
+    SnrH1Trend,
 } from "./snr-system-data";
 import { SnrHeaderBar } from "./SnrHeaderBar";
 import { SnrTelemetryBar } from "./SnrTelemetryBar";
-import { SnrMsnrColumn } from "./SnrMsnrColumn";
-import { SnrDcaModuleColumn } from "./SnrDcaModuleColumn";
+import { SnrEngineGrid } from "./SnrEngineGrid";
+import { SnrConfigDeck } from "./SnrConfigDeck";
 import { SnrActionBar } from "./SnrActionBar";
 
 export function SnrSystemMockPanel() {
-    const [paused, setPaused] = useState(false);
     const [minimized, setMinimized] = useState(false);
-    const [timeframe, setTimeframe] = useState<SnrTimeframe>("H1");
-    const [story, setStory] = useState<SnrStoryState>("RANGING");
-    const [buyReady, setBuyReady] = useState(true);
-    const [sellReady, setSellReady] = useState(true);
-    const [equity, setEquity] = useState(INITIAL_EQUITY);
+    const [eaActive, setEaActive] = useState(true);
+    const [h1Trend, setH1Trend] = useState<SnrH1Trend>("BEARISH (SELL)");
+    const [buyLocked, setBuyLocked] = useState(true);
+    const [sellLocked, setSellLocked] = useState(true);
+    const [balance, setBalance] = useState(INITIAL_BALANCE);
+    const [equityBase, setEquityBase] = useState(INITIAL_EQUITY_BASE);
     const [dailyPnl, setDailyPnl] = useState(0);
-    const [msnr, setMsnr] = useState<MsnrModuleState>(INITIAL_MSNR_STATE);
-    const [ote, setOte] = useState<DcaModuleState>(INITIAL_OTE_STATE);
-    const [dynSnr, setDynSnr] = useState<DcaModuleState>(INITIAL_DYNAMIC_SNR_STATE);
+    const [config, setConfig] = useState<SnrEntryConfigState>(INITIAL_ENTRY_CONFIG);
+    const [engines, setEngines] = useState<Record<SnrEngineKey, SnrEngineUnitState>>({
+        msnr: { ...INITIAL_ENGINE_UNIT },
+        ote: { ...INITIAL_ENGINE_UNIT },
+        dynSnr: { ...INITIAL_ENGINE_UNIT },
+    });
     const [toastMsg, setToastMsg] = useState<string | null>(null);
 
-    const totalFloat = msnr.moduleFloat + ote.moduleFloat + dynSnr.moduleFloat;
+    const parsedLot = Math.max(0.01, Number.parseFloat(config.baseLot) || 0.02);
+    const units = [engines.msnr, engines.ote, engines.dynSnr];
+    const openBuyCount = units.reduce((s, u) => s + u.openBuy, 0);
+    const openSellCount = units.reduce((s, u) => s + u.openSell, 0);
+    const pendBuyCount = units.reduce((s, u) => s + u.pendBuy, 0);
+    const pendSellCount = units.reduce((s, u) => s + u.pendSell, 0);
+    const totalFloat = units.reduce((s, u) => s + u.moduleFloat, 0);
+    const openBuyLots = Number((openBuyCount * parsedLot).toFixed(2));
+    const openSellLots = Number((openSellCount * parsedLot).toFixed(2));
+    const totalLots = Number((openBuyLots + openSellLots).toFixed(2));
 
     useEffect(() => {
         if (!toastMsg) return;
@@ -34,111 +52,134 @@ export function SnrSystemMockPanel() {
         return () => clearTimeout(timer);
     }, [toastMsg]);
 
-    const handleCycleTfStory = () => {
-        const nextTf = SNR_TIMEFRAMES[(SNR_TIMEFRAMES.indexOf(timeframe) + 1) % SNR_TIMEFRAMES.length];
-        const nextStory = SNR_STORIES[(SNR_STORIES.indexOf(story) + 1) % SNR_STORIES.length];
-        setTimeframe(nextTf);
-        setStory(nextStory);
-        setToastMsg(`Scanned ${nextTf} | Storyline: ${nextStory}`);
+    const handleToggleEngine = (key: SnrEngineKey) => {
+        setEngines((prev) => {
+            const nextEnabled = !prev[key].enabled;
+            const nextState = {
+                ...prev,
+                [key]: { ...prev[key], enabled: nextEnabled },
+            };
+            const anyEnabled = Object.values(nextState).some((u) => u.enabled);
+            if (nextEnabled && buyLocked && sellLocked) {
+                setBuyLocked(h1Trend === "BEARISH (SELL)");
+                setSellLocked(h1Trend === "BULLISH (BUY)");
+            } else if (!anyEnabled) {
+                setBuyLocked(true);
+                setSellLocked(true);
+            }
+            return nextState;
+        });
     };
 
-    const handleRescanOrSimulate = () => {
-        const orderSum = [msnr, ote, dynSnr].reduce((sum, m) => sum + m.pendBuy + m.pendSell + m.openBuy + m.openSell, 0);
+    const handleCycleTrend = () => {
+        const nextTrend =
+            SNR_TREND_STATES[
+                (SNR_TREND_STATES.indexOf(h1Trend) + 1) % SNR_TREND_STATES.length
+            ];
+        setH1Trend(nextTrend);
+        setToastMsg(`H1 Storyline: ${nextTrend}`);
+    };
+
+    const handleRescanChart = () => {
+        const orderSum = pendBuyCount + pendSellCount + openBuyCount + openSellCount;
         if (orderSum > 0) {
-            const clear = { pendBuy: 0, pendSell: 0, openBuy: 0, openSell: 0, moduleFloat: 0 };
-            setMsnr((s) => ({ ...s, ...clear }));
-            setOte((s) => ({ ...s, ...clear }));
-            setDynSnr((s) => ({ ...s, ...clear }));
+            setEngines((prev) => ({
+                msnr: { ...prev.msnr, pendBuy: 0, pendSell: 0, openBuy: 0, openSell: 0, moduleFloat: 0 },
+                ote: { ...prev.ote, pendBuy: 0, pendSell: 0, openBuy: 0, openSell: 0, moduleFloat: 0 },
+                dynSnr: { ...prev.dynSnr, pendBuy: 0, pendSell: 0, openBuy: 0, openSell: 0, moduleFloat: 0 },
+            }));
             setToastMsg("Chart Rescanned: Reset to Fresh Flat State");
             return;
         }
-        setMsnr((s) => s.enabled ? { ...s, pendBuy: buyReady ? 2 : 0, pendSell: sellReady ? 2 : 0, openBuy: buyReady ? 1 : 0, openSell: 0, moduleFloat: buyReady ? 18.4 : 0 } : s);
-        setOte((s) => s.enabled ? { ...s, pendBuy: buyReady ? 1 : 0, pendSell: sellReady ? 1 : 0, openBuy: 0, openSell: sellReady ? 1 : 0, moduleFloat: sellReady ? 24.6 : 0 } : s);
-        setDynSnr((s) => s.enabled ? { ...s, pendBuy: buyReady ? 1 : 0, pendSell: sellReady ? 1 : 0, openBuy: buyReady ? 1 : 0, openSell: 0, moduleFloat: buyReady ? 9.5 : 0 } : s);
-        setToastMsg(`MT5 Rescan (${timeframe}): Fresh Body SNR & OTE Limits Placed`);
+        const noneEnabled = !engines.msnr.enabled && !engines.ote.enabled && !engines.dynSnr.enabled;
+        const nextBuyLocked = noneEnabled ? false : buyLocked && sellLocked ? false : buyLocked;
+        const nextSellLocked = noneEnabled ? false : buyLocked && sellLocked ? false : sellLocked;
+        setBuyLocked(nextBuyLocked);
+        setSellLocked(nextSellLocked);
+        setEngines((prev) => {
+            const msnrOn = noneEnabled ? true : prev.msnr.enabled;
+            const oteOn = noneEnabled ? true : prev.ote.enabled;
+            const dynOn = prev.dynSnr.enabled;
+            return {
+                msnr: msnrOn ? { enabled: true, pendBuy: nextBuyLocked ? 0 : 2, pendSell: nextSellLocked ? 0 : 2, openBuy: nextBuyLocked ? 0 : 1, openSell: 0, moduleFloat: nextBuyLocked ? 0 : 18.4 } : prev.msnr,
+                ote: oteOn ? { enabled: true, pendBuy: nextBuyLocked ? 0 : 1, pendSell: nextSellLocked ? 0 : 2, openBuy: 0, openSell: nextSellLocked ? 0 : 1, moduleFloat: nextSellLocked ? 0 : 24.6 } : prev.ote,
+                dynSnr: dynOn ? { enabled: true, pendBuy: nextBuyLocked ? 0 : 1, pendSell: nextSellLocked ? 0 : 1, openBuy: 0, openSell: nextSellLocked ? 0 : 1, moduleFloat: nextSellLocked ? 0 : 9.5 } : prev.dynSnr,
+            };
+        });
+        setToastMsg("MT5 Rescan: Fresh Body SNR & OTE Limits Placed");
     };
 
-    const handleDeletePendingSide = (side: "BUY" | "SELL") => {
+    const handleDeleteSide = (side: "BUY" | "SELL") => {
         const key = side === "BUY" ? "pendBuy" : "pendSell";
-        const count = msnr[key] + ote[key] + dynSnr[key];
-        setMsnr((s) => ({ ...s, [key]: 0 }));
-        setOte((s) => ({ ...s, [key]: 0 }));
-        setDynSnr((s) => ({ ...s, [key]: 0 }));
+        const count = side === "BUY" ? pendBuyCount : pendSellCount;
+        if (side === "BUY") setBuyLocked(true);
+        else setSellLocked(true);
+        setEngines((prev) => ({
+            msnr: { ...prev.msnr, [key]: 0 },
+            ote: { ...prev.ote, [key]: 0 },
+            dynSnr: { ...prev.dynSnr, [key]: 0 },
+        }));
         setToastMsg(`MT5: Deleted ${count} Pending ${side} Limit(s)`);
     };
 
-    const handleCloseAllOpen = () => {
-        const openCount = msnr.openBuy + msnr.openSell + ote.openBuy + ote.openSell + dynSnr.openBuy + dynSnr.openSell;
+    const handleCloseAll = () => {
+        const openCount = openBuyCount + openSellCount;
         if (openCount > 0) {
-            setEquity((prev) => Number((prev + totalFloat).toFixed(2)));
+            setBalance((prev) => Number((prev + totalFloat).toFixed(2)));
+            setEquityBase((prev) => Number((prev + totalFloat).toFixed(2)));
             setDailyPnl((prev) => Number((prev + totalFloat).toFixed(2)));
         }
-        const clearOpen = { openBuy: 0, openSell: 0, moduleFloat: 0 };
-        setMsnr((s) => ({ ...s, ...clearOpen }));
-        setOte((s) => ({ ...s, ...clearOpen }));
-        setDynSnr((s) => ({ ...s, ...clearOpen }));
+        setEngines((prev) => ({
+            msnr: { ...prev.msnr, openBuy: 0, openSell: 0, moduleFloat: 0 },
+            ote: { ...prev.ote, openBuy: 0, openSell: 0, moduleFloat: 0 },
+            dynSnr: { ...prev.dynSnr, openBuy: 0, openSell: 0, moduleFloat: 0 },
+        }));
         setToastMsg(`MT5: Closed ${openCount} Open Position(s)`);
     };
 
     return (
         <div
-            className={`relative mx-auto w-full max-w-[632px] lg:w-[596px] xl:w-[632px] rounded-[2px] border-2 border-[#f59e0b] bg-[#080c14] p-2 text-left font-mono tabular-nums text-[10px] text-white shadow-2xl shadow-black/60 lg:mx-0 ${
-                minimized ? "self-start space-y-2" : "h-full flex flex-col justify-between gap-2"
+            className={`relative mx-auto w-full max-w-[540px] lg:w-[500px] xl:w-[540px] border border-[#b87300] bg-[#06090f] p-2.5 text-left font-mono tabular-nums text-[10px] text-white shadow-2xl shadow-black/60 lg:mx-0 ${
+                minimized ? "self-start" : "h-full flex flex-col justify-between gap-2"
             }`}
         >
             {toastMsg && (
-                <div className="pointer-events-none absolute top-2.5 left-1/2 -translate-x-1/2 z-20 whitespace-nowrap rounded-[2px] border border-[#fbbf24] bg-[#090d16]/95 px-3 py-1 text-[9.5px] font-black text-[#fbbf24] shadow-lg">
+                <div className="pointer-events-none absolute top-2.5 left-1/2 -translate-x-1/2 z-20 whitespace-nowrap border border-[#ffd21f] bg-[#090d16]/95 px-3 py-1 text-[9.5px] font-black text-[#ffd21f] shadow-lg">
                     {toastMsg}
                 </div>
             )}
-            <SnrHeaderBar
-                paused={paused}
-                minimized={minimized}
-                timeframe={timeframe}
-                story={story}
-                buyReady={buyReady}
-                sellReady={sellReady}
-                onTogglePause={() => { setPaused((v) => !v); setToastMsg(!paused ? "SNR Engine: PAUSED" : "SNR Engine: ACTIVE"); }}
-                onToggleMinimize={() => setMinimized((v) => !v)}
-                onCycleTfStory={handleCycleTfStory}
-                onToggleBuyReady={() => setBuyReady((v) => !v)}
-                onToggleSellReady={() => setSellReady((v) => !v)}
-            />
+            <SnrHeaderBar minimized={minimized} onToggleMinimize={() => setMinimized((v) => !v)} />
             {!minimized && (
                 <>
-                    <SnrTelemetryBar equity={equity + totalFloat} totalFloat={totalFloat} dailyPnl={dailyPnl} onSimulateTelemetry={handleRescanOrSimulate} />
-                    <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-2">
-                        <SnrMsnrColumn
-                            state={msnr}
-                            onToggleEnabled={() => setMsnr((s) => ({ ...s, enabled: !s.enabled }))}
-                            onToggleMode={() => setMsnr((s) => ({ ...s, mode: s.mode === "SINGLE (1R -> BE)" ? "SINGLE (FIXED TP)" : "SINGLE (1R -> BE)" }))}
-                            onChangeField={(f, val) => setMsnr((s) => ({ ...s, [f]: val }))}
-                        />
-                        <SnrDcaModuleColumn
-                            idPrefix="ote"
-                            engineTitle="CHOCH OTE"
-                            state={ote}
-                            onToggleEnabled={() => setOte((s) => ({ ...s, enabled: !s.enabled }))}
-                            onToggleMode={() => setOte((s) => ({ ...s, mode: s.mode === "SINGLE" ? "DCA" : "SINGLE" }))}
-                            onToggleLotMode={() => setOte((s) => ({ ...s, lotMode: s.lotMode === "ADD (+)" ? "MULT (x)" : "ADD (+)" }))}
-                            onChangeField={(f, val) => setOte((s) => ({ ...s, [f]: val }))}
-                        />
-                        <SnrDcaModuleColumn
-                            idPrefix="dynsnr"
-                            engineTitle="DYNAMIC S&R"
-                            state={dynSnr}
-                            onToggleEnabled={() => setDynSnr((s) => ({ ...s, enabled: !s.enabled }))}
-                            onToggleMode={() => setDynSnr((s) => ({ ...s, mode: s.mode === "SINGLE" ? "DCA" : "SINGLE" }))}
-                            onToggleLotMode={() => setDynSnr((s) => ({ ...s, lotMode: s.lotMode === "ADD (+)" ? "MULT (x)" : "ADD (+)" }))}
-                            onChangeField={(f, val) => setDynSnr((s) => ({ ...s, [f]: val }))}
-                        />
-                    </div>
+                    <SnrTelemetryBar
+                        balance={balance}
+                        equity={equityBase + totalFloat}
+                        dailyPnl={dailyPnl}
+                        totalFloat={totalFloat}
+                        totalLots={totalLots}
+                        eaActive={eaActive}
+                        h1Trend={h1Trend}
+                        openBuyCount={openBuyCount}
+                        openSellCount={openSellCount}
+                        openBuyLots={openBuyLots}
+                        openSellLots={openSellLots}
+                        pendBuyCount={pendBuyCount}
+                        pendSellCount={pendSellCount}
+                        buyLocked={buyLocked}
+                        sellLocked={sellLocked}
+                        onToggleEaActive={() => { setEaActive((v) => !v); setToastMsg(!eaActive ? "EA ACTIVE : ON" : "EA ACTIVE : OFF"); }}
+                        onCycleTrend={handleCycleTrend}
+                        onToggleBuyLock={() => setBuyLocked((v) => !v)}
+                        onToggleSellLock={() => setSellLocked((v) => !v)}
+                    />
+                    <SnrEngineGrid engines={engines} onToggleEngine={handleToggleEngine} />
+                    <SnrConfigDeck config={config} onChangeField={(f, val) => setConfig((c) => ({ ...c, [f]: val }))} />
                     <SnrActionBar
-                        onDeletePendingBuy={() => handleDeletePendingSide("BUY")}
-                        onDeletePendingSell={() => handleDeletePendingSide("SELL")}
-                        onCloseAllOpen={handleCloseAllOpen}
-                        onRescanChart={handleRescanOrSimulate}
-                        onApplySettings={() => setToastMsg("MT5: SNR Command Deck Settings Applied")}
+                        onDeleteBuy={() => handleDeleteSide("BUY")}
+                        onDeleteSell={() => handleDeleteSide("SELL")}
+                        onCloseAll={handleCloseAll}
+                        onRescanChart={handleRescanChart}
+                        onApplyConfig={() => setToastMsg("MT5: Entry & SL/TP Config Applied")}
                     />
                 </>
             )}
