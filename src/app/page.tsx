@@ -11,24 +11,25 @@ import dynamic from "next/dynamic";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "TheNextTrade - All-in-One Forex Trading OS, Playbook & Journal",
+    title: "TheNextTrade — The Discipline OS for MT5 Traders",
     description:
-        "Turn your trade history into consistent edge with TheNextTrade. Automated MT5 Trade Journal, Playbook Studio, 17 free forex calculators, and automated MT5 execution systems.",
+        "Sync Demo & Live MT5 trades via EA with zero password sharing. Spot revenge sizing, enforce hard stop-loss rules, and access 17 free risk calculators.",
     alternates: {
         canonical: "/",
     },
     openGraph: {
-        title: "TheNextTrade - All-in-One Forex Trading OS, Playbook & Journal",
+        title: "TheNextTrade — The Discipline OS for MT5 Traders",
         description:
-            "Automated MT5 Trade Journal, Playbook Studio, 17 free forex calculators, and automated MT5 execution systems.",
-        url: "https://thenexttrade.io",
+            "Sync Demo & Live MT5 trades via EA with zero password sharing. Spot revenge sizing, enforce hard stop-loss rules, and access 17 free risk calculators.",
+        url: "/",
         siteName: "TheNextTrade",
         images: [
             {
-                url: "/og-image.jpg",
+                url: "/og-image.jpg?v=2",
                 width: 1200,
                 height: 630,
-                alt: "TheNextTrade Trading Platform",
+                type: "image/jpeg",
+                alt: "TheNextTrade — The Discipline OS for MT5 Traders",
             },
         ],
         locale: "en_US",
@@ -36,10 +37,10 @@ export const metadata: Metadata = {
     },
     twitter: {
         card: "summary_large_image",
-        title: "TheNextTrade - All-in-One Forex Trading OS",
+        title: "TheNextTrade — The Discipline OS for MT5 Traders",
         description:
-            "Automated MT5 Trade Journal, Playbook Studio, 17 free forex calculators, and automated MT5 execution systems.",
-        images: ["/og-image.jpg"],
+            "Sync Demo & Live MT5 trades via EA with zero password sharing. Spot revenge sizing, enforce hard stop-loss rules, and access 17 free risk calculators.",
+        images: ["/og-image.jpg?v=2"],
     },
 };
 

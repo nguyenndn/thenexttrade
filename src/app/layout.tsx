@@ -38,11 +38,11 @@ const lexend = Lexend({
 
 export const metadata: Metadata = {
     title: {
-        default: "TheNextTrade - Professional Forex Trading Tools & Academy",
+        default: "TheNextTrade — The Discipline OS for MT5 Traders",
         template: "%s | TheNextTrade",
     },
     description:
-        "Forex position-size calculator, MT5-synced trading journal, and targeted risk calculators — free to use.",
+        "Sync Demo & Live MT5 trades via EA with zero password sharing. Spot revenge sizing, enforce hard stop-loss rules, and access 17 free risk calculators.",
     keywords: [
         "Forex",
         "Trading Journal",
@@ -57,23 +57,27 @@ export const metadata: Metadata = {
     openGraph: {
         type: "website",
         locale: "en_US",
-        url: "https://thenexttrade.io",
-        title: "TheNextTrade - Professional Forex Trading Tools",
-        description: "Forex tools, journal, and education — free to start.",
+        url: "/",
+        title: "TheNextTrade — The Discipline OS for MT5 Traders",
+        description:
+            "Sync Demo & Live MT5 trades via EA with zero password sharing. Spot revenge sizing, enforce hard stop-loss rules, and access 17 free risk calculators.",
         siteName: "TheNextTrade",
         images: [
             {
-                url: "/og-image.jpg",
+                url: "/og-image.jpg?v=2",
                 width: 1200,
                 height: 630,
-                alt: "TheNextTrade Dashboard",
+                type: "image/jpeg",
+                alt: "TheNextTrade — The Discipline OS for MT5 Traders",
             },
         ],
     },
     twitter: {
         card: "summary_large_image",
-        title: "TheNextTrade",
-        description: "Professional Forex Trading Tools & Academy",
+        title: "TheNextTrade — The Discipline OS for MT5 Traders",
+        description:
+            "Sync Demo & Live MT5 trades via EA with zero password sharing. Spot revenge sizing, enforce hard stop-loss rules, and access 17 free risk calculators.",
+        images: ["/og-image.jpg?v=2"],
         creator: "@thenexttrade",
     },
     icons: {
