@@ -10,7 +10,7 @@ async function getLastTradingSession(userId: string, accountId?: string) {
     const result = await prisma.$queryRaw`
  WITH last_day AS (
  SELECT DISTINCT DATE("exitDate") as "tradeDate"
- FROM "JournalEntry"
+ FROM "journal_entries"
  WHERE "userId" = ${userId}::uuid
  AND "status" = 'CLOSED'
  AND (${accountId ? accountId : "1"} = '1' OR "accountId" = ${accountId})
@@ -23,7 +23,7 @@ async function getLastTradingSession(userId: string, accountId?: string) {
  SUM(CASE WHEN "result" = 'WIN' THEN 1 ELSE 0 END) as "wins",
  SUM(CASE WHEN "result" = 'LOSS' THEN 1 ELSE 0 END) as "losses",
  SUM(COALESCE(j."pnl", 0) + COALESCE(j."commission", 0) + COALESCE(j."swap", 0)) as "pnl"
- FROM "JournalEntry" j
+ FROM "journal_entries" j
  INNER JOIN last_day ld ON DATE(j."exitDate") = ld."tradeDate"
  WHERE j."userId" = ${userId}::uuid
  AND j."status" = 'CLOSED'
@@ -55,7 +55,7 @@ async function getWeekStats(userId: string, accountId?: string) {
  THEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) ELSE 0 END) as "grossProfit",
  SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) < 0
  THEN ABS(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) ELSE 0 END) as "grossLoss"
- FROM "JournalEntry"
+ FROM "journal_entries"
  WHERE "userId" = ${userId}::uuid
  AND "status" = 'CLOSED'
  AND "exitDate" >= ${weekStart}

@@ -247,8 +247,8 @@ async function cmdMigrate(target) {
 
 // ─── COMMAND: sync ────────────────────────────────────────────────────────────
 
-const ACADEMY_TABLES = ['Level', 'Module', 'Lesson'];
-const CONTENT_TABLES = ['Category', 'Tag', 'Article', 'ArticleTag', 'Quote'];
+const ACADEMY_TABLES = ['levels', 'modules', 'lessons'];
+const CONTENT_TABLES = ['categories', 'tags', 'articles', 'article_tags', 'quotes'];
 
 async function cmdSync(direction) {
   if (direction === 'local-to-prod') {

@@ -372,8 +372,8 @@ async function getEnrichedStats(
  SELECT up."userId",
  COUNT(up.id) AS "lessonsCompleted",
  COALESCE(SUM(l.duration), 0) AS "studyTimeMinutes"
- FROM "UserProgress" up
- INNER JOIN "Lesson" l ON l.id = up."lessonId"
+ FROM "user_progress" up
+ INNER JOIN "lessons" l ON l.id = up."lessonId"
  WHERE up."isCompleted" = true AND up."userId"::text IN (${Prisma.join(userIds)})
  GROUP BY up."userId"
  `;
@@ -703,9 +703,9 @@ async function getAcademyLeaderboard(
  SELECT u.id AS "userId", u.name, u.image, u.xp, u.level,
  COUNT(up.id) AS count,
  COALESCE(SUM(l.duration), 0) AS "studyMinutes"
- FROM "User" u
- INNER JOIN "UserProgress" up ON up."userId" = u.id AND up."isCompleted" = true
- INNER JOIN "Lesson" l ON l.id = up."lessonId"
+ FROM "users" u
+ INNER JOIN "user_progress" up ON up."userId" = u.id AND up."isCompleted" = true
+ INNER JOIN "lessons" l ON l.id = up."lessonId"
  WHERE u."showOnLeaderboard" = true
  GROUP BY u.id, u.name, u.image, u.xp, u.level
  ORDER BY count DESC
@@ -838,13 +838,13 @@ async function getTradingLeaderboard(
    AND ta."userId" = u.id
    AND UPPER(COALESCE(ta.account_type, 'REAL')) NOT IN ('DEMO', 'CONTEST')
    AND COALESCE(ta.server, '') NOT ILIKE '%demo%'
- INNER JOIN "JournalEntry" je ON je."accountId" = cp.trading_account_id`
+ INNER JOIN "journal_entries" je ON je."accountId" = cp.trading_account_id`
         : Prisma.sql`
  INNER JOIN "trading_accounts" ta ON ta."userId" = u.id
    AND ta.use_for_leaderboard = true
    AND UPPER(COALESCE(ta.account_type, 'REAL')) NOT IN ('DEMO', 'CONTEST')
    AND COALESCE(ta.server, '') NOT ILIKE '%demo%'
- INNER JOIN "JournalEntry" je ON je."accountId" = ta.id`;
+ INNER JOIN "journal_entries" je ON je."accountId" = ta.id`;
 
     const brokerFilterSql =
         allowedBrokers.length > 0
@@ -892,7 +892,7 @@ async function getTradingLeaderboard(
    ),
    0
  ) AS "totalPnl"
- FROM "User" u
+ FROM "users" u
  ${sprintJoinSql}
  WHERE u."showOnLeaderboard" = true
  ${brokerFilterSql}

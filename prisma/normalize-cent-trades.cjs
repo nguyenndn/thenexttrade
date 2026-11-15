@@ -12,11 +12,11 @@ async function main() {
 
     // Update all trades for the Cent account user
     const updatedCount = await prisma.$executeRaw`
-        UPDATE "JournalEntry"
+        UPDATE "journal_entries"
         SET "lotSize" = ROUND(CAST("lotSize" / 100.0 AS numeric), 6)
         WHERE "userId" = '787334ae-0483-4afa-b9fa-4a5af8496940'::uuid;
     `;
-    console.log(`Updated ${updatedCount} rows in JournalEntry.`);
+    console.log(`Updated ${updatedCount} rows in journal_entries.`);
 
     const after = await prisma.journalEntry.aggregate({
         _sum: { lotSize: true },

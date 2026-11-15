@@ -30,8 +30,6 @@ model User {
   articleVotes             ArticleVote[]
   auditLogs                AuditLog[]                @relation("AdminAuditLogs")
   certificates             Certificate[]
-  challengesReceived       Challenge[]               @relation("Challengee")
-  challengesSent           Challenge[]               @relation("Challenger")
   comments                 Comment[]
   eaDownloads              EADownload[]
   EALicenses               EALicense[]
@@ -41,12 +39,9 @@ model User {
   notifications            Notification[]
   profile                  Profile?
   badges                   UserBadge[]
-  following                UserFollow[]              @relation("Followers")
-  followers                UserFollow[]              @relation("Following")
   progress                 UserProgress[]
   quizAttempts             UserQuizAttempt[]
   sessions                 UserSession[]
-  accountNotifications     AccountNotification[]
   analyticsEvents          AnalyticsEvent[]
   shortcuts                ContentShortcut[]
   eaCommands               EaCommand[]
@@ -85,6 +80,7 @@ model User {
   @@index([email])
   @@index([xp(sort: Desc)])
   @@index([streak(sort: Desc)])
+  @@map("users")
 }
 
 model TradingDayNote {
@@ -98,6 +94,7 @@ model TradingDayNote {
 
   @@unique([userId, date])
   @@index([userId, date])
+  @@map("trading_day_notes")
 }
 
 model Profile {
@@ -129,6 +126,7 @@ model Profile {
   @@index([role])
   @@index([username])
   @@index([country])
+  @@map("profiles")
 }
 
 model Level {
@@ -141,6 +139,8 @@ model Level {
   accessLevel  String        @default("PUBLIC")
   certificates Certificate[]
   modules      Module[]
+
+  @@map("levels")
 }
 
 model Module {
@@ -156,6 +156,7 @@ model Module {
   quiz        Quiz?
 
   @@index([levelId])
+  @@map("modules")
 }
 
 model Lesson {
@@ -179,6 +180,7 @@ model Lesson {
   progress        UserProgress[]
 
   @@index([moduleId, order])
+  @@map("lessons")
 }
 
 model UserProgress {
@@ -193,6 +195,7 @@ model UserProgress {
   @@unique([userId, lessonId])
   @@index([userId, isCompleted])
   @@index([lessonId])
+  @@map("user_progress")
 }
 
 model Article {
@@ -231,6 +234,7 @@ model Article {
   @@index([status, createdAt], map: "article_status_created_idx")
   @@index([isFeatured, status, createdAt])
   @@index([status, views])
+  @@map("articles")
 }
 
 model ArticleVote {
@@ -243,6 +247,7 @@ model ArticleVote {
 
   @@unique([userId, articleId])
   @@index([articleId])
+  @@map("article_votes")
 }
 
 model Category {
@@ -256,6 +261,8 @@ model Category {
   articles    Article[]
   parent      Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
   children    Category[] @relation("CategoryHierarchy")
+
+  @@map("categories")
 }
 
 model Tag {
@@ -263,6 +270,8 @@ model Tag {
   name     String
   slug     String       @unique
   articles ArticleTag[]
+
+  @@map("tags")
 }
 
 model ArticleTag {
@@ -272,6 +281,7 @@ model ArticleTag {
   tag       Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
 
   @@id([articleId, tagId])
+  @@map("article_tags")
 }
 
 model ContentShortcut {
@@ -350,6 +360,7 @@ model JournalEntry {
   @@index([userId, exitDate])
   @@index([userId, accountId, exitDate])
   @@index([userId, symbol])
+  @@map("journal_entries")
 }
 
 model Strategy {
@@ -428,7 +439,6 @@ model TradingAccount {
   syncSource               String                    @default("EA") @map("sync_source") @db.VarChar(20)
   journalEntries           JournalEntry[]
   mainForProfiles          Profile[]                 @relation("ProfileMainAccount")
-  notifications            AccountNotification[]
   commands                 EaCommand[]
   ibLeads                  IbLead[]                  @relation("IbLeadAccount")
   importHistory            ImportHistory[]
@@ -441,8 +451,6 @@ model TradingAccount {
   traderGoals              TraderGoal[]
   credential               TradingAccountCredential?
   mt5ImportJobs            Mt5ImportJob[]
-  rawOrders                Mt5RawOrder[]
-  rawDeals                 Mt5RawDeal[]
   tradeCheckSnapshots      TradeCheckSnapshot[]
   productAccesses          EAProductAccess[]
   productUsageEvents       EAProductUsageEvent[]
@@ -462,23 +470,6 @@ model TradingAccount {
   @@index([userId])
   @@index([ibAttribution])
   @@map("trading_accounts")
-}
-
-model AccountNotification {
-  id               String         @id @default(uuid())
-  tradingAccountId String         @map("trading_account_id")
-  userId           String         @map("user_id") @db.Uuid
-  type             String         @db.VarChar(30)
-  title            String         @db.VarChar(200)
-  message          String?
-  isRead           Boolean        @default(false) @map("is_read")
-  sentEmail        Boolean        @default(false) @map("sent_email")
-  createdAt        DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
-  tradingAccount   TradingAccount @relation(fields: [tradingAccountId], references: [id], onDelete: Cascade)
-  user             User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId, isRead])
-  @@map("account_notifications")
 }
 
 model EaCommand {
@@ -564,6 +555,7 @@ model EconomicEvent {
 
   @@unique([title, currency, date])
   @@index([date, impact])
+  @@map("economic_events")
 }
 
 model Quiz {
@@ -576,6 +568,8 @@ model Quiz {
   questions   Question[]
   module      Module?           @relation(fields: [moduleId], references: [id])
   attempts    UserQuizAttempt[]
+
+  @@map("quizzes")
 }
 
 model Question {
@@ -589,6 +583,7 @@ model Question {
   quiz      Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
 
   @@index([quizId])
+  @@map("questions")
 }
 
 model Option {
@@ -599,6 +594,7 @@ model Option {
   question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   @@index([questionId])
+  @@map("options")
 }
 
 model UserQuizAttempt {
@@ -610,6 +606,8 @@ model UserQuizAttempt {
   completedAt DateTime @default(now()) @db.Timestamptz(6)
   quiz        Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_quiz_attempts")
 }
 
 model Certificate {
@@ -623,6 +621,7 @@ model Certificate {
 
   @@unique([userId, levelId])
   @@index([userId])
+  @@map("certificates")
 }
 
 model Comment {
@@ -645,6 +644,7 @@ model Comment {
   @@index([createdAt])
   @@index([lessonId])
   @@index([parentId])
+  @@map("comments")
 }
 
 model ErrorLog {
@@ -654,6 +654,8 @@ model ErrorLog {
   context   String?
   severity  String   @default("ERROR")
   createdAt DateTime @default(now()) @db.Timestamptz(6)
+
+  @@map("error_logs")
 }
 
 model Media {
@@ -673,6 +675,7 @@ model Media {
   user         User?    @relation(fields: [userId], references: [id])
 
   @@index([userId])
+  @@map("media")
 }
 
 model SystemSetting {
@@ -680,6 +683,8 @@ model SystemSetting {
   key       String   @unique
   value     Json
   updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@map("system_settings")
 }
 
 model Badge {
@@ -692,6 +697,8 @@ model Badge {
   createdAt   DateTime    @default(now()) @db.Timestamptz(6)
   category    String      @default("milestone")
   users       UserBadge[]
+
+  @@map("badges")
 }
 
 model UserBadge {
@@ -704,6 +711,7 @@ model UserBadge {
 
   @@unique([userId, badgeId])
   @@index([userId])
+  @@map("user_badges")
 }
 
 model EABroker {
@@ -772,6 +780,7 @@ model EALicense {
   @@index([status])
   @@index([accountNumber])
   @@index([createdAt])
+  @@map("ea_licenses")
 }
 
 model EAProduct {
@@ -797,6 +806,7 @@ model EAProduct {
 
   @@index([isActive])
   @@index([type])
+  @@map("ea_products")
 }
 
 model EADownload {
@@ -814,6 +824,7 @@ model EADownload {
   @@index([productId])
   @@index([userId])
   @@index([createdAt])
+  @@map("ea_downloads")
 }
 
 model Notification {
@@ -840,6 +851,7 @@ model Notification {
   @@index([createdAt])
   @@index([broadcastId])
   @@unique([userId, dedupeKey], map: "unique_user_notification_dedupe")
+  @@map("notifications")
 }
 
 model TraderInsightSnapshot {
@@ -932,6 +944,7 @@ model AdminBroadcast {
 
   @@index([createdAt])
   @@index([sentAt])
+  @@map("admin_broadcasts")
 }
 
 model AuditLog {
@@ -948,6 +961,7 @@ model AuditLog {
   @@index([action])
   @@index([targetType])
   @@index([createdAt])
+  @@map("audit_logs")
 }
 
 model UserSession {
@@ -962,6 +976,7 @@ model UserSession {
 
   @@unique([userId, userAgent, ip], name: "unique_session")
   @@index([userId])
+  @@map("user_sessions")
 }
 
 model Feedback {
@@ -977,6 +992,7 @@ model Feedback {
   @@index([userId])
   @@index([status])
   @@index([type])
+  @@map("feedbacks")
 }
 
 model ContactMessage {
@@ -1002,37 +1018,7 @@ model ToolView {
   updatedAt DateTime @updatedAt @db.Timestamptz(6)
 
   @@index([viewCount(sort: Desc)])
-}
-
-model UserFollow {
-  id          String   @id @default(cuid())
-  followerId  String   @db.Uuid
-  followingId String   @db.Uuid
-  createdAt   DateTime @default(now()) @db.Timestamptz(6)
-  follower    User     @relation("Followers", fields: [followerId], references: [id], onDelete: Cascade)
-  following   User     @relation("Following", fields: [followingId], references: [id], onDelete: Cascade)
-
-  @@unique([followerId, followingId])
-  @@index([followerId])
-  @@index([followingId])
-}
-
-model Challenge {
-  id           String   @id @default(cuid())
-  challengerId String   @db.Uuid
-  challengeeId String   @db.Uuid
-  status       String   @default("PENDING")
-  createdAt    DateTime @default(now()) @db.Timestamptz(6)
-  endDate      DateTime @db.Timestamptz(6)
-  startDate    DateTime @db.Timestamptz(6)
-  type         String   @default("xp")
-  winnerId     String?  @db.Uuid
-  challengee   User     @relation("Challengee", fields: [challengeeId], references: [id], onDelete: Cascade)
-  challenger   User     @relation("Challenger", fields: [challengerId], references: [id], onDelete: Cascade)
-
-  @@index([challengerId])
-  @@index([challengeeId])
-  @@index([status])
+  @@map("tool_views")
 }
 
 model Quote {
@@ -1046,21 +1032,7 @@ model Quote {
 
   @@index([type])
   @@index([isActive])
-}
-
-model Partner {
-  id             Int                       @id @default(autoincrement())
-  partnerCode    String                    @unique @map("partner_code")
-  partnerName    String                    @map("partner_name")
-  apiKeyHash     String                    @map("api_key_hash")
-  webhookUrl     String?                   @map("webhook_url")
-  allowedIps     String?                   @map("allowed_ips")
-  allowedDomains String?                   @map("allowed_domains")
-  status         String                    @default("ACTIVE")
-  createdAt      DateTime                  @default(now()) @map("created_at")
-  updatedAt      DateTime                  @updatedAt @map("updated_at")
-
-  @@map("partners")
+  @@map("quotes")
 }
 
 model TradingReport {
@@ -1829,31 +1801,6 @@ model AdminAuditLog {
   @@map("admin_audit_logs")
 }
 
-model Mt5Worker {
-  id            String             @id @db.VarChar(100)
-  tokenHash     String             @map("token_hash") @db.VarChar(64)
-  status        String             @default("ENROLLED") @db.VarChar(30)
-  lastHeartbeat DateTime?          @map("last_heartbeat") @db.Timestamptz(6)
-  currentJobId  String?            @map("current_job_id") @db.VarChar(50)
-  version       String?            @db.VarChar(20)
-  createdAt     DateTime           @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt     DateTime           @updatedAt @map("updated_at") @db.Timestamptz(6)
-  attempts      Mt5ImportAttempt[]
-
-  @@map("mt5_workers")
-}
-
-model Mt5EnrollmentToken {
-  tokenHash String    @id @map("token_hash") @db.VarChar(64)
-  rawToken  String?   @map("raw_token") @db.VarChar(128)
-  workerId  String    @map("worker_id") @db.VarChar(100)
-  expiresAt DateTime  @map("expires_at") @db.Timestamptz(6)
-  usedAt    DateTime? @map("used_at") @db.Timestamptz(6)
-  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
-
-  @@map("mt5_enrollment_tokens")
-}
-
 model TradingAccountCredential {
   accountId         String         @id @map("account_id")
   encryptedPassword String         @map("encrypted_password") @db.VarChar(500)
@@ -1888,72 +1835,11 @@ model Mt5ImportJob {
   updatedAt       DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
   completedAt     DateTime? @map("completed_at") @db.Timestamptz(6)
 
-  user     User               @relation(fields: [userId], references: [id], onDelete: Cascade)
-  account  TradingAccount     @relation(fields: [accountId], references: [id], onDelete: Cascade)
-  batches  Mt5Batch[]
-  attempts Mt5ImportAttempt[]
+  user    User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  account TradingAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
 
   @@index([status, createdAt])
   @@map("mt5_import_jobs")
-}
-
-model Mt5Batch {
-  jobId        String       @map("job_id") @db.VarChar(50)
-  entityType   String       @map("entity_type") @db.VarChar(20)
-  batchIndex   Int          @map("batch_index")
-  totalBatches Int          @map("total_batches")
-  checksum     String       @db.VarChar(64)
-  recordCount  Int          @map("record_count")
-  createdAt    DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
-  job          Mt5ImportJob @relation(fields: [jobId], references: [id], onDelete: Cascade)
-
-  @@id([jobId, entityType, batchIndex])
-  @@map("mt5_batches")
-}
-
-model Mt5ImportAttempt {
-  id                 String       @id @default(cuid())
-  jobId              String       @map("job_id") @db.VarChar(50)
-  workerId           String       @map("worker_id") @db.VarChar(100)
-  attemptNumber      Int          @map("attempt_number")
-  terminalSlotId     String?      @map("terminal_slot_id") @db.VarChar(50)
-  terminalPid        Int?         @map("terminal_pid")
-  status             String       @db.VarChar(30)
-  accountVerified    Boolean      @default(false) @map("account_verified")
-  brokerConnectedAt  DateTime?    @map("broker_connected_at") @db.Timestamptz(6)
-  fetchStartedAt     DateTime?    @map("fetch_started_at") @db.Timestamptz(6)
-  cleanupCompletedAt DateTime?    @map("cleanup_completed_at") @db.Timestamptz(6)
-  errorCode          String?      @map("error_code") @db.VarChar(80)
-  createdAt          DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
-  completedAt        DateTime?    @map("completed_at") @db.Timestamptz(6)
-  job                Mt5ImportJob @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  worker             Mt5Worker    @relation(fields: [workerId], references: [id], onDelete: Cascade)
-
-  @@map("mt5_import_attempts")
-}
-
-model Mt5RawOrder {
-  accountId   String         @map("account_id")
-  ticket      String         @db.VarChar(50)
-  payloadJson Json           @map("payload_json")
-  lastJobId   String         @map("last_job_id") @db.VarChar(50)
-  updatedAt   DateTime       @updatedAt @map("updated_at") @db.Timestamptz(6)
-  account     TradingAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
-
-  @@id([accountId, ticket])
-  @@map("mt5_raw_orders")
-}
-
-model Mt5RawDeal {
-  accountId   String         @map("account_id")
-  ticket      String         @db.VarChar(50)
-  payloadJson Json           @map("payload_json")
-  lastJobId   String         @map("last_job_id") @db.VarChar(50)
-  updatedAt   DateTime       @updatedAt @map("updated_at") @db.Timestamptz(6)
-  account     TradingAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
-
-  @@id([accountId, ticket])
-  @@map("mt5_raw_deals")
 }
 
 model TradeCheckSnapshot {

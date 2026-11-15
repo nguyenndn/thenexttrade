@@ -173,7 +173,7 @@ async function getCoreStats(
  THEN ABS(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) ELSE 0 END) as "grossLoss",
  MAX(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "largestWin",
  MIN(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "largestLoss"
- FROM "JournalEntry"
+ FROM "journal_entries"
  WHERE "userId" = ${userId}::uuid
  AND "status" = 'CLOSED'
  AND "exitDate" >= ${start}
@@ -229,7 +229,7 @@ async function getSymbolBreakdown(
  COUNT(*) as "trades",
  SUM(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "pnl",
  SUM(CASE WHEN "result" = 'WIN' THEN 1 ELSE 0 END) as "wins"
- FROM "JournalEntry"
+ FROM "journal_entries"
  WHERE "userId" = ${userId}::uuid
  AND "status" = 'CLOSED'
  AND "exitDate" >= ${start} AND "exitDate" <= ${end}
@@ -265,7 +265,7 @@ async function getStrategyBreakdown(
  COUNT(*) as "trades",
  SUM(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "pnl",
  SUM(CASE WHEN "result" = 'WIN' THEN 1 ELSE 0 END) as "wins"
- FROM "JournalEntry"
+ FROM "journal_entries"
  WHERE "userId" = ${userId}::uuid
  AND "status" = 'CLOSED'
  AND "exitDate" >= ${start} AND "exitDate" <= ${end}
@@ -301,7 +301,7 @@ async function getSessionBreakdown(
  COUNT(*) as "trades",
  SUM(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "pnl",
  SUM(CASE WHEN "result" = 'WIN' THEN 1 ELSE 0 END) as "wins"
- FROM "JournalEntry"
+ FROM "journal_entries"
  WHERE "userId" = ${userId}::uuid
  AND "status" = 'CLOSED'
  AND "exitDate" >= ${start} AND "exitDate" <= ${end}
@@ -337,7 +337,7 @@ async function getDirectionBreakdown(
  COUNT(*) as "trades",
  SUM(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "pnl",
  SUM(CASE WHEN "result" = 'WIN' THEN 1 ELSE 0 END) as "wins"
- FROM "JournalEntry"
+ FROM "journal_entries"
  WHERE "userId" = ${userId}::uuid
  AND "status" = 'CLOSED'
  AND "exitDate" >= ${start} AND "exitDate" <= ${end}
@@ -373,7 +373,7 @@ async function getDailyBreakdown(
  TO_CHAR("exitDate" AT TIME ZONE ${timezone}, 'YYYY-MM-DD') as "date",
  COUNT(*) as "trades",
  SUM(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "pnl"
- FROM "JournalEntry"
+ FROM "journal_entries"
  WHERE "userId" = ${userId}::uuid
  AND "status" = 'CLOSED'
  AND "exitDate" >= ${start} AND "exitDate" <= ${end}
@@ -513,7 +513,7 @@ async function getBestWorstTrades(
     const [bestResult, worstResult] = await Promise.all([
         prisma.$queryRaw`
  SELECT "symbol", (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "pnl", "exitDate"
- FROM "JournalEntry"
+ FROM "journal_entries"
  WHERE "userId" = ${userId}::uuid AND "status" = 'CLOSED'
  AND "exitDate" >= ${start} AND "exitDate" <= ${end}
  ${accountFilter}
@@ -522,7 +522,7 @@ async function getBestWorstTrades(
  `,
         prisma.$queryRaw`
  SELECT "symbol", (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "pnl", "exitDate"
- FROM "JournalEntry"
+ FROM "journal_entries"
  WHERE "userId" = ${userId}::uuid AND "status" = 'CLOSED'
  AND "exitDate" >= ${start} AND "exitDate" <= ${end}
  ${accountFilter}

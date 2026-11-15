@@ -710,7 +710,7 @@ export async function getDailyPnlForCalendar(accountId?: string) {
  DATE("exitDate") as "date",
  SUM(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0))::float as "pnl",
  COUNT(*)::int as "tradeCount"
- FROM "JournalEntry"
+ FROM "journal_entries"
  WHERE "userId" = ${user.id}::uuid
  AND "status" = 'CLOSED'
  AND "exitDate" IS NOT NULL

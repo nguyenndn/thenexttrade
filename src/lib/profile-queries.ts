@@ -99,7 +99,7 @@ async function getSessionPreference(
  SELECT
  je."trading_session" as "session",
  COUNT(*) as "cnt"
- FROM "JournalEntry" je
+ FROM "journal_entries" je
  INNER JOIN "trading_accounts" ta ON ta.id = je."accountId"
    AND UPPER(COALESCE(ta.account_type, 'REAL')) NOT IN ('DEMO', 'CONTEST')
    AND COALESCE(ta.server, '') NOT ILIKE '%demo%'
@@ -119,7 +119,7 @@ async function getSessionPreference(
 
         const totalResult = await prisma.$queryRaw<Array<{ total: bigint }>>`
  SELECT COUNT(*) as "total"
- FROM "JournalEntry" je
+ FROM "journal_entries" je
  INNER JOIN "trading_accounts" ta ON ta.id = je."accountId"
    AND UPPER(COALESCE(ta.account_type, 'REAL')) NOT IN ('DEMO', 'CONTEST')
    AND COALESCE(ta.server, '') NOT ILIKE '%demo%'
@@ -205,7 +205,7 @@ async function getVerifiedPublicStats(
      )
    ) AS "avgLoss",
    MAX(je."exitDate") AS "latestExitDate"
- FROM "JournalEntry" je
+ FROM "journal_entries" je
  INNER JOIN "trading_accounts" ta ON ta.id = je."accountId"
    AND UPPER(COALESCE(ta.account_type, 'REAL')) NOT IN ('DEMO', 'CONTEST')
    AND COALESCE(ta.server, '') NOT ILIKE '%demo%'
@@ -253,7 +253,7 @@ async function getVerifiedPublicTopPairs(
      ),
      0
    ) AS "winRate"
- FROM "JournalEntry" je
+ FROM "journal_entries" je
  INNER JOIN "trading_accounts" ta ON ta.id = je."accountId"
    AND UPPER(COALESCE(ta.account_type, 'REAL')) NOT IN ('DEMO', 'CONTEST')
    AND COALESCE(ta.server, '') NOT ILIKE '%demo%'

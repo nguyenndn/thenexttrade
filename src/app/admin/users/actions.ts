@@ -324,7 +324,6 @@ async function performCascadeUserDelete(tx: any, userId: string) {
     await tx.mt5ImportJob.deleteMany({
         where: { OR: [{ userId }, { tradingAccount: { userId } }] },
     });
-    await tx.accountNotification.deleteMany({ where: { userId } });
     await tx.tradingAccount.deleteMany({ where: { userId } });
 
     // 7. AI, Gamification & Profile
@@ -332,13 +331,7 @@ async function performCascadeUserDelete(tx: any, userId: string) {
     await tx.analyticsEvent.deleteMany({ where: { userId } });
     await tx.edgeEvent.deleteMany({ where: { userId } });
     await tx.certificate.deleteMany({ where: { userId } });
-    await tx.challenge.deleteMany({
-        where: { OR: [{ challengerId: userId }, { challengeeId: userId }] },
-    });
     await tx.userBadge.deleteMany({ where: { userId } });
-    await tx.userFollow.deleteMany({
-        where: { OR: [{ followerId: userId }, { followingId: userId }] },
-    });
     await tx.userProgress.deleteMany({ where: { userId } });
     await tx.userQuizAttempt.deleteMany({ where: { userId } });
     await tx.userSession.deleteMany({ where: { userId } });

@@ -87,7 +87,7 @@ async function getSessionPerformance(
  SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) > 0 THEN 1 ELSE 0 END) as "winCount",
  SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) < 0 THEN 1 ELSE 0 END) as "lossCount",
  SUM(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "pnl"
- FROM "JournalEntry"
+ FROM "journal_entries"
  WHERE "userId" = ${userId}::uuid
  AND "status" = 'CLOSED'
  AND "trading_session" IS NOT NULL
@@ -140,7 +140,7 @@ async function getRevengeTradePatterns(
  LAG("exitDate") OVER (ORDER BY "entryDate" ASC) as "prevExitDate",
  LAG("result") OVER (ORDER BY "entryDate" ASC) as "prevResult",
  LAG("symbol") OVER (ORDER BY "entryDate" ASC) as "prevSymbol"
- FROM "JournalEntry"
+ FROM "journal_entries"
  WHERE "userId" = ${userId}::uuid
  AND "status" = 'CLOSED'
  AND (${accountId ? accountId : "1"} = '1' OR "accountId" = ${accountId})
@@ -187,7 +187,7 @@ async function getPlanCompliance(
  SELECT
  COUNT(*) FILTER (WHERE "followedPlan" IS NOT NULL) as "totalWithPlan",
  COUNT(*) FILTER (WHERE "followedPlan" = true) as "followedCount"
- FROM "JournalEntry"
+ FROM "journal_entries"
  WHERE "userId" = ${userId}::uuid
  AND "status" = 'CLOSED'
  AND (${accountId ? accountId : "1"} = '1' OR "accountId" = ${accountId})
@@ -227,7 +227,7 @@ async function getEmotionCorrelation(
  "emotionBefore" as "emotion",
  COUNT(*) as "tradeCount",
  SUM(CASE WHEN "result" = 'LOSS' THEN 1 ELSE 0 END) as "lossCount"
- FROM "JournalEntry"
+ FROM "journal_entries"
  WHERE "userId" = ${userId}::uuid
  AND "status" = 'CLOSED'
  AND "emotionBefore" IS NOT NULL
@@ -263,7 +263,7 @@ async function getRiskDiscipline(
  SELECT
  COUNT(*) as "total",
  COUNT(*) FILTER (WHERE "stopLoss" IS NOT NULL) as "withSL"
- FROM "JournalEntry"
+ FROM "journal_entries"
  WHERE "userId" = ${userId}::uuid
  AND "status" = 'CLOSED'
  AND (${accountId ? accountId : "1"} = '1' OR "accountId" = ${accountId})

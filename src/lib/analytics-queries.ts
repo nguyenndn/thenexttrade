@@ -92,7 +92,7 @@ export async function getMonthlyAnalytics(
   SUM(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "profit",
   COUNT(*) as "tradeCount",
   SUM(CASE WHEN "result" = 'WIN' THEN 1 ELSE 0 END) as "winCount"
-  FROM "JournalEntry"
+  FROM "journal_entries"
   WHERE "userId" = ${userId}::uuid
   AND "status" = 'CLOSED'
   AND (${accountId ? accountId : "1"} = '1' OR "accountId" = ${accountId})
@@ -150,7 +150,7 @@ export async function getKeyStats(
   MAX(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) > 0 THEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) ELSE 0 END) as "maxWin",
   MIN(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) < 0 THEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) ELSE 0 END) as "maxLoss",
   AVG(EXTRACT(EPOCH FROM ("exitDate" - "entryDate"))/60) as "avgHoldMinutes"
-  FROM "JournalEntry"
+  FROM "journal_entries"
   WHERE "userId" = ${userId}::uuid
   AND "status" = 'CLOSED'
   AND (${normalizedAccountId ? normalizedAccountId : "1"} = '1' OR "accountId" = ${normalizedAccountId})
@@ -255,7 +255,7 @@ export async function getDailyPerformance(
   COUNT(*) FILTER (WHERE "result" = 'WIN') as "winCount",
   COUNT(*) FILTER (WHERE "result" = 'LOSS') as "lossCount",
   COUNT(*) FILTER (WHERE "result" IN ('BREAK_EVEN', 'BE_PLUS')) as "breakEvenCount"
-  FROM "JournalEntry"
+  FROM "journal_entries"
   WHERE "userId" = ${userId}::uuid
   AND "status" = 'CLOSED'
   AND (${normalizedAccountId ? normalizedAccountId : "1"} = '1' OR "accountId" = ${normalizedAccountId})
@@ -303,7 +303,7 @@ export async function getIntradayPerformance(
   SELECT 
   "exitDate" as "date",
   (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "pnl"
-  FROM "JournalEntry"
+  FROM "journal_entries"
   WHERE "userId" = ${userId}::uuid
   AND "status" = 'CLOSED'
   AND (${accountId ? accountId : "1"} = '1' OR "accountId" = ${accountId})
@@ -346,7 +346,7 @@ export async function getSymbolPerformance(
   COUNT(*) FILTER (WHERE "result" = 'WIN') as "winCount",
   COUNT(*) FILTER (WHERE "result" = 'LOSS') as "lossCount",
   COUNT(*) FILTER (WHERE "result" IN ('BREAK_EVEN', 'BE_PLUS')) as "breakEvenCount"
-  FROM "JournalEntry"
+  FROM "journal_entries"
   WHERE "userId" = ${userId}::uuid
   AND "status" = 'CLOSED'
   AND (${normalizedAccountId ? normalizedAccountId : "1"} = '1' OR "accountId" = ${normalizedAccountId})
@@ -396,7 +396,7 @@ export async function getTopTrades(
         // Best Trades: Highest Positive PnL
         prisma.$queryRaw`
   SELECT "id", "symbol", "type", (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "pnl", "entryDate", "exitDate", "result", "lotSize"
-  FROM "JournalEntry"
+  FROM "journal_entries"
   WHERE "userId" = ${userId}::uuid
   AND "status" = 'CLOSED'
   AND (${accountId ? accountId : "1"} = '1' OR "accountId" = ${accountId})
@@ -409,7 +409,7 @@ export async function getTopTrades(
         // Worst Trades: Lowest Negative PnL (Biggest Loss)
         prisma.$queryRaw`
   SELECT "id", "symbol", "type", (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "pnl", "entryDate", "exitDate", "result", "lotSize"
-  FROM "JournalEntry"
+  FROM "journal_entries"
   WHERE "userId" = ${userId}::uuid
   AND "status" = 'CLOSED'
   AND (${accountId ? accountId : "1"} = '1' OR "accountId" = ${accountId})
@@ -458,7 +458,7 @@ export async function getLotDistribution(
   SELECT 
   "symbol",
   SUM("lotSize") as "totalLots"
-  FROM "JournalEntry"
+  FROM "journal_entries"
   WHERE "userId" = ${userId}::uuid
   AND "status" = 'CLOSED'
   AND (${accountId ? accountId : "1"} = '1' OR "accountId" = ${accountId})
@@ -505,7 +505,7 @@ export async function getDayOfWeekPerformance(
   COUNT(*) FILTER (WHERE "result" = 'WIN') as "winCount",
   COUNT(*) FILTER (WHERE "result" = 'LOSS') as "lossCount",
   COUNT(*) FILTER (WHERE "result" IN ('BREAK_EVEN', 'BE_PLUS')) as "breakEvenCount"
-  FROM "JournalEntry"
+  FROM "journal_entries"
   WHERE "userId" = ${userId}::uuid
   AND "status" = 'CLOSED'
   AND (${normalizedAccountId ? normalizedAccountId : "1"} = '1' OR "accountId" = ${normalizedAccountId})
@@ -553,7 +553,7 @@ export async function getCurrentStreak(
 ): Promise<{ type: "win" | "loss" | "none"; count: number }> {
     const result = (await prisma.$queryRaw`
   SELECT "result"
-  FROM "JournalEntry"
+  FROM "journal_entries"
   WHERE "userId" = ${userId}::uuid
   AND "status" = 'CLOSED'
   AND "result" IS NOT NULL
@@ -613,7 +613,7 @@ export async function getSessionPerformance(
   COUNT(*) FILTER (WHERE "result" = 'WIN') as "winCount",
   COUNT(*) FILTER (WHERE "result" = 'LOSS') as "lossCount",
   COUNT(*) FILTER (WHERE "result" IN ('BREAK_EVEN', 'BE_PLUS')) as "breakEvenCount"
-  FROM "JournalEntry"
+  FROM "journal_entries"
   WHERE "userId" = ${userId}::uuid
   AND "status" = 'CLOSED'
   AND "entryDate" IS NOT NULL
