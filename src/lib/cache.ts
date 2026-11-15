@@ -1,13 +1,19 @@
-import { redis } from "./redis";
+import { getRedisClient } from "./redis";
 
 const DEFAULT_TTL = 3600; // 1 hour
 
 export const cache = {
     async get<T>(key: string): Promise<T | null> {
+        const redis = getRedisClient();
         if (!redis) return null;
         try {
-            const data = await redis.get<T>(key);
-            return data ?? null;
+            const raw = await redis.get(key);
+            if (raw === null) return null;
+            try {
+                return JSON.parse(raw) as T;
+            } catch {
+                return raw as unknown as T;
+            }
         } catch (error) {
             console.warn(`Cache GET error for ${key}:`, error);
             return null;
@@ -16,15 +22,17 @@ export const cache = {
 
     async set(
         key: string,
-        value: any,
+        value: unknown,
         ttl: number = DEFAULT_TTL
     ): Promise<void> {
+        const redis = getRedisClient();
         if (!redis) return;
         try {
-            if (ttl) {
-                await redis.set(key, value, { ex: ttl });
+            const serialized = JSON.stringify(value);
+            if (ttl > 0) {
+                await redis.set(key, serialized, "EX", ttl);
             } else {
-                await redis.set(key, value);
+                await redis.set(key, serialized);
             }
         } catch (error) {
             console.warn(`Cache SET error for ${key}:`, error);
@@ -32,6 +40,7 @@ export const cache = {
     },
 
     async del(key: string): Promise<void> {
+        const redis = getRedisClient();
         if (!redis) return;
         try {
             await redis.del(key);
@@ -47,12 +56,12 @@ export const cache = {
         ttl: number = DEFAULT_TTL
     ): Promise<T> {
         const cached = await this.get<T>(key);
-        if (cached) {
+        if (cached !== null) {
             return cached;
         }
 
         const fresh = await fn();
-        if (fresh) {
+        if (fresh !== undefined && fresh !== null) {
             await this.set(key, fresh, ttl);
         }
         return fresh;

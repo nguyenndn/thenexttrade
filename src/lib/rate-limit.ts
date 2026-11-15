@@ -1,10 +1,11 @@
-import { Redis } from "@upstash/redis";
+import type Redis from "ioredis";
 import { LRUCache } from "lru-cache";
+import { getRedisClient } from "@/lib/redis";
 
 // =============================================================================
 // Distributed Rate Limiter
-// Uses Upstash Redis when available (multi-instance safe), falls back to
-// in-memory LRU cache for local development or when Redis is not configured.
+// Uses Redis (REDIS_URL via ioredis) when available, falling back seamlessly to
+// in-memory LRU cache for local development or when Redis is unreachable.
 // =============================================================================
 
 type RateLimitOptions = {
@@ -29,9 +30,16 @@ function createRedisRateLimiter(
                 .pipeline()
                 .incr(key)
                 .expire(key, windowSec)
-                .exec<[number, number]>();
+                .exec();
 
-            const currentUsage = results[0];
+            if (!results || results[0]?.[0]) {
+                throw (
+                    results?.[0]?.[0] ??
+                    new Error("Redis rate-limit pipeline failed")
+                );
+            }
+
+            const currentUsage = Number(results[0][1]);
 
             if (currentUsage > limit) {
                 throw undefined; // Matches original reject() behavior
@@ -65,22 +73,31 @@ function createMemoryRateLimiter(options?: RateLimitOptions): RateLimiter {
     };
 }
 
-// Lazily resolved Redis client (avoids import-time side effects)
-let _redis: Redis | null | undefined;
-function getRedis(): Redis | null {
-    if (_redis !== undefined) return _redis;
-    const url = process.env.UPSTASH_REDIS_REST_URL;
-    const token = process.env.UPSTASH_REDIS_REST_TOKEN;
-    _redis = url && token ? new Redis({ url, token }) : null;
-    return _redis;
-}
-
 export function rateLimit(options?: RateLimitOptions): RateLimiter {
-    const redis = getRedis();
     const intervalMs = options?.interval || 60000;
+    const memoryLimiter = createMemoryRateLimiter(options);
 
-    if (redis) {
-        return createRedisRateLimiter(redis, intervalMs);
-    }
-    return createMemoryRateLimiter(options);
+    return {
+        check: async (limit: number, token: string) => {
+            const redis = getRedisClient();
+            if (!redis) {
+                await memoryLimiter.check(limit, token);
+                return;
+            }
+
+            const redisLimiter = createRedisRateLimiter(redis, intervalMs);
+            try {
+                await redisLimiter.check(limit, token);
+            } catch (error) {
+                if (error === undefined) {
+                    throw undefined;
+                }
+                console.warn(
+                    "[RateLimit] Redis unreachable, falling back to in-memory store:",
+                    error instanceof Error ? error.message : String(error)
+                );
+                await memoryLimiter.check(limit, token);
+            }
+        },
+    };
 }

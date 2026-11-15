@@ -6,7 +6,7 @@ import {
     ShieldAlert,
     Target,
     Calculator,
-    BookOpen,
+    ClipboardCheck,
     Crown,
 } from "lucide-react";
 import { ThemeToggleSwitch } from "@/components/ui/ThemeToggleSwitch";
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
         default: "Authentication | TheNextTrade",
     },
     description:
-        "Sign in or create an account to access TheNextTrade tools, academy, and journal.",
+        "Sign in or create an account to access TheNextTrade tools, trading systems, and journal.",
 };
 
 export default function AuthLayout({
@@ -72,9 +72,9 @@ export default function AuthLayout({
             color: "text-emerald-600 dark:text-emerald-400",
         },
         {
-            icon: BookOpen,
-            label: "12-Level Academy",
-            desc: "Market structure & liquidity",
+            icon: ClipboardCheck,
+            label: "Strategy Playbooks",
+            desc: "Pre-trade rules & expectancy",
             color: "text-amber-600 dark:text-gold",
         },
         {

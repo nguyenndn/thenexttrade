@@ -1,9 +1,10 @@
+import type Redis from "ioredis";
 import { logSecurityEvent, SECURITY_EVENT_TYPES } from "@/lib/security-logger";
-import { Redis } from "@upstash/redis";
+import { getRedisClient } from "@/lib/redis";
 
 // =============================================================================
-// Auth Rate Limiter — Distributed via Upstash Redis
-// Falls back to in-memory Map when Redis is not configured (local dev).
+// Auth Rate Limiter — Distributed via Redis (REDIS_URL)
+// Falls back to in-memory Map when Redis is not configured or unreachable.
 // =============================================================================
 
 export type AuthRateLimitAction =
@@ -39,23 +40,13 @@ const limits: Record<AuthRateLimitAction, RateLimitRule> = {
 // In-memory fallback store
 const memoryStore = new Map<string, { count: number; resetAt: number }>();
 
-// Lazily resolved Redis client
-let _redis: Redis | null | undefined;
-function getRedis(): Redis | null {
-    if (_redis !== undefined) return _redis;
-    const url = process.env.UPSTASH_REDIS_REST_URL;
-    const token = process.env.UPSTASH_REDIS_REST_TOKEN;
-    _redis = url && token ? new Redis({ url, token }) : null;
-    return _redis;
-}
-
 export function normalizeEmail(email: string) {
     return email.trim().toLowerCase();
 }
 
 /**
  * Check if an auth action is rate-limited using Redis (distributed) or
- * in-memory Map (local dev fallback).
+ * in-memory Map (local dev / offline fallback).
  * @returns true if blocked, false if allowed.
  */
 async function checkWithRedis(
@@ -67,11 +58,22 @@ async function checkWithRedis(
 
     for (const key of keysToVerify) {
         const redisKey = `auth_rl:${key}`;
-        const [currentCount, currentTtl] = await redis
+        const results = await redis
             .pipeline()
             .incr(redisKey)
             .ttl(redisKey)
-            .exec<[number, number]>();
+            .exec();
+
+        if (!results || results[0]?.[0] || results[1]?.[0]) {
+            throw (
+                results?.[0]?.[0] ??
+                results?.[1]?.[0] ??
+                new Error("Redis auth rate-limit pipeline failed")
+            );
+        }
+
+        const currentCount = Number(results[0][1]);
+        const currentTtl = Number(results[1][1]);
 
         if (currentCount === 1 || currentTtl < 0) {
             await redis.expire(redisKey, windowSec);
@@ -135,10 +137,21 @@ export async function checkAuthRateLimit(
         keysToVerify.push(`${action}:email:${normalizeEmail(email)}`);
     }
 
-    const redis = getRedis();
-    const isBlocked = redis
-        ? await checkWithRedis(redis, keysToVerify, rule)
-        : checkWithMemory(keysToVerify, rule);
+    const redis = getRedisClient();
+    let isBlocked: boolean;
+    if (redis) {
+        try {
+            isBlocked = await checkWithRedis(redis, keysToVerify, rule);
+        } catch (error) {
+            console.warn(
+                "[AuthRateLimit] Redis unreachable, falling back to in-memory store:",
+                error instanceof Error ? error.message : String(error)
+            );
+            isBlocked = checkWithMemory(keysToVerify, rule);
+        }
+    } else {
+        isBlocked = checkWithMemory(keysToVerify, rule);
+    }
 
     if (isBlocked) {
         const maskedEmail = email

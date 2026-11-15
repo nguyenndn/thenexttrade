@@ -1,25 +1,36 @@
-import { Redis } from "@upstash/redis";
+import Redis from "ioredis";
 
-// Upstash REST client for Vercel serverless
-const getRedisClient = () => {
-    const url = process.env.UPSTASH_REDIS_REST_URL;
-    const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+function createRedisInstance(url: string): Redis {
+    const client = new Redis(url, {
+        maxRetriesPerRequest: 1,
+        connectTimeout: 3000,
+        commandTimeout: 2000,
+        enableOfflineQueue: false,
+        lazyConnect: true,
+    });
 
-    if (!url || !token) {
-        console.warn("Upstash Redis not configured. Caching disabled.");
+    client.on("error", (err: Error) => {
+        console.warn("[Redis] Connection warning:", err.message);
+    });
+
+    return client;
+}
+
+export function getRedisClient(): Redis | null {
+    const url = process.env.REDIS_URL?.trim();
+    if (!url) {
         return null;
     }
 
-    return new Redis({ url, token });
-};
+    if (!globalThis.redisClient) {
+        globalThis.redisClient = createRedisInstance(url);
+    }
 
-// Singleton for dev mode
+    return globalThis.redisClient;
+}
+
 declare global {
-    var redisClient: ReturnType<typeof getRedisClient> | undefined;
+    var redisClient: Redis | undefined;
 }
 
-export const redis = globalThis.redisClient || getRedisClient();
-
-if (process.env.NODE_ENV !== "production") {
-    globalThis.redisClient = redis;
-}
+export const redis = getRedisClient();
