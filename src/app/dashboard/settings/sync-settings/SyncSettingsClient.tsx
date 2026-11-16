@@ -22,7 +22,7 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { buttonVariants } from "@/components/ui/button-variants";
-import { getSyncServerUrl } from "@/lib/sync/sync-urls";
+import { Mt5WebRequestUrlList } from "@/components/trading-accounts/Mt5WebRequestUrlList";
 
 export default function SyncSettingsClient() {
     const [isLoading, setIsLoading] = useState(true);
@@ -46,7 +46,6 @@ export default function SyncSettingsClient() {
     const [manualCompletedSteps, setManualCompletedSteps] = useState<
         Record<string, boolean>
     >({});
-    const [copiedUrl, setCopiedUrl] = useState(false);
 
     useEffect(() => {
         try {
@@ -185,9 +184,14 @@ export default function SyncSettingsClient() {
         },
     ];
 
-    const syncApiUrl = getSyncServerUrl();
-
-    const STEPS = [
+    const STEPS: Array<{
+        id: string;
+        step: string;
+        title: string;
+        description: string;
+        done: boolean;
+        showWebRequestUrls?: boolean;
+    }> = [
         {
             id: "step-1",
             step: "1",
@@ -199,19 +203,11 @@ export default function SyncSettingsClient() {
         {
             id: "step-2",
             step: "2",
-            title: "Configure WebRequest in MetaTrader 5",
+            title: "Configure WebRequest in MetaTrader 5 (Main + Backup Servers)",
             description:
-                "In MT5 (Tools > Options > Expert Advisors), enable 'Allow WebRequest for listed URL' and add our URL.",
+                "In MT5 (Tools > Options > Expert Advisors), enable 'Allow WebRequest for listed URL' and add our official Main Server domain (https://thenexttrade.app) along with both Backup Server URLs for uninterrupted failover:",
             done: Boolean(manualCompletedSteps["step-2"]),
-            action: {
-                label: copiedUrl ? "Copied!" : "Copy WebRequest URL",
-                onClick: () => {
-                    navigator.clipboard.writeText(syncApiUrl);
-                    setCopiedUrl(true);
-                    toast.success(`Copied ${syncApiUrl} to clipboard`);
-                    setTimeout(() => setCopiedUrl(false), 2000);
-                },
-            },
+            showWebRequestUrls: true,
         },
         {
             id: "step-3",
@@ -526,14 +522,14 @@ export default function SyncSettingsClient() {
                                             : "bg-gray-50/80 dark:bg-[#151925] border-dashboard hover:border-gold/40"
                                     )}
                                 >
-                                    <div className="flex items-start sm:items-center gap-3.5 min-w-0">
+                                    <div className="flex items-start gap-3.5 min-w-0 flex-1">
                                         <Button
                                             variant="ghost"
                                             size="icon"
                                             type="button"
                                             aria-label={`Mark step ${stepItem.step} as ${isDone ? "incomplete" : "complete"}`}
                                             className={cn(
-                                                "w-7 h-7 rounded-lg flex items-center justify-center text-xs font-black font-mono tabular-nums shrink-0 transition-all duration-200 mt-0.5 sm:mt-0 p-0",
+                                                "w-7 h-7 rounded-lg flex items-center justify-center text-xs font-black font-mono tabular-nums shrink-0 transition-all duration-200 mt-0.5 p-0",
                                                 isDone
                                                     ? "bg-emerald-500 text-white shadow-sm shadow-emerald-500/25 ring-2 ring-emerald-500/20 hover:bg-emerald-600 hover:text-white"
                                                     : "bg-white dark:bg-[#1E2028] text-gray-400 dark:text-gray-500 ring-1 ring-gray-200 dark:ring-white/10 group-hover:ring-gold/40 group-hover:text-amber-600 dark:group-hover:text-gold"
@@ -548,7 +544,7 @@ export default function SyncSettingsClient() {
                                                 stepItem.step
                                             )}
                                         </Button>
-                                        <div className="min-w-0">
+                                        <div className="min-w-0 flex-1">
                                             <div className="flex items-center gap-2 flex-wrap">
                                                 <span
                                                     className={cn(
@@ -573,28 +569,17 @@ export default function SyncSettingsClient() {
                                             <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 leading-relaxed">
                                                 {stepItem.description}
                                             </p>
+                                            {stepItem.showWebRequestUrls && (
+                                                <div
+                                                    onClick={(e) =>
+                                                        e.stopPropagation()
+                                                    }
+                                                >
+                                                    <Mt5WebRequestUrlList className="mt-3" />
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
-
-                                    {/* Action button inside step (e.g. Copy WebRequest URL) */}
-                                    {stepItem.action && (
-                                        <div
-                                            className="sm:shrink-0 pl-10 sm:pl-0"
-                                            onClick={(e) => e.stopPropagation()}
-                                        >
-                                            <Button
-                                                size="sm"
-                                                variant="outline"
-                                                onClick={
-                                                    stepItem.action.onClick
-                                                }
-                                                className="h-8 px-3 text-xs font-semibold gap-1.5"
-                                            >
-                                                <Copy size={12} />
-                                                {stepItem.action.label}
-                                            </Button>
-                                        </div>
-                                    )}
                                 </div>
                             );
                         })}

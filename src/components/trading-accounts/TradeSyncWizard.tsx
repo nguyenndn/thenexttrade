@@ -34,7 +34,7 @@ import {
 import { toast } from "sonner";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { getSyncServerUrl } from "@/lib/sync/sync-urls";
+import { Mt5WebRequestUrlList } from "@/components/trading-accounts/Mt5WebRequestUrlList";
 import { SyncTroubleshootingPanel } from "@/components/trading-accounts/SyncTroubleshootingPanel";
 import { useIsMobileSyncDevice } from "@/lib/device";
 
@@ -83,7 +83,6 @@ export function TradeSyncWizard({
     const [isLoadingKey, setIsLoadingKey] = useState(false);
     const [isGenerating, setIsGenerating] = useState(false);
     const [copied, setCopied] = useState(false);
-    const [copiedUrl, setCopiedUrl] = useState(false);
     const [keyData, setKeyData] = useState<{
         hasKey: boolean;
         key: string | null;
@@ -185,14 +184,6 @@ export function TradeSyncWizard({
         }
     };
 
-    const handleCopyUrl = () => {
-        const urlToCopy = syncServerUrl || "https://thenexttrade.app";
-        navigator.clipboard.writeText(urlToCopy);
-        setCopiedUrl(true);
-        toast.success("WebRequest URL copied to clipboard!");
-        setTimeout(() => setCopiedUrl(false), 2000);
-    };
-
     const checkSyncStatus = useCallback(async () => {
         setIsCheckingStatus(true);
         try {
@@ -226,8 +217,6 @@ export function TradeSyncWizard({
             setStep((prev) => (prev - 1) as 1 | 2 | 3);
         }
     };
-
-    const syncServerUrl = getSyncServerUrl();
 
     // Verify step status checks
     const checks = syncStatus
@@ -699,38 +688,17 @@ export function TradeSyncWizard({
                                         <div className="space-y-2 flex-1 min-w-0">
                                             <div className="space-y-0.5">
                                                 <p className="font-bold text-gray-800 dark:text-gray-200">
-                                                    Allow WebRequest &amp; Add Server URL
+                                                    Allow WebRequest &amp; Add Main + Backup Server URLs
                                                 </p>
                                                 <p className="text-gray-500 dark:text-gray-400 leading-relaxed">
                                                     Tick{" "}
                                                     <strong className="text-gray-700 dark:text-gray-200">
                                                         &quot;Allow WebRequest for listed URL&quot;
                                                     </strong>
-                                                    , double-click the green <strong className="text-emerald-600 dark:text-emerald-400">+</strong> row (&quot;add new URL&quot;), paste this exact URL, and click <strong className="text-gray-700 dark:text-gray-200">OK</strong>:
+                                                    , double-click the green <strong className="text-emerald-600 dark:text-emerald-400">+</strong> row (&quot;add new URL&quot;), add both our official <strong className="text-gray-700 dark:text-gray-200">Main Server</strong> and <strong className="text-gray-700 dark:text-gray-200">Backup Servers</strong> below, then click <strong className="text-gray-700 dark:text-gray-200">OK</strong>:
                                                 </p>
                                             </div>
-                                            <div className="flex items-center gap-2 min-w-0">
-                                                <code className="flex-1 min-w-0 bg-white dark:bg-black/40 px-2.5 py-2 rounded-lg border border-dashboard font-mono text-[11px] text-primary break-all">
-                                                    {syncServerUrl || "https://thenexttrade.app"}
-                                                </code>
-                                                <Button
-                                                    type="button"
-                                                    variant="outline"
-                                                    size="sm"
-                                                    onClick={handleCopyUrl}
-                                                    className="shrink-0 text-xs font-bold h-8 px-2.5"
-                                                >
-                                                    {copiedUrl ? (
-                                                        <>
-                                                            <Check size={13} className="text-emerald-500" /> Copied
-                                                        </>
-                                                    ) : (
-                                                        <>
-                                                            <Copy size={13} /> Copy URL
-                                                        </>
-                                                    )}
-                                                </Button>
-                                            </div>
+                                            <Mt5WebRequestUrlList compact />
                                         </div>
                                     </div>
 

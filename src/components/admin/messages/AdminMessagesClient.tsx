@@ -2,348 +2,321 @@
 
 import { useState, useTransition, useMemo } from "react";
 import {
-  Mail,
-  Search,
-  CheckCircle2,
-  ExternalLink,
-  Eye,
-  Inbox,
-  Clock,
-  Archive,
+    Archive,
+    CheckCircle2,
+    Clock,
+    Inbox,
+    Mail,
+    Search,
+    X,
+    type LucideIcon,
 } from "lucide-react";
 import { toast } from "sonner";
-import { formatDistanceToNow } from "date-fns";
 import { Button } from "@/components/ui/Button";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/Tabs";
+import { cn } from "@/lib/utils";
 import { MessagesStatsGrid } from "./MessagesStatsGrid";
+import { MessagesTable } from "./MessagesTable";
 import { LetterDetailModal } from "./LetterDetailModal";
 import {
-  fetchAdminMessagesData,
-  updateContactMessageStatus,
-  deleteContactMessage,
-  type ContactMessageRecord,
-  type AdminMessagesStats,
-  type MessageStatus,
+    fetchAdminMessagesData,
+    updateContactMessageStatus,
+    saveContactMessageNotes,
+    replyToContactMessage,
+    deleteContactMessage,
+    type ContactMessageRecord,
+    type AdminMessagesStats,
+    type MessageStatus,
 } from "@/actions/admin/messages";
 
 interface AdminMessagesClientProps {
-  initialMessages: ContactMessageRecord[];
-  initialStats: AdminMessagesStats;
-  initialTotal: number;
+    initialMessages: ContactMessageRecord[];
+    initialStats: AdminMessagesStats;
+    initialTotal: number;
 }
 
 type TabType = "all" | "new" | "read" | "replied" | "archived";
 
 export function AdminMessagesClient({
-  initialMessages,
-  initialStats,
-  initialTotal: _initialTotal,
+    initialMessages,
+    initialStats,
+    initialTotal: _initialTotal,
 }: AdminMessagesClientProps) {
-  const [messages, setMessages] = useState<ContactMessageRecord[]>(initialMessages);
-  const [stats, setStats] = useState<AdminMessagesStats>(initialStats);
-  const [activeTab, setActiveTab] = useState<TabType>("all");
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedMessage, setSelectedMessage] = useState<ContactMessageRecord | null>(null);
-  const [isPending, startTransition] = useTransition();
+    const [messages, setMessages] =
+        useState<ContactMessageRecord[]>(initialMessages);
+    const [stats, setStats] = useState<AdminMessagesStats>(initialStats);
+    const [activeTab, setActiveTab] = useState<TabType>("all");
+    const [searchTerm, setSearchTerm] = useState("");
+    const [selectedMessage, setSelectedMessage] =
+        useState<ContactMessageRecord | null>(null);
+    const [openInReplyMode, setOpenInReplyMode] = useState(false);
+    const [, startTransition] = useTransition();
 
-  const reloadData = async (tab = activeTab, search = searchTerm) => {
-    const res = await fetchAdminMessagesData({
-      status: tab === "all" ? undefined : tab,
-      search: search || undefined,
-    });
-    if (res.success && res.data) {
-      setMessages(res.data.messages);
-      setStats(res.data.stats);
-    }
-  };
+    const reloadData = async (tab = activeTab, search = searchTerm) => {
+        const res = await fetchAdminMessagesData({
+            status: tab === "all" ? undefined : tab,
+            search: search || undefined,
+        });
+        if (res.success && res.data) {
+            setMessages(res.data.messages);
+            setStats(res.data.stats);
+        }
+    };
 
-  const handleTabChange = (tab: TabType) => {
-    setActiveTab(tab);
-    startTransition(async () => {
-      await reloadData(tab, searchTerm);
-    });
-  };
+    const handleTabChange = (nextTabValue: string) => {
+        const tab = nextTabValue as TabType;
+        setActiveTab(tab);
+        startTransition(async () => {
+            await reloadData(tab, searchTerm);
+        });
+    };
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
-    setSearchTerm(val);
-  };
+    const handleSearchSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        startTransition(async () => {
+            await reloadData(activeTab, searchTerm);
+        });
+    };
 
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    startTransition(async () => {
-      await reloadData(activeTab, searchTerm);
-    });
-  };
+    const handleOpenMessage = (
+        msg: ContactMessageRecord,
+        openReply = false
+    ) => {
+        setOpenInReplyMode(openReply);
+        setSelectedMessage(msg);
+        if (msg.status === "new") {
+            void handleStatusChange(msg.id, "read", undefined, true);
+        }
+    };
 
-  const handleStatusChange = async (
-    id: string,
-    newStatus: MessageStatus,
-    notes?: string
-  ) => {
-    const res = await updateContactMessageStatus(id, newStatus, notes);
-    if (res.success) {
-      toast.success(`Message marked as ${newStatus}`);
-      setMessages((prev) =>
-        prev.map((m) => (m.id === id ? { ...m, status: newStatus, notes: notes ?? m.notes } : m))
-      );
-      if (selectedMessage && selectedMessage.id === id) {
-        setSelectedMessage((prev) =>
-          prev ? { ...prev, status: newStatus, notes: notes ?? prev.notes } : null
-        );
-      }
-      startTransition(async () => {
-        await reloadData();
-      });
-    } else {
-      toast.error(res.error || "Failed to update status");
-    }
-  };
-
-  const handleDelete = async (id: string) => {
-    const res = await deleteContactMessage(id);
-    if (res.success) {
-      toast.success("Inquiry deleted successfully");
-      setMessages((prev) => prev.filter((m) => m.id !== id));
-      if (selectedMessage?.id === id) {
-        setSelectedMessage(null);
-      }
-      startTransition(async () => {
-        await reloadData();
-      });
-    } else {
-      toast.error(res.error || "Failed to delete message");
-    }
-  };
-
-  const filteredMessages = useMemo(() => {
-    if (!searchTerm.trim()) return messages;
-    const term = searchTerm.toLowerCase();
-    return messages.filter(
-      (m) =>
-        m.name.toLowerCase().includes(term) ||
-        m.email.toLowerCase().includes(term) ||
-        m.subject.toLowerCase().includes(term) ||
-        m.message.toLowerCase().includes(term)
-    );
-  }, [messages, searchTerm]);
-
-  const tabs: { key: TabType; label: string; count: number }[] = [
-    { key: "all", label: "All Inquiries", count: stats.total },
-    { key: "new", label: "New", count: stats.newCount },
-    { key: "read", label: "Read", count: stats.readCount },
-    { key: "replied", label: "Replied", count: stats.repliedCount },
-    { key: "archived", label: "Archived", count: stats.archivedCount },
-  ];
-
-  const getStatusBadge = (status: string) => {
-    switch (status.toLowerCase()) {
-      case "new":
-        return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-wider bg-amber-500/10 text-amber-600 dark:text-gold border border-amber-500/20">
-            <span className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse" />
-            New
-          </span>
-        );
-      case "replied":
-        return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-wider bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-            <CheckCircle2 size={10} />
-            Replied
-          </span>
-        );
-      case "archived":
-        return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-gray-500/10 text-gray-500 border border-gray-500/20">
-            <Archive size={10} />
-            Archived
-          </span>
-        );
-      case "read":
-      default:
-        return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-gold/10 text-amber-600 dark:text-gold border border-gold/20">
-            <Clock size={10} />
-            Read
-          </span>
-        );
-    }
-  };
-
-  return (
-    <div className="space-y-6">
-      {/* 4 Stat Cards */}
-      <MessagesStatsGrid stats={stats} />
-
-      {/* Control Bar: Filter Tabs + Search */}
-      <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-4 shadow-sm flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
-        {/* Status Tabs */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
-          {tabs.map((tab) => {
-            const isActive = activeTab === tab.key;
-            return (
-              <Button
-                key={tab.key}
-                variant={isActive ? "primary" : "outline"}
-                size="sm"
-                onClick={() => handleTabChange(tab.key)}
-                className={`rounded-lg text-xs font-bold shrink-0 transition-all ${
-                  isActive
-                    ? "bg-gold hover:bg-amber-600 text-white border-transparent"
-                    : "border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
-                }`}
-              >
-                <span>{tab.label}</span>
-                <span
-                  className={`ml-1.5 px-1.5 py-0.2 rounded-lg text-[10px] font-mono tabular-nums ${
-                    isActive
-                      ? "bg-white/20 text-white"
-                      : "bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-gray-400"
-                  }`}
-                >
-                  {tab.count}
-                </span>
-              </Button>
+    const handleStatusChange = async (
+        id: string,
+        newStatus: MessageStatus,
+        notes?: string,
+        silent = false
+    ) => {
+        const res = await updateContactMessageStatus(id, newStatus, notes);
+        if (res.success) {
+            if (!silent) {
+                toast.success(`Message marked as ${newStatus}`);
+            }
+            setMessages((prev) =>
+                prev.map((m) =>
+                    m.id === id
+                        ? { ...m, status: newStatus, notes: notes ?? m.notes }
+                        : m
+                )
             );
-          })}
-        </div>
+            setSelectedMessage((prev) =>
+                prev && prev.id === id
+                    ? { ...prev, status: newStatus, notes: notes ?? prev.notes }
+                    : prev
+            );
+            startTransition(async () => {
+                await reloadData();
+            });
+        } else {
+            toast.error(res.error || "Failed to update status");
+        }
+    };
 
-        {/* Search Input */}
-        <form onSubmit={handleSearchSubmit} className="relative min-w-[240px] md:w-72">
-          <Search
-            size={14}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
-          />
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={handleSearchChange}
-            aria-label="Search inquiries"
-            className="w-full pl-9 pr-3 py-1.5 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 text-xs font-medium text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-colors"
-          />
-        </form>
-      </div>
+    const handleSaveNotes = async (id: string, notes: string) => {
+        const res = await saveContactMessageNotes(id, notes);
+        if (res.success) {
+            toast.success("Admin notes saved");
+            setMessages((prev) =>
+                prev.map((m) => (m.id === id ? { ...m, notes } : m))
+            );
+            setSelectedMessage((prev) =>
+                prev && prev.id === id ? { ...prev, notes } : prev
+            );
+        } else {
+            toast.error(res.error || "Failed to save admin notes");
+        }
+    };
 
-      {/* Messages Table Container */}
-      <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead className="bg-gray-50/80 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/10 text-[10px] font-black uppercase tracking-wider text-gray-400 select-none">
-              <tr>
-                <th className="py-3 px-4">Status</th>
-                <th className="py-3 px-4">Sender</th>
-                <th className="py-3 px-4">Subject & Correspondence</th>
-                <th className="py-3 px-4">Received</th>
-                <th className="py-3 px-4 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200 dark:divide-white/5">
-              {filteredMessages.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="py-12 text-center text-gray-400 space-y-2">
-                    <Inbox size={32} className="mx-auto text-gray-300 dark:text-gray-600" />
-                    <div className="font-bold text-gray-600 dark:text-gray-300 text-sm">
-                      No correspondence found
+    const handleSendReply = async (
+        id: string,
+        subject: string,
+        replyMessage: string
+    ): Promise<boolean> => {
+        const res = await replyToContactMessage({ id, subject, replyMessage });
+        if (res.success) {
+            toast.success("Email reply sent via mail server");
+            setMessages((prev) =>
+                prev.map((m) => (m.id === id ? { ...m, status: "replied" } : m))
+            );
+            setSelectedMessage((prev) =>
+                prev && prev.id === id ? { ...prev, status: "replied" } : prev
+            );
+            startTransition(async () => {
+                await reloadData();
+            });
+            return true;
+        }
+        toast.error(res.error || "Failed to send email reply");
+        return false;
+    };
+
+    const handleDelete = async (id: string) => {
+        const res = await deleteContactMessage(id);
+        if (res.success) {
+            toast.success("Message deleted successfully");
+            setMessages((prev) => prev.filter((m) => m.id !== id));
+            if (selectedMessage?.id === id) {
+                setSelectedMessage(null);
+            }
+            startTransition(async () => {
+                await reloadData();
+            });
+        } else {
+            toast.error(res.error || "Failed to delete message");
+        }
+    };
+
+    const filteredMessages = useMemo(() => {
+        if (!searchTerm.trim()) return messages;
+        const term = searchTerm.toLowerCase();
+        return messages.filter(
+            (m) =>
+                m.name.toLowerCase().includes(term) ||
+                m.email.toLowerCase().includes(term) ||
+                m.subject.toLowerCase().includes(term) ||
+                m.message.toLowerCase().includes(term)
+        );
+    }, [messages, searchTerm]);
+
+    const tabs: {
+        key: TabType;
+        label: string;
+        count: number;
+        icon: LucideIcon;
+    }[] = [
+        { key: "all", label: "All Messages", count: stats.total, icon: Inbox },
+        { key: "new", label: "New", count: stats.newCount, icon: Mail },
+        { key: "read", label: "Read", count: stats.readCount, icon: Clock },
+        {
+            key: "replied",
+            label: "Replied",
+            count: stats.repliedCount,
+            icon: CheckCircle2,
+        },
+        {
+            key: "archived",
+            label: "Archived",
+            count: stats.archivedCount,
+            icon: Archive,
+        },
+    ];
+
+    return (
+        <div className="space-y-6">
+            <MessagesStatsGrid stats={stats} />
+
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+                <Tabs
+                    value={activeTab}
+                    onValueChange={handleTabChange}
+                    tabsId="admin-messages-tabs"
+                    className="w-full lg:w-auto"
+                >
+                    <div className="overflow-x-auto scrollbar-hide flex">
+                        <TabsList className="shrink-0">
+                            {tabs.map((tab) => {
+                                const Icon = tab.icon;
+                                const isActive = activeTab === tab.key;
+                                return (
+                                    <TabsTrigger
+                                        key={tab.key}
+                                        value={tab.key}
+                                        className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:hover:border-white/10 flex items-center gap-2 cursor-pointer transition-colors"
+                                        activeIndicatorClassName="!bg-gold shadow-sm shadow-amber-500/20 border-0"
+                                        activeTextClassName="!text-white"
+                                    >
+                                        <Icon
+                                            size={15}
+                                            className={cn(
+                                                isActive
+                                                    ? "text-white"
+                                                    : "text-gray-400 dark:text-gray-500"
+                                            )}
+                                        />
+                                        <span className="whitespace-nowrap">
+                                            {tab.label}
+                                        </span>
+                                        <span
+                                            className={cn(
+                                                "text-[11px] px-2 py-0.5 rounded-lg font-mono font-bold tabular-nums transition-colors",
+                                                isActive
+                                                    ? "bg-white/20 text-white"
+                                                    : "bg-gray-200/80 text-gray-600 dark:bg-white/10 dark:text-gray-300"
+                                            )}
+                                        >
+                                            {tab.count}
+                                        </span>
+                                    </TabsTrigger>
+                                );
+                            })}
+                        </TabsList>
                     </div>
-                    <div className="text-xs">
-                      {searchTerm ? "Try searching with different keywords" : "No messages in this folder"}
+                </Tabs>
+
+                <form
+                    onSubmit={handleSearchSubmit}
+                    className="w-full lg:w-80 shrink-0"
+                >
+                    <div className="flex items-center gap-2 px-3.5 py-2 bg-white dark:bg-[#1E2028] rounded-lg border border-gray-200 dark:border-white/10 focus-within:border-gold focus-within:ring-2 focus-within:ring-gold/20 transition-all w-full h-[38px] shadow-sm">
+                        <Search
+                            size={15}
+                            className="text-gray-400 shrink-0"
+                        />
+                        <input
+                            type="text"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            aria-label="Search messages"
+                            className="bg-transparent text-xs font-medium focus:outline-none w-full text-gray-900 dark:text-white"
+                        />
+                        {searchTerm && (
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => {
+                                    setSearchTerm("");
+                                    startTransition(async () => {
+                                        await reloadData(activeTab, "");
+                                    });
+                                }}
+                                aria-label="Clear search"
+                                className="h-auto w-auto p-0.5 rounded-full text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                            >
+                                <X size={14} />
+                            </Button>
+                        )}
                     </div>
-                  </td>
-                </tr>
-              ) : (
-                filteredMessages.map((msg) => (
-                  <tr
-                    key={msg.id}
-                    className={`hover:bg-gray-50/80 dark:hover:bg-white/[0.02] transition-colors cursor-pointer group ${
-                      msg.status === "new" ? "bg-amber-50/30 dark:bg-gold/[0.02]" : ""
-                    }`}
-                    onClick={() => {
-                      setSelectedMessage(msg);
-                      if (msg.status === "new") {
-                        handleStatusChange(msg.id, "read");
-                      }
-                    }}
-                  >
-                    <td className="py-3 px-4 whitespace-nowrap">
-                      {getStatusBadge(msg.status)}
-                    </td>
+                </form>
+            </div>
 
-                    <td className="py-3 px-4 whitespace-nowrap">
-                      <div className="font-bold text-gray-900 dark:text-white">
-                        {msg.name}
-                      </div>
-                      <div className="text-[11px] font-mono text-gray-500 dark:text-gray-400">
-                        {msg.email}
-                      </div>
-                    </td>
+            <MessagesTable
+                messages={filteredMessages}
+                searchTerm={searchTerm}
+                onOpenMessage={handleOpenMessage}
+            />
 
-                    <td className="py-3 px-4 max-w-md">
-                      <div className="font-bold text-gray-900 dark:text-gray-100 truncate">
-                        {msg.subject}
-                      </div>
-                      <div className="text-[11px] text-gray-500 dark:text-gray-400 truncate">
-                        {msg.message}
-                      </div>
-                    </td>
-
-                    <td className="py-3 px-4 whitespace-nowrap text-[11px] font-mono tabular-nums text-gray-500 dark:text-gray-400">
-                      {formatDistanceToNow(new Date(msg.createdAt), { addSuffix: true })}
-                    </td>
-
-                    <td
-                      className="py-3 px-4 text-right whitespace-nowrap"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <div className="flex items-center justify-end gap-1.5">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => {
-                            setSelectedMessage(msg);
-                            if (msg.status === "new") {
-                              handleStatusChange(msg.id, "read");
-                            }
-                          }}
-                          className="rounded-lg border-gray-200 dark:border-white/10 text-xs font-bold gap-1 px-2.5"
-                          aria-label={`View inquiry from ${msg.name}`}
-                        >
-                          <Eye size={12} />
-                          <span>View</span>
-                        </Button>
-
-                        <a
-                          href={`mailto:${msg.email}?subject=Re: ${encodeURIComponent(msg.subject)}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <Button
-                            variant="primary"
-                            size="sm"
-                            className="rounded-lg bg-gold hover:bg-amber-600 text-white font-bold text-xs gap-1 px-2.5"
-                            aria-label={`Reply to ${msg.email}`}
-                          >
-                            <Mail size={12} />
-                            <span>Reply</span>
-                            <ExternalLink size={10} className="opacity-70" />
-                          </Button>
-                        </a>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+            <LetterDetailModal
+                message={selectedMessage}
+                isOpen={!!selectedMessage}
+                initialReplyOpen={openInReplyMode}
+                onClose={() => {
+                    setSelectedMessage(null);
+                    setOpenInReplyMode(false);
+                }}
+                onStatusChange={handleStatusChange}
+                onSaveNotes={handleSaveNotes}
+                onSendReply={handleSendReply}
+                onDelete={handleDelete}
+            />
         </div>
-      </div>
-
-      {/* Letter Inspection Modal */}
-      <LetterDetailModal
-        message={selectedMessage}
-        isOpen={!!selectedMessage}
-        onClose={() => setSelectedMessage(null)}
-        onStatusChange={handleStatusChange}
-        onDelete={handleDelete}
-      />
-    </div>
-  );
+    );
 }

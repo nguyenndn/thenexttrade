@@ -356,8 +356,7 @@ export async function signup(formData: FormData) {
         }
 
         const otpCode = linkData.properties.email_otp;
-        const appUrl =
-            process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3500";
+        const appUrl = getAppBaseUrl();
         const confirmUrl = `${appUrl}/auth/verify-email?email=${encodeURIComponent(validated.data.email)}`;
 
         const emailResult = await sendEmailWithDetails({

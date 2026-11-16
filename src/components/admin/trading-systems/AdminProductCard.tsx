@@ -179,18 +179,20 @@ export function AdminProductCard({
                             </span>
                         </div>
 
-                        <div className="p-3.5 !border-t-0">
+                        <div className="p-3.5 !border-t-0 min-w-0">
                             <span className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 block">
                                 Licensees
                             </span>
-                            <span className="text-[15px] font-bold tabular-nums text-gray-900 dark:text-white flex items-center gap-1.5 mt-1 truncate">
+                            <span className="text-xs sm:text-[13px] font-bold tabular-nums text-gray-900 dark:text-white flex items-center gap-1.5 mt-1 truncate">
                                 <ShieldCheck
                                     size={15}
                                     className="text-emerald-500 shrink-0"
                                     aria-hidden="true"
                                 />
-                                <span>
-                                    {tradersCount}t · {accountsCount}a
+                                <span className="truncate">
+                                    {tradersCount}{" "}
+                                    {tradersCount === 1 ? "trader" : "traders"}{" "}
+                                    · {accountsCount} acc
                                 </span>
                             </span>
                         </div>

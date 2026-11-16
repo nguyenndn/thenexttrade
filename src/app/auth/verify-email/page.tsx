@@ -144,11 +144,13 @@ function VerifyEmailForm() {
 
                 <Button
                     type="submit"
-                    className="w-full h-14 bg-gold !text-white hover:bg-amber-600 font-bold text-base border-none rounded-lg shadow-md transition-all shadow-amber-500/20 flex items-center justify-center gap-2"
+                    variant="primary"
+                    size="md"
+                    className="w-full !text-white active:scale-[0.99]"
                     isLoading={loading}
                     disabled={otp.length !== 8 || loading}
                 >
-                    Verify Account <ShieldCheck size={20} />
+                    Verify Account <ShieldCheck size={16} />
                 </Button>
             </form>
 

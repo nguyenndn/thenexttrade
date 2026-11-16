@@ -53,6 +53,7 @@ export interface SendEmailOptions {
     subject: string;
     html: string;
     text?: string;
+    replyTo?: string;
 }
 
 export interface SendEmailResult {
@@ -66,6 +67,7 @@ export async function sendEmailWithDetails({
     subject,
     html,
     text,
+    replyTo,
 }: SendEmailOptions): Promise<SendEmailResult> {
     const { transporter, from } = getTransporter();
 
@@ -80,6 +82,7 @@ export async function sendEmailWithDetails({
         const info = await transporter.sendMail({
             from,
             to,
+            replyTo: replyTo || process.env.SMTP_FROM_EMAIL || process.env.EMAIL_FROM || undefined,
             subject,
             html,
             text,
@@ -457,7 +460,7 @@ export function buildEALicenseEmailHtml(data: EALicenseEmailData): string {
       <div style="font-weight: 700; font-size: 14px; color: #111827; margin-bottom: 8px;">⚡ Quick Setup Guide:</div>
       <ol style="margin: 0; padding-left: 20px; font-size: 14px; color: #374151; line-height: 1.7;">
         <li>Download the <code>.ex5</code> file below into your MT5 <code>Experts</code> folder.</li>
-        <li>In MT5, enable <strong>"Allow Algo Trading"</strong> and <strong>"Allow WebRequest"</strong>.</li>
+        <li>In MT5 (<code>Tools → Options → Expert Advisors</code>), enable <strong>"Allow Algo Trading"</strong> and <strong>"Allow WebRequest"</strong>, then add Main Server <code>https://thenexttrade.app</code> plus Backup Servers <code>https://raw.githubusercontent.com/</code> and <code>https://api.github.com</code>.</li>
         <li>Attach the EA to your gold chart (XAUUSD M15/M30) and paste your license key.</li>
       </ol>
     </div>
@@ -841,6 +844,72 @@ export function buildAdminResetPasswordEmailHtml(
     return buildUnifiedEmailHtml({
         subject: `🛡️ Password Recovery Link from TheNextTrade Admin`,
         preheader: `Administrator has generated a password reset link for your account.`,
+        bodyHtml,
+        appUrl,
+    });
+}
+
+// ─── Contact Message Reply Template (Admin Support Desk) ────────────────────
+
+export interface ContactReplyEmailData {
+    recipientName: string;
+    replySubject: string;
+    replyBody: string;
+    originalSubject: string;
+    originalMessage: string;
+}
+
+function escapeEmailHtml(raw: string): string {
+    return raw
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+}
+
+export function buildContactReplyEmailHtml(
+    data: ContactReplyEmailData
+): string {
+    const appUrl =
+        process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.app";
+    const safeName = escapeEmailHtml(data.recipientName.trim() || "Trader");
+    const safeReplyHtml = escapeEmailHtml(data.replyBody.trim()).replace(
+        /\r?\n/g,
+        "<br />"
+    );
+    const safeOrigSubject = escapeEmailHtml(data.originalSubject.trim());
+    const safeOrigMessageHtml = escapeEmailHtml(
+        data.originalMessage.trim()
+    ).replace(/\r?\n/g, "<br />");
+
+    const bodyHtml = `
+  <div style="padding: 4px 0;">
+    <p style="font-size: 15px; color: #111827; margin: 0 0 16px 0; line-height: 1.6;">
+      Hi <strong>${safeName}</strong>,
+    </p>
+    <div style="font-size: 15px; color: #374151; line-height: 1.7; margin: 0 0 24px 0;">
+      ${safeReplyHtml}
+    </div>
+    <p style="font-size: 14px; color: #374151; line-height: 1.6; margin: 0 0 28px 0;">
+      Best regards,<br />
+      <strong style="color: #111827;">TheNextTrade Support Desk</strong>
+    </p>
+
+    <div style="background-color: #F9FAFB; border: 1px solid #E5E7EB; border-left: 3px solid ${EMAIL_GOLD_COLORS.brandGold}; border-radius: 8px; padding: 16px; margin-top: 20px;">
+      <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #6B7280; margin-bottom: 6px;">
+        Your Original Message · ${safeOrigSubject}
+      </div>
+      <div style="font-size: 13px; color: #4B5563; line-height: 1.6;">
+        ${safeOrigMessageHtml}
+      </div>
+    </div>
+  </div>
+  `;
+
+    return buildUnifiedEmailHtml({
+        subject: data.replySubject,
+        preheader: `Reply from TheNextTrade Support regarding "${data.originalSubject}".`,
         bodyHtml,
         appUrl,
     });

@@ -1022,7 +1022,7 @@ export function AccountListClient({
                             <span>Supported Brokers:</span>
                             <div className="flex items-center flex-wrap gap-2">
                                 <a
-                                    href="https://www.vantagemarkets.com/forex-trading/forex-trading-account/?affid=111451"
+                                    href={BROKER_INFO.VANTAGE.affiliateUrl}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="text-amber-500 hover:text-amber-600 dark:text-amber-400 dark:hover:text-amber-300 font-bold transition-colors"
@@ -1033,7 +1033,7 @@ export function AccountListClient({
                                     •
                                 </span>
                                 <a
-                                    href="https://one.exnessonelink.com/a/1ewjh1ww32"
+                                    href={BROKER_INFO.EXNESS.affiliateUrl}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="text-amber-500 hover:text-amber-600 dark:text-amber-400 dark:hover:text-amber-300 font-bold transition-colors"
@@ -1044,7 +1044,7 @@ export function AccountListClient({
                                     •
                                 </span>
                                 <a
-                                    href="https://www.vtmarkets.com/get-trading/forex-trading-account/?affid=830422"
+                                    href={BROKER_INFO.VTMARKETS.affiliateUrl}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="text-amber-500 hover:text-amber-600 dark:text-amber-400 dark:hover:text-amber-300 font-bold transition-colors"

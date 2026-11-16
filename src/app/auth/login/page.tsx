@@ -130,10 +130,10 @@ function LoginPageContent() {
     const [rememberMe, setRememberMe] = useState(true);
 
     const inputClassName =
-        "h-12 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 text-slate-900 dark:text-white text-sm sm:text-base py-3 focus:bg-white dark:focus:bg-[#151925] focus:border-gold focus:ring-gold/20 transition-colors";
+        "h-[42px] rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 text-slate-900 dark:text-white text-sm py-2.5 focus:bg-white dark:focus:bg-[#151925] focus:border-gold focus:ring-gold/20 transition-colors";
 
     const primaryButtonClassName =
-        "w-full h-12 sm:h-14 rounded-lg border-none bg-gold hover:bg-amber-600 text-sm sm:text-base font-black !text-white shadow-md shadow-amber-500/20 active:scale-[0.99] transition-all";
+        "w-full !text-white active:scale-[0.99]";
 
     useEffect(() => {
         setIsHydrated(true);
@@ -216,32 +216,32 @@ function LoginPageContent() {
                     </h1>
                 </div>
 
-                <div className="flex rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] p-1 mb-5 sm:mb-6">
+                <div className="flex items-center gap-1 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] p-1 mb-5 sm:mb-6">
                     <Button
                         type="button"
                         variant="ghost"
                         onClick={() => switchMode("password")}
-                        className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-xs sm:text-sm font-semibold transition-all min-h-[44px] h-auto border-0 ${
+                        className={`flex-1 flex items-center justify-center gap-2 px-4 py-1.5 rounded-lg text-sm font-bold transition-all h-auto border-0 ${
                             mode === "password"
                                 ? "bg-gold !text-white shadow-sm hover:bg-amber-600 hover:!text-white"
-                                : "text-slate-600 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white"
+                                : "text-slate-600 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white hover:bg-transparent dark:hover:bg-transparent"
                         }`}
                     >
-                        <Lock size={16} />
-                        Password
+                        <Lock size={15} />
+                        <span className="whitespace-nowrap">Password</span>
                     </Button>
                     <Button
                         type="button"
                         variant="ghost"
                         onClick={() => switchMode("magic")}
-                        className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-xs sm:text-sm font-semibold transition-all min-h-[44px] h-auto border-0 ${
+                        className={`flex-1 flex items-center justify-center gap-2 px-4 py-1.5 rounded-lg text-sm font-bold transition-all h-auto border-0 ${
                             mode === "magic"
                                 ? "bg-gold !text-white shadow-sm hover:bg-amber-600 hover:!text-white"
-                                : "text-slate-600 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white"
+                                : "text-slate-600 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white hover:bg-transparent dark:hover:bg-transparent"
                         }`}
                     >
-                        <Mail size={16} />
-                        Magic Link
+                        <Mail size={15} />
+                        <span className="whitespace-nowrap">Magic Link</span>
                     </Button>
                 </div>
 
@@ -265,7 +265,7 @@ function LoginPageContent() {
                             required
                             startIcon={
                                 <Mail
-                                    size={20}
+                                    size={16}
                                     className="text-amber-600 dark:text-gold"
                                 />
                             }
@@ -280,7 +280,7 @@ function LoginPageContent() {
                             required
                             startIcon={
                                 <Lock
-                                    size={20}
+                                    size={16}
                                     className="text-amber-600 dark:text-gold"
                                 />
                             }
@@ -295,7 +295,7 @@ function LoginPageContent() {
                                     onClick={() =>
                                         setShowPassword(!showPassword)
                                     }
-                                    className="text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white"
+                                    className="h-8 w-8 p-0 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white"
                                     aria-label={
                                         showPassword
                                             ? "Hide password"
@@ -303,9 +303,9 @@ function LoginPageContent() {
                                     }
                                 >
                                     {showPassword ? (
-                                        <EyeOff size={20} />
+                                        <EyeOff size={16} />
                                     ) : (
-                                        <Eye size={20} />
+                                        <Eye size={16} />
                                     )}
                                 </Button>
                             }
@@ -347,6 +347,7 @@ function LoginPageContent() {
                         <Button
                             type="submit"
                             variant="primary"
+                            size="md"
                             className={primaryButtonClassName}
                             isLoading={loading}
                             disabled={!isHydrated}
@@ -377,7 +378,7 @@ function LoginPageContent() {
                             required
                             startIcon={
                                 <Mail
-                                    size={20}
+                                    size={16}
                                     className="text-amber-600 dark:text-gold"
                                 />
                             }
@@ -393,11 +394,12 @@ function LoginPageContent() {
                         <Button
                             type="submit"
                             variant="primary"
-                            className={`${primaryButtonClassName} flex items-center justify-center gap-2`}
+                            size="md"
+                            className={primaryButtonClassName}
                             isLoading={loading}
                             disabled={!isHydrated}
                         >
-                            <Mail size={18} />
+                            <Mail size={16} />
                             Send Magic Link
                         </Button>
                     </form>
@@ -422,8 +424,9 @@ function LoginPageContent() {
                         <Button
                             type="button"
                             variant="outline"
+                            size="md"
                             onClick={() => setMagicLinkSent(false)}
-                            className="text-xs sm:text-sm text-amber-600 hover:text-amber-700 font-semibold mt-3 sm:mt-4 py-2 px-4 inline-flex items-center justify-center rounded-lg border-gray-200 dark:border-white/10 hover:bg-amber-500/10 min-h-[44px] dark:text-gold transition-colors h-auto"
+                            className="mt-3 sm:mt-4 text-amber-600 hover:text-amber-700 border-gray-200 dark:border-white/10 hover:bg-amber-500/10 dark:text-gold"
                         >
                             Try again with a different email
                         </Button>

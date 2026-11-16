@@ -448,11 +448,11 @@ export const TRADING_SYSTEMS_DATA: SystemData[] = [
             },
             {
                 question: "Why does v3.1 use WebRequest instead of DLL imports for licensing?",
-                answer: "Version 3.1 eliminates DLL imports entirely for maximum security and compatibility. MT5 connects directly to secure Google Apps Script authorization endpoints via native WebRequest. You simply add https://script.google.com and https://script.googleusercontent.com in MT5 Tools -> Options -> Expert Advisors.",
+                answer: "Version 3.1 eliminates DLL imports entirely for maximum security and compatibility. MT5 connects directly via native WebRequest to our Main Server (https://thenexttrade.app) with automatic failover to Backup Servers (https://raw.githubusercontent.com/ and https://api.github.com) in MT5 Tools -> Options -> Expert Advisors.",
             },
             {
                 question: "What should I do if the EA displays 'License: NOT REGISTERED' or fails to trade?",
-                answer: "First, verify that your account ID shown in the panel's Status box has been authorized by your broker or partner admin. Second, ensure 'Allow WebRequest for listed URL' has both Google Script endpoints added. Third, ensure the toolbar 'Algo Trading' button is green and 'Allow Algo Trading' is checked in the EA Common tab.",
+                answer: "First, verify that your account ID shown in the panel's Status box has been authorized and your License Key is entered. Second, ensure 'Allow WebRequest for listed URL' includes https://thenexttrade.app, https://raw.githubusercontent.com/, and https://api.github.com. Third, ensure the toolbar 'Algo Trading' button is green and 'Allow Algo Trading' is checked in the EA Common tab.",
             },
         ],
         metrics: {
@@ -499,7 +499,7 @@ export const TRADING_SYSTEMS_DATA: SystemData[] = [
             {
                 step: "02",
                 title: "Authorize WebRequest URLs",
-                desc: "Open MT5 -> Tools -> Options -> Expert Advisors. Check 'Allow WebRequest for listed URL' and add https://script.google.com and https://script.googleusercontent.com.",
+                desc: "Open MT5 -> Tools -> Options -> Expert Advisors. Check 'Allow WebRequest for listed URL' and add Main Server https://thenexttrade.app plus Backup Servers https://raw.githubusercontent.com/ and https://api.github.com.",
             },
             {
                 step: "03",
@@ -815,7 +815,7 @@ export const TRADING_SYSTEMS_DATA: SystemData[] = [
             {
                 step: "02",
                 title: "Allow WebRequest URLs",
-                desc: "Open Tools -> Options -> Expert Advisors. Tick Allow Algorithmic Trading and Allow WebRequest for listed URL, then add https://raw.githubusercontent.com/ and https://api.github.com (plus your dashboard URL for Tab 5 SYNC).",
+                desc: "Open Tools -> Options -> Expert Advisors. Tick Allow Algorithmic Trading and Allow WebRequest for listed URL, then add Main Server https://thenexttrade.app along with Backup Servers https://raw.githubusercontent.com/ and https://api.github.com.",
             },
             {
                 step: "03",
@@ -1141,7 +1141,7 @@ export const TRADING_SYSTEMS_DATA: SystemData[] = [
             {
                 step: "02",
                 title: "Authorize License WebRequest URLs",
-                desc: "Open Tools -> Options -> Expert Advisors, enable Allow Algorithmic Trading and Allow WebRequest for listed URL, and add https://raw.githubusercontent.com and https://api.github.com.",
+                desc: "Open Tools -> Options -> Expert Advisors, enable Allow Algorithmic Trading and Allow WebRequest for listed URL, and add Main Server https://thenexttrade.app plus Backup Servers https://raw.githubusercontent.com/ and https://api.github.com.",
             },
             {
                 step: "03",
@@ -1448,7 +1448,7 @@ export const TRADING_SYSTEMS_DATA: SystemData[] = [
             {
                 step: "02",
                 title: "Allow Algo Trading & WebRequest",
-                desc: "Tools -> Options -> Expert Advisors: enable Allow Algorithmic Trading and Allow WebRequest, then add your TheNextTrade server URL for license and telemetry sync.",
+                desc: "Tools -> Options -> Expert Advisors: enable Allow Algorithmic Trading and Allow WebRequest for listed URL, then add Main Server https://thenexttrade.app plus Backup Servers https://raw.githubusercontent.com/ and https://api.github.com.",
             },
             {
                 step: "03",
@@ -1493,10 +1493,23 @@ export const TRADING_SYSTEMS_DATA: SystemData[] = [
 
 export function getSystemBySlug(slug: string): SystemData | undefined {
     const normalized = slug.toLowerCase().replace(/[^a-z0-9]/g, "");
-    if (normalized === "gsnphoenixgrid" || normalized === "gsnshadowmatrix") {
-        return TRADING_SYSTEMS_DATA.find((s) => s.slug === "gsn-shadown-matrix");
+    if (
+        normalized === "gsnphoenixgrid" ||
+        normalized === "gsnshadowmatrix" ||
+        normalized === "gsnshadownmatrix" ||
+        normalized === "shadowmatrix" ||
+        normalized === "shadownmatrix"
+    ) {
+        return TRADING_SYSTEMS_DATA.find(
+            (s) => s.slug === "gsn-shadown-matrix"
+        );
     }
     return TRADING_SYSTEMS_DATA.find(
         (s) => s.slug.toLowerCase().replace(/[^a-z0-9]/g, "") === normalized
     );
+}
+
+export function getCanonicalSystemPageSlug(slug: string): string {
+    const matched = getSystemBySlug(slug);
+    return matched ? matched.slug : slug.trim().toLowerCase();
 }

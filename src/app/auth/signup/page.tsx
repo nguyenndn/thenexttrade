@@ -57,13 +57,13 @@ function SignupPageContent() {
     const [referralCode, setReferralCode] = useState("");
 
     const inputClassName =
-        "h-12 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 text-slate-900 dark:text-white text-sm sm:text-base py-3 focus:bg-white dark:focus:bg-[#151925] focus:border-gold focus:ring-gold/20 transition-colors";
+        "h-[42px] rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 text-slate-900 dark:text-white text-sm py-2.5 focus:bg-white dark:focus:bg-[#151925] focus:border-gold focus:ring-gold/20 transition-colors";
 
     const primaryButtonClassName =
-        "w-full h-12 sm:h-14 rounded-lg border-none bg-gold hover:bg-amber-600 text-sm sm:text-base font-black !text-white shadow-md shadow-amber-500/20 active:scale-[0.99] transition-all";
+        "w-full !text-white active:scale-[0.99]";
 
     const secondaryButtonClassName =
-        "w-full h-12 sm:h-14 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] text-sm sm:text-base font-bold text-slate-700 hover:border-gold/40 hover:bg-gray-100 dark:text-slate-200 dark:hover:border-gold/40 dark:hover:bg-white/[0.06] active:scale-[0.99] transition-all";
+        "w-full border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] text-slate-700 hover:border-gold/40 hover:bg-gray-100 dark:text-slate-200 dark:hover:border-gold/40 dark:hover:bg-white/[0.06] active:scale-[0.99]";
 
     useEffect(() => {
         const search = new URLSearchParams(window.location.search);
@@ -296,7 +296,7 @@ function SignupPageContent() {
                             }
                             startIcon={
                                 <User
-                                    size={20}
+                                    size={16}
                                     className="text-amber-600 dark:text-gold"
                                 />
                             }
@@ -319,6 +319,7 @@ function SignupPageContent() {
                         <Button
                             type="button"
                             variant="primary"
+                            size="md"
                             className={primaryButtonClassName}
                             onClick={goNext}
                         >
@@ -338,7 +339,7 @@ function SignupPageContent() {
                             onChange={(event) => setEmail(event.target.value)}
                             startIcon={
                                 <Mail
-                                    size={20}
+                                    size={16}
                                     className="text-amber-600 dark:text-gold"
                                 />
                             }
@@ -371,6 +372,7 @@ function SignupPageContent() {
                             <Button
                                 type="button"
                                 variant="outline"
+                                size="md"
                                 className={secondaryButtonClassName}
                                 onClick={goBack}
                             >
@@ -379,6 +381,7 @@ function SignupPageContent() {
                             <Button
                                 type="button"
                                 variant="primary"
+                                size="md"
                                 className={primaryButtonClassName}
                                 onClick={goNext}
                             >
@@ -427,7 +430,7 @@ function SignupPageContent() {
                                 }}
                                 startIcon={
                                     <Lock
-                                        size={20}
+                                        size={16}
                                         className="text-amber-600 dark:text-gold"
                                     />
                                 }
@@ -442,7 +445,7 @@ function SignupPageContent() {
                                         onClick={() =>
                                             setShowPassword(!showPassword)
                                         }
-                                        className="text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white"
+                                        className="h-8 w-8 p-0 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white"
                                         aria-label={
                                             showPassword
                                                 ? "Hide password"
@@ -450,9 +453,9 @@ function SignupPageContent() {
                                         }
                                     >
                                         {showPassword ? (
-                                            <EyeOff size={20} />
+                                            <EyeOff size={16} />
                                         ) : (
-                                            <Eye size={20} />
+                                            <Eye size={16} />
                                         )}
                                     </Button>
                                 }
@@ -485,7 +488,7 @@ function SignupPageContent() {
                             }}
                             startIcon={
                                 <Lock
-                                    size={20}
+                                    size={16}
                                     className="text-amber-600 dark:text-gold"
                                 />
                             }
@@ -498,7 +501,7 @@ function SignupPageContent() {
                                     onMouseDown={(e) => e.preventDefault()}
                                     onTouchStart={(e) => e.preventDefault()}
                                     onClick={() => setShowConfirm(!showConfirm)}
-                                    className="text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white"
+                                    className="h-8 w-8 p-0 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white"
                                     aria-label={
                                         showConfirm
                                             ? "Hide confirm password"
@@ -506,9 +509,9 @@ function SignupPageContent() {
                                     }
                                 >
                                     {showConfirm ? (
-                                        <EyeOff size={20} />
+                                        <EyeOff size={16} />
                                     ) : (
-                                        <Eye size={20} />
+                                        <Eye size={16} />
                                     )}
                                 </Button>
                             }
@@ -565,6 +568,7 @@ function SignupPageContent() {
                             <Button
                                 type="button"
                                 variant="outline"
+                                size="md"
                                 className={secondaryButtonClassName}
                                 onClick={goBack}
                             >
@@ -573,7 +577,8 @@ function SignupPageContent() {
                             <Button
                                 type="submit"
                                 variant="primary"
-                                className={cn(primaryButtonClassName, "px-2 sm:px-4")}
+                                size="md"
+                                className={cn(primaryButtonClassName, "px-3 sm:px-4")}
                                 isLoading={loading}
                             >
                                 <span className="truncate">Create Account</span>

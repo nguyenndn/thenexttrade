@@ -17,7 +17,7 @@ import {
 // =============================================================================
 
 const INTERNAL_BASE_URL =
-    process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3500";
+    process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.app";
 
 // =============================================================================
 // RATE LIMITER (In-memory, sliding window)
@@ -212,7 +212,7 @@ function addSecurityHeaders(
         "default-src 'self'",
         "script-src 'self' 'unsafe-inline' https://*.supabase.co https://*.google.com https://*.googleapis.com https://*.googletagmanager.com https://challenges.cloudflare.com",
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-        "img-src 'self' blob: data: https://*.supabase.co https://*.unsplash.com https://flagcdn.com https://images.unsplash.com https://cdn.jsdelivr.net https://*.r2.dev https://*.thenexttrade.com https://*.thenexttrade.io",
+        "img-src 'self' blob: data: https://*.supabase.co https://*.unsplash.com https://flagcdn.com https://images.unsplash.com https://cdn.jsdelivr.net https://*.r2.dev https://thenexttrade.app https://*.thenexttrade.app https://*.thenexttrade.com https://*.thenexttrade.io",
         "font-src 'self' data: https://fonts.gstatic.com",
         "connect-src 'self' https://*.supabase.co https://*.google-analytics.com https://*.googleapis.com wss://*.supabase.co https://challenges.cloudflare.com https://cdn.jsdelivr.net",
         "frame-src https://challenges.cloudflare.com",

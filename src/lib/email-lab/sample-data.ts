@@ -32,7 +32,7 @@ export interface ReportEmailData {
 export function getSampleReportEmailData(
     type: "WEEKLY" | "MONTHLY"
 ): ReportEmailData {
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.app";
 
     if (type === "WEEKLY") {
         return {
@@ -94,7 +94,7 @@ export function getSampleActivationLink(
     type: ActivationReminderType,
     method: "EA_SYNC" | "MANUAL"
 ): string {
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.app";
 
     switch (type) {
         case "NO_ACCOUNT_24H":
@@ -183,7 +183,7 @@ export function renderWelcomePreviewEmail(template: "d0" | "d1" | "d3"): {
 // ─── New Mockup Sample Data Generators ──────────────────────────────────────
 
 export function getSampleEALicenseData() {
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.app";
     return {
         userName: "Alex Trader",
         eaName: "GoldScalperNinja Pro MT5",
@@ -195,7 +195,7 @@ export function getSampleEALicenseData() {
 }
 
 export function getSampleEAUpdateData() {
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.app";
     return {
         userName: "Alex Trader",
         eaName: "GoldScalperNinja Pro",
@@ -212,7 +212,7 @@ export function getSampleEAUpdateData() {
 }
 
 export function getSampleAcademyCertificateData() {
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.app";
     return {
         userName: "Alex Trader",
         certificateId: "TNT-CERT-2026-8942",
@@ -223,7 +223,7 @@ export function getSampleAcademyCertificateData() {
 }
 
 export function getSampleMilestoneData() {
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.app";
     return {
         userName: "Alex Trader",
         milestoneTitle: "100-Trade Discipline Club",
@@ -234,7 +234,7 @@ export function getSampleMilestoneData() {
 }
 
 export function getSampleSignupOtpData() {
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.app";
     return {
         userName: "Alex Trader",
         otpCode: "84920173",
@@ -243,7 +243,7 @@ export function getSampleSignupOtpData() {
 }
 
 export function getSampleResendOtpData() {
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.app";
     return {
         userName: "Alex Trader",
         otpCode: "59138472",
@@ -252,7 +252,7 @@ export function getSampleResendOtpData() {
 }
 
 export function getSampleMagicLinkData() {
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.app";
     return {
         userName: "Alex Trader",
         magicLinkUrl: `${appUrl}/auth/callback?token=sample-magic-link-token&type=magiclink`,
@@ -260,7 +260,7 @@ export function getSampleMagicLinkData() {
 }
 
 export function getSampleForgotPasswordData() {
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.app";
     return {
         userName: "Alex Trader",
         resetUrl: `${appUrl}/auth/reset-password?token=sample-recovery-token`,
@@ -268,7 +268,7 @@ export function getSampleForgotPasswordData() {
 }
 
 export function getSampleAdminResetData() {
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.app";
     return {
         userName: "Alex Trader",
         adminName: "Security Officer",
@@ -279,7 +279,7 @@ export function getSampleAdminResetData() {
 // ─── VIP Lifecycle Email Sample Data ─────────────────────────────────────────
 
 export function getSampleVipTrialEndingSoonData() {
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.app";
     const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000);
     return {
         userName: "Alex Trader",
@@ -294,7 +294,7 @@ export function getSampleVipTrialEndingSoonData() {
 }
 
 export function getSampleVipTrialEndedData() {
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.app";
     return {
         userName: "Alex Trader",
         appUrl,
@@ -302,7 +302,7 @@ export function getSampleVipTrialEndedData() {
 }
 
 export function getSampleVipInactivityWarningData() {
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.app";
     return {
         userName: "Alex Trader",
         daysInactive: 8,
@@ -313,7 +313,7 @@ export function getSampleVipInactivityWarningData() {
 }
 
 export function getSampleVipPolicyPausedData() {
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.app";
     return {
         userName: "Alex Trader",
         reason: "No trade activity recorded in over 14 consecutive days",
@@ -323,7 +323,7 @@ export function getSampleVipPolicyPausedData() {
 }
 
 export function getSampleVipFundingGraceData() {
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.app";
     const in7Days = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
     return {
         userName: "Alex Trader",

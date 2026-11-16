@@ -7,13 +7,13 @@ import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/Button";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { AdminNotificationList } from "@/components/admin/notification-center/AdminNotificationList";
+import { AdminNotificationTabs } from "@/components/admin/notification-center/AdminNotificationTabs";
 import { requireAdminPageAccess } from "@/lib/admin/auth.server";
 import {
     ADMIN_NOTIFICATION_FILTERS,
     loadAdminNotificationFeed,
 } from "@/lib/admin/admin-notification-center.server";
 import type { AdminNotificationFilter } from "@/lib/admin/admin-notification-center.server";
-import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
     title: "Notifications | Admin",
@@ -21,16 +21,6 @@ export const metadata: Metadata = {
 };
 
 export const dynamic = "force-dynamic";
-
-const TABS: { key: AdminNotificationFilter; label: string }[] = [
-    { key: "ALL", label: "All" },
-    { key: "UNREAD", label: "Unread" },
-    { key: "ACCOUNTS", label: "Accounts" },
-    { key: "VIP", label: "VIP" },
-    { key: "LICENSES", label: "Licenses" },
-    { key: "BROADCASTS", label: "Broadcasts" },
-    { key: "SYSTEM", label: "System" },
-];
 
 function resolveTab(value: string | undefined): AdminNotificationFilter {
     const upper = (value || "ALL").toUpperCase();
@@ -78,28 +68,13 @@ export default async function AdminNotificationsPage({
                 </Link>
             </AdminPageHeader>
 
-            <div className="flex gap-1 overflow-x-auto pb-1">
-                {TABS.map((tab) => (
-                    <Link
-                        key={tab.key}
-                        href={
-                            tab.key === "ALL"
-                                ? "/admin/notifications"
-                                : `/admin/notifications?tab=${tab.key}`
-                        }
-                        className={cn(
-                            "px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-colors",
-                            activeTab === tab.key
-                                ? "bg-amber-500 text-white shadow-sm"
-                                : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5"
-                        )}
-                    >
-                        {tab.label}
-                    </Link>
-                ))}
-            </div>
+            <AdminNotificationTabs
+                activeTab={activeTab}
+                unreadCount={feed.unreadCount}
+            />
 
             <AdminNotificationList
+                key={activeTab}
                 initialNotifications={feed.notifications}
                 initialNextCursor={feed.nextCursor}
                 initialUnreadCount={feed.unreadCount}

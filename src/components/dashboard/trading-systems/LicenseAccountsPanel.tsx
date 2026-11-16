@@ -36,6 +36,7 @@ import {
     updateTradingAccountLoginNumber,
 } from "@/app/dashboard/trading-systems/actions";
 import { maskSyncApiKey } from "@/lib/utils/api-key";
+import { Mt5WebRequestUrlList } from "@/components/trading-accounts/Mt5WebRequestUrlList";
 
 export interface AccountLicenseItem {
     id: string;
@@ -395,42 +396,16 @@ export function LicenseAccountsPanel({
                             .
                         </li>
                         <li>
-                            Add the following URLs so both the Primary License
-                            Server and High-Availability Backup Server can
-                            verify your account:
+                            Add both the{" "}
+                            <span className="font-bold">Main Server</span>{" "}
+                            (official domain) and{" "}
+                            <span className="font-bold">Backup Servers</span>{" "}
+                            below so primary licensing, live telemetry, and
+                            high-availability failover work without
+                            interruption:
                         </li>
                     </ol>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                        {[
-                            process.env.NEXT_PUBLIC_APP_URL?.trim().replace(/\/+$/, "") ||
-                                "https://thenexttrade.app",
-                            "https://api.github.com",
-                            "https://raw.githubusercontent.com",
-                        ].map((url) => (
-                            <div
-                                key={url}
-                                className="flex items-center justify-between gap-2 px-3 py-2 rounded-lg bg-white dark:bg-[#151925] border border-dashboard dark:border-white/10"
-                            >
-                                <span className="font-mono text-xs text-gray-800 dark:text-gray-200 truncate">
-                                    {url}
-                                </span>
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    size="sm"
-                                    aria-label={`Copy ${url}`}
-                                    onClick={() => handleCopy(url, url)}
-                                    className="rounded-lg h-7 px-2 text-[11px] shrink-0"
-                                >
-                                    {copiedId === url ? (
-                                        <Check size={12} />
-                                    ) : (
-                                        <Copy size={12} />
-                                    )}
-                                </Button>
-                            </div>
-                        ))}
-                    </div>
+                    <Mt5WebRequestUrlList compact />
                 </div>
             )}
 

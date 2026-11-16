@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
-import { Lock, Loader2 } from "lucide-react";
+import { Lock } from "lucide-react";
 import { updatePassword } from "../actions";
 
 export default function UpdatePasswordPage() {
@@ -51,11 +51,11 @@ export default function UpdatePasswordPage() {
                             type="password"
                             required
                             autoComplete="new-password"
-                            className="w-full bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg px-4 py-3 pl-11 text-slate-900 dark:text-white focus:bg-white dark:focus:bg-[#151925] focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold/30 transition-all"
+                            className="w-full h-[42px] bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg px-3.5 py-2.5 pl-10 text-sm text-slate-900 dark:text-white focus:bg-white dark:focus:bg-[#151925] focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold/30 transition-all"
                         />
                         <Lock
-                            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-amber-600 dark:text-gold"
-                            size={20}
+                            className="absolute left-3 top-1/2 -translate-y-1/2 text-amber-600 dark:text-gold"
+                            size={16}
                         />
                     </div>
                     <p className="text-xs text-slate-500 dark:text-slate-400 tabular-nums">
@@ -77,11 +77,11 @@ export default function UpdatePasswordPage() {
                             type="password"
                             required
                             autoComplete="new-password"
-                            className="w-full bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg px-4 py-3 pl-11 text-slate-900 dark:text-white focus:bg-white dark:focus:bg-[#151925] focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold/30 transition-all"
+                            className="w-full h-[42px] bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 rounded-lg px-3.5 py-2.5 pl-10 text-sm text-slate-900 dark:text-white focus:bg-white dark:focus:bg-[#151925] focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold/30 transition-all"
                         />
                         <Lock
-                            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-amber-600 dark:text-gold"
-                            size={20}
+                            className="absolute left-3 top-1/2 -translate-y-1/2 text-amber-600 dark:text-gold"
+                            size={16}
                         />
                     </div>
                 </div>
@@ -94,15 +94,12 @@ export default function UpdatePasswordPage() {
 
                 <Button
                     type="submit"
-                    disabled={isLoading}
                     variant="gold"
-                    className="w-full font-bold h-12 rounded-lg bg-gold hover:bg-amber-600 !text-white transition-all shadow-md shadow-amber-500/20 flex items-center justify-center"
+                    size="md"
+                    isLoading={isLoading}
+                    className="w-full !text-white active:scale-[0.99]"
                 >
-                    {isLoading ? (
-                        <Loader2 className="animate-spin" />
-                    ) : (
-                        "Reset Password"
-                    )}
+                    Reset Password
                 </Button>
             </form>
         </div>

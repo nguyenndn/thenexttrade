@@ -9,7 +9,7 @@
  * 1. NEXT_PUBLIC_APP_URL (Configured in .env / deployment platform)
  * 2. APP_URL (Server-side environment variable)
  * 3. Client-side window.location.origin (if running in browser)
- * 4. Fallback: http://localhost:3000 (development) or https://thenexttrade.app (production)
+ * 4. Fallback: http://localhost:3500 (development) or https://thenexttrade.app (production)
  */
 export function getBaseUrl(): string {
     const rawUrl =

@@ -5,7 +5,9 @@ import { isAcademyEnabled } from "@/app/admin/academy/actions";
 export const dynamic = "force-dynamic"; // Always fetch fresh data
 
 export async function GET() {
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const baseUrl = (
+        process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.app"
+    ).replace(/\/+$/, "");
     const academyEnabled = await isAcademyEnabled();
 
     const feed = new RSS({

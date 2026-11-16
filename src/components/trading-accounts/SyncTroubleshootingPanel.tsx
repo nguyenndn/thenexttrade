@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
     ChevronDown,
     ChevronUp,
@@ -9,6 +9,10 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { trackEvent } from "@/lib/track";
+import {
+    CANONICAL_BACKUP_SERVER_URLS,
+    getSyncServerUrl,
+} from "@/lib/sync/sync-urls";
 
 type SyncMethod = "EA_SYNC";
 
@@ -30,8 +34,9 @@ function buildTradeManagerHelp(serverUrl: string): HelpTopic[] {
         {
             question: "Trade Manager EA cannot connect to server",
             answer: [
-                "Confirm the WebRequest URL is added in MT5 → Tools → Options → Expert Advisors.",
-                `The correct URL is: ${serverUrl}`,
+                "Confirm the WebRequest URLs are added in MT5 → Tools → Options → Expert Advisors.",
+                `Main Server (Required): ${serverUrl}`,
+                `Backup Servers (Failover): ${CANONICAL_BACKUP_SERVER_URLS.join(", ")}`,
                 'Confirm the EA is attached to a chart and "Algo Trading" (or "Auto Trading") is enabled at the top toolbar.',
             ],
         },
@@ -63,19 +68,7 @@ export function SyncTroubleshootingPanel({
 }: SyncTroubleshootingPanelProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
-    const [serverUrl, setServerUrl] = useState<string>(() => {
-        const envOrigin = process.env.NEXT_PUBLIC_APP_URL?.trim().replace(
-            /\/+$/,
-            ""
-        );
-        return envOrigin || "https://thenexttrade.app";
-    });
-
-    useEffect(() => {
-        if (typeof window !== "undefined" && window.location.origin) {
-            setServerUrl(window.location.origin);
-        }
-    }, []);
+    const serverUrl = getSyncServerUrl();
 
     const topics = buildTradeManagerHelp(serverUrl);
     const methodLabel = "Trade Manager";

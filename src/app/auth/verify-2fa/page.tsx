@@ -4,7 +4,7 @@ import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { verifyLogin2FA } from "@/app/auth/actions";
 import { createClient } from "@/lib/supabase/client";
-import { Shield, Loader2 } from "lucide-react";
+import { Shield } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/Button";
 
@@ -82,30 +82,26 @@ function Verify2FAContent() {
 
                 <Button
                     type="submit"
-                    disabled={loading || signingOut || code.length < 6}
                     variant="primary"
-                    className="w-full h-12 bg-gold hover:bg-amber-600 !text-white font-bold text-base rounded-lg transition-all shadow-md shadow-amber-500/20 disabled:opacity-50 flex items-center justify-center gap-2"
+                    size="md"
+                    isLoading={loading}
+                    disabled={loading || signingOut || code.length < 6}
+                    className="w-full !text-white active:scale-[0.99]"
                 >
-                    {loading ? (
-                        <Loader2 size={24} className="animate-spin" />
-                    ) : (
-                        "Verify Identity"
-                    )}
+                    Verify Identity
                 </Button>
             </form>
 
             <Button
                 type="button"
                 variant="outline"
+                size="md"
+                isLoading={signingOut}
                 disabled={loading || signingOut}
                 onClick={handleBackToLogin}
-                className="w-full text-center mt-6 text-sm font-bold border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] text-slate-700 dark:text-slate-200 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg"
+                className="w-full mt-4 border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#151925] text-slate-700 dark:text-slate-200 hover:bg-gray-100 dark:hover:bg-white/5 active:scale-[0.99]"
             >
-                {signingOut ? (
-                    <Loader2 size={18} className="animate-spin" />
-                ) : (
-                    "Back to Login"
-                )}
+                Back to Login
             </Button>
         </div>
     );

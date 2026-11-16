@@ -39,7 +39,7 @@ export const BROKER_INFO: Record<
     EXNESS: {
         name: "Exness",
         logo: "/images/brokers/exness.png",
-        affiliateUrl: "https://one.exnessonelink.com/a/1ewjh1ww32",
+        affiliateUrl: "https://one.toexness.com/a/1ewjh1ww32",
         ibCode: "1ewjh1ww32",
         color: "#FFC107",
         minDeposit: 200,
@@ -66,7 +66,7 @@ export const BROKER_INFO: Record<
             steps: [
                 "Contact Exness Supporter on your Dashboard area",
                 "Request to change IB to our partner",
-                "Provide Partner IB link: https://one.exnessonelink.com/a/1ewjh1ww32",
+                "Provide Partner IB link: https://one.toexness.com/a/1ewjh1ww32",
                 "Provide Partner IB code: 1ewjh1ww32",
                 "Wait for the confirmation email from Exness",
             ],
@@ -77,7 +77,7 @@ export const BROKER_INFO: Record<
         name: "VantageMarkets",
         logo: "/images/brokers/vantage.png",
         affiliateUrl:
-            "https://www.vantagemarkets.com/forex-trading/forex-trading-account/?affid=111451",
+            "https://www.vantagemarkets.com/open-live-account/?affid=MTExNDUx&invitecode=FzzbC6Qy",
         ibCode: "111451",
         color: "#E31937",
         minDeposit: 200,
@@ -118,7 +118,7 @@ export const BROKER_INFO: Record<
         name: "VTMarkets",
         logo: "/images/brokers/vtmarkets.png",
         affiliateUrl:
-            "https://www.vtmarkets.com/get-trading/forex-trading-account/?affid=830422",
+            "https://www.vtmarkets.com/trade-now/?affid=ODMwNDIy&invitecode=n9d2cKEY",
         ibCode: "830422",
         color: "#1E3A5F",
         minDeposit: 200,
