@@ -215,6 +215,28 @@ function SidebarItemComponent({
     );
 }
 
+const ADMIN_SECTION_NAMES: Record<string, string> = {
+    Monitoring: "MONITORING",
+    Content: "CONTENT",
+    Academy: "EDUCATION",
+    "IB & VIP": "IB & VIP",
+    System: "SYSTEM",
+};
+
+const USER_SECTION_NAMES: Record<string, string> = {
+    Dashboard: "OPERATIONS",
+    "Trading Journal": "PLAYBOOK & EXECUTION",
+    "Analytics Hub": "PERFORMANCE",
+    Academy: "GROWTH",
+};
+
+const USER_SECTION_SLUGS: Record<string, string> = {
+    OPERATIONS: "operations",
+    "PLAYBOOK & EXECUTION": "playbook",
+    PERFORMANCE: "performance",
+    GROWTH: "growth",
+};
+
 export function Sidebar({
     items = dashboardMenuItems,
     className,
@@ -304,22 +326,41 @@ export function Sidebar({
     // Detect if we're in Admin sidebar by checking first item href
     const isAdmin = visibleItems[0]?.href === "/admin";
 
-    const sectionNames: Record<string, string> = isAdmin
-        ? {
-              // Admin groups
-              Monitoring: "MONITORING",
-              Content: "CONTENT",
-              Academy: "EDUCATION",
-              "IB & VIP": "IB & VIP",
-              System: "SYSTEM",
-          }
-        : {
-              // User Dashboard groups
-              Dashboard: "OPERATIONS",
-              "Trading Journal": "PLAYBOOK & EXECUTION",
-              "Analytics Hub": "PERFORMANCE",
-              Academy: "GROWTH",
-          };
+    const groupedItems = useMemo(() => {
+        const sectionNames = isAdmin ? ADMIN_SECTION_NAMES : USER_SECTION_NAMES;
+        const groups: Array<{
+            key: string;
+            tourSlug: string | null;
+            items: Array<{
+                item: SidebarItem;
+                globalIndex: number;
+                sectionLabel?: string;
+            }>;
+        }> = [];
+
+        visibleItems.forEach((item: SidebarItem, index: number) => {
+            const sectionLabel = sectionNames[item.name];
+            if (sectionLabel || groups.length === 0) {
+                const slug =
+                    !isAdmin && sectionLabel
+                        ? USER_SECTION_SLUGS[sectionLabel] ?? null
+                        : null;
+                groups.push({
+                    key: sectionLabel || item.name,
+                    tourSlug: slug,
+                    items: [{ item, globalIndex: index, sectionLabel }],
+                });
+            } else {
+                groups[groups.length - 1].items.push({
+                    item,
+                    globalIndex: index,
+                    sectionLabel: undefined,
+                });
+            }
+        });
+
+        return groups;
+    }, [visibleItems, isAdmin]);
 
     return (
         <aside
@@ -331,42 +372,61 @@ export function Sidebar({
             )}
         >
             {/* Navigation Items */}
-            <div className="flex-1 overflow-y-auto overflow-x-hidden flex flex-col gap-1 py-4 custom-scrollbar">
-                {visibleItems.map((item: any, index: number) => {
-                    const sectionLabel = sectionNames[item.name];
+            <div
+                data-tour={!isAdmin ? "sidebar-menu" : undefined}
+                className="flex-1 overflow-y-auto overflow-x-hidden flex flex-col gap-1 py-4 custom-scrollbar"
+            >
+                {groupedItems.map((group) => (
+                    <div
+                        key={group.key}
+                        data-tour={
+                            group.tourSlug
+                                ? `sidebar-group-${group.tourSlug}`
+                                : undefined
+                        }
+                        className="flex flex-col gap-1"
+                    >
+                        {group.items.map(
+                            ({ item, globalIndex, sectionLabel }) => (
+                                <div key={item.name}>
+                                    {/* Section Label */}
+                                    {sectionLabel && !isCollapsed && (
+                                        <div className="px-5 py-2 mt-2">
+                                            <span className="text-[10px] font-black text-gray-600 dark:text-gray-300 tracking-widest uppercase">
+                                                {sectionLabel}
+                                            </span>
+                                        </div>
+                                    )}
 
-                    return (
-                        <div key={item.name}>
-                            {/* Section Label */}
-                            {sectionLabel && !isCollapsed && (
-                                <div className="px-5 py-2 mt-2">
-                                    <span className="text-[10px] font-black text-gray-600 dark:text-gray-300 tracking-widest uppercase">
-                                        {sectionLabel}
-                                    </span>
+                                    {/* Divider for Collapsed State */}
+                                    {sectionLabel &&
+                                        globalIndex > 0 &&
+                                        isCollapsed && (
+                                            <div className="mx-4 my-2 h-px bg-gray-200 dark:bg-white/10" />
+                                        )}
+
+                                    <SidebarItemComponent
+                                        item={item}
+                                        pathname={pathname}
+                                        collapsed={isCollapsed}
+                                        setCollapsed={
+                                            setCollapsed || (() => {})
+                                        }
+                                        isExpanded={expandedGroup === item.name}
+                                        onToggle={() => {
+                                            setExpandedGroup((prev) =>
+                                                prev === item.name
+                                                    ? null
+                                                    : item.name
+                                            );
+                                        }}
+                                        activeHref={activeHref}
+                                    />
                                 </div>
-                            )}
-
-                            {/* Divider for Collapsed State */}
-                            {sectionLabel && index > 0 && isCollapsed && (
-                                <div className="mx-4 my-2 h-px bg-gray-200 dark:bg-white/10" />
-                            )}
-
-                            <SidebarItemComponent
-                                item={item}
-                                pathname={pathname}
-                                collapsed={isCollapsed}
-                                setCollapsed={setCollapsed || (() => {})}
-                                isExpanded={expandedGroup === item.name}
-                                onToggle={() => {
-                                    setExpandedGroup((prev) =>
-                                        prev === item.name ? null : item.name
-                                    );
-                                }}
-                                activeHref={activeHref}
-                            />
-                        </div>
-                    );
-                })}
+                            )
+                        )}
+                    </div>
+                ))}
             </div>
 
             {/* VIP Pro Status Widget - only show in user dashboard, not admin */}

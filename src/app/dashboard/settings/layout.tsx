@@ -4,7 +4,6 @@ import {
     Brain,
     Flame,
     Settings,
-    Users,
     Lock,
     MessageSquare,
     Globe,
@@ -46,7 +45,6 @@ const baseNavItems: NavItem[] = [
         icon: RefreshCw,
     },
     { title: "Login Streak", href: "/dashboard/settings/streak", icon: Flame },
-    { title: "Referrals", href: "/dashboard/settings/referrals", icon: Users },
 ];
 
 const feedbackNavItem: NavItem = {

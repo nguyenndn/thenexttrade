@@ -31,7 +31,7 @@ import {
     deleteBulkSyncRequestsAdmin,
     UnifiedSyncItem,
 } from "@/actions/admin-sync-requests";
-import { SyncFilterToolbar, RangeOption } from "./SyncFilterToolbar";
+import { SyncFilterToolbar, RangeOption } from "@/components/admin/SyncFilterToolbar";
 import { SavedPasswordReveal } from "@/components/trading-accounts/SavedPasswordReveal";
 import { CredentialCopyChip } from "@/components/trading-accounts/CredentialCopyChip";
 import { toast } from "sonner";
@@ -142,7 +142,7 @@ export function SyncRequestsClient({
         if (merged.range && merged.range !== "all") query.set("range", merged.range);
 
         startTransition(() => {
-            router.push(`/admin/ib/sync-requests?${query.toString()}`);
+            router.push(`/admin/cloud-sync-logs?${query.toString()}`);
         });
     };
 
@@ -242,7 +242,7 @@ export function SyncRequestsClient({
     };
 
     const statusTabs = [
-        { key: "ALL", label: "All Requests", count: stats.totalAll, icon: CloudSync },
+        { key: "ALL", label: "All Logs", count: stats.totalAll, icon: CloudSync },
         { key: "QUEUE", label: "In Queue / Pending", count: stats.queueCount, icon: Clock },
         { key: "COMPLETED", label: "Completed", count: stats.completedCount, icon: CheckCircle2 },
         { key: "FAILED", label: "Failed", count: stats.failedCount, icon: XCircle },
@@ -260,7 +260,7 @@ export function SyncRequestsClient({
             {/* Top Metric Cards with AnimatedStatCard (matching pipeline) */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <AnimatedStatCard
-                    title="Total Requests"
+                    title="Total Sync Jobs"
                     value={stats.totalAll}
                     icon={CloudSync}
                     color="amber"
@@ -383,9 +383,9 @@ export function SyncRequestsClient({
                                 <tr>
                                     <td colSpan={8} className="py-16 text-center text-gray-400 dark:text-gray-500">
                                         <CloudSync className="h-10 w-10 mx-auto mb-2 opacity-30 text-primary" />
-                                        <p className="text-sm font-bold text-gray-700 dark:text-gray-300">No sync requests found</p>
+                                        <p className="text-sm font-bold text-gray-700 dark:text-gray-300">No Cloud Sync logs found</p>
                                         <p className="text-xs mt-1 text-gray-500 dark:text-gray-400">
-                                            Sync jobs from Cloud Sync worker will appear here.
+                                            Automated MT5 Cloud Sync job records will appear here.
                                         </p>
                                     </td>
                                 </tr>
@@ -828,7 +828,7 @@ export function SyncRequestsClient({
                                     </div>
                                     <div>
                                         <h3 className="text-base font-bold text-gray-900 dark:text-white">
-                                            Sync Request Diagnostics
+                                            Cloud Sync Diagnostics
                                         </h3>
                                         <div className="flex items-center gap-2 mt-0.5">
                                             <span className="font-mono text-xs text-gray-400">

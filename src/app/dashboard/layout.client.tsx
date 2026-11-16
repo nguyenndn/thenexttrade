@@ -4,11 +4,15 @@ import { Sidebar } from "@/components/dashboard/Sidebar";
 import { Header } from "@/components/dashboard/Header";
 import { MobileSidebar } from "@/components/dashboard/MobileSidebar";
 import { MobileBottomTabBar } from "@/components/dashboard/MobileBottomTabBar";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { AuthUser } from "@/lib/auth-types";
 import { FloatingQuickActions } from "@/components/dashboard/FloatingQuickActions";
 import { DashboardProvider } from "@/lib/dashboard-context";
-import { PageWelcomeGuide } from "@/components/onboarding/PageWelcomeGuide";
+import { DashboardTourProvider } from "@/components/onboarding/DashboardTourProvider";
+import {
+    DEFAULT_DASHBOARD_TOUR_STATE,
+    type DashboardTourState,
+} from "@/lib/onboarding/tour-state";
 import {
     ProProvider,
     type InitialProStatus,
@@ -26,6 +30,7 @@ interface DashboardLayoutClientProps {
     user: AuthUser | null;
     initialProStatus?: InitialProStatus | null;
     initialDisabledFlags?: string[];
+    initialTourState?: DashboardTourState;
 }
 
 export function DashboardLayoutClient({
@@ -33,15 +38,23 @@ export function DashboardLayoutClient({
     user,
     initialProStatus,
     initialDisabledFlags,
+    initialTourState = DEFAULT_DASHBOARD_TOUR_STATE,
 }: DashboardLayoutClientProps) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [collapsed, setCollapsed] = useState(false);
+    const ensureSidebarExpanded = useCallback(() => {
+        setCollapsed(false);
+    }, []);
 
     return (
         <DashboardButtonSizeProvider>
             <DashboardProvider initialDisabledFlags={initialDisabledFlags}>
                 <ProProvider initialProStatus={initialProStatus}>
                     <SampleModeProvider>
+                        <DashboardTourProvider
+                            initialTourState={initialTourState}
+                            onEnsureSidebarExpanded={ensureSidebarExpanded}
+                        >
                         <TradingStyleAutoSync userId={user?.id} />
                         <div
                             className="h-screen font-sans flex flex-col overflow-hidden"
@@ -82,15 +95,13 @@ export function DashboardLayoutClient({
                     {/* Mobile Bottom Tab Bar */}
                     <MobileBottomTabBar />
 
-                    {/* Page Welcome Guide — shows once per page */}
-                    <PageWelcomeGuide />
-
                     {/* Level Up Celebration Modal */}
                     <LevelUpModal />
 
                     {/* Milestone Celebration Modal */}
                     <MilestoneCelebrationModal />
                 </div>
+                        </DashboardTourProvider>
                 </SampleModeProvider>
             </ProProvider>
         </DashboardProvider>

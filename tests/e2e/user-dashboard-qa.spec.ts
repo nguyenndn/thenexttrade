@@ -173,7 +173,7 @@ async function dismissBlockingOverlays(page: Page) {
             continue;
         }
 
-        const closePanel = page.getByRole("button", { name: /close panel|close menu/i }).last();
+        const closePanel = page.getByRole("button", { name: /close panel|close menu|close tour|^skip$/i }).last();
         if (await closePanel.isVisible({ timeout: 300 }).catch(() => false)) {
             await closePanel.click({ force: true }).catch(() => {});
             await page.waitForTimeout(250);
@@ -340,7 +340,6 @@ async function routeSmoke(page: Page, viewport: ViewportName) {
         "/dashboard/settings",
         "/dashboard/settings/account",
         "/dashboard/settings/profile",
-        "/dashboard/settings/referrals",
         "/dashboard/settings/security",
         "/dashboard/settings/streak",
         "/dashboard/settings/sync-settings",

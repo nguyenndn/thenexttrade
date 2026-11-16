@@ -1,5 +1,6 @@
 "use server";
 
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth-cache";
 import { isAdminRole } from "@/lib/permissions";
@@ -8,7 +9,6 @@ import { classifyUser } from "@/lib/admin/behavior/classify.server";
 import {
     getBatchProductAdoption,
     getBatchLastActivity,
-    computeUserTradingActivity,
 } from "@/lib/admin/behavior/activity.server";
 
 export interface GetBehaviorSegmentsParams {
@@ -64,7 +64,7 @@ export async function getBehaviorSegments(
             pageSize = 20,
         } = params;
 
-        const whereUser: any = {};
+        const whereUser: Prisma.UserWhereInput = {};
         if (search.trim()) {
             whereUser.OR = [
                 { name: { contains: search.trim(), mode: "insensitive" } },
@@ -158,6 +158,7 @@ export async function getBehaviorSegments(
                         severity: true,
                         title: true,
                         summary: true,
+                        metadata: true,
                     },
                 }),
                 getBatchProductAdoption(userIds),
@@ -203,6 +204,23 @@ export async function getBehaviorSegments(
                 productAdoptionFeatures: adoption.features,
             });
 
+            const primaryMatchedSignal =
+                userSignals.find(
+                    (s) => s.signalType === classification.primarySignal
+                ) ||
+                userSignals[0] ||
+                null;
+            const signalMeta =
+                primaryMatchedSignal?.metadata &&
+                typeof primaryMatchedSignal.metadata === "object" &&
+                !Array.isArray(primaryMatchedSignal.metadata)
+                    ? (primaryMatchedSignal.metadata as Record<string, unknown>)
+                    : null;
+            const contactedAt =
+                typeof signalMeta?.adminContactedAt === "string"
+                    ? signalMeta.adminContactedAt
+                    : null;
+
             return {
                 userId: user.id,
                 user: {
@@ -214,6 +232,8 @@ export async function getBehaviorSegments(
                 },
                 classification,
                 lastActivityAt: lastActivity,
+                activeSignalId: primaryMatchedSignal?.id ?? null,
+                contactedAt,
             };
         });
 
@@ -300,8 +320,13 @@ export async function getBehaviorSegments(
                 },
             },
         };
-    } catch (err: any) {
-        console.error("Failed to get behavior segments:", err);
-        return { success: false, error: err.message || "Failed to load behavior segments" };
+    } catch (err: unknown) {
+        return {
+            success: false,
+            error:
+                err instanceof Error
+                    ? err.message
+                    : "Failed to load behavior segments",
+        };
     }
 }

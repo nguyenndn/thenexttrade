@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
+import { buildInitialEmailPreferences } from "@/lib/email/preferences";
 
 export async function GET(request: Request) {
     const { searchParams, origin } = new URL(request.url);
@@ -68,6 +69,12 @@ export async function GET(request: Request) {
                         (!conflictingEmailUser ||
                             conflictingEmailUser.id === authUser.id);
 
+                    const marketingOptIn =
+                        typeof authUser.user_metadata?.marketing_opt_in ===
+                        "boolean"
+                            ? authUser.user_metadata.marketing_opt_in
+                            : undefined;
+
                     await prisma.user.upsert({
                         where: { id: authUser.id },
                         update: {
@@ -83,6 +90,17 @@ export async function GET(request: Request) {
                             name: metaName,
                             emailVerified: confirmedAt,
                             image: authUser.user_metadata?.avatar_url || null,
+                            ...(marketingOptIn !== undefined
+                                ? {
+                                      settings: {
+                                          emailPreferences: {
+                                              ...buildInitialEmailPreferences(
+                                                  marketingOptIn
+                                              ),
+                                          },
+                                      },
+                                  }
+                                : {}),
                         },
                     });
                 } catch (upsertErr) {

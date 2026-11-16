@@ -147,6 +147,7 @@ function PrivacyToggleCard({
 interface ProfileClientProps {
     initialSettings: ProfileSettings;
     userDisplayName?: string | null;
+    userAvatar?: string | null;
     userJoinedDate?: Date | null;
     userCountry?: string | null;
     userTradingStyle?: {
@@ -154,13 +155,19 @@ interface ProfileClientProps {
         archetypeTitle: string;
         dimensions?: Record<string, number>;
     } | null;
+    previewAccount?: {
+        broker: string | null;
+        accountNumber: string | null;
+    } | null;
 }
 
 export default function ProfileClient({
     initialSettings,
     userDisplayName,
+    userAvatar,
     userJoinedDate,
     userTradingStyle,
+    previewAccount,
 }: ProfileClientProps) {
     const [settings, setSettings] = useState<ProfileSettings>(initialSettings);
     const [isPending, startTransition] = useTransition();
@@ -681,9 +688,11 @@ export default function ProfileClient({
                             profile={{
                                 name: settings.showRealName
                                     ? userDisplayName || "Trader"
-                                    : "Trader",
+                                    : `@${settings.username || "trader"}`,
                                 username: settings.username || "trader",
-                                image: null,
+                                image: settings.showRealName
+                                    ? userAvatar || null
+                                    : null,
                                 bio: null,
                                 xp: 1500,
                                 level: 5,
@@ -700,6 +709,21 @@ export default function ProfileClient({
                                 },
                                 dataSource: "Preview data only",
                                 methodologyHref: "/faq",
+                                verifiedAccount:
+                                    settings.showBroker ||
+                                    settings.showAccountNumber
+                                        ? {
+                                              broker: settings.showBroker
+                                                  ? previewAccount?.broker ||
+                                                    "Exness"
+                                                  : null,
+                                              accountNumber:
+                                                  settings.showAccountNumber
+                                                      ? previewAccount?.accountNumber ||
+                                                        "924399"
+                                                      : null,
+                                          }
+                                        : null,
                                 badges: [
                                     {
                                         name: "Trader",
@@ -733,6 +757,7 @@ export default function ProfileClient({
                                     winRate: 68.5,
                                     avgRR: 2.1,
                                     tradeScore: 82,
+                                    netPnl: settings.showMoney ? 2450 : null,
                                 },
                                 tradingStyle: settings.showTradingStyle
                                     ? userTradingStyle || {

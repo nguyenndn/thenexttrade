@@ -54,7 +54,6 @@ function SignupPageContent() {
     const [confirm, setConfirm] = useState("");
     const [turnstileToken, setTurnstileToken] = useState("");
     const [turnstileResetKey, setTurnstileResetKey] = useState(0);
-    const [referralCode, setReferralCode] = useState("");
 
     const inputClassName =
         "h-[42px] rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 text-slate-900 dark:text-white text-sm py-2.5 focus:bg-white dark:focus:bg-[#151925] focus:border-gold focus:ring-gold/20 transition-colors";
@@ -67,7 +66,6 @@ function SignupPageContent() {
 
     useEffect(() => {
         const search = new URLSearchParams(window.location.search);
-        setReferralCode(search.get("ref")?.trim() || "");
 
         const intentParam = search.get("intent")?.trim();
         if (intentParam) {
@@ -186,9 +184,6 @@ function SignupPageContent() {
         formData.set("termsAccepted", termsAccepted ? "on" : "");
         formData.set("notify", notify ? "on" : "");
         formData.set("cf-turnstile-response", turnstileToken);
-        if (referralCode) {
-            formData.set("referralCode", referralCode);
-        }
 
         trackEvent("sign_up_submitted", { country, notify: notify ? 1 : 0 });
         const result = await signup(formData);
@@ -231,11 +226,6 @@ function SignupPageContent() {
                 <p className="mt-1.5 sm:mt-2 text-sm sm:text-base font-medium text-slate-600 dark:text-slate-300">
                     Set up your trading workspace in minutes.
                 </p>
-                {referralCode && (
-                    <p className="mx-auto mt-2.5 sm:mt-3 inline-flex rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700 dark:border-emerald-400/20 dark:bg-emerald-400/10 dark:text-emerald-200">
-                        Referral applied
-                    </p>
-                )}
             </div>
 
             <div className="mb-6 sm:mb-7 flex items-center justify-center gap-1 sm:gap-2 md:gap-3 max-w-full">

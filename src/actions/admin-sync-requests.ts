@@ -293,7 +293,7 @@ export async function retrySyncJobAdmin(jobId: string) {
         },
     });
 
-    revalidatePath("/admin/ib/sync-requests");
+    revalidatePath("/admin/cloud-sync-logs");
     revalidatePath("/dashboard/accounts");
     return { success: true };
 }
@@ -328,7 +328,7 @@ export async function cancelSyncJobAdmin(jobId: string) {
         },
     });
 
-    revalidatePath("/admin/ib/sync-requests");
+    revalidatePath("/admin/cloud-sync-logs");
     revalidatePath("/dashboard/accounts");
     return { success: true };
 }
@@ -350,7 +350,7 @@ export async function deleteSyncJobAdmin(jobId: string) {
         await prisma.mt5ImportJob.delete({
             where: { id: jobId },
         });
-        revalidatePath("/admin/ib/sync-requests");
+        revalidatePath("/admin/cloud-sync-logs");
         return { success: true };
     }
 
@@ -377,7 +377,7 @@ export async function deleteBulkSyncRequestsAdmin(ids: string[]) {
         where: { id: { in: ids } },
     });
 
-    revalidatePath("/admin/ib/sync-requests");
+    revalidatePath("/admin/cloud-sync-logs");
     revalidatePath("/dashboard/accounts");
 
     return {

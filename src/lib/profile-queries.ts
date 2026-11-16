@@ -40,7 +40,13 @@ export interface PublicProfileData {
         winRate: number;
         avgRR: number;
         tradeScore: number | null;
+        netPnl?: number | null;
     };
+
+    verifiedAccount?: {
+        broker: string | null;
+        accountNumber: string | null;
+    } | null;
 
     badges: Array<{
         name: string;
@@ -154,6 +160,7 @@ async function getVerifiedPublicStats(
     winRate: number;
     avgWin: number;
     avgLoss: number;
+    netPnl: number;
     latestExitDate: Date | null;
 }> {
     if (!isValidUuid(userId)) {
@@ -162,6 +169,7 @@ async function getVerifiedPublicStats(
             winRate: 0,
             avgWin: 0,
             avgLoss: 0,
+            netPnl: 0,
             latestExitDate: null,
         };
     }
@@ -271,12 +279,14 @@ async function getVerifiedPublicStats(
         totalWinPnlCount > 0 ? totalUsdWinPnl / totalWinPnlCount : 0;
     const avgLoss =
         totalLossPnlCount > 0 ? totalUsdLossPnl / totalLossPnlCount : 0;
+    const netPnl = Number((totalUsdWinPnl - totalUsdLossPnl).toFixed(2));
 
     return {
         totalTrades,
         winRate,
         avgWin,
         avgLoss,
+        netPnl,
         latestExitDate,
     };
 }
@@ -395,30 +405,49 @@ export const getPublicProfileData = cache(
     const qualifyingClosedTrades = stats.totalTrades;
     const hasVerificationSample = qualifyingClosedTrades >= 10;
 
+    // Fetch primary verified real account when needed for Trade Score or Broker/Account # display
+    const needsPrimaryAccount =
+        (profile.showTradeScore && stats.totalTrades >= 30) ||
+        profile.showBroker ||
+        profile.showAccountNumber;
+
+    const primaryRealAccount = needsPrimaryAccount
+        ? await prisma.tradingAccount.findFirst({
+              where: {
+                  userId,
+                  accountType: { notIn: ["DEMO", "CONTEST"] },
+                  NOT: { server: { contains: "demo", mode: "insensitive" } },
+              },
+              orderBy: [
+                  { useForLeaderboard: "desc" },
+                  { isDefault: "desc" },
+                  { createdAt: "desc" },
+              ],
+              select: {
+                  id: true,
+                  broker: true,
+                  accountNumber: true,
+              },
+          })
+        : null;
+
     // Trade Score (only if toggled on AND enough verified real synced trades)
     let tradeScore: number | null = null;
-    if (profile.showTradeScore && stats.totalTrades >= 30) {
+    if (
+        profile.showTradeScore &&
+        stats.totalTrades >= 30 &&
+        primaryRealAccount
+    ) {
         try {
-            const primaryRealAccount = await prisma.tradingAccount.findFirst({
-                where: {
-                    userId,
-                    accountType: { notIn: ["DEMO", "CONTEST"] },
-                    NOT: { server: { contains: "demo", mode: "insensitive" } },
-                },
-                orderBy: [{ useForLeaderboard: "desc" }, { createdAt: "desc" }],
-                select: { id: true },
-            });
-            if (primaryRealAccount) {
-                const { getIntelligenceData } =
-                    await import("@/lib/smart-analytics");
-                const intelligence = await getIntelligenceData(
-                    userId,
-                    primaryRealAccount.id,
-                    ninetyDaysAgo,
-                    now
-                );
-                tradeScore = intelligence.tradeScore.score;
-            }
+            const { getIntelligenceData } =
+                await import("@/lib/smart-analytics");
+            const intelligence = await getIntelligenceData(
+                userId,
+                primaryRealAccount.id,
+                ninetyDaysAgo,
+                now
+            );
+            tradeScore = intelligence.tradeScore.score;
         } catch {
             // Silent fail
         }
@@ -426,6 +455,12 @@ export const getPublicProfileData = cache(
 
     const avgRR = stats.avgLoss > 0 ? stats.avgWin / stats.avgLoss : 0;
     const canShowPercent = profile.showPercentMetrics;
+    const safeBroker = profile.showBroker
+        ? primaryRealAccount?.broker?.trim() || null
+        : null;
+    const safeAccountNumber = profile.showAccountNumber
+        ? primaryRealAccount?.accountNumber?.trim() || null
+        : null;
 
     return {
         name: profile.showRealName
@@ -459,7 +494,16 @@ export const getPublicProfileData = cache(
             winRate: canShowPercent ? stats.winRate : 0,
             avgRR,
             tradeScore,
+            netPnl: profile.showMoney ? stats.netPnl : null,
         },
+
+        verifiedAccount:
+            safeBroker || safeAccountNumber
+                ? {
+                      broker: safeBroker,
+                      accountNumber: safeAccountNumber,
+                  }
+                : null,
 
         badges: profile.showBadges
             ? profile.user.badges.map((b) => ({

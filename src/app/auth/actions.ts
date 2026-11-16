@@ -23,11 +23,8 @@ import { headers } from "next/headers";
 import { checkAuthRateLimit } from "@/lib/security/auth-rate-limit";
 import { AUTH_ERRORS } from "@/lib/security/auth-errors";
 import { normalizeCountryCode } from "@/lib/country-utils";
-import {
-    recordQualifiedReferral,
-    resolveReferrerByCode,
-} from "@/lib/referrals";
 import { isOnboardingDone } from "@/lib/onboarding/onboarding.server";
+import { buildInitialEmailPreferences } from "@/lib/email/preferences";
 
 function getAppBaseUrl(): string {
     return (
@@ -135,12 +132,27 @@ export async function login(formData: FormData) {
                 };
             } else {
                 // Self-heal: Create missing user record
+                const marketingOptIn =
+                    typeof user.user_metadata?.marketing_opt_in === "boolean"
+                        ? user.user_metadata.marketing_opt_in
+                        : undefined;
                 await prisma.user.create({
                     data: {
                         id: user.id,
                         email: user.email,
                         name: user.user_metadata?.full_name || "",
                         image: user.user_metadata?.avatar_url || "",
+                        ...(marketingOptIn !== undefined
+                            ? {
+                                  settings: {
+                                      emailPreferences: {
+                                          ...buildInitialEmailPreferences(
+                                              marketingOptIn
+                                          ),
+                                      },
+                                  },
+                              }
+                            : {}),
                     },
                 });
             }
@@ -304,12 +316,7 @@ export async function signup(formData: FormData) {
 
     const { fullName, country, password } = validated.data;
     const normalizedCountry = normalizeCountryCode(country);
-    const referralCode =
-        (formData.get("referralCode") as string | null)?.trim() || null;
-    const referrer = await resolveReferrerByCode(
-        referralCode,
-        validated.data.email
-    );
+    const marketingOptIn = formData.get("notify") === "on";
 
     // Attempt to split name for metadata if needed, otherwise just use full name
     const nameParts = fullName.trim().split(" ");
@@ -321,8 +328,7 @@ export async function signup(formData: FormData) {
         country: normalizedCountry,
         first_name: firstName,
         last_name: lastName,
-        referral_code: referralCode,
-        referrer_user_id: referrer?.id || null,
+        marketing_opt_in: marketingOptIn,
     };
 
     const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -411,17 +417,43 @@ export async function signup(formData: FormData) {
     if (data?.user && data.session) {
         // Fallback: If verification is disabled, insert immediately
         try {
+            const existingUser = await prisma.user.findUnique({
+                where: { id: data.user.id },
+                select: { settings: true },
+            });
+            const existingSettings =
+                (existingUser?.settings as Record<string, unknown> | null) || {};
+            const shouldWriteMarketingPref =
+                existingSettings.emailPreferences === undefined;
+
             await prisma.$transaction([
                 prisma.user.upsert({
                     where: { id: data.user.id },
                     update: {
                         email: validated.data.email,
                         name: fullName.trim(),
+                        ...(shouldWriteMarketingPref
+                            ? {
+                                  settings: {
+                                      ...existingSettings,
+                                      emailPreferences: {
+                                          ...buildInitialEmailPreferences(
+                                              marketingOptIn
+                                          ),
+                                      },
+                                  },
+                              }
+                            : {}),
                     },
                     create: {
                         id: data.user.id,
                         email: validated.data.email,
                         name: fullName.trim(),
+                        settings: {
+                            emailPreferences: {
+                                ...buildInitialEmailPreferences(marketingOptIn),
+                            },
+                        },
                     },
                 }),
                 prisma.profile.upsert({
@@ -435,16 +467,6 @@ export async function signup(formData: FormData) {
                     },
                 }),
             ]);
-
-            if (referrer && referrer.id !== data.user.id) {
-                await recordQualifiedReferral({
-                    referrerId: referrer.id,
-                    referredUserId: data.user.id,
-                    referredEmail: validated.data.email,
-                    referredName: fullName.trim(),
-                    referralCode,
-                }).catch(() => {});
-            }
         } catch {
             // Silently handle insert error
         }
@@ -585,30 +607,59 @@ export async function verifyOtpAction(formData: FormData) {
             (metadata?.first_name
                 ? metadata.first_name + " " + metadata.last_name
                 : "Trader");
-        const referrerUserId =
-            typeof metadata?.referrer_user_id === "string"
-                ? metadata.referrer_user_id
-                : null;
-        const referralCode =
-            typeof metadata?.referral_code === "string"
-                ? metadata.referral_code
-                : null;
         const normalizedCountry = normalizeCountryCode(
             typeof metadata?.country === "string" ? metadata.country : null
         );
+        const marketingOptIn =
+            typeof metadata?.marketing_opt_in === "boolean"
+                ? metadata.marketing_opt_in
+                : undefined;
 
         try {
+            const existingUser = await prisma.user.findUnique({
+                where: { id: data.user.id },
+                select: { settings: true },
+            });
+            const existingSettings =
+                (existingUser?.settings as Record<string, unknown> | null) || {};
+            const shouldWriteMarketingPref =
+                marketingOptIn !== undefined &&
+                existingSettings.emailPreferences === undefined;
+
             await prisma.$transaction([
                 prisma.user.upsert({
                     where: { id: data.user.id },
                     update: {
                         email: data.user.email!,
                         name: fullName.trim(),
+                        ...(shouldWriteMarketingPref
+                            ? {
+                                  settings: {
+                                      ...existingSettings,
+                                      emailPreferences: {
+                                          ...buildInitialEmailPreferences(
+                                              marketingOptIn
+                                          ),
+                                      },
+                                  },
+                              }
+                            : {}),
                     },
                     create: {
                         id: data.user.id,
                         email: data.user.email!,
                         name: fullName.trim(),
+                        ...(marketingOptIn !== undefined
+                            ? {
+                                  settings: {
+                                      emailPreferences: {
+                                          ...buildInitialEmailPreferences(
+                                              marketingOptIn
+                                          ),
+                                      },
+                                  },
+                              }
+                            : {}),
                     },
                 }),
                 prisma.profile.upsert({
@@ -622,16 +673,6 @@ export async function verifyOtpAction(formData: FormData) {
                     },
                 }),
             ]);
-
-            if (referrerUserId && referrerUserId !== data.user.id) {
-                await recordQualifiedReferral({
-                    referrerId: referrerUserId,
-                    referredUserId: data.user.id,
-                    referredEmail: data.user.email,
-                    referredName: fullName.trim(),
-                    referralCode,
-                }).catch(() => {});
-            }
         } catch {
             // Silently handle insert error
         }

@@ -225,7 +225,7 @@ describe("notifyAdminsOfSyncFailure", () => {
         vi.clearAllMocks();
     });
 
-    it("creates URGENT notifications linking to /admin/ib/sync-requests?q=<accountNumber>", async () => {
+    it("creates URGENT notifications linking to /admin/cloud-sync-logs?q=<accountNumber>", async () => {
         vi.mocked(prisma.profile.findMany).mockResolvedValueOnce([
             { userId: "admin-1" },
         ] as any);
@@ -245,7 +245,7 @@ describe("notifyAdminsOfSyncFailure", () => {
 
         expect(first.userId).toBe("admin-1");
         expect(first.priority).toBe(NotificationPriority.URGENT);
-        expect(first.link).toBe("/admin/ib/sync-requests?q=88990011");
+        expect(first.link).toBe("/admin/cloud-sync-logs?q=88990011");
         expect(first.dedupeKey).toBe("admin-sync-fail-job-55-admin-1");
     });
 });

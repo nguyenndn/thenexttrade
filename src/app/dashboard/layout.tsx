@@ -6,6 +6,10 @@ import { redirect } from "next/navigation";
 import { isOnboardingDone } from "@/lib/onboarding/onboarding.server";
 import { getUserTradingDataState } from "@/lib/trading-data-state";
 import { dashboardMenuItems, dashboardMenuGroups } from "@/config/navigation";
+import {
+    DEFAULT_DASHBOARD_TOUR_STATE,
+    getDashboardTourState,
+} from "@/lib/onboarding/tour-state";
 
 export const dynamic = "force-dynamic";
 
@@ -71,7 +75,7 @@ export default async function DashboardLayout({
         }
     }
 
-    const [initialProStatus, initialDisabledFlags] = await Promise.all([
+    const [userContext, initialDisabledFlags] = await Promise.all([
         user
             ? Promise.all([
                   getUserProAccess(user.id),
@@ -79,22 +83,29 @@ export default async function DashboardLayout({
                       where: { userId: user.id },
                       select: { mainTradingAccountId: true },
                   }),
-              ]).then(([r, profile]) => ({
-                  isPro: r.isPro,
-                  status: r.status,
-                  source: r.source,
-                  expiresAt: r.expiresAt?.toISOString() ?? null,
-                  activeAccountCount: r.activeAccountCount,
-                  mainAccountId: profile?.mainTradingAccountId ?? null,
-                  accounts: r.accounts.map((a) => ({
-                      tradingAccountId: a.tradingAccountId,
-                      accountName: a.accountName,
-                      broker: a.broker,
-                      status: a.status,
-                      isPro: a.isPro,
-                      source: a.source,
-                      expiresAt: a.expiresAt?.toISOString() ?? null,
-                  })),
+                  prisma.user.findUnique({
+                      where: { id: user.id },
+                      select: { settings: true },
+                  }),
+              ]).then(([r, profile, dbUser]) => ({
+                  proStatus: {
+                      isPro: r.isPro,
+                      status: r.status,
+                      source: r.source,
+                      expiresAt: r.expiresAt?.toISOString() ?? null,
+                      activeAccountCount: r.activeAccountCount,
+                      mainAccountId: profile?.mainTradingAccountId ?? null,
+                      accounts: r.accounts.map((a) => ({
+                          tradingAccountId: a.tradingAccountId,
+                          accountName: a.accountName,
+                          broker: a.broker,
+                          status: a.status,
+                          isPro: a.isPro,
+                          source: a.source,
+                          expiresAt: a.expiresAt?.toISOString() ?? null,
+                      })),
+                  },
+                  tourState: getDashboardTourState(dbUser?.settings),
               }))
             : Promise.resolve(null),
         getDisabledDashboardFlags(),
@@ -103,8 +114,11 @@ export default async function DashboardLayout({
     return (
         <DashboardLayoutClient
             user={user}
-            initialProStatus={initialProStatus}
+            initialProStatus={userContext?.proStatus ?? null}
             initialDisabledFlags={initialDisabledFlags}
+            initialTourState={
+                userContext?.tourState ?? DEFAULT_DASHBOARD_TOUR_STATE
+            }
         >
             {children}
         </DashboardLayoutClient>

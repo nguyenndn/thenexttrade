@@ -795,11 +795,6 @@ export default function SettingsClient() {
                                     title: "Product & Feature Updates",
                                     desc: "Announcements about new features and content",
                                 },
-                                {
-                                    key: "welcome",
-                                    title: "Welcome Emails",
-                                    desc: "Your onboarding welcome sequence",
-                                },
                             ] as const
                         ).map((row) => {
                             const on =

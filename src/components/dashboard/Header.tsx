@@ -28,6 +28,7 @@ import { NotificationBell } from "@/components/layout/NotificationBell";
 import { ThemeToggleSwitch } from "@/components/ui/ThemeToggleSwitch";
 import { Button } from "@/components/ui/Button";
 import { SampleModeToggle } from "@/components/dashboard/SampleModeToggle";
+import { DashboardTourButton } from "@/components/onboarding/DashboardTourButton";
 
 export function Header({
     onMobileMenuClick,
@@ -104,27 +105,35 @@ export function Header({
 
                 {/* Right Side Actions & Search */}
                 <div className="flex items-center gap-1.5 sm:gap-2">
-                    <div className="hidden md:block mr-2">
-                        <CommandPaletteTrigger />
-                    </div>
-
-                    {showAccountSelector && (
-                        <div className="hidden md:block">
-                            <AccountSelector
-                                currentAccountId={accountId ?? undefined}
-                            />
+                    <div
+                        data-tour="header-tools"
+                        className="flex items-center gap-1.5 sm:gap-2"
+                    >
+                        <div className="hidden md:block mr-2">
+                            <CommandPaletteTrigger />
                         </div>
-                    )}
 
-                    {/* Sample Mode Toggle */}
-                    <SampleModeToggle />
+                        {showAccountSelector && (
+                            <div className="hidden md:block">
+                                <AccountSelector
+                                    currentAccountId={accountId ?? undefined}
+                                />
+                            </div>
+                        )}
 
-                    {/* Theme Toggle - visible on all sizes, next to avatar */}
-                    <ThemeToggleSwitch />
+                        {/* Sample Mode Toggle */}
+                        <SampleModeToggle />
 
-                    {/* Notification Bell - visible on all sizes, next to avatar */}
-                    <div key="notification-bell">
-                        {bell ? bell : <NotificationBell />}
+                        {/* Dashboard Tour Replay Button */}
+                        <DashboardTourButton />
+
+                        {/* Theme Toggle - visible on all sizes, next to avatar */}
+                        <ThemeToggleSwitch />
+
+                        {/* Notification Bell - visible on all sizes, next to avatar */}
+                        <div key="notification-bell">
+                            {bell ? bell : <NotificationBell />}
+                        </div>
                     </div>
 
                     <div className="h-6 w-[1px] bg-gray-200 dark:bg-white/10 mx-1 hidden sm:block"></div>

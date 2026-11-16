@@ -12,28 +12,45 @@ export default async function PublicProfilePage() {
         redirect("/auth/login");
     }
 
-    const profile = await prisma.profile.findUnique({
-        where: { userId: user.id },
-        select: {
-            username: true,
-            isPublicProfile: true,
-            showTradeScore: true,
-            showBadges: true,
-            showPairStats: true,
-            showSessionStats: true,
-            profileHeadline: true,
-            showMoney: true,
-            showBroker: true,
-            showAccountNumber: true,
-            showRealName: true,
-            showPercentMetrics: true,
-        },
-    });
-
-    const dbUser = await prisma.user.findUnique({
-        where: { id: user.id },
-        select: { settings: true },
-    });
+    const [profile, dbUser, primaryRealAccount] = await Promise.all([
+        prisma.profile.findUnique({
+            where: { userId: user.id },
+            select: {
+                username: true,
+                isPublicProfile: true,
+                showTradeScore: true,
+                showBadges: true,
+                showPairStats: true,
+                showSessionStats: true,
+                profileHeadline: true,
+                showMoney: true,
+                showBroker: true,
+                showAccountNumber: true,
+                showRealName: true,
+                showPercentMetrics: true,
+            },
+        }),
+        prisma.user.findUnique({
+            where: { id: user.id },
+            select: { settings: true },
+        }),
+        prisma.tradingAccount.findFirst({
+            where: {
+                userId: user.id,
+                accountType: { notIn: ["DEMO", "CONTEST"] },
+                NOT: { server: { contains: "demo", mode: "insensitive" } },
+            },
+            orderBy: [
+                { useForLeaderboard: "desc" },
+                { isDefault: "desc" },
+                { createdAt: "desc" },
+            ],
+            select: {
+                broker: true,
+                accountNumber: true,
+            },
+        }),
+    ]);
     const userSettings = (dbUser?.settings as Record<string, unknown>) || {};
     const profileSettings =
         (userSettings?.profileSettings as Record<string, unknown> | undefined) ||
@@ -72,8 +89,17 @@ export default async function PublicProfilePage() {
         <ProfileClient
             initialSettings={settings}
             userDisplayName={user.name}
+            userAvatar={user.image}
             userJoinedDate={user.createdAt}
             userTradingStyle={userTradingStyle}
+            previewAccount={
+                primaryRealAccount
+                    ? {
+                          broker: primaryRealAccount.broker,
+                          accountNumber: primaryRealAccount.accountNumber,
+                      }
+                    : null
+            }
         />
     );
 }

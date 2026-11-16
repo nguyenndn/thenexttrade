@@ -7,6 +7,7 @@ import {
     getEmailPreferences,
     DEFAULT_EMAIL_PREFERENCES,
 } from "@/lib/email/preferences";
+import { getDashboardTourState } from "@/lib/onboarding/tour-state";
 
 export async function GET() {
     const user = await getAuthUser();
@@ -60,6 +61,7 @@ export async function GET() {
         true;
 
     const emailPreferences = getEmailPreferences(dbUser?.settings);
+    const dashboardTour = getDashboardTourState(dbUser?.settings);
     const payoutWallet =
         (userSettings?.payoutWallet as {
             network: "BEP20" | "TRC20" | "ERC20";
@@ -67,10 +69,22 @@ export async function GET() {
         } | null) || null;
 
     if (!profile) {
-        return NextResponse.json({ ...base, showTradingStyle, emailPreferences, payoutWallet });
+        return NextResponse.json({
+            ...base,
+            showTradingStyle,
+            emailPreferences,
+            dashboardTour,
+            payoutWallet,
+        });
     }
 
-    return NextResponse.json({ ...profile, showTradingStyle, emailPreferences, payoutWallet });
+    return NextResponse.json({
+        ...profile,
+        showTradingStyle,
+        emailPreferences,
+        dashboardTour,
+        payoutWallet,
+    });
 }
 
 export async function PUT(request: Request) {
@@ -105,6 +119,41 @@ export async function PUT(request: Request) {
                 settings: {
                     ...settings,
                     emailPreferences: merged,
+                },
+            },
+        });
+    }
+
+    // Persist dashboard product tour state inside User.settings.dashboardTour
+    if (body.dashboardTour && typeof body.dashboardTour === "object") {
+        const dbUser = await prisma.user.findUnique({
+            where: { id: user.id },
+            select: { settings: true },
+        });
+        const settings = (dbUser?.settings as Record<string, unknown>) || {};
+        const existingTour = getDashboardTourState(dbUser?.settings);
+        const incomingTour = body.dashboardTour as Record<string, unknown>;
+
+        const nextCompleted =
+            typeof incomingTour.completed === "boolean"
+                ? incomingTour.completed
+                : existingTour.completed;
+        const nextViews =
+            typeof incomingTour.views === "number" &&
+            Number.isFinite(incomingTour.views)
+                ? Math.max(existingTour.views, Math.floor(incomingTour.views))
+                : existingTour.views;
+
+        await prisma.user.update({
+            where: { id: user.id },
+            data: {
+                settings: {
+                    ...settings,
+                    dashboardTour: {
+                        completed: nextCompleted,
+                        views: nextViews,
+                        updatedAt: new Date().toISOString(),
+                    },
                 },
             },
         });

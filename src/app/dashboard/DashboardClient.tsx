@@ -372,7 +372,9 @@ export default function DashboardClient(data: DashboardPageData) {
                             activationState.totalCount &&
                             !suppress?.activationChecklist &&
                             !shouldHideActivationChecklistForPrimaryReview && (
-                                <ActivationChecklist state={activationState} />
+                                <div data-tour="dashboard-action-center">
+                                    <ActivationChecklist state={activationState} />
+                                </div>
                             )}
 
                         <DashboardManager

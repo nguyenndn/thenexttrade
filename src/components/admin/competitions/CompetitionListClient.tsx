@@ -23,7 +23,7 @@ import { AnimatedStatCard } from "@/components/admin/dashboard/AnimatedStatCard"
 import {
     SyncFilterToolbar,
     StatusFilterOption,
-} from "@/app/admin/ib/sync-requests/SyncFilterToolbar";
+} from "@/components/admin/SyncFilterToolbar";
 import { toast } from "sonner";
 import { CompetitionModal } from "./CompetitionModal";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";

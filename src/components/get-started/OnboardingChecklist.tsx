@@ -47,7 +47,7 @@ const steps: StepDef[] = [
         id: "profile",
         title: "Finish your identity",
         description:
-            "Add a username so your public profile, referrals, and leaderboard identity are clean.",
+            "Add a username so your public profile and leaderboard identity are clean.",
         href: "/dashboard/settings/profile",
         cta: "Edit profile",
         icon: User,

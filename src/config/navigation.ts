@@ -210,7 +210,6 @@ export const adminMenuItems = [
             { name: "VIP Pipeline", href: "/admin/ib/pipeline" },
             { name: "Trader Monitor", href: "/admin/ib/traders" },
             { name: "Trader Behavior", href: "/admin/users/behavior" },
-            { name: "Sync Requests", href: "/admin/ib/sync-requests" },
             { name: "Competitions", href: "/admin/competitions" },
             { name: "Loyalty & Rewards", href: "/admin/loyalty" },
         ],
@@ -223,6 +222,7 @@ export const adminMenuItems = [
         icon: Settings,
         items: [
             { name: "Trading Systems", href: "/admin/trading-systems" },
+            { name: "Cloud Sync Logs", href: "/admin/cloud-sync-logs" },
             { name: "Users", href: "/admin/users" },
             { name: "Broadcasts", href: "/admin/notifications" },
             { name: "Feedback", href: "/admin/feedback" },
@@ -355,11 +355,6 @@ export const adminMenuGroups = [
                 href: "/admin/users/behavior",
                 icon: Target,
             },
-            {
-                name: "Sync Requests",
-                href: "/admin/ib/sync-requests",
-                icon: CloudSync,
-            },
             { name: "Competitions", href: "/admin/competitions", icon: Trophy },
             { name: "Loyalty & Rewards", href: "/admin/loyalty", icon: Award },
             { name: "Users", href: "/admin/users", icon: Users },
@@ -371,6 +366,11 @@ export const adminMenuGroups = [
         items: [
             { name: "Academy", href: "/admin/academy", icon: GraduationCap },
             { name: "Trading Systems", href: "/admin/trading-systems", icon: Bot },
+            {
+                name: "Cloud Sync Logs",
+                href: "/admin/cloud-sync-logs",
+                icon: CloudSync,
+            },
             { name: "Broadcasts", href: "/admin/notifications", icon: MessageCircle },
             { name: "Feedback", href: "/admin/feedback", icon: MessageSquare },
             { name: "Messages", href: "/admin/messages", icon: Mail },

@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
     getEmailPreferences,
     canSendEmailCategory,
+    buildInitialEmailPreferences,
     DEFAULT_EMAIL_PREFERENCES,
 } from "./preferences";
 
@@ -63,5 +64,19 @@ describe("email preferences", () => {
         expect(canSendEmailCategory(settings, "reports")).toBe(false);
         expect(canSendEmailCategory(settings, "activation")).toBe(false);
         expect(canSendEmailCategory(settings, "welcome")).toBe(false);
+    });
+
+    it("buildInitialEmailPreferences maps signup marketing opt-in accurately", () => {
+        expect(buildInitialEmailPreferences(false)).toEqual({
+            ...DEFAULT_EMAIL_PREFERENCES,
+            marketing: false,
+        });
+        expect(buildInitialEmailPreferences(true)).toEqual({
+            ...DEFAULT_EMAIL_PREFERENCES,
+            marketing: true,
+        });
+        expect(buildInitialEmailPreferences(undefined)).toEqual(
+            DEFAULT_EMAIL_PREFERENCES
+        );
     });
 });

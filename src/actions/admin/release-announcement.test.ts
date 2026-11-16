@@ -151,4 +151,50 @@ describe("Release Announcement Actions", () => {
             })
         );
     });
+
+    it("skips users who disabled marketing emails or unsubscribed from all emails", async () => {
+        const { sendEmailWithDetails } = await import("@/lib/services/email.service");
+        vi.mocked(prisma.eAProduct.findUnique).mockResolvedValue({
+            id: "goldscalperninja",
+            name: "GoldScalperNinja Pro",
+            version: "2.5.0",
+            slug: "goldscalperninja",
+        } as any);
+
+        vi.mocked(prisma.user.findMany).mockResolvedValue([
+            {
+                id: "u1",
+                name: "Opted In Trader",
+                email: "in@example.com",
+                settings: { emailPreferences: { marketing: true, unsubscribedAll: false } },
+            },
+            {
+                id: "u2",
+                name: "Marketing Off Trader",
+                email: "nomarketing@example.com",
+                settings: { emailPreferences: { marketing: false, unsubscribedAll: false } },
+            },
+            {
+                id: "u3",
+                name: "Unsubscribed All Trader",
+                email: "unsub@example.com",
+                settings: { emailPreferences: { marketing: true, unsubscribedAll: true } },
+            },
+        ] as any);
+
+        const result = await sendReleaseAnnouncementBroadcast({
+            productId: "goldscalperninja",
+            version: "2.5.0",
+            releaseNotes: ["Risk engine update"],
+            targetAudience: "ALL_USERS",
+            isTest: false,
+        });
+
+        expect(result.success).toBe(true);
+        expect(result.count).toBe(1);
+        expect(sendEmailWithDetails).toHaveBeenCalledTimes(1);
+        expect(sendEmailWithDetails).toHaveBeenCalledWith(
+            expect.objectContaining({ to: "in@example.com" })
+        );
+    });
 });

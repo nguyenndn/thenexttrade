@@ -105,7 +105,8 @@ export function WelcomeHero({
 
     return (
         <div className="space-y-4">
-            {/* Hero Card */}
+            <div data-tour="dashboard-action-center" className="space-y-4">
+                {/* Hero Card */}
             <div className="relative rounded-xl border border-dashboard bg-white dark:bg-[#1E2028] overflow-hidden">
                 {/* Background glow */}
                 <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 dark:bg-primary/10 rounded-full blur-[100px] pointer-events-none" />
@@ -221,6 +222,7 @@ export function WelcomeHero({
                     ))}
                 </div>
             )}
+            </div>
 
             {/* Ghost Chart Preview - show what the dashboard will look like */}
             <div className="relative rounded-xl border border-dashboard bg-white dark:bg-[#1E2028] overflow-hidden">

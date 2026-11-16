@@ -281,7 +281,7 @@ export async function POST(request: NextRequest) {
 
         revalidatePath("/dashboard/accounts");
         revalidatePath("/dashboard");
-        revalidatePath("/admin/ib/sync-requests");
+        revalidatePath("/admin/cloud-sync-logs");
 
         return NextResponse.json({
             success: true,

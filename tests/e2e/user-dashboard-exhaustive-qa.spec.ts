@@ -141,7 +141,7 @@ async function gotoHealthy(page: Page, route: string) {
 
 async function dismissOverlays(page: Page) {
     for (let i = 0; i < 4; i += 1) {
-        const gotIt = page.getByRole("button", { name: /got it/i }).last();
+        const gotIt = page.getByRole("button", { name: /got it|close tour|^skip$/i }).last();
         if (await gotIt.isVisible({ timeout: 400 }).catch(() => false)) {
             await gotIt.click({ force: true }).catch(() => {});
             await page.waitForTimeout(200);
@@ -388,7 +388,7 @@ function writeReport() {
         "",
         "## Exhaustive Coverage",
         "",
-        "The pass covered route smoke, desktop sidebar, mobile bottom nav, accounts, Journal filters/columns/detail/edit/inline cells, strategies, feedback, settings account/profile/security/TNT/referrals/streak, notifications, funded challenge, academy lesson completion, quiz navigation/submission, leaderboard tabs/profile modal, trading-system tabs/setup widgets, reports, analytics, search, and responsive desktop/mobile screens.",
+        "The pass covered route smoke, desktop sidebar, mobile bottom nav, accounts, Journal filters/columns/detail/edit/inline cells, strategies, feedback, settings account/profile/security/TNT/streak, notifications, funded challenge, academy lesson completion, quiz navigation/submission, leaderboard tabs/profile modal, trading-system tabs/setup widgets, reports, analytics, search, and responsive desktop/mobile screens.",
         "",
     ].filter(Boolean).join("\n"), "utf8");
 }
@@ -556,14 +556,6 @@ async function settingsMicroControls(page: Page) {
         await page.reload({ waitUntil: "domcontentloaded" });
         await expect(page.locator("body")).toContainText(/No API Key Generated/i, { timeout: 12_000 });
         await expect(page.getByRole("link", { name: /Download Trade Manager EA/i })).toBeVisible();
-    });
-
-    await recordStep("mobile", "Settings", "Referrals copy button renders and responds", async () => {
-        await page.setViewportSize({ width: 390, height: 844 });
-        await gotoHealthy(page, "/dashboard/settings/referrals");
-        const copy = page.getByRole("button", { name: /copy/i }).first();
-        await expect(copy).toBeVisible();
-        await copy.click();
     });
 }
 

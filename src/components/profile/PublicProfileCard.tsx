@@ -17,6 +17,9 @@ import {
     Target,
     Crown,
     Medal,
+    Building2,
+    Hash,
+    DollarSign,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -117,6 +120,16 @@ function getScoreInfo(score: number) {
     return { label: "Beginner", text: "text-orange-600 dark:text-orange-400" };
 }
 
+function formatSignedUsd(amount: number): string {
+    const absFormatted = Math.abs(amount).toLocaleString("en-US", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+    });
+    if (amount > 0) return `+$${absFormatted}`;
+    if (amount < 0) return `-$${absFormatted}`;
+    return `$${absFormatted}`;
+}
+
 export function PublicProfileCard({
     profile,
     isModal = false,
@@ -131,6 +144,32 @@ export function PublicProfileCard({
     const scoreInfo =
         profile.stats.tradeScore !== null && profile.visibility.showTradeScore
             ? getScoreInfo(profile.stats.tradeScore)
+            : null;
+    const avatarInitial = (
+        profile.name.replace(/^@/, "").trim() ||
+        profile.username ||
+        "T"
+    )
+        .charAt(0)
+        .toUpperCase();
+    const showHandleSubtitle =
+        profile.name.trim().toLowerCase() !==
+        `@${profile.username}`.toLowerCase();
+    const visibleBroker = profile.visibility.showBroker
+        ? profile.verifiedAccount?.broker?.trim() || null
+        : null;
+    const rawAccountNum = profile.visibility.showAccountNumber
+        ? profile.verifiedAccount?.accountNumber?.trim() || null
+        : null;
+    const visibleAccountNumber = rawAccountNum
+        ? rawAccountNum.startsWith("#")
+            ? rawAccountNum
+            : `#${rawAccountNum}`
+        : null;
+    const visibleNetPnl =
+        profile.visibility.showMoney &&
+        typeof profile.stats.netPnl === "number"
+            ? profile.stats.netPnl
             : null;
 
     return (
@@ -176,9 +215,7 @@ export function PublicProfileCard({
                                             />
                                         ) : (
                                             <div className="flex h-full w-full items-center justify-center rounded-full bg-amber-50 dark:bg-amber-500/10 text-2xl font-black text-amber-500">
-                                                {profile.name
-                                                    .charAt(0)
-                                                    .toUpperCase()}
+                                                {avatarInitial}
                                             </div>
                                         )}
                                     </div>
@@ -189,9 +226,11 @@ export function PublicProfileCard({
                                         {profile.name}
                                     </h1>
                                     <div className="mt-1.5 flex items-center gap-2">
-                                        <span className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                                            @{profile.username}
-                                        </span>
+                                        {showHandleSubtitle && (
+                                            <span className="text-sm font-medium text-slate-600 dark:text-slate-400">
+                                                @{profile.username}
+                                            </span>
+                                        )}
                                         <span className="rounded-full bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 text-[9px] font-black tracking-wide text-amber-600 dark:text-amber-400">
                                             LV {profile.level}
                                         </span>
@@ -232,6 +271,46 @@ export function PublicProfileCard({
                                     </span>
                                 </div>
                             </div>
+
+                            {(visibleBroker || visibleAccountNumber) && (
+                                <div
+                                    className={cn(
+                                        "mt-2.5 grid rounded-lg border border-amber-100 dark:border-white/10 bg-gray-50/70 dark:bg-[#1E2536] overflow-hidden",
+                                        visibleBroker && visibleAccountNumber
+                                            ? "grid-cols-2 divide-x divide-amber-200/60 dark:divide-white/10"
+                                            : "grid-cols-1"
+                                    )}
+                                >
+                                    {visibleBroker && (
+                                        <div className="px-3 py-2 min-w-0">
+                                            <div className="flex items-center gap-1 text-[9px] font-black uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
+                                                <Building2
+                                                    size={10}
+                                                    className="text-amber-600 dark:text-amber-400 shrink-0"
+                                                />
+                                                <span>Broker</span>
+                                            </div>
+                                            <p className="mt-0.5 truncate text-xs font-bold text-slate-800 dark:text-white">
+                                                {visibleBroker}
+                                            </p>
+                                        </div>
+                                    )}
+                                    {visibleAccountNumber && (
+                                        <div className="px-3 py-2 min-w-0">
+                                            <div className="flex items-center gap-1 text-[9px] font-black uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
+                                                <Hash
+                                                    size={10}
+                                                    className="text-amber-600 dark:text-amber-400 shrink-0"
+                                                />
+                                                <span>Account</span>
+                                            </div>
+                                            <p className="mt-0.5 truncate font-mono text-xs font-bold tabular-nums text-slate-800 dark:text-white">
+                                                {visibleAccountNumber}
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
                         </div>
 
                         <div className="mx-6 h-[1px] bg-gradient-to-r from-transparent via-amber-500/25 dark:via-white/15 to-transparent" />
@@ -246,6 +325,32 @@ export function PublicProfileCard({
                                     {profile.performanceWindow.qualifyingClosedTrades.toLocaleString()} closed trades
                                 </span>
                             </div>
+
+                            {visibleNetPnl !== null && (
+                                <div className="mb-4 flex items-center justify-between gap-3 rounded-lg border border-amber-100 dark:border-white/10 bg-gray-50/70 dark:bg-[#1E2536] px-3.5 py-2.5">
+                                    <div className="flex items-center gap-1.5">
+                                        <DollarSign
+                                            size={13}
+                                            className="text-amber-600 dark:text-amber-400 shrink-0"
+                                        />
+                                        <span className="text-[10px] font-black uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
+                                            Net P&amp;L (90d)
+                                        </span>
+                                    </div>
+                                    <span
+                                        className={cn(
+                                            "text-lg font-black tracking-tight tabular-nums",
+                                            visibleNetPnl > 0
+                                                ? "text-emerald-600 dark:text-emerald-400"
+                                                : visibleNetPnl < 0
+                                                  ? "text-rose-500 dark:text-rose-400"
+                                                  : "text-slate-700 dark:text-slate-200"
+                                        )}
+                                    >
+                                        {formatSignedUsd(visibleNetPnl)}
+                                    </span>
+                                </div>
+                            )}
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
@@ -513,11 +618,7 @@ export function PublicProfileCard({
             {!isModal && (
                 <div className="relative z-20 mt-8 text-center">
                     <Link
-                        href={
-                            isLoggedIn
-                                ? "/dashboard"
-                                : `/auth/signup?ref=${profile.username}`
-                        }
+                        href={isLoggedIn ? "/dashboard" : "/auth/signup"}
                         className={cn(
                             buttonVariants({ variant: "gold", size: "smd" }),
                             "gap-2 font-black shadow-lg shadow-gold/25 transition-all hover:scale-[1.03] active:scale-[0.97]"

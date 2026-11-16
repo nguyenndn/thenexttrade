@@ -69,3 +69,15 @@ export function canSendEmailCategory(
     if (prefs.unsubscribedAll) return false;
     return prefs[category];
 }
+
+/** Build initial emailPreferences payload from optional signup marketing opt-in. */
+export function buildInitialEmailPreferences(
+    marketingOptIn?: boolean
+): EmailPreferences {
+    return {
+        ...DEFAULT_EMAIL_PREFERENCES,
+        ...(typeof marketingOptIn === "boolean"
+            ? { marketing: marketingOptIn }
+            : {}),
+    };
+}

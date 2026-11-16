@@ -9,7 +9,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/Avatar";
 import {
     SyncFilterToolbar,
     StatusFilterOption,
-} from "@/app/admin/ib/sync-requests/SyncFilterToolbar";
+} from "@/components/admin/SyncFilterToolbar";
 import {
     CheckCircle2,
     Clock,

@@ -40,6 +40,7 @@ interface SyncFilterToolbarProps {
     typeValue?: string;
     typeOptions?: TypeFilterOption[];
     onTypeChange?: (type: string) => void;
+    typeLabel?: string;
     rangeValue?: string;
     rangeOptions?: RangeOption[];
     onRangeChange?: (range: string) => void;
@@ -60,6 +61,7 @@ export function SyncFilterToolbar({
     typeValue,
     typeOptions,
     onTypeChange,
+    typeLabel = "Type:",
     rangeValue,
     rangeOptions,
     onRangeChange,
@@ -164,7 +166,7 @@ export function SyncFilterToolbar({
                     {/* Type Dropdown (Section 13.5) */}
                     {typeOptions && typeOptions.length > 0 && onTypeChange && (
                         <div className="flex items-center gap-1.5">
-                            <span className="text-xs font-bold text-gray-400">Type:</span>
+                            <span className="text-xs font-bold text-gray-400">{typeLabel}</span>
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <Button

@@ -1,8 +1,10 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import type { Prisma } from "@prisma/client";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
+import { canSendEmailCategory } from "@/lib/email/preferences";
 import {
     createEAProductSchema,
     updateEAProductSchema,
@@ -415,18 +417,29 @@ export async function sendReleaseAnnouncementBroadcast(
         }
 
         // Production Broadcast: Query recipients
-        let targetUsers: Array<{ id: string; name: string | null; email: string | null }> = [];
+        type BroadcastRecipient = {
+            id: string;
+            name: string | null;
+            email: string | null;
+            settings?: Prisma.JsonValue | null;
+        };
+        let targetUsers: BroadcastRecipient[] = [];
 
         if (input.targetAudience === "ACTIVE_HOLDERS") {
             const licenses = await prisma.eALicense.findMany({
                 where: { status: "APPROVED" },
                 include: {
                     user: {
-                        select: { id: true, name: true, email: true },
+                        select: {
+                            id: true,
+                            name: true,
+                            email: true,
+                            settings: true,
+                        },
                     },
                 },
             });
-            const userMap = new Map<string, { id: string; name: string | null; email: string | null }>();
+            const userMap = new Map<string, BroadcastRecipient>();
             for (const lic of licenses) {
                 if (lic.user && lic.user.email) {
                     userMap.set(lic.user.id, lic.user);
@@ -441,28 +454,46 @@ export async function sendReleaseAnnouncementBroadcast(
                         some: { status: "ACTIVE" },
                     },
                 },
-                select: { id: true, name: true, email: true },
+                select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                    settings: true,
+                },
             });
             targetUsers = proUsers;
         } else {
             targetUsers = await prisma.user.findMany({
                 where: { email: { not: "" } },
-                select: { id: true, name: true, email: true },
+                select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                    settings: true,
+                },
                 take: 500, // Safety boundary per broadcast
             });
         }
 
-        if (targetUsers.length === 0) {
+        const optedInRecipients = targetUsers.filter(
+            (recipient) =>
+                Boolean(recipient.email) &&
+                canSendEmailCategory(recipient.settings, "marketing")
+        );
+        const skippedPreferencesCount =
+            targetUsers.length - optedInRecipients.length;
+
+        if (optedInRecipients.length === 0) {
             return {
                 success: false,
-                error: "No eligible recipients found for this audience group.",
+                error: "No eligible opted-in recipients found for this audience group.",
             };
         }
 
         let sentCount = 0;
         let failCount = 0;
 
-        for (const recipient of targetUsers) {
+        for (const recipient of optedInRecipients) {
             if (!recipient.email) continue;
             const html = buildEAUpdateEmailHtml({
                 userName: recipient.name || "Trader",
@@ -501,6 +532,7 @@ export async function sendReleaseAnnouncementBroadcast(
                     audience: input.targetAudience,
                     sentCount,
                     failCount,
+                    skippedPreferencesCount,
                 },
             },
         });

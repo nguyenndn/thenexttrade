@@ -65,4 +65,6 @@ export interface UserBehaviorSegmentItem {
     };
     classification: BehaviorClassification;
     lastActivityAt: Date | null;
+    activeSignalId?: string | null;
+    contactedAt?: string | null;
 }

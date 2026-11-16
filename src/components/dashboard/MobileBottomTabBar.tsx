@@ -210,7 +210,10 @@ export function MobileBottomTabBar() {
             </AnimatePresence>
 
             {/* Tab Bar */}
-            <nav className="fixed bottom-0 inset-x-0 z-50 lg:hidden bg-white dark:bg-[#1E2028] border-t border-dashboard safe-area-bottom">
+            <nav
+                data-tour={!isAdmin ? "mobile-bottom-nav" : undefined}
+                className="fixed bottom-0 inset-x-0 z-50 lg:hidden bg-white dark:bg-[#1E2028] border-t border-dashboard safe-area-bottom"
+            >
                 <div className="flex items-center justify-around h-16 px-2">
                     {filteredGroups.map((group) => {
                         const Icon = group.icon;
