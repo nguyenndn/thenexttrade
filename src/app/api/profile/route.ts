@@ -37,14 +37,11 @@ const httpsAvatarSchema = z.union([
         .string()
         .trim()
         .max(500, "Avatar URL must be at most 500 characters")
-        .url("Invalid avatar URL")
-        .refine((val) => {
-            try {
-                return new URL(val).protocol === "https:";
-            } catch {
-                return false;
-            }
-        }, "Avatar URL must use https://"),
+        .url("Avatar URL must be a valid URL")
+        .refine(
+            (val) => val.startsWith("https://"),
+            "Avatar URL must start with https://"
+        ),
     z.literal(""),
 ]);
 
@@ -201,6 +198,14 @@ export async function PUT(request: Request) {
         // Ensures backwards-compatibility for clients sending full country names ("Vietnam" -> "VN").
         if (typeof body.country === "string" && body.country.trim() !== "") {
             body.country = normalizeCountryCode(body.country) ?? body.country;
+        }
+
+        // Ignore unchanged legacy data:image/* blobs so saving profile fields never fails 500-char limit
+        if (typeof body.image === "string" && body.image.startsWith("data:image/")) {
+            delete body.image;
+        }
+        if (typeof body.avatarUrl === "string" && body.avatarUrl.startsWith("data:image/")) {
+            delete body.avatarUrl;
         }
 
         const validatedData = updateProfileSchema.parse(body);

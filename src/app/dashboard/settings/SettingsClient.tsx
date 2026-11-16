@@ -107,6 +107,7 @@ export default function SettingsClient() {
     const [isSaving, setIsSaving] = useState(false);
     const [isSavingEmail, setIsSavingEmail] = useState(false);
     const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+    const [failedAvatarSrc, setFailedAvatarSrc] = useState<string | null>(null);
     const [emailPrefs, setEmailPrefs] = useState<EmailPreferences>({
         ...DEFAULT_EMAIL_PREFS,
     });
@@ -290,6 +291,8 @@ export default function SettingsClient() {
         );
     }
 
+    const showAvatarImage = Boolean(formData.image) && failedAvatarSrc !== formData.image;
+
     return (
         <div className="w-full min-w-0 space-y-5">
             {/* ── Unified Profile Card ── */}
@@ -310,11 +313,12 @@ export default function SettingsClient() {
                     <div className="flex items-end gap-4 sm:gap-5 -mt-12 mb-3 min-w-0">
                         <div className="relative flex-shrink-0">
                             <div className="w-[100px] h-[100px] rounded-lg overflow-hidden bg-gray-100 dark:bg-[#151925] border-4 border-white dark:border-[#1E2028] shadow-lg">
-                                {formData.image ? (
+                                {showAvatarImage ? (
                                     <img
                                         src={formData.image}
                                         alt="Profile"
                                         className="w-full h-full object-cover"
+                                        onError={() => setFailedAvatarSrc(formData.image)}
                                     />
                                 ) : (
                                     <div className="w-full h-full flex items-center justify-center text-gray-500">
@@ -359,8 +363,10 @@ export default function SettingsClient() {
                                                 toast.error(data.error || "Upload failed");
                                                 return;
                                             }
+                                            setFailedAvatarSrc(null);
                                             setFormData((prev) => ({ ...prev, image: data.url }));
-                                            toast.success("Avatar uploaded! Click Save to apply.");
+                                            router.refresh();
+                                            toast.success("Avatar updated successfully!");
                                         } catch {
                                             toast.error("Upload failed. Please try again.");
                                         } finally {

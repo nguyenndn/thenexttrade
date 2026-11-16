@@ -6,20 +6,28 @@ import {
 import crypto from "crypto";
 import path from "path";
 
-// Parse env vars
+// Parse env vars (read runtime env first so container env changes take effect without rebuild)
 const R2_ENDPOINT = process.env.R2_ENDPOINT || "";
 const R2_REGION = process.env.R2_REGION || "auto";
 const R2_BUCKET = process.env.R2_BUCKET || "";
 const R2_ACCESS_KEY_ID = process.env.R2_ACCESS_KEY_ID || "";
 const R2_SECRET_ACCESS_KEY = process.env.R2_SECRET_ACCESS_KEY || "";
-const ASSET_PUBLIC_BASE_URL = process.env.NEXT_PUBLIC_R2_PUBLIC_URL || "";
+
+function getAssetPublicBaseUrl(): string {
+    return (
+        process.env["R2_PUBLIC_URL"] ||
+        process.env["NEXT_PUBLIC_R2_PUBLIC_URL"] ||
+        process.env.NEXT_PUBLIC_R2_PUBLIC_URL ||
+        ""
+    ).replace(/\/+$/, "");
+}
 
 export const isR2Configured = Boolean(
     R2_ENDPOINT &&
-    R2_BUCKET &&
-    R2_ACCESS_KEY_ID &&
-    R2_SECRET_ACCESS_KEY &&
-    ASSET_PUBLIC_BASE_URL
+        R2_BUCKET &&
+        R2_ACCESS_KEY_ID &&
+        R2_SECRET_ACCESS_KEY &&
+        getAssetPublicBaseUrl()
 );
 
 let r2Client: S3Client | null = null;
@@ -52,13 +60,12 @@ export async function uploadPublicAsset(
     }
 
     const ext = path.extname(originalFilename);
-    // Sanitize filename to avoid weird characters
     const sanitizedName = path
         .basename(originalFilename, ext)
         .replace(/[^a-z0-9]/gi, "-")
         .toLowerCase();
     const uniqueFilename = `${sanitizedName}-${crypto.randomUUID()}${ext}`;
-    const key = `${directory}/${uniqueFilename}`; // e.g. articles/my-image-123.jpg
+    const key = `${directory}/${uniqueFilename}`;
 
     try {
         await r2Client.send(
@@ -67,12 +74,10 @@ export async function uploadPublicAsset(
                 Key: key,
                 Body: buffer,
                 ContentType: contentType,
-                // Cache-Control: Cache for 1 year immutable
                 CacheControl: "public, max-age=31536000, immutable",
             })
         );
 
-        // Return the public URL for the CDN
         return getPublicAssetUrl(key);
     } catch (error) {
         console.error("[ObjectStorage] Failed to upload asset:", error);
@@ -81,20 +86,31 @@ export async function uploadPublicAsset(
 }
 
 /**
- * Delete an object from object storage
+ * Delete an object from object storage (supports both custom CDN domain and legacy *.r2.dev URLs)
  */
 export async function deletePublicAsset(url: string): Promise<boolean> {
-    if (
-        !isR2Configured ||
-        !r2Client ||
-        !url.startsWith(ASSET_PUBLIC_BASE_URL)
-    ) {
+    const baseUrl = getAssetPublicBaseUrl();
+    if (!isR2Configured || !r2Client || !url) {
         return false;
     }
 
     try {
-        // Extract the key from the public URL
-        const key = url.replace(`${ASSET_PUBLIC_BASE_URL}/`, "");
+        const parsed = new URL(url);
+        let configuredHost = "";
+        try {
+            configuredHost = new URL(baseUrl).hostname.toLowerCase();
+        } catch {
+            /* ignore */
+        }
+        const host = parsed.hostname.toLowerCase();
+        if (host !== configuredHost && !host.endsWith(".r2.dev")) {
+            return false;
+        }
+
+        const key = parsed.pathname.replace(/^\/+/, "");
+        if (!key || key.startsWith("mt5/") || key.includes("..")) {
+            return false;
+        }
 
         await r2Client.send(
             new DeleteObjectCommand({
@@ -113,8 +129,9 @@ export async function deletePublicAsset(url: string): Promise<boolean> {
  * Construct the public CDN URL
  */
 export function getPublicAssetUrl(key: string): string {
-    return `${ASSET_PUBLIC_BASE_URL.replace(/\/$/, "")}/${key}`;
+    return `${getAssetPublicBaseUrl()}/${key.replace(/^\/+/, "")}`;
 }
+
 export async function uploadProtectedAsset(
     buffer: Buffer,
     key: string,
@@ -135,7 +152,10 @@ export async function uploadProtectedAsset(
         );
         return true;
     } catch (error) {
-        console.error("[ObjectStorage] Failed to upload protected asset:", error);
+        console.error(
+            "[ObjectStorage] Failed to upload protected asset:",
+            error
+        );
         return false;
     }
 }

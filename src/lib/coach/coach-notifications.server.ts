@@ -1,8 +1,17 @@
 import { prisma } from "@/lib/prisma";
 
+const NON_TRADE_ACTIVATION_SIGNALS = new Set(["NO_LESSON_STARTED"]);
+
 export async function triggerCoachNotifications(userId: string): Promise<number> {
     let triggeredCount = 0;
     const now = new Date();
+
+    const [accountCount, closedTradeCount] = await Promise.all([
+        prisma.tradingAccount.count({ where: { userId } }),
+        prisma.journalEntry.count({
+            where: { userId, status: "CLOSED" },
+        }),
+    ]);
 
     // 1. Process Active Trader Signals (Leak Alerts & Activation Signals)
     const activeSignals = await prisma.traderSignal.findMany({
@@ -13,7 +22,17 @@ export async function triggerCoachNotifications(userId: string): Promise<number>
     });
 
     for (const signal of activeSignals) {
-        const metadata = (signal.metadata as Record<string, any>) || {};
+        if (signal.signalType === "SYNC_STALE" && accountCount === 0) {
+            continue;
+        }
+        if (
+            !NON_TRADE_ACTIVATION_SIGNALS.has(signal.signalType) &&
+            closedTradeCount === 0
+        ) {
+            continue;
+        }
+
+        const metadata = (signal.metadata as Record<string, unknown>) || {};
         const dedupeKey = `SIGNAL:${signal.signalType}:${signal.id}`;
 
         let cooldownDays = 3; // Default 72h cooldown for leak signals
@@ -25,7 +44,10 @@ export async function triggerCoachNotifications(userId: string): Promise<number>
             cooldownDays = 7; // Align with the weekly review cadence
         }
 
-        const lastSentStr = metadata.notificationSentAt;
+        const lastSentStr =
+            typeof metadata.notificationSentAt === "string"
+                ? metadata.notificationSentAt
+                : null;
         if (lastSentStr) {
             const lastSent = new Date(lastSentStr);
             const cooldownMs = cooldownDays * 24 * 60 * 60 * 1000;
@@ -78,6 +100,11 @@ export async function triggerCoachNotifications(userId: string): Promise<number>
         } catch {
             /* Duplicate notification write blocked atomically by DB constraint */
         }
+    }
+
+    // Trade-backed insights and experiments require actual closed trades
+    if (closedTradeCount === 0) {
+        return triggeredCount;
     }
 
     // 2. Process First Insight & Actionable Patterns (TraderInsightSnapshot)

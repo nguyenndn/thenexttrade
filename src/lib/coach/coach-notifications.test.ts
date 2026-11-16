@@ -4,6 +4,12 @@ import { prisma } from "@/lib/prisma";
 
 vi.mock("@/lib/prisma", () => ({
     prisma: {
+        tradingAccount: {
+            count: vi.fn(),
+        },
+        journalEntry: {
+            count: vi.fn(),
+        },
         traderSignal: {
             findMany: vi.fn(),
             update: vi.fn(),
@@ -23,11 +29,13 @@ vi.mock("@/lib/prisma", () => ({
 describe("triggerCoachNotifications", () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        vi.mocked(prisma.tradingAccount.count).mockResolvedValue(1);
+        vi.mocked(prisma.journalEntry.count).mockResolvedValue(20);
     });
 
     it("should dispatch notification for active trader signals and set actionType to OPEN_COACH_PLAN", async () => {
         const mockUserId = "user-123";
-        (prisma.traderSignal.findMany as any).mockResolvedValue([
+        vi.mocked(prisma.traderSignal.findMany).mockResolvedValue([
             {
                 id: "sig-1",
                 signalType: "LOSS_STREAK",
@@ -37,11 +45,11 @@ describe("triggerCoachNotifications", () => {
                 actionHref: "/dashboard/academy",
                 metadata: {},
             },
-        ]);
-        (prisma.traderInsightSnapshot.findFirst as any).mockResolvedValue(null);
-        (prisma.improvementExperiment.findMany as any).mockResolvedValue([]);
-        (prisma.notification.upsert as any).mockResolvedValue({ id: "notif-1" });
-        (prisma.traderSignal.update as any).mockResolvedValue({ id: "sig-1" });
+        ] as never);
+        vi.mocked(prisma.traderInsightSnapshot.findFirst).mockResolvedValue(null);
+        vi.mocked(prisma.improvementExperiment.findMany).mockResolvedValue([]);
+        vi.mocked(prisma.notification.upsert).mockResolvedValue({ id: "notif-1" } as never);
+        vi.mocked(prisma.traderSignal.update).mockResolvedValue({ id: "sig-1" } as never);
 
         const count = await triggerCoachNotifications(mockUserId);
 
@@ -79,18 +87,18 @@ describe("triggerCoachNotifications", () => {
         const mockUserId = "user-123";
         const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
 
-        (prisma.traderSignal.findMany as any).mockResolvedValue([
+        vi.mocked(prisma.traderSignal.findMany).mockResolvedValue([
             {
                 id: "sig-2",
                 signalType: "LOSS_STREAK",
                 title: "3-Trade Loss Streak Detected",
                 summary: "You recently hit a streak of 3 consecutive losses.",
                 severity: "HIGH",
-                metadata: { notificationSentAt: oneHourAgo }, // Cooldown is 24h
+                metadata: { notificationSentAt: oneHourAgo },
             },
-        ]);
-        (prisma.traderInsightSnapshot.findFirst as any).mockResolvedValue(null);
-        (prisma.improvementExperiment.findMany as any).mockResolvedValue([]);
+        ] as never);
+        vi.mocked(prisma.traderInsightSnapshot.findFirst).mockResolvedValue(null);
+        vi.mocked(prisma.improvementExperiment.findMany).mockResolvedValue([]);
 
         const count = await triggerCoachNotifications(mockUserId);
 
@@ -100,15 +108,15 @@ describe("triggerCoachNotifications", () => {
 
     it("should dispatch notification for First Insight / Actionable Pattern snapshot", async () => {
         const mockUserId = "user-123";
-        (prisma.traderSignal.findMany as any).mockResolvedValue([]);
-        (prisma.traderInsightSnapshot.findFirst as any).mockResolvedValue({
+        vi.mocked(prisma.traderSignal.findMany).mockResolvedValue([]);
+        vi.mocked(prisma.traderInsightSnapshot.findFirst).mockResolvedValue({
             id: "insight-1",
             fingerprint: "WEAK_SESSION_DAY_SYMBOL:XAUUSD",
             title: "Actionable Pattern Identified for XAUUSD",
             summary: "Based on 12 closed trades, XAUUSD accounts for 85% of volume.",
-        });
-        (prisma.improvementExperiment.findMany as any).mockResolvedValue([]);
-        (prisma.notification.upsert as any).mockResolvedValue({ id: "notif-insight" });
+        } as never);
+        vi.mocked(prisma.improvementExperiment.findMany).mockResolvedValue([]);
+        vi.mocked(prisma.notification.upsert).mockResolvedValue({ id: "notif-insight" } as never);
 
         const count = await triggerCoachNotifications(mockUserId);
 
@@ -139,16 +147,16 @@ describe("triggerCoachNotifications", () => {
 
     it("should dispatch notification for Review Ready Improvement Experiments", async () => {
         const mockUserId = "user-123";
-        (prisma.traderSignal.findMany as any).mockResolvedValue([]);
-        (prisma.traderInsightSnapshot.findFirst as any).mockResolvedValue(null);
-        (prisma.improvementExperiment.findMany as any).mockResolvedValue([
+        vi.mocked(prisma.traderSignal.findMany).mockResolvedValue([]);
+        vi.mocked(prisma.traderInsightSnapshot.findFirst).mockResolvedValue(null);
+        vi.mocked(prisma.improvementExperiment.findMany).mockResolvedValue([
             {
                 id: "exp-1",
                 title: "Risk Execution Discipline",
                 targetTradeCount: 10,
             },
-        ]);
-        (prisma.notification.upsert as any).mockResolvedValue({ id: "notif-exp" });
+        ] as never);
+        vi.mocked(prisma.notification.upsert).mockResolvedValue({ id: "notif-exp" } as never);
 
         const count = await triggerCoachNotifications(mockUserId);
 
@@ -173,5 +181,36 @@ describe("triggerCoachNotifications", () => {
                 }),
             })
         );
+    });
+
+    it("suppresses stale insight, experiment, and trade-leak notifications when user has 0 accounts and 0 closed trades", async () => {
+        const mockUserId = "user-empty";
+        vi.mocked(prisma.tradingAccount.count).mockResolvedValue(0);
+        vi.mocked(prisma.journalEntry.count).mockResolvedValue(0);
+        vi.mocked(prisma.traderSignal.findMany).mockResolvedValue([
+            {
+                id: "sig-stale-1",
+                signalType: "LOSS_STREAK",
+                title: "391-Trade Loss Streak Detected",
+                summary: "Stale leak alert",
+                severity: "HIGH",
+                metadata: {},
+            },
+            {
+                id: "sig-stale-2",
+                signalType: "SYNC_STALE",
+                title: "Sync is disconnected or stale",
+                summary: "Stale sync alert",
+                severity: "MEDIUM",
+                metadata: {},
+            },
+        ] as never);
+
+        const count = await triggerCoachNotifications(mockUserId);
+
+        expect(count).toBe(0);
+        expect(prisma.notification.upsert).not.toHaveBeenCalled();
+        expect(prisma.traderInsightSnapshot.findFirst).not.toHaveBeenCalled();
+        expect(prisma.improvementExperiment.findMany).not.toHaveBeenCalled();
     });
 });

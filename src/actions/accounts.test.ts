@@ -34,7 +34,23 @@ vi.mock("@/lib/prisma", () => ({
             updateMany: vi.fn(),
         },
         journalEntry: {
+            count: vi.fn(),
             updateMany: vi.fn(),
+        },
+        traderInsightSnapshot: {
+            deleteMany: vi.fn(),
+        },
+        improvementExperiment: {
+            deleteMany: vi.fn(),
+        },
+        traderSignal: {
+            deleteMany: vi.fn(),
+        },
+        coachActionPlan: {
+            deleteMany: vi.fn(),
+        },
+        notification: {
+            deleteMany: vi.fn(),
         },
         eALicense: {
             deleteMany: vi.fn(),
@@ -230,11 +246,13 @@ describe("Trading Accounts Actions", () => {
             expect(prisma.tradingAccount.delete).not.toHaveBeenCalled();
         });
 
-        it("deletes account belonging to user and returns success", async () => {
+        it("deletes account belonging to user and purges stale coach artifacts when no accounts or closed trades remain", async () => {
             (prisma.tradingAccount.findUnique as any).mockResolvedValue({
                 id: "acc-1",
                 userId: mockUser.id,
             });
+            (prisma.tradingAccount.count as any).mockResolvedValue(0);
+            (prisma.journalEntry.count as any).mockResolvedValue(0);
             (prisma.tradingAccount.delete as any).mockResolvedValue({ id: "acc-1" });
 
             const result = await deleteTradingAccount("acc-1");
@@ -242,6 +260,20 @@ describe("Trading Accounts Actions", () => {
             expect(prisma.tradingAccount.delete).toHaveBeenCalledWith({
                 where: { id: "acc-1", userId: mockUser.id },
             });
+            expect(prisma.traderInsightSnapshot.deleteMany).toHaveBeenCalledWith({
+                where: { userId: mockUser.id },
+            });
+            expect(prisma.traderSignal.deleteMany).toHaveBeenCalledWith({
+                where: { userId: mockUser.id },
+            });
+            expect(prisma.coachActionPlan.deleteMany).toHaveBeenCalledWith({
+                where: { userId: mockUser.id },
+            });
+            expect(prisma.notification.deleteMany).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    where: expect.objectContaining({ userId: mockUser.id }),
+                })
+            );
         });
     });
 });

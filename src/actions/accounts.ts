@@ -556,6 +556,20 @@ export async function deleteTradingAccount(id: string) {
             target.broker
         ).map((license) => license.id);
 
+        const [otherAccountsCount, totalClosedTrades] = await Promise.all([
+            prisma.tradingAccount.count({
+                where: { userId: user.id, id: { not: id } },
+            }),
+            prisma.journalEntry.count({
+                where: {
+                    userId: user.id,
+                    status: "CLOSED",
+                },
+            }),
+        ]);
+        const shouldPurgeAllCoachArtifacts =
+            otherAccountsCount === 0 && totalClosedTrades === 0;
+
         await prisma.$transaction([
             prisma.profile.updateMany({
                 where: { userId: user.id, mainTradingAccountId: id },
@@ -580,6 +594,45 @@ export async function deleteTradingAccount(id: string) {
                 where: { accountId: id },
                 data: { accountId: null },
             }),
+            prisma.traderInsightSnapshot.deleteMany({
+                where: shouldPurgeAllCoachArtifacts
+                    ? { userId: user.id }
+                    : { userId: user.id, accountId: id },
+            }),
+            prisma.improvementExperiment.deleteMany({
+                where: shouldPurgeAllCoachArtifacts
+                    ? { userId: user.id }
+                    : { userId: user.id, accountId: id },
+            }),
+            prisma.traderSignal.deleteMany({
+                where: shouldPurgeAllCoachArtifacts
+                    ? { userId: user.id }
+                    : otherAccountsCount === 0
+                      ? {
+                            userId: user.id,
+                            OR: [
+                                { sourceId: id },
+                                { signalType: "SYNC_STALE" },
+                            ],
+                        }
+                      : { userId: user.id, sourceId: id },
+            }),
+            ...(shouldPurgeAllCoachArtifacts
+                ? [
+                      prisma.coachActionPlan.deleteMany({
+                          where: { userId: user.id },
+                      }),
+                      prisma.notification.deleteMany({
+                          where: {
+                              userId: user.id,
+                              OR: [
+                                  { dedupeKey: { startsWith: "COACH_" } },
+                                  { dedupeKey: { startsWith: "SIGNAL:" } },
+                              ],
+                          },
+                      }),
+                  ]
+                : []),
             ...(scopedLicenseIds.length > 0
                 ? [
                       prisma.eALicense.deleteMany({

@@ -1,8 +1,14 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
+import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/rate-limit";
 import { validateImageFile, MAX_FILE_SIZE } from "@/lib/storage/image-validation";
-import { uploadPublicAsset, isR2Configured } from "@/lib/storage/object-storage";
+import {
+    uploadPublicAsset,
+    deletePublicAsset,
+    isR2Configured,
+} from "@/lib/storage/object-storage";
 
 const ALLOWED_PURPOSES = ["journal", "avatar"] as const;
 type UploadPurpose = (typeof ALLOWED_PURPOSES)[number];
@@ -124,13 +130,12 @@ export async function POST(request: Request) {
 
         // 8. Upload to R2
         const directory = getR2Directory(purpose as UploadPurpose);
-        const prefix = purpose === "avatar" ? "av" : "js";
-        const uniqueFilename = `${prefix}-${crypto.randomUUID()}.webp`;
+        const baseFilename = purpose === "avatar" ? "av.webp" : "js.webp";
 
         const publicUrl = await uploadPublicAsset(
             processedBuffer,
             directory,
-            uniqueFilename,
+            baseFilename,
             "image/webp"
         );
 
@@ -139,6 +144,40 @@ export async function POST(request: Request) {
                 { error: "Upload failed. Please try again." },
                 { status: 500 }
             );
+        }
+
+        // 9. When replacing avatar, persist immediately and clean up old R2 avatar object
+        if (purpose === "avatar") {
+            try {
+                const existingUser = await prisma.user.findUnique({
+                    where: { id: user.id },
+                    select: { image: true },
+                });
+
+                await prisma.user.update({
+                    where: { id: user.id },
+                    data: { image: publicUrl },
+                });
+
+                if (existingUser?.image && existingUser.image !== publicUrl) {
+                    deletePublicAsset(existingUser.image).catch(() => {});
+                }
+
+                await supabase.auth
+                    .updateUser({
+                        data: { avatar_url: publicUrl },
+                    })
+                    .catch(() => {});
+
+                revalidatePath("/dashboard/settings");
+                revalidatePath("/dashboard/settings/profile");
+                revalidatePath("/dashboard", "layout");
+            } catch (persistErr) {
+                console.error(
+                    "[Upload] Failed to persist avatar URL on user:",
+                    persistErr
+                );
+            }
         }
 
         return NextResponse.json({ url: publicUrl });
