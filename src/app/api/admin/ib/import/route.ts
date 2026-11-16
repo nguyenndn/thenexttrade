@@ -5,6 +5,7 @@ import {
     previewCsvImport,
     executeCsvImport,
 } from "@/lib/services/ib-import.service";
+import { toPublicErrorMessage } from "@/lib/errors/public-error";
 
 /**
  * POST /api/admin/ib/import
@@ -52,10 +53,10 @@ export async function POST(request: Request) {
             preview: true,
             ...preview,
         });
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("[IB Import Error]:", error);
         return NextResponse.json(
-            { error: "Import failed", detail: error.message },
+            { error: toPublicErrorMessage(error, "Import failed") },
             { status: 500 }
         );
     }

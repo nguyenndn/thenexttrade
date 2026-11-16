@@ -1,5 +1,11 @@
+import { isInternalError } from "@/lib/errors/public-error";
+
 export type CanonicalSyncSource =
-    "EA_SYNC" | "APP" | "MANUAL" | "WINDOWS_IMPORT" | "UNKNOWN";
+    | "EA_SYNC"
+    | "APP"
+    | "MANUAL"
+    | "WINDOWS_IMPORT"
+    | "UNKNOWN";
 
 export function normalizeSyncSource(
     value: string | null | undefined
@@ -9,7 +15,12 @@ export function normalizeSyncSource(
     if (val === "EA" || val === "EA_SYNC" || val === "EA_HISTORY") {
         return "EA_SYNC";
     }
-    if (val === "APP" || val === "TNT_CONNECT" || val === "TNT" || val === "CONNECT") {
+    if (
+        val === "APP" ||
+        val === "TNT_CONNECT" ||
+        val === "TNT" ||
+        val === "CONNECT"
+    ) {
         return "APP";
     }
     if (val === "MANUAL") {
@@ -35,15 +46,22 @@ export function getSyncSourceLabel(source: CanonicalSyncSource): string {
 }
 
 export function isAutoSyncSource(source: CanonicalSyncSource): boolean {
-    return source === "EA_SYNC" || source === "APP" || source === "WINDOWS_IMPORT";
+    return (
+        source === "EA_SYNC" ||
+        source === "APP" ||
+        source === "WINDOWS_IMPORT"
+    );
 }
 
 export function formatSyncErrorMessage(
-    job: {
-        errorCode?: string | null;
-        errorMessage?: string | null;
-        message?: string | null;
-    } | null | undefined
+    job:
+        | {
+              errorCode?: string | null;
+              errorMessage?: string | null;
+              message?: string | null;
+          }
+        | null
+        | undefined
 ): string {
     if (!job) return "Sync failed. Please try again.";
 
@@ -63,7 +81,7 @@ export function formatSyncErrorMessage(
     }
 
     const rawMsg = (job.errorMessage || job.message || "").trim();
-    if (!rawMsg) {
+    if (!rawMsg || isInternalError(rawMsg)) {
         return "Unable to sync trade history. Please try again or request sync support.";
     }
 
@@ -74,7 +92,10 @@ export function formatSyncErrorMessage(
         lower.includes("timed out") ||
         lower.includes("timeout") ||
         lower.includes("stalled") ||
-        lower.includes("pick up request")
+        lower.includes("pick up request") ||
+        lower.includes("prisma") ||
+        lower.includes("invocation") ||
+        lower.includes("column")
     ) {
         return "Unable to sync trade history. Please try again or request sync support.";
     }
@@ -87,5 +108,5 @@ export function formatSyncErrorMessage(
         return "Invalid server or investor password. Please verify your credentials.";
     }
 
-    return rawMsg;
+    return rawMsg.slice(0, 240);
 }

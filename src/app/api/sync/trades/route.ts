@@ -11,6 +11,7 @@ import {
     normalizeCurrencyCode,
     normalizeLotSize,
 } from "@/lib/utils/cent-account";
+import { toPublicErrorMessage } from "@/lib/errors/public-error";
 
 const limiter = rateLimit({
     uniqueTokenPerInterval: 500,
@@ -424,8 +425,14 @@ export async function POST(request: NextRequest) {
                                         : null,
                             });
                         }
-                    } catch (err: any) {
-                        errors.push(`Trade ${trade.ticket}: ${err.message}`);
+                    } catch (err: unknown) {
+                        console.error(
+                            `[Sync Trades] Error processing trade #${trade?.ticket}:`,
+                            err
+                        );
+                        errors.push(
+                            `Trade ${trade.ticket}: ${toPublicErrorMessage(err, "Invalid trade data")}`
+                        );
                     }
                 }
 

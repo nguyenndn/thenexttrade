@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/api-auth";
+import { toPublicErrorMessage } from "@/lib/errors/public-error";
 
 const SERPER_API_KEY = process.env.SERPER_API_KEY;
 
@@ -149,10 +150,10 @@ export async function POST(req: NextRequest) {
             results: sorted.slice(0, 10),
             totalFound: sorted.length,
         });
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("[AI Search Error]", error);
         return NextResponse.json(
-            { error: error.message || "Search failed" },
+            { error: toPublicErrorMessage(error, "Search failed") },
             { status: 500 }
         );
     }

@@ -38,6 +38,16 @@ describe("sync-source formatting & error handling", () => {
         expect(formatSyncErrorMessage({ errorMessage: "" })).toBe("Unable to sync trade history. Please try again or request sync support.");
     });
 
+    it("never leaks raw Prisma / DB / CLI error messages to UI", () => {
+        expect(
+            formatSyncErrorMessage({
+                errorCode: "SYNC_EXECUTION_ERROR",
+                errorMessage:
+                    "Invalid `prisma.mt5ImportJob.update()` invocation: The provided value for the column is too long for the column's type.",
+            })
+        ).toBe("Unable to sync trade history. Please try again or request sync support.");
+    });
+
     it("normalizes canonical sync sources correctly", () => {
         expect(normalizeSyncSource("EA_SYNC")).toBe("EA_SYNC");
         expect(normalizeSyncSource("APP")).toBe("APP");

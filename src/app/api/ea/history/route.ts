@@ -10,6 +10,7 @@ import {
     normalizeLotSize,
 } from "@/lib/utils/cent-account";
 import { detectBroker } from "@/lib/ea/broker-detection";
+import { toPublicErrorMessage } from "@/lib/errors/public-error";
 
 const limiter = rateLimit({
     uniqueTokenPerInterval: 500,
@@ -107,7 +108,7 @@ export async function POST(request: NextRequest) {
 
         if (!auth.success) {
             return NextResponse.json(
-                { error: auth.error },
+                { error: toPublicErrorMessage(auth.error, "Authentication failed") },
                 { status: auth.status }
             );
         }
@@ -182,8 +183,10 @@ export async function POST(request: NextRequest) {
                     )
                 );
             } catch (err: unknown) {
-                const reason =
-                    err instanceof Error ? err.message : String(err);
+                const reason = toPublicErrorMessage(
+                    err,
+                    "Invalid trade payload"
+                );
                 const ticket =
                     rawTrade &&
                     typeof rawTrade === "object" &&

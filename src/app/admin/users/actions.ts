@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { UserRole } from "@prisma/client";
 import { z } from "zod";
 import { normalizeCountryCode } from "@/lib/country-utils";
+import { toPublicErrorMessage } from "@/lib/errors/public-error";
 
 // =============================================================================
 // AUTH HELPERS (reused pattern from [id]/actions.ts)
@@ -130,7 +131,10 @@ export async function createUser(data: {
         if (authError || !authData.user) {
             return {
                 success: false,
-                error: authError?.message || "Failed to create auth account",
+                error: toPublicErrorMessage(
+                    authError?.message,
+                    "Failed to create auth account"
+                ),
             };
         }
 
@@ -395,9 +399,12 @@ export async function deleteUser(userId: string) {
 
         revalidatePath("/admin/users");
         return { success: true };
-    } catch (error) {
+    } catch (error: unknown) {
         console.error("deleteUser error:", error);
-        return { success: false, error: error instanceof Error ? error.message : "An unexpected error occurred" };
+        return {
+            success: false,
+            error: toPublicErrorMessage(error, "An unexpected error occurred"),
+        };
     }
 }
 
@@ -455,8 +462,11 @@ export async function bulkDeleteUsers(userIds: string[]) {
 
         revalidatePath("/admin/users");
         return { success: true, deleted };
-    } catch (error) {
+    } catch (error: unknown) {
         console.error("bulkDeleteUsers error:", error);
-        return { success: false, error: error instanceof Error ? error.message : "An unexpected error occurred" };
+        return {
+            success: false,
+            error: toPublicErrorMessage(error, "An unexpected error occurred"),
+        };
     }
 }

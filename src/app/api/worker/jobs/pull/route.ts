@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getInvestorPasswordForAccount } from "@/lib/credentials/investor-password.server";
+import { toPublicErrorMessage } from "@/lib/errors/public-error";
 
 export async function GET(request: NextRequest) {
     try {
@@ -107,9 +108,10 @@ export async function GET(request: NextRequest) {
                 rangeTo: job.rangeTo.toISOString(),
             },
         });
-    } catch (error: any) {
+    } catch (error: unknown) {
+        console.error("[Worker Pull Error]:", error);
         return NextResponse.json(
-            { error: error.message || "Internal server error" },
+            { error: toPublicErrorMessage(error, "Internal server error") },
             { status: 500 }
         );
     }

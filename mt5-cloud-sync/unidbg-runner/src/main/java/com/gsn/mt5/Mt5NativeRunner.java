@@ -16,9 +16,14 @@ import com.github.unidbg.virtualmodule.android.AndroidModule;
 import com.github.unidbg.virtualmodule.android.JniGraphics;
 import unicorn.Arm64Const;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.URL;
@@ -32,6 +37,7 @@ import java.util.regex.Pattern;
 
 public class Mt5NativeRunner extends AbstractJni {
     private static final String ANDROID_FILES_DIR = "/data/user/0/net.metaquotes.metatrader5/files";
+    private static final boolean VERBOSE_TRACE = "1".equals(System.getenv("MT5_VERBOSE_TRACE"));
 
     private final AndroidEmulator emulator;
     private final VM vm;
@@ -336,65 +342,67 @@ public class Mt5NativeRunner extends AbstractJni {
         }, module.base + 0x401d80, module.base + 0x401d80, null);
 
         // 8. Trace CSocketThread::OnPacketReceived (0x2cd4dc), SetHeader (0x2e3b90), and CTerminal::OnNetworkPacket (0x31deec)
-        backend.hook_add_new(new CodeHook() {
-            @Override
-            public void hook(Backend b, long address, int size, Object user) {
-                long pkt = b.reg_read(Arm64Const.UC_ARM64_REG_X0).longValue();
-                int cmd = b.reg_read(Arm64Const.UC_ARM64_REG_X1).intValue() & 0xff;
-                int seq = b.reg_read(Arm64Const.UC_ARM64_REG_X2).intValue() & 0xffff;
-                int flg = b.reg_read(Arm64Const.UC_ARM64_REG_X3).intValue() & 0xffff;
-                int len = pkt != 0 ? emulator.getMemory().pointer(pkt + 0x10).getInt(0) : -1;
-                System.out.printf("[PktSend] SetHeader pkt=0x%x cmd=0x%02x len=%d seq=%d flags=0x%04x%n",
-                        pkt, cmd, len, seq, flg);
-            }
-            @Override public void onAttach(UnHook unHook) {}
-            @Override public void detach() {}
-        }, module.base + 0x2e3b90, module.base + 0x2e3b90, null);
+        if (VERBOSE_TRACE) {
+            backend.hook_add_new(new CodeHook() {
+                @Override
+                public void hook(Backend b, long address, int size, Object user) {
+                    long pkt = b.reg_read(Arm64Const.UC_ARM64_REG_X0).longValue();
+                    int cmd = b.reg_read(Arm64Const.UC_ARM64_REG_X1).intValue() & 0xff;
+                    int seq = b.reg_read(Arm64Const.UC_ARM64_REG_X2).intValue() & 0xffff;
+                    int flg = b.reg_read(Arm64Const.UC_ARM64_REG_X3).intValue() & 0xffff;
+                    int len = pkt != 0 ? emulator.getMemory().pointer(pkt + 0x10).getInt(0) : -1;
+                    System.out.printf("[PktSend] SetHeader pkt=0x%x cmd=0x%02x len=%d seq=%d flags=0x%04x%n",
+                            pkt, cmd, len, seq, flg);
+                }
+                @Override public void onAttach(UnHook unHook) {}
+                @Override public void detach() {}
+            }, module.base + 0x2e3b90, module.base + 0x2e3b90, null);
 
-        backend.hook_add_new(new CodeHook() {
-            @Override
-            public void hook(Backend b, long address, int size, Object user) {
-                long pkt = b.reg_read(Arm64Const.UC_ARM64_REG_X1).longValue();
-                if (pkt != 0) {
-                    long bufPtr = emulator.getMemory().pointer(pkt + 0x8).getLong(0);
-                    int cap = emulator.getMemory().pointer(pkt + 0x10).getInt(0);
-                    int len = emulator.getMemory().pointer(pkt + 0x18).getInt(0);
-                    int cmd = -1;
-                    int seq = -1;
-                    int flags = -1;
-                    int rawSz = -1;
-                    int cmpSz = -1;
-                    if (bufPtr != 0 && len >= 9) {
-                        byte[] hdr = b.mem_read(bufPtr, Math.min(len, 17));
-                        cmd = hdr[0] & 0xff;
-                        seq = ((hdr[5] & 0xff) | ((hdr[6] & 0xff) << 8));
-                        flags = ((hdr[7] & 0xff) | ((hdr[8] & 0xff) << 8));
-                        if (hdr.length >= 17) {
-                            ByteBuffer bb = ByteBuffer.wrap(hdr, 9, 8).order(ByteOrder.LITTLE_ENDIAN);
-                            rawSz = bb.getInt();
-                            cmpSz = bb.getInt();
+            backend.hook_add_new(new CodeHook() {
+                @Override
+                public void hook(Backend b, long address, int size, Object user) {
+                    long pkt = b.reg_read(Arm64Const.UC_ARM64_REG_X1).longValue();
+                    if (pkt != 0) {
+                        long bufPtr = emulator.getMemory().pointer(pkt + 0x8).getLong(0);
+                        int cap = emulator.getMemory().pointer(pkt + 0x10).getInt(0);
+                        int len = emulator.getMemory().pointer(pkt + 0x18).getInt(0);
+                        int cmd = -1;
+                        int seq = -1;
+                        int flags = -1;
+                        int rawSz = -1;
+                        int cmpSz = -1;
+                        if (bufPtr != 0 && len >= 9) {
+                            byte[] hdr = b.mem_read(bufPtr, Math.min(len, 17));
+                            cmd = hdr[0] & 0xff;
+                            seq = ((hdr[5] & 0xff) | ((hdr[6] & 0xff) << 8));
+                            flags = ((hdr[7] & 0xff) | ((hdr[8] & 0xff) << 8));
+                            if (hdr.length >= 17) {
+                                ByteBuffer bb = ByteBuffer.wrap(hdr, 9, 8).order(ByteOrder.LITTLE_ENDIAN);
+                                rawSz = bb.getInt();
+                                cmpSz = bb.getInt();
+                            }
+                        }
+                        if (cmd != 0x32 && cmd != 0x33) {
+                            System.out.printf("[PktRecv] OnPacketReceived pkt=0x%x cmd=0x%02x len=%d cap=%d seq=%d flags=0x%04x rawSz=%d cmpSz=%d%n",
+                                    pkt, cmd, len, cap, seq, flags, rawSz, cmpSz);
                         }
                     }
-                    if (cmd != 0x32 && cmd != 0x33) {
-                        System.out.printf("[PktRecv] OnPacketReceived pkt=0x%x cmd=0x%02x len=%d cap=%d seq=%d flags=0x%04x rawSz=%d cmpSz=%d%n",
-                                pkt, cmd, len, cap, seq, flags, rawSz, cmpSz);
-                    }
                 }
-            }
-            @Override public void onAttach(UnHook unHook) {}
-            @Override public void detach() {}
-        }, module.base + 0x2cd4dc, module.base + 0x2cd4dc, null);
+                @Override public void onAttach(UnHook unHook) {}
+                @Override public void detach() {}
+            }, module.base + 0x2cd4dc, module.base + 0x2cd4dc, null);
 
-        backend.hook_add_new(new CodeHook() {
-            @Override
-            public void hook(Backend b, long address, int size, Object user) {
-                long sp = b.reg_read(Arm64Const.UC_ARM64_REG_SP).longValue();
-                int tag = b.mem_read(sp + 0x10, 1)[0] & 0xff;
-                System.out.printf("[OnSyncPacket] section tag=0x%02x (%d)%n", tag, tag);
-            }
-            @Override public void onAttach(UnHook unHook) {}
-            @Override public void detach() {}
-        }, module.base + 0x31e2c8, module.base + 0x31e2c8, null);
+            backend.hook_add_new(new CodeHook() {
+                @Override
+                public void hook(Backend b, long address, int size, Object user) {
+                    long sp = b.reg_read(Arm64Const.UC_ARM64_REG_SP).longValue();
+                    int tag = b.mem_read(sp + 0x10, 1)[0] & 0xff;
+                    System.out.printf("[OnSyncPacket] section tag=0x%02x (%d)%n", tag, tag);
+                }
+                @Override public void onAttach(UnHook unHook) {}
+                @Override public void detach() {}
+            }, module.base + 0x31e2c8, module.base + 0x31e2c8, null);
+        }
 
         // 9. Hook __android_log_print (0x401ff0) and native logger (0x15bcc4)
         backend.hook_add_new(new CodeHook() {
@@ -1039,7 +1047,8 @@ public class Mt5NativeRunner extends AbstractJni {
             long login,
             String password,
             long fromMs,
-            long toMs
+            long toMs,
+            File outputJsonFile
     ) {
         DvmObject<?> context = vm.resolveClass("android/content/Context").newObject(null);
 
@@ -1328,7 +1337,7 @@ public class Mt5NativeRunner extends AbstractJni {
         int prevDealsCnt = -1;
         boolean completed = false;
 
-        for (int step = 0; step < 50; step++) {
+        for (int step = 0; step < 400; step++) {
             emulator.getBackend().mem_write(cNetworkPtr + 0x1298, intOne);
             emulator.getBackend().mem_write(cNetworkPtr + 0x129c, intOne);
             int sockFd = emulator.getMemory().pointer(cSocketThreadPtr + 0x140).getInt(0);
@@ -1348,7 +1357,7 @@ public class Mt5NativeRunner extends AbstractJni {
                     module.callFunction(emulator, 0x2ccdc0, cSocketThreadPtr);
                 }
                 try { Thread.sleep(100); } catch (InterruptedException ignored) {}
-                for (int r = 0; r < 12; r++) {
+                for (int r = 0; r < 24; r++) {
                     lastRecvBytes = 0;
                     packetsInCurrentReadCall = 0;
                     emulator.getBackend().mem_write(cNetworkPtr + 0x1298, intOne);
@@ -1435,8 +1444,9 @@ public class Mt5NativeRunner extends AbstractJni {
                 boolean countsStable = (posCnt == prevPosCnt && dealsCnt == prevDealsCnt);
                 prevPosCnt = posCnt;
                 prevDealsCnt = dealsCnt;
+                boolean networkQuiet = (totalRecvInStep == 0);
                 if (historyRequested && step >= historyRequestStep + 2 && isReady == 1 && reqGen == doneGen
-                        && (countsStable || step >= historyRequestStep + 6)
+                        && ((countsStable && networkQuiet) || (countsStable && step >= historyRequestStep + 6) || step >= historyRequestStep + 360)
                         && (dealsCnt > 0 || posCnt > 0 || step >= historyRequestStep + 4)) {
                     DvmObject<?> tradeInfoObj = vm.resolveClass("net/metaquotes/metatrader5/types/TradeInfoRecord").newObject(new LinkedHashMap<String, Object>());
                     termTradeObj.callJniMethodInt(emulator, "tradeGetInfo(Lnet/metaquotes/metatrader5/types/TradeInfoRecord;)Z", tradeInfoObj);
@@ -1447,77 +1457,165 @@ public class Mt5NativeRunner extends AbstractJni {
                     DvmObject<?> openPosListObj = listClass.newObject(openPosDvmList);
                     termTradeObj.callJniMethodInt(emulator, "tradePositionsGet(Ljava/util/List;)Z", openPosListObj);
 
-                    List<Map<String, Object>> positionsOut = new ArrayList<>();
-                    int olderPosStreak = 0;
-                    for (int i = posCnt - 1; i >= 0; i--) {
-                        DvmObject<?> posObj = termTradeObj.callJniMethodObject(
-                                emulator,
-                                "tradeHistoryPositionAt(I)Lnet/metaquotes/metatrader5/types/HistoryPosition;",
-                                i
-                        );
-                        Map<String, Object> m = fieldsOf(posObj);
-                        long closeTime = ((Number) m.getOrDefault("closeTime", 0L)).longValue();
-                        long closeTimeMs = closeTime > 10000000000L ? closeTime : closeTime * 1000L;
-                        if (closeTimeMs >= fromMs && closeTimeMs <= toMs) {
-                            positionsOut.add(m);
-                            olderPosStreak = 0;
-                        } else if (closeTimeMs < fromMs) {
-                            olderPosStreak++;
-                            if (olderPosStreak >= 100) {
-                                break;
-                            }
-                        }
-                    }
-
-                    List<Map<String, Object>> dealsOut = new ArrayList<>();
-                    int olderDealStreak = 0;
-                    for (int i = dealsCnt - 1; i >= 0 && dealsOut.size() < 200; i--) {
-                        DvmObject<?> dealObj = termTradeObj.callJniMethodObject(
-                                emulator,
-                                "tradeHistoryDealAt(I)Lnet/metaquotes/metatrader5/types/TradeDeal;",
-                                i
-                        );
-                        Map<String, Object> m = fieldsOf(dealObj);
-                        long date = ((Number) m.getOrDefault("date", 0L)).longValue();
-                        long dateMs = date > 10000000000L ? date : date * 1000L;
-                        if (dateMs >= fromMs && dateMs <= toMs) {
-                            dealsOut.add(m);
-                            olderDealStreak = 0;
-                        } else if (dateMs < fromMs) {
-                            olderDealStreak++;
-                            if (olderDealStreak >= 100) {
-                                break;
-                            }
-                        }
-                    }
-
+                    Map<String, Object> tradeInfoMap = new LinkedHashMap<>(fieldsOf(tradeInfoObj));
+                    Map<String, Object> posSummaryMap = new LinkedHashMap<>(fieldsOf(posSummaryObj));
                     List<Map<String, Object>> openPositionsOut = new ArrayList<>();
                     for (DvmObject<?> openObj : openPosDvmList) {
-                        openPositionsOut.add(fieldsOf(openObj));
+                        openPositionsOut.add(new LinkedHashMap<>(fieldsOf(openObj)));
                     }
 
                     int trdAllowed = termTradeObj.callJniMethodInt(emulator, "tradeAllowed()Z") & 0xff;
 
-                    Map<String, Object> payload = new LinkedHashMap<>();
-                    payload.put("success", true);
-                    payload.put("server", serverName);
-                    payload.put("company", companyName);
-                    payload.put("login", login);
-                    payload.put("fromMs", fromMs);
-                    payload.put("toMs", toMs);
-                    payload.put("tradeAllowed", trdAllowed != 0);
-                    payload.put("tradeInfo", fieldsOf(tradeInfoObj));
-                    payload.put("positionSummary", fieldsOf(posSummaryObj));
-                    payload.put("positions", positionsOut);
-                    payload.put("deals", dealsOut);
-                    payload.put("openPositions", openPositionsOut);
-                    payload.put("ordersCount", ordCnt);
+                    if (outputJsonFile != null) {
+                        try {
+                            if (outputJsonFile.getParentFile() != null) {
+                                outputJsonFile.getParentFile().mkdirs();
+                            }
+                            try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputJsonFile), StandardCharsets.UTF_8), 65536)) {
+                                writer.write("{\"success\":true");
+                                writer.write(",\"server\":" + toJson(serverName));
+                                writer.write(",\"company\":" + toJson(companyName));
+                                writer.write(",\"login\":" + login);
+                                writer.write(",\"fromMs\":" + fromMs);
+                                writer.write(",\"toMs\":" + toMs);
+                                writer.write(",\"tradeAllowed\":" + (trdAllowed != 0));
+                                writer.write(",\"tradeInfo\":" + toJson(tradeInfoMap));
+                                writer.write(",\"positionSummary\":" + toJson(posSummaryMap));
+                                writer.write(",\"openPositions\":" + toJson(openPositionsOut));
+                                writer.write(",\"ordersCount\":" + ordCnt);
 
-                    System.out.println("__MT5_JSON_START__");
-                    System.out.println(toJson(payload));
-                    System.out.println("__MT5_JSON_END__");
-                    completed = true;
-                    break;
+                                // Stream positions in O(1) JVM heap
+                                writer.write(",\"positions\":[");
+                                boolean firstPos = true;
+                                int olderPosStreak = 0;
+                                for (int i = posCnt - 1; i >= 0; i--) {
+                                    DvmObject<?> posObj = termTradeObj.callJniMethodObject(
+                                            emulator,
+                                            "tradeHistoryPositionAt(I)Lnet/metaquotes/metatrader5/types/HistoryPosition;",
+                                            i
+                                    );
+                                    Map<String, Object> m = fieldsOf(posObj);
+                                    long closeTime = ((Number) m.getOrDefault("closeTime", 0L)).longValue();
+                                    long closeTimeMs = closeTime > 10000000000L ? closeTime : closeTime * 1000L;
+                                    if (closeTimeMs >= fromMs && closeTimeMs <= toMs) {
+                                        if (!firstPos) writer.write(",");
+                                        firstPos = false;
+                                        writer.write(toJson(m));
+                                        olderPosStreak = 0;
+                                    } else if (closeTimeMs < fromMs) {
+                                        olderPosStreak++;
+                                        if (olderPosStreak >= 200) {
+                                            fieldStore.remove(posObj);
+                                            break;
+                                        }
+                                    }
+                                    fieldStore.remove(posObj);
+                                }
+                                writer.write("]");
+
+                                // Stream recent deals sample (capped at 200 for summary compatibility)
+                                writer.write(",\"deals\":[");
+                                boolean firstDeal = true;
+                                int dealsWritten = 0;
+                                int olderDealStreak = 0;
+                                for (int i = dealsCnt - 1; i >= 0 && dealsWritten < 200; i--) {
+                                    DvmObject<?> dealObj = termTradeObj.callJniMethodObject(
+                                            emulator,
+                                            "tradeHistoryDealAt(I)Lnet/metaquotes/metatrader5/types/TradeDeal;",
+                                            i
+                                    );
+                                    Map<String, Object> m = fieldsOf(dealObj);
+                                    long date = ((Number) m.getOrDefault("date", 0L)).longValue();
+                                    long dateMs = date > 10000000000L ? date : date * 1000L;
+                                    if (dateMs >= fromMs && dateMs <= toMs) {
+                                        if (!firstDeal) writer.write(",");
+                                        firstDeal = false;
+                                        writer.write(toJson(m));
+                                        dealsWritten++;
+                                        olderDealStreak = 0;
+                                    } else if (dateMs < fromMs) {
+                                        olderDealStreak++;
+                                        if (olderDealStreak >= 200) {
+                                            fieldStore.remove(dealObj);
+                                            break;
+                                        }
+                                    }
+                                    fieldStore.remove(dealObj);
+                                }
+                                writer.write("]}");
+                            }
+                            System.out.println("__MT5_JSON_FILE_WRITTEN__");
+                            completed = true;
+                            break;
+                        } catch (IOException ioEx) {
+                            System.out.println("[Unidbg] Failed writing output JSON file: " + ioEx.getMessage());
+                        }
+                    } else {
+                        List<Map<String, Object>> positionsOut = new ArrayList<>();
+                        int olderPosStreak = 0;
+                        for (int i = posCnt - 1; i >= 0; i--) {
+                            DvmObject<?> posObj = termTradeObj.callJniMethodObject(
+                                    emulator,
+                                    "tradeHistoryPositionAt(I)Lnet/metaquotes/metatrader5/types/HistoryPosition;",
+                                    i
+                            );
+                            Map<String, Object> m = fieldsOf(posObj);
+                            long closeTime = ((Number) m.getOrDefault("closeTime", 0L)).longValue();
+                            long closeTimeMs = closeTime > 10000000000L ? closeTime : closeTime * 1000L;
+                            if (closeTimeMs >= fromMs && closeTimeMs <= toMs) {
+                                positionsOut.add(m);
+                                olderPosStreak = 0;
+                            } else if (closeTimeMs < fromMs) {
+                                olderPosStreak++;
+                                if (olderPosStreak >= 200) {
+                                    break;
+                                }
+                            }
+                        }
+
+                        List<Map<String, Object>> dealsOut = new ArrayList<>();
+                        int olderDealStreak = 0;
+                        for (int i = dealsCnt - 1; i >= 0 && dealsOut.size() < 200; i--) {
+                            DvmObject<?> dealObj = termTradeObj.callJniMethodObject(
+                                    emulator,
+                                    "tradeHistoryDealAt(I)Lnet/metaquotes/metatrader5/types/TradeDeal;",
+                                    i
+                            );
+                            Map<String, Object> m = fieldsOf(dealObj);
+                            long date = ((Number) m.getOrDefault("date", 0L)).longValue();
+                            long dateMs = date > 10000000000L ? date : date * 1000L;
+                            if (dateMs >= fromMs && dateMs <= toMs) {
+                                dealsOut.add(m);
+                                olderDealStreak = 0;
+                            } else if (dateMs < fromMs) {
+                                olderDealStreak++;
+                                if (olderDealStreak >= 200) {
+                                    break;
+                                }
+                            }
+                        }
+
+                        Map<String, Object> payload = new LinkedHashMap<>();
+                        payload.put("success", true);
+                        payload.put("server", serverName);
+                        payload.put("company", companyName);
+                        payload.put("login", login);
+                        payload.put("fromMs", fromMs);
+                        payload.put("toMs", toMs);
+                        payload.put("tradeAllowed", trdAllowed != 0);
+                        payload.put("tradeInfo", tradeInfoMap);
+                        payload.put("positionSummary", posSummaryMap);
+                        payload.put("positions", positionsOut);
+                        payload.put("deals", dealsOut);
+                        payload.put("openPositions", openPositionsOut);
+                        payload.put("ordersCount", ordCnt);
+
+                        System.out.println("__MT5_JSON_START__");
+                        System.out.println(toJson(payload));
+                        System.out.println("__MT5_JSON_END__");
+                        completed = true;
+                        break;
+                    }
                 }
             }
         }
@@ -1528,9 +1626,26 @@ public class Mt5NativeRunner extends AbstractJni {
             errPayload.put("error", authStep == -1
                     ? "Failed to authenticate with MT5 server " + serverName + " for account " + login
                     : "Timed out waiting for MT5 trade history response from " + serverName);
-            System.out.println("__MT5_JSON_START__");
-            System.out.println(toJson(errPayload));
-            System.out.println("__MT5_JSON_END__");
+            String errJson = toJson(errPayload);
+            if (outputJsonFile != null) {
+                try {
+                    if (outputJsonFile.getParentFile() != null) {
+                        outputJsonFile.getParentFile().mkdirs();
+                    }
+                    try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputJsonFile), StandardCharsets.UTF_8))) {
+                        writer.write(errJson);
+                    }
+                    System.out.println("__MT5_JSON_FILE_WRITTEN__");
+                } catch (IOException ignored) {
+                    System.out.println("__MT5_JSON_START__");
+                    System.out.println(errJson);
+                    System.out.println("__MT5_JSON_END__");
+                }
+            } else {
+                System.out.println("__MT5_JSON_START__");
+                System.out.println(errJson);
+                System.out.println("__MT5_JSON_END__");
+            }
         }
     }
 
@@ -1647,6 +1762,7 @@ public class Mt5NativeRunner extends AbstractJni {
         long toMs = cal.getTimeInMillis();
         String apkPath = "bin/metatrader5.apk";
         String workDirPath = "unidbg-workdir";
+        String outputJsonPath = null;
         String searchBrokerQuery = null;
 
         for (int i = 0; i < args.length - 1; i++) {
@@ -1661,6 +1777,7 @@ public class Mt5NativeRunner extends AbstractJni {
                 case "--to": toMs = Long.parseLong(args[++i]); break;
                 case "--apk": apkPath = args[++i]; break;
                 case "--workdir": workDirPath = args[++i]; break;
+                case "--output": outputJsonPath = args[++i]; break;
             }
         }
 
@@ -1677,7 +1794,8 @@ public class Mt5NativeRunner extends AbstractJni {
                 .filter(s -> !s.isEmpty())
                 .toArray(String[]::new);
 
-        runner.runSync(serverName, companyName, accessPoints, login, password, fromMs, toMs);
+        File outputJsonFile = outputJsonPath != null ? new File(outputJsonPath) : null;
+        runner.runSync(serverName, companyName, accessPoints, login, password, fromMs, toMs, outputJsonFile);
         System.exit(0);
     }
 }

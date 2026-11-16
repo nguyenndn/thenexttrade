@@ -173,7 +173,7 @@ export function AccountListClient({
         for (const acc of initialAccounts) {
             if (acc.latestJob && (acc.latestJob.status === "PENDING" || acc.latestJob.status === "PROCESSING")) {
                 const jobAge = now - new Date(acc.latestJob.createdAt).getTime();
-                const maxAge = acc.latestJob.status === "PENDING" ? 60000 : 120000;
+                const maxAge = acc.latestJob.status === "PENDING" ? 60000 : 600000;
                 if (jobAge < maxAge) {
                     initial[acc.id] = {
                         jobId: acc.latestJob.id,

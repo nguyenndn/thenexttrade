@@ -407,7 +407,7 @@ export function CloudSyncModal({
                     latestJob.status === "PROCESSING") &&
                 latestJob.createdAt &&
                 Date.now() - new Date(latestJob.createdAt).getTime() <
-                    (latestJob.status === "PENDING" ? 60000 : 120000)
+                    (latestJob.status === "PENDING" ? 60000 : 600000)
         );
 
     const importStageTitle = isSaving

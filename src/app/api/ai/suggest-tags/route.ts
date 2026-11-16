@@ -3,6 +3,7 @@ import { randomUUID } from "node:crypto";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/api-auth";
 import { executeAiGateway } from "@/lib/ai-gateway/provider-router";
+import { toPublicErrorMessage } from "@/lib/errors/public-error";
 
 export async function POST(req: NextRequest) {
     const auth = await requireAdmin();
@@ -152,10 +153,10 @@ IMPORTANT: existingTagIds must contain actual IDs from the existing tags list. O
             tagIds: allTagIds,
             newTagsCreated: createdTags.length,
         });
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("[AI Suggest Tags Error]", error);
         return NextResponse.json(
-            { error: error.message || "Failed to suggest tags" },
+            { error: toPublicErrorMessage(error, "Failed to suggest tags") },
             { status: 500 }
         );
     }

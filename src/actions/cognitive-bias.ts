@@ -10,6 +10,7 @@ import {
     convertToUsdEquivalent,
     normalizeLotSize,
 } from "@/lib/utils/cent-account";
+import { toPublicErrorMessage } from "@/lib/errors/public-error";
 
 // Map biases to lessons in the academy (fallback default values)
 const BIAS_LESSON_MAP = {
@@ -602,9 +603,11 @@ Ensure your response is valid raw JSON, with no markdown code blocks (\`\`\`json
         };
     } catch (error: unknown) {
         console.error("[AI Cognitive Bias Error]:", error);
-        const msg = error instanceof Error ? error.message : String(error);
         return {
-            error: `Failed to generate AI Bias Profile: ${msg}. Please try again.`,
+            error: toPublicErrorMessage(
+                error,
+                "Failed to generate AI Bias Profile. Please try again."
+            ),
         };
     }
 }

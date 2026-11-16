@@ -4,6 +4,7 @@ import { recordCronRun } from "@/lib/cron/cron-health.server";
 import { generateActivitySnapshots } from "@/lib/services/ib-snapshot.service";
 import { prisma } from "@/lib/prisma";
 import { NOTIFICATION_ROUTES } from "@/lib/notification-routes";
+import { toPublicErrorMessage } from "@/lib/errors/public-error";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 120;
@@ -77,11 +78,11 @@ export async function GET(request: Request) {
             notificationsSent,
             timestamp: new Date().toISOString(),
         });
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("[IB Snapshot Cron Error]:", error);
         await recordCronRun("ib-snapshots", cronStartedAt, "FAILED", error);
         return NextResponse.json(
-            { error: "Failed to generate snapshots", detail: error.message },
+            { error: toPublicErrorMessage(error, "Failed to generate snapshots") },
             { status: 500 }
         );
     }

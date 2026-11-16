@@ -8,6 +8,7 @@ import {
     revokeUserProductAccess,
 } from "@/lib/admin/ib/product-usage.server";
 import { ToolAccessSource } from "@prisma/client";
+import { toPublicErrorMessage } from "@/lib/errors/public-error";
 
 async function verifyAdmin() {
     const user = await getAuthUser();
@@ -44,8 +45,11 @@ export async function adminGrantProductAccessAction(params: {
         revalidatePath("/admin/ib/pipeline");
         revalidatePath("/admin/ib/traders");
         return { success: true };
-    } catch (err: any) {
-        return { error: err.message || "Failed to grant product access" };
+    } catch (err: unknown) {
+        console.error("adminGrantProductAccessAction error:", err);
+        return {
+            error: toPublicErrorMessage(err, "Failed to grant product access"),
+        };
     }
 }
 
@@ -69,8 +73,11 @@ export async function adminRevokeProductAccessAction(params: {
         revalidatePath("/admin/ib/pipeline");
         revalidatePath("/admin/ib/traders");
         return { success: true };
-    } catch (err: any) {
-        return { error: err.message || "Failed to revoke product access" };
+    } catch (err: unknown) {
+        console.error("adminRevokeProductAccessAction error:", err);
+        return {
+            error: toPublicErrorMessage(err, "Failed to revoke product access"),
+        };
     }
 }
 
@@ -103,8 +110,11 @@ export async function adminSendSetupReminderAction(params: {
         });
 
         return { success: true };
-    } catch (err: any) {
-        return { error: err.message || "Failed to send setup reminder" };
+    } catch (err: unknown) {
+        console.error("adminSendSetupReminderAction error:", err);
+        return {
+            error: toPublicErrorMessage(err, "Failed to send setup reminder"),
+        };
     }
 }
 
@@ -212,8 +222,14 @@ export async function adminBulkExtendGracePeriodAction(params: {
         revalidatePath("/dashboard/accounts");
         revalidatePath("/dashboard/trading-systems");
         return { success: true, count: params.userIds.length };
-    } catch (err: any) {
-        return { error: err.message || "Failed to extend grace period in bulk" };
+    } catch (err: unknown) {
+        console.error("adminBulkExtendGracePeriodAction error:", err);
+        return {
+            error: toPublicErrorMessage(
+                err,
+                "Failed to extend grace period in bulk"
+            ),
+        };
     }
 }
 
@@ -253,8 +269,14 @@ export async function adminBulkSendSetupReminderAction(params: {
         });
 
         return { success: true, count: params.userIds.length };
-    } catch (err: any) {
-        return { error: err.message || "Failed to send setup reminders in bulk" };
+    } catch (err: unknown) {
+        console.error("adminBulkSendSetupReminderAction error:", err);
+        return {
+            error: toPublicErrorMessage(
+                err,
+                "Failed to send setup reminders in bulk"
+            ),
+        };
     }
 }
 

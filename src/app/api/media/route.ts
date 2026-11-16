@@ -7,6 +7,7 @@ import {
     uploadPublicAsset,
 } from "@/lib/storage/object-storage";
 import { requireAdmin } from "@/lib/api-auth";
+import { toPublicErrorMessage } from "@/lib/errors/public-error";
 
 export async function GET(request: Request) {
     const auth = await requireAdmin();
@@ -48,7 +49,8 @@ export async function GET(request: Request) {
                 totalPages: Math.ceil(total / limit),
             },
         });
-    } catch (error) {
+    } catch (error: unknown) {
+        console.error("Failed to fetch media:", error);
         return NextResponse.json(
             { error: "Failed to fetch media" },
             { status: 500 }
@@ -158,10 +160,10 @@ export async function POST(request: Request) {
         });
 
         return NextResponse.json(media);
-    } catch (error) {
+    } catch (error: unknown) {
         console.error("Upload failed details:", error);
         return NextResponse.json(
-            { error: "Upload failed: " + (error instanceof Error ? error.message : "Unknown error") },
+            { error: toPublicErrorMessage(error, "Upload failed") },
             { status: 500 }
         );
     }

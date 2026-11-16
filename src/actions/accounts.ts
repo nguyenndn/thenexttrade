@@ -179,7 +179,7 @@ export async function getTradingAccounts(page = 1, limit = 12) {
         ) {
             const ageMs = Date.now() - new Date(latestJob.createdAt).getTime();
             const isPending = latestJob.status === "PENDING";
-            const STALE_THRESHOLD_MS = isPending ? 60 * 1000 : 120 * 1000;
+            const STALE_THRESHOLD_MS = isPending ? 60 * 1000 : 600 * 1000;
             if (ageMs > STALE_THRESHOLD_MS) {
                 const timeoutMsg = "Unable to sync trade history. Please try again or request sync support.";
 

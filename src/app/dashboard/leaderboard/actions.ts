@@ -10,6 +10,7 @@ import { isRealTradingAccount } from "@/lib/loyalty/loyalty.server";
 import { convertToUsdEquivalent } from "@/lib/utils/cent-account";
 import { notifyAdminsOfCompetitionJoin } from "@/lib/admin/admin-notification.server";
 import { isCompetitionsEnabled as getCompetitionsEnabled } from "@/actions/admin/competitions";
+import { toPublicErrorMessage } from "@/lib/errors/public-error";
 
 export type LeaderboardType =
     "sprint" | "trading" | "xp" | "streak" | "academy" | "mystats";
@@ -255,10 +256,7 @@ export async function joinCompetition(
         }
         console.error("joinCompetition error:", error);
         return {
-            error:
-                error instanceof Error
-                    ? error.message
-                    : "Failed to join competition.",
+            error: toPublicErrorMessage(error, "Failed to join competition."),
         };
     }
 }

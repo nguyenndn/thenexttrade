@@ -3,6 +3,7 @@
 import { z } from "zod";
 import { getAuthUser } from "@/lib/auth-cache";
 import { prisma } from "@/lib/prisma";
+import { toPublicErrorMessage } from "@/lib/errors/public-error";
 import {
     sendEmailWithDetails,
     buildReportEmailHtml,
@@ -339,14 +340,11 @@ export async function renderEmailLabPreview(input: {
             html: content.html,
             text: content.text,
         };
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("[EMAIL_LAB_PREVIEW_ERROR]", error);
         return {
             success: false,
-            message:
-                error instanceof Error
-                    ? error.message
-                    : "Failed to render preview",
+            message: toPublicErrorMessage(error, "Failed to render preview"),
         };
     }
 }
@@ -459,21 +457,24 @@ export async function sendEmailLabTest(input: {
                 subject,
             };
         } else {
+            const safeError = error
+                ? toPublicErrorMessage(error, "Check server logs.")
+                : "";
             return {
                 success: false,
-                message: error
-                    ? `SMTP Delivery Failed: ${error}`
+                message: safeError
+                    ? `SMTP Delivery Failed: ${safeError}`
                     : "SMTP Delivery Failed. Check server logs.",
             };
         }
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("[EMAIL_LAB_ERROR]", error);
         return {
             success: false,
-            message:
-                error instanceof Error
-                    ? error.message
-                    : "An unexpected error occurred",
+            message: toPublicErrorMessage(
+                error,
+                "An unexpected error occurred"
+            ),
         };
     }
 }

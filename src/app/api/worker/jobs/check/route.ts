@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { toPublicErrorMessage } from "@/lib/errors/public-error";
 
 export async function GET(request: NextRequest) {
     try {
@@ -62,9 +63,10 @@ export async function GET(request: NextRequest) {
             status: job.status,
             isCancelled,
         });
-    } catch (error: any) {
+    } catch (error: unknown) {
+        console.error("[Worker Check Error]:", error);
         return NextResponse.json(
-            { error: error.message || "Internal server error" },
+            { error: toPublicErrorMessage(error, "Internal server error") },
             { status: 500 }
         );
     }

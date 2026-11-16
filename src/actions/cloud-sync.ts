@@ -16,6 +16,7 @@ import { EATrade, RawEATrade, parseEATrade } from "@/lib/ea/utils";
 import { isLiveTradingPayload } from "@/lib/trading-account-classification";
 import { decryptPassword, encryptPassword } from "@/lib/crypto";
 import { rateLimit } from "@/lib/rate-limit";
+import { isInternalError, toPublicErrorMessage } from "@/lib/errors/public-error";
 
 const brokerSearchRateLimiter = rateLimit({
     interval: 60_000,
@@ -26,6 +27,32 @@ const passwordRevealRateLimiter = rateLimit({
     interval: 60_000,
     uniqueTokenPerInterval: 500,
 });
+
+const MAX_DB_ERROR_MESSAGE_LEN = 480;
+const MAX_DB_STATUS_MESSAGE_LEN = 290;
+const DB_TICKET_QUERY_BATCH_SIZE = 2000;
+const DB_CREATE_BATCH_SIZE = 2000;
+const DB_UPDATE_BATCH_SIZE = 100;
+
+function sanitizeCloudSyncError(raw: unknown, fallback: string): string {
+    const text =
+        typeof raw === "string"
+            ? raw.trim()
+            : raw instanceof Error
+              ? raw.message.trim()
+              : "";
+    if (!text) return fallback;
+
+    if (/timed out|ETIMEDOUT|SIGTERM/i.test(text)) {
+        return "Connection to MT5 server timed out while loading trade history. Please try a shorter date range or try again.";
+    }
+
+    if (isInternalError(raw)) {
+        return fallback;
+    }
+
+    return toPublicErrorMessage(raw, fallback).slice(0, MAX_DB_ERROR_MESSAGE_LEN);
+}
 
 function resolveSavedPassword(
     cred?: { encryptedPassword?: string | null; keyVersion?: string | null } | null
@@ -129,10 +156,11 @@ export async function saveCloudSyncCredentials(
 
         revalidatePath("/dashboard/accounts");
         return { success: true };
-    } catch (err: any) {
+    } catch (err: unknown) {
+        console.error("[CloudSync] saveCloudSyncCredentials error:", err);
         return {
             success: false,
-            error: err.message || "Failed to save credentials",
+            error: toPublicErrorMessage(err, "Failed to save credentials."),
         };
     }
 }
@@ -252,7 +280,7 @@ async function executeApkCloudSyncJob(params: ApkCloudSyncJobParams) {
             data: {
                 status: "PROCESSING",
                 progressPercent: 25,
-                message: "Connecting via MT5 APK Cloud Sync & loading trade history...",
+                message: "Connecting & loading trade history...",
             },
         });
 
@@ -265,14 +293,15 @@ async function executeApkCloudSyncJob(params: ApkCloudSyncJobParams) {
             password,
             from: fromDate.toISOString(),
             to: toDate.toISOString(),
-            limit: 50000,
+            limit: 500000,
             autoPush: false,
         });
 
         if (!syncResult || !syncResult.success) {
-            const errMsg =
-                syncResult?.error ||
-                "Failed to authenticate or load trade history from MT5 server.";
+            const errMsg = sanitizeCloudSyncError(
+                syncResult?.error,
+                "Failed to authenticate or load trade history from MT5 server."
+            );
             await prisma.mt5ImportJob.update({
                 where: { id: jobId },
                 data: {
@@ -342,29 +371,46 @@ async function executeApkCloudSyncJob(params: ApkCloudSyncJobParams) {
                 isCent || isCentSymbol(trade.symbol)
             );
 
-        const existingEntries =
-            tickets.length > 0
-                ? await prisma.journalEntry.findMany({
-                      where: {
-                          accountId,
-                          externalTicket: { in: tickets },
-                      },
-                      select: {
-                          externalTicket: true,
-                          status: true,
-                          pnl: true,
-                          commission: true,
-                          swap: true,
-                          stopLoss: true,
-                          takeProfit: true,
-                          entryDate: true,
-                          entryPrice: true,
-                          exitDate: true,
-                          exitPrice: true,
-                          lotSize: true,
-                      },
-                  })
-                : [];
+        // Chunked lookup (2,000 tickets per batch) so 100k–500k+ trade accounts never hit PostgreSQL's 32,767/65,535 bind parameter limit
+        const existingEntries: Array<{
+            externalTicket: string | null;
+            status: string;
+            pnl: number | null;
+            commission: number | null;
+            swap: number | null;
+            stopLoss: number | null;
+            takeProfit: number | null;
+            entryDate: Date;
+            entryPrice: number;
+            exitDate: Date | null;
+            exitPrice: number | null;
+            lotSize: number;
+        }> = [];
+
+        for (let i = 0; i < tickets.length; i += DB_TICKET_QUERY_BATCH_SIZE) {
+            const ticketBatch = tickets.slice(i, i + DB_TICKET_QUERY_BATCH_SIZE);
+            const rows = await prisma.journalEntry.findMany({
+                where: {
+                    accountId,
+                    externalTicket: { in: ticketBatch },
+                },
+                select: {
+                    externalTicket: true,
+                    status: true,
+                    pnl: true,
+                    commission: true,
+                    swap: true,
+                    stopLoss: true,
+                    takeProfit: true,
+                    entryDate: true,
+                    entryPrice: true,
+                    exitDate: true,
+                    exitPrice: true,
+                    lotSize: true,
+                },
+            });
+            existingEntries.push(...rows);
+        }
 
         const existingByTicket = new Map(
             existingEntries.map((e) => [e.externalTicket, e])
@@ -396,84 +442,115 @@ async function executeApkCloudSyncJob(params: ApkCloudSyncJobParams) {
         const resolvedAccountType = isRealAccount ? "REAL" : "DEMO";
         const received = eligibleTrades.length;
 
-        const imported = await prisma.$transaction(async (tx) => {
-            let inserted = 0;
-            let closed = 0;
+        let inserted = 0;
+        let closed = 0;
+        const totalMutations = newTrades.length + closingTrades.length;
 
-            if (newTrades.length > 0) {
-                const insertData = newTrades.map((trade) => {
-                    const isClosed = trade.closeTime !== null;
-                    return {
-                        userId,
-                        accountId,
-                        symbol: trade.symbol,
-                        type: trade.type,
-                        entryDate: trade.openTime,
-                        entryPrice: trade.openPrice,
-                        exitDate: isClosed ? trade.closeTime : null,
-                        exitPrice: isClosed ? trade.closePrice : null,
-                        stopLoss: trade.stopLoss || null,
-                        takeProfit: trade.takeProfit || null,
-                        lotSize: normalizedLotFor(trade),
-                        pnl: isClosed ? trade.profit : 0,
-                        commission: trade.commission,
-                        swap: trade.swap,
-                        status: isClosed ? ("CLOSED" as const) : ("OPEN" as const),
-                        result: isClosed
-                            ? classifyTradeResult({
-                                  pnl:
-                                      (trade.profit || 0) +
-                                      (trade.commission || 0) +
-                                      (trade.swap || 0),
-                              })
-                            : null,
-                        externalTicket: trade.ticket,
-                        syncSource: "EA_SYNC",
-                        syncedAt: new Date(),
-                    };
-                });
+        // Chunked batch inserts (2,000 rows per batch — immune to Prisma's 5s interactive transaction timeout)
+        for (let offset = 0; offset < newTrades.length; offset += DB_CREATE_BATCH_SIZE) {
+            const batchTrades = newTrades.slice(offset, offset + DB_CREATE_BATCH_SIZE);
+            const insertData = batchTrades.map((trade) => {
+                const isClosed = trade.closeTime !== null;
+                return {
+                    userId,
+                    accountId,
+                    symbol: trade.symbol,
+                    type: trade.type,
+                    entryDate: trade.openTime,
+                    entryPrice: trade.openPrice,
+                    exitDate: isClosed ? trade.closeTime : null,
+                    exitPrice: isClosed ? trade.closePrice : null,
+                    stopLoss: trade.stopLoss || null,
+                    takeProfit: trade.takeProfit || null,
+                    lotSize: normalizedLotFor(trade),
+                    pnl: isClosed ? trade.profit : 0,
+                    commission: trade.commission,
+                    swap: trade.swap,
+                    status: isClosed ? ("CLOSED" as const) : ("OPEN" as const),
+                    result: isClosed
+                        ? classifyTradeResult({
+                              pnl:
+                                  (trade.profit || 0) +
+                                  (trade.commission || 0) +
+                                  (trade.swap || 0),
+                          })
+                        : null,
+                    externalTicket: trade.ticket,
+                    syncSource: "EA_SYNC",
+                    syncedAt: new Date(),
+                };
+            });
 
-                const res = await tx.journalEntry.createMany({
-                    data: insertData,
-                    skipDuplicates: true,
-                });
-                inserted = res.count;
+            const res = await prisma.journalEntry.createMany({
+                data: insertData,
+                skipDuplicates: true,
+            });
+            inserted += res.count;
+
+            if (newTrades.length > DB_CREATE_BATCH_SIZE) {
+                const processedSoFar = Math.min(newTrades.length, offset + batchTrades.length);
+                const pct = Math.min(
+                    92,
+                    40 + Math.round((processedSoFar / Math.max(1, totalMutations)) * 50)
+                );
+                await prisma.mt5ImportJob
+                    .update({
+                        where: { id: jobId },
+                        data: {
+                            progressPercent: pct,
+                            message: `Importing ${processedSoFar.toLocaleString()} / ${newTrades.length.toLocaleString()} trades...`,
+                        },
+                    })
+                    .catch(() => {});
             }
+        }
 
-            for (const trade of closingTrades) {
-                const upd = await tx.journalEntry.updateMany({
-                    where: {
-                        accountId,
-                        externalTicket: trade.ticket,
-                    },
-                    data: {
-                        status: "CLOSED",
-                        exitDate: trade.closeTime,
-                        exitPrice: trade.closePrice,
-                        entryDate: trade.openTime,
-                        entryPrice: trade.openPrice,
-                        lotSize: normalizedLotFor(trade),
-                        stopLoss: trade.stopLoss || null,
-                        takeProfit: trade.takeProfit || null,
-                        pnl: trade.profit,
-                        commission: trade.commission,
-                        swap: trade.swap,
-                        result: classifyTradeResult({
-                            pnl:
-                                (trade.profit || 0) +
-                                (trade.commission || 0) +
-                                (trade.swap || 0),
-                        }),
-                        syncedAt: new Date(),
-                    },
-                });
+        // Chunked batch updates for newly closed / reconciled positions
+        for (let offset = 0; offset < closingTrades.length; offset += DB_UPDATE_BATCH_SIZE) {
+            const updateSlice = closingTrades.slice(offset, offset + DB_UPDATE_BATCH_SIZE);
+            const updateResults = await prisma.$transaction(
+                updateSlice.map((trade) =>
+                    prisma.journalEntry.updateMany({
+                        where: {
+                            accountId,
+                            externalTicket: trade.ticket,
+                        },
+                        data: {
+                            status: "CLOSED",
+                            exitDate: trade.closeTime,
+                            exitPrice: trade.closePrice,
+                            entryDate: trade.openTime,
+                            entryPrice: trade.openPrice,
+                            lotSize: normalizedLotFor(trade),
+                            stopLoss: trade.stopLoss || null,
+                            takeProfit: trade.takeProfit || null,
+                            pnl: trade.profit,
+                            commission: trade.commission,
+                            swap: trade.swap,
+                            result: classifyTradeResult({
+                                pnl:
+                                    (trade.profit || 0) +
+                                    (trade.commission || 0) +
+                                    (trade.swap || 0),
+                            }),
+                            syncedAt: new Date(),
+                        },
+                    })
+                )
+            );
+            for (const upd of updateResults) {
                 closed += upd.count;
             }
+        }
 
-            const skipped = Math.max(0, received - inserted - closed);
-            const summaryMessage = `Synced ${received} trades (${inserted} new, ${closed} updated, ${skipped} already synced).`;
+        const skipped = Math.max(0, received - inserted - closed);
+        const summaryMessage = `Synced ${received} trades (${inserted} new, ${closed} updated, ${skipped} already synced).`;
+        const exactTotalTrades = await prisma.journalEntry.count({
+            where: { accountId },
+        });
 
-            await tx.syncHistory.create({
+        await prisma.$transaction([
+            prisma.syncHistory.create({
                 data: {
                     tradingAccountId: accountId,
                     tradesReceived: received,
@@ -482,9 +559,8 @@ async function executeApkCloudSyncJob(params: ApkCloudSyncJobParams) {
                     eaVersion: "2.4.0",
                     clientTime: new Date(),
                 },
-            });
-
-            await tx.tradingAccount.update({
+            }),
+            prisma.tradingAccount.update({
                 where: { id: accountId },
                 data: {
                     status: "CONNECTED",
@@ -492,7 +568,7 @@ async function executeApkCloudSyncJob(params: ApkCloudSyncJobParams) {
                     lastHeartbeat: new Date(),
                     lastSync: new Date(),
                     eaVersion: "2.4.0",
-                    totalTrades: { increment: inserted },
+                    totalTrades: exactTotalTrades,
                     currency: resolvedCurrency,
                     server,
                     ...(detectedBroker || broker
@@ -503,35 +579,34 @@ async function executeApkCloudSyncJob(params: ApkCloudSyncJobParams) {
                     ...(Number.isFinite(balance) ? { balance } : {}),
                     ...(Number.isFinite(equity) ? { equity } : {}),
                 },
-            });
-
-            await tx.mt5ImportJob.update({
+            }),
+            prisma.mt5ImportJob.update({
                 where: { id: jobId },
                 data: {
                     status: "COMPLETED",
                     progressPercent: 100,
                     dealsReceived: received,
-                    message: summaryMessage,
+                    message: summaryMessage.slice(0, MAX_DB_STATUS_MESSAGE_LEN),
                     completedAt: new Date(),
                 },
-            });
+            }),
+        ]);
 
-            return {
-                success: true as const,
-                status: "COMPLETED" as const,
-                received,
-                inserted,
-                closed,
-                skipped,
-                message: summaryMessage,
-            };
-        });
-
-        return imported;
-    } catch (err: any) {
-        const errMsg =
-            err?.message ||
-            "Unexpected error while executing MT5 Cloud Sync.";
+        return {
+            success: true as const,
+            status: "COMPLETED" as const,
+            received,
+            inserted,
+            closed,
+            skipped,
+            message: summaryMessage,
+        };
+    } catch (err: unknown) {
+        console.error("[CloudSync] Job execution error:", err);
+        const errMsg = sanitizeCloudSyncError(
+            err,
+            "Unexpected error while executing MT5 Cloud Sync."
+        );
         await prisma.mt5ImportJob
             .update({
                 where: { id: jobId },
@@ -592,7 +667,7 @@ export async function triggerCloudSync(
         const qPos = getJobQueuePosition(activeJob.id);
         const ageMs = Date.now() - new Date(activeJob.createdAt).getTime();
         const isPending = activeJob.status === "PENDING";
-        const STALE_THRESHOLD_MS = 120 * 1000;
+        const STALE_THRESHOLD_MS = 600 * 1000;
         if (qPos === -1 && ageMs > STALE_THRESHOLD_MS) {
             await prisma.mt5ImportJob.update({
                 where: { id: activeJob.id },
@@ -718,7 +793,7 @@ export async function triggerCloudSync(
                 where: { id: job.id },
                 data: { message: initialMsg },
             })
-            .catch(() => {});
+            .catch(() => { });
     }
 
     revalidatePath("/dashboard/accounts");
@@ -783,7 +858,7 @@ export async function getCloudSyncStatus(accountId: string) {
     if (latestJob && (latestJob.status === "PENDING" || latestJob.status === "PROCESSING")) {
         const qPos = getJobQueuePosition(latestJob.id);
         const ageMs = Date.now() - new Date(latestJob.createdAt).getTime();
-        const STALE_THRESHOLD_MS = 180 * 1000;
+        const STALE_THRESHOLD_MS = 600 * 1000;
 
         if (latestJob.status === "PENDING" && qPos >= 0) {
             latestJob = {
@@ -819,7 +894,7 @@ export async function getCloudSyncStatus(accountId: string) {
             revalidatePath("/dashboard");
             revalidatePath("/dashboard/journal");
             revalidatePath("/dashboard/analytics");
-        } catch {}
+        } catch { }
     }
 
     const hasSavedPassword = Boolean(account.credential?.encryptedPassword);
@@ -997,10 +1072,14 @@ export async function searchMt5BrokersAndServers(
             brokers: res.brokers || [],
             servers: res.servers || [],
         };
-    } catch (err: any) {
+    } catch (err: unknown) {
+        console.error("[CloudSync] searchMt5BrokersAndServers error:", err);
         return {
             success: false,
-            error: err?.message || "Failed to search MT5 brokers and servers",
+            error: toPublicErrorMessage(
+                err,
+                "Failed to search MT5 brokers and servers."
+            ),
             brokers: [],
             servers: [],
         };

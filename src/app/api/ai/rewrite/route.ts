@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { randomUUID } from "node:crypto";
 import { requireAdmin } from "@/lib/api-auth";
 import { executeAiGateway } from "@/lib/ai-gateway/provider-router";
+import { toPublicErrorMessage } from "@/lib/errors/public-error";
 import { YoutubeTranscript } from "youtube-transcript";
 import { readFile } from "fs/promises";
 import path from "path";
@@ -628,10 +629,10 @@ export async function POST(req: NextRequest) {
             imageCount: allImages.length,
             sourcesUsed: urlList.length,
         });
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("[AI Rewrite Error]", error);
         return NextResponse.json(
-            { error: error.message || "Failed to rewrite content" },
+            { error: toPublicErrorMessage(error, "Failed to rewrite content") },
             { status: 500 }
         );
     }

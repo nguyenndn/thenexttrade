@@ -19,6 +19,7 @@ import { parseBrokerNumber } from "@/lib/utils";
 import { recordEaProductTelemetry } from "@/lib/ea/telemetry.server";
 import { detectBroker } from "@/lib/ea/broker-detection";
 import { isLiveTradingPayload } from "@/lib/trading-account-classification";
+import { toPublicErrorMessage } from "@/lib/errors/public-error";
 import zlib from "zlib";
 
 const limiter = rateLimit({
@@ -198,7 +199,7 @@ export async function POST(request: NextRequest) {
 
         if (!auth.success) {
             return NextResponse.json(
-                { error: auth.error },
+                { error: toPublicErrorMessage(auth.error, "Authentication failed") },
                 { status: auth.status }
             );
         }
@@ -284,8 +285,10 @@ export async function POST(request: NextRequest) {
                     )
                 );
             } catch (err: unknown) {
-                const reason =
-                    err instanceof Error ? err.message : String(err);
+                const reason = toPublicErrorMessage(
+                    err,
+                    "Invalid trade payload"
+                );
                 const ticket =
                     rawTrade &&
                     typeof rawTrade === "object" &&

@@ -1,6 +1,12 @@
 const fs = require('fs');
 const path = require('path');
-const { enqueueNativeRun, cleanWorkDir, execJavaAsync } = require('../../NativeQueue');
+const {
+  enqueueNativeRun,
+  cleanWorkDir,
+  restoreAccountTradeCache,
+  persistAccountTradeCache,
+  execJavaAsync
+} = require('../../NativeQueue');
 const { AccountsBase } = require('./AccountsBase');
 const { ServersBase } = require('./ServersBase');
 const { NetworkManager } = require('./NetworkManager');
@@ -677,19 +683,30 @@ class TradesBase {
       return null;
     }
 
+    const cacheRootDir = path.join(cloudSyncRoot, 'trade-cache');
+
     return enqueueNativeRun(workDir, async (slotWorkDir) => {
-      const args = [...argsPrefix, '--workdir', slotWorkDir];
+      await restoreAccountTradeCache(cacheRootDir, slotWorkDir, serverName, login);
+      const outputJsonFile = path.join(slotWorkDir, 'sync-output.json');
+      const args = [...argsPrefix, '--workdir', slotWorkDir, '--output', outputJsonFile];
       const stdout = await execJavaAsync(javaExe, args, {
         cwd: execCwd,
-        timeout: 120000
+        timeout: 600000
       });
+
+      await persistAccountTradeCache(cacheRootDir, slotWorkDir, serverName, login);
+
+      if (fs.existsSync(outputJsonFile)) {
+        const fileJsonText = await fs.promises.readFile(outputJsonFile, 'utf8');
+        return JSON.parse(fileJsonText);
+      }
 
       const startMarker = '__MT5_JSON_START__';
       const endMarker = '__MT5_JSON_END__';
       const sIdx = stdout.indexOf(startMarker);
       const eIdx = stdout.indexOf(endMarker);
       if (sIdx === -1 || eIdx === -1 || eIdx <= sIdx) {
-        throw new Error('Mt5NativeRunner did not emit JSON markers');
+        throw new Error('Unable to read trade history response from MT5 server. Please try again.');
       }
 
       const jsonText = stdout.slice(sIdx + startMarker.length, eIdx).trim();
@@ -708,7 +725,7 @@ class TradesBase {
     days = 30,
     from = null,
     to = null,
-    limit = 5000
+    limit = 500000
   } = {}) {
     const allAccounts = this.accountsBase.getAllAccounts();
     const targetAcc =
@@ -795,7 +812,9 @@ class TradesBase {
       return {
         success: false,
         connected: false,
-        error: `Native libcommon.so execution failed: ${err.message}`
+        error:
+          err?.message ||
+          'Unable to load trade history from MT5 server. Please try again.'
       };
     }
 

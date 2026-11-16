@@ -9,6 +9,7 @@ import {
     CHART_ANALYSIS_PROMPT_VERSION,
 } from "@/lib/ai-gateway/chart-analysis-prompt";
 import { captureTradingViewChartServerSide } from "@/lib/ai-gateway/server-chart-capture";
+import { toPublicErrorMessage } from "@/lib/errors/public-error";
 import { randomUUID } from "node:crypto";
 
 const MAX_IMAGE_SIZE = 4 * 1024 * 1024; // 4MB
@@ -162,6 +163,7 @@ export async function analyzeChartImage(
             imageBase64 = pngBuffer.toString("base64");
             imageMimeType = "image/png";
         } catch (err: unknown) {
+            console.error("[Chart Capture Error]:", err);
             // Release reserved quota slot (FAILED with zero attempts is excluded by quotaConsumingFilter)
             await prisma.aiRequest
                 .updateMany({
@@ -180,10 +182,10 @@ export async function analyzeChartImage(
 
             return {
                 ok: false,
-                error:
-                    err instanceof Error && err.message
-                        ? err.message
-                        : "Could not capture chart automatically. Please upload a screenshot.",
+                error: toPublicErrorMessage(
+                    err,
+                    "Could not capture chart automatically. Please upload a screenshot."
+                ),
                 errorCode: "CAPTURE_FAILED",
             };
         }
@@ -215,7 +217,10 @@ export async function analyzeChartImage(
         if (!result.ok) {
             return {
                 ok: false,
-                error: result.message || "AI analysis failed. Please try again.",
+                error: toPublicErrorMessage(
+                    result.message,
+                    "AI analysis failed. Please try again."
+                ),
                 errorCode: result.error_code,
                 quota:
                     reservation.status === "RESERVED"

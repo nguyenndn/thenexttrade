@@ -90,6 +90,7 @@ scratch/
 # MT5 Cloud Sync runtime caches & local account data (never commit)
 mt5-cloud-sync/accounts.dat.json
 mt5-cloud-sync/bases/
+mt5-cloud-sync/trade-cache/
 mt5-cloud-sync/unidbg-workdir/
 mt5-cloud-sync/unidbg-runner/target/
 

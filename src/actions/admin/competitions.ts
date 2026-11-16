@@ -3,7 +3,8 @@
 import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth-cache";
 import { revalidatePath } from "next/cache";
-import { CompetitionStatus } from "@prisma/client";
+import { CompetitionStatus, Prisma } from "@prisma/client";
+import { toPublicErrorMessage } from "@/lib/errors/public-error";
 
 async function verifyAdmin() {
     const user = await getAuthUser();
@@ -74,11 +75,14 @@ export async function toggleCompetitionsFeature(enabled: boolean): Promise<{
         revalidatePath("/dashboard/leaderboard");
 
         return { success: true, enabled };
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("toggleCompetitionsFeature error:", error);
         return {
             success: false,
-            error: error.message || "Failed to toggle competitions feature.",
+            error: toPublicErrorMessage(
+                error,
+                "Failed to toggle competitions feature."
+            ),
         };
     }
 }
@@ -220,9 +224,17 @@ export async function createCompetition(input: CreateCompetitionInput) {
         revalidatePath("/dashboard/leaderboard");
 
         return { success: true, competition: created };
-    } catch (error: any) {
+    } catch (error: unknown) {
+        if (
+            error instanceof Prisma.PrismaClientKnownRequestError &&
+            error.code === "P2002"
+        ) {
+            return { error: "A competition with this slug already exists." };
+        }
         console.error("createCompetition error:", error);
-        return { error: error.message || "Failed to create competition." };
+        return {
+            error: toPublicErrorMessage(error, "Failed to create competition."),
+        };
     }
 }
 
@@ -284,9 +296,17 @@ export async function updateCompetition(
         revalidatePath("/dashboard/leaderboard");
 
         return { success: true, competition: updated };
-    } catch (error: any) {
+    } catch (error: unknown) {
+        if (
+            error instanceof Prisma.PrismaClientKnownRequestError &&
+            error.code === "P2002"
+        ) {
+            return { error: "A competition with this slug already exists." };
+        }
         console.error("updateCompetition error:", error);
-        return { error: error.message || "Failed to update competition." };
+        return {
+            error: toPublicErrorMessage(error, "Failed to update competition."),
+        };
     }
 }
 
@@ -306,9 +326,11 @@ export async function toggleCompetitionStatus(
         revalidatePath("/dashboard/leaderboard");
 
         return { success: true, competition: updated };
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("toggleCompetitionStatus error:", error);
-        return { error: error.message || "Failed to change status." };
+        return {
+            error: toPublicErrorMessage(error, "Failed to change status."),
+        };
     }
 }
 
@@ -324,8 +346,10 @@ export async function deleteCompetition(id: string) {
         revalidatePath("/dashboard/leaderboard");
 
         return { success: true };
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("deleteCompetition error:", error);
-        return { error: error.message || "Failed to delete competition." };
+        return {
+            error: toPublicErrorMessage(error, "Failed to delete competition."),
+        };
     }
 }

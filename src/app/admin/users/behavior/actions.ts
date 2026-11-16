@@ -10,6 +10,7 @@ import {
     getBatchProductAdoption,
     getBatchLastActivity,
 } from "@/lib/admin/behavior/activity.server";
+import { toPublicErrorMessage } from "@/lib/errors/public-error";
 
 export interface GetBehaviorSegmentsParams {
     tab?: "needs-attention" | "value";
@@ -41,21 +42,23 @@ export interface GetBehaviorSegmentsResult {
 export async function getBehaviorSegments(
     params: GetBehaviorSegmentsParams = {}
 ): Promise<GetBehaviorSegmentsResult> {
-    const authUser = await getAuthUser();
-    if (!authUser) {
-        return { success: false, error: "Unauthorized" };
-    }
-
-    const profile = await prisma.profile.findUnique({
-        where: { userId: authUser.id },
-        select: { role: true },
-    });
-
-    if (!profile || !isAdminRole(profile.role)) {
-        return { success: false, error: "Forbidden: Admin privileges required" };
-    }
-
     try {
+        const authUser = await getAuthUser();
+        if (!authUser) {
+            return { success: false, error: "Unauthorized" };
+        }
+
+        const profile = await prisma.profile.findUnique({
+            where: { userId: authUser.id },
+            select: { role: true },
+        });
+
+        if (!profile || !isAdminRole(profile.role)) {
+            return {
+                success: false,
+                error: "Forbidden: Admin privileges required",
+            };
+        }
         const {
             tab = "needs-attention",
             search = "",
@@ -321,12 +324,13 @@ export async function getBehaviorSegments(
             },
         };
     } catch (err: unknown) {
+        console.error("[getBehaviorSegments Error]:", err);
         return {
             success: false,
-            error:
-                err instanceof Error
-                    ? err.message
-                    : "Failed to load behavior segments",
+            error: toPublicErrorMessage(
+                err,
+                "Failed to load behavior segments"
+            ),
         };
     }
 }

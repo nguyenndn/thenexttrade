@@ -9,6 +9,10 @@ import {
     sendEmailWithDetails,
     buildContactReplyEmailHtml,
 } from "@/lib/services/email.service";
+import {
+    isInternalError,
+    toPublicErrorMessage,
+} from "@/lib/errors/public-error";
 
 export type MessageStatus = "new" | "read" | "replied" | "archived";
 
@@ -69,7 +73,10 @@ async function requireAdmin() {
 }
 
 function getErrorMessage(error: unknown, fallback: string): string {
-    return error instanceof Error && error.message ? error.message : fallback;
+    if (isInternalError(error)) {
+        console.error("[Admin Messages Error]:", error);
+    }
+    return toPublicErrorMessage(error, fallback);
 }
 
 export async function fetchAdminMessagesData(
@@ -267,7 +274,10 @@ export async function replyToContactMessage(input: {
         if (!delivery.success) {
             return {
                 success: false,
-                error: delivery.error || "Failed to send email via mail server",
+                error: toPublicErrorMessage(
+                    delivery.error,
+                    "Failed to send email via mail server"
+                ),
             };
         }
 

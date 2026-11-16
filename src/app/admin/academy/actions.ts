@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { requireAdminAuth } from "@/lib/auth-cache";
+import { toPublicErrorMessage } from "@/lib/errors/public-error";
 
 export async function isAcademyEnabled(): Promise<boolean> {
     try {
@@ -45,10 +46,10 @@ export async function toggleAcademyFeature(enabled: boolean): Promise<{
         console.error("[TOGGLE_ACADEMY_FEATURE]", error);
         return {
             success: false,
-            error:
-                error instanceof Error
-                    ? error.message
-                    : "Failed to toggle Academy feature",
+            error: toPublicErrorMessage(
+                error,
+                "Failed to toggle Academy feature"
+            ),
         };
     }
 }
@@ -73,11 +74,11 @@ export async function deleteLevel(levelId: string) {
         });
         revalidatePath("/admin/academy");
         return { success: true };
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("[DELETE_LEVEL]", error);
         return {
             success: false,
-            error: error.message || "Failed to delete level",
+            error: toPublicErrorMessage(error, "Failed to delete level"),
         };
     }
 }
@@ -94,11 +95,11 @@ export async function updateLevel(
         });
         revalidatePath("/admin/academy");
         return { success: true };
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("[UPDATE_LEVEL]", error);
         return {
             success: false,
-            error: error.message || "Failed to update level",
+            error: toPublicErrorMessage(error, "Failed to update level"),
         };
     }
 }

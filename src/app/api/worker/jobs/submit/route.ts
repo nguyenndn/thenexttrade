@@ -10,6 +10,7 @@ import {
     normalizeCurrencyCode,
     normalizeLotSize,
 } from "@/lib/utils/cent-account";
+import { toPublicErrorMessage } from "@/lib/errors/public-error";
 
 interface DealPayload {
     ticket: number | string;
@@ -289,9 +290,10 @@ export async function POST(request: NextRequest) {
             updated,
             totalDeals: deals.length,
         });
-    } catch (error: any) {
+    } catch (error: unknown) {
+        console.error("[Worker Submit Error]:", error);
         return NextResponse.json(
-            { error: error.message || "Internal server error" },
+            { error: toPublicErrorMessage(error, "Internal server error") },
             { status: 500 }
         );
     }

@@ -2,14 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { notifyAdminsOfSyncFailure } from "@/lib/admin/admin-notification.server";
+import { toPublicErrorMessage } from "@/lib/errors/public-error";
 
 function sanitizeWorkerErrorMessage(
     message: string | null | undefined,
-    maxLength = 500
+    maxLength = 280
 ): string {
-    const cleaned = (message || "Unknown worker error")
-        .replace(/[\r\n\t]+/g, " ")
-        .trim();
+    const publicMsg = toPublicErrorMessage(message, "Unknown worker error");
+    const cleaned = publicMsg.replace(/[\r\n\t]+/g, " ").trim();
     return (cleaned || "Unknown worker error").slice(0, maxLength);
 }
 
@@ -116,9 +116,10 @@ export async function POST(request: NextRequest) {
         revalidatePath("/admin/cloud-sync-logs");
 
         return NextResponse.json({ success: true, status: "FAILED" });
-    } catch (error: any) {
+    } catch (error: unknown) {
+        console.error("[Worker Fail Route Error]:", error);
         return NextResponse.json(
-            { error: error.message || "Internal server error" },
+            { error: toPublicErrorMessage(error, "Internal server error") },
             { status: 500 }
         );
     }
