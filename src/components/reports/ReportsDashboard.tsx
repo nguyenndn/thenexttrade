@@ -494,7 +494,7 @@ export function ReportsDashboard({
                                 data.
                             </p>
                         </div>
-                        <div className="flex items-center gap-1.5 sm:gap-2">
+                        <div className="grid grid-cols-[3fr_7fr] sm:flex items-center gap-2 w-full sm:w-auto">
                             <Button
                                 type="button"
                                 variant="outline"
@@ -504,7 +504,7 @@ export function ReportsDashboard({
                                 }
                                 disabled={reviewLoading}
                                 aria-label="Refresh reports"
-                                className="shrink-0"
+                                className="w-full sm:w-auto px-0 sm:px-4 shrink-0"
                             >
                                 <RefreshCw
                                     size={15}
@@ -520,6 +520,7 @@ export function ReportsDashboard({
                                         ? "WEEKLY"
                                         : "MONTHLY"
                                 }
+                                className="w-full sm:w-auto px-2 sm:px-4 gap-1.5 sm:gap-2 whitespace-nowrap"
                                 onResult={(result) => {
                                     setLastGenerateResult(result);
                                     if (result.success) {
@@ -683,12 +684,17 @@ export function ReportsDashboard({
 
                             <div className="w-full xl:w-auto">
                                 <Button
+                                    size="smd"
                                     onClick={handleGenerate}
                                     isLoading={isGenerating}
-                                    className="w-full xl:w-auto h-11 px-6 rounded-lg font-bold"
+                                    className="w-full xl:w-auto xl:h-11 xl:px-6 xl:text-sm rounded-lg font-bold shadow-lg shadow-amber-500/30"
                                 >
                                     {!isGenerating && (
-                                        <Download size={20} strokeWidth={2.5} />
+                                        <Download
+                                            size={16}
+                                            strokeWidth={2.5}
+                                            className="xl:w-5 xl:h-5"
+                                        />
                                     )}
                                     <span>
                                         {isGenerating
@@ -704,7 +710,7 @@ export function ReportsDashboard({
                             <span className="text-[10px] font-black text-gray-600 dark:text-gray-300 uppercase tracking-widest sm:mr-2">
                                 Quick Presets:
                             </span>
-                            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2.5">
+                            <div className="flex flex-nowrap sm:flex-wrap items-center gap-1 sm:gap-2.5 w-full sm:w-auto">
                                 {[
                                     {
                                         label: "This Month",
@@ -757,7 +763,7 @@ export function ReportsDashboard({
                                                 setDateRange(presetRange)
                                             }
                                             className={cn(
-                                                "h-auto px-4 py-2 text-[11px] font-black uppercase tracking-wider rounded-lg border-2 transition-all duration-200 active:scale-95 cursor-pointer",
+                                                "grow sm:grow-0 h-auto px-1.5 sm:px-4 py-1.5 sm:py-2 text-[9.5px] sm:text-[11px] font-bold sm:font-black uppercase tracking-tight sm:tracking-wider whitespace-nowrap rounded-lg border sm:border-2 transition-all duration-200 active:scale-95 cursor-pointer",
                                                 isActive
                                                     ? "border-amber-500 bg-amber-500/10 text-amber-500 dark:border-amber-400 dark:text-amber-400 dark:bg-amber-500/15 shadow-sm shadow-amber-500/10 hover:bg-amber-500/15"
                                                     : "border-dashboard/80 dark:border-white/[0.08] bg-transparent text-slate-500 dark:text-slate-400 hover:border-amber-500 hover:text-amber-500 hover:bg-amber-500/5 dark:hover:border-amber-400 dark:hover:text-amber-400 dark:hover:bg-amber-500/10"

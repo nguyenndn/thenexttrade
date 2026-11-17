@@ -6,7 +6,6 @@ import {
     AlertCircle,
     Target,
     ChevronRight,
-    Bot,
     RefreshCw,
     ChevronDown,
     ChevronUp,
@@ -137,23 +136,16 @@ export function AiCoachCard({
     if (!insight && !isLoading && !error && !insufficientData && !isProRequired) {
         return (
             <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-amber-200/50 dark:border-dashboard shadow-sm overflow-hidden relative">
-                <div className="px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-6 relative z-10">
-                    <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-lg bg-amber-100 dark:bg-amber-500/20 border border-amber-200 dark:border-amber-500/30 flex items-center justify-center shrink-0">
-                            <Bot
-                                size={24}
-                                className="text-amber-600 dark:text-amber-400"
-                            />
+                <div className="p-4 sm:px-6 sm:py-7 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 sm:gap-6 relative z-10">
+                    <div className="flex items-start sm:items-center gap-3 sm:gap-4 min-w-0">
+                        <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-lg bg-amber-100 dark:bg-amber-500/20 border border-amber-200 dark:border-amber-500/30 flex items-center justify-center shrink-0">
+                            <Brain className="w-[18px] h-[18px] sm:w-6 sm:h-6 text-amber-600 dark:text-amber-400" />
                         </div>
-                        <div>
-                            <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                                TheNextTrade Discipline Coach{" "}
-                                <Brain
-                                    size={16}
-                                    className="text-amber-500 dark:text-amber-400"
-                                />
+                        <div className="min-w-0">
+                            <h3 className="text-[14px] sm:text-lg font-bold tracking-tight text-gray-900 dark:text-white whitespace-nowrap">
+                                TheNextTrade Discipline Coach
                             </h3>
-                            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-1 leading-relaxed">
                                 Automated execution audit: detects revenge sizing, stop-loss violations, and tilt patterns.
                             </p>
                         </div>
@@ -187,7 +179,7 @@ export function AiCoachCard({
             >
                 <div className="flex items-center gap-2.5">
                     <div className="p-1.5 bg-amber-500 rounded-lg shrink-0">
-                        <Bot size={16} className="text-white" />
+                        <Brain size={16} className="text-white" />
                     </div>
                     <h3 className="font-bold text-gray-900 dark:text-amber-300">
                         Execution Discipline Assessment

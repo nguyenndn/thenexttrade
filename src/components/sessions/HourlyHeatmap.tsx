@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 interface HourlyHeatmapProps {
     data: Array<{
@@ -78,11 +78,8 @@ export function HourlyHeatmap({
     const amHours = fullHours.slice(0, 12);
     const pmHours = fullHours.slice(12, 24);
 
-    const defaultActiveHour =
-        fullHours.find((h) => h.totalTrades > 0)?.hour ?? 0;
-    const [selectedHour, setSelectedHour] = useState<number>(defaultActiveHour);
-    const activeHourInfo =
-        fullHours.find((h) => h.hour === selectedHour) ?? fullHours[0];
+    const [openHour, setOpenHour] = useState<number | null>(null);
+    const isPointerRef = useRef(false);
 
     const renderHourBlock = (
         hoursData: typeof fullHours,
@@ -90,29 +87,73 @@ export function HourlyHeatmap({
     ) => (
         <div className="grid grid-cols-6 md:grid-cols-12 gap-1.5 md:gap-2">
             {hoursData.map((hour) => {
-                const isSelected = selectedHour === hour.hour;
+                const isOpen = openHour === hour.hour;
                 return (
                     <div key={hour.hour} className="space-y-1">
-                        <Tooltip delayDuration={0}>
+                        <Tooltip
+                            open={isOpen}
+                            delayDuration={0}
+                            disableHoverableContent
+                        >
                             <TooltipTrigger asChild>
                                 <div
                                     role="button"
                                     tabIndex={0}
+                                    data-heatmap-cell={hour.hour}
                                     aria-label={`${hour.hourLabel} UTC. ${hour.totalTrades} trades. P&L: ${hour.totalPnL.toFixed(2)}`}
-                                    onClick={() => setSelectedHour(hour.hour)}
+                                    onPointerEnter={(e) => {
+                                        if (e.pointerType === "mouse") {
+                                            setOpenHour(hour.hour);
+                                        }
+                                    }}
+                                    onPointerLeave={(e) => {
+                                        if (e.pointerType === "mouse") {
+                                            setOpenHour((prev) =>
+                                                prev === hour.hour ? null : prev
+                                            );
+                                        }
+                                    }}
+                                    onPointerDown={() => {
+                                        isPointerRef.current = true;
+                                    }}
+                                    onClick={() => {
+                                        isPointerRef.current = false;
+                                        setOpenHour((prev) =>
+                                            prev === hour.hour
+                                                ? null
+                                                : hour.hour
+                                        );
+                                    }}
+                                    onFocus={() => {
+                                        if (!isPointerRef.current) {
+                                            setOpenHour(hour.hour);
+                                        }
+                                        isPointerRef.current = false;
+                                    }}
+                                    onBlur={() => {
+                                        if (!isPointerRef.current) {
+                                            setOpenHour((prev) =>
+                                                prev === hour.hour ? null : prev
+                                            );
+                                        }
+                                    }}
                                     onKeyDown={(e) => {
                                         if (
                                             e.key === "Enter" ||
                                             e.key === " "
                                         ) {
                                             e.preventDefault();
-                                            setSelectedHour(hour.hour);
+                                            setOpenHour((prev) =>
+                                                prev === hour.hour
+                                                    ? null
+                                                    : hour.hour
+                                            );
                                         }
                                     }}
                                     className={`
  w-full h-12 md:h-[80px] rounded-lg flex flex-col items-center justify-center
  cursor-pointer transition-all hover:scale-105 focus:scale-105 focus:outline-none focus:ring-2 focus:ring-gold/50 relative shadow-sm border border-transparent hover:border-white/20 hover:z-20 focus:z-20
- ${isSelected ? "ring-2 ring-amber-500 md:ring-0" : ""}
+ ${isOpen ? "ring-2 ring-amber-500 scale-105 z-20 md:ring-0" : ""}
  ${getColor(hour)}
  `}
                                 >
@@ -128,7 +169,16 @@ export function HourlyHeatmap({
                             <TooltipContent
                                 side={isTopRow ? "bottom" : "top"}
                                 sideOffset={8}
-                                className="w-36 bg-white dark:bg-[#1E2028] border border-dashboard text-gray-800 dark:text-white p-3 shadow-xl rounded-lg z-[100]"
+                                collisionPadding={12}
+                                onEscapeKeyDown={() => setOpenHour(null)}
+                                onPointerDownOutside={(e) => {
+                                    const target =
+                                        e.target as HTMLElement | null;
+                                    if (target?.closest("[data-heatmap-cell]"))
+                                        return;
+                                    setOpenHour(null);
+                                }}
+                                className="pointer-events-none w-36 bg-white dark:bg-[#1E2028] border border-dashboard text-gray-800 dark:text-white p-2.5 sm:p-3 shadow-xl rounded-lg z-[100]"
                             >
                                 <p className="font-bold font-mono tabular-nums border-b border-dashboard pb-2 mb-2">
                                     {hour.hourLabel} UTC
@@ -195,38 +245,8 @@ export function HourlyHeatmap({
                 </div>
             </TooltipProvider>
 
-            {/* Compact selected-hour detail strip on mobile (< md) */}
-            <div className="md:hidden mt-3 rounded-lg bg-gray-50 dark:bg-[#151925] border border-dashboard px-3 py-2.5 flex items-center justify-between gap-2 text-xs">
-                <span className="font-bold font-mono tabular-nums text-gray-800 dark:text-white shrink-0">
-                    {activeHourInfo.hourLabel} UTC
-                </span>
-                <div className="flex items-center gap-3 font-mono tabular-nums">
-                    <span className="text-gray-500 dark:text-gray-400">
-                        {activeHourInfo.totalTrades}T
-                    </span>
-                    <span className="text-gray-500 dark:text-gray-400">
-                        {activeHourInfo.winRate.toFixed(0)}% WR
-                    </span>
-                    <span
-                        className={`font-bold ${
-                            activeHourInfo.totalPnL > 0
-                                ? "text-primary dark:text-[#00C888]"
-                                : activeHourInfo.totalPnL < 0
-                                  ? "text-red-500"
-                                  : "text-gray-500"
-                        }`}
-                    >
-                        {formatDashboardCurrency(
-                            activeHourInfo.totalPnL,
-                            currency,
-                            { signDisplay: "always" }
-                        )}
-                    </span>
-                </div>
-            </div>
-
             {/* Color Legend */}
-            <div className="flex items-center justify-end gap-4 mt-6 text-xs text-gray-600 dark:text-gray-400">
+            <div className="flex items-center justify-end gap-4 mt-4 md:mt-6 text-xs text-gray-600 dark:text-gray-400">
                 <div className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full bg-red-400"></div>
                     <span>High Loss</span>
