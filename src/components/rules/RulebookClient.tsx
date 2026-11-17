@@ -243,14 +243,14 @@ export function RulebookClient({
                     </div>
 
                     {filteredRules.length === 0 ? (
-                        <div className="text-center py-12 sm:py-16 bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm max-w-xl mx-auto mt-0 md:mt-6">
+                        <div className="w-full text-center py-12 md:py-16 bg-white dark:bg-[#1E2028] rounded-xl border-2 border-dashed border-dashboard mt-2 md:mt-6 shadow-sm">
                             <div className="w-12 h-12 rounded-lg bg-amber-50 dark:bg-gold/15 flex items-center justify-center mx-auto mb-4 text-amber-600 dark:text-gold">
                                 <Shield size={24} />
                             </div>
                             <h3 className="text-base font-bold text-gray-800 dark:text-white">
                                 No Rules Defined
                             </h3>
-                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 max-w-xs mx-auto">
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 px-6 max-w-sm mx-auto">
                                 Define entry checklists or risk boundaries.
                                 Alternatively, set up starter rules below.
                             </p>
@@ -260,7 +260,7 @@ export function RulebookClient({
                                     size="smd"
                                     onClick={handleAddStarterRules}
                                     disabled={isPending}
-                                    className="flex items-center gap-1.5 border-amber-500/30 text-amber-600 dark:text-gold hover:bg-gold/10 font-bold"
+                                    className="flex items-center justify-center gap-1.5 border-amber-500/30 text-amber-600 dark:text-gold hover:bg-gold/10 font-bold"
                                 >
                                     <Plus size={14} />
                                     Add Starter Rules
