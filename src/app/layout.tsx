@@ -164,11 +164,40 @@ export default function RootLayout({
                     <script
                         dangerouslySetInnerHTML={{
                             __html: `
-if ('serviceWorker' in navigator && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
-(window.requestIdleCallback || function(cb){setTimeout(cb,1)})(function() {
-navigator.serviceWorker.register('/sw.js');
-});
-}
+(function() {
+  function reloadOnceOnStaleChunk() {
+    try {
+      var last = Number(sessionStorage.getItem('tnt_chunk_reload_at') || '0');
+      if (Date.now() - last > 15000) {
+        sessionStorage.setItem('tnt_chunk_reload_at', String(Date.now()));
+        window.location.reload();
+      }
+    } catch (e) {}
+  }
+  window.addEventListener('error', function(ev) {
+    var t = ev && ev.target;
+    if (t && t.tagName === 'SCRIPT' && t.src && t.src.indexOf('/_next/static/') !== -1) {
+      reloadOnceOnStaleChunk();
+      return;
+    }
+    var msg = (ev && ev.message) || '';
+    if (/ChunkLoadError|Loading chunk [\\w-]+ failed|Failed to fetch dynamically imported module|Importing a module script failed/i.test(msg)) {
+      reloadOnceOnStaleChunk();
+    }
+  }, true);
+  window.addEventListener('unhandledrejection', function(ev) {
+    var r = ev && ev.reason;
+    var msg = (r && (r.name + ' ' + r.message)) || String(r || '');
+    if (/ChunkLoadError|Loading chunk [\\w-]+ failed|Failed to fetch dynamically imported module|Importing a module script failed/i.test(msg)) {
+      reloadOnceOnStaleChunk();
+    }
+  });
+  if ('serviceWorker' in navigator && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+    (window.requestIdleCallback || function(cb){setTimeout(cb,1)})(function() {
+      navigator.serviceWorker.register('/sw.js').then(function(reg) { reg.update(); }).catch(function() {});
+    });
+  }
+})();
 `,
                         }}
                     />

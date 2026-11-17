@@ -5,6 +5,18 @@ import Link from "next/link";
 import { AlertTriangle, Home, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
+function isStaleChunkError(error: Error | null | undefined): boolean {
+    if (!error) return false;
+    const msg = `${error.name || ""} ${error.message || ""}`;
+    return (
+        error.name === "ChunkLoadError" ||
+        /Loading chunk [\w-]+ failed/i.test(msg) ||
+        /Failed to fetch dynamically imported module/i.test(msg) ||
+        /Importing a module script failed/i.test(msg) ||
+        /error loading dynamically imported module/i.test(msg)
+    );
+}
+
 export default function Error({
     error,
     reset,
@@ -14,7 +26,31 @@ export default function Error({
 }) {
     useEffect(() => {
         console.error(error);
+        if (isStaleChunkError(error) && typeof window !== "undefined") {
+            try {
+                const lastReload = Number(
+                    sessionStorage.getItem("tnt_chunk_reload_at") || "0"
+                );
+                if (Date.now() - lastReload > 15_000) {
+                    sessionStorage.setItem(
+                        "tnt_chunk_reload_at",
+                        String(Date.now())
+                    );
+                    window.location.reload();
+                }
+            } catch {
+                window.location.reload();
+            }
+        }
     }, [error]);
+
+    const handleRetry = () => {
+        if (isStaleChunkError(error) && typeof window !== "undefined") {
+            window.location.reload();
+            return;
+        }
+        reset();
+    };
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-transparent px-4">
@@ -48,16 +84,16 @@ export default function Error({
                 {/* Actions */}
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
                     <Button
-                        onClick={reset}
+                        onClick={handleRetry}
                         variant="primary"
-                        className="rounded-full shadow-md shadow-amber-500/20"
+                        className="rounded-lg shadow-md shadow-amber-500/20"
                     >
                         <RotateCcw size={16} />
                         Try Again
                     </Button>
                     <Link
                         href="/"
-                        className="flex items-center gap-2 px-6 py-2.5 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-700 dark:text-gray-300 font-bold rounded-full transition-colors"
+                        className="flex items-center gap-2 px-6 py-2.5 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-700 dark:text-gray-300 font-bold rounded-lg transition-colors"
                     >
                         <Home size={16} />
                         Go Home

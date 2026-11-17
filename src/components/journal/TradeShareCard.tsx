@@ -1,6 +1,6 @@
 "use client";
 
-import { Medal, ShieldCheck } from "lucide-react";
+import { Medal } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { TradingViewMiniChart } from "./TradingViewMiniChart";
 import { formatDashboardCurrency, normalizeCurrencyCode } from "@/lib/utils/cent-account";
@@ -160,35 +160,36 @@ export function TradeShareCard({
                 >
                     <div>
                         {/* Header: Logo & Badge */}
-                        <div className="flex flex-wrap items-center justify-between gap-2 mb-6 md:mb-8">
-                            <div className="flex items-center gap-1.5">
-                                <span className="font-black text-2xl tracking-tighter">
-                                    <span className="text-gray-700 dark:text-white">
-                                        TheNext
+                        <div className="flex flex-nowrap items-center justify-between gap-2 mb-6 md:mb-8">
+                            <div className="flex items-center gap-2 min-w-0">
+                                <img
+                                    src="/images/logo_thenexttrade_brain.png"
+                                    alt="TheNextTrade"
+                                    width={28}
+                                    height={28}
+                                    className="w-7 h-7 object-contain shrink-0 filter drop-shadow-[0_0_8px_rgba(245,158,11,0.25)]"
+                                />
+                                <span className="text-lg sm:text-xl font-black tracking-tight whitespace-nowrap text-gray-900 dark:text-white">
+                                    TheNext
+                                    <span className="text-gold font-black">
+                                        Trade
                                     </span>
-                                    <span className="text-primary">Trade</span>
                                 </span>
                             </div>
-                            <div className="flex items-center gap-1.5">
-                                {entry.account?.accountType && (
-                                    <span
-                                        className={cn(
-                                            "px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest border",
-                                            entry.account.accountType === "DEMO"
-                                                ? "border-amber-400/40 text-amber-600 bg-amber-50 dark:bg-amber-500/10 dark:text-amber-400"
-                                                : "border-emerald-400/40 text-emerald-600 bg-emerald-50 dark:bg-emerald-500/10 dark:text-emerald-400"
-                                        )}
-                                    >
-                                        {entry.account.accountType === "DEMO"
-                                            ? "Demo"
-                                            : "Real"}
-                                    </span>
-                                )}
-                                <span className="flex items-center gap-1 px-2 py-0.5 rounded-lg border border-gold/30 text-amber-600 dark:text-gold text-[9px] font-black uppercase tracking-widest bg-gold/10">
-                                    <ShieldCheck size={10} strokeWidth={3} />
-                                    Verified
+                            {entry.account?.accountType && (
+                                <span
+                                    className={cn(
+                                        "shrink-0 px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest border",
+                                        entry.account.accountType === "DEMO"
+                                            ? "border-amber-400/40 text-amber-600 bg-amber-50 dark:bg-amber-500/10 dark:text-amber-400"
+                                            : "border-emerald-400/40 text-emerald-600 bg-emerald-50 dark:bg-emerald-500/10 dark:text-emerald-400"
+                                    )}
+                                >
+                                    {entry.account.accountType === "DEMO"
+                                        ? "Demo"
+                                        : "Real"}
                                 </span>
-                            </div>
+                            )}
                         </div>
 
                         {/* Trade Header */}
@@ -210,7 +211,7 @@ export function TradeShareCard({
                         {/* Big PnL */}
                         <div
                             className={cn(
-                                "text-4xl md:text-6xl font-black font-mono tabular-nums tracking-tighter mb-6 md:mb-8",
+                                "text-3xl md:text-4xl font-black font-mono tabular-nums tracking-tight mb-5 md:mb-6",
                                 textColor
                             )}
                         >
@@ -284,27 +285,35 @@ export function TradeShareCard({
 
                 {/* RIGHT COLUMN: TradingView Chart (Full Mode Only) */}
                 {variant === "full" && (
-                    <div className="relative flex-1 bg-gray-50 dark:bg-black/20 min-h-[250px] md:min-h-[300px] border-t md:border-t-0 md:border-l border-dashboard flex flex-col justify-end overflow-hidden">
-                        {/* Premium Grid Pattern Background */}
+                    <div className="relative flex-1 bg-slate-50/70 dark:bg-[#141722] min-h-[260px] md:min-h-[310px] border-t md:border-t-0 md:border-l border-dashboard flex flex-col justify-end overflow-hidden">
+                        {/* Subtle Technical Grid Background */}
                         <div
-                            className="absolute inset-0 opacity-[0.03] dark:opacity-[0.02] pointer-events-none"
+                            className="absolute inset-0 pointer-events-none"
                             style={{
                                 backgroundImage:
-                                    "linear-gradient(to right, #000 1px, transparent 1px), linear-gradient(to bottom, #000 1px, transparent 1px)",
-                                backgroundSize: "40px 40px",
+                                    "linear-gradient(to right, rgba(148, 163, 184, 0.08) 1px, transparent 1px), linear-gradient(to bottom, rgba(148, 163, 184, 0.08) 1px, transparent 1px)",
+                                backgroundSize: "36px 36px",
                             }}
                         ></div>
 
-                        {/* Watermark / Brand in Chart */}
-                        <div className="absolute top-6 right-6 flex items-center gap-2 opacity-50 z-20">
-                            <Medal size={16} className="text-amber-600 dark:text-gold" />
-                            <span className="text-xs font-bold text-gray-500">
-                                Verified by TheNextTrade
+                        {/* Top Telemetry Strip */}
+                        <div className="absolute top-3.5 inset-x-4 flex items-center justify-between gap-2 z-20 pointer-events-none">
+                            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                                {entry.symbol} · {isBuy ? "Long" : "Short"} Position
                             </span>
+                            <div className="flex items-center gap-1.5 opacity-75">
+                                <Medal
+                                    size={14}
+                                    className="text-amber-500 dark:text-gold"
+                                />
+                                <span className="text-[11px] font-bold text-gray-500 dark:text-gray-400">
+                                    Verified by TheNextTrade
+                                </span>
+                            </div>
                         </div>
 
-                        {/* TradingView Lightweight Chart */}
-                        <div className="absolute inset-0 pt-10 pb-2 px-2">
+                        {/* TradingView Position Box Candlestick Chart */}
+                        <div className="absolute inset-0 pt-9 pb-2.5 px-2.5">
                             <TradingViewMiniChart
                                 entryPrice={Number(entry.entryPrice)}
                                 exitPrice={Number(

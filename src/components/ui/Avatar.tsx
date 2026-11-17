@@ -21,8 +21,12 @@ Avatar.displayName = "Avatar";
 const AvatarImage = React.forwardRef<
     HTMLImageElement,
     React.ImgHTMLAttributes<HTMLImageElement>
->(({ className, src, alt, ...props }, ref) => {
+>(({ className, src, alt, referrerPolicy = "no-referrer", ...props }, ref) => {
     const [hasError, setHasError] = React.useState(false);
+
+    React.useEffect(() => {
+        setHasError(false);
+    }, [src]);
 
     if (!src || src === "" || hasError) {
         return null;
@@ -33,6 +37,7 @@ const AvatarImage = React.forwardRef<
             ref={ref}
             src={src}
             alt={alt || "Avatar"}
+            referrerPolicy={referrerPolicy}
             onError={() => setHasError(true)}
             className={cn("aspect-square h-full w-full object-cover", className)}
             {...props}

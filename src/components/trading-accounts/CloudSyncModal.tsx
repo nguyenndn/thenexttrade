@@ -21,7 +21,6 @@ import {
 } from "@/components/ui/select";
 import {
     CloudSync,
-    CloudUpload,
     RefreshCw,
     Server,
     Clock,
@@ -442,10 +441,95 @@ export function CloudSyncModal({
                             </DialogDescription>
                         </DialogHeader>
 
-                        {/* Animated Cloud Upload Icon */}
-                        <div className="relative flex items-center justify-center h-14 w-14 rounded-2xl border border-amber-500/20 bg-amber-500/10 dark:bg-amber-500/15 text-amber-500">
-                            <span className="animate-ping absolute inline-flex h-10 w-10 rounded-full bg-amber-500/20" />
-                            <CloudUpload className="relative h-8 w-8 text-amber-500 animate-bounce" />
+                        {/* Live MT5 → TheNextTrade Telemetry Stream Visual */}
+                        <div
+                            aria-hidden="true"
+                            className="flex items-center justify-center gap-2.5 sm:gap-3 py-1 select-none"
+                        >
+                            {/* Source Node: MT5 Server */}
+                            <div className="relative flex flex-col items-center justify-center w-12 h-12 rounded-xl border border-dashboard bg-gray-50 dark:bg-[#151925] shadow-sm shrink-0">
+                                <Server className="w-4 h-4 text-slate-600 dark:text-slate-300" />
+                                <span className="mt-0.5 text-[9px] font-mono font-black tracking-wider text-slate-500 dark:text-slate-400">
+                                    MT5
+                                </span>
+                                <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
+                                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500 border border-white dark:border-[#1E2028]" />
+                                </span>
+                            </div>
+
+                            {/* Streaming Trade Packets Track */}
+                            <div className="relative w-24 sm:w-28 h-8 flex items-center overflow-hidden">
+                                <div className="w-full border-t border-dashed border-gray-300 dark:border-white/15" />
+
+                                <motion.div
+                                    className="absolute left-0 h-[2px] w-12 rounded-full bg-gradient-to-r from-transparent via-amber-500 to-emerald-500"
+                                    initial={{ x: -48, opacity: 0 }}
+                                    animate={{
+                                        x: [-48, 116],
+                                        opacity: [0, 1, 1, 0],
+                                    }}
+                                    transition={{
+                                        repeat: Infinity,
+                                        duration: 1.4,
+                                        ease: "easeInOut",
+                                    }}
+                                />
+
+                                {[0, 0.45, 0.9].map((delay, idx) => (
+                                    <motion.span
+                                        key={delay}
+                                        className={`absolute left-0 h-2 w-2 rounded-full shadow-sm ${
+                                            idx === 1
+                                                ? "bg-emerald-500 shadow-emerald-500/50"
+                                                : "bg-amber-500 shadow-amber-500/50"
+                                        }`}
+                                        initial={{
+                                            x: -8,
+                                            scale: 0.6,
+                                            opacity: 0,
+                                        }}
+                                        animate={{
+                                            x: [-8, 108],
+                                            scale: [0.6, 1, 1, 0.7],
+                                            opacity: [0, 1, 1, 0],
+                                        }}
+                                        transition={{
+                                            repeat: Infinity,
+                                            duration: 1.35,
+                                            delay,
+                                            ease: "linear",
+                                        }}
+                                    />
+                                ))}
+                            </div>
+
+                            {/* Destination Node: TheNextTrade Journal */}
+                            <div className="relative flex items-center justify-center w-12 h-12 rounded-xl border border-emerald-500/30 bg-emerald-500/[0.06] dark:bg-emerald-500/10 shadow-sm shrink-0">
+                                <motion.span
+                                    className="absolute inset-0 rounded-xl border border-emerald-500/40 pointer-events-none"
+                                    animate={{
+                                        scale: [1, 1.14, 1],
+                                        opacity: [0.55, 0, 0.55],
+                                    }}
+                                    transition={{
+                                        repeat: Infinity,
+                                        duration: 1.6,
+                                        ease: "easeOut",
+                                    }}
+                                />
+                                <img
+                                    src="/images/logo_thenexttrade_brain.png"
+                                    alt="TheNextTrade"
+                                    width={24}
+                                    height={24}
+                                    className="w-6 h-6 object-contain"
+                                />
+                                <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500 border border-white dark:border-[#1E2028]" />
+                                </span>
+                            </div>
                         </div>
 
                         {/* Title & Step Status */}
@@ -453,25 +537,30 @@ export function CloudSyncModal({
                             <h3 className="text-lg font-bold text-gray-900 dark:text-white">
                                 Importing {account.name || brokerDisplayName}
                             </h3>
-                            <p className="text-xs font-bold text-gray-700 dark:text-gray-200">
-                                {importStageTitle}
+                            <p className="text-xs font-bold text-gray-700 dark:text-gray-200 inline-flex items-center justify-center gap-1.5">
+                                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                <span>{importStageTitle}</span>
+                                {_jobWaitSeconds > 0 && (
+                                    <span className="font-mono tabular-nums text-[11px] font-semibold text-gray-400 dark:text-gray-500">
+                                        · {_jobWaitSeconds}s
+                                    </span>
+                                )}
                             </p>
                             <p className="text-xs text-gray-500 dark:text-gray-400">
                                 {importStageSubtitle}
                             </p>
                         </div>
 
-                        {/* Animated Indeterminate / Running Progress Bar (Gold) */}
-                        <div className="w-full max-w-xs pt-2">
-                            <div className="relative h-2.5 w-full overflow-hidden rounded-full bg-amber-500/20 dark:bg-amber-500/15">
+                        {/* Forward-Streaming Progress Bar */}
+                        <div className="w-full max-w-xs pt-1">
+                            <div className="relative h-1.5 w-full overflow-hidden rounded-full bg-gray-100 dark:bg-white/10">
                                 <motion.div
-                                    className="absolute top-0 bottom-0 w-2/5 rounded-full bg-amber-500"
-                                    initial={{ left: "0%" }}
-                                    animate={{ left: ["0%", "60%"] }}
+                                    className="absolute top-0 bottom-0 w-2/5 rounded-full bg-gradient-to-r from-amber-500 via-emerald-500 to-amber-500"
+                                    initial={{ x: "-100%" }}
+                                    animate={{ x: ["-100%", "250%"] }}
                                     transition={{
                                         repeat: Infinity,
-                                        repeatType: "reverse",
-                                        duration: 1.1,
+                                        duration: 1.5,
                                         ease: "easeInOut",
                                     }}
                                 />

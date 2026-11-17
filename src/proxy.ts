@@ -208,11 +208,24 @@ function addSecurityHeaders(
     );
 
     // CSP — Content Security Policy (only add upgrade-insecure-requests over HTTPS)
+    let r2ImgHost = "";
+    try {
+        const rawR2Url =
+            process.env.R2_PUBLIC_URL ||
+            process.env.NEXT_PUBLIC_R2_PUBLIC_URL ||
+            process.env.ASSET_PUBLIC_BASE_URL ||
+            "";
+        if (rawR2Url) {
+            r2ImgHost = ` https://${new URL(rawR2Url).hostname}`;
+        }
+    } catch {
+        /* ignore invalid R2 URL */
+    }
     const csp = [
         "default-src 'self'",
         "script-src 'self' 'unsafe-inline' https://*.supabase.co https://*.google.com https://*.googleapis.com https://*.googletagmanager.com https://challenges.cloudflare.com",
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-        "img-src 'self' blob: data: https://*.supabase.co https://*.unsplash.com https://flagcdn.com https://images.unsplash.com https://cdn.jsdelivr.net https://*.r2.dev https://thenexttrade.app https://*.thenexttrade.app https://*.thenexttrade.com https://*.thenexttrade.io",
+        `img-src 'self' blob: data: https://*.supabase.co https://*.googleusercontent.com https://*.gravatar.com https://*.unsplash.com https://flagcdn.com https://images.unsplash.com https://cdn.jsdelivr.net https://*.r2.dev https://thenexttrade.app https://*.thenexttrade.app https://thenexttrade.com https://*.thenexttrade.com https://thenexttrade.io https://*.thenexttrade.io${r2ImgHost}`,
         "font-src 'self' data: https://fonts.gstatic.com",
         "connect-src 'self' https://*.supabase.co https://*.google-analytics.com https://*.googleapis.com wss://*.supabase.co https://challenges.cloudflare.com https://cdn.jsdelivr.net",
         "frame-src https://challenges.cloudflare.com",

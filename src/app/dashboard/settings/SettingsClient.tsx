@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import {
     User,
     Save,
@@ -292,6 +293,10 @@ export default function SettingsClient() {
     }
 
     const showAvatarImage = Boolean(formData.image) && failedAvatarSrc !== formData.image;
+    const isOptimizableAvatar =
+        showAvatarImage &&
+        (formData.image.startsWith("https://") ||
+            formData.image.startsWith("/"));
 
     return (
         <div className="w-full min-w-0 space-y-2 md:space-y-5">
@@ -314,12 +319,32 @@ export default function SettingsClient() {
                         <div className="relative flex-shrink-0">
                             <div className="w-20 h-20 sm:w-[100px] sm:h-[100px] rounded-lg overflow-hidden bg-gray-100 dark:bg-[#151925] border-4 border-white dark:border-[#1E2028] shadow-lg">
                                 {showAvatarImage ? (
-                                    <img
-                                        src={formData.image}
-                                        alt="Profile"
-                                        className="w-full h-full object-cover"
-                                        onError={() => setFailedAvatarSrc(formData.image)}
-                                    />
+                                    isOptimizableAvatar ? (
+                                        <Image
+                                            src={formData.image}
+                                            alt={formData.name || "Profile"}
+                                            width={100}
+                                            height={100}
+                                            className="w-full h-full object-cover"
+                                            onError={() =>
+                                                setFailedAvatarSrc(
+                                                    formData.image
+                                                )
+                                            }
+                                        />
+                                    ) : (
+                                        <img
+                                            src={formData.image}
+                                            alt="Profile"
+                                            referrerPolicy="no-referrer"
+                                            className="w-full h-full object-cover"
+                                            onError={() =>
+                                                setFailedAvatarSrc(
+                                                    formData.image
+                                                )
+                                            }
+                                        />
+                                    )
                                 ) : (
                                     <div className="w-full h-full flex items-center justify-center text-gray-500">
                                         <User size={36} />

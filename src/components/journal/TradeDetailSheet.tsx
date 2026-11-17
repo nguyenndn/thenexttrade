@@ -290,13 +290,7 @@ export function TradeDetailSheet({
 
                 {/* Fixed Non-Scrolling Header Section */}
                 <div className="shrink-0 relative z-30 bg-white dark:bg-[#0D111C] border-b border-dashboard px-4 sm:px-6 py-3 sm:py-4">
-                    <div className="flex items-center justify-between gap-2">
-                        <div className="flex items-center gap-4 min-w-0">
-                            <h2 className="text-base sm:text-lg font-bold text-gray-700 dark:text-white truncate">
-                                Trade Details
-                            </h2>
-                        </div>
-                        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                    <div className="flex items-center justify-end gap-1.5 sm:gap-2">
                             {onEdit && (
                                 <Button
                                     type="button"
@@ -341,7 +335,6 @@ export function TradeDetailSheet({
                                 <X size={18} className="sm:w-5 sm:h-5" />
                             </SheetClose>
                         </div>
-                    </div>
                 </div>
 
                 <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain scrollbar-hide p-3 sm:p-6 space-y-3 sm:space-y-5">

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import Image from "next/image";
 import {
     User,
     Bell,
@@ -116,10 +117,23 @@ export default function SettingsPageClient({
 /* ─────────────────────────────────────────────
  Profile Settings — Hero card + Personal info
  ───────────────────────────────────────────── */
-function ProfileSettings({ user }: { user: any }) {
+function ProfileSettings({
+    user,
+}: {
+    user: SettingsPageClientProps["user"];
+}) {
     const [isPending, startTransition] = useTransition();
     const [avatarPreview, setAvatarPreview] = useState<string | null>(
         user?.image || null
+    );
+    const [failedAvatarSrc, setFailedAvatarSrc] = useState<string | null>(null);
+
+    const showAvatar =
+        Boolean(avatarPreview) && failedAvatarSrc !== avatarPreview;
+    const isOptimizableUrl = Boolean(
+        avatarPreview &&
+        (avatarPreview.startsWith("https://") ||
+            avatarPreview.startsWith("/"))
     );
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -131,6 +145,7 @@ function ProfileSettings({ user }: { user: any }) {
             }
             const reader = new FileReader();
             reader.onloadend = () => {
+                setFailedAvatarSrc(null);
                 setAvatarPreview(reader.result as string);
                 toast.success("Image selected!");
             };
@@ -169,12 +184,33 @@ function ProfileSettings({ user }: { user: any }) {
                     <div className="flex items-end gap-5 -mt-14 mb-4">
                         <div className="relative flex-shrink-0">
                             <div className="w-[120px] h-[120px] rounded-lg overflow-hidden bg-gray-100 dark:bg-[#0B0E14] border-4 border-white dark:border-[#1E2028] shadow-lg">
-                                {avatarPreview ? (
-                                    <img
-                                        src={avatarPreview}
-                                        alt="Avatar Preview"
-                                        className="w-full h-full object-cover"
-                                    />
+                                {showAvatar && avatarPreview ? (
+                                    isOptimizableUrl ? (
+                                        <Image
+                                            src={avatarPreview}
+                                            alt={user.name || "Avatar Preview"}
+                                            width={120}
+                                            height={120}
+                                            className="w-full h-full object-cover"
+                                            onError={() =>
+                                                setFailedAvatarSrc(
+                                                    avatarPreview
+                                                )
+                                            }
+                                        />
+                                    ) : (
+                                        <img
+                                            src={avatarPreview}
+                                            alt="Avatar Preview"
+                                            referrerPolicy="no-referrer"
+                                            className="w-full h-full object-cover"
+                                            onError={() =>
+                                                setFailedAvatarSrc(
+                                                    avatarPreview
+                                                )
+                                            }
+                                        />
+                                    )
                                 ) : (
                                     <div className="w-full h-full bg-primary/80 text-white flex items-center justify-center text-4xl font-bold">
                                         {user.name?.[0] || "U"}
@@ -227,7 +263,7 @@ function ProfileSettings({ user }: { user: any }) {
                     <PremiumInput
                         label="Email Address"
                         type="email"
-                        defaultValue={user.email}
+                        defaultValue={user.email || ""}
                         disabled
                         className="cursor-not-allowed text-gray-600"
                     />

@@ -639,15 +639,16 @@ export default function JournalForm({
                                     <Button
                                         key={type}
                                         type="button"
+                                        variant="ghost"
                                         onClick={() =>
                                             setFormData((p) => ({ ...p, type }))
                                         }
                                         className={`flex-1 h-full text-xs font-bold transition-all rounded-lg ${
                                             formData.type === type
                                                 ? type === "BUY"
-                                                    ? "bg-emerald-500 text-white shadow-md shadow-emerald-500/20"
-                                                    : "bg-red-500 text-white shadow-md shadow-red-500/20"
-                                                : "bg-transparent text-gray-600 hover:bg-white dark:hover:bg-white/5"
+                                                    ? "bg-emerald-500 hover:bg-emerald-600 text-white hover:text-white shadow-md shadow-emerald-500/20"
+                                                    : "bg-red-500 hover:bg-red-600 text-white hover:text-white shadow-md shadow-red-500/20"
+                                                : "bg-transparent text-gray-600 dark:text-gray-400 hover:bg-white dark:hover:bg-white/5"
                                         }`}
                                     >
                                         {type}
