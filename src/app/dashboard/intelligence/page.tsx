@@ -7,9 +7,10 @@ import { prisma } from "@/lib/prisma";
 import { parseLocalStartOfDay, parseLocalEndOfDay } from "@/lib/utils";
 import { getUserTradingDataState } from "@/lib/trading-data-state";
 import { getIntelligenceData, getScoreHistory } from "@/lib/smart-analytics";
-import { IntelligenceDashboard } from "@/components/analytics/IntelligenceDashboard";
-import { EdgeLeakDetector } from "@/components/pro/EdgeLeakDetector";
-import { RuleViolationTracker } from "@/components/pro/RuleViolationTracker";
+import {
+    IntelligenceDashboard,
+    IntelligenceProSections,
+} from "@/components/analytics/IntelligenceDashboard";
 import { DashboardFilter } from "@/components/dashboard/DashboardFilter";
 import { TabBar } from "@/components/ui/TabBar";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -102,6 +103,7 @@ export default async function IntelligencePage({
             <PageHeader
                 title="Trading Intelligence"
                 description="Execution leak radar, discipline scoring, and behavioral pattern detection from your trade history."
+                hideDescriptionOnMobile
             >
                 {tradingDataState.hasTradeData && (
                     <DashboardFilter
@@ -186,23 +188,8 @@ async function IntelligenceDataLoader({
                 prevDateTo={prevEndDate?.toISOString().split("T")[0]}
             />
 
-            {/* Pro-gated: Edge Leak Detector (only when sample threshold met so 0-trade/low-sample never claims zero leaks) */}
-            {data.hasEnoughData && (
-                <div className="mt-6 bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-5">
-                    <EdgeLeakDetector
-                        issues={data.issues}
-                        strengths={data.strengths}
-                        accountId={accountId}
-                    />
-                </div>
-            )}
-
-            {/* Pro-gated: Rule Violation Tracker (only when closed trades exist so 0-trade accounts never display 100% compliance praise) */}
-            {data.totalAnalyzed > 0 && (
-                <div className="mt-4 bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-5">
-                    <RuleViolationTracker accountId={accountId} />
-                </div>
-            )}
+            {/* Pro-gated: Edge Leak Detector & Rule Violation Tracker (avoids consecutive duplicate locked ProGate teasers on mobile) */}
+            <IntelligenceProSections data={data} accountId={accountId} />
         </>
     );
 }

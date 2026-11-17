@@ -19,7 +19,7 @@ export function DashboardTourButton() {
             onClick={startTour}
             aria-label="Start dashboard tour"
             title="Start dashboard tour"
-            className="inline-flex items-center gap-1.5 h-8 px-2.5 rounded-lg text-xs font-semibold text-gray-500 dark:text-gray-400 hover:text-amber-600 dark:hover:text-gold hover:bg-gold/10"
+            className="hidden lg:inline-flex items-center gap-1.5 h-8 px-2.5 rounded-lg text-xs font-semibold text-gray-500 dark:text-gray-400 hover:text-amber-600 dark:hover:text-gold hover:bg-gold/10"
         >
             <HelpCircle size={15} />
             <span className="hidden xl:inline">Tour</span>

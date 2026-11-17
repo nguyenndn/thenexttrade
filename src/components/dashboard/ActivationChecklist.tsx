@@ -52,8 +52,8 @@ export function ActivationChecklist({ state }: ActivationChecklistProps) {
 
             {/* Next Step CTA */}
             {nextStep && (
-                <div className="px-5 py-4 bg-primary/5 dark:bg-primary/10 border-b border-dashboard">
-                    <div className="flex items-center justify-between gap-4">
+                <div className="px-5 py-4 bg-primary/5 dark:bg-primary/10 md:border-b border-dashboard">
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
                         <div className="flex-1 min-w-0">
                             <p className="text-sm font-bold text-gray-800 dark:text-white">
                                 {nextStep.title}
@@ -67,10 +67,11 @@ export function ActivationChecklist({ state }: ActivationChecklistProps) {
                             onClick={() =>
                                 handleCtaClick(nextStep.id, nextStep.ctaHref)
                             }
+                            className="w-full sm:w-auto shrink-0"
                         >
                             <Button
                                 variant="primary"
-                                className="shrink-0 gap-1.5 text-sm px-4 py-2"
+                                className="w-full sm:w-auto shrink-0 gap-1.5 text-sm px-4 py-2"
                             >
                                 {nextStep.ctaLabel}
                                 <ArrowRight size={14} />
@@ -81,7 +82,7 @@ export function ActivationChecklist({ state }: ActivationChecklistProps) {
             )}
 
             {/* Step List */}
-            <div className="px-5 py-3 space-y-1">
+            <div className="hidden md:block px-5 py-3 space-y-1">
                 {steps.map((step) => (
                     <div
                         key={step.id}

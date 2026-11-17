@@ -191,7 +191,7 @@ export function PublicProfileCard({
                     <div className="relative overflow-hidden rounded-xl bg-white dark:bg-[#151925]">
                         <div className="pointer-events-none absolute inset-0 z-10 bg-[linear-gradient(120deg,rgba(251,191,36,0.05),transparent_38%,rgba(255,255,255,0.18)_70%,transparent)] dark:bg-[linear-gradient(120deg,rgba(251,191,36,0.08),transparent_38%,rgba(255,255,255,0.04)_70%,transparent)]" />
 
-                        <div className="relative z-20 flex items-center justify-between px-6 pt-5">
+                        <div className="relative z-20 flex items-center justify-between px-4 sm:px-6 pt-5">
                             <div className="flex items-center gap-2">
                                 <Zap size={12} className="text-amber-600 dark:text-amber-400" />
                                 <span className="text-[10px] font-black uppercase tracking-[0.2em] text-amber-800 dark:text-amber-400">
@@ -201,7 +201,7 @@ export function PublicProfileCard({
                             <ShareButton username={profile.username} />
                         </div>
 
-                        <div className="relative z-20 px-6 pb-4 pt-5">
+                        <div className="relative z-20 px-4 sm:px-6 pb-4 pt-5">
                             <div className="flex items-center gap-4">
                                 <div className="shrink-0 rounded-full border border-amber-500/40 bg-amber-500/5 p-[2px] shadow-sm">
                                     <div className="h-16 w-16 overflow-hidden rounded-full bg-white p-[2px] dark:bg-[#151925]">
@@ -313,9 +313,9 @@ export function PublicProfileCard({
                             )}
                         </div>
 
-                        <div className="mx-6 h-[1px] bg-gradient-to-r from-transparent via-amber-500/25 dark:via-white/15 to-transparent" />
+                        <div className="mx-4 sm:mx-6 h-[1px] bg-gradient-to-r from-transparent via-amber-500/25 dark:via-white/15 to-transparent" />
 
-                        <div className="relative z-20 px-6 py-5">
+                        <div className="relative z-20 px-4 sm:px-6 py-5">
                             <div className="mb-4 flex flex-wrap items-center gap-x-3 gap-y-1">
                                 <Shield size={10} className="text-amber-700 dark:text-amber-400" />
                                 <span className="text-[9px] font-black uppercase tracking-[0.2em] text-amber-800 dark:text-amber-400">
@@ -354,7 +354,7 @@ export function PublicProfileCard({
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <p className="text-4xl font-black leading-none tracking-tighter text-slate-800 dark:text-white tabular-nums">
+                                    <p className="text-3xl sm:text-4xl font-black leading-none tracking-tighter text-slate-800 dark:text-white tabular-nums">
                                         {profile.stats.totalTrades.toLocaleString()}
                                     </p>
                                     <p className="mt-1 text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
@@ -365,7 +365,7 @@ export function PublicProfileCard({
                                     {profile.visibility.showPercentMetrics ? (
                                         <>
                                             <p
-                                                className={`text-4xl font-black leading-none tracking-tighter tabular-nums ${profile.stats.winRate >= 50 ? "text-amber-600 dark:text-amber-400" : "text-red-500 dark:text-red-400"}`}
+                                                className={`text-3xl sm:text-4xl font-black leading-none tracking-tighter tabular-nums ${profile.stats.winRate >= 50 ? "text-amber-600 dark:text-amber-400" : "text-red-500 dark:text-red-400"}`}
                                             >
                                                 {Math.round(
                                                     profile.stats.winRate
@@ -380,7 +380,7 @@ export function PublicProfileCard({
                                         </>
                                     ) : (
                                         <>
-                                            <p className="text-4xl font-black leading-none tracking-tighter text-amber-200 dark:text-slate-600">
+                                            <p className="text-3xl sm:text-4xl font-black leading-none tracking-tighter text-amber-200 dark:text-slate-600">
                                                 —
                                             </p>
                                             <p className="mt-1 text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
@@ -390,7 +390,7 @@ export function PublicProfileCard({
                                     )}
                                 </div>
                                 <div>
-                                    <p className="text-4xl font-black leading-none tracking-tighter text-slate-800 dark:text-white tabular-nums">
+                                    <p className="text-3xl sm:text-4xl font-black leading-none tracking-tighter text-slate-800 dark:text-white tabular-nums">
                                         {profile.stats.avgRR > 0
                                             ? profile.stats.avgRR.toFixed(1)
                                             : "-"}
@@ -404,7 +404,7 @@ export function PublicProfileCard({
                                 scoreInfo ? (
                                     <div>
                                         <p
-                                            className={`text-4xl font-black leading-none tracking-tighter tabular-nums ${scoreInfo.text}`}
+                                            className={`text-3xl sm:text-4xl font-black leading-none tracking-tighter tabular-nums ${scoreInfo.text}`}
                                         >
                                             {profile.stats.tradeScore}
                                         </p>
@@ -419,7 +419,7 @@ export function PublicProfileCard({
                                     </div>
                                 ) : (
                                     <div>
-                                        <p className="text-4xl font-black leading-none tracking-tighter text-amber-200 dark:text-slate-600">
+                                        <p className="text-3xl sm:text-4xl font-black leading-none tracking-tighter text-amber-200 dark:text-slate-600">
                                             -
                                         </p>
                                         <p className="mt-1 text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
@@ -430,12 +430,12 @@ export function PublicProfileCard({
                             </div>
                         </div>
 
-                        <div className="mx-6 h-[1px] bg-amber-100 dark:bg-white/10" />
+                        <div className="mx-4 sm:mx-6 h-[1px] bg-amber-100 dark:bg-white/10" />
 
                         {profile.topPairs &&
                             profile.topPairs.length > 0 &&
                             profile.visibility.showPairStats && (
-                                <div className="relative z-20 px-6 py-4">
+                                <div className="relative z-20 px-4 sm:px-6 py-4">
                                     <p className="mb-3 text-[9px] font-black uppercase tracking-[0.2em] text-amber-800 dark:text-amber-400">
                                         Top Pairs
                                     </p>
@@ -473,8 +473,8 @@ export function PublicProfileCard({
                             profile.badges.length > 0 &&
                             profile.visibility.showBadges && (
                                 <>
-                                    <div className="mx-6 h-[1px] bg-amber-100 dark:bg-white/10" />
-                                    <div className="relative z-20 px-6 py-4">
+                                    <div className="mx-4 sm:mx-6 h-[1px] bg-amber-100 dark:bg-white/10" />
+                                    <div className="relative z-20 px-4 sm:px-6 py-4">
                                         <div className="mb-3 flex items-center gap-1">
                                             <Award
                                                 size={10}
@@ -512,8 +512,8 @@ export function PublicProfileCard({
                         {profile.preferredSession &&
                             profile.visibility.showSessionStats && (
                                 <>
-                                    <div className="mx-6 h-[1px] bg-amber-100 dark:bg-white/10" />
-                                    <div className="relative z-20 px-6 py-4">
+                                    <div className="mx-4 sm:mx-6 h-[1px] bg-amber-100 dark:bg-white/10" />
+                                    <div className="relative z-20 px-4 sm:px-6 py-4">
                                         <div className="mb-2 flex items-center gap-1">
                                             <Clock
                                                 size={10}
@@ -545,8 +545,8 @@ export function PublicProfileCard({
                         {profile.tradingStyle &&
                             profile.visibility.showTradingStyle !== false && (
                                 <>
-                                    <div className="mx-6 h-[1px] bg-amber-100 dark:bg-white/10" />
-                                    <div className="relative z-20 px-6 py-4">
+                                    <div className="mx-4 sm:mx-6 h-[1px] bg-amber-100 dark:bg-white/10" />
+                                    <div className="relative z-20 px-4 sm:px-6 py-4">
                                         <div className="mb-2.5 flex items-center justify-between">
                                             <div className="flex items-center gap-1.5">
                                                 <Brain
@@ -584,7 +584,7 @@ export function PublicProfileCard({
                                 </>
                             )}
 
-                        <div className="relative z-20 px-6 py-4">
+                        <div className="relative z-20 px-4 sm:px-6 py-4">
                             <div className="mb-3 space-y-1 text-[10px] leading-relaxed text-slate-500 dark:text-slate-400">
                                 <p>
                                     {profile.dataSource}. Calculated as of{" "}

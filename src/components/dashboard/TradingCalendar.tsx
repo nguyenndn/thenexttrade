@@ -191,7 +191,7 @@ export function TradingCalendar({
                                                         }
                                                     )}
                                                 </p>
-                                                <p className="text-[8px] font-medium font-mono tabular-nums text-gray-400 dark:text-gray-600 truncate leading-none mt-0.5">
+                                                <p className="hidden sm:block text-[8px] font-medium font-mono tabular-nums text-gray-400 dark:text-gray-600 truncate leading-none mt-0.5">
                                                     {perf?.tradeCount || 0}T •{" "}
                                                     {perf?.winRate
                                                         ? perf.winRate.toFixed(

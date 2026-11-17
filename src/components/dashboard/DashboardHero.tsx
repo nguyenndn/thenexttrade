@@ -145,7 +145,7 @@ export function DashboardHero({
             case "TOTAL_BALANCE":
                 return (
                     <>
-                        <p className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-emerald-500">
+                        <p className="text-lg sm:text-xl xl:text-2xl font-black tracking-tight text-emerald-500">
                             <NumberTicker
                                 value={totalBalance}
                                 prefix={unsignedCurrencyTicker.prefix}
@@ -153,7 +153,7 @@ export function DashboardHero({
                                 decimals={2}
                             />
                         </p>
-                        <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">
+                        <p className="hidden sm:block text-xs text-gray-600 dark:text-gray-300 mt-1">
                             Live + Funded
                         </p>
                     </>
@@ -176,7 +176,7 @@ export function DashboardHero({
                                 />
                             )}
                             <p
-                                className={`text-xl sm:text-2xl lg:text-3xl font-black tracking-tight ${
+                                className={`text-lg sm:text-xl xl:text-2xl font-black tracking-tight ${
                                     periodPnL >= 0
                                         ? "text-emerald-500"
                                         : "text-red-500"
@@ -190,7 +190,7 @@ export function DashboardHero({
                                 />
                             </p>
                         </div>
-                        <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">
+                        <p className="hidden sm:block text-xs text-gray-600 dark:text-gray-300 mt-1">
                             Realized P&L
                         </p>
                     </>
@@ -237,7 +237,7 @@ export function DashboardHero({
                                 </span>
                             </div>
                         </div>
-                        <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">
+                        <p className="hidden sm:block text-xs text-gray-600 dark:text-gray-300 mt-1">
                             Winning trades
                         </p>
                     </>
@@ -291,7 +291,7 @@ export function DashboardHero({
                         </div>
                         <Link
                             href="/dashboard/intelligence"
-                            className="text-xs text-gray-600 dark:text-gray-300 mt-1 hover:text-amber-500 dark:hover:text-amber-400 transition-colors inline-block font-semibold"
+                            className="hidden sm:inline-block text-xs text-gray-600 dark:text-gray-300 mt-1 hover:text-amber-500 dark:hover:text-amber-400 transition-colors font-semibold"
                         >
                             {tradeScore !== null
                                 ? "View Details →"
@@ -310,7 +310,7 @@ export function DashboardHero({
                     <>
                         <p
                             className={cn(
-                                "text-xl sm:text-2xl lg:text-3xl font-black tracking-tight",
+                                "text-lg sm:text-xl xl:text-2xl font-black tracking-tight",
                                 pfColor
                             )}
                         >
@@ -323,7 +323,7 @@ export function DashboardHero({
                                 "--"
                             )}
                         </p>
-                        <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">
+                        <p className="hidden sm:block text-xs text-gray-600 dark:text-gray-300 mt-1">
                             Gross Profit / Loss
                         </p>
                     </>
@@ -331,13 +331,13 @@ export function DashboardHero({
             case "TOTAL_TRADES":
                 return (
                     <>
-                        <p className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-gray-900 dark:text-white">
+                        <p className="text-lg sm:text-xl xl:text-2xl font-black tracking-tight text-gray-900 dark:text-white">
                             <NumberTicker
                                 value={totalTrades}
                                 decimals={0}
                             />
                         </p>
-                        <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">
+                        <p className="hidden sm:block text-xs text-gray-600 dark:text-gray-300 mt-1">
                             Trades Executed
                         </p>
                     </>
@@ -345,7 +345,7 @@ export function DashboardHero({
             case "AVG_WIN":
                 return (
                     <>
-                        <p className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-emerald-500">
+                        <p className="text-lg sm:text-xl xl:text-2xl font-black tracking-tight text-emerald-500">
                             <NumberTicker
                                 value={avgWin}
                                 prefix={unsignedCurrencyTicker.prefix}
@@ -353,7 +353,7 @@ export function DashboardHero({
                                 decimals={2}
                             />
                         </p>
-                        <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">
+                        <p className="hidden sm:block text-xs text-gray-600 dark:text-gray-300 mt-1">
                             Per winning trade
                         </p>
                     </>
@@ -361,7 +361,7 @@ export function DashboardHero({
             case "AVG_LOSS":
                 return (
                     <>
-                        <p className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-red-500">
+                        <p className="text-lg sm:text-xl xl:text-2xl font-black tracking-tight text-red-500">
                             <NumberTicker
                                 value={Math.abs(avgLoss)}
                                 prefix={minusCurrencyTicker.prefix}
@@ -369,7 +369,7 @@ export function DashboardHero({
                                 decimals={2}
                             />
                         </p>
-                        <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">
+                        <p className="hidden sm:block text-xs text-gray-600 dark:text-gray-300 mt-1">
                             Per losing trade
                         </p>
                     </>
@@ -382,7 +382,7 @@ export function DashboardHero({
                                 size={24}
                                 className="text-orange-500 fill-orange-500"
                             />
-                            <p className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-orange-500">
+                            <p className="text-lg sm:text-xl xl:text-2xl font-black tracking-tight text-orange-500">
                                 <NumberTicker
                                     value={streak}
                                     suffix=" Days"
@@ -390,7 +390,7 @@ export function DashboardHero({
                                 />
                             </p>
                         </div>
-                        <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">
+                        <p className="hidden sm:block text-xs text-gray-600 dark:text-gray-300 mt-1">
                             Daily active streak
                         </p>
                     </>
@@ -406,7 +406,7 @@ export function DashboardHero({
                     <>
                         <p
                             className={cn(
-                                "text-xl sm:text-2xl lg:text-3xl font-black tracking-tight",
+                                "text-lg sm:text-xl xl:text-2xl font-black tracking-tight",
                                 rrColor
                             )}
                         >
@@ -422,7 +422,7 @@ export function DashboardHero({
                                 "--"
                             )}
                         </p>
-                        <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">
+                        <p className="hidden sm:block text-xs text-gray-600 dark:text-gray-300 mt-1">
                             Average Risk:Reward
                         </p>
                     </>
@@ -436,7 +436,7 @@ export function DashboardHero({
                     <>
                         <p
                             className={cn(
-                                "text-xl sm:text-2xl lg:text-3xl font-black tracking-tight",
+                                "text-lg sm:text-xl xl:text-2xl font-black tracking-tight",
                                 expColor
                             )}
                         >
@@ -447,7 +447,7 @@ export function DashboardHero({
                                 decimals={2}
                             />
                         </p>
-                        <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">
+                        <p className="hidden sm:block text-xs text-gray-600 dark:text-gray-300 mt-1">
                             Expectancy per trade
                         </p>
                     </>
@@ -455,7 +455,7 @@ export function DashboardHero({
             case "FEES":
                 return (
                     <>
-                        <p className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-red-500">
+                        <p className="text-lg sm:text-xl xl:text-2xl font-black tracking-tight text-red-500">
                             <NumberTicker
                                 value={Math.abs(fees)}
                                 prefix={minusCurrencyTicker.prefix}
@@ -463,7 +463,7 @@ export function DashboardHero({
                                 decimals={2}
                             />
                         </p>
-                        <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">
+                        <p className="hidden sm:block text-xs text-gray-600 dark:text-gray-300 mt-1">
                             Commission + Swap
                         </p>
                     </>
@@ -471,7 +471,7 @@ export function DashboardHero({
             case "MAX_WIN":
                 return (
                     <>
-                        <p className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-emerald-500">
+                        <p className="text-lg sm:text-xl xl:text-2xl font-black tracking-tight text-emerald-500">
                             <NumberTicker
                                 value={maxWin}
                                 prefix={unsignedCurrencyTicker.prefix}
@@ -479,7 +479,7 @@ export function DashboardHero({
                                 decimals={2}
                             />
                         </p>
-                        <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">
+                        <p className="hidden sm:block text-xs text-gray-600 dark:text-gray-300 mt-1">
                             Single best trade
                         </p>
                     </>
@@ -487,7 +487,7 @@ export function DashboardHero({
             case "MAX_LOSS":
                 return (
                     <>
-                        <p className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-red-500">
+                        <p className="text-lg sm:text-xl xl:text-2xl font-black tracking-tight text-red-500">
                             <NumberTicker
                                 value={Math.abs(maxLoss)}
                                 prefix={minusCurrencyTicker.prefix}
@@ -495,7 +495,7 @@ export function DashboardHero({
                                 decimals={2}
                             />
                         </p>
-                        <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">
+                        <p className="hidden sm:block text-xs text-gray-600 dark:text-gray-300 mt-1">
                             Single worst trade
                         </p>
                     </>
@@ -538,7 +538,7 @@ export function DashboardHero({
 
                                 {/* Drag Handle & Swap Trigger dropdown visible in edit mode */}
                                 {isEditable && (
-                                    <div className="flex items-center gap-1">
+                                    <div className="hidden md:flex items-center gap-1">
                                         <div
                                             className="inline-flex items-center justify-center w-6 h-6 rounded-lg bg-slate-500/10 text-slate-600 dark:text-slate-400 hover:bg-slate-500/20 active:scale-95 transition-all shadow-sm cursor-grab active:cursor-grabbing"
                                             title="Drag to Reorder"

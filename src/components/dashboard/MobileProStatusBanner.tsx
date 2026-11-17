@@ -159,8 +159,8 @@ export function MobileProStatusBanner({ hideFreeNudge = false }: { hideFreeNudge
         );
     }
 
-    // NONE - show upgrade nudge (compact)
-    if (!isPro) {
+    // NONE - show upgrade nudge (compact), unless suppressed by active onboarding/setup banners
+    if (!isPro && !hideFreeNudge) {
         return (
             <div className="md:hidden mb-3 flex items-center gap-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-dashboard px-3 py-2">
                 <Crown className="h-4 w-4 text-gray-400 dark:text-gray-500 shrink-0" />

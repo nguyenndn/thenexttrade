@@ -29,10 +29,10 @@ export function SampleModeToggle() {
                                 : "Explore sample data playground"
                         }
                         className={cn(
-                            "h-9 px-2.5 sm:px-3 rounded-lg transition-all duration-200 border text-xs font-semibold gap-1.5",
+                            "rounded-lg transition-all duration-200 border text-xs font-semibold gap-1.5",
                             isSampleMode
-                                ? "border-amber-500/40 bg-amber-500/10 text-amber-600 dark:text-amber-400 hover:bg-amber-500/20 shadow-sm shadow-amber-500/10"
-                                : "border-dashboard text-gray-600 dark:text-gray-300 hover:border-amber-500/40 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-500/5"
+                                ? "inline-flex h-8 sm:h-9 px-2 sm:px-3 border-amber-500/40 bg-amber-500/10 text-amber-600 dark:text-amber-400 hover:bg-amber-500/20 shadow-sm shadow-amber-500/10"
+                                : "hidden sm:inline-flex h-9 px-2.5 sm:px-3 border-dashboard text-gray-600 dark:text-gray-300 hover:border-amber-500/40 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-500/5"
                         )}
                     >
                         {isSampleMode ? (

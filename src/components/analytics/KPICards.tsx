@@ -100,7 +100,7 @@ export function KPICards({ summary, currency }: KPICardsProps) {
     ];
 
     return (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-5">
             {cards.map((card, index) => {
                 const Icon = card.icon;
 
@@ -114,11 +114,11 @@ export function KPICards({ summary, currency }: KPICardsProps) {
                 return (
                     <div
                         key={index}
-                        className={`bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-dashboard shadow-sm hover:shadow-md transition-shadow duration-200 group border-t-4 ${card.color.replace("text-", "border-t-")}`}
+                        className={`bg-white dark:bg-[#1E2028] p-3.5 sm:p-6 rounded-xl border border-dashboard shadow-sm hover:shadow-md transition-shadow duration-200 group border-t-4 ${card.color.replace("text-", "border-t-")}`}
                     >
-                        <div className="flex items-center gap-3 mb-4">
+                        <div className="flex items-center gap-3 mb-3 sm:mb-4">
                             <div
-                                className={`p-3 rounded-lg ${card.bg} text-opacity-80 group-hover:bg-opacity-100 transition-colors shadow-sm relative z-10`}
+                                className={`p-2 sm:p-3 rounded-lg ${card.bg} text-opacity-80 group-hover:bg-opacity-100 transition-colors shadow-sm relative z-10`}
                             >
                                 <Icon
                                     size={20}
@@ -127,11 +127,11 @@ export function KPICards({ summary, currency }: KPICardsProps) {
                                 />
                             </div>
                         </div>
-                        <h3 className="text-[11px] font-bold uppercase tracking-widest text-gray-600 dark:text-gray-300 mb-1.5 relative z-10">
+                        <h3 className="text-[11px] font-bold uppercase tracking-widest text-gray-600 dark:text-gray-300 mb-1 sm:mb-1.5 relative z-10">
                             {card.title}
                         </h3>
                         <p
-                            className={`text-[28px] font-bold font-mono tabular-nums tracking-tight ${colorClass} relative z-10`}
+                            className={`text-lg sm:text-2xl font-bold font-mono tabular-nums tracking-tight ${colorClass} relative z-10 truncate`}
                         >
                             {card.value}
                         </p>

@@ -37,7 +37,7 @@ export function AccountProfitTargetSettings({
                         Profit Milestones & Targets
                     </h3>
                 </div>
-                <span className="text-[10px] text-gray-400">
+                <span className="hidden sm:inline text-[10px] text-gray-400">
                     Per-account weekly & monthly targets
                 </span>
             </div>

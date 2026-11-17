@@ -41,7 +41,7 @@ interface GreetingHeaderProps {
 
 export function GreetingHeader({
     userName,
-    currentAccountId,
+    currentAccountId: _currentAccountId,
     hideFilters = false,
 }: GreetingHeaderProps) {
     const [mounted, setMounted] = useState(false);
@@ -72,6 +72,11 @@ export function GreetingHeader({
                 text: "Good evening",
                 icon: <AnimatedEveningIcon size={32} />,
             });
+        }
+
+        // Skip quote setup/fetch on mobile where quote block is hidden
+        if (window.innerWidth < 768) {
+            return;
         }
 
         // New users get motivational onboarding quotes (skip API call)
@@ -115,16 +120,16 @@ export function GreetingHeader({
             <div
                 className={`transition-all duration-500 ease-out ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"}`}
             >
-                <div className="flex items-center gap-2 mb-1.5">
+                <div className="flex items-center gap-2 mb-0 md:mb-1.5">
                     {greeting.icon}
-                    <h1 className="text-xl font-black text-gray-700 dark:text-white tracking-tight">
+                    <h1 className="text-lg sm:text-xl font-black text-gray-700 dark:text-white tracking-tight">
                         {greeting.text},{" "}
                         <span className="text-amber-500 dark:text-amber-400 uppercase">
                             {userName}
                         </span>
                     </h1>
                 </div>
-                <div className="min-h-[24px] flex items-start gap-2 max-w-2xl">
+                <div className="hidden md:flex min-h-[24px] items-start gap-2 max-w-2xl">
                     {quote && (
                         <>
                             <Quote

@@ -143,7 +143,7 @@ export function PlCalendarHeatmap({
                         <h3 className="font-bold text-gray-700 dark:text-white text-sm truncate">
                             P&L Calendar Heatmap
                         </h3>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                        <p className="hidden sm:block text-xs text-gray-500 dark:text-gray-400 truncate">
                             Daily profit & loss intensity
                         </p>
                     </div>

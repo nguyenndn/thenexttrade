@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { AlertTriangle, ArrowRight, Trophy } from "lucide-react";
+import { ArrowRight, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { buttonVariants } from "@/components/ui/button-variants";
 import {
@@ -21,7 +21,7 @@ export function TradingSetupModal() {
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogContent className="max-w-md rounded-2xl p-0 overflow-hidden border-0 shadow-2xl">
                 {/* Header Gradient */}
-                <div className="bg-gradient-to-br from-amber-500 to-amber-600 p-8 text-center relative overflow-hidden">
+                <div className="bg-gradient-to-br from-amber-500 to-amber-600 p-5 sm:p-8 text-center relative overflow-hidden">
                     <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.2),transparent_60%)]" />
                     <div className="relative">
                         <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-lg flex items-center justify-center mx-auto mb-3 shadow-inner">
@@ -37,7 +37,7 @@ export function TradingSetupModal() {
                 </div>
 
                 {/* Body */}
-                <div className="p-6 space-y-4">
+                <div className="p-4 sm:p-6 space-y-4">
                     <DialogHeader>
                         <DialogTitle className="text-base font-bold text-gray-900 dark:text-white">
                             No Real Account Configured
@@ -61,6 +61,7 @@ export function TradingSetupModal() {
                             variant="outline"
                             size="smd"
                             onClick={() => setOpen(false)}
+                            className="flex-1 sm:flex-none"
                         >
                             Maybe later
                         </Button>
@@ -69,7 +70,8 @@ export function TradingSetupModal() {
                             className={buttonVariants({
                                 variant: "gold",
                                 size: "smd",
-                                className: "gap-2 shrink-0 font-bold",
+                                className:
+                                    "flex-1 sm:flex-none justify-center gap-2 shrink-0 font-bold",
                             })}
                         >
                             Go to Accounts

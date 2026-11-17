@@ -127,11 +127,11 @@ export default async function CertificatesPage() {
 
             {/* Not yet completed — locked master card teaser */}
             {!allLevelsCompleted && (
-                <div className="relative rounded-xl border-2 border-dashed border-gold/30 bg-gold/5 p-6 flex items-center gap-4">
+                <div className="relative rounded-xl border-2 border-dashed border-gold/30 bg-gold/5 p-4 sm:p-6 flex items-center gap-4">
                     <div className="w-12 h-12 rounded-lg bg-gold/10 flex items-center justify-center flex-shrink-0">
                         <Lock size={20} className="text-amber-600 dark:text-gold" />
                     </div>
-                    <div>
+                    <div className="min-w-0">
                         <h3 className="text-sm font-bold text-gray-700 dark:text-gray-300">
                             Master Trader Certificate
                         </h3>
@@ -140,7 +140,7 @@ export default async function CertificatesPage() {
                             Master Trader Certificate. <span className="font-mono tabular-nums">{earnedCount}/{totalLevels}</span> completed.
                         </p>
                     </div>
-                    <div className="ml-auto">
+                    <div className="hidden sm:block ml-auto">
                         <Trophy size={28} className="text-amber-600/40 dark:text-gold/40" />
                     </div>
                 </div>

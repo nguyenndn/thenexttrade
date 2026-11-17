@@ -162,7 +162,7 @@ export function AiCoachCard({
                         onClick={() => handleGenerate(true)}
                         variant="gold"
                         size="smd"
-                        className="shrink-0 whitespace-nowrap gap-2"
+                        className="w-full sm:w-auto shrink-0 whitespace-nowrap gap-2"
                     >
                         <Brain size={15} />
                         Audit My Execution
@@ -205,14 +205,15 @@ export function AiCoachCard({
                                 variant="outline"
                                 size="sm"
                                 disabled={isLoading}
+                                aria-label="Re-analyze"
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     handleGenerate(true);
                                 }}
-                                className="h-7 px-2.5 text-xs font-semibold text-gray-500 dark:text-gray-400 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-500/10 border-amber-200 dark:border-amber-500/30 transition-colors"
+                                className="h-7 px-2 sm:px-2.5 gap-1.5 text-xs font-semibold text-gray-500 dark:text-gray-400 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-500/10 border-amber-200 dark:border-amber-500/30 transition-colors"
                             >
-                                <RefreshCw size={13} className="mr-1.5" />
-                                Re-analyze
+                                <RefreshCw size={13} />
+                                <span className="hidden sm:inline">Re-analyze</span>
                             </Button>
                             <div className="p-1 rounded-lg hover:bg-amber-500/10 dark:hover:bg-amber-500/20 text-amber-500 dark:text-amber-400 shrink-0 transition-colors">
                                 {isCollapsed ? (
@@ -267,7 +268,7 @@ export function AiCoachCard({
                             </div>
 
                             {/* 3 Step Matrix */}
-                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-xl mx-auto text-left relative">
+                            <div className="hidden sm:grid sm:grid-cols-3 gap-3 max-w-xl mx-auto text-left relative">
                                 <div className="p-3.5 rounded-lg border border-dashboard/80 dark:border-white/10 bg-white dark:bg-[#1E2028] shadow-xs">
                                     <div className="text-[10px] font-black text-amber-500 uppercase tracking-widest mb-1">Step 1</div>
                                     <div className="text-xs font-bold text-gray-800 dark:text-white">Connect Broker</div>
@@ -352,7 +353,7 @@ export function AiCoachCard({
                                 variant="outline"
                                 size="sm"
                                 onClick={() => handleGenerate(true)}
-                                className="ml-auto"
+                                className="ml-auto shrink-0"
                             >
                                 Retry
                             </Button>

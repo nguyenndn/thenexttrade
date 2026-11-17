@@ -121,11 +121,11 @@ export function MyStatsView({
                 {/* ═══════════════════════════════════════════════════════════ */}
                 {/* PROFILE HERO */}
                 {/* ═══════════════════════════════════════════════════════════ */}
-                <div className="px-6 py-8 bg-gray-50/80 dark:bg-[#151925]">
-                    <div className="flex items-center gap-6">
+                <div className="px-4 py-5 sm:px-6 sm:py-8 bg-gray-50/80 dark:bg-[#151925]">
+                    <div className="flex items-center gap-3 sm:gap-6">
                         {/* Avatar */}
                         <div className="relative shrink-0">
-                            <div className="w-20 h-20 rounded-lg flex items-center justify-center font-bold text-2xl text-white bg-gray-400 dark:bg-gray-600 overflow-hidden ring-4 ring-white dark:ring-[#1E2028] shadow-lg">
+                            <div className="w-14 h-14 sm:w-20 sm:h-20 rounded-lg flex items-center justify-center font-bold text-lg sm:text-2xl text-white bg-gray-400 dark:bg-gray-600 overflow-hidden ring-2 sm:ring-4 ring-white dark:ring-[#1E2028] shadow-lg">
                                 {userAvatar ? (
                                     <img
                                         src={userAvatar}
@@ -137,17 +137,17 @@ export function MyStatsView({
                                 )}
                             </div>
                             {/* Level badge */}
-                            <div className="absolute -bottom-1.5 -right-1.5 w-7 h-7 rounded-lg bg-gold !text-white text-xs font-black font-mono tabular-nums flex items-center justify-center shadow-md border-2 border-white dark:border-[#1E2028]">
+                            <div className="absolute -bottom-1.5 -right-1.5 w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-gold !text-white text-[10px] sm:text-xs font-black font-mono tabular-nums flex items-center justify-center shadow-md border-2 border-white dark:border-[#1E2028]">
                                 {level}
                             </div>
                         </div>
 
                         {/* Name + Tier */}
                         <div className="flex-1 min-w-0">
-                            <h2 className="text-2xl font-black text-gray-700 dark:text-white truncate mb-1">
+                            <h2 className="text-lg sm:text-2xl font-black text-gray-700 dark:text-white truncate mb-1">
                                 {userName || "You"}
                             </h2>
-                            <div className="flex items-center gap-3 flex-wrap">
+                            <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
                                 <UserTierBadge
                                     tierName={tierProgress.current.name}
                                     tierColor={tierProgress.current.color}
@@ -155,7 +155,7 @@ export function MyStatsView({
                                     tierLabel={tierProgress.current.label}
                                     size="sm"
                                 />
-                                <span className="text-sm font-mono tabular-nums text-gray-500">
+                                <span className="text-xs sm:text-sm font-mono tabular-nums text-gray-500">
                                     {earnedCount}/{badges.length} badges
                                 </span>
                             </div>
@@ -163,10 +163,10 @@ export function MyStatsView({
 
                         {/* Rank */}
                         <div className="text-right shrink-0 font-mono tabular-nums">
-                            <div className="text-5xl font-black text-amber-600 dark:text-gold leading-none">
+                            <div className="text-3xl sm:text-5xl font-black text-amber-600 dark:text-gold leading-none">
                                 #{rank}
                             </div>
-                            <span className="text-sm font-bold text-gray-500 mt-1 block">
+                            <span className="text-xs sm:text-sm font-bold text-gray-500 mt-1 block">
                                 Top {percentile.toFixed(1)}%
                             </span>
                         </div>
@@ -176,8 +176,8 @@ export function MyStatsView({
                 {/* ═══════════════════════════════════════════════════════════ */}
                 {/* TIER PROGRESS */}
                 {/* ═══════════════════════════════════════════════════════════ */}
-                <div className="px-6 py-4 border-t border-dashboard">
-                    <div className="flex items-center justify-between mb-2">
+                <div className="px-4 py-4 sm:px-6 border-t border-dashboard">
+                    <div className="flex items-center justify-between gap-2 mb-2">
                         <span className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">
                             Edge Progress
                         </span>
@@ -188,29 +188,53 @@ export function MyStatsView({
                             </span>
                         )}
                     </div>
-                    <div className="flex items-center gap-3">
-                        <UserTierBadge
-                            tierName={tierProgress.current.name}
-                            tierColor={tierProgress.current.color}
-                            tierIcon={tierProgress.current.icon}
-                            tierLabel={tierProgress.current.label}
-                            size="sm"
-                        />
-                        <div className="flex-1 h-2.5 rounded-full bg-gray-100 dark:bg-white/5 overflow-hidden">
-                            <div
-                                className="h-full rounded-full bg-gold transition-all duration-700 ease-out"
-                                style={{ width: `${tierProgress.progress}%` }}
-                            />
-                        </div>
-                        {tierProgress.next && (
+                    <div className="space-y-2 sm:space-y-0">
+                        <div className="flex items-center justify-between sm:hidden">
                             <UserTierBadge
-                                tierName={tierProgress.next.name}
-                                tierColor={tierProgress.next.color}
-                                tierIcon={tierProgress.next.icon}
-                                tierLabel={tierProgress.next.label}
+                                tierName={tierProgress.current.name}
+                                tierColor={tierProgress.current.color}
+                                tierIcon={tierProgress.current.icon}
+                                tierLabel={tierProgress.current.label}
                                 size="sm"
                             />
-                        )}
+                            {tierProgress.next && (
+                                <UserTierBadge
+                                    tierName={tierProgress.next.name}
+                                    tierColor={tierProgress.next.color}
+                                    tierIcon={tierProgress.next.icon}
+                                    tierLabel={tierProgress.next.label}
+                                    size="sm"
+                                />
+                            )}
+                        </div>
+                        <div className="flex items-center gap-3">
+                            <div className="hidden sm:block shrink-0">
+                                <UserTierBadge
+                                    tierName={tierProgress.current.name}
+                                    tierColor={tierProgress.current.color}
+                                    tierIcon={tierProgress.current.icon}
+                                    tierLabel={tierProgress.current.label}
+                                    size="sm"
+                                />
+                            </div>
+                            <div className="flex-1 h-2.5 rounded-full bg-gray-100 dark:bg-white/5 overflow-hidden">
+                                <div
+                                    className="h-full rounded-full bg-gold transition-all duration-700 ease-out"
+                                    style={{ width: `${tierProgress.progress}%` }}
+                                />
+                            </div>
+                            {tierProgress.next && (
+                                <div className="hidden sm:block shrink-0">
+                                    <UserTierBadge
+                                        tierName={tierProgress.next.name}
+                                        tierColor={tierProgress.next.color}
+                                        tierIcon={tierProgress.next.icon}
+                                        tierLabel={tierProgress.next.label}
+                                        size="sm"
+                                    />
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
 
@@ -229,21 +253,21 @@ export function MyStatsView({
                         label="Streak"
                         value={`${streak}d`}
                         color="text-amber-600 dark:text-gold"
-                        border
+                        className="border-l border-dashboard"
                     />
                     <QuickStat
                         icon={BookOpen}
                         label="Lessons"
                         value={String(lessonsCompleted)}
                         color="text-emerald-500"
-                        border
+                        className="border-t sm:border-t-0 sm:border-l border-dashboard"
                     />
                     <QuickStat
                         icon={TrendingUp}
                         label="Trades"
                         value={String(totalTrades)}
                         color="text-amber-600 dark:text-gold"
-                        border
+                        className="border-t border-l sm:border-t-0 border-dashboard"
                     />
                 </div>
 
@@ -251,7 +275,7 @@ export function MyStatsView({
                 {/* BADGES & ACHIEVEMENTS */}
                 {/* ═══════════════════════════════════════════════════════════ */}
                 {badges.length > 0 && (
-                    <div className="px-6 py-5 border-t border-dashboard">
+                    <div className="px-4 py-4 sm:px-6 sm:py-5 border-t border-dashboard">
                         <div className="flex items-center justify-between mb-4">
                             <h3 className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">
                                 <Award size={12} className="inline-block mr-1 align-[-1px]" /> Badges & Achievements
@@ -279,19 +303,19 @@ function QuickStat({
     label,
     value,
     color,
-    border,
+    className,
 }: {
     icon: React.ElementType;
     label: string;
     value: string;
     color: string;
-    border?: boolean;
+    className?: string;
 }) {
     return (
         <div
             className={cn(
                 "px-4 py-4 text-center",
-                border && "border-l border-dashboard"
+                className
             )}
         >
             <Icon size={18} className={cn("mx-auto mb-1.5", color)} />

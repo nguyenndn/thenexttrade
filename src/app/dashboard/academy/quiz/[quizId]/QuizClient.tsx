@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Link from "next/link";
 import { SPRING_SOFT, backdropVariants } from "@/lib/animations";
@@ -67,7 +66,6 @@ export function QuizClient({
     completedLessonIds,
     firstLessonSlug,
 }: QuizProps) {
-    const router = useRouter();
     const draftKey = `quiz-draft-${quiz.id}`;
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -418,11 +416,11 @@ export function QuizClient({
     return (
         <div className="space-y-4">
             {/* Breadcrumb */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="flex items-center gap-2 text-base font-semibold">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+                <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm min-w-0 flex-wrap font-semibold">
                     <Link
                         href="/dashboard/academy"
-                        className="flex items-center gap-1.5 text-primary hover:underline transition-colors"
+                        className="flex items-center gap-1.5 text-primary hover:underline transition-colors shrink-0"
                     >
                         <GraduationCap size={16} />
                         Academy
@@ -431,32 +429,32 @@ export function QuizClient({
                         <>
                             <ChevronRight
                                 size={14}
-                                className="text-gray-300 dark:text-gray-600"
+                                className="hidden sm:inline text-gray-300 dark:text-gray-600 shrink-0"
                             />
-                            <span className="text-gray-600 dark:text-gray-300">
+                            <span className="hidden sm:inline text-gray-600 dark:text-gray-300">
                                 {quiz.module.level.title}
                             </span>
                             <ChevronRight
                                 size={14}
-                                className="text-gray-300 dark:text-gray-600"
+                                className="text-gray-300 dark:text-gray-600 shrink-0"
                             />
-                            <span className="text-gray-700 dark:text-gray-200 font-bold">
+                            <span className="text-gray-700 dark:text-gray-200 font-bold min-w-0 truncate">
                                 {quiz.module.title}
                             </span>
                         </>
                     )}
                 </div>
-                <div className="flex items-center gap-3 text-base font-bold w-full sm:w-auto">
+                <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm font-bold w-full sm:w-auto">
                     {firstLessonSlug && (
                         <Link
                             href={`/dashboard/academy/lessons/${firstLessonSlug}`}
-                            className="flex items-center gap-1.5 text-gray-500 hover:text-primary px-3 py-1.5 rounded-full bg-gray-100 dark:bg-white/5 transition-colors text-sm"
+                            className="flex items-center gap-1.5 text-gray-500 hover:text-primary px-3 py-1.5 rounded-full bg-gray-100 dark:bg-white/5 transition-colors text-xs sm:text-sm"
                         >
                             <BookOpen size={14} />
                             <span>Back to Lessons</span>
                         </Link>
                     )}
-                    <div className="flex items-center gap-1.5 text-gray-600 bg-gray-100 dark:bg-white/5 px-3 py-1.5 rounded-full">
+                    <div className="flex items-center gap-1.5 text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-white/5 px-3 py-1.5 rounded-full">
                         <Trophy size={14} />
                         <span>Quiz</span>
                     </div>
@@ -538,26 +536,28 @@ export function QuizClient({
 
                             {/* Certificate Earned Banner */}
                             {certificateEarned && (
-                                <div className="mx-8 mb-8 p-4 rounded-xl bg-gradient-to-r from-amber-500/10 to-yellow-500/10 border border-amber-500/20">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center flex-shrink-0">
-                                            <Award
-                                                size={20}
-                                                className="text-amber-500"
-                                            />
-                                        </div>
-                                        <div className="flex-1">
-                                            <p className="font-bold text-amber-600 dark:text-amber-400 text-sm">
-                                                Level Certificate Earned!
-                                            </p>
-                                            <p className="text-xs text-amber-600/70 dark:text-amber-400/70">
-                                                You&apos;ve passed all quizzes
-                                                in this level.
-                                            </p>
+                                <div className="mx-4 mb-4 sm:mx-8 sm:mb-8 p-4 rounded-xl bg-gradient-to-r from-amber-500/10 to-yellow-500/10 border border-amber-500/20">
+                                    <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                                        <div className="flex items-center gap-3 flex-1 min-w-0">
+                                            <div className="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center flex-shrink-0">
+                                                <Award
+                                                    size={20}
+                                                    className="text-amber-500"
+                                                />
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <p className="font-bold text-amber-600 dark:text-amber-400 text-sm">
+                                                    Level Certificate Earned!
+                                                </p>
+                                                <p className="text-xs text-amber-600/70 dark:text-amber-400/70">
+                                                    You&apos;ve passed all quizzes
+                                                    in this level.
+                                                </p>
+                                            </div>
                                         </div>
                                         <Link
                                             href="/dashboard/academy/certificates"
-                                            className="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-xs font-bold transition-colors whitespace-nowrap"
+                                            className="px-3 py-2 sm:py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-xs font-bold transition-colors whitespace-nowrap text-center"
                                         >
                                             View Certificate
                                         </Link>
@@ -570,7 +570,7 @@ export function QuizClient({
                             {/* Quiz Card */}
                             <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm overflow-hidden">
                                 {/* Quiz Header */}
-                                <div className="px-6 lg:px-8 pt-6 lg:pt-8 pb-4">
+                                <div className="p-4 sm:p-6 pb-3 sm:pb-4">
                                     <h1 className="text-2xl lg:text-3xl font-black text-gray-700 dark:text-white leading-tight tracking-tight">
                                         {quiz.title}
                                     </h1>
@@ -583,7 +583,7 @@ export function QuizClient({
                                 <div className="h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
 
                                 {/* Progress bar */}
-                                <div className="px-6 lg:px-8 pt-5 pb-2">
+                                <div className="px-4 sm:px-6 pt-4 sm:pt-5 pb-2">
                                     <div className="flex items-center justify-between text-xs text-gray-600 mb-2">
                                         <span>
                                             Question{" "}
@@ -609,7 +609,7 @@ export function QuizClient({
 
                                 {/* Question */}
                                 {question && (
-                                    <div className="p-6 lg:p-8">
+                                    <div className="p-4 sm:p-6">
                                         <h2 className="text-lg font-bold text-gray-700 dark:text-white mb-6">
                                             {question.text}
                                         </h2>
@@ -667,7 +667,7 @@ export function QuizClient({
                             </div>
 
                             {/* Navigation */}
-                            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-6 flex items-center justify-between gap-4">
+                            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-4 sm:p-6 flex items-center justify-between gap-4">
                                 <Button
                                     variant="outline"
                                     onClick={handlePrev}
@@ -677,7 +677,7 @@ export function QuizClient({
                                     Previous
                                 </Button>
 
-                                <div className="flex gap-1.5">
+                                <div className="hidden sm:flex gap-1.5">
                                     {quiz.questions.map((q, idx) => (
                                         <Button
                                             key={q.id}

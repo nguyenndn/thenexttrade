@@ -63,7 +63,7 @@ export function TradingRuleCard({
                 setLocalActive(rule.isActive);
                 toast.error("Failed to update rule status.");
             }
-        } catch (error) {
+        } catch {
             setLocalActive(rule.isActive);
             toast.error("An error occurred while updating status.");
         } finally {
@@ -181,7 +181,7 @@ export function TradingRuleCard({
                     disabled={isPending || isDeleting}
                     title="Edit Rule"
                     aria-label="Edit Rule"
-                    className="w-7 h-7 rounded-lg border-dashboard dark:border-white/10 text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary"
+                    className="w-9 h-9 sm:w-7 sm:h-7 rounded-lg border-dashboard dark:border-white/10 text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary"
                 >
                     <Edit size={12} />
                 </Button>
@@ -192,7 +192,7 @@ export function TradingRuleCard({
                     disabled={isPending || isDeleting}
                     title="Delete Rule"
                     aria-label="Delete Rule"
-                    className="w-7 h-7 rounded-lg border-red-200 dark:border-red-500/15 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10"
+                    className="w-9 h-9 sm:w-7 sm:h-7 rounded-lg border-red-200 dark:border-red-500/15 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10"
                 >
                     <Trash2 size={12} />
                 </Button>

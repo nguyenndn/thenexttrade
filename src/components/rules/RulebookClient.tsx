@@ -96,6 +96,7 @@ export function RulebookClient({
             <PageHeader
                 title="Trading Rulebook & Compliance"
                 description="Establish clear risk parameters, entry filters, and audit your rule compliance."
+                hideDescriptionOnMobile
             >
                 <div className="flex items-center gap-3">
                     {activeTab === "rulebook" && (
@@ -149,7 +150,7 @@ export function RulebookClient({
                 {/* --- RULEBOOK TAB --- */}
                 <TabsContent value="rulebook" className="space-y-6">
                     {/* Category Filter Selector */}
-                    <div className="flex flex-wrap gap-1.5 border-b border-dashboard/80 dark:border-white/[0.08] pb-4">
+                    <div className="flex flex-nowrap sm:flex-wrap gap-1.5 overflow-x-auto scrollbar-hide max-w-full pb-2.5 sm:pb-4 border-b border-dashboard/80 dark:border-white/[0.08]">
                         {categories.map((cat) => (
                             <Button
                                 key={cat.value}
@@ -157,7 +158,7 @@ export function RulebookClient({
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => setSelectedCategory(cat.value)}
-                                className={`h-auto px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${
+                                className={`h-auto shrink-0 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${
                                     selectedCategory === cat.value
                                         ? "bg-amber-500/10 border-amber-500 text-gold dark:text-amber-400 font-bold hover:bg-amber-500/15"
                                         : "bg-white dark:bg-[#1E2028] border-dashboard hover:border-amber-400/40 text-gray-600 dark:text-gray-400"

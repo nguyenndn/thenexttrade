@@ -125,7 +125,7 @@ export function TabBar({
     return (
         <div
             className={cn(
-                "bg-[#F1F3F5] dark:bg-[#1A1D27] p-1 rounded-lg border border-dashboard h-auto overflow-x-auto scrollbar-hide",
+                "max-w-full bg-[#F1F3F5] dark:bg-[#1A1D27] p-1 rounded-lg border border-dashboard h-auto overflow-x-auto scrollbar-hide",
                 equalWidth
                     ? "w-full flex lg:w-auto lg:inline-flex"
                     : "w-auto inline-flex",
@@ -175,7 +175,7 @@ export function TabBar({
                         key={tab.href}
                         href={targetHref}
                         className={cn(
-                            "rounded-lg px-3 sm:px-4 py-1.5 text-sm font-bold transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2 border whitespace-nowrap shrink-0",
+                            "rounded-lg px-2.5 sm:px-4 py-1.5 text-xs sm:text-sm font-bold transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2 border whitespace-nowrap shrink-0",
                             equalWidth && "flex-1 text-center lg:flex-none",
                             isActive
                                 ? "bg-gold text-white shadow-md shadow-amber-500/20 border-transparent"

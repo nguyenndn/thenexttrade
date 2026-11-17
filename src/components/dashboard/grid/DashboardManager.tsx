@@ -644,8 +644,15 @@ export function DashboardManager({
 
     if (!activeDashboard) return null;
 
+    const hideControlsOnMobile = !isEditable && dashboards.length <= 1;
+
     const controls = (
-        <div className="flex items-center gap-1.5 bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-[#382F1D] rounded-lg px-2 h-10 shadow-sm w-full 2xl:w-auto max-w-full overflow-x-auto scrollbar-none">
+        <div
+            className={cn(
+                "items-center gap-1.5 bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-[#382F1D] rounded-lg px-2 h-10 shadow-sm w-full 2xl:w-auto max-w-full overflow-x-auto scrollbar-hide",
+                hideControlsOnMobile ? "hidden md:flex" : "flex"
+            )}
+        >
             {isEditable ? (
                 <>
                     <input
@@ -749,7 +756,7 @@ export function DashboardManager({
                                             )}
                                         />
                                         <div
-                                            className="p-1 hover:text-amber-500 transition-colors"
+                                            className="hidden md:inline-flex p-1 hover:text-amber-500 transition-colors"
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 setActiveId(db.id);
@@ -762,9 +769,9 @@ export function DashboardManager({
                                     </div>
                                 </DropdownMenuItem>
                             ))}
-                            <DropdownMenuSeparator className="bg-gray-100 dark:bg-gray-800" />
+                            <DropdownMenuSeparator className="hidden md:block bg-gray-100 dark:bg-gray-800" />
                             <DropdownMenuItem
-                                className="flex items-center gap-2 cursor-pointer font-bold text-amber-500 dark:text-amber-400 rounded-lg px-3 py-2 hover:bg-amber-500/10"
+                                className="hidden md:flex items-center gap-2 cursor-pointer font-bold text-amber-500 dark:text-amber-400 rounded-lg px-3 py-2 hover:bg-amber-500/10"
                                 onClick={handleCreateDashboard}
                                 disabled={isPending}
                             >
@@ -773,21 +780,21 @@ export function DashboardManager({
                         </DropdownMenuContent>
                     </DropdownMenu>
 
-                    <div className="w-px h-5 bg-gray-200 dark:bg-gray-800 mx-1" />
+                    <div className="hidden md:block w-px h-5 bg-gray-200 dark:bg-gray-800 mx-1" />
 
                     <Button
                         variant="ghost"
                         size="icon"
                         onClick={handleCreateDashboard}
                         disabled={isPending}
-                        className="w-7 h-7 flex items-center justify-center text-slate-500 hover:text-amber-500 dark:text-slate-400 dark:hover:text-amber-400 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-colors"
+                        className="hidden md:flex w-7 h-7 items-center justify-center text-slate-500 hover:text-amber-500 dark:text-slate-400 dark:hover:text-amber-400 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-colors"
                         aria-label="Create New Dashboard"
                         title="Create New Dashboard"
                     >
                         <Plus className="w-4 h-4" />
                     </Button>
 
-                    <div className="w-px h-5 bg-gray-200 dark:bg-gray-800 mx-1" />
+                    <div className="hidden md:block w-px h-5 bg-gray-200 dark:bg-gray-800 mx-1" />
 
                     <Button
                         variant="ghost"
@@ -796,7 +803,7 @@ export function DashboardManager({
                             setEditName(activeDashboard.name);
                             setIsEditable(true);
                         }}
-                        className="w-7 h-7 flex items-center justify-center text-slate-500 hover:text-amber-500 dark:text-slate-400 dark:hover:text-amber-400 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-colors"
+                        className="hidden md:flex w-7 h-7 items-center justify-center text-slate-500 hover:text-amber-500 dark:text-slate-400 dark:hover:text-amber-400 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-colors"
                         aria-label="Edit Dashboard"
                         title="Edit Dashboard"
                     >
@@ -810,7 +817,14 @@ export function DashboardManager({
     return (
         <div className="space-y-6">
             <div className="flex flex-col 2xl:flex-row items-stretch 2xl:items-center justify-between gap-4 w-full">
-                <div className="w-full 2xl:w-auto">{controls}</div>
+                <div
+                    className={cn(
+                        "w-full 2xl:w-auto",
+                        hideControlsOnMobile && "hidden md:block"
+                    )}
+                >
+                    {controls}
+                </div>
                 <div className="flex items-center gap-3 w-full 2xl:w-auto">
                     <div className="hidden 2xl:block w-px h-6 bg-gray-200 dark:bg-[#382F1D]" />
                     <DashboardFilter

@@ -27,6 +27,10 @@ import type {
     ScoreHistoryPoint,
 } from "@/lib/smart-analytics";
 import { format, parseISO } from "date-fns";
+import { cn } from "@/lib/utils";
+import { useProAccess } from "@/components/pro/ProProvider";
+import { EdgeLeakDetector } from "@/components/pro/EdgeLeakDetector";
+import { RuleViolationTracker } from "@/components/pro/RuleViolationTracker";
 import { BehavioralRadarChart } from "./BehavioralRadarChart";
 import { AiCoachCard } from "./AiCoachCard";
 import { BiasProfileWidget } from "./BiasProfileWidget";
@@ -142,8 +146,8 @@ function PeriodComparison({
     ];
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-6">
-            <div className="flex items-center gap-2.5 mb-5">
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-4 sm:p-6">
+            <div className="flex items-center gap-2.5 mb-4 sm:mb-5">
                 <div className="p-2 rounded-lg bg-gold/10 border border-gold/20">
                     <Activity size={18} className="text-amber-600 dark:text-gold" />
                 </div>
@@ -159,17 +163,17 @@ function PeriodComparison({
                 {cards.map((card) => (
                     <div
                         key={card.label}
-                        className={`text-center p-4 rounded-lg bg-gray-50/80 dark:bg-[#151925] border-t-[3px] ${card.accent} ${
+                        className={`text-center p-3 sm:p-4 rounded-lg bg-gray-50/80 dark:bg-[#151925] border-t-[3px] ${card.accent} ${
                             card.label === "Strengths"
                                 ? "col-span-2 sm:col-span-1"
                                 : ""
                         }`}
                     >
-                        <p className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
+                        <p className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5 sm:mb-2">
                             {card.label}
                         </p>
-                        <div className="flex items-center justify-center gap-2 mb-1">
-                            <span className="text-2xl font-black font-mono tabular-nums text-gray-800 dark:text-white">
+                        <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1">
+                            <span className="text-lg sm:text-2xl font-black font-mono tabular-nums text-gray-800 dark:text-white">
                                 {card.value}
                             </span>
                             {card.delta}
@@ -304,6 +308,7 @@ function ScoreHistoryChart({ data }: { data: ScoreHistoryPoint[] }) {
                                 fontWeight: 500,
                             }}
                             dy={10}
+                            minTickGap={28}
                         />
                         <YAxis
                             domain={[0, 100]}
@@ -559,7 +564,7 @@ function ScoreAndRiskPanel({ data }: { data: IntelligenceData }) {
                                         key={factor.name}
                                         className="flex items-center gap-2 sm:gap-3"
                                     >
-                                        <span className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-500 w-20 sm:w-28 shrink-0">
+                                        <span className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-500 w-28 shrink-0">
                                             {factor.name}
                                         </span>
                                         <div className="flex-1 h-2 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
@@ -618,7 +623,7 @@ function ScoreAndRiskPanel({ data }: { data: IntelligenceData }) {
                         </p>
 
                         {/* Quick stats */}
-                        <div className="mt-4 pt-4 border-t border-dashboard grid grid-cols-3 gap-3">
+                        <div className="mt-4 pt-4 border-t border-dashboard hidden md:grid grid-cols-3 gap-3">
                             <div className="text-center">
                                 <p className="text-lg font-black font-mono tabular-nums text-gray-700 dark:text-white">
                                     {data.issues.length}
@@ -833,6 +838,45 @@ export function IntelligenceDashboard({
                 </div>
             )}
         </div>
+    );
+}
+
+export function IntelligenceProSections({
+    data,
+    accountId,
+}: {
+    data: IntelligenceData;
+    accountId?: string;
+}) {
+    const { isPro, loading, getAccountStatus } = useProAccess();
+    const accountStatus = accountId ? getAccountStatus(accountId) : null;
+    const isUnlocked = accountId ? (accountStatus?.isPro ?? false) : isPro;
+    const suppressDuplicateMobileTeaser =
+        !loading && !isUnlocked && data.hasEnoughData;
+
+    return (
+        <>
+            {data.hasEnoughData && (
+                <div className="mt-6 bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-4 sm:p-5">
+                    <EdgeLeakDetector
+                        issues={data.issues}
+                        strengths={data.strengths}
+                        accountId={accountId}
+                    />
+                </div>
+            )}
+
+            {data.totalAnalyzed > 0 && (
+                <div
+                    className={cn(
+                        "mt-4 bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-4 sm:p-5",
+                        suppressDuplicateMobileTeaser && "hidden md:block"
+                    )}
+                >
+                    <RuleViolationTracker accountId={accountId} />
+                </div>
+            )}
+        </>
     );
 }
 

@@ -62,7 +62,7 @@ export function LeaderboardMethodologyModal({
                 </Button>
 
                 {/* Header */}
-                <div className="flex items-center gap-3 mb-6">
+                <div className="flex items-center gap-3 mb-6 pr-8">
                     <div className="w-10 h-10 rounded-lg bg-amber-100 dark:bg-amber-500/20 border border-amber-200 dark:border-amber-500/30 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0">
                         <Scale size={20} />
                     </div>

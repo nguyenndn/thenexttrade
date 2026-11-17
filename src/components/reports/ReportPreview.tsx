@@ -60,14 +60,14 @@ export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
     const currency = data.currency || "USD";
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-dashboard shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div className="flex justify-between items-center mb-6">
+        <div className="bg-white dark:bg-[#1E2028] p-4 sm:p-6 rounded-xl border border-dashboard shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="flex justify-between items-center gap-3 mb-6">
                 <h3 className="font-bold text-gray-700 dark:text-white text-lg">
                     Report Preview
                 </h3>
                 <Button
                     onClick={onDownload}
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 shrink-0"
                 >
                     <Download size={18} />
                     Download PDF
@@ -75,9 +75,9 @@ export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
             </div>
 
             {/* Summary Card */}
-            <div className="bg-gradient-to-br from-amber-500/10 to-amber-600/5 p-6 rounded-lg mb-8 border border-amber-500/20">
-                <h4 className="text-lg font-bold text-gray-700 dark:text-white mb-6 flex items-center gap-2">
-                    <span className="w-1 h-6 bg-gold rounded-full"></span>
+            <div className="bg-gradient-to-br from-amber-500/10 to-amber-600/5 p-4 sm:p-6 rounded-lg mb-8 border border-amber-500/20">
+                <h4 className="text-base sm:text-lg font-bold text-gray-700 dark:text-white mb-4 sm:mb-6 flex items-center gap-2">
+                    <span className="w-1 h-6 bg-gold rounded-full shrink-0"></span>
                     Performance Summary: {data.period}
                 </h4>
 
@@ -87,7 +87,7 @@ export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
                             Net P/L
                         </p>
                         <p
-                            className={`text-2xl font-black ${data.summary.netPnL >= 0 ? "text-primary" : "text-red-500"}`}
+                            className={`text-lg sm:text-2xl font-black font-mono tabular-nums ${data.summary.netPnL >= 0 ? "text-primary" : "text-red-500"}`}
                         >
                             {formatDashboardCurrency(
                                 data.summary.netPnL,
@@ -100,7 +100,7 @@ export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
                         <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">
                             Win Rate
                         </p>
-                        <p className="text-2xl font-black text-gray-700 dark:text-white">
+                        <p className="text-lg sm:text-2xl font-black font-mono tabular-nums text-gray-700 dark:text-white">
                             {data.summary.winRate.toFixed(0)}%
                         </p>
                     </div>
@@ -108,7 +108,7 @@ export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
                         <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">
                             Total Trades
                         </p>
-                        <p className="text-2xl font-black text-gray-700 dark:text-white">
+                        <p className="text-lg sm:text-2xl font-black font-mono tabular-nums text-gray-700 dark:text-white">
                             {data.summary.totalTrades}
                         </p>
                     </div>
@@ -116,7 +116,7 @@ export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
                         <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">
                             Profit Factor
                         </p>
-                        <p className="text-2xl font-black text-gray-700 dark:text-white">
+                        <p className="text-lg sm:text-2xl font-black font-mono tabular-nums text-gray-700 dark:text-white">
                             {data.summary.profitFactor.toFixed(2)}
                         </p>
                     </div>

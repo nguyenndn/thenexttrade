@@ -151,7 +151,7 @@ export function GoalCard({ goal, onUpdate }: GoalCardProps) {
                                         }
                                         disabled={isPending || progress <= 0}
                                         aria-label="Decrease progress"
-                                        className="w-7 h-7 p-0 rounded-lg border-none hover:bg-gray-200 dark:hover:bg-white/5 text-gray-500"
+                                        className="w-9 h-9 sm:w-7 sm:h-7 p-0 rounded-lg border-none hover:bg-gray-200 dark:hover:bg-white/5 text-gray-500"
                                     >
                                         -
                                     </Button>
@@ -182,7 +182,7 @@ export function GoalCard({ goal, onUpdate }: GoalCardProps) {
                                             isPending || progress >= target
                                         }
                                         aria-label="Increase progress"
-                                        className="w-7 h-7 p-0 rounded-lg border-none hover:bg-gray-200 dark:hover:bg-white/5 text-gray-500"
+                                        className="w-9 h-9 sm:w-7 sm:h-7 p-0 rounded-lg border-none hover:bg-gray-200 dark:hover:bg-white/5 text-gray-500"
                                     >
                                         +
                                     </Button>
@@ -206,7 +206,7 @@ export function GoalCard({ goal, onUpdate }: GoalCardProps) {
                                 size="icon"
                                 onClick={() => handleUpdateStatus("COMPLETED")}
                                 disabled={isPending}
-                                className="w-7 h-7 rounded-lg border-emerald-200 dark:border-emerald-500/10 text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-500/10"
+                                className="w-9 h-9 sm:w-7 sm:h-7 rounded-lg border-emerald-200 dark:border-emerald-500/10 text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-500/10"
                                 title="Mark Completed"
                                 aria-label="Mark Completed"
                             >
@@ -217,7 +217,7 @@ export function GoalCard({ goal, onUpdate }: GoalCardProps) {
                                 size="icon"
                                 onClick={() => handleUpdateStatus("CANCELLED")}
                                 disabled={isPending}
-                                className="w-7 h-7 rounded-lg border-red-200 dark:border-red-500/10 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10"
+                                className="w-9 h-9 sm:w-7 sm:h-7 rounded-lg border-red-200 dark:border-red-500/10 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10"
                                 title="Cancel Goal"
                                 aria-label="Cancel Goal"
                             >
@@ -230,7 +230,7 @@ export function GoalCard({ goal, onUpdate }: GoalCardProps) {
                         size="icon"
                         onClick={handleDelete}
                         disabled={isPending}
-                        className="w-7 h-7 rounded-lg border-dashboard dark:border-white/10 text-gray-500 dark:text-gray-400 hover:text-red-500 hover:bg-gray-100 dark:hover:bg-white/5"
+                        className="w-9 h-9 sm:w-7 sm:h-7 rounded-lg border-dashboard dark:border-white/10 text-gray-500 dark:text-gray-400 hover:text-red-500 hover:bg-gray-100 dark:hover:bg-white/5"
                         title="Delete Goal"
                         aria-label="Delete Goal"
                     >

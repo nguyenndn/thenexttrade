@@ -82,14 +82,14 @@ export function LoyaltyCommandHero({
               Lots
             </span>
           </div>
-          <p className="text-[11px] text-gray-400 leading-relaxed">
+          <p className="hidden sm:block text-[11px] text-gray-400 leading-relaxed">
             Calculated independently per verified Partner IB REAL account (XAUUSD / GOLD closed lots only; currency pairs excluded).
           </p>
         </div>
 
         {/* Column 2: Continuous Horizontal Milestone Progress (5 cols) */}
         <div className="lg:col-span-5 p-4 rounded-lg border border-dashed border-gray-200 dark:border-white/10 bg-gray-50/60 dark:bg-white/[0.02] space-y-3">
-          <div className="flex items-center justify-between text-xs">
+          <div className="flex flex-wrap items-center justify-between gap-1 text-xs">
             <span className="font-bold text-gray-700 dark:text-gray-300">
               {nextTier ? (
                 <>Next Target: <strong className="text-gray-900 dark:text-white">Level {nextTier.level} ({nextTier.name})</strong></>
@@ -127,7 +127,7 @@ export function LoyaltyCommandHero({
           </div>
 
           {/* Reward Unlock Callout Tag */}
-          <div className="flex items-center justify-between text-xs pt-1 border-t border-gray-100 dark:border-white/5">
+          <div className="flex flex-wrap items-center justify-between gap-1 text-xs pt-1 border-t border-gray-100 dark:border-white/5">
             <span className="text-[11px] font-medium text-gray-500 dark:text-gray-400 flex items-center gap-1">
               <Zap size={12} className="text-amber-500" />
               Target Reward:
@@ -149,8 +149,8 @@ export function LoyaltyCommandHero({
         </div>
 
         {/* Column 3: 2x2 Telemetry Matrix (3 cols) */}
-        <div className="lg:col-span-3">
-          <div className="grid grid-cols-2 rounded-lg border border-gray-200 dark:border-white/10 divide-x divide-y divide-gray-200 dark:divide-white/10 bg-gray-50/50 dark:bg-white/[0.015] overflow-hidden">
+        <div className="hidden sm:block lg:col-span-3">
+          <div className="hidden sm:grid grid-cols-2 rounded-lg border border-gray-200 dark:border-white/10 divide-x divide-y divide-gray-200 dark:divide-white/10 bg-gray-50/50 dark:bg-white/[0.015] overflow-hidden">
             <div className="p-3">
               <span className="block text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-0.5">
                 IB Real Account

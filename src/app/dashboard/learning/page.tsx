@@ -115,7 +115,7 @@ export default async function MyLearningPage() {
                         className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm overflow-hidden flex flex-col group hover:border-gold/30 transition-colors"
                     >
                         {/* Course Header / Thumbnail Placeholder */}
-                        <div className="h-32 bg-gray-50/80 dark:bg-[#151925] border-b border-dashboard flex items-center justify-center relative">
+                        <div className="hidden sm:flex h-32 bg-gray-50/80 dark:bg-[#151925] border-b border-dashboard items-center justify-center relative">
                             <BookOpen
                                 size={40}
                                 className="text-amber-600 dark:text-gold opacity-60"
@@ -126,10 +126,16 @@ export default async function MyLearningPage() {
                             </div>
                         </div>
 
-                        <div className="p-6 flex-1 flex flex-col">
-                            <h3 className="font-bold text-lg text-gray-700 dark:text-white mb-2 group-hover:text-amber-600 dark:group-hover:text-gold transition-colors">
-                                {course.title}
-                            </h3>
+                        <div className="p-4 sm:p-6 flex-1 flex flex-col">
+                            <div className="flex items-start justify-between gap-2 mb-2">
+                                <h3 className="font-bold text-lg text-gray-700 dark:text-white group-hover:text-amber-600 dark:group-hover:text-gold transition-colors">
+                                    {course.title}
+                                </h3>
+                                <span className="sm:hidden shrink-0 bg-gray-50 dark:bg-[#151925] border border-dashboard px-2.5 py-1 rounded-lg text-[11px] font-bold font-mono tabular-nums text-gray-700 dark:text-white inline-flex items-center gap-1">
+                                    <Clock size={11} />
+                                    {course.totalLessons} Lessons
+                                </span>
+                            </div>
                             <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-2 mb-4 flex-1">
                                 {course.description ||
                                     "Structured trading psychology, execution risk, and system edge."}

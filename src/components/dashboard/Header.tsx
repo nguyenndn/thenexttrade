@@ -71,11 +71,11 @@ export function Header({
 
     return (
         <>
-            <header className="mx-4 mt-3 mb-3 rounded-xl bg-white/100 dark:bg-[#1E2028] shadow-sm border border-dashboard h-16 px-4 lg:px-6 flex items-center justify-between z-40 relative transition-all duration-100 ease-in-out">
+            <header className="mx-3 mt-2.5 mb-2.5 sm:mx-4 sm:mt-3 sm:mb-3 rounded-xl bg-white/100 dark:bg-[#1E2028] shadow-sm border border-dashboard h-14 sm:h-16 px-3 sm:px-4 lg:px-6 flex items-center justify-between gap-2 z-40 relative transition-all duration-100 ease-in-out">
                 {/* Left Section: Toggle + Logo */}
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2 sm:gap-4 min-w-0">
                     {/* Desktop Toggle + Logo (Toggle FIRST) */}
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 sm:gap-3 min-w-0">
                         {/* Desktop Toggle */}
                         <Button
                             variant="ghost"
@@ -92,19 +92,27 @@ export function Header({
                             size="icon"
                             aria-label="Open navigation menu"
                             onClick={onMobileMenuClick}
-                            className="flex lg:hidden p-1.5 rounded-lg text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                            className="flex lg:hidden w-9 h-9 sm:w-10 sm:h-10 p-1.5 rounded-lg text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors shrink-0"
                         >
                             <Menu size={20} />
                         </Button>
-                        <Logo textClassName="text-lg font-bold tracking-tight text-gray-700 dark:text-white" />
+                        <Logo
+                            size="sm"
+                            className="sm:hidden"
+                            textClassName="text-base font-bold tracking-tight text-gray-700 dark:text-white"
+                        />
+                        <Logo
+                            className="hidden sm:flex"
+                            textClassName="text-lg font-bold tracking-tight text-gray-700 dark:text-white"
+                        />
                     </div>
                 </div>
 
                 {/* Spacer */}
-                <div className="flex-1" />
+                <div className="flex-1 min-w-0" />
 
                 {/* Right Side Actions & Search */}
-                <div className="flex items-center gap-1.5 sm:gap-2">
+                <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
                     <div
                         data-tour="header-tools"
                         className="flex items-center gap-1.5 sm:gap-2"
@@ -127,8 +135,10 @@ export function Header({
                         {/* Dashboard Tour Replay Button */}
                         <DashboardTourButton />
 
-                        {/* Theme Toggle - visible on all sizes, next to avatar */}
-                        <ThemeToggleSwitch />
+                        {/* Theme Toggle - hidden on <sm (accessible via UserMenu) */}
+                        <div className="hidden sm:block">
+                            <ThemeToggleSwitch />
+                        </div>
 
                         {/* Notification Bell - visible on all sizes, next to avatar */}
                         <div key="notification-bell">

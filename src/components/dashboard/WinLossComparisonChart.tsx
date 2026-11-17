@@ -37,7 +37,7 @@ export function WinLossComparisonChart({
                     <h3 className="font-bold text-gray-700 dark:text-white text-sm">
                         Win / Loss Comparison
                     </h3>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                    <p className="hidden sm:block text-xs text-gray-500 dark:text-gray-400">
                         Average win vs average loss size
                     </p>
                 </div>

@@ -135,7 +135,7 @@ export function PrescriptionCard({
                     >
                         <div>
                             {/* Top Step & Badge Row */}
-                            <div className="mb-2 flex items-center justify-between gap-2">
+                            <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
                                 <span className="font-mono tabular-nums text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
                                     <span className="mr-1.5 font-semibold text-gray-400 dark:text-gray-500">
                                         {item.stepNum} ·

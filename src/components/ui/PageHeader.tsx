@@ -7,6 +7,7 @@ interface PageHeaderProps {
     children?: ReactNode;
     className?: string;
     mobileFullWidthButton?: boolean;
+    hideDescriptionOnMobile?: boolean;
     accentColor?: "gold" | "primary";
 }
 
@@ -16,35 +17,41 @@ export function PageHeader({
     children,
     className,
     mobileFullWidthButton,
+    hideDescriptionOnMobile = false,
     accentColor = "gold",
 }: PageHeaderProps) {
     return (
         <div
             id="onborda-page-header"
             className={cn(
-                "flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-2",
+                "flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-2",
                 className
             )}
         >
             {/* Left: Gradient accent bar + text */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3 sm:gap-4 min-w-0">
                 {/* Gradient Bar */}
                 <div
                     className={cn(
-                        "w-1 self-stretch min-h-[40px] rounded-full shrink-0",
+                        "w-1 self-stretch min-h-[32px] sm:min-h-[40px] rounded-full shrink-0",
                         accentColor === "gold"
                             ? "bg-gradient-to-b from-amber-400 via-amber-500 to-amber-600 shadow-[0_0_8px_rgba(245,158,11,0.25)]"
                             : "bg-gradient-to-b from-primary via-emerald-400 to-teal-500"
                     )}
                 />
-                <div>
+                <div className="min-w-0">
                     {title && (
-                        <h1 className="text-xl font-bold text-gray-700 dark:text-white tracking-tight">
+                        <h1 className="text-lg sm:text-xl font-bold text-gray-700 dark:text-white tracking-tight">
                             {title}
                         </h1>
                     )}
                     {description && (
-                        <p className="text-sm text-gray-600 dark:text-gray-300 mt-0.5">
+                        <p
+                            className={cn(
+                                "text-xs sm:text-sm text-gray-600 dark:text-gray-300 mt-0.5 line-clamp-1 sm:line-clamp-none",
+                                hideDescriptionOnMobile && "hidden sm:block"
+                            )}
+                        >
                             {description}
                         </p>
                     )}

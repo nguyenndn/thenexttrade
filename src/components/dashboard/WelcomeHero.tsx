@@ -112,7 +112,7 @@ export function WelcomeHero({
                 <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 dark:bg-primary/10 rounded-full blur-[100px] pointer-events-none" />
                 <div className="absolute bottom-0 left-0 w-48 h-48 bg-amber-500/5 dark:bg-amber-500/10 rounded-full blur-[80px] pointer-events-none" />
 
-                <div className="relative z-10 p-6 md:p-8">
+                <div className="relative z-10 p-4 sm:p-6 md:p-8">
                     {/* Greeting */}
                     <div className="flex items-center gap-2 mb-4">
                         <div className="relative p-2 bg-gold/10 rounded-lg">
@@ -225,7 +225,7 @@ export function WelcomeHero({
             </div>
 
             {/* Ghost Chart Preview - show what the dashboard will look like */}
-            <div className="relative rounded-xl border border-dashboard bg-white dark:bg-[#1E2028] overflow-hidden">
+            <div className="hidden sm:block relative rounded-xl border border-dashboard bg-white dark:bg-[#1E2028] overflow-hidden">
                 {/* Blurred mock chart (SVG) */}
                 <div className="relative h-36 md:h-48 overflow-hidden">
                     <svg

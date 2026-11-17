@@ -17,7 +17,6 @@ import {
   Clock,
   ArrowRight,
   AlertCircle,
-  Coins,
 } from "lucide-react";
 
 interface WalletRequiredModalProps {
@@ -42,7 +41,7 @@ export function WalletRequiredModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-md rounded-2xl p-6 bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 shadow-2xl">
+      <DialogContent className="max-w-md rounded-2xl p-4 sm:p-6 bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 shadow-2xl">
         <DialogHeader className="space-y-3 text-center sm:text-left">
           <div className="mx-auto sm:mx-0 w-12 h-12 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-500 flex items-center justify-center">
             <Wallet size={24} />
@@ -123,7 +122,8 @@ export function WalletRequiredModal({
             size="smd"
             onClick={handleGoToSettings}
           >
-            Go to Settings to Add Wallet
+            <span className="sm:hidden">Configure Payout Wallet</span>
+            <span className="hidden sm:inline">Go to Settings to Add Wallet</span>
             <ArrowRight size={14} />
           </Button>
         </div>
@@ -165,7 +165,7 @@ export function ClaimSuccessModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-md rounded-2xl p-6 bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 shadow-2xl">
+      <DialogContent className="max-w-md rounded-2xl p-4 sm:p-6 bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 shadow-2xl">
         <DialogHeader className="space-y-3 text-center sm:text-left">
           <div className="mx-auto sm:mx-0 w-12 h-12 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-500 flex items-center justify-center">
             <CheckCircle2 size={26} />

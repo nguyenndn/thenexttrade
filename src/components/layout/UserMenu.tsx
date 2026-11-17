@@ -61,7 +61,7 @@ export function UserMenu({
                 <Button
                     variant="outline"
                     size="sm"
-                    className="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full bg-amber-500/10 dark:bg-white/10 border-none sm:border-solid border-amber-500/20 dark:border-amber-400/20 hover:bg-amber-500/15 dark:hover:bg-amber-400/10 transition-all group shadow-sm !h-auto"
+                    className="flex items-center gap-2 pl-1 pr-1 sm:pr-3 py-1 rounded-full bg-amber-500/10 dark:bg-white/10 border-none sm:border-solid border-amber-500/20 dark:border-amber-400/20 hover:bg-amber-500/15 dark:hover:bg-amber-400/10 transition-all group shadow-sm !h-auto shrink-0"
                     aria-label="User menu"
                 >
                     <div className="w-8 h-8 rounded-full bg-white dark:bg-white/10 overflow-hidden border border-white dark:border-white/10 shadow-sm shrink-0">
@@ -82,7 +82,7 @@ export function UserMenu({
 
                     <Settings
                         size={20}
-                        className="text-amber-500 dark:text-gray-400 dark:group-hover:text-white group-hover:rotate-90 transition-transform duration-500"
+                        className="hidden sm:block text-amber-500 dark:text-gray-400 dark:group-hover:text-white group-hover:rotate-90 transition-transform duration-500"
                     />
                 </Button>
             </DropdownMenuTrigger>
@@ -98,21 +98,22 @@ export function UserMenu({
                 />
 
                 {/* Mobile Search inside dropdown */}
-                <div className="sm:hidden px-3 py-2 border-b border-gray-200 dark:border-white/10">
+                <div className="md:hidden px-3 py-2 border-b border-gray-200 dark:border-white/10">
                     <Button
                         type="button"
                         variant="outline"
                         size="sm"
                         aria-label="Search"
-                        onClick={() =>
+                        onClick={() => {
+                            setIsOpen(false);
                             document.dispatchEvent(
                                 new KeyboardEvent("keydown", {
                                     key: "k",
                                     ctrlKey: true,
                                     bubbles: true,
                                 })
-                            )
-                        }
+                            );
+                        }}
                         className="w-full flex items-center justify-start gap-2 px-3 py-2.5 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 transition-colors text-sm text-left h-auto border-transparent"
                     >
                         <Search size={15} className="shrink-0" />

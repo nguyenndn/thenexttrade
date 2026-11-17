@@ -26,7 +26,7 @@ export function SystemDetailSidebar({
 }: SystemDetailSidebarProps) {
     return (
         <aside className="w-full md:w-60 lg:w-64 shrink-0 border-b md:border-b-0 md:border-r border-dashboard dark:border-white/[0.08] bg-gray-50/70 dark:bg-[#151925]">
-            <div className="px-5 py-3.5 border-b border-dashboard dark:border-white/[0.06] flex items-center justify-between">
+            <div className="px-5 py-3.5 border-b border-dashboard dark:border-white/[0.06] hidden md:flex items-center justify-between">
                 <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500">
                     CONTENTS
                 </span>
@@ -35,7 +35,7 @@ export function SystemDetailSidebar({
                 </span>
             </div>
 
-            <div className="flex md:flex-col overflow-x-auto p-2.5 gap-1 scrollbar-none md:sticky md:top-4">
+            <div className="flex md:flex-col overflow-x-auto p-2.5 gap-1 scrollbar-hide md:sticky md:top-4">
                 {items.map((item) => {
                     const isActive = activeTab === item.id;
                     const Icon = item.icon;

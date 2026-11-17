@@ -16,7 +16,11 @@ import {
     Loader2,
 } from "lucide-react";
 import { AnimatePresence } from "framer-motion";
-import { DayTradeList } from "./DayTradeList";
+import {
+    DayTradeList,
+    type DayTradeItem,
+    type DayTradeStats,
+} from "./DayTradeList";
 import { toast } from "sonner";
 import { getDayDetails } from "@/actions/journal";
 import { Button } from "@/components/ui/Button";
@@ -28,7 +32,7 @@ interface ProfitCalendarProps {
         pnl: number;
         growth: number;
         tradeCount: number;
-        trades: any[];
+        trades: DayTradeItem[];
     }>;
     equityCurve?: Array<{ date: string; balance: number; pnl: number }>;
     accountId?: string;
@@ -46,8 +50,8 @@ export function ProfitCalendar({
     const [currentMonth, setCurrentMonth] = useState(new Date());
     const [selectedDay, setSelectedDay] = useState<{
         date: string;
-        trades: any[];
-        stats?: any;
+        trades: DayTradeItem[];
+        stats?: DayTradeStats;
         startBalance?: number;
         endBalance?: number;
     } | null>(null);
@@ -68,7 +72,7 @@ export function ProfitCalendar({
 
                 if (equityCurve && equityCurve.length > 0) {
                     const dayIdx = equityCurve.findIndex(
-                        (e: any) => e.date === dateKey
+                        (e) => e.date === dateKey
                     );
                     if (dayIdx >= 0) {
                         endBalance = equityCurve[dayIdx].balance;
@@ -84,11 +88,11 @@ export function ProfitCalendar({
                     endBalance,
                 });
             }
-        } catch (err: any) {
+        } catch (err: unknown) {
             toast.error(
                 err instanceof Error
                     ? err.message
-                    : err?.message || "Failed to load details for this day."
+                    : "Failed to load details for this day."
             );
         } finally {
             setLoadingDay(null);
@@ -165,7 +169,7 @@ export function ProfitCalendar({
     };
 
     // Create data map and calculate monthly PnL using useMemo
-    const { dataMap, monthlyPnL, maxPnL } = useMemo(() => {
+    const { dataMap, monthlyPnL } = useMemo(() => {
         const map = new Map(data.map((d) => [d.date, d]));
 
         let pnl = 0;
@@ -177,14 +181,10 @@ export function ProfitCalendar({
             }
         });
 
-        const max = Math.max(...data.map((d) => Math.abs(d.pnl)), 1);
-
-        return { dataMap: map, monthlyPnL: pnl, maxPnL: max };
+        return { dataMap: map, monthlyPnL: pnl };
     }, [data, days]);
 
     const getColorClass = (pnl: number) => {
-        const intensity = Math.min(Math.abs(pnl) / maxPnL, 1);
-        // Use opacity based on intensity
         if (pnl > 0) {
             return "bg-emerald-50/80 dark:bg-primary/10 text-emerald-600 dark:text-primary border border-emerald-400 dark:border-primary/60";
         } else if (pnl < 0) {
@@ -196,34 +196,36 @@ export function ProfitCalendar({
     return (
         <div
             ref={calendarRef}
-            className="bg-white dark:bg-[#1E2028] p-6 rounded-lg border border-dashboard shadow-sm hover:shadow-md transition-shadow duration-200 group"
+            className="bg-white dark:bg-[#1E2028] p-4 sm:p-6 rounded-lg border border-dashboard shadow-sm hover:shadow-md transition-shadow duration-200 group"
         >
             {/* Header */}
-            <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-2.5">
-                    <div className="p-2 bg-primary/10 rounded-lg text-primary">
-                        <CalendarDays size={18} />
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 sm:mb-6">
+                <div className="flex items-center justify-between gap-2 sm:contents">
+                    <div className="flex items-center gap-2.5">
+                        <div className="p-2 bg-primary/10 rounded-lg text-primary">
+                            <CalendarDays size={18} />
+                        </div>
+                        <div>
+                            <h3 className="font-bold text-gray-700 dark:text-white text-sm">
+                                Profit Calendar
+                            </h3>
+                            <p className="hidden sm:block text-xs text-gray-500">
+                                Daily P&L overview
+                            </p>
+                        </div>
                     </div>
-                    <div>
-                        <h3 className="font-bold text-gray-700 dark:text-white text-sm">
-                            Profit Calendar
-                        </h3>
-                        <p className="text-xs text-gray-500">
-                            Daily P&L overview
-                        </p>
-                    </div>
+                    <p className="text-sm sm:text-lg font-bold text-gray-700 dark:text-gray-200">
+                        Monthly P/L:{" "}
+                        <span
+                            className={
+                                monthlyPnL >= 0 ? "text-primary" : "text-red-500"
+                            }
+                        >
+                            {formatDashboardCurrency(monthlyPnL, currency)}
+                        </span>
+                    </p>
                 </div>
-                <p className="text-base sm:text-lg font-bold text-gray-700 dark:text-gray-200">
-                    Monthly P/L:{" "}
-                    <span
-                        className={
-                            monthlyPnL >= 0 ? "text-primary" : "text-red-500"
-                        }
-                    >
-                        {formatDashboardCurrency(monthlyPnL, currency)}
-                    </span>
-                </p>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-3">
                     <Button
                         variant="outline"
                         size="icon"
@@ -235,7 +237,7 @@ export function ProfitCalendar({
                     >
                         <ChevronLeft size={18} />
                     </Button>
-                    <span className="text-[15px] font-medium text-gray-700 dark:text-gray-300 min-w-[120px] text-center">
+                    <span className="text-sm sm:text-[15px] font-medium text-gray-700 dark:text-gray-300 min-w-[120px] text-center">
                         {format(currentMonth, "MMMM yyyy")}
                     </span>
                     <Button
@@ -250,32 +252,34 @@ export function ProfitCalendar({
                         <ChevronRight size={18} />
                     </Button>
 
-                    <div className="w-[1px] h-4 bg-gray-200 dark:bg-white/10 mx-1"></div>
+                    <div className="hidden md:flex items-center gap-3">
+                        <div className="w-[1px] h-4 bg-gray-200 dark:bg-white/10 mx-1"></div>
 
-                    <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={handleScreenshot}
-                        disabled={isCapturing}
-                        className={`rounded-lg ${isCapturing ? "opacity-50" : ""}`}
-                        title="Screenshot Report"
-                        aria-label="Download screenshot"
-                    >
-                        {isCapturing ? (
-                            <Loader2
-                                size={16}
-                                className="animate-spin text-gray-500"
-                            />
-                        ) : (
-                            <Camera size={16} className="text-gray-600" />
-                        )}
-                    </Button>
+                        <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={handleScreenshot}
+                            disabled={isCapturing}
+                            className={`rounded-lg ${isCapturing ? "opacity-50" : ""}`}
+                            title="Screenshot Report"
+                            aria-label="Download screenshot"
+                        >
+                            {isCapturing ? (
+                                <Loader2
+                                    size={16}
+                                    className="animate-spin text-gray-500"
+                                />
+                            ) : (
+                                <Camera size={16} className="text-gray-600" />
+                            )}
+                        </Button>
+                    </div>
                 </div>
             </div>
-            <div className="w-full overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-800">
-                <div className="min-w-[768px]">
+            <div className="w-full overflow-x-auto pb-2 sm:pb-4 scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-800">
+                <div className="min-w-0 md:min-w-[768px]">
                     {/* Day headers */}
-                    <div className="grid grid-cols-8 gap-2 mb-2">
+                    <div className="grid grid-cols-7 md:grid-cols-8 gap-1 sm:gap-2 mb-2">
                         {[
                             "Sun",
                             "Mon",
@@ -288,7 +292,11 @@ export function ProfitCalendar({
                         ].map((day) => (
                             <div
                                 key={day}
-                                className="text-center text-[10px] font-bold text-gray-500 uppercase tracking-wider"
+                                className={`text-center text-[10px] font-bold text-gray-500 uppercase tracking-wider ${
+                                    day === "Weekly"
+                                        ? "hidden md:flex items-center justify-center"
+                                        : ""
+                                }`}
                             >
                                 {day}
                             </div>
@@ -296,7 +304,7 @@ export function ProfitCalendar({
                     </div>
 
                     {/* Calendar grid */}
-                    <div className="grid grid-cols-8 gap-2">
+                    <div className="grid grid-cols-7 md:grid-cols-8 gap-1 sm:gap-2">
                         {weeks.map((week, weekIndex) => {
                             let weeklyPnL = 0;
                             let weeklyTradeDays = 0;
@@ -319,7 +327,7 @@ export function ProfitCalendar({
                                             return (
                                                 <div
                                                     key={`empty-${weekIndex}-${dayIndex}`}
-                                                    className="min-h-[80px]"
+                                                    className="min-h-[48px] sm:min-h-[80px]"
                                                 />
                                             );
                                         }
@@ -351,8 +359,8 @@ export function ProfitCalendar({
                                                     )
                                                 }
                                                 className={`
- min-h-[80px] p-2 rounded-lg flex flex-col items-center justify-center
- transition-all relative border
+ min-h-[48px] sm:min-h-[80px] p-1 sm:p-2 rounded-lg flex flex-col items-center justify-center
+ transition-all relative border overflow-hidden
  ${hasTrades ? `${getColorClass(pnl)} cursor-pointer hover:brightness-95 dark:hover:brightness-110` : "bg-gray-50 dark:bg-white/5 text-gray-500 border-transparent cursor-default"}
  `}
                                                 title={
@@ -362,22 +370,22 @@ export function ProfitCalendar({
                                                 }
                                             >
                                                 <span
-                                                    className={`text-[10px] font-bold absolute top-1.5 left-2 ${hasTrades ? "text-gray-700 dark:text-gray-100" : "text-gray-700 dark:text-gray-500"}`}
+                                                    className={`text-[9px] sm:text-[10px] font-bold absolute top-1 left-1.5 sm:top-1.5 sm:left-2 ${hasTrades ? "text-gray-700 dark:text-gray-100" : "text-gray-700 dark:text-gray-500"}`}
                                                 >
                                                     {format(day, "d")}
                                                 </span>
 
                                                 {hasTrades ? (
-                                                    <div className="flex flex-col items-center mt-2.5">
+                                                    <div className="flex flex-col items-center mt-3 sm:mt-2.5 w-full">
                                                         {loadingDay ===
                                                         dateKey ? (
                                                             <Loader2
-                                                                size={16}
-                                                                className="animate-spin text-gray-500 mt-1"
+                                                                size={14}
+                                                                className="animate-spin text-gray-500 mt-0.5"
                                                             />
                                                         ) : (
                                                             <>
-                                                                <span className="text-base sm:text-lg tracking-tighter whitespace-nowrap font-bold leading-none mb-0.5">
+                                                                <span className="text-[10px] sm:text-base tracking-tighter whitespace-nowrap font-bold leading-none sm:mb-0.5 truncate max-w-full">
                                                                     {pnl >= 0
                                                                         ? ""
                                                                         : "-"}
@@ -385,7 +393,7 @@ export function ProfitCalendar({
                                                                         formattedPnL
                                                                     }
                                                                 </span>
-                                                                <span className="text-sm opacity-80 font-medium">
+                                                                <span className="hidden md:block text-sm opacity-80 font-medium">
                                                                     {growth > 0
                                                                         ? "+"
                                                                         : ""}
@@ -403,7 +411,7 @@ export function ProfitCalendar({
                                     })}
 
                                     {/* Weekly Summary Cell */}
-                                    <div className="min-h-[80px] p-2 rounded-lg flex flex-col items-center justify-center bg-white dark:bg-[#1E2028] border border-dashboard relative shadow-sm hover:shadow-md transition-all">
+                                    <div className="hidden md:flex min-h-[80px] p-2 rounded-lg flex-col items-center justify-center bg-white dark:bg-[#1E2028] border border-dashboard relative shadow-sm hover:shadow-md transition-all">
                                         <span
                                             className={`text-[10px] font-bold absolute top-1.5 left-2 ${weeklyPnL >= 0 ? "text-primary" : "text-red-500"}`}
                                         >

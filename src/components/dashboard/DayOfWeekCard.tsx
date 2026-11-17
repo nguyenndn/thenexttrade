@@ -64,9 +64,9 @@ export function DayOfWeekCard({
     return (
         <div className="flex flex-col h-full w-full overflow-hidden">
             {/* Header */}
-            <div className="px-5 pt-5 pb-3 shrink-0">
+            <div className="px-3.5 sm:px-5 pt-5 pb-3 shrink-0">
                 <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 sm:gap-3">
                         <div className="p-2 bg-gold/10 rounded-lg text-amber-600 dark:text-gold">
                             <Calendar size={20} />
                         </div>
@@ -74,7 +74,7 @@ export function DayOfWeekCard({
                             <h3 className="font-bold text-gray-700 dark:text-white text-sm">
                                 Day of Week
                             </h3>
-                            <p className="text-xs text-gray-500">
+                            <p className="hidden sm:block text-xs text-gray-500">
                                 P&L by Trading Day
                             </p>
                         </div>
@@ -103,7 +103,7 @@ export function DayOfWeekCard({
             </div>
 
             {/* Day rows - exactly 5 rows fill remaining space */}
-            <div className="flex-1 flex flex-col px-5 pb-5 min-h-0 overflow-y-auto custom-scrollbar">
+            <div className="flex-1 flex flex-col px-3.5 sm:px-5 pb-5 min-h-0 overflow-y-auto custom-scrollbar">
                 {!hasTrades ? (
                     <div className="flex items-center justify-center flex-1">
                         <p className="text-sm text-gray-400">
@@ -127,7 +127,7 @@ export function DayOfWeekCard({
                             return (
                                 <div
                                     key={d.day}
-                                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all flex-1 ${
+                                    className={`flex items-center gap-2 sm:gap-3 px-3 py-2.5 rounded-lg transition-all flex-1 ${
                                         isBest
                                             ? "bg-gradient-to-r from-primary/5 to-emerald-500/5 border border-primary/20"
                                             : isWorst

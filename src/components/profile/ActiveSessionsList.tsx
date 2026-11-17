@@ -101,10 +101,7 @@ export function ActiveSessionsList() {
 
     return (
         <div>
-            <h3 className="text-lg font-bold text-gray-700 dark:text-white mb-4">
-                Active Sessions
-            </h3>
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
                 {sessions.length === 0 && (
                     <div className="text-center text-gray-600 py-4">
                         No active sessions found.
@@ -117,33 +114,33 @@ export function ActiveSessionsList() {
                     return (
                         <div
                             key={session.id}
-                            className={`flex items-center justify-between p-4 rounded-lg border transition-all ${isCurrent ? "bg-green-50/50 dark:bg-green-500/5 border-green-200 dark:border-green-500/30" : "bg-gray-50 dark:bg-white/5 border-dashboard "}`}
+                            className={`flex items-center justify-between gap-3 p-3.5 sm:p-4 rounded-lg border transition-all ${isCurrent ? "bg-green-50/50 dark:bg-green-500/5 border-green-200 dark:border-green-500/30" : "bg-gray-50 dark:bg-white/5 border-dashboard "}`}
                         >
-                            <div className="flex items-center gap-4">
+                            <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
                                 <div
-                                    className={`w-10 h-10 rounded-full flex items-center justify-center ${isCurrent ? "bg-green-100 dark:bg-green-500/20" : "bg-white dark:bg-white/10"}`}
+                                    className={`w-10 h-10 shrink-0 rounded-full flex items-center justify-center ${isCurrent ? "bg-green-100 dark:bg-green-500/20" : "bg-white dark:bg-white/10"}`}
                                 >
                                     {getDeviceIcon(session.device)}
                                 </div>
-                                <div>
-                                    <div className="flex items-center gap-2">
-                                        <p className="font-bold text-gray-700 dark:text-white text-sm">
+                                <div className="min-w-0 flex-1">
+                                    <div className="flex items-center gap-2 min-w-0">
+                                        <p className="font-bold text-gray-700 dark:text-white text-sm truncate">
                                             {session.device || "Unknown Device"}
                                         </p>
                                         {isCurrent && (
-                                            <span className="text-[10px] bg-green-100 dark:bg-green-500/20 text-green-600 dark:text-green-400 px-2 py-0.5 rounded-full font-bold">
+                                            <span className="shrink-0 text-[10px] bg-green-100 dark:bg-green-500/20 text-green-600 dark:text-green-400 px-2 py-0.5 rounded-full font-bold">
                                                 Current
                                             </span>
                                         )}
                                     </div>
-                                    <p className="text-xs text-gray-600 mt-0.5 flex flex-wrap gap-2">
-                                        <span>
+                                    <p className="text-xs text-gray-600 dark:text-gray-400 mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 min-w-0">
+                                        <span className="truncate max-w-full">
                                             {session.ip || "Unknown IP"}
                                         </span>
                                         <span className="text-gray-300 dark:text-gray-600">
                                             •
                                         </span>
-                                        <span>
+                                        <span className="shrink-0">
                                             Active{" "}
                                             {formatDistanceToNow(
                                                 new Date(session.lastActive)
@@ -160,7 +157,7 @@ export function ActiveSessionsList() {
                                     size="icon"
                                     onClick={() => confirmRevoke(session.id)}
                                     isLoading={revokingId === session.id}
-                                    className="text-gray-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10"
+                                    className="shrink-0 text-gray-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10"
                                     title="Revoke Session"
                                     aria-label={`Revoke session on ${session.device || "Unknown Device"}`}
                                 >
@@ -171,7 +168,7 @@ export function ActiveSessionsList() {
                             )}
 
                             {isCurrent && (
-                                <div className="text-green-500 text-xs font-bold px-3">
+                                <div className="shrink-0 whitespace-nowrap text-green-500 text-xs font-bold px-2 sm:px-3">
                                     Active Now
                                 </div>
                             )}

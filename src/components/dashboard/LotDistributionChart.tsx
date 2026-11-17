@@ -40,7 +40,7 @@ export function LotDistributionChart({
                     <h3 className="font-bold text-gray-700 dark:text-white text-sm">
                         Lot Size Distribution
                     </h3>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                    <p className="hidden sm:block text-xs text-gray-500 dark:text-gray-400">
                         Volume allocation by instrument
                     </p>
                 </div>

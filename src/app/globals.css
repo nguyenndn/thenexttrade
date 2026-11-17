@@ -118,13 +118,21 @@ h6 {
         text-wrap: balance;
     }
 
-    .scrollbar-hide {
+    .scrollbar-hide,
+    .no-scrollbar,
+    .scrollbar-none {
         -ms-overflow-style: none;
         scrollbar-width: none;
     }
 
-    .scrollbar-hide::-webkit-scrollbar {
+    .scrollbar-hide::-webkit-scrollbar,
+    .no-scrollbar::-webkit-scrollbar,
+    .scrollbar-none::-webkit-scrollbar {
         display: none;
+    }
+
+    .safe-area-bottom {
+        padding-bottom: env(safe-area-inset-bottom);
     }
 }
 

@@ -36,7 +36,7 @@ export function BalanceGrowthChart({
                     <h3 className="font-bold text-gray-700 dark:text-white text-sm">
                         Balance Growth
                     </h3>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                    <p className="hidden sm:block text-xs text-gray-500 dark:text-gray-400">
                         Account equity curve over time
                     </p>
                 </div>
@@ -162,11 +162,12 @@ export function BalanceGrowthChart({
                             minTickGap={30}
                         />
                         <YAxis
+                            width={46}
                             axisLine={false}
                             tickLine={false}
                             tick={{
                                 fill: "var(--text-secondary)",
-                                fontSize: 12,
+                                fontSize: 10,
                             }}
                             tickFormatter={(value) =>
                                 formatDashboardCurrency(value, currency, {

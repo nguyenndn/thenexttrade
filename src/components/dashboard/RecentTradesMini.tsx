@@ -42,7 +42,7 @@ export function RecentTradesMini({
     return (
         <div className="flex flex-col h-full w-full overflow-hidden">
             {/* Header */}
-            <div className="px-5 py-4 border-b border-dashboard flex items-center justify-between">
+            <div className="px-3.5 sm:px-5 py-4 border-b border-dashboard flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
                     <div className="p-2 bg-amber-500/10 rounded-lg text-amber-500">
                         <Clock size={18} />
@@ -51,7 +51,7 @@ export function RecentTradesMini({
                         <h3 className="font-bold text-gray-700 dark:text-white text-sm">
                             Recent Trades
                         </h3>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                        <p className="hidden sm:block text-xs text-gray-500 dark:text-gray-400">
                             Latest closed positions
                         </p>
                     </div>
@@ -77,25 +77,25 @@ export function RecentTradesMini({
             ) : (
                 <div className="divide-y divide-gray-50 dark:divide-white/5 flex-1 flex flex-col overflow-hidden">
                     {/* Table header */}
-                    <div className="grid grid-cols-12 gap-2 px-5 py-2.5 text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-white/[0.02]">
-                        <div className="col-span-4">Symbol</div>
+                    <div className="grid grid-cols-12 gap-2 px-3.5 sm:px-5 py-2.5 text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-white/[0.02]">
+                        <div className="col-span-5 sm:col-span-4">Symbol</div>
                         <div className="col-span-2 text-center">Type</div>
-                        <div className="col-span-3 text-right">P&L</div>
-                        <div className="col-span-3 text-right">Date</div>
+                        <div className="col-span-5 sm:col-span-3 text-right">P&L</div>
+                        <div className="hidden sm:block sm:col-span-3 text-right">Date</div>
                     </div>
                     {/* Rows */}
                     <div className="flex-1 overflow-hidden divide-y divide-gray-50 dark:divide-white/5">
                         {displayTrades.map((trade) => (
                             <div
                                 key={trade.id}
-                                className="grid grid-cols-12 gap-2 items-center px-5 h-[56px] hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors cursor-default"
+                                className="grid grid-cols-12 gap-2 items-center px-3.5 sm:px-5 h-[56px] hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors cursor-default"
                             >
-                                <div className="col-span-4 flex items-center gap-2">
-                                    <span className="font-bold text-sm text-gray-800 dark:text-gray-200">
+                                <div className="col-span-5 sm:col-span-4 flex items-center gap-1.5 min-w-0">
+                                    <span className="font-bold text-sm text-gray-800 dark:text-gray-200 truncate">
                                         {trade.symbol}
                                     </span>
                                     {trade.lotSize && (
-                                        <span className="text-[10px] text-gray-500 dark:text-gray-400 font-medium font-mono tabular-nums">
+                                        <span className="text-[10px] text-gray-500 dark:text-gray-400 font-medium font-mono tabular-nums shrink-0">
                                             {Number(trade.lotSize).toFixed(2)}
                                         </span>
                                     )}
@@ -112,7 +112,7 @@ export function RecentTradesMini({
                                     </span>
                                 </div>
                                 <div
-                                    className={`col-span-3 text-right font-bold font-mono tabular-nums text-sm ${
+                                    className={`col-span-5 sm:col-span-3 text-right font-bold font-mono tabular-nums text-sm whitespace-nowrap ${
                                         (trade.pnl || 0) >= 0
                                             ? "text-primary"
                                             : "text-red-500"
@@ -125,7 +125,7 @@ export function RecentTradesMini({
                                 >
                                     {formatCurrency(trade.pnl || 0)}
                                 </div>
-                                <div className="col-span-3 text-right text-xs text-gray-500 dark:text-gray-400 font-medium font-mono tabular-nums">
+                                <div className="hidden sm:block sm:col-span-3 text-right text-xs text-gray-500 dark:text-gray-400 font-medium font-mono tabular-nums whitespace-nowrap">
                                     {formatDate(trade.exitDate)}
                                 </div>
                             </div>

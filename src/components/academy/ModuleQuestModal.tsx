@@ -264,15 +264,15 @@ export function ModuleQuestModal({
                     )}
                 >
                     {/* Modal Content */}
-                    <div className="p-5 sm:p-7 space-y-5">
+                    <div className="p-4 sm:p-7 space-y-5">
                         {/* Header Row: Stage & Level Badge + Close Button */}
-                        <div className="flex items-center justify-between gap-3">
-                            <div className="flex items-center gap-2">
-                                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-bold uppercase tracking-wider bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20">
+                        <div className="flex items-start justify-between gap-2">
+                            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 min-w-0">
+                                <span className="inline-flex items-center gap-1.5 px-2 sm:px-2.5 py-1 rounded-lg text-[10px] sm:text-[11px] font-bold uppercase tracking-wider bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20">
                                     <StageIcon size={13} className="shrink-0 text-amber-600 dark:text-amber-400" />
                                     Stage {stageMeta.stage} · {stageMeta.name}
                                 </span>
-                                <span className="text-[11px] font-bold text-gray-500 dark:text-zinc-400 uppercase tracking-wider">
+                                <span className="text-[10px] sm:text-[11px] font-bold text-gray-500 dark:text-zinc-400 uppercase tracking-wider whitespace-nowrap">
                                     Level {level.order < 10 ? `0${level.order}` : level.order}
                                 </span>
                             </div>
@@ -282,7 +282,7 @@ export function ModuleQuestModal({
                                 size="sm"
                                 onClick={onClose}
                                 aria-label="Close quest modal"
-                                className="h-8 w-8 rounded-full p-0 border-gray-200 dark:border-white/10 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-500 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white"
+                                className="h-8 w-8 shrink-0 rounded-full p-0 border-gray-200 dark:border-white/10 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-500 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white"
                             >
                                 <X size={15} />
                             </Button>

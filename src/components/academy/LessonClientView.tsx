@@ -22,7 +22,6 @@ import {
 import { celebrateXP } from "@/lib/celebrate";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
-import { PageHeader } from "@/components/ui/PageHeader";
 
 interface LessonSummaryItem {
     id: string;
@@ -181,32 +180,32 @@ export default function LessonClientView({
     return (
         <div className="space-y-4">
             {/* Breadcrumb + Actions */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="flex items-center gap-2 text-base font-semibold">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+                <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm min-w-0 flex-wrap font-semibold">
                     <Link
                         href={academyPath}
-                        className="flex items-center gap-1.5 text-primary hover:underline transition-colors"
+                        className="flex items-center gap-1.5 text-primary hover:underline transition-colors shrink-0"
                     >
                         <GraduationCap size={16} />
                         Academy
                     </Link>
                     <ChevronRight
                         size={14}
-                        className="text-gray-300 dark:text-gray-600"
+                        className="hidden sm:inline text-gray-300 dark:text-gray-600 shrink-0"
                     />
-                    <span className="text-gray-600 dark:text-gray-300">
+                    <span className="hidden sm:inline text-gray-600 dark:text-gray-300">
                         {lesson.module.level?.title || "Level"}
                     </span>
                     <ChevronRight
                         size={14}
-                        className="text-gray-300 dark:text-gray-600"
+                        className="text-gray-300 dark:text-gray-600 shrink-0"
                     />
-                    <span className="text-gray-700 dark:text-gray-200 font-bold">
+                    <span className="text-gray-700 dark:text-gray-200 font-bold min-w-0 truncate">
                         {lesson.module.title}
                     </span>
                 </div>
-                <div className="flex items-center gap-3 text-base font-bold w-full sm:w-auto">
-                    <div className="flex items-center gap-1.5 text-gray-600 bg-gray-100 dark:bg-white/5 px-3 py-1.5 rounded-full">
+                <div className="flex items-center gap-3 text-xs sm:text-sm font-bold w-full sm:w-auto">
+                    <div className="flex items-center gap-1.5 text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-white/5 px-3 py-1.5 rounded-full">
                         <BookOpen size={14} />
                         <span>
                             {currentIndex + 1}/{courseLessons.length}
@@ -235,14 +234,14 @@ export default function LessonClientView({
 
                     {/* Article Content Card */}
                     <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard shadow-sm overflow-hidden">
-                        <div className="px-6 lg:px-8 pt-6 lg:pt-8 pb-4">
+                        <div className="px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 lg:pt-8 pb-4">
                             <h1 className="text-2xl lg:text-3xl font-black text-gray-700 dark:text-white leading-tight tracking-tight">
                                 {lesson.title}
                             </h1>
                         </div>
                         <div className="h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
                         <article
-                            className="p-6 lg:p-8 prose prose-base dark:prose-invert max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-h2:text-xl prose-h2:mt-10 prose-h2:mb-4 prose-h2:pb-2 prose-h2:border-b prose-h2:border-dashboard dark:prose-h2:border-white/5 prose-h3:text-lg prose-h3:mt-6 prose-h3:mb-3 prose-p:leading-relaxed prose-p:text-gray-600 dark:prose-p:text-gray-300 prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-a:font-semibold prose-img:rounded-lg prose-img:shadow-md prose-img:mx-auto prose-blockquote:border-l-primary prose-blockquote:bg-gray-50 dark:prose-blockquote:bg-white/5 prose-blockquote:rounded-r-lg prose-blockquote:py-1 prose-blockquote:px-2 prose-li:text-gray-600 dark:prose-li:text-gray-300 prose-strong:text-gray-700 dark:prose-strong:text-white prose-pre:bg-gray-800 prose-pre:text-gray-100 prose-pre:rounded-lg prose-pre:p-5 prose-pre:text-sm prose-pre:leading-relaxed prose-pre:overflow-x-auto prose-code:bg-gray-100 dark:prose-code:bg-white/10 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-lg prose-code:text-sm prose-code:font-semibold prose-code:text-gray-800 dark:prose-code:text-gray-200 [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-gray-100 [&_pre_code]:font-mono [&_table]:w-full [&_table]:border-collapse [&_th]:bg-gray-50 dark:[&_th]:bg-white/5 [&_th]:px-4 [&_th]:py-2 [&_th]:text-left [&_th]:font-bold [&_th]:border [&_th]:border-dashboard dark:[&_th]:border-white/10 [&_td]:px-4 [&_td]:py-2 [&_td]:border [&_td]:border-dashboard dark:[&_td]:border-white/10 [&_figure]:text-center [&_figure]:my-8 [&_figcaption]:text-center [&_figcaption]:italic [&_figcaption]:text-sm [&_figcaption]:text-gray-500 dark:[&_figcaption]:text-gray-400 [&_figcaption]:mt-3 lesson-footer-compact"
+                            className="p-4 sm:p-6 lg:p-8 prose prose-base dark:prose-invert max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-h2:text-xl prose-h2:mt-10 prose-h2:mb-4 prose-h2:pb-2 prose-h2:border-b prose-h2:border-dashboard dark:prose-h2:border-white/5 prose-h3:text-lg prose-h3:mt-6 prose-h3:mb-3 prose-p:leading-relaxed prose-p:text-gray-600 dark:prose-p:text-gray-300 prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-a:font-semibold prose-img:rounded-lg prose-img:shadow-md prose-img:mx-auto prose-blockquote:border-l-primary prose-blockquote:bg-gray-50 dark:prose-blockquote:bg-white/5 prose-blockquote:rounded-r-lg prose-blockquote:py-1 prose-blockquote:px-2 prose-li:text-gray-600 dark:prose-li:text-gray-300 prose-strong:text-gray-700 dark:prose-strong:text-white prose-pre:bg-gray-800 prose-pre:text-gray-100 prose-pre:rounded-lg prose-pre:p-5 prose-pre:text-sm prose-pre:leading-relaxed prose-pre:overflow-x-auto prose-code:bg-gray-100 dark:prose-code:bg-white/10 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-lg prose-code:text-sm prose-code:font-semibold prose-code:text-gray-800 dark:prose-code:text-gray-200 [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-gray-100 [&_pre_code]:font-mono [&_table]:block [&_table]:overflow-x-auto sm:[&_table]:table [&_table]:w-full [&_table]:border-collapse [&_th]:bg-gray-50 dark:[&_th]:bg-white/5 [&_th]:px-4 [&_th]:py-2 [&_th]:text-left [&_th]:font-bold [&_th]:border [&_th]:border-dashboard dark:[&_th]:border-white/10 [&_td]:px-4 [&_td]:py-2 [&_td]:border [&_td]:border-dashboard dark:[&_td]:border-white/10 [&_figure]:text-center [&_figure]:my-8 [&_figcaption]:text-center [&_figcaption]:italic [&_figcaption]:text-sm [&_figcaption]:text-gray-500 dark:[&_figcaption]:text-gray-400 [&_figcaption]:mt-3 lesson-footer-compact"
                             dangerouslySetInnerHTML={{
                                 __html: DOMPurify.sanitize(lesson.content),
                             }}
@@ -250,16 +249,16 @@ export default function LessonClientView({
                     </div>
 
                     {/* Completion + Navigation */}
-                    <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-6 flex flex-wrap items-center justify-between gap-4">
+                    <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-4 sm:p-6 flex flex-wrap items-center justify-between gap-3 sm:gap-4">
                         {prevLesson ? (
                             <Link
                                 href={lessonPath(prevLesson.slug)}
-                                className="hover:text-primary flex items-center gap-2 transition-colors text-xs font-bold text-gray-500 uppercase tracking-wider"
+                                className="order-2 sm:order-1 hover:text-primary flex items-center gap-2 transition-colors text-xs font-bold text-gray-500 uppercase tracking-wider"
                             >
                                 <ChevronLeft size={14} /> Previous
                             </Link>
                         ) : (
-                            <span></span>
+                            <span className="order-2 sm:order-1"></span>
                         )}
 
                         <Button
@@ -267,7 +266,7 @@ export default function LessonClientView({
                             onClick={handleComplete}
                             disabled={isCompleted || completing}
                             className={cn(
-                                "group rounded-lg font-bold px-8 shadow-lg transition-all",
+                                "order-1 sm:order-2 w-full sm:w-auto group rounded-lg font-bold px-8 shadow-lg transition-all",
                                 isCompleted
                                     ? "bg-green-50 dark:bg-green-900/10 text-green-600 border-green-200 dark:border-green-800/30 cursor-default"
                                     : "bg-gold hover:bg-amber-600 text-white shadow-amber-500/20",
@@ -303,7 +302,7 @@ export default function LessonClientView({
                                             ? `/dashboard/academy/quiz/${quiz.id}`
                                             : `/academy/quiz/${quiz.id}`
                                     }
-                                    className="text-amber-600 dark:text-gold hover:underline flex items-center gap-2 transition-colors text-xs font-bold uppercase tracking-wider"
+                                    className="order-3 text-amber-600 dark:text-gold hover:underline flex items-center gap-2 transition-colors text-xs font-bold uppercase tracking-wider"
                                 >
                                     Module Quiz <ChevronRight size={14} />
                                 </Link>
@@ -314,7 +313,7 @@ export default function LessonClientView({
                                     size="sm"
                                     disabled
                                     aria-label="Complete this lesson to unlock module quiz"
-                                    className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider opacity-60 cursor-not-allowed rounded-lg"
+                                    className="order-3 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider opacity-60 cursor-not-allowed rounded-lg"
                                 >
                                     <Lock size={13} /> Module Quiz
                                 </Button>
@@ -323,7 +322,7 @@ export default function LessonClientView({
                             isCompleted ? (
                                 <Link
                                     href={lessonPath(nextLesson.slug)}
-                                    className="hover:text-primary flex items-center gap-2 transition-colors text-xs font-bold text-gray-500 uppercase tracking-wider"
+                                    className="order-3 hover:text-primary flex items-center gap-2 transition-colors text-xs font-bold text-gray-500 uppercase tracking-wider"
                                 >
                                     Next Lesson <ChevronRight size={14} />
                                 </Link>
@@ -334,19 +333,19 @@ export default function LessonClientView({
                                     size="sm"
                                     disabled
                                     aria-label="Mark current lesson complete to unlock next lesson"
-                                    className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider opacity-60 cursor-not-allowed rounded-lg"
+                                    className="order-3 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider opacity-60 cursor-not-allowed rounded-lg"
                                 >
                                     Next Lesson <Lock size={13} />
                                 </Button>
                             )
                         ) : (
-                            <span></span>
+                            <span className="order-3"></span>
                         )}
                     </div>
                 </div>
 
                 {/* ── Sidebar ── */}
-                <div className="space-y-4">
+                <div className="hidden lg:block space-y-4">
                     {/* Module Info Card */}
                     <div className="bg-white dark:bg-[#1E2028] rounded-lg border border-dashboard shadow-sm p-5 space-y-3">
                         <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">

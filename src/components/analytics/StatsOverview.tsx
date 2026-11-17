@@ -61,29 +61,29 @@ export function StatsOverview({ stats, currency = "USD" }: StatsProps) {
     ];
 
     return (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
             {cards.map((card, idx) => {
                 const Icon = card.icon;
                 return (
                     <div
                         key={idx}
-                        className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-dashboard shadow-sm hover:shadow-md transition-shadow"
+                        className="bg-white dark:bg-[#1E2028] p-3.5 sm:p-5 rounded-xl border border-dashboard shadow-sm hover:shadow-md transition-shadow"
                     >
-                        <div className="flex items-start justify-between">
-                            <div>
-                                <p className="text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">
+                        <div className="flex items-start justify-between gap-2">
+                            <div className="min-w-0">
+                                <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">
                                     {card.title}
                                 </p>
                                 <h3
-                                    className={`text-2xl font-black font-mono tabular-nums ${card.color.includes("text") ? (card.title === "Total Trades" ? "text-gray-700 dark:text-white" : card.color) : "text-gray-700 dark:text-white"}`}
+                                    className={`text-lg sm:text-2xl font-black font-mono tabular-nums truncate ${card.color.includes("text") ? (card.title === "Total Trades" ? "text-gray-700 dark:text-white" : card.color) : "text-gray-700 dark:text-white"}`}
                                 >
                                     {card.value}
                                 </h3>
                             </div>
                             <div
-                                className={`p-3 rounded-lg ${card.bg} ${card.color}`}
+                                className={`p-2 sm:p-3 rounded-lg shrink-0 ${card.bg} ${card.color}`}
                             >
-                                <Icon size={20} />
+                                <Icon size={18} />
                             </div>
                         </div>
                     </div>
@@ -96,12 +96,12 @@ export function StatsOverview({ stats, currency = "USD" }: StatsProps) {
 export function DetailedStats({ stats, currency = "USD" }: StatsProps) {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-dashboard flex justify-between items-center group">
+            <div className="bg-white dark:bg-[#1E2028] p-3.5 sm:p-5 rounded-xl border border-dashboard flex justify-between items-center group">
                 <div>
                     <p className="text-sm text-gray-500 font-bold uppercase tracking-wider mb-1">
                         Avg Win
                     </p>
-                    <p className="text-xl font-bold font-mono tabular-nums text-primary">
+                    <p className="text-lg sm:text-xl font-bold font-mono tabular-nums text-primary">
                         {formatDashboardCurrency(stats.avgWin, currency, {
                             signDisplay: "always",
                         })}
@@ -112,12 +112,12 @@ export function DetailedStats({ stats, currency = "USD" }: StatsProps) {
                 </div>
             </div>
 
-            <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-dashboard flex justify-between items-center group">
+            <div className="bg-white dark:bg-[#1E2028] p-3.5 sm:p-5 rounded-xl border border-dashboard flex justify-between items-center group">
                 <div>
                     <p className="text-sm text-gray-500 font-bold uppercase tracking-wider mb-1">
                         Avg Loss
                     </p>
-                    <p className="text-xl font-bold font-mono tabular-nums text-red-500">
+                    <p className="text-lg sm:text-xl font-bold font-mono tabular-nums text-red-500">
                         {formatDashboardCurrency(-Math.abs(stats.avgLoss), currency)}
                     </p>
                 </div>
@@ -126,23 +126,23 @@ export function DetailedStats({ stats, currency = "USD" }: StatsProps) {
                 </div>
             </div>
 
-            <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-dashboard flex justify-between items-center">
+            <div className="bg-white dark:bg-[#1E2028] p-3.5 sm:p-5 rounded-xl border border-dashboard flex justify-between items-center">
                 <div>
                     <p className="text-sm text-gray-500 font-bold uppercase tracking-wider mb-1">
                         Best Pair
                     </p>
-                    <p className="text-xl font-bold text-gray-700 dark:text-white">
+                    <p className="text-lg sm:text-xl font-bold text-gray-700 dark:text-white">
                         {stats.bestPair}
                     </p>
                 </div>
             </div>
 
-            <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-dashboard flex justify-between items-center">
+            <div className="bg-white dark:bg-[#1E2028] p-3.5 sm:p-5 rounded-xl border border-dashboard flex justify-between items-center">
                 <div>
                     <p className="text-sm text-gray-500 font-bold uppercase tracking-wider mb-1">
                         Worst Pair
                     </p>
-                    <p className="text-xl font-bold text-gray-700 dark:text-white">
+                    <p className="text-lg sm:text-xl font-bold text-gray-700 dark:text-white">
                         {stats.worstPair}
                     </p>
                 </div>

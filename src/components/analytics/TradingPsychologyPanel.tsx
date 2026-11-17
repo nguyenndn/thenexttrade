@@ -60,7 +60,7 @@ export function TradingPsychologyPanel({ data, confidence }: TradingPsychologyPa
                     </div>
                     <div>
                         <h3 className="text-lg font-bold text-slate-900 dark:text-white">Trading Psychology & Execution Diagnostic</h3>
-                        <p className="text-xs text-slate-500 dark:text-slate-400">Behavioral pattern analysis & risk-reward optimization</p>
+                        <p className="hidden sm:block text-xs text-slate-500 dark:text-slate-400">Behavioral pattern analysis & risk-reward optimization</p>
                     </div>
                 </div>
                 {confidence && (
@@ -78,7 +78,7 @@ export function TradingPsychologyPanel({ data, confidence }: TradingPsychologyPa
                             <Clock className="w-4 h-4 text-amber-600 dark:text-gold" />
                             Holding Time Ratio
                         </span>
-                        <span className={`px-2 py-0.5 rounded-lg text-[10px] font-bold font-mono tabular-nums uppercase ${
+                        <span className={`px-2 py-0.5 rounded-lg text-[10px] font-bold font-mono tabular-nums uppercase whitespace-nowrap shrink-0 ${
                             isHighDisposition
                                 ? "bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20"
                                 : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
@@ -116,7 +116,7 @@ export function TradingPsychologyPanel({ data, confidence }: TradingPsychologyPa
                             <Flame className="w-4 h-4 text-amber-600 dark:text-gold" />
                             Tilt & Revenge Index
                         </span>
-                        <span className={`px-2 py-0.5 rounded-lg text-[10px] font-bold font-mono tabular-nums uppercase ${
+                        <span className={`px-2 py-0.5 rounded-lg text-[10px] font-bold font-mono tabular-nums uppercase whitespace-nowrap shrink-0 ${
                             isHighTilt
                                 ? "bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20"
                                 : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
@@ -159,11 +159,11 @@ export function TradingPsychologyPanel({ data, confidence }: TradingPsychologyPa
                             Optimal R:R Simulator
                         </span>
                         {!insufficientData && optimalRR ? (
-                            <span className="px-2 py-0.5 rounded-lg text-[10px] font-bold font-mono tabular-nums uppercase bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                            <span className="px-2 py-0.5 rounded-lg text-[10px] font-bold font-mono tabular-nums uppercase whitespace-nowrap shrink-0 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                                 Optimal: 1:{optimalRR.targetRR}
                             </span>
                         ) : (
-                            <span className="px-2 py-0.5 rounded-lg text-[10px] font-bold font-mono tabular-nums uppercase bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                            <span className="px-2 py-0.5 rounded-lg text-[10px] font-bold font-mono tabular-nums uppercase whitespace-nowrap shrink-0 bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
                                 {validSlTradesCount} / 5 SL Trades
                             </span>
                         )}

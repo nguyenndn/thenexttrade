@@ -156,17 +156,17 @@ function StatCard({
 }) {
     return (
         <div
-            className={`bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-5 shadow-sm hover:shadow-md transition-shadow duration-200 border-t-4 ${borderColor || "border-t-transparent"}`}
+            className={`bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-3.5 sm:p-5 shadow-sm hover:shadow-md transition-shadow duration-200 border-t-4 ${borderColor || "border-t-transparent"}`}
         >
-            <div className="flex items-center gap-3 mb-3">
-                <div className={`p-2 rounded-lg ${iconBg}`}>
+            <div className="flex items-center gap-2.5 sm:gap-3 mb-2.5 sm:mb-3">
+                <div className={`p-2 rounded-lg shrink-0 ${iconBg}`}>
                     <Icon size={18} className={color} />
                 </div>
                 <span className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
                     {label}
                 </span>
             </div>
-            <p className="text-2xl font-black font-mono tabular-nums text-gray-800 dark:text-white">
+            <p className="text-lg sm:text-2xl font-black font-mono tabular-nums text-gray-800 dark:text-white truncate">
                 {value}
             </p>
             {previous !== undefined && (
@@ -204,7 +204,7 @@ function BreakdownTable({
     return (
         <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden">
             {/* Header */}
-            <div className="px-5 py-4 border-b border-dashboard flex items-center gap-2.5">
+            <div className="px-3.5 sm:px-5 py-4 border-b border-dashboard flex items-center gap-2.5">
                 <div className={`p-2 ${iconColor} rounded-lg`}>
                     <Icon size={18} />
                 </div>
@@ -214,11 +214,11 @@ function BreakdownTable({
             </div>
 
             {/* Table header */}
-            <div className="grid grid-cols-12 gap-2 px-5 py-2.5 text-[10px] font-bold uppercase tracking-wider text-gray-500 bg-gray-50/80 dark:bg-[#151925]">
-                <div className="col-span-5">Name</div>
-                <div className="col-span-2 text-right">Trades</div>
+            <div className="grid grid-cols-12 gap-2 px-3.5 sm:px-5 py-2.5 text-[10px] font-bold uppercase tracking-wider text-gray-500 bg-gray-50/80 dark:bg-[#151925]">
+                <div className="col-span-6 sm:col-span-5">Name</div>
+                <div className="hidden sm:block sm:col-span-2 text-right">Trades</div>
                 <div className="col-span-2 text-right">Win Rate</div>
-                <div className="col-span-3 text-right">P&L</div>
+                <div className="col-span-4 sm:col-span-3 text-right">P&L</div>
             </div>
 
             {/* Rows */}
@@ -226,24 +226,27 @@ function BreakdownTable({
                 {data.map((item, i) => (
                     <div
                         key={i}
-                        className="grid grid-cols-12 gap-2 items-center px-5 h-[52px] hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors border-b border-gray-50 dark:border-white/[0.04] last:border-0"
+                        className="grid grid-cols-12 gap-2 items-center px-3.5 sm:px-5 h-[52px] hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors border-b border-gray-50 dark:border-white/[0.04] last:border-0"
                     >
-                        <div className="col-span-5 flex items-center gap-2 min-w-0">
-                            <span className="text-xs font-mono tabular-nums bg-gray-100 dark:bg-white/5 px-2 py-0.5 rounded-lg shrink-0">
+                        <div className="col-span-6 sm:col-span-5 flex items-center gap-1.5 sm:gap-2 min-w-0">
+                            <span className="text-xs font-mono tabular-nums bg-gray-100 dark:bg-white/5 px-1.5 sm:px-2 py-0.5 rounded-lg shrink-0">
                                 {i + 1}
                             </span>
-                            <span className="text-sm font-bold text-gray-800 dark:text-gray-200 truncate">
+                            <span className="text-xs sm:text-sm font-bold text-gray-800 dark:text-gray-200 truncate">
                                 {item.name}
                             </span>
+                            <span className="sm:hidden text-[10px] font-mono tabular-nums text-gray-400 shrink-0">
+                                {item.trades}T
+                            </span>
                         </div>
-                        <div className="col-span-2 text-right text-xs font-mono tabular-nums text-gray-500 font-medium">
+                        <div className="hidden sm:block sm:col-span-2 text-right text-xs font-mono tabular-nums text-gray-500 font-medium">
                             {item.trades}
                         </div>
                         <div className="col-span-2 text-right text-xs font-mono tabular-nums text-gray-500 font-medium">
                             {item.winRate?.toFixed(0)}%
                         </div>
                         <div
-                            className={`col-span-3 text-right font-bold font-mono tabular-nums text-sm ${item.pnl >= 0 ? "text-emerald-500" : "text-red-500"}`}
+                            className={`col-span-4 sm:col-span-3 text-right font-bold font-mono tabular-nums text-xs sm:text-sm truncate ${item.pnl >= 0 ? "text-emerald-500" : "text-red-500"}`}
                         >
                             {formatDashboardCurrency(
                                 item.pnl ?? 0,
@@ -403,7 +406,7 @@ function TradesList({
     return (
         <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden">
             {/* Header */}
-            <div className="px-5 py-4 border-b border-dashboard flex items-center gap-2.5">
+            <div className="px-3.5 sm:px-5 py-4 border-b border-dashboard flex items-center gap-2.5">
                 <div className={`p-2 rounded-lg ${iconColor}`}>
                     <Icon size={18} />
                 </div>
@@ -413,10 +416,10 @@ function TradesList({
             </div>
 
             {/* Table header */}
-            <div className="grid grid-cols-12 gap-2 px-5 py-2.5 text-[10px] font-bold uppercase tracking-wider text-gray-500 bg-gray-50/80 dark:bg-[#151925]">
-                <div className="col-span-5">Symbol</div>
+            <div className="grid grid-cols-12 gap-2 px-3.5 sm:px-5 py-2.5 text-[10px] font-bold uppercase tracking-wider text-gray-500 bg-gray-50/80 dark:bg-[#151925]">
+                <div className="col-span-4">Symbol</div>
                 <div className="col-span-4 text-center">Date</div>
-                <div className="col-span-3 text-right">P&L</div>
+                <div className="col-span-4 text-right">P&L</div>
             </div>
 
             {/* Rows */}
@@ -424,10 +427,10 @@ function TradesList({
                 {trades.map((t, i: number) => (
                     <div
                         key={i}
-                        className="grid grid-cols-12 gap-2 items-center px-5 h-[52px] hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors border-b border-gray-50 dark:border-white/[0.04] last:border-0"
+                        className="grid grid-cols-12 gap-2 items-center px-3.5 sm:px-5 h-[52px] hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors border-b border-gray-50 dark:border-white/[0.04] last:border-0"
                     >
-                        <div className="col-span-5">
-                            <span className="text-sm font-bold text-gray-800 dark:text-gray-200">
+                        <div className="col-span-4 min-w-0">
+                            <span className="text-xs sm:text-sm font-bold text-gray-800 dark:text-gray-200 truncate block">
                                 {t.symbol}
                             </span>
                         </div>
@@ -437,7 +440,7 @@ function TradesList({
                                 : ""}
                         </div>
                         <div
-                            className={`col-span-3 text-right font-bold font-mono tabular-nums text-sm ${pnlColor}`}
+                            className={`col-span-4 text-right font-bold font-mono tabular-nums text-xs sm:text-sm truncate ${pnlColor}`}
                         >
                             {formatDashboardCurrency(t.pnl ?? 0, currency, {
                                 signDisplay: "always",
@@ -452,7 +455,6 @@ function TradesList({
 
 export function ReportView({
     reports,
-    total,
     type,
     currency = "USD",
 }: ReportViewProps) {
@@ -601,8 +603,52 @@ export function ReportView({
                 />
             </div>
 
-            {/* Secondary Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {/* Secondary Stats — Mobile 2x2 Matrix Card (< sm) */}
+            <div className="grid grid-cols-2 divide-x divide-y divide-gray-200/60 dark:divide-white/5 border border-dashboard rounded-xl bg-white dark:bg-[#1E2028] shadow-sm overflow-hidden sm:hidden">
+                <div className="px-3.5 py-3 min-w-0">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 block mb-0.5">
+                        Avg Win
+                    </span>
+                    <span className="text-sm font-black font-mono tabular-nums text-emerald-500 block truncate">
+                        {formatDashboardCurrency(report.avgWin, currency, {
+                            signDisplay: "always",
+                        })}
+                    </span>
+                </div>
+                <div className="px-3.5 py-3 min-w-0">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 block mb-0.5">
+                        Avg Loss
+                    </span>
+                    <span className="text-sm font-black font-mono tabular-nums text-red-500 block truncate">
+                        {formatDashboardCurrency(
+                            -Math.abs(report.avgLoss),
+                            currency,
+                            { signDisplay: "always" }
+                        )}
+                    </span>
+                </div>
+                <div className="px-3.5 py-3 min-w-0 border-l-0">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 block mb-0.5">
+                        Largest Win
+                    </span>
+                    <span className="text-sm font-black font-mono tabular-nums text-emerald-500 block truncate">
+                        {formatDashboardCurrency(report.largestWin, currency, {
+                            signDisplay: "always",
+                        })}
+                    </span>
+                </div>
+                <div className="px-3.5 py-3 min-w-0">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 block mb-0.5">
+                        Largest Loss
+                    </span>
+                    <span className="text-sm font-black font-mono tabular-nums text-red-500 block truncate">
+                        {formatDashboardCurrency(report.largestLoss, currency)}
+                    </span>
+                </div>
+            </div>
+
+            {/* Secondary Stats — Desktop Grid (>= sm) */}
+            <div className="hidden sm:grid sm:grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-5 shadow-sm">
                     <p className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1.5">
                         Avg Win

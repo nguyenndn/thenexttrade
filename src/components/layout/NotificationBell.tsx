@@ -52,7 +52,7 @@ export function NotificationBell() {
                     variant="ghost"
                     size="icon"
                     aria-label="Notifications"
-                    className="w-10 h-10 rounded-full border border-gray-200 dark:border-white/10 relative text-gray-600 hover:text-gray-700 dark:text-gray-500 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-100"
+                    className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-gray-200 dark:border-white/10 relative text-gray-600 hover:text-gray-700 dark:text-gray-500 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-100 shrink-0"
                 >
                     <Bell size={20} />
                     {unreadCount > 0 && (

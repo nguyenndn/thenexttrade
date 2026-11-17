@@ -91,7 +91,7 @@ export function QuizFlow({ isLoggedIn, onSaveSuccess }: QuizFlowProps) {
                 className="mx-auto max-w-3xl text-center pt-0 pb-8 sm:pb-12"
             >
                 {/* Headline with Gold accent on Fix Your Leaks (2 clean lines) */}
-                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[64px] font-black tracking-tight text-gray-950 dark:text-white leading-[1.08]">
+                <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-[64px] font-black tracking-tight text-gray-950 dark:text-white leading-[1.08]">
                     Know Your Style.
                     <span className="block text-gold mt-1">
                         Fix Your Leaks.
@@ -103,7 +103,7 @@ export function QuizFlow({ isLoggedIn, onSaveSuccess }: QuizFlowProps) {
                 </p>
 
                 {/* 3 Stats Row in clean columns */}
-                <div className="mt-9 flex items-center justify-center gap-10 sm:gap-16 text-center">
+                <div className="mt-9 flex items-center justify-center gap-5 sm:gap-10 text-center">
                     <div>
                         <div className="text-2xl sm:text-3xl font-black font-mono tabular-nums text-gray-950 dark:text-white">
                             14

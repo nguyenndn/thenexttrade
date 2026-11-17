@@ -38,7 +38,7 @@ export function IntradayHeatmapChart({ data }: IntradayHeatmapChartProps) {
     };
 
     return (
-        <div className="p-5 rounded-xl bg-white dark:bg-[#1E2028] border border-dashboard dark:border-white/[0.08] shadow-sm space-y-4 text-slate-900 dark:text-white overflow-hidden">
+        <div className="hidden md:block p-5 rounded-xl bg-white dark:bg-[#1E2028] border border-dashboard dark:border-white/[0.08] shadow-sm space-y-4 text-slate-900 dark:text-white overflow-hidden">
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                     <Clock className="w-5 h-5 text-amber-600 dark:text-gold" />

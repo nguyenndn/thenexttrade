@@ -50,6 +50,7 @@ export default async function SessionAnalysisPage({
             <PageHeader
                 title="Sessions"
                 description="Analyze your performance by market session."
+                hideDescriptionOnMobile
             />
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-4">
                 <TabBar tabs={ANALYTICS_TABS} />

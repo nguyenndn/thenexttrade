@@ -310,9 +310,9 @@ export default function SettingsClient() {
                 </div>
 
                 <div className="px-4 sm:px-6 pb-5">
-                    <div className="flex items-end gap-4 sm:gap-5 -mt-12 mb-3 min-w-0">
+                    <div className="flex items-end gap-4 sm:gap-5 -mt-10 sm:-mt-12 mb-3 min-w-0">
                         <div className="relative flex-shrink-0">
-                            <div className="w-[100px] h-[100px] rounded-lg overflow-hidden bg-gray-100 dark:bg-[#151925] border-4 border-white dark:border-[#1E2028] shadow-lg">
+                            <div className="w-20 h-20 sm:w-[100px] sm:h-[100px] rounded-lg overflow-hidden bg-gray-100 dark:bg-[#151925] border-4 border-white dark:border-[#1E2028] shadow-lg">
                                 {showAvatarImage ? (
                                     <img
                                         src={formData.image}
@@ -585,12 +585,13 @@ export default function SettingsClient() {
                 </div>
 
                 {/* Save Footer */}
-                <div className="px-6 py-4 border-t border-dashboard flex justify-end">
+                <div className="px-4 sm:px-6 py-4 border-t border-dashboard flex justify-end">
                     <Button
                         type="submit"
                         variant="primary"
                         size="smd"
                         disabled={isSaving}
+                        className="w-full sm:w-auto"
                     >
                         {isSaving ? (
                             <Loader2 className="animate-spin" size={16} />
@@ -732,7 +733,7 @@ export default function SettingsClient() {
                         </div>
                     </div>
 
-                    <div className="rounded-lg bg-amber-500/5 border border-amber-500/15 p-3.5 flex items-start gap-3">
+                    <div className="hidden sm:flex rounded-lg bg-amber-500/5 border border-amber-500/15 p-3.5 items-start gap-3">
                         <ShieldCheck size={18} className="text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
                         <div className="text-xs text-amber-800 dark:text-amber-300/90 leading-relaxed">
                             <span className="font-semibold">Automated Loyalty Claim Integration:</span> When you claim milestone rewards in the Loyalty Dashboard, Admin will verify and dispatch USDT directly to this saved wallet within 24 business hours.
@@ -749,7 +750,7 @@ export default function SettingsClient() {
                         variant="gold"
                         size="smd"
                         disabled={isSavingWallet}
-                        className="shrink-0 self-end sm:self-auto"
+                        className="w-full sm:w-auto shrink-0"
                     >
                         {isSavingWallet ? (
                             <Loader2 className="animate-spin" size={16} />
@@ -767,7 +768,7 @@ export default function SettingsClient() {
                 onSubmit={handleEmailPrefsSubmit}
                 className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm overflow-hidden"
             >
-                <div className="px-6 py-5 space-y-4">
+                <div className="px-4 sm:px-6 py-5 space-y-4">
                     <div className="flex items-center gap-2.5">
                         <div className="w-7 h-7 rounded-lg bg-gold/10 border border-gold/20 flex items-center justify-center">
                             <Mail size={14} className="text-amber-600 dark:text-gold" />
@@ -855,12 +856,13 @@ export default function SettingsClient() {
                     </div>
                 </div>
 
-                <div className="px-6 py-4 border-t border-dashboard flex justify-end">
+                <div className="px-4 sm:px-6 py-4 border-t border-dashboard flex justify-end">
                     <Button
                         type="submit"
                         variant="primary"
                         size="smd"
                         disabled={isSavingEmail}
+                        className="w-full sm:w-auto"
                     >
                         {isSavingEmail ? (
                             <Loader2 className="animate-spin" size={16} />

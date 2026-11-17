@@ -6,6 +6,7 @@ import { Download, Lock, Share2, Award, Crown, Eye, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/Button";
 import { CertificateTemplate } from "./CertificateTemplate";
+import { CertificateShareScale } from "./CertificateShareScale";
 import { CertificateShareModal } from "./CertificateShareModal";
 import { cn } from "@/lib/utils";
 import { SPRING_SOFT, backdropVariants, panelVariants } from "@/lib/animations";
@@ -278,14 +279,14 @@ export function CertificateCard({
                         <Button
                             variant="ghost"
                             onClick={() => setShowPreview(true)}
-                            className="flex-1 py-2.5 rounded-lg bg-white/20 hover:bg-white/30 backdrop-blur-sm text-sm"
+                            className="flex-1 py-2.5 px-2.5 text-xs sm:px-4 sm:text-sm rounded-lg bg-white/20 hover:bg-white/30 backdrop-blur-sm"
                         >
                             <Eye size={14} /> Preview
                         </Button>
                         <Button
                             variant="ghost"
                             onClick={handleDownload}
-                            className="flex-1 py-2.5 rounded-lg bg-white/20 hover:bg-white/30 backdrop-blur-sm text-sm"
+                            className="flex-1 py-2.5 px-2.5 text-xs sm:px-4 sm:text-sm rounded-lg bg-white/20 hover:bg-white/30 backdrop-blur-sm"
                         >
                             <Download size={14} /> Download
                         </Button>
@@ -293,7 +294,7 @@ export function CertificateCard({
                             variant="ghost"
                             onClick={handleShare}
                             aria-label="Share certificate"
-                            className="py-2.5 px-4 rounded-lg bg-white/10 hover:bg-white/20 backdrop-blur-sm text-sm self-stretch"
+                            className="py-2.5 px-2.5 text-xs sm:px-4 sm:text-sm rounded-lg bg-white/10 hover:bg-white/20 backdrop-blur-sm self-stretch"
                         >
                             <Share2 size={14} />
                         </Button>
@@ -310,7 +311,7 @@ export function CertificateCard({
                     animate="animate"
                     exit="exit"
                     transition={{ type: "tween", duration: 0.2 }}
-                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-3 sm:p-4"
                     onClick={() => setShowPreview(false)}
                 >
                     <motion.div
@@ -319,30 +320,37 @@ export function CertificateCard({
                         animate="animate"
                         exit="exit"
                         transition={SPRING_SOFT}
-                        className="relative max-w-[95vw] max-h-[90vh] overflow-auto rounded-2xl shadow-2xl"
+                        className="relative w-full max-w-[95vw] xl:max-w-[1200px] max-h-[90vh] overflow-y-auto overflow-x-hidden rounded-2xl shadow-2xl bg-white dark:bg-[#1E2028]"
                         onClick={(e) => e.stopPropagation()}
                     >
                         {/* Modal header */}
-                        <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-3 bg-gray-100 backdrop-blur-sm border-b border-dashboard">
-                            <h3 className="text-gray-800 font-bold text-sm">
+                        <div className="sticky top-0 z-10 flex items-center justify-between gap-2 px-3 sm:px-6 py-3 bg-gray-100 dark:bg-[#151925] backdrop-blur-sm border-b border-dashboard">
+                            <h3 className="text-gray-800 dark:text-white font-bold text-xs sm:text-sm truncate min-w-0">
                                 {isMaster
                                     ? "Master Trader Certificate Preview"
                                     : `Certificate Preview — Level ${levelOrder}`}
                             </h3>
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
                                 <Button
                                     type="button"
                                     variant="primary"
                                     size="sm"
                                     onClick={handleDownload}
                                     className={cn(
-                                        "flex items-center gap-2 text-white font-bold h-8 text-xs",
+                                        "flex items-center gap-1.5 sm:gap-2 text-white font-bold h-8 px-2.5 sm:px-3 text-xs",
                                         isMaster
                                             ? "bg-amber-600 hover:bg-amber-700"
                                             : "bg-[#00C888] hover:bg-[#00B077]"
                                     )}
                                 >
-                                    <Download size={14} /> Download PNG
+                                    <Download size={14} />
+                                    <span>
+                                        Download
+                                        <span className="hidden sm:inline">
+                                            {" "}
+                                            PNG
+                                        </span>
+                                    </span>
                                 </Button>
                                 <Button
                                     type="button"
@@ -350,19 +358,36 @@ export function CertificateCard({
                                     size="icon"
                                     onClick={() => setShowPreview(false)}
                                     aria-label="Close preview"
-                                    className="h-8 w-8 text-gray-500 hover:text-gray-800"
+                                    className="h-8 w-8 text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white"
                                 >
                                     <X size={16} />
                                 </Button>
                             </div>
                         </div>
 
-                        {/* Certificate template */}
+                        {/* Responsive scaled preview */}
+                        <div
+                            className={cn(
+                                "p-2 sm:p-4",
+                                isMaster ? "bg-[#1a1408]" : "bg-[#0F1119]"
+                            )}
+                        >
+                            <CertificateShareScale
+                                userName={userName}
+                                levelTitle={levelTitle}
+                                levelOrder={levelOrder}
+                                score={score ?? 0}
+                                earnedAt={earnedAt ?? new Date().toISOString()}
+                                variant={variant}
+                            />
+                        </div>
+
+                        {/* Unscaled offscreen template for crisp 1200x850 PNG export */}
                         <div
                             ref={templateRef}
-                            className={
-                                isMaster ? "bg-[#1a1408]" : "bg-[#0F1119]"
-                            }
+                            aria-hidden="true"
+                            className="fixed -left-[9999px] top-0 pointer-events-none overflow-hidden"
+                            style={{ width: 1200, height: 850 }}
                         >
                             <CertificateTemplate
                                 userName={userName}
@@ -373,7 +398,7 @@ export function CertificateCard({
                                 variant={variant}
                             />
                         </div>
-                        </motion.div>
+                    </motion.div>
                 </motion.div>
                 )}
             </AnimatePresence>

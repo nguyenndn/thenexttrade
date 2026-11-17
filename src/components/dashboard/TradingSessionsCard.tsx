@@ -58,7 +58,7 @@ export function TradingSessionsCard({
     return (
         <div className="flex flex-col h-full w-full overflow-hidden">
             {/* Header */}
-            <div className="px-5 pt-5 pb-3">
+            <div className="px-3.5 sm:px-5 pt-5 pb-3">
                 <div className="flex items-center gap-3 mb-1">
                     <div className="p-2 bg-amber-500/10 rounded-lg text-amber-500">
                         <Globe size={20} />
@@ -67,7 +67,7 @@ export function TradingSessionsCard({
                         <h3 className="font-bold text-gray-700 dark:text-white text-sm">
                             Trading Sessions
                         </h3>
-                        <p className="text-xs text-gray-500">
+                        <p className="hidden sm:block text-xs text-gray-500">
                             Performance by Market Session
                         </p>
                     </div>
@@ -75,7 +75,7 @@ export function TradingSessionsCard({
             </div>
 
             {/* Sessions List */}
-            <div className="flex-1 px-5 pb-5 overflow-y-auto min-h-0 custom-scrollbar">
+            <div className="flex-1 px-3.5 sm:px-5 pb-5 overflow-y-auto min-h-0 custom-scrollbar">
                 {data.length === 0 ? (
                     <div className="flex items-center justify-center h-full min-h-[120px]">
                         <p className="text-sm text-gray-400">No session data</p>
@@ -121,7 +121,7 @@ export function TradingSessionsCard({
                                                     <span className="text-xs font-bold text-gray-700 dark:text-white">
                                                         {session.session}
                                                     </span>
-                                                    <span className="text-[10px] font-mono tabular-nums text-gray-400">
+                                                    <span className="hidden sm:inline text-[10px] font-mono tabular-nums text-gray-400">
                                                         {config.hours}
                                                     </span>
                                                 </div>

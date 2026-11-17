@@ -242,7 +242,7 @@ export function CloudSyncModal({
         return () => {
             if (waitTimerRef.current) clearInterval(waitTimerRef.current);
         };
-    }, [isOpen, isSyncing, isSaving, latestJob?.status]);
+    }, [isOpen, isSyncing, isSaving, latestJob]);
 
     // Poll active job status if job is PENDING or PROCESSING
     useEffect(() => {
@@ -278,7 +278,7 @@ export function CloudSyncModal({
         }, 2000);
 
         return () => clearInterval(interval);
-    }, [isOpen, latestJob, account.id, onUpdated]);
+    }, [isOpen, latestJob, account.id, onUpdated, onClose]);
 
     // Unified handle for saving password and/or triggering sync
     const handleAction = async () => {
@@ -706,7 +706,7 @@ export function CloudSyncModal({
 
                     {/* Custom Date Range Picker (From - To) */}
                     {syncPeriod === "custom" && (
-                        <div className="grid grid-cols-2 gap-2 pt-1.5">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1.5">
                             <div>
                                 <label className="text-[11px] font-bold text-gray-500 dark:text-gray-400 flex items-center gap-1 mb-1">
                                     <Calendar className="h-3 w-3 text-gray-400" />

@@ -96,12 +96,12 @@ export function LoyaltyClaimHistory({ claims = [] }: LoyaltyClaimHistoryProps) {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-gray-100 dark:border-white/5 bg-gray-50/80 dark:bg-[#151925] text-[11px] font-bold uppercase tracking-wider text-gray-400">
-                <th className="p-4">Milestone Tier</th>
-                <th className="p-4">Date Claimed</th>
-                <th className="p-4">Reward Amount</th>
-                <th className="p-4">USDT Destination</th>
-                <th className="p-4">Status</th>
-                <th className="p-4 text-right">Blockchain TxID</th>
+                <th className="p-3 sm:p-4">Milestone Tier</th>
+                <th className="hidden md:table-cell p-3 sm:p-4">Date Claimed</th>
+                <th className="p-3 sm:p-4">Reward Amount</th>
+                <th className="hidden lg:table-cell p-3 sm:p-4">USDT Destination</th>
+                <th className="p-3 sm:p-4">Status</th>
+                <th className="hidden sm:table-cell p-3 sm:p-4 text-right">Blockchain TxID</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 dark:divide-white/5 text-sm">
@@ -121,7 +121,7 @@ export function LoyaltyClaimHistory({ claims = [] }: LoyaltyClaimHistoryProps) {
                     className="hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors"
                   >
                     {/* Milestone Tier */}
-                    <td className="p-4">
+                    <td className="p-3 sm:p-4">
                       <div className="flex items-center gap-2.5">
                         <span className="font-mono tabular-nums text-xs font-bold px-2 py-0.5 rounded-lg bg-gold/10 text-amber-600 dark:text-gold border border-gold/20 shrink-0">
                           L{claim.level}
@@ -141,14 +141,14 @@ export function LoyaltyClaimHistory({ claims = [] }: LoyaltyClaimHistoryProps) {
                     </td>
 
                     {/* Date Claimed */}
-                    <td className="p-4">
+                    <td className="hidden md:table-cell p-3 sm:p-4">
                       <span className="text-xs font-mono tabular-nums text-gray-600 dark:text-gray-300 font-medium">
                         {formattedDate}
                       </span>
                     </td>
 
                     {/* Reward Amount */}
-                    <td className="p-4">
+                    <td className="p-3 sm:p-4">
                       {claim.cashAmount && claim.cashAmount > 0 ? (
                         <span className="font-mono tabular-nums text-sm font-black text-amber-600 dark:text-gold flex items-center gap-1.5">
                           <Coins size={14} className="shrink-0 text-amber-600 dark:text-gold" />
@@ -162,7 +162,7 @@ export function LoyaltyClaimHistory({ claims = [] }: LoyaltyClaimHistoryProps) {
                     </td>
 
                     {/* USDT Destination */}
-                    <td className="p-4">
+                    <td className="hidden lg:table-cell p-3 sm:p-4">
                       {claim.usdtAddress ? (
                         <div className="flex items-center gap-2">
                           <span className="px-1.5 py-0.5 rounded-lg text-[10px] font-mono tabular-nums font-bold bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-white/10 uppercase">
@@ -191,7 +191,7 @@ export function LoyaltyClaimHistory({ claims = [] }: LoyaltyClaimHistoryProps) {
                     </td>
 
                     {/* Status */}
-                    <td className="p-4">
+                    <td className="p-3 sm:p-4">
                       {claim.status === "COMPLETED" ? (
                         <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20">
                           <CheckCircle2 size={13} />
@@ -216,7 +216,7 @@ export function LoyaltyClaimHistory({ claims = [] }: LoyaltyClaimHistoryProps) {
                     </td>
 
                     {/* Blockchain TxID */}
-                    <td className="p-4 text-right">
+                    <td className="hidden sm:table-cell p-3 sm:p-4 text-right">
                       {claim.transactionRef ? (
                         <a
                           href={getExplorerUrl(claim.network, claim.transactionRef)}

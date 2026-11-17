@@ -77,7 +77,7 @@ export const PaginationControl = ({
                     {itemName}
                 </span>
 
-                <div className="flex items-center gap-2">
+                <div className="hidden sm:flex items-center gap-2">
                     <span className="text-sm font-medium text-gray-600 dark:text-gray-300">
                         Show:
                     </span>
@@ -124,7 +124,11 @@ export const PaginationControl = ({
                     <ChevronLeft size={16} />
                 </Button>
 
-                <div className="flex items-center gap-1 px-1">
+                <span className="sm:hidden px-3 text-xs font-bold tabular-nums text-gray-600 dark:text-gray-300 select-none">
+                    Page {currentPage} / {totalPages}
+                </span>
+
+                <div className="hidden sm:flex items-center gap-1 px-1">
                     {getPageNumbers().map((p, idx) =>
                         typeof p === "number" ? (
                             <Button

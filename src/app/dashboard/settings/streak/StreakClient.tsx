@@ -133,23 +133,23 @@ export default function StreakClient() {
             {/* Left Column: Login Info (40%) */}
             <div className="xl:col-span-2 h-full">
                 {/* 1. Hero Section: Current Streak & Check-in */}
-                <div className="bg-white dark:bg-[#1E2028] p-8 rounded-xl border border-dashboard shadow-sm flex flex-col relative overflow-hidden h-full">
+                <div className="bg-white dark:bg-[#1E2028] p-5 sm:p-8 rounded-xl border border-dashboard shadow-sm flex flex-col relative overflow-hidden h-full">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-gold to-transparent opacity-50"></div>
 
                     {/* TOP PART: Stats & Action */}
-                    <div className="flex-1 flex flex-col items-center justify-center w-full min-h-[300px]">
-                        <div className="relative mb-6">
+                    <div className="flex-1 flex flex-col items-center justify-center w-full min-h-[220px] sm:min-h-[300px]">
+                        <div className="relative mb-4 sm:mb-6">
                             <div className="absolute inset-0 bg-gold blur-[50px] opacity-20 rounded-full"></div>
                             <Flame
                                 size={80}
-                                className="text-amber-500 dark:text-gold relative z-10"
+                                className="w-16 h-16 sm:w-20 sm:h-20 text-amber-500 dark:text-gold relative z-10"
                             />
                         </div>
-                        <div className="mb-6 text-center">
+                        <div className="mb-5 sm:mb-6 text-center">
                             <p className="text-gray-600 dark:text-gray-400 font-bold uppercase tracking-[0.2em] text-xs mb-2">
                                 Current Login Streak
                             </p>
-                            <h2 className="text-6xl font-black font-mono tabular-nums text-gray-700 dark:text-white mb-2">
+                            <h2 className="text-5xl sm:text-6xl font-black font-mono tabular-nums text-gray-700 dark:text-white mb-2">
                                 {streak}
                             </h2>
                             <p className="text-sm text-gray-500 font-medium">
@@ -266,8 +266,8 @@ export default function StreakClient() {
             </div>
 
             {/* Right Column: Calendar Wrapper (60%) */}
-            <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-dashboard shadow-sm h-full flex flex-col xl:col-span-3">
-                <div className="flex items-center justify-between mb-6">
+            <div className="bg-white dark:bg-[#1E2028] p-4 sm:p-6 rounded-xl border border-dashboard shadow-sm h-full flex flex-col xl:col-span-3">
+                <div className="flex items-center justify-between mb-4 sm:mb-6">
                     <h3 className="font-bold text-gray-700 dark:text-white">
                         Monthly History
                     </h3>
@@ -324,21 +324,21 @@ export default function StreakClient() {
                                             : "bg-gray-50/80 dark:bg-[#151925] border-dashboard text-gray-700 dark:text-gray-300"
                                     )}
                                 >
-                                    <span className="text-sm font-bold font-mono tabular-nums">
+                                    <span className="text-xs sm:text-sm font-bold font-mono tabular-nums leading-none">
                                         {format(day, "d")}
                                     </span>
 
                                     {isCheckedIn && (
-                                        <div className="mt-1.5">
-                                            <div className="w-3 h-3 rounded-full bg-gold shadow-sm shadow-amber-500/50" />
+                                        <div className="mt-0.5 sm:mt-1.5">
+                                            <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-gold shadow-sm shadow-amber-500/50" />
                                         </div>
                                     )}
 
                                     {isMissed && (
-                                        <div className="mt-1.5">
+                                        <div className="mt-0.5 sm:mt-1.5">
                                             <X
                                                 size={14}
-                                                className="text-gray-300"
+                                                className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 text-gray-300"
                                             />
                                         </div>
                                     )}

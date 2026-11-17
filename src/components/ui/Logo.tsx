@@ -25,7 +25,7 @@ export function Logo({
     return (
         <Link
             href="/"
-            className={`flex items-center gap-2.5 group cursor-pointer ${className}`}
+            className={`flex items-center gap-2 sm:gap-2.5 group cursor-pointer min-w-0 ${className}`}
         >
             <div className={`relative ${iconSize} shrink-0 group-hover:scale-105 transition-transform`}>
                 <Image
@@ -38,7 +38,7 @@ export function Logo({
                 />
             </div>
             <span
-                className={`text-lg sm:text-xl font-black tracking-tight ${textClassName || "text-gray-900 dark:text-white"}`}
+                className={`text-base sm:text-xl font-black tracking-tight truncate ${textClassName || "text-gray-900 dark:text-white"}`}
             >
                 TheNext<span className="text-gold font-black">Trade</span>
             </span>

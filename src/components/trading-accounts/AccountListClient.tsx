@@ -15,13 +15,20 @@ import {
     ArrowRight,
     ArrowUpRight,
     Users,
+    MoreHorizontal,
 } from "lucide-react";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { SyncHealthCenter } from "./SyncHealthCenter";
 import { AccountTable } from "./AccountTable";
 import { AddAccountModal } from "./AddAccountModal";
 import { formatSyncErrorMessage } from "@/lib/sync/sync-source";
 import { convertToUsdEquivalent } from "@/lib/utils/cent-account";
-import { cn } from "@/lib/utils";
 import { AccountSettingsModal } from "./AccountSettingsModal";
 import { RegenerateKeyModal } from "./RegenerateKeyModal";
 import { DeleteAccountModal } from "./DeleteAccountModal";
@@ -410,6 +417,7 @@ export function AccountListClient({
         mainAccountId,
         initialAccounts,
         preferredSyncMethod,
+        isFreeLimitReached,
         router,
     ]);
 
@@ -443,7 +451,100 @@ export function AccountListClient({
                 title="Account Hub"
                 description="Connect and manage MT5 accounts."
             >
-                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full sm:w-auto mt-4 sm:mt-0">
+                {/* Mobile Action Bar (< md) */}
+                <div className="flex md:hidden items-center gap-2 w-full mt-2 sm:mt-0">
+                    <Button
+                        variant="gold"
+                        size="smd"
+                        onClick={() => {
+                            if (isFreeLimitReached) {
+                                toast.info(
+                                    "Free tier is limited to 2 connected accounts. Upgrade to Partner Pro for unlimited accounts."
+                                );
+                                setActiveModal({ type: "FREE_VS_PRO" });
+                                return;
+                            }
+                            setActiveModal({ type: "ADD" });
+                        }}
+                        className="flex items-center justify-center gap-2 flex-1 h-10 font-bold"
+                    >
+                        <Plus size={16} />
+                        Add Account
+                    </Button>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                size="icon"
+                                aria-label="More account actions"
+                                className="h-10 w-10 shrink-0 border-dashboard bg-white dark:bg-white/[0.04] text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.08] shadow-sm"
+                            >
+                                <MoreHorizontal size={18} />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent
+                            align="end"
+                            className="w-52 p-1.5 rounded-xl border-dashboard shadow-xl bg-white dark:bg-[#1E2028]"
+                        >
+                            <DropdownMenuItem
+                                onClick={() => {
+                                    startTransition(() => {
+                                        router.refresh();
+                                    });
+                                }}
+                                disabled={isPending}
+                                className="flex items-center gap-2.5 px-3 py-2 text-xs font-semibold cursor-pointer rounded-lg"
+                            >
+                                <RefreshCw
+                                    size={14}
+                                    className={
+                                        isPending
+                                            ? "animate-spin text-primary"
+                                            : "text-gray-400 dark:text-gray-500"
+                                    }
+                                />
+                                <span>Refresh</span>
+                            </DropdownMenuItem>
+                            {isSyncHealthCenterEnabled() && (
+                                <DropdownMenuItem
+                                    onClick={() =>
+                                        setActiveModal({ type: "SYNC_HEALTH" })
+                                    }
+                                    className="flex items-center gap-2.5 px-3 py-2 text-xs font-semibold cursor-pointer rounded-lg"
+                                >
+                                    <Activity
+                                        size={14}
+                                        className="text-amber-500"
+                                    />
+                                    <span>Sync Health Center</span>
+                                </DropdownMenuItem>
+                            )}
+                            <DropdownMenuItem
+                                onClick={() =>
+                                    setActiveModal({ type: "FREE_VS_PRO" })
+                                }
+                                className="flex items-center gap-2.5 px-3 py-2 text-xs font-semibold cursor-pointer rounded-lg"
+                            >
+                                <Crown size={14} className="text-amber-500" />
+                                <span>Free vs Pro</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                                onClick={() =>
+                                    setActiveModal({ type: "SYNC_SETUP" })
+                                }
+                                className="flex items-center gap-2.5 px-3 py-2 text-xs font-semibold cursor-pointer rounded-lg"
+                            >
+                                <Cable size={14} className="text-cyan-500" />
+                                <span>Desktop EA Setup</span>
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
+
+                {/* Desktop Action Bar (>= md) */}
+                <div className="hidden md:flex items-center gap-2.5">
                     <Button
                         variant="outline"
                         size="smd"
@@ -453,7 +554,7 @@ export function AccountListClient({
                             });
                         }}
                         disabled={isPending}
-                        className="flex items-center justify-center gap-2 border-dashboard bg-white dark:bg-white/[0.04] text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.08] flex-1 sm:flex-none shadow-sm"
+                        className="flex items-center justify-center gap-2 border-dashboard bg-white dark:bg-white/[0.04] text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.08] shadow-sm"
                     >
                         <RefreshCw
                             size={14}
@@ -468,7 +569,7 @@ export function AccountListClient({
                         variant="outline"
                         size="smd"
                         onClick={() => setActiveModal({ type: "SYNC_SETUP" })}
-                        className="flex items-center justify-center gap-2 border-dashboard bg-white dark:bg-white/[0.04] text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.08] flex-1 sm:flex-none shadow-sm"
+                        className="flex items-center justify-center gap-2 border-dashboard bg-white dark:bg-white/[0.04] text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.08] shadow-sm"
                     >
                         <Cable size={14} className="text-cyan-500" />
                         Set up Trade Sync
@@ -480,7 +581,7 @@ export function AccountListClient({
                             onClick={() =>
                                 setActiveModal({ type: "SYNC_HEALTH" })
                             }
-                            className="flex items-center justify-center gap-2 border-dashboard bg-white dark:bg-white/[0.04] text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.08] flex-1 sm:flex-none shadow-sm"
+                            className="flex items-center justify-center gap-2 border-dashboard bg-white dark:bg-white/[0.04] text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.08] shadow-sm"
                         >
                             <Activity size={14} className="text-amber-500" />
                             Sync Health Center
@@ -490,7 +591,7 @@ export function AccountListClient({
                         variant="outline"
                         size="smd"
                         onClick={() => setActiveModal({ type: "FREE_VS_PRO" })}
-                        className="flex items-center justify-center gap-2 border-dashboard bg-white dark:bg-white/[0.04] text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.08] flex-1 sm:flex-none shadow-sm"
+                        className="flex items-center justify-center gap-2 border-dashboard bg-white dark:bg-white/[0.04] text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/[0.08] shadow-sm"
                     >
                         <Crown size={14} className="text-amber-500" />
                         Free vs Pro
@@ -509,7 +610,7 @@ export function AccountListClient({
                             }
                             setActiveModal({ type: "ADD" });
                         }}
-                        className="flex items-center justify-center gap-2 flex-1 sm:flex-none font-bold"
+                        className="flex items-center justify-center gap-2 font-bold"
                     >
                         <Plus size={16} />
                         Add Account
@@ -602,13 +703,13 @@ export function AccountListClient({
                                     </span>
                                 </div>
                             ) : isFreeLimitReached ? (
-                                <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-lg border border-amber-500/40 bg-amber-500/10 dark:border-amber-500/30 dark:bg-amber-500/10 text-xs shadow-sm">
+                                <div className="flex items-center gap-2 px-3 sm:px-3.5 py-1.5 rounded-lg border border-amber-500/40 bg-amber-500/10 dark:border-amber-500/30 dark:bg-amber-500/10 text-xs shadow-sm">
                                     <Users className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0" />
                                     <span className="font-bold text-gray-900 dark:text-white tabular-nums">
                                         {totalConnected}/{MAX_FREE_ACCOUNTS} Accounts
                                     </span>
-                                    <span className="text-amber-300 dark:text-amber-500/40">·</span>
-                                    <span className="text-amber-700 dark:text-amber-300 font-bold text-[11px]">
+                                    <span className="hidden sm:inline text-amber-300 dark:text-amber-500/40">·</span>
+                                    <span className="hidden sm:inline text-amber-700 dark:text-amber-300 font-bold text-[11px]">
                                         Free Limit
                                     </span>
                                     <Button
@@ -855,13 +956,13 @@ export function AccountListClient({
                 }
             >
                 <DialogContent className="max-w-4xl p-0 overflow-hidden bg-white dark:bg-[#1E2028] border-dashboard dark:border-white/[0.08]">
-                    <div className="p-6 pb-4 border-b border-dashboard dark:border-white/[0.08]">
+                    <div className="p-4 sm:p-6 pb-3 sm:pb-4 border-b border-dashboard dark:border-white/[0.08]">
                         <DialogHeader>
-                            <DialogTitle className="flex items-center gap-2 text-xl">
-                                <Crown className="w-6 h-6 text-amber-500" />
+                            <DialogTitle className="flex items-center gap-2 text-lg sm:text-xl">
+                                <Crown className="w-5 h-5 sm:w-6 sm:h-6 text-amber-500 shrink-0" />
                                 Free vs Pro Access
                             </DialogTitle>
-                            <DialogDescription className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                            <DialogDescription className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-2">
                                 Free accounts can track and sync trades. Partner
                                 Pro enables premium downloads, VIP access, and
                                 advanced trading intelligence for eligible
@@ -871,18 +972,18 @@ export function AccountListClient({
                     </div>
 
                     <div className="max-h-[70vh] overflow-auto">
-                        <table className="w-full text-sm text-left">
+                        <table className="w-full text-xs sm:text-sm text-left">
                             <thead className="bg-gray-50 dark:bg-white/[0.04] sticky top-0 border-b border-dashboard dark:border-white/[0.08]">
                                 <tr>
-                                    <th className="w-1/2 px-6 py-4 font-semibold text-gray-900 dark:text-gray-100">
+                                    <th className="w-1/2 px-3 py-2.5 text-xs sm:px-6 sm:py-4 sm:text-sm font-semibold text-gray-900 dark:text-gray-100">
                                         Feature
                                     </th>
-                                    <th className="w-1/4 px-6 py-4 font-semibold text-gray-900 dark:text-gray-100 whitespace-nowrap">
+                                    <th className="w-1/4 px-3 py-2.5 text-xs sm:px-6 sm:py-4 sm:text-sm font-semibold text-gray-900 dark:text-gray-100 sm:whitespace-nowrap">
                                         Free
                                     </th>
-                                    <th className="w-1/4 px-6 py-4 font-semibold text-amber-600 dark:text-amber-400 whitespace-nowrap bg-amber-500/[0.04] dark:bg-amber-500/[0.08]">
-                                        <div className="flex items-center gap-1.5">
-                                            <Crown className="w-4 h-4 text-amber-500" />
+                                    <th className="w-1/4 px-3 py-2.5 text-xs sm:px-6 sm:py-4 sm:text-sm font-semibold text-amber-600 dark:text-amber-400 sm:whitespace-nowrap bg-amber-500/[0.04] dark:bg-amber-500/[0.08]">
+                                        <div className="flex items-center gap-1 sm:gap-1.5">
+                                            <Crown className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-500 shrink-0" />
                                             <span>Partner Pro</span>
                                         </div>
                                     </th>
@@ -950,23 +1051,23 @@ export function AccountListClient({
                                         key={i}
                                         className="hover:bg-gray-50/50 dark:hover:bg-white/[0.02]"
                                     >
-                                        <td className="w-1/2 px-6 py-4 font-medium text-gray-900 dark:text-gray-200">
+                                        <td className="w-1/2 px-3 py-2.5 text-xs sm:px-6 sm:py-4 sm:text-sm font-medium text-gray-900 dark:text-gray-200">
                                             {row.name}
                                         </td>
-                                        <td className="w-1/4 px-6 py-4 whitespace-nowrap">
-                                            <div className="flex items-center gap-2 whitespace-nowrap">
+                                        <td className="w-1/4 px-3 py-2.5 text-xs sm:px-6 sm:py-4 sm:text-sm sm:whitespace-nowrap">
+                                            <div className="flex items-center gap-1.5 sm:gap-2 sm:whitespace-nowrap">
                                                 {row.free === "Up to 2 accounts" && (
-                                                    <Users className="w-4 h-4 text-gray-400 shrink-0" />
+                                                    <Users className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400 shrink-0" />
                                                 )}
                                                 {row.free === "Included" && (
-                                                    <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                                                    <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-500 shrink-0" />
                                                 )}
                                                 {row.free === "Locked" && (
-                                                    <Lock className="w-4 h-4 text-gray-400 shrink-0" />
+                                                    <Lock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400 shrink-0" />
                                                 )}
                                                 {row.free ===
                                                     "Eligibility review" && (
-                                                        <Clock3 className="w-4 h-4 text-amber-500 shrink-0" />
+                                                        <Clock3 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-500 shrink-0" />
                                                     )}
                                                 <span
                                                     className={
@@ -985,14 +1086,14 @@ export function AccountListClient({
                                                 </span>
                                             </div>
                                         </td>
-                                        <td className="w-1/4 px-6 py-4 whitespace-nowrap bg-amber-500/[0.02] dark:bg-amber-500/[0.04]">
-                                            <div className="flex items-center gap-2 whitespace-nowrap">
+                                        <td className="w-1/4 px-3 py-2.5 text-xs sm:px-6 sm:py-4 sm:text-sm sm:whitespace-nowrap bg-amber-500/[0.02] dark:bg-amber-500/[0.04]">
+                                            <div className="flex items-center gap-1.5 sm:gap-2 sm:whitespace-nowrap">
                                                 {row.pro === "Included" && (
-                                                    <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                                                    <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-500 shrink-0" />
                                                 )}
                                                 {(row.pro === "Verified" ||
                                                     row.pro === "Unlimited") && (
-                                                        <Crown className="w-4 h-4 text-amber-500 shrink-0" />
+                                                        <Crown className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-500 shrink-0" />
                                                     )}
                                                 <span
                                                     className={
@@ -1066,7 +1167,7 @@ export function AccountListClient({
                         </div>
                     </div>
 
-                    <div className="p-4 px-6 bg-gray-50 dark:bg-white/[0.01] border-t border-dashboard dark:border-white/[0.08] flex items-center justify-between">
+                    <div className="p-4 sm:px-6 bg-gray-50 dark:bg-white/[0.01] border-t border-dashboard dark:border-white/[0.08] flex items-center justify-between gap-2">
                         <Button
                             variant="outline"
                             size="smd"

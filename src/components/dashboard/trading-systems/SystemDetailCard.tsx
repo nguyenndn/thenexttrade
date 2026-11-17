@@ -191,7 +191,7 @@ export function SystemDetailCard({
                             <rect x="463" y="30" width="14" height="100" fill="#26a69a" rx="2" />
                         </svg>
 
-                        <div className="relative z-10 w-64 sm:w-72 max-w-[88%] bg-[#161922]/95 border border-white/15 rounded-xl p-4 sm:p-5 shadow-2xl backdrop-blur-md flex flex-col gap-3">
+                        <div className="relative z-10 w-64 sm:w-72 max-w-[88%] scale-[0.82] sm:scale-100 origin-center bg-[#161922]/95 border border-white/15 rounded-xl p-4 sm:p-5 shadow-2xl backdrop-blur-md flex flex-col gap-3">
                             <div className="flex items-center justify-between border-b border-white/[0.08] pb-2">
                                 <span className="text-xs sm:text-sm font-black uppercase tracking-wider text-amber-400 truncate max-w-[170px]">
                                     {product.name}
@@ -352,7 +352,7 @@ export function SystemDetailCard({
                                         type: "tween",
                                         duration: 0.2,
                                     }}
-                                    className="absolute bottom-[calc(100%+8px)] left-0 w-52 p-3 bg-gray-900 dark:bg-[#1E2028] text-white text-xs rounded-lg shadow-xl border border-dashboard dark:border-white/10 font-medium z-20 text-center leading-relaxed"
+                                    className="hidden sm:block absolute bottom-[calc(100%+8px)] left-0 w-52 p-3 bg-gray-900 dark:bg-[#1E2028] text-white text-xs rounded-lg shadow-xl border border-dashboard dark:border-white/10 font-medium z-20 text-center leading-relaxed"
                                 >
                                     <p className="mb-2">
                                         Please connect your broker account to unlock downloads.

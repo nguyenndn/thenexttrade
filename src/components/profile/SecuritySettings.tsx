@@ -28,7 +28,7 @@ export function SecuritySettings() {
     return (
         <div className="w-full space-y-5">
             {/* ── Security Header Card ── */}
-            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-5">
+            <div className="hidden sm:block bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-5">
                 <div className="flex items-center justify-between gap-4">
                     <div className="flex items-center gap-4">
                         <div className="w-12 h-12 rounded-lg bg-gold/10 border border-gold/20 flex items-center justify-center flex-shrink-0">
@@ -58,8 +58,8 @@ export function SecuritySettings() {
 
             {/* ── Change Password Card ── */}
             <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm overflow-hidden">
-                <div className="px-6 py-4 border-b border-dashboard flex items-center gap-2.5">
-                    <div className="w-7 h-7 rounded-lg bg-gold/10 border border-gold/20 flex items-center justify-center">
+                <div className="px-4 sm:px-6 py-4 border-b border-dashboard flex items-center gap-2.5">
+                    <div className="w-7 h-7 rounded-lg bg-gold/10 border border-gold/20 flex items-center justify-center shrink-0">
                         <Key size={14} className="text-amber-600 dark:text-gold" />
                     </div>
                     <div>
@@ -72,7 +72,7 @@ export function SecuritySettings() {
                     </div>
                 </div>
 
-                <div className="px-6 py-5">
+                <div className="px-4 sm:px-6 py-5">
                     <form
                         ref={passwordFormRef}
                         action={async (formData) => {
@@ -160,12 +160,13 @@ export function SecuritySettings() {
                         ))}
 
                         {/* Submit inside card footer */}
-                        <div className="pt-2 -mx-6 -mb-5 px-6 py-4 border-t border-dashboard flex justify-end">
+                        <div className="pt-2 -mx-4 sm:-mx-6 -mb-5 px-4 sm:px-6 py-4 border-t border-dashboard flex justify-end">
                             <Button
                                 type="submit"
                                 isLoading={isLoading}
                                 variant="primary"
                                 size="smd"
+                                className="w-full sm:w-auto"
                             >
                                 Update Password
                             </Button>
@@ -176,8 +177,8 @@ export function SecuritySettings() {
 
             {/* ── Two-Factor Authentication Card ── */}
             <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm overflow-hidden">
-                <div className="px-6 py-4 border-b border-dashboard flex items-center gap-2.5">
-                    <div className="w-7 h-7 rounded-lg bg-gold/10 border border-gold/20 flex items-center justify-center">
+                <div className="px-4 sm:px-6 py-4 border-b border-dashboard flex items-center gap-2.5">
+                    <div className="w-7 h-7 rounded-lg bg-gold/10 border border-gold/20 flex items-center justify-center shrink-0">
                         <Shield size={14} className="text-amber-600 dark:text-gold" />
                     </div>
                     <div>
@@ -189,7 +190,7 @@ export function SecuritySettings() {
                         </p>
                     </div>
                 </div>
-                <div className="px-6 py-5">
+                <div className="px-4 sm:px-6 py-5">
                     <TwoFactorSetup
                         isEnabled={is2FAEnabled}
                         onUpdate={refresh2FA}
@@ -199,8 +200,8 @@ export function SecuritySettings() {
 
             {/* ── Active Sessions Card ── */}
             <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm overflow-hidden">
-                <div className="px-6 py-4 border-b border-dashboard flex items-center gap-2.5">
-                    <div className="w-7 h-7 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
+                <div className="px-4 sm:px-6 py-4 border-b border-dashboard flex items-center gap-2.5">
+                    <div className="w-7 h-7 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
                         <Monitor size={14} className="text-emerald-500" />
                     </div>
                     <div>
@@ -212,7 +213,7 @@ export function SecuritySettings() {
                         </p>
                     </div>
                 </div>
-                <div className="px-6 py-5">
+                <div className="px-4 sm:px-6 py-5">
                     <ActiveSessionsList />
                 </div>
             </div>

@@ -98,10 +98,10 @@ export function TargetProgressWidget({ accountId, accountName, currency: propCur
                         <h3 className="text-xs font-bold uppercase tracking-wider text-gray-900 dark:text-white flex items-center gap-1.5">
                             Profit Targets {isSampleMode && <span className="text-[10px] px-1.5 py-0.5 rounded font-bold bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/20">Playground</span>}
                         </h3>
-                        <p className="text-[11px] text-gray-600 dark:text-gray-400">Weekly and monthly discipline pacing</p>
+                        <p className="hidden sm:block text-[11px] text-gray-600 dark:text-gray-400">Weekly and monthly discipline pacing</p>
                     </div>
                 </div>
-                <Button variant="outline" size="sm" onClick={() => setIsModalOpen(true)} className="h-8 gap-1.5 text-xs font-semibold rounded-lg">
+                <Button variant="outline" size="sm" onClick={() => setIsModalOpen(true)} className="h-8 gap-1.5 text-xs font-semibold rounded-lg shrink-0">
                     <Crosshair size={13} className="text-amber-500" />
                     <span>Set Target</span>
                 </Button>

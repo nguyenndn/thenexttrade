@@ -55,7 +55,7 @@ export function DimensionBars({ scores }: DimensionBarsProps) {
                                 <span className="text-sm font-bold text-gray-900 dark:text-white">
                                     {dim.name}
                                 </span>
-                                <span className="text-xs font-medium text-gray-400 dark:text-gray-500">
+                                <span className="hidden sm:inline text-xs font-medium text-gray-400 dark:text-gray-500">
                                     {dim.lowPole} → {dim.highPole}
                                 </span>
                             </div>

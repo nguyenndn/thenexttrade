@@ -68,8 +68,13 @@ export const Pagination = ({ totalPages }: PaginationProps) => {
                     <ChevronLeft size={16} />
                 </Link>
 
+                {/* Mobile Compact Indicator */}
+                <span className="sm:hidden px-3 text-xs font-bold tabular-nums text-gray-600 dark:text-gray-300 select-none">
+                    Page {currentPage} / {totalPages}
+                </span>
+
                 {/* Page Numbers */}
-                <div className="flex items-center gap-1">
+                <div className="hidden sm:flex items-center gap-1">
                     {getPageList(currentPage, totalPages).map((item, index) => {
                         if (
                             item === "ellipsis-start" ||

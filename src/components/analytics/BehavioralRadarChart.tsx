@@ -102,9 +102,15 @@ function getGradeLabel(avg: number): { label: string; color: string } {
 }
 
 // Custom Tooltip
-function CustomTooltip({ active, payload }: any) {
+function CustomTooltip({
+    active,
+    payload,
+}: {
+    active?: boolean;
+    payload?: ReadonlyArray<{ payload?: RadarDimension }>;
+}) {
     if (!active || !payload?.length) return null;
-    const d = payload[0]?.payload as RadarDimension;
+    const d = payload[0]?.payload;
     if (!d) return null;
 
     return (
@@ -130,7 +136,7 @@ export function BehavioralRadarChart({ data }: BehavioralRadarChartProps) {
     const color = getScoreColor(avgScore);
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-5 min-h-[460px] lg:h-full flex flex-col justify-between">
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-4 sm:p-5 min-h-[380px] sm:min-h-[460px] lg:h-full flex flex-col justify-between">
             {/* Header */}
             <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2.5">
@@ -178,7 +184,11 @@ export function BehavioralRadarChart({ data }: BehavioralRadarChartProps) {
                     minWidth={0}
                     minHeight={200}
                 >
-                    <RadarChart data={radarData} outerRadius="72%">
+                    <RadarChart
+                        data={radarData}
+                        outerRadius="62%"
+                        margin={{ top: 8, right: 20, bottom: 8, left: 20 }}
+                    >
                         <PolarGrid
                             stroke="rgba(156,163,175,0.15)"
                             strokeDasharray="3 3"
@@ -187,7 +197,7 @@ export function BehavioralRadarChart({ data }: BehavioralRadarChartProps) {
                             dataKey="dimension"
                             tick={{
                                 fill: "#9CA3AF",
-                                fontSize: 11,
+                                fontSize: 10,
                                 fontWeight: 600,
                             }}
                             tickLine={false}

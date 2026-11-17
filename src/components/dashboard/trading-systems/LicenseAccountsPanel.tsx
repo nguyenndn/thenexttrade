@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
     Key,
@@ -81,7 +81,13 @@ export function LicenseAccountsPanel({
     hasApprovedLicense = false,
     vipLink = null,
 }: LicenseAccountsPanelProps) {
-    const [showAddForm, setShowAddForm] = useState(items.length === 0);
+    const [showAddForm, setShowAddForm] = useState(false);
+
+    useEffect(() => {
+        if (items.length === 0 && window.innerWidth >= 768) {
+            setShowAddForm(true);
+        }
+    }, [items.length]);
     const [showWebRequestGuide, setShowWebRequestGuide] = useState(false);
     const [selectedAccountIds, setSelectedAccountIds] = useState<string[]>([]);
     const [submitting, setSubmitting] = useState(false);
@@ -293,7 +299,7 @@ export function LicenseAccountsPanel({
                                 1 Account License = Unlocks All 3 EAs
                             </span>
                         </div>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                        <p className="hidden sm:block text-xs text-gray-500 dark:text-gray-400 mt-0.5">
                             Each MT5 trading account verified under our IB
                             network receives 1 unified License Key that unlocks
                             all 3 Expert Advisors (Trade Manager,
@@ -335,7 +341,7 @@ export function LicenseAccountsPanel({
                         onClick={() =>
                             setShowWebRequestGuide((prev) => !prev)
                         }
-                        className="rounded-lg text-xs font-bold"
+                        className="hidden md:inline-flex rounded-lg text-xs font-bold"
                     >
                         <HelpCircle size={14} />
                         <span>MT5 WebRequest Setup (30s)</span>
@@ -431,18 +437,16 @@ export function LicenseAccountsPanel({
                                     License Key.
                                 </p>
                             </div>
-                            <div className="flex items-center justify-center gap-2 pt-1">
-                                {items.length > 0 && (
-                                    <Button
-                                        type="button"
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={() => setShowAddForm(false)}
-                                        className="rounded-lg"
-                                    >
-                                        Cancel
-                                    </Button>
-                                )}
+                            <div className="flex items-center justify-center gap-2 pt-1 flex-wrap">
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => setShowAddForm(false)}
+                                    className="rounded-lg"
+                                >
+                                    Cancel
+                                </Button>
                                 <Link
                                     href="/dashboard/accounts"
                                     className={cn(
@@ -517,7 +521,7 @@ export function LicenseAccountsPanel({
                                                     toggleSelectAccount(acc.id);
                                                 }
                                             }}
-                                            className={`p-3 rounded-lg border transition-all flex items-center justify-between gap-3 ${
+                                            className={`p-3 rounded-lg border transition-all flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 ${
                                                 isSelectable
                                                     ? isSelected
                                                         ? "cursor-pointer bg-gold/10 border-gold/50 dark:bg-gold/10"
@@ -580,7 +584,7 @@ export function LicenseAccountsPanel({
                                                             onClick={(e) =>
                                                                 e.stopPropagation()
                                                             }
-                                                            className="flex items-center gap-1.5"
+                                                            className="flex flex-wrap items-center gap-1.5"
                                                         >
                                                             <input
                                                                 type="text"
@@ -667,32 +671,30 @@ export function LicenseAccountsPanel({
                                 })}
                             </div>
 
-                            <div className="flex items-center justify-between gap-2 pt-1">
+                            <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-2 pt-1">
                                 <Link
                                     href="/dashboard/accounts"
                                     className={cn(
                                         buttonVariants({ variant: "outline", size: "sm" }),
-                                        "rounded-lg text-xs inline-flex items-center gap-1.5"
+                                        "rounded-lg text-xs inline-flex items-center justify-center gap-1.5"
                                     )}
                                 >
                                     <Plus size={13} />
                                     <span>Add New Account</span>
                                 </Link>
 
-                                <div className="flex items-center gap-2">
-                                    {items.length > 0 && (
-                                        <Button
-                                            type="button"
-                                            variant="outline"
-                                            size="sm"
-                                            onClick={() =>
-                                                setShowAddForm(false)
-                                            }
-                                            className="rounded-lg"
-                                        >
-                                            Cancel
-                                        </Button>
-                                    )}
+                                <div className="flex items-center justify-end gap-2">
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() =>
+                                            setShowAddForm(false)
+                                        }
+                                        className="rounded-lg"
+                                    >
+                                        Cancel
+                                    </Button>
                                     <Button
                                         type="submit"
                                         variant="gold"
@@ -701,7 +703,7 @@ export function LicenseAccountsPanel({
                                             submitting ||
                                             selectedAccountIds.length === 0
                                         }
-                                        className="rounded-lg font-bold !text-white"
+                                        className="flex-1 sm:flex-none rounded-lg font-bold !text-white"
                                     >
                                         {submitting
                                             ? "Submitting..."
@@ -855,10 +857,10 @@ export function LicenseAccountsPanel({
                                                 onClick={() =>
                                                     handleRemoveOrCancel(item)
                                                 }
-                                                className="rounded-lg h-8 text-xs text-rose-600 dark:text-rose-400 hover:bg-rose-500/10 border-rose-500/20"
+                                                className="rounded-lg h-8 px-2 sm:px-3 text-xs text-rose-600 dark:text-rose-400 hover:bg-rose-500/10 border-rose-500/20"
                                             >
                                                 <Trash2 size={13} />
-                                                <span>Remove</span>
+                                                <span className="hidden sm:inline">Remove</span>
                                             </Button>
                                         </>
                                     ) : (

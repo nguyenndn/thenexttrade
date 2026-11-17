@@ -33,19 +33,8 @@ export function RecentTradesTable({ trades, currency = "USD" }: RecentTradesTabl
         }
     };
 
-    const getResultBadge = (result: string) => {
-        switch (result) {
-            case "WIN":
-                return "bg-green-100 text-green-700 dark:bg-green-500/10 dark:text-green-400";
-            case "LOSS":
-                return "bg-red-100 text-red-700 dark:bg-red-500/10 dark:text-red-400";
-            default:
-                return "bg-gray-100 text-gray-700 dark:bg-gray-500/10 dark:text-gray-500";
-        }
-    };
-
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-lg border border-dashboard shadow-sm hover:shadow-md transition-shadow group">
+        <div className="bg-white dark:bg-[#1E2028] p-4 sm:p-6 rounded-lg border border-dashboard shadow-sm hover:shadow-md transition-shadow group">
             <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
                     <div className="w-1.5 h-6 bg-[#00C888] rounded-full"></div>
@@ -74,8 +63,8 @@ export function RecentTradesTable({ trades, currency = "USD" }: RecentTradesTabl
                                 <th className="px-4 py-3">Pair</th>
                                 <th className="px-4 py-3">Type</th>
                                 <th className="px-4 py-3">Result</th>
-                                <th className="px-4 py-3 text-right">Comm</th>
-                                <th className="px-4 py-3 text-right">Swap</th>
+                                <th className="hidden md:table-cell px-4 py-3 text-right">Comm</th>
+                                <th className="hidden md:table-cell px-4 py-3 text-right">Swap</th>
                                 <th className="px-4 py-3 text-right">P&L</th>
                             </tr>
                         </thead>
@@ -114,7 +103,7 @@ export function RecentTradesTable({ trades, currency = "USD" }: RecentTradesTabl
                                         </span>
                                     </td>
                                     <td
-                                        className={`px-4 py-3.5 text-right font-mono font-medium whitespace-nowrap ${
+                                        className={`hidden md:table-cell px-4 py-3.5 text-right font-mono font-medium whitespace-nowrap ${
                                             (trade.commission || 0) < 0
                                                 ? "text-red-500/90"
                                                 : "text-gray-500 dark:text-gray-400"
@@ -123,7 +112,7 @@ export function RecentTradesTable({ trades, currency = "USD" }: RecentTradesTabl
                                         {formatDashboardCurrency(trade.commission || 0, currency)}
                                     </td>
                                     <td
-                                        className={`px-4 py-3.5 text-right font-mono font-medium whitespace-nowrap ${
+                                        className={`hidden md:table-cell px-4 py-3.5 text-right font-mono font-medium whitespace-nowrap ${
                                             (trade.swap || 0) > 0
                                                 ? "text-emerald-500 dark:text-[#00C888]"
                                                 : (trade.swap || 0) < 0

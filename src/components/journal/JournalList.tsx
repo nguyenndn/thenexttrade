@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { Edit2, ArrowUpDown, Activity, Brain } from "lucide-react";
+import { Edit2, Pencil, ArrowUpDown, Brain } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
 import { utcTime, cn } from "@/lib/utils";
@@ -142,9 +142,9 @@ export default function JournalList({
 
     // Parse URL Params for State
     const accountId = searchParams.get("accountId") || currentAccountId || null;
-    const page = parseInt(searchParams.get("page") || "1");
+    const _page = parseInt(searchParams.get("page") || "1");
     // const pageSize = parseInt(searchParams.get("limit") || "10"); // We can parse this
-    const [pageSize, setPageSize] = useState(10); // Keep local for component control, or push to URL
+    const [_pageSize, _setPageSize] = useState(10); // Keep local for component control, or push to URL
 
     // Filters from URL
     const filterSymbol = searchParams.get("symbol") || "";
@@ -173,13 +173,17 @@ export default function JournalList({
     const effectiveEntries = isSampleMode ? sampleEntries : entries;
     const effectiveStats = isSampleMode ? SAMPLE_JOURNAL_STATS : stats;
     const effectiveCurrency = isSampleMode ? "USD" : currency;
-    const strategies = isSampleMode
-        ? [...(initialStrategies || []), ...SAMPLE_STRATEGIES]
-        : (initialStrategies || []);
+    const strategies = useMemo(
+        () =>
+            isSampleMode
+                ? [...(initialStrategies || []), ...SAMPLE_STRATEGIES]
+                : initialStrategies || [],
+        [isSampleMode, initialStrategies]
+    );
     const availableUserTags = isSampleMode
         ? Array.from(new Set([...userTags, ...SAMPLE_TAGS]))
         : userTags;
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, _setIsLoading] = useState(false);
 
     const displayedEntries = effectiveEntries;
 
@@ -416,9 +420,7 @@ export default function JournalList({
 
     // Sync local search when URL changes
     useEffect(() => {
-        if (searchTerm !== filterSymbol) {
-            setSearchTerm(filterSymbol);
-        }
+        setSearchTerm(filterSymbol);
     }, [filterSymbol]);
 
     const availableStrategies = useMemo(() => {
@@ -440,6 +442,7 @@ export default function JournalList({
             <PageHeader
                 title="Journal"
                 description="Log trade setups, review execution telemetry, and audit plan compliance."
+                hideDescriptionOnMobile
             />
 
             {/* Sample Mode Active Banner */}
@@ -961,12 +964,30 @@ export default function JournalList({
                                     displayedEntries.map((entry) => (
                                         <div
                                             key={entry.id}
-                                            className="bg-gray-50/80 dark:bg-[#151925] p-3 sm:p-4 rounded-lg border relative transition-colors duration-150 hover:shadow-md border-dashboard"
+                                            role="button"
+                                            tabIndex={0}
+                                            onClick={() => {
+                                                setSelectedDetailEntry(entry);
+                                                setIsDetailOpen(true);
+                                            }}
+                                            onKeyDown={(e) => {
+                                                if (
+                                                    e.key === "Enter" ||
+                                                    e.key === " "
+                                                ) {
+                                                    e.preventDefault();
+                                                    setSelectedDetailEntry(
+                                                        entry
+                                                    );
+                                                    setIsDetailOpen(true);
+                                                }
+                                            }}
+                                            className="bg-gray-50/80 dark:bg-[#151925] p-3 sm:p-4 rounded-xl border relative transition-shadow duration-150 hover:shadow-md border-dashboard cursor-pointer"
                                         >
                                             {/* Header Row */}
-                                            <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
-                                                <div className="flex items-center gap-2 flex-1">
-                                                    <span className="font-bold text-gray-700 dark:text-white text-base sm:text-lg">
+                                            <div className="flex items-center gap-2 sm:gap-3 mb-2.5 sm:mb-3">
+                                                <div className="flex items-center gap-2 flex-1 min-w-0">
+                                                    <span className="font-bold text-gray-700 dark:text-white text-base sm:text-lg truncate">
                                                         {entry.symbol}
                                                     </span>
                                                     <TradeTypeBadge
@@ -976,43 +997,66 @@ export default function JournalList({
                                                         status={entry.status}
                                                     />
                                                 </div>
-                                                <TooltipProvider
-                                                    delayDuration={200}
-                                                >
-                                                    <Tooltip>
-                                                        <TooltipTrigger asChild>
-                                                            <Button
-                                                                variant="outline"
-                                                                size="icon"
-                                                                aria-label={`View Details for ${entry.symbol}`}
-                                                                onClick={() => {
-                                                                    setSelectedDetailEntry(
-                                                                        entry
-                                                                    );
-                                                                    setIsDetailOpen(
-                                                                        true
-                                                                    );
-                                                                }}
-                                                                className="w-8 h-8 rounded-lg bg-white dark:bg-[#1E2028] border border-dashboard flex items-center justify-center text-gray-400 hover:text-gold dark:hover:text-amber-400 hover:border-amber-500/30 hover:bg-amber-500/5 dark:hover:bg-amber-500/10 transition-all"
+                                                <div className="flex items-center gap-1.5 shrink-0">
+                                                    <TooltipProvider
+                                                        delayDuration={200}
+                                                    >
+                                                        <Tooltip>
+                                                            <TooltipTrigger asChild>
+                                                                <Button
+                                                                    type="button"
+                                                                    variant="outline"
+                                                                    size="icon"
+                                                                    aria-label={`View Details for ${entry.symbol}`}
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        setSelectedDetailEntry(
+                                                                            entry
+                                                                        );
+                                                                        setIsDetailOpen(
+                                                                            true
+                                                                        );
+                                                                    }}
+                                                                    onKeyDown={(e) =>
+                                                                        e.stopPropagation()
+                                                                    }
+                                                                    className="w-8 h-8 rounded-lg bg-white dark:bg-[#1E2028] border border-dashboard flex items-center justify-center text-gray-400 hover:text-gold dark:hover:text-amber-400 hover:border-amber-500/30 hover:bg-amber-500/5 dark:hover:bg-amber-500/10 transition-all"
+                                                                >
+                                                                    <Brain
+                                                                        size={14}
+                                                                        className="text-amber-600 dark:text-gold transition-transform duration-150 hover:scale-110"
+                                                                    />
+                                                                </Button>
+                                                            </TooltipTrigger>
+                                                            <TooltipContent
+                                                                side="bottom"
+                                                                className="bg-gray-700 dark:bg-gray-800 text-white border border-gray-600/20 shadow-md font-bold"
                                                             >
-                                                                <Brain
-                                                                    size={14}
-                                                                    className="text-amber-600 dark:text-gold transition-transform duration-150 hover:scale-110"
-                                                                />
-                                                            </Button>
-                                                        </TooltipTrigger>
-                                                        <TooltipContent
-                                                            side="bottom"
-                                                            className="bg-gray-700 dark:bg-gray-800 text-white border border-gray-600/20 shadow-md font-bold"
-                                                        >
-                                                            Details
-                                                        </TooltipContent>
-                                                    </Tooltip>
-                                                </TooltipProvider>
+                                                                Details
+                                                            </TooltipContent>
+                                                        </Tooltip>
+                                                    </TooltipProvider>
+                                                    <Button
+                                                        type="button"
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        aria-label="Edit trade"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleEdit(entry);
+                                                        }}
+                                                        onKeyDown={(e) =>
+                                                            e.stopPropagation()
+                                                        }
+                                                        className="w-8 h-8 rounded-lg text-gray-500 hover:text-gold dark:text-gray-400 dark:hover:text-amber-400 hover:bg-amber-500/10 transition-colors"
+                                                    >
+                                                        <Pencil size={14} />
+                                                    </Button>
+                                                </div>
                                             </div>
 
                                             {/* Info Grid */}
-                                            <div className="grid grid-cols-2 gap-y-3 text-sm mb-3">
+                                            <div className="grid grid-cols-2 gap-y-2.5 text-sm">
                                                 <div>
                                                     <p className="text-xs text-gray-500 mb-0.5">
                                                         Open Time
@@ -1099,28 +1143,14 @@ export default function JournalList({
                                                 ) : null}
                                             </div>
 
-                                            {/* Tags & Mistakes Summary (Simulated simple view) */}
-                                            <div className="flex flex-wrap gap-1 mb-3">
-                                                {entry.strategy && (
+                                            {/* Tags & Mistakes Summary */}
+                                            {entry.strategy && (
+                                                <div className="flex flex-wrap gap-1 mt-2.5">
                                                     <span className="px-2 py-0.5 text-[10px] font-medium bg-gold/10 text-amber-600 dark:text-gold rounded-lg border border-gold/20">
                                                         {entry.strategy}
                                                     </span>
-                                                )}
-                                            </div>
-
-                                            {/* Footer Actions */}
-                                            <div className="pt-3 border-t border-dashboard flex justify-end">
-                                                <Button
-                                                    variant="outline"
-                                                    onClick={() =>
-                                                        handleEdit(entry)
-                                                    }
-                                                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-gray-600 hover:text-gold dark:hover:text-amber-400 hover:bg-amber-500/10 rounded-lg transition-colors"
-                                                >
-                                                    <Edit2 size={14} />
-                                                    Edit Trade
-                                                </Button>
-                                            </div>
+                                                </div>
+                                            )}
                                         </div>
                                     ))
                                 )}

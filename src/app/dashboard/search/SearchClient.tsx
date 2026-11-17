@@ -178,14 +178,14 @@ export default function SearchClient() {
                     <Button
                         type="submit"
                         variant="primary"
-                        className="rounded-lg bg-gold hover:bg-amber-600 !text-white font-bold px-6 py-2.5 h-auto shrink-0"
+                        className="hidden sm:inline-flex rounded-lg bg-gold hover:bg-amber-600 !text-white font-bold px-6 py-2.5 h-auto shrink-0"
                     >
                         Search
                     </Button>
                 </div>
                 <p
                     id="dashboard-search-helper"
-                    className="mt-2 text-xs text-gray-500 dark:text-gray-400"
+                    className="hidden sm:block mt-2 text-xs text-gray-500 dark:text-gray-400"
                 >
                     Filter across Academy curriculum, Forex calculators, trading systems, playbooks, and research articles.
                 </p>
@@ -208,7 +208,7 @@ export default function SearchClient() {
                                     <Link
                                         key={`${result.type}-${result.id}`}
                                         href={result.slug}
-                                        className="block bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-gray-200 dark:border-white/10 hover:border-gold/40 dark:hover:border-gold/40 transition-shadow group shadow-sm hover:shadow-md"
+                                        className="block bg-white dark:bg-[#1E2028] p-3.5 sm:p-5 rounded-xl border border-gray-200 dark:border-white/10 hover:border-gold/40 dark:hover:border-gold/40 transition-shadow group shadow-sm hover:shadow-md"
                                     >
                                         <div className="flex items-start gap-4">
                                             <div

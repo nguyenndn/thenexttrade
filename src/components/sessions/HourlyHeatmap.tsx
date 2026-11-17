@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 interface HourlyHeatmapProps {
     data: Array<{
         hour: number;
@@ -76,116 +78,152 @@ export function HourlyHeatmap({
     const amHours = fullHours.slice(0, 12);
     const pmHours = fullHours.slice(12, 24);
 
+    const defaultActiveHour =
+        fullHours.find((h) => h.totalTrades > 0)?.hour ?? 0;
+    const [selectedHour, setSelectedHour] = useState<number>(defaultActiveHour);
+    const activeHourInfo =
+        fullHours.find((h) => h.hour === selectedHour) ?? fullHours[0];
+
     const renderHourBlock = (
         hoursData: typeof fullHours,
         isTopRow: boolean = false
     ) => (
-        <div className="space-y-1.5">
-            {/* Hour cells */}
-            <div className="grid grid-cols-12 gap-1.5 md:gap-2">
-                {hoursData.map((hour) => (
-                    <Tooltip key={hour.hour} delayDuration={0}>
-                        <TooltipTrigger asChild>
-                            <div
-                                role="button"
-                                tabIndex={0}
-                                aria-label={`${hour.hourLabel} UTC. ${hour.totalTrades} trades. P&L: ${hour.totalPnL.toFixed(2)}`}
-                                onKeyDown={(e) => {
-                                    if (e.key === "Enter" || e.key === " ") {
-                                        e.preventDefault();
-                                        // Activate tooltip if needed, or trigger click
-                                    }
-                                }}
-                                className={`
- w-full h-[80px] rounded-lg flex flex-col items-center justify-center
+        <div className="grid grid-cols-6 md:grid-cols-12 gap-1.5 md:gap-2">
+            {hoursData.map((hour) => {
+                const isSelected = selectedHour === hour.hour;
+                return (
+                    <div key={hour.hour} className="space-y-1">
+                        <Tooltip delayDuration={0}>
+                            <TooltipTrigger asChild>
+                                <div
+                                    role="button"
+                                    tabIndex={0}
+                                    aria-label={`${hour.hourLabel} UTC. ${hour.totalTrades} trades. P&L: ${hour.totalPnL.toFixed(2)}`}
+                                    onClick={() => setSelectedHour(hour.hour)}
+                                    onKeyDown={(e) => {
+                                        if (
+                                            e.key === "Enter" ||
+                                            e.key === " "
+                                        ) {
+                                            e.preventDefault();
+                                            setSelectedHour(hour.hour);
+                                        }
+                                    }}
+                                    className={`
+ w-full h-12 md:h-[80px] rounded-lg flex flex-col items-center justify-center
  cursor-pointer transition-all hover:scale-105 focus:scale-105 focus:outline-none focus:ring-2 focus:ring-gold/50 relative shadow-sm border border-transparent hover:border-white/20 hover:z-20 focus:z-20
+ ${isSelected ? "ring-2 ring-amber-500 md:ring-0" : ""}
  ${getColor(hour)}
  `}
+                                >
+                                    <span className="font-bold font-mono tabular-nums text-xs md:text-[13px] opacity-100">
+                                        {hour.totalTrades > 0
+                                            ? hour.totalTrades
+                                            : ""}
+                                    </span>
+                                </div>
+                            </TooltipTrigger>
+
+                            {/* Radix Portal Tooltip */}
+                            <TooltipContent
+                                side={isTopRow ? "bottom" : "top"}
+                                sideOffset={8}
+                                className="w-36 bg-white dark:bg-[#1E2028] border border-dashboard text-gray-800 dark:text-white p-3 shadow-xl rounded-lg z-[100]"
                             >
-                                <span className="font-bold font-mono tabular-nums text-[13px] opacity-100">
-                                    {hour.totalTrades > 0
-                                        ? hour.totalTrades
-                                        : ""}
-                                </span>
-                            </div>
-                        </TooltipTrigger>
-
-                        {/* Radix Portal Tooltip */}
-                        <TooltipContent
-                            side={isTopRow ? "bottom" : "top"}
-                            sideOffset={8}
-                            className="w-36 bg-white dark:bg-[#1E2028] border border-dashboard text-gray-800 dark:text-white p-3 shadow-xl rounded-lg z-[100]"
-                        >
-                            <p className="font-bold font-mono tabular-nums border-b border-dashboard pb-2 mb-2">
-                                {hour.hourLabel} UTC
-                            </p>
-                            <div className="space-y-1.5">
-                                <div className="flex justify-between items-center gap-2">
-                                    <span className="text-gray-500">
-                                        Trades:
-                                    </span>
-                                    <span className="font-medium font-mono tabular-nums">
-                                        {hour.totalTrades}
-                                    </span>
+                                <p className="font-bold font-mono tabular-nums border-b border-dashboard pb-2 mb-2">
+                                    {hour.hourLabel} UTC
+                                </p>
+                                <div className="space-y-1.5">
+                                    <div className="flex justify-between items-center gap-2">
+                                        <span className="text-gray-500">
+                                            Trades:
+                                        </span>
+                                        <span className="font-medium font-mono tabular-nums">
+                                            {hour.totalTrades}
+                                        </span>
+                                    </div>
+                                    <div className="flex justify-between items-center gap-2">
+                                        <span className="text-gray-500">
+                                            Win Rate:
+                                        </span>
+                                        <span className="font-medium font-mono tabular-nums">
+                                            {hour.winRate.toFixed(0)}%
+                                        </span>
+                                    </div>
+                                    <div className="flex justify-between items-center gap-2">
+                                        <span className="text-gray-500">
+                                            P&L:
+                                        </span>
+                                        <span
+                                            className={`font-medium font-mono tabular-nums ${hour.totalPnL > 0 ? "text-primary dark:text-[#00C888]" : hour.totalPnL < 0 ? "text-red-500" : "text-gray-400"}`}
+                                        >
+                                            {formatDashboardCurrency(
+                                                hour.totalPnL,
+                                                currency,
+                                                { signDisplay: "always" }
+                                            )}
+                                        </span>
+                                    </div>
                                 </div>
-                                <div className="flex justify-between items-center gap-2">
-                                    <span className="text-gray-500">
-                                        Win Rate:
-                                    </span>
-                                    <span className="font-medium font-mono tabular-nums">
-                                        {hour.winRate.toFixed(0)}%
-                                    </span>
-                                </div>
-                                <div className="flex justify-between items-center gap-2">
-                                    <span className="text-gray-500">P&L:</span>
-                                    <span
-                                        className={`font-medium font-mono tabular-nums ${hour.totalPnL > 0 ? "text-primary dark:text-[#00C888]" : hour.totalPnL < 0 ? "text-red-500" : "text-gray-400"}`}
-                                    >
-                                        {formatDashboardCurrency(
-                                            hour.totalPnL,
-                                            currency,
-                                            { signDisplay: "always" }
-                                        )}
-                                    </span>
-                                </div>
-                            </div>
-                        </TooltipContent>
-                    </Tooltip>
-                ))}
-            </div>
-
-            {/* Hour labels */}
-            <div className="grid grid-cols-12 gap-1.5 md:gap-2">
-                {hoursData.map((hour) => (
-                    <div
-                        key={hour.hour}
-                        className="text-center text-[10px] font-medium font-mono tabular-nums text-gray-500"
-                    >
-                        {hour.hour}
+                            </TooltipContent>
+                        </Tooltip>
+                        <div className="text-center text-[10px] font-medium font-mono tabular-nums text-gray-500">
+                            {hour.hour}
+                        </div>
                     </div>
-                ))}
-            </div>
+                );
+            })}
         </div>
     );
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-dashboard shadow-sm transition-shadow hover:shadow-md">
+        <div className="bg-white dark:bg-[#1E2028] p-4 sm:p-6 rounded-xl border border-dashboard shadow-sm transition-shadow hover:shadow-md">
             <h3 className="font-bold text-gray-700 dark:text-white mb-2">
                 24-Hour Trading Heatmap
             </h3>
-            <p className="text-sm text-gray-600 mb-6">
+            <p className="text-sm text-gray-600 mb-4 md:mb-6">
                 P&L distribution across the day (UTC timezone)
             </p>
 
             {/* Heatmap Grid */}
             <TooltipProvider>
-                <div className="overflow-x-auto pb-6 custom-scrollbar">
-                    <div className="min-w-[700px] md:min-w-full space-y-8 pr-6 pl-1 md:pr-1 md:pl-0">
+                <div className="overflow-x-auto pb-2 md:pb-6 custom-scrollbar">
+                    <div className="min-w-0 md:min-w-full space-y-4 md:space-y-8 md:pr-1 md:pl-0">
                         {renderHourBlock(amHours, true)}
                         {renderHourBlock(pmHours, false)}
                     </div>
                 </div>
             </TooltipProvider>
+
+            {/* Compact selected-hour detail strip on mobile (< md) */}
+            <div className="md:hidden mt-3 rounded-lg bg-gray-50 dark:bg-[#151925] border border-dashboard px-3 py-2.5 flex items-center justify-between gap-2 text-xs">
+                <span className="font-bold font-mono tabular-nums text-gray-800 dark:text-white shrink-0">
+                    {activeHourInfo.hourLabel} UTC
+                </span>
+                <div className="flex items-center gap-3 font-mono tabular-nums">
+                    <span className="text-gray-500 dark:text-gray-400">
+                        {activeHourInfo.totalTrades}T
+                    </span>
+                    <span className="text-gray-500 dark:text-gray-400">
+                        {activeHourInfo.winRate.toFixed(0)}% WR
+                    </span>
+                    <span
+                        className={`font-bold ${
+                            activeHourInfo.totalPnL > 0
+                                ? "text-primary dark:text-[#00C888]"
+                                : activeHourInfo.totalPnL < 0
+                                  ? "text-red-500"
+                                  : "text-gray-500"
+                        }`}
+                    >
+                        {formatDashboardCurrency(
+                            activeHourInfo.totalPnL,
+                            currency,
+                            { signDisplay: "always" }
+                        )}
+                    </span>
+                </div>
+            </div>
 
             {/* Color Legend */}
             <div className="flex items-center justify-end gap-4 mt-6 text-xs text-gray-600 dark:text-gray-400">

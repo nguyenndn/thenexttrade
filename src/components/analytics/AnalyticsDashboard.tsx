@@ -1,7 +1,5 @@
 "use client";
 
-import { useSearchParams, useRouter } from "next/navigation";
-import { format } from "date-fns";
 import { BarChart3 } from "lucide-react";
 import { EmptyStateCTAs } from "@/components/ui/EmptyStateCTAs";
 
@@ -79,7 +77,6 @@ interface AnalyticsDashboardProps {
 export function AnalyticsDashboard({
     data,
     accountId,
-    dateRange,
 }: AnalyticsDashboardProps) {
     const isEmpty = !data || data.summary.totalTrades === 0;
 
@@ -121,7 +118,7 @@ export function AnalyticsLoadingSkeleton() {
     return (
         <div className="space-y-4 animate-pulse">
             <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded-lg w-48" />
-            <div className="grid grid-cols-5 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
                 {[...Array(5)].map((_, i) => (
                     <div
                         key={i}
@@ -129,7 +126,7 @@ export function AnalyticsLoadingSkeleton() {
                     />
                 ))}
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <div className="h-80 bg-gray-200 dark:bg-gray-700 rounded-lg" />
                 <div className="h-80 bg-gray-200 dark:bg-gray-700 rounded-lg" />
             </div>

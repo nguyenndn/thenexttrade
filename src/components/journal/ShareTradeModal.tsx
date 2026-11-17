@@ -214,13 +214,13 @@ export function ShareTradeModal({
                 </VisuallyHidden>
 
                 {/* Header */}
-                <div className="px-6 py-4 border-b border-dashboard flex items-center justify-between bg-white dark:bg-[#0D111C]">
+                <div className="px-4 sm:px-6 py-3.5 sm:py-4 border-b border-dashboard flex items-center justify-between bg-white dark:bg-[#0D111C]">
                     <h2 className="text-lg font-bold text-gray-700 dark:text-white">
                         Share Your Trade
                     </h2>
                 </div>
 
-                <div className="p-6 space-y-6 max-h-[85vh] overflow-y-auto">
+                <div className="p-4 sm:p-6 space-y-5 sm:space-y-6 max-h-[85vh] overflow-y-auto">
                     {/* Controls Row */}
                     <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
                         <span className="text-sm font-bold text-gray-600 uppercase tracking-wider">
@@ -248,10 +248,16 @@ export function ShareTradeModal({
                                 <Button
                                     variant="outline"
                                     onClick={() => setMode("private")}
-                                    className={`rounded-lg font-bold transition-all h-8 px-3 text-xs flex items-center gap-1.5 ${mode === "private" ? "bg-slate-800 dark:bg-slate-700 !text-white shadow-sm border-transparent hover:bg-slate-900 hover:!text-white" : "text-gray-600 dark:text-gray-300 hover:text-gray-800 border-transparent dark:hover:text-white hover:bg-transparent"}`}
+                                    className={`rounded-lg font-bold transition-all h-8 px-2.5 sm:px-3 text-xs flex items-center gap-1.5 ${mode === "private" ? "bg-slate-800 dark:bg-slate-700 !text-white shadow-sm border-transparent hover:bg-slate-900 hover:!text-white" : "text-gray-600 dark:text-gray-300 hover:text-gray-800 border-transparent dark:hover:text-white hover:bg-transparent"}`}
                                 >
                                     <Lock size={12} />
-                                    Private (Link Disabled)
+                                    <span>
+                                        Private
+                                        <span className="hidden sm:inline">
+                                            {" "}
+                                            (Link Disabled)
+                                        </span>
+                                    </span>
                                 </Button>
                                 <Button
                                     variant="outline"

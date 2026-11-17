@@ -40,8 +40,8 @@ export function EquityCurve({
     }
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-lg border border-dashboard shadow-sm hover:shadow-md transition-shadow duration-200 group/card">
-            <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
+        <div className="bg-white dark:bg-[#1E2028] p-4 sm:p-6 rounded-lg border border-dashboard shadow-sm hover:shadow-md transition-shadow duration-200 group/card">
+            <div className="flex flex-wrap items-center justify-between gap-4 mb-6 sm:mb-8">
                 <div className="flex items-center gap-3">
                     <div className="p-2 bg-primary/10 rounded-lg text-primary">
                         <TrendingUp size={20} />
@@ -58,7 +58,7 @@ export function EquityCurve({
 
                 <div className="flex items-center gap-6">
                     {totalCommission !== undefined && (
-                        <div className="text-right">
+                        <div className="hidden sm:block text-right">
                             <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-0.5">
                                 Commission
                             </p>
@@ -74,7 +74,7 @@ export function EquityCurve({
                         </div>
                     )}
                     {totalSwap !== undefined && (
-                        <div className="text-right">
+                        <div className="hidden sm:block text-right">
                             <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-0.5">
                                 Swap
                             </p>
@@ -109,7 +109,7 @@ export function EquityCurve({
             </div>
 
             <div className="h-[340px] w-full overflow-x-auto overflow-y-hidden [&_svg]:outline-none [&_.recharts-wrapper]:outline-none scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-800 pb-2">
-                <div className="min-w-[600px] h-full">
+                <div className="min-w-0 h-full">
                     <ResponsiveContainer
                         width="100%"
                         height="100%"
@@ -121,7 +121,7 @@ export function EquityCurve({
                             margin={{
                                 top: 10,
                                 right: 10,
-                                left: 10,
+                                left: 0,
                                 bottom: 20,
                             }}
                         >
@@ -225,7 +225,7 @@ export function EquityCurve({
                                     })
                                 }
                                 domain={["auto", "auto"]}
-                                width={80}
+                                width={52}
                             />
                             <Tooltip
                                 content={({ active, payload, label }) => {

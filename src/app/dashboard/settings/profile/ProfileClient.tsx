@@ -259,82 +259,107 @@ export default function ProfileClient({
             {/* Profile Settings Card (Header + Toggle + Headline) */}
             <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm overflow-hidden">
                 {/* Header + Toggle Row */}
-                <div className="p-5 flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-lg bg-gold/10 border border-gold/20 flex items-center justify-center flex-shrink-0">
-                            <Globe size={24} className="text-amber-600 dark:text-gold" />
-                        </div>
-                        <div>
-                            <div className="flex items-center gap-2.5">
-                                <h2 className="text-lg font-bold text-gray-700 dark:text-white">
-                                    Public Profile
-                                </h2>
-                                {/* Status Badge */}
-                                <span
-                                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-bold ${
-                                        settings.isPublicProfile
-                                            ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
-                                            : "bg-gray-100 dark:bg-white/5 text-gray-500 border border-dashboard"
-                                    }`}
-                                >
-                                    {settings.isPublicProfile ? (
-                                        <Eye size={10} />
-                                    ) : (
-                                        <EyeOff size={10} />
-                                    )}
-                                    {settings.isPublicProfile
-                                        ? "Public"
-                                        : "Private"}
-                                </span>
+                <div className="p-4 sm:p-5">
+                    <div className="flex items-center justify-between gap-3 sm:gap-4">
+                        <div className="flex items-center gap-4 min-w-0">
+                            <div className="hidden sm:flex w-12 h-12 rounded-lg bg-gold/10 border border-gold/20 items-center justify-center flex-shrink-0">
+                                <Globe size={24} className="text-amber-600 dark:text-gold" />
                             </div>
-                            <p className="text-gray-500 text-sm mt-0.5">
-                                {settings.username ? (
-                                    <>
-                                        Profile URL:{" "}
-                                        <span className="text-amber-600 dark:text-gold font-semibold font-mono">
-                                            /trader/{settings.username}
-                                        </span>
-                                        {settings.isPublicProfile &&
-                                            settings.username && (
-                                                <span className="inline-flex items-center gap-3 ml-2">
-                                                    <Link
-                                                        href={`/trader/${settings.username}`}
-                                                        target="_blank"
-                                                        className="inline-flex items-center gap-1 text-xs text-amber-600 dark:text-gold hover:underline font-semibold"
-                                                    >
-                                                        <ExternalLink
-                                                            size={11}
-                                                        />
-                                                        Public Page
-                                                    </Link>
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="sm"
-                                                        type="button"
-                                                        onClick={() =>
-                                                            setIsPreviewOpen(
-                                                                true
-                                                            )
-                                                        }
-                                                        className="inline-flex items-center gap-1 text-xs text-amber-600 dark:text-gold hover:underline font-bold h-auto p-0 hover:bg-transparent"
-                                                    >
-                                                        <Eye size={11} />
-                                                        Live Preview Card
-                                                    </Button>
-                                                </span>
-                                            )}
-                                    </>
-                                ) : (
-                                    "Set a username in Account Settings to enable."
-                                )}
-                            </p>
+                            <div className="min-w-0">
+                                <div className="flex items-center gap-2.5 flex-wrap">
+                                    <h2 className="text-lg font-bold text-gray-700 dark:text-white">
+                                        Public Profile
+                                    </h2>
+                                    {/* Status Badge */}
+                                    <span
+                                        className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-bold shrink-0 ${
+                                            settings.isPublicProfile
+                                                ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
+                                                : "bg-gray-100 dark:bg-white/5 text-gray-500 border border-dashboard"
+                                        }`}
+                                    >
+                                        {settings.isPublicProfile ? (
+                                            <Eye size={10} />
+                                        ) : (
+                                            <EyeOff size={10} />
+                                        )}
+                                        {settings.isPublicProfile
+                                            ? "Public"
+                                            : "Private"}
+                                    </span>
+                                </div>
+                                <p className="text-gray-500 text-xs sm:text-sm mt-0.5 break-words">
+                                    {settings.username ? (
+                                        <>
+                                            Profile URL:{" "}
+                                            <span className="text-amber-600 dark:text-gold font-semibold font-mono">
+                                                /trader/{settings.username}
+                                            </span>
+                                            {settings.isPublicProfile &&
+                                                settings.username && (
+                                                    <span className="hidden sm:inline-flex items-center gap-3 ml-2">
+                                                        <Link
+                                                            href={`/trader/${settings.username}`}
+                                                            target="_blank"
+                                                            className="inline-flex items-center gap-1 text-xs text-amber-600 dark:text-gold hover:underline font-semibold"
+                                                        >
+                                                            <ExternalLink
+                                                                size={11}
+                                                            />
+                                                            Public Page
+                                                        </Link>
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="sm"
+                                                            type="button"
+                                                            onClick={() =>
+                                                                setIsPreviewOpen(
+                                                                    true
+                                                                )
+                                                            }
+                                                            className="inline-flex items-center gap-1 text-xs text-amber-600 dark:text-gold hover:underline font-bold h-auto p-0 hover:bg-transparent"
+                                                        >
+                                                            <Eye size={11} />
+                                                            Live Preview Card
+                                                        </Button>
+                                                    </span>
+                                                )}
+                                        </>
+                                    ) : (
+                                        "Set a username in Account Settings to enable."
+                                    )}
+                                </p>
+                            </div>
                         </div>
+                        <ToggleSwitch
+                            enabled={settings.isPublicProfile}
+                            onToggle={() => handleToggle("isPublicProfile")}
+                            disabled={!settings.username}
+                        />
                     </div>
-                    <ToggleSwitch
-                        enabled={settings.isPublicProfile}
-                        onToggle={() => handleToggle("isPublicProfile")}
-                        disabled={!settings.username}
-                    />
+
+                    {settings.isPublicProfile && settings.username && (
+                        <div className="sm:hidden mt-3 pt-3 border-t border-dashboard flex items-center gap-4">
+                            <Link
+                                href={`/trader/${settings.username}`}
+                                target="_blank"
+                                className="inline-flex items-center gap-1.5 text-xs text-amber-600 dark:text-gold hover:underline font-bold"
+                            >
+                                <ExternalLink size={12} />
+                                Public Page
+                            </Link>
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                type="button"
+                                onClick={() => setIsPreviewOpen(true)}
+                                className="inline-flex items-center gap-1.5 text-xs text-amber-600 dark:text-gold hover:underline font-bold h-auto p-0 hover:bg-transparent"
+                            >
+                                <Eye size={12} />
+                                Live Preview Card
+                            </Button>
+                        </div>
+                    )}
                 </div>
 
                 {/* Username Warning */}
@@ -398,12 +423,12 @@ export default function ProfileClient({
             {settings.isPublicProfile && (
                 <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm overflow-hidden">
                     {/* Section Header */}
-                    <div className="px-5 py-4 border-b border-dashboard flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 rounded-lg bg-rose-500/10 border border-rose-500/20 flex items-center justify-center">
+                    <div className="px-4 sm:px-5 py-4 border-b border-dashboard flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-3 min-w-0">
+                            <div className="w-9 h-9 rounded-lg bg-rose-500/10 border border-rose-500/20 flex items-center justify-center shrink-0">
                                 <Shield size={16} className="text-rose-500" />
                             </div>
-                            <div>
+                            <div className="min-w-0">
                                 <h3 className="font-bold text-gray-700 dark:text-white text-sm">
                                     Privacy Controls
                                 </h3>
@@ -413,7 +438,7 @@ export default function ProfileClient({
                                 </p>
                             </div>
                         </div>
-                        <span className="text-xs font-bold font-mono tabular-nums text-gray-500 bg-gray-50/80 dark:bg-[#151925] border border-dashboard px-2.5 py-1 rounded-lg">
+                        <span className="shrink-0 whitespace-nowrap text-xs font-bold font-mono tabular-nums text-gray-500 bg-gray-50/80 dark:bg-[#151925] border border-dashboard px-2.5 py-1 rounded-lg">
                             {activeCount}/{visibilityItems.length} visible
                         </span>
                     </div>
@@ -673,8 +698,8 @@ export default function ProfileClient({
             )}
 
             <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
-                <DialogContent className="max-w-[490px] w-full p-0 overflow-hidden bg-white dark:bg-[#0D111C] border-dashboard dark:border-white/[0.08] rounded-2xl shadow-2xl max-h-[94vh] flex flex-col">
-                    <div className="p-4 px-6 border-b border-dashboard dark:border-white/[0.08] flex-shrink-0">
+                <DialogContent className="max-w-[490px] p-0 overflow-hidden bg-white dark:bg-[#0D111C] border-dashboard dark:border-white/[0.08] rounded-2xl shadow-2xl max-h-[94vh] flex flex-col">
+                    <div className="p-4 px-4 sm:px-6 border-b border-dashboard dark:border-white/[0.08] flex-shrink-0">
                         <DialogHeader>
                             <DialogTitle className="text-base font-black text-gray-800 dark:text-white flex items-center gap-2">
                                 <Shield size={16} className="text-amber-600 dark:text-gold" />

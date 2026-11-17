@@ -120,6 +120,7 @@ export default async function AnalyticsPage({
             <PageHeader
                 title="Analytics"
                 description="Analyze your trading performance."
+                hideDescriptionOnMobile
             >
                 {tradingDataState.hasTradeData && (
                     <DashboardFilter

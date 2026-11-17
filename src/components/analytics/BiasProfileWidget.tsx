@@ -340,16 +340,16 @@ export function BiasProfileWidget({ accountId }: { accountId?: string }) {
         { name: "FOMO", value: profile.biases.fomo },
         { name: "Overconfidence", value: profile.biases.overconfidence },
         {
-            name: "Emotional Contagion",
+            name: "Contagion",
             value: profile.biases.emotionalContagion,
         },
     ];
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm flex flex-col justify-between min-h-[460px] lg:h-full group transition-all duration-300">
-            <div className="p-5 flex-1 flex flex-col justify-between">
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm flex flex-col justify-between min-h-[420px] sm:min-h-[460px] lg:h-full group transition-all duration-300">
+            <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between">
                 {/* Header */}
-                <div className="flex items-center justify-between mb-2">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
                     <div className="flex items-center gap-2.5">
                         <div className="p-2 rounded-lg bg-amber-500/10 text-amber-500 shrink-0">
                             <Brain className="h-5 w-5 animate-pulse" />
@@ -363,7 +363,7 @@ export function BiasProfileWidget({ accountId }: { accountId?: string }) {
                             </p>
                         </div>
                     </div>
-                    <div className="text-right">
+                    <div className="sm:text-right">
                         <p className="text-base sm:text-lg font-black text-amber-600 dark:text-amber-400">
                             {getBiasDisplayName(profile.dominantBias)}
                         </p>
@@ -374,17 +374,17 @@ export function BiasProfileWidget({ accountId }: { accountId?: string }) {
                 </div>
 
                 {/* Radar Chart */}
-                <div className="flex-1 min-h-0 w-full my-2 flex items-center justify-center">
+                <div className="flex-1 min-h-[180px] w-full my-2 flex items-center justify-center">
                     <ResponsiveContainer
                         width="100%"
                         height="100%"
                         minWidth={0}
-                        minHeight={100}
+                        minHeight={160}
                     >
                         <RadarChart
                             cx="50%"
                             cy="50%"
-                            outerRadius="72%"
+                            outerRadius="65%"
                             data={biasData}
                         >
                             <PolarGrid
@@ -395,7 +395,7 @@ export function BiasProfileWidget({ accountId }: { accountId?: string }) {
                                 dataKey="name"
                                 tick={{
                                     fill: "#9CA3AF",
-                                    fontSize: 11,
+                                    fontSize: 10,
                                     fontWeight: 600,
                                 }}
                                 tickLine={false}
@@ -430,7 +430,7 @@ export function BiasProfileWidget({ accountId }: { accountId?: string }) {
                 </div>
 
                 {/* Dimension Breakdown */}
-                <div className="grid grid-cols-4 gap-1.5 mt-1">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 mt-1">
                     <div className="text-center px-1 py-2 rounded-lg bg-gray-50 dark:bg-white/[0.03] border border-dashboard/50">
                         <p className="text-base font-black font-mono tabular-nums text-amber-600 dark:text-amber-400">
                             {profile.biases.lossAversion}%
@@ -489,7 +489,7 @@ export function BiasProfileWidget({ accountId }: { accountId?: string }) {
 
             {/* Recommended Lesson CTA Loop */}
             <div className="p-4 border-t border-dashboard bg-gray-50/50 dark:bg-white/[0.01]">
-                <div className="flex items-center justify-between gap-3">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
                     <div className="flex items-center gap-2 overflow-hidden">
                         <div className="p-1 rounded-lg bg-amber-500/10 text-amber-500 shrink-0">
                             <BookOpen className="h-3.5 w-3.5" />
@@ -506,15 +506,15 @@ export function BiasProfileWidget({ accountId }: { accountId?: string }) {
 
                     <Link
                         href={profile.recommendedLesson.path}
-                        className="shrink-0"
+                        className="shrink-0 w-full sm:w-auto"
                     >
-                        <Button className="bg-gold hover:bg-amber-600 text-white font-bold text-xs py-2 px-3 rounded-lg flex items-center gap-0.5 shadow-md shadow-amber-500/20 border-none">
+                        <Button className="w-full sm:w-auto justify-center bg-gold hover:bg-amber-600 text-white font-bold text-xs py-2 px-3 rounded-lg flex items-center gap-0.5 shadow-md shadow-amber-500/20 border-none">
                             Correct Mental Bias
                             <ChevronRight className="h-3.5 w-3.5" />
                         </Button>
                     </Link>
                 </div>
-                <div className="flex items-center gap-1.5 mt-2 justify-center text-[10px] text-gray-500 dark:text-gray-400">
+                <div className="hidden sm:flex items-center gap-1.5 mt-2 justify-center text-[10px] text-gray-500 dark:text-gray-400">
                     <Brain className="h-3 w-3 text-amber-500" />
                     <span>
                         Complete the recommended lesson to earn{" "}

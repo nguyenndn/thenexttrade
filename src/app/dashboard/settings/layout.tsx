@@ -8,20 +8,16 @@ import {
     MessageSquare,
     Globe,
     RefreshCw,
-    type LucideIcon,
 } from "lucide-react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { TabBar } from "@/components/ui/TabBar";
 import { useSystemConfig } from "@/lib/dashboard-context";
+import {
+    SettingsMobileNav,
+    type SettingsNavItem,
+} from "./SettingsMobileNav";
 
-interface NavItem {
-    title: string;
-    href: string;
-    icon: LucideIcon;
-    exact?: boolean;
-}
-
-const baseNavItems: NavItem[] = [
+const baseNavItems: SettingsNavItem[] = [
     {
         title: "Account",
         href: "/dashboard/settings",
@@ -47,7 +43,7 @@ const baseNavItems: NavItem[] = [
     { title: "Login Streak", href: "/dashboard/settings/streak", icon: Flame },
 ];
 
-const feedbackNavItem: NavItem = {
+const feedbackNavItem: SettingsNavItem = {
     title: "Feedback & Support",
     href: "/dashboard/settings/feedback",
     icon: MessageSquare,
@@ -72,9 +68,12 @@ export default function SettingsLayout({
                 description="Manage your account, profile, and security settings."
             />
 
-            {/* ── Horizontal Tab Nav (Pill Style) ── */}
+            {/* ── Mobile Dropdown Section Switcher (< md) ── */}
+            <SettingsMobileNav items={navItems} />
+
+            {/* ── Horizontal Tab Nav (Pill Style, >= md) ── */}
             <TabBar
-                className="max-w-full"
+                className="hidden md:inline-flex max-w-full"
                 tabs={navItems.map((item) => ({
                     label: item.title,
                     href: item.href,

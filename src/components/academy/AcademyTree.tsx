@@ -530,7 +530,7 @@ export function AcademyTree({
         <>
             <div
                 className={cn(
-                    "relative min-h-[600px] w-full py-16 px-4 overflow-hidden bg-white dark:bg-[#0B0E14] transition-colors duration-300",
+                    "relative min-h-[600px] w-full py-8 sm:py-16 px-4 overflow-hidden bg-white dark:bg-[#0B0E14] transition-colors duration-300",
                     className
                 )}
             >
@@ -541,11 +541,11 @@ export function AcademyTree({
                 <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.18] bg-[radial-gradient(rgba(0,200,136,0.55)_1px,transparent_1px)] [background-size:32px_32px] dark:opacity-[0.12] dark:bg-[radial-gradient(rgba(255,255,255,0.5)_1px,transparent_1px)] dark:[background-size:24px_24px]" />
 
                 {/* Learning Spine — central vertical line */}
-                <div className="absolute left-1/2 top-0 z-0 h-full w-px -translate-x-1/2 bg-gradient-to-b from-transparent via-amber-200/80 to-transparent dark:via-white/10" />
+                <div className="hidden md:block absolute left-1/2 top-0 z-0 h-full w-px -translate-x-1/2 bg-gradient-to-b from-transparent via-amber-200/80 to-transparent dark:via-white/10" />
 
                 {/* Topographic curriculum path SVG (behind nodes) */}
                 <svg
-                    className="absolute left-1/2 top-[10%] -translate-x-1/2 w-[800px] h-[80%] max-w-none opacity-[0.07] dark:opacity-[0.03] pointer-events-none"
+                    className="hidden md:block absolute left-1/2 top-[10%] -translate-x-1/2 w-[800px] h-[80%] max-w-none opacity-[0.07] dark:opacity-[0.03] pointer-events-none"
                     viewBox="0 0 800 600"
                     fill="none"
                     aria-hidden="true"
@@ -577,7 +577,7 @@ export function AcademyTree({
                 </div>
 
                 {/* Fireflies (reduced — premium, not noisy) */}
-                <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+                <div className="hidden md:block absolute inset-0 z-0 pointer-events-none overflow-hidden">
                     {fireflies.map((f) => (
                         <motion.div
                             key={f.id}
@@ -1079,7 +1079,7 @@ export function AcademyTree({
                                                                     )
                                                                 }
                                                                 className={cn(
-                                                                    "flex items-center gap-2.5 py-2 px-3 rounded-lg border w-full max-w-[85%] sm:max-w-xs cursor-pointer select-none transition-all",
+                                                                    "flex items-center gap-2.5 py-2 px-3 rounded-lg border w-full max-w-full sm:max-w-xs cursor-pointer select-none transition-all",
                                                                     "bg-gray-50/80 dark:bg-[#151925] border-gray-200 dark:border-white/10 hover:border-gray-400 dark:hover:border-white/20",
                                                                     isLevelLocked
                                                                         ? "opacity-40"
@@ -1156,7 +1156,7 @@ export function AcademyTree({
                                                                         )
                                                                     }
                                                                     className={cn(
-                                                                        "group flex items-center gap-2.5 py-2 px-3 rounded-lg border transition-all w-full max-w-[85%] sm:max-w-xs text-left h-auto font-normal",
+                                                                        "group flex items-center gap-2.5 py-2 px-3 rounded-lg border transition-all w-full max-w-full sm:max-w-xs text-left h-auto font-normal",
                                                                         "bg-emerald-50 dark:bg-emerald-500/5 border-emerald-200 dark:border-emerald-500/20",
                                                                         "hover:border-emerald-400 dark:hover:border-emerald-500/40 hover:shadow-md hover:shadow-emerald-500/10",
                                                                         isEven
@@ -1305,7 +1305,7 @@ export function AcademyTree({
                                                                         )
                                                                     }
                                                                     className={cn(
-                                                                        "group flex items-center gap-2.5 py-2.5 px-3 rounded-lg border-2 transition-all w-full max-w-[85%] sm:max-w-xs relative z-10 text-left h-auto font-normal",
+                                                                        "group flex items-center gap-2.5 py-2.5 px-3 rounded-lg border-2 transition-all w-full max-w-full sm:max-w-xs relative z-10 text-left h-auto font-normal",
                                                                         "bg-white dark:bg-[#1E2028] border-gold/60 dark:border-gold/40",
                                                                         "hover:border-gold dark:hover:border-gold/60 hover:shadow-md hover:shadow-amber-500/10",
                                                                         isEven
@@ -1411,7 +1411,7 @@ export function AcademyTree({
                                                                     )
                                                                 }
                                                                 className={cn(
-                                                                    "group flex items-center gap-2.5 py-2 px-3 rounded-lg border transition-all w-full max-w-[85%] sm:max-w-xs text-left h-auto font-normal",
+                                                                    "group flex items-center gap-2.5 py-2 px-3 rounded-lg border transition-all w-full max-w-full sm:max-w-xs text-left h-auto font-normal",
                                                                     "bg-white dark:bg-[#1E2028] border-gray-200 dark:border-white/10",
                                                                     "hover:border-gold/50 dark:hover:border-gold/30 hover:shadow-md hover:shadow-amber-500/5",
                                                                     isEven
@@ -1513,7 +1513,7 @@ export function AcademyTree({
 
             {/* Dev Test Panel */}
             {devMode && (
-                <div className="fixed bottom-4 right-4 z-50">
+                <div className="fixed bottom-20 lg:bottom-4 right-4 z-50">
                     <AnimatePresence>
                         {devMessage && (
                             <motion.div

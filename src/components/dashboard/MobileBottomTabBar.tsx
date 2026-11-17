@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { X, Bug, Lightbulb } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { dashboardMenuGroups, adminMenuGroups } from "@/config/navigation";
@@ -11,8 +11,39 @@ import { useFeatureFlags } from "@/lib/dashboard-context";
 import { Button } from "@/components/ui/Button";
 import { SPRING_SOFT, backdropVariants } from "@/lib/animations";
 
+const ACCOUNT_SCOPED_ROUTES = new Set([
+    "/dashboard",
+    "/dashboard/journal",
+    "/dashboard/strategies",
+    "/dashboard/rules",
+    "/dashboard/analytics",
+    "/dashboard/sessions",
+    "/dashboard/intelligence",
+    "/dashboard/reports",
+]);
+
+function buildScopedHref(
+    rawHref: string,
+    searchParams: ReturnType<typeof useSearchParams>
+): string {
+    if (!rawHref || rawHref === "#") return rawHref;
+    const cleanPath = rawHref.split("?")[0];
+    if (!ACCOUNT_SCOPED_ROUTES.has(cleanPath)) return rawHref;
+
+    const params = new URLSearchParams(rawHref.split("?")[1] || "");
+    const accountId = searchParams?.get("accountId");
+
+    if (accountId && !params.has("accountId")) {
+        params.set("accountId", accountId);
+    }
+
+    const qs = params.toString();
+    return qs ? `${cleanPath}?${qs}` : cleanPath;
+}
+
 export function MobileBottomTabBar() {
     const pathname = usePathname();
+    const searchParams = useSearchParams();
     const [openGroup, setOpenGroup] = useState<string | null>(null);
     const { disabledFlags, loaded } = useFeatureFlags();
 
@@ -102,7 +133,7 @@ export function MobileBottomTabBar() {
                         animate={{ y: 0 }}
                         exit={{ y: "100%" }}
                         transition={SPRING_SOFT}
-                        className="fixed bottom-[64px] left-0 right-0 z-40 lg:hidden"
+                        className="fixed bottom-[calc(4rem+env(safe-area-inset-bottom))] left-0 right-0 z-40 lg:hidden"
                     >
                     <div className="bg-white dark:bg-[#1E2028] rounded-t-2xl shadow-2xl shadow-black/20 border-t border-x border-dashboard overflow-hidden">
                         {/* Drag Handle */}
@@ -127,17 +158,21 @@ export function MobileBottomTabBar() {
                         </div>
 
                         {/* Sheet Items */}
-                        <div className="px-3 pb-4 space-y-0.5">
+                        <div className="px-3 pb-4 space-y-0.5 max-h-[65dvh] overflow-y-auto custom-scrollbar">
                             {activeSheet.items.map((item) => {
                                 const Icon = item.icon;
                                 const isActive =
                                     pathname === item.href ||
                                     pathname.startsWith(`${item.href}/`);
+                                const resolvedHref = buildScopedHref(
+                                    item.href,
+                                    searchParams
+                                );
 
                                 return (
                                     <Link
                                         key={item.href}
-                                        href={item.href}
+                                        href={resolvedHref}
                                         className={cn(
                                             "flex items-center gap-3 px-4 py-3 rounded-lg text-sm nav-menu-text transition-colors",
                                             isActive
@@ -219,6 +254,50 @@ export function MobileBottomTabBar() {
                         const Icon = group.icon;
                         const isActive = activeGroupLabel === group.label;
                         const isSheetOpen = openGroup === group.label;
+                        const singleDirectHref =
+                            group.items.length === 1 && group.label !== "More"
+                                ? buildScopedHref(
+                                      group.items[0].href,
+                                      searchParams
+                                  )
+                                : null;
+
+                        if (singleDirectHref) {
+                            return (
+                                <Link
+                                    key={group.label}
+                                    href={singleDirectHref}
+                                    onClick={() => setOpenGroup(null)}
+                                    className={cn(
+                                        "flex flex-col items-center justify-center gap-1 flex-1 h-full transition-colors relative font-normal",
+                                        isActive
+                                            ? "text-amber-500 dark:text-amber-400"
+                                            : "text-gray-600 dark:text-gray-300"
+                                    )}
+                                    aria-label={group.label}
+                                >
+                                    <Icon
+                                        size={22}
+                                        className={cn(
+                                            "transition-colors",
+                                            isActive
+                                                ? "text-amber-500 dark:text-amber-400"
+                                                : "text-gray-600 dark:text-gray-300"
+                                        )}
+                                    />
+                                    <span
+                                        className={cn(
+                                            "text-[10px] font-semibold",
+                                            isActive
+                                                ? "text-amber-500 dark:text-amber-400"
+                                                : "text-gray-600 dark:text-gray-300"
+                                        )}
+                                    >
+                                        {group.label}
+                                    </span>
+                                </Link>
+                            );
+                        }
 
                         return (
                             <Button

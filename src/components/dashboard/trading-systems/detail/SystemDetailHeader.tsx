@@ -50,7 +50,7 @@ export function SystemDetailHeader({
                     />
                     <span>Back to Trading Systems</span>
                 </Link>
-                <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 font-mono tabular-nums">
+                <span className="hidden sm:inline text-[11px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 font-mono tabular-nums">
                     TRADING SYSTEMS &bull; MT5 &bull; {product.name}
                 </span>
             </div>

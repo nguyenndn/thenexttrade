@@ -72,7 +72,7 @@ export function LeaderboardTabs({
     return (
         <div
             className={cn(
-                "bg-white dark:bg-[#1E2028] p-1.5 rounded-xl border border-dashboard dark:border-white/[0.08] shadow-sm h-auto max-w-full overflow-x-auto no-scrollbar",
+                "bg-white dark:bg-[#1E2028] p-1.5 rounded-xl border border-dashboard dark:border-white/[0.08] shadow-sm h-auto max-w-full overflow-x-auto scrollbar-hide",
                 equalWidth
                     ? "w-full flex lg:w-auto lg:inline-flex"
                     : "w-auto inline-flex"
@@ -89,19 +89,48 @@ export function LeaderboardTabs({
                         key={tab.type}
                         href={`/dashboard/leaderboard?${tabParams.toString()}`}
                         className={cn(
-                            "rounded-lg px-3.5 py-1.5 text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-2 border whitespace-nowrap",
+                            "shrink-0 rounded-lg px-2.5 sm:px-3.5 py-1.5 text-xs sm:text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-1.5 sm:gap-2 border whitespace-nowrap",
                             equalWidth && "flex-1 text-center lg:flex-none",
                             isActive
                                 ? cn(tab.activeBg, tab.activeColor, "font-bold shadow-xs")
                                 : "text-gray-500 dark:text-gray-400 border-transparent hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5"
                         )}
                     >
-                        <Icon size={15} className="shrink-0" />
-                        <span>{tab.label}</span>
+                        <Icon size={15} className="hidden sm:block shrink-0" />
+                        <span>
+                            {tab.type === "trading" ? (
+                                <>
+                                    <span className="hidden sm:inline">All </span>
+                                    Performance
+                                </>
+                            ) : tab.type === "streak" ? (
+                                <>
+                                    <span className="hidden sm:inline">Discipline </span>
+                                    Streak
+                                </>
+                            ) : tab.type === "mystats" ? (
+                                <>
+                                    My{" "}
+                                    <span className="hidden sm:inline">Telemetry</span>
+                                    <span className="sm:hidden">Stats</span>
+                                </>
+                            ) : (
+                                tab.label
+                            )}
+                        </span>
                         {tab.badge && (
-                            <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded-lg bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
-                                {tab.badge}
-                            </span>
+                            <>
+                                <span
+                                    className="sm:hidden relative flex h-2 w-2 shrink-0"
+                                    aria-label={tab.badge}
+                                >
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                                </span>
+                                <span className="hidden sm:inline-flex text-[9px] font-extrabold px-1.5 py-0.5 rounded-lg bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
+                                    {tab.badge}
+                                </span>
+                            </>
                         )}
                     </Link>
                 );

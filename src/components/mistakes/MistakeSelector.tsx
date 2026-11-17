@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { X, ChevronDown, AlertTriangle, Check } from "lucide-react";
 import {
     Popover,
@@ -113,7 +112,7 @@ export function MistakeSelector({
                     )}
                 </PopoverTrigger>
                 <PopoverContent
-                    className="w-[380px] p-0"
+                    className="w-[calc(100vw-2rem)] sm:w-[380px] p-0"
                     align="start"
                     sideOffset={5}
                     collisionPadding={20}

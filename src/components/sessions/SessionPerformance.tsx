@@ -30,7 +30,7 @@ export function SessionPerformance({
     currency = "USD",
 }: SessionPerformanceProps) {
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-dashboard shadow-sm h-full flex flex-col transition-shadow hover:shadow-md">
+        <div className="bg-white dark:bg-[#1E2028] p-4 sm:p-6 rounded-xl border border-dashboard shadow-sm h-full flex flex-col transition-shadow hover:shadow-md">
             <h3 className="font-bold text-gray-700 dark:text-white mb-2">
                 P&L by Session
             </h3>
@@ -54,7 +54,7 @@ export function SessionPerformance({
                         <XAxis
                             type="number"
                             stroke="#9CA3AF"
-                            fontSize={12}
+                            fontSize={11}
                             tickFormatter={(value) =>
                                 formatDashboardCurrency(value, currency, {
                                     fractionDigits: 0,
@@ -65,8 +65,8 @@ export function SessionPerformance({
                             type="category"
                             dataKey="displayName"
                             stroke="#9CA3AF"
-                            fontSize={12}
-                            width={120}
+                            fontSize={11}
+                            width={76}
                         />
                         <Tooltip
                             content={({ active, payload }) => {
@@ -145,7 +145,7 @@ export function SessionPerformance({
             </div>
 
             {/* Legend with session colors */}
-            <div className="flex flex-wrap gap-3 mt-4 pt-4 border-t border-dashboard">
+            <div className="hidden sm:flex flex-wrap gap-3 mt-4 pt-4 border-t border-dashboard">
                 {data.map((session) => (
                     <div
                         key={session.session}

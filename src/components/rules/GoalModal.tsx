@@ -84,7 +84,7 @@ export function GoalModal({ isOpen, onClose, onSuccess }: GoalModalProps) {
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-            <DialogContent className="max-w-md bg-white dark:bg-[#0D111C] border-dashboard dark:border-white/[0.08] p-6 rounded-2xl">
+            <DialogContent className="max-w-md bg-white dark:bg-[#0D111C] border-dashboard dark:border-white/[0.08] p-4 sm:p-6 rounded-2xl">
                 <DialogHeader className="border-b border-dashboard/80 dark:border-white/[0.08] pb-4">
                     <DialogTitle className="text-lg font-bold text-gray-800 dark:text-white">
                         Create Behavior Goal
@@ -111,7 +111,7 @@ export function GoalModal({ isOpen, onClose, onSuccess }: GoalModalProps) {
                     </div>
 
                     {/* Type & Period Grid */}
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                         <div>
                             <label className="text-[10px] font-black uppercase tracking-wider text-gray-400 dark:text-gray-500 block mb-1">
                                 Goal Type

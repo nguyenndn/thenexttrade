@@ -260,7 +260,7 @@ export default function FeedbackPageClient({
                         <div
                             key={fb.id}
                             className={cn(
-                                "bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-5 shadow-sm transition-all",
+                                "bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-4 sm:p-5 shadow-sm transition-all",
                                 "border-l-4",
                                 isBug
                                     ? "border-l-red-500"
@@ -269,14 +269,15 @@ export default function FeedbackPageClient({
                                     "ring-1 ring-gold/40 bg-gold/[0.02]"
                             )}
                         >
-                            <div className="flex items-start justify-between gap-4">
-                                <div className="flex items-start gap-3">
+                            {/* Top Header Row: [Checkbox + Type Badge] (left) and [Status Badge + Delete Button] (right) */}
+                            <div className="flex items-center justify-between gap-2">
+                                <div className="flex items-center gap-2.5 min-w-0">
                                     <Button
                                         variant="ghost"
                                         size="icon"
                                         type="button"
                                         onClick={() => toggleSelectItem(fb.id)}
-                                        className="h-6 w-6 mt-0.5 text-gray-400 hover:text-amber-600 dark:hover:text-gold transition-colors cursor-pointer hover:bg-transparent"
+                                        className="h-6 w-6 shrink-0 text-gray-400 hover:text-amber-600 dark:hover:text-gold transition-colors cursor-pointer hover:bg-transparent p-0"
                                         aria-label={
                                             isSelected
                                                 ? "Deselect item"
@@ -293,46 +294,31 @@ export default function FeedbackPageClient({
                                         )}
                                     </Button>
 
-                                    <div>
-                                        <div className="flex items-center gap-2.5 mb-1.5">
-                                            <div
-                                                className={cn(
-                                                    "p-1.5 rounded-lg",
-                                                    isBug
-                                                        ? "bg-red-500/10 text-red-500"
-                                                        : "bg-gold/10 text-amber-600 dark:text-gold"
-                                                )}
-                                            >
-                                                {isBug ? (
-                                                    <Bug size={16} />
-                                                ) : (
-                                                    <Lightbulb size={16} />
-                                                )}
-                                            </div>
-                                            <span className="text-xs font-bold uppercase tracking-wider text-gray-600 dark:text-gray-400">
-                                                {isBug
-                                                    ? "Bug Report"
-                                                    : "Feature Request"}
-                                            </span>
-                                        </div>
-
-                                        <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed mt-1">
-                                            {fb.message}
-                                        </p>
-
-                                        <p className="text-[11px] text-gray-500 mt-2 font-mono tabular-nums">
-                                            {formatDistanceToNow(
-                                                new Date(fb.createdAt)
-                                            )}{" "}
-                                            ago
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <div className="flex items-center gap-2 shrink-0">
                                     <div
                                         className={cn(
-                                            "flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-bold",
+                                            "p-1.5 rounded-lg shrink-0",
+                                            isBug
+                                                ? "bg-red-500/10 text-red-500"
+                                                : "bg-gold/10 text-amber-600 dark:text-gold"
+                                        )}
+                                    >
+                                        {isBug ? (
+                                            <Bug size={15} />
+                                        ) : (
+                                            <Lightbulb size={15} />
+                                        )}
+                                    </div>
+                                    <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-gray-600 dark:text-gray-400 truncate">
+                                        {isBug
+                                            ? "Bug Report"
+                                            : "Feature Request"}
+                                    </span>
+                                </div>
+
+                                <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                                    <div
+                                        className={cn(
+                                            "flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 rounded-lg text-[10px] sm:text-[11px] font-bold whitespace-nowrap",
                                             status.color
                                         )}
                                     >
@@ -345,13 +331,22 @@ export default function FeedbackPageClient({
                                         size="icon"
                                         onClick={() => setDeletingId(fb.id)}
                                         disabled={isPending}
-                                        className="w-7 h-7 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 border-gray-200 dark:border-white/10 rounded-lg transition-colors"
+                                        className="w-7 h-7 shrink-0 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 border-gray-200 dark:border-white/10 rounded-lg transition-colors"
                                         aria-label="Delete feedback"
                                     >
                                         <Trash2 size={13} />
                                     </Button>
                                 </div>
                             </div>
+
+                            {/* Full-width Message + Timestamp */}
+                            <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed mt-3 break-words">
+                                {fb.message}
+                            </p>
+
+                            <p className="text-[11px] text-gray-500 mt-2 font-mono tabular-nums">
+                                {formatDistanceToNow(new Date(fb.createdAt))} ago
+                            </p>
                         </div>
                     );
                 })}

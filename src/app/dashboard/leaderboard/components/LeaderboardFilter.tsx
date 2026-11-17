@@ -35,9 +35,9 @@ export function LeaderboardFilter({
     };
 
     return (
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
             {/* Period Selector */}
-            <div className="flex items-center bg-gray-50 dark:bg-white/5 p-1 rounded-xl border border-dashboard shrink-0 select-none gap-1">
+            <div className="flex items-center bg-gray-50 dark:bg-white/5 p-1 rounded-xl border border-dashboard shrink-0 select-none gap-0.5 sm:gap-1">
                 {PERIODS.map((p) => (
                     <Button
                         key={p.value}
@@ -46,7 +46,7 @@ export function LeaderboardFilter({
                         size="sm"
                         onClick={() => handleParamChange("period", p.value)}
                         className={cn(
-                            "rounded-lg px-2.5 py-1.5 h-auto text-xs font-bold transition-all duration-200 whitespace-nowrap",
+                            "rounded-lg px-2 sm:px-2.5 py-1.5 h-auto text-xs font-bold transition-all duration-200 whitespace-nowrap",
                             currentPeriod === p.value
                                 ? "bg-gold text-white shadow-sm hover:bg-gold"
                                 : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/5"
@@ -58,20 +58,21 @@ export function LeaderboardFilter({
             </div>
 
             {/* SortBy Selector */}
-            <div className="flex items-center bg-gray-50 dark:bg-white/5 p-1 rounded-xl border border-dashboard shrink-0 select-none gap-1">
+            <div className="flex items-center bg-gray-50 dark:bg-white/5 p-1 rounded-xl border border-dashboard shrink-0 select-none gap-0.5 sm:gap-1">
                 <Button
                     type="button"
                     variant="ghost"
                     size="sm"
                     onClick={() => handleParamChange("sortBy", "percentage")}
                     className={cn(
-                        "rounded-lg px-3 py-1.5 h-auto text-xs font-bold transition-all duration-200 whitespace-nowrap",
+                        "rounded-lg px-2 sm:px-2.5 py-1.5 h-auto text-xs font-bold transition-all duration-200 whitespace-nowrap",
                         currentSortBy === "percentage"
                             ? "bg-gold text-white shadow-sm hover:bg-gold"
                             : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/5"
                     )}
                 >
-                    Win Rate (%)
+                    <span className="sm:hidden">Win %</span>
+                    <span className="hidden sm:inline">Win Rate (%)</span>
                 </Button>
                 <Button
                     type="button"
@@ -79,13 +80,14 @@ export function LeaderboardFilter({
                     size="sm"
                     onClick={() => handleParamChange("sortBy", "currency")}
                     className={cn(
-                        "rounded-lg px-3 py-1.5 h-auto text-xs font-bold transition-all duration-200 whitespace-nowrap",
+                        "rounded-lg px-2 sm:px-2.5 py-1.5 h-auto text-xs font-bold transition-all duration-200 whitespace-nowrap",
                         currentSortBy === "currency"
                             ? "bg-gold text-white shadow-sm hover:bg-gold"
                             : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/5"
                     )}
                 >
-                    Net P&L ($)
+                    <span className="sm:hidden">Net $</span>
+                    <span className="hidden sm:inline">Net P&amp;L ($)</span>
                 </Button>
             </div>
 
@@ -96,7 +98,7 @@ export function LeaderboardFilter({
                     variant="outline"
                     size="sm"
                     onClick={onOpenMethodology}
-                    className="p-2 h-auto rounded-lg bg-gray-50 dark:bg-white/5 border border-dashboard hover:bg-amber-50 dark:hover:bg-amber-500/10 text-gray-500 dark:text-gray-400 hover:text-amber-600 dark:hover:text-amber-400 transition-colors flex items-center gap-1.5 text-xs font-semibold"
+                    className="p-1.5 sm:p-2 h-auto rounded-lg bg-gray-50 dark:bg-white/5 border border-dashboard hover:bg-amber-50 dark:hover:bg-amber-500/10 text-gray-500 dark:text-gray-400 hover:text-amber-600 dark:hover:text-amber-400 transition-colors flex items-center gap-1.5 text-xs font-semibold"
                     title="Methodology & Rules"
                     aria-label="Methodology & Rules"
                 >

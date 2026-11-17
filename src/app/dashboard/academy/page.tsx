@@ -217,6 +217,26 @@ export default async function UserAcademyDashboard() {
                 </div>
             </PageHeader>
 
+            {/* Mobile Quick-Jump Strip (avoids scrolling 3,500px past 12 levels) */}
+            <div className="flex items-center gap-2 lg:hidden">
+                <a
+                    href="#quizzes"
+                    className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-white dark:bg-[#1E2028] border border-dashboard text-xs font-bold text-gray-700 dark:text-gray-200 shadow-sm hover:border-gold/40 transition-colors"
+                >
+                    <Trophy size={14} className="text-amber-600 dark:text-gold shrink-0" />
+                    <span className="whitespace-nowrap">Quizzes</span>
+                </a>
+                <Link
+                    href="/dashboard/academy/certificates"
+                    className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-white dark:bg-[#1E2028] border border-dashboard text-xs font-bold text-gray-700 dark:text-gray-200 shadow-sm hover:border-gold/40 transition-colors"
+                >
+                    <Award size={14} className="text-amber-600 dark:text-gold shrink-0" />
+                    <span className="whitespace-nowrap">
+                        Certificates ({earnedCerts}/{totalLevels})
+                    </span>
+                </Link>
+            </div>
+
             <div className="grid lg:grid-cols-3 gap-4">
                 {/* Main Map Column */}
                 <div className="lg:col-span-2 space-y-4">
@@ -225,7 +245,7 @@ export default async function UserAcademyDashboard() {
                         <div
                             id="onborda-academy-resume"
                             className={cn(
-                                "relative overflow-hidden rounded-xl border p-6 shadow-sm transition-all duration-300",
+                                "relative overflow-hidden rounded-xl border p-4 sm:p-6 shadow-sm transition-all duration-300",
                                 idleDays >= 7
                                     ? "bg-white dark:bg-[#1E2028] border-amber-500/30 dark:border-amber-500/20"
                                     : "bg-white dark:bg-[#1E2028] border-dashboard dark:border-white/[0.08]"
@@ -301,8 +321,8 @@ export default async function UserAcademyDashboard() {
                             </div>
                         </div>
                     ) : (
-                        <div className="p-6 rounded-xl bg-gold/10 border border-gold/20 text-amber-600 dark:text-gold flex items-center gap-4">
-                            <Trophy size={24} />
+                        <div className="p-4 sm:p-6 rounded-xl bg-gold/10 border border-gold/20 text-amber-600 dark:text-gold flex items-center gap-4">
+                            <Trophy size={24} className="shrink-0" />
                             <div>
                                 <h3 className="font-bold">Mission Complete!</h3>
                                 <p className="text-sm opacity-80">
@@ -357,7 +377,10 @@ export default async function UserAcademyDashboard() {
                     </div>
 
                     {/* Available Quizzes */}
-                    <div className="bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-dashboard dark:border-white/[0.08] shadow-sm">
+                    <div
+                        id="quizzes"
+                        className="scroll-mt-24 bg-white dark:bg-[#1E2028] p-5 rounded-xl border border-dashboard dark:border-white/[0.08] shadow-sm"
+                    >
                         <h3 className="font-extrabold text-sm text-gray-700 dark:text-white mb-4 flex items-center gap-2 tracking-wider uppercase">
                             <Trophy size={18} className="text-amber-600 dark:text-gold" />{" "}
                             Quizzes

@@ -1,10 +1,10 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import { DateRangePicker } from "@/components/ui/DateRangePicker";
 import { AccountSelector } from "./AccountSelector";
-import { startOfMonth, endOfMonth, format, endOfDay, startOfDay } from "date-fns";
+import { startOfMonth, format, endOfDay, startOfDay } from "date-fns";
 import { Button } from "@/components/ui/Button";
 import { RefreshCw, Filter, X } from "lucide-react";
 import { toast } from "sonner";
@@ -35,7 +35,11 @@ export function DashboardFilter({
     defaultToAllTime,
 }: DashboardFilterProps) {
     const router = useRouter();
+    const pathname = usePathname();
     const searchParams = useSearchParams();
+    const hideAdvancedFilters =
+        pathname === "/dashboard/analytics" ||
+        pathname === "/dashboard/intelligence";
     const { isSampleMode } = useSampleMode();
     const prevSampleModeRef = useRef<boolean>(isSampleMode);
     const [isSyncing, setIsSyncing] = useState(false);
@@ -84,21 +88,28 @@ export function DashboardFilter({
         }
     }, [startStr, endStr]);
 
+    const urlDirection = searchParams.get("direction") || "";
+    const urlSource = searchParams.get("source") || "";
+    const urlComment = searchParams.get("comment") || "";
+    const urlMagicNumber = searchParams.get("magicNumber") || "";
+    const urlSymbol = searchParams.get("symbol") || "";
+    const urlResult = searchParams.get("result") || "";
+
     // Sync local advanced filter states with URL params
     useEffect(() => {
-        setDirection(searchParams.get("direction") || "");
-        setSource(searchParams.get("source") || "");
-        setComment(searchParams.get("comment") || "");
-        setMagicNumber(searchParams.get("magicNumber") || "");
-        setSymbol(searchParams.get("symbol") || "");
-        setResult(searchParams.get("result") || "");
+        setDirection(urlDirection);
+        setSource(urlSource);
+        setComment(urlComment);
+        setMagicNumber(urlMagicNumber);
+        setSymbol(urlSymbol);
+        setResult(urlResult);
     }, [
-        searchParams.get("direction"),
-        searchParams.get("source"),
-        searchParams.get("comment"),
-        searchParams.get("magicNumber"),
-        searchParams.get("symbol"),
-        searchParams.get("result"),
+        urlDirection,
+        urlSource,
+        urlComment,
+        urlMagicNumber,
+        urlSymbol,
+        urlResult,
     ]);
 
     const hasInitialized = useRef(false);
@@ -237,7 +248,7 @@ export function DashboardFilter({
             } else {
                 toast.error(res.error || "Failed to trigger sync");
             }
-        } catch (e) {
+        } catch {
             toast.error("Failed to request sync");
         } finally {
             setTimeout(() => {
@@ -330,7 +341,8 @@ export function DashboardFilter({
                         currentAccountId === "all"
                     }
                     variant="outline"
-                    className="flex items-center gap-1.5 h-10 px-3.5 text-[13px] font-medium border-gray-200 dark:border-[#382F1D] text-slate-700 dark:text-gray-200 bg-white dark:bg-[#1E2028] hover:bg-gray-50 dark:hover:bg-white/5 active:scale-95 transition-all shadow-sm rounded-lg shrink-0"
+                    aria-label="Sync Now"
+                    className="flex items-center justify-center gap-1.5 h-10 w-10 px-0 sm:w-auto sm:px-3.5 text-[13px] font-medium border-gray-200 dark:border-[#382F1D] text-slate-700 dark:text-gray-200 bg-white dark:bg-[#1E2028] hover:bg-gray-50 dark:hover:bg-white/5 active:scale-95 transition-all shadow-sm rounded-lg shrink-0"
                     title="Sync Account Now"
                 >
                     <RefreshCw
@@ -340,9 +352,10 @@ export function DashboardFilter({
                             isSyncing && "animate-spin text-amber-500"
                         )}
                     />
-                    <span>Sync Now</span>
+                    <span className="hidden sm:inline">Sync Now</span>
                 </Button>
 
+                {!hideAdvancedFilters && (
                 <Popover open={isOpen} onOpenChange={handleOpenChange}>
                     <PopoverTrigger asChild>
                         <Button
@@ -371,7 +384,7 @@ export function DashboardFilter({
                     </PopoverTrigger>
                     <PopoverContent
                         align="start"
-                        className="w-[330px] sm:w-[340px] border border-gray-200 dark:border-[#382F1D] bg-white dark:bg-[#1C1E24] shadow-2xl rounded-xl p-4"
+                        className="w-[calc(100vw-1.5rem)] sm:w-[340px] border border-gray-200 dark:border-[#382F1D] bg-white dark:bg-[#1C1E24] shadow-2xl rounded-xl p-4"
                     >
                         {/* Header */}
                         <div className="flex items-center justify-between pb-3 mb-3 border-b border-gray-100 dark:border-gray-800/60">
@@ -568,6 +581,7 @@ export function DashboardFilter({
                         </form>
                     </PopoverContent>
                 </Popover>
+                )}
 
                 <AccountSelector
                     currentAccountId={currentAccountId}

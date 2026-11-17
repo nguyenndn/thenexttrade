@@ -33,7 +33,7 @@ export function PairPerformance({ data, currency = "USD" }: PairPerformanceProps
     const { isEmpty, chartData, bestPair } = processPairPerformanceData(data);
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-lg border border-dashboard shadow-sm hover:shadow-md transition-shadow duration-200 group">
+        <div className="bg-white dark:bg-[#1E2028] p-4 sm:p-6 rounded-lg border border-dashboard shadow-sm hover:shadow-md transition-shadow duration-200 group">
             <div className="flex items-center gap-2.5 mb-6">
                 <div className="p-2 bg-primary/10 rounded-lg text-primary">
                     <BarChart2 size={18} />
@@ -59,7 +59,7 @@ export function PairPerformance({ data, currency = "USD" }: PairPerformanceProps
                         <BarChart
                             data={chartData}
                             layout="vertical"
-                            margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                            margin={{ top: 5, right: 12, left: 0, bottom: 5 }}
                         >
                             <CartesianGrid
                                 strokeDasharray="3 3"
@@ -78,7 +78,7 @@ export function PairPerformance({ data, currency = "USD" }: PairPerformanceProps
                                     fontWeight: 600,
                                     fill: isDark ? "#9CA3AF" : "#4B5563",
                                 }}
-                                width={80}
+                                width={62}
                             />
                             <Tooltip
                                 contentStyle={{
@@ -92,8 +92,8 @@ export function PairPerformance({ data, currency = "USD" }: PairPerformanceProps
                                     fontSize: "12px",
                                 }}
                                 itemStyle={{ color: isDark ? "#fff" : "#000" }}
-                                formatter={(value: any) => [
-                                    formatDashboardCurrency(Number(value), currency),
+                                formatter={(value) => [
+                                    formatDashboardCurrency(Number(value ?? 0), currency),
                                     "PnL",
                                 ]}
                             />

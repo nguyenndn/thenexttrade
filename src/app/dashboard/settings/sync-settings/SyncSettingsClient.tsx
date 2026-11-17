@@ -258,7 +258,7 @@ export default function SyncSettingsClient() {
                     </div>
 
                     {/* Feature highlights */}
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-5">
+                    <div className="hidden sm:grid sm:grid-cols-3 gap-3 mt-5">
                         {FEATURES.map(
                             ({ icon: Icon, label, desc, color, bg }) => (
                                 <div
@@ -303,21 +303,21 @@ export default function SyncSettingsClient() {
                             </h2>
                         </div>
                         {keyData.hasKey && (
-                            <div className="flex flex-wrap items-center gap-2">
+                            <div className="flex items-center gap-2 w-full sm:w-auto">
                                 <Button
                                     onClick={generateKey}
                                     variant="outline"
                                     size="smd"
                                     disabled={isGenerating}
-                                    className="font-bold border-dashboard hover:border-primary/40 hover:text-primary dark:hover:text-primary"
+                                    className="flex-1 sm:flex-none text-xs font-bold border-dashboard hover:border-primary/40 hover:text-primary dark:hover:text-primary"
                                 >
                                     {isGenerating ? (
                                         <Loader2
-                                            size={16}
-                                            className="animate-spin mr-2"
+                                            size={15}
+                                            className="animate-spin"
                                         />
                                     ) : (
-                                        <RefreshCw size={16} className="mr-2" />
+                                        <RefreshCw size={15} />
                                     )}
                                     Regenerate
                                 </Button>
@@ -326,15 +326,15 @@ export default function SyncSettingsClient() {
                                     variant="outline"
                                     size="smd"
                                     disabled={isRevoking}
-                                    className="font-bold text-red-500 border-red-200 hover:bg-red-50 hover:border-red-300 dark:border-red-500/20 dark:hover:bg-red-500/10 dark:hover:border-red-500/40"
+                                    className="flex-1 sm:flex-none text-xs font-bold text-red-500 border-red-200 hover:bg-red-50 hover:border-red-300 dark:border-red-500/20 dark:hover:bg-red-500/10 dark:hover:border-red-500/40"
                                 >
                                     {isRevoking ? (
                                         <Loader2
-                                            size={16}
-                                            className="animate-spin mr-2"
+                                            size={15}
+                                            className="animate-spin"
                                         />
                                     ) : (
-                                        <Trash2 size={16} className="mr-2" />
+                                        <Trash2 size={15} />
                                     )}
                                     Revoke Key
                                 </Button>
@@ -516,13 +516,13 @@ export default function SyncSettingsClient() {
                                     key={stepItem.id}
                                     onClick={() => toggleStep(stepItem.id)}
                                     className={cn(
-                                        "group relative flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-lg border transition-all duration-200 cursor-pointer select-none",
+                                        "group relative flex flex-col gap-2.5 p-3 sm:p-3.5 rounded-lg border transition-all duration-200 cursor-pointer select-none",
                                         isDone
                                             ? "bg-emerald-500/[0.03] border-emerald-500/30 dark:bg-emerald-500/[0.05] dark:border-emerald-500/20 shadow-sm"
                                             : "bg-gray-50/80 dark:bg-[#151925] border-dashboard hover:border-gold/40"
                                     )}
                                 >
-                                    <div className="flex items-start gap-3.5 min-w-0 flex-1">
+                                    <div className="flex items-start gap-3 sm:gap-3.5 min-w-0 flex-1">
                                         <Button
                                             variant="ghost"
                                             size="icon"
@@ -569,17 +569,18 @@ export default function SyncSettingsClient() {
                                             <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 leading-relaxed">
                                                 {stepItem.description}
                                             </p>
-                                            {stepItem.showWebRequestUrls && (
-                                                <div
-                                                    onClick={(e) =>
-                                                        e.stopPropagation()
-                                                    }
-                                                >
-                                                    <Mt5WebRequestUrlList className="mt-3" />
-                                                </div>
-                                            )}
                                         </div>
                                     </div>
+                                    {stepItem.showWebRequestUrls && (
+                                        <div
+                                            className="w-full sm:pl-10"
+                                            onClick={(e) =>
+                                                e.stopPropagation()
+                                            }
+                                        >
+                                            <Mt5WebRequestUrlList />
+                                        </div>
+                                    )}
                                 </div>
                             );
                         })}

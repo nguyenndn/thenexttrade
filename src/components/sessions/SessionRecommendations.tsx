@@ -1,13 +1,17 @@
 "use client";
 
+import { useState } from "react";
 import {
     Lightbulb,
     Info,
     CheckCircle2,
     AlertTriangle,
     XCircle,
+    ChevronDown,
+    ChevronUp,
     type LucideIcon,
 } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 
 type RecommendationType = "positive" | "negative" | "warning" | "neutral";
@@ -62,11 +66,15 @@ const configMap: Record<
 export function SessionRecommendations({
     recommendations,
 }: SessionRecommendationsProps) {
+    const [showAll, setShowAll] = useState(false);
+
     if (recommendations.length === 0) return null;
 
+    const hiddenCount = recommendations.length - 1;
+
     return (
-        <div className="bg-white dark:bg-[#151925] p-5 sm:p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-xs">
-            <div className="flex items-center gap-3 mb-5">
+        <div className="bg-white dark:bg-[#151925] p-4 sm:p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-xs">
+            <div className="flex items-center gap-3 mb-4 sm:mb-5">
                 <div className="w-9 h-9 rounded-lg bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/20 text-amber-500 flex items-center justify-center">
                     <Lightbulb size={18} />
                 </div>
@@ -93,7 +101,8 @@ export function SessionRecommendations({
                         <div
                             key={index}
                             className={cn(
-                                "flex gap-3 items-start p-4 rounded-lg border transition-all hover:shadow-xs cursor-default",
+                                "gap-3 items-start p-4 rounded-lg border transition-all hover:shadow-xs cursor-default",
+                                index > 0 && !showAll ? "hidden sm:flex" : "flex",
                                 styling.bg,
                                 styling.border
                             )}
@@ -130,6 +139,29 @@ export function SessionRecommendations({
                     );
                 })}
             </div>
+
+            {hiddenCount > 0 && (
+                <div className="mt-3 sm:hidden">
+                    <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setShowAll((prev) => !prev)}
+                        className="w-full text-xs font-semibold gap-1.5"
+                    >
+                        <span>
+                            {showAll
+                                ? "Show less"
+                                : `Show ${hiddenCount} more ${hiddenCount === 1 ? "insight" : "insights"}`}
+                        </span>
+                        {showAll ? (
+                            <ChevronUp size={14} />
+                        ) : (
+                            <ChevronDown size={14} />
+                        )}
+                    </Button>
+                </div>
+            )}
         </div>
     );
 }

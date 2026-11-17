@@ -8,7 +8,6 @@ import {
 } from "@/app/dashboard/settings/security/actions";
 import { toast } from "sonner";
 import {
-    Shield,
     CheckCircle,
     Loader2,
     Copy,
@@ -90,36 +89,24 @@ export function TwoFactorSetup({ isEnabled, onUpdate }: TwoFactorSetupProps) {
     if (isEnabled) {
         return (
             <div>
-                <div className="flex justify-between items-start">
-                    <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
-                            <Shield size={24} className="text-emerald-500" />
-                        </div>
-                        <div>
-                            <h2 className="text-lg font-bold text-gray-700 dark:text-white">
-                                Two-Factor Authentication (2FA)
-                            </h2>
-                            <p className="text-gray-600 dark:text-gray-400 text-sm">
-                                Your account is secured with an extra layer of
-                                protection.
-                            </p>
-                        </div>
-                    </div>
-                    <div className="flex items-center gap-4">
-                        <div className="px-3 py-1 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-xs font-bold rounded-lg flex items-center gap-1">
-                            <CheckCircle size={12} /> Enabled
-                        </div>
+                <div className="flex justify-between items-start gap-3">
+                    <p className="text-gray-600 dark:text-gray-400 text-sm min-w-0 leading-relaxed">
+                        Your account is secured with an extra layer of
+                        authenticator protection.
+                    </p>
+                    <div className="shrink-0 px-3 py-1 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-xs font-bold rounded-lg flex items-center gap-1 whitespace-nowrap">
+                        <CheckCircle size={12} /> Enabled
                     </div>
                 </div>
 
                 {step !== "disable-verify" && (
-                    <div className="mt-6 flex justify-end">
+                    <div className="mt-4 flex justify-end">
                         <Button
                             variant="outline"
                             size="smd"
                             onClick={handleDisableClick}
                             disabled={loading}
-                            className="border-red-200 dark:border-red-500/30 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10"
+                            className="w-full sm:w-auto border-red-200 dark:border-red-500/30 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10"
                         >
                             Disable 2FA
                         </Button>
@@ -127,7 +114,7 @@ export function TwoFactorSetup({ isEnabled, onUpdate }: TwoFactorSetupProps) {
                 )}
 
                 {step === "disable-verify" && (
-                    <div className="mt-6 bg-rose-50/80 dark:bg-[#151925] rounded-lg p-6 border border-rose-200 dark:border-rose-500/20 animate-in fade-in zoom-in-95 duration-200">
+                    <div className="mt-4 bg-rose-50/80 dark:bg-[#151925] rounded-lg p-4 sm:p-6 border border-rose-200 dark:border-rose-500/20 animate-in fade-in zoom-in-95 duration-200">
                         <h3 className="font-bold text-gray-700 dark:text-white mb-2">
                             Verify to Disable 2FA
                         </h3>
@@ -136,20 +123,21 @@ export function TwoFactorSetup({ isEnabled, onUpdate }: TwoFactorSetupProps) {
                             security feature.
                         </p>
 
-                        <div className="flex gap-2">
+                        <div className="flex flex-col sm:flex-row gap-2">
                             <input
                                 type="text"
                                 value={disableCode}
                                 onChange={(e) => setDisableCode(e.target.value)}
                                 maxLength={6}
                                 aria-label="6-digit verification code to disable 2FA"
-                                className="w-full max-w-[200px] px-4 py-2 bg-white dark:bg-[#0B0E14] text-gray-800 dark:text-white border border-dashboard rounded-lg focus:outline-none focus:border-red-500 font-mono tabular-nums text-center tracking-widest text-lg"
+                                className="w-full sm:max-w-[200px] px-4 py-2 bg-white dark:bg-[#0B0E14] text-gray-800 dark:text-white border border-dashboard rounded-lg focus:outline-none focus:border-red-500 font-mono tabular-nums text-center tracking-widest text-lg"
                             />
                             <Button
                                 variant="destructive"
                                 size="smd"
                                 onClick={confirmDisable}
                                 disabled={loading || disableCode.length < 6}
+                                className="w-full sm:w-auto"
                             >
                                 {loading && (
                                     <Loader2
@@ -177,34 +165,24 @@ export function TwoFactorSetup({ isEnabled, onUpdate }: TwoFactorSetupProps) {
 
     return (
         <div>
-            <div className="flex justify-between items-start">
-                <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-dashboard flex items-center justify-center">
-                        <Shield size={24} className="text-gray-500" />
-                    </div>
-                    <div>
-                        <h2 className="text-lg font-bold text-gray-700 dark:text-white">
-                            Two-Factor Authentication (2FA)
-                        </h2>
-                        <p className="text-gray-600 dark:text-gray-400 text-sm">
-                            Add an extra layer of security to your account.
-                        </p>
-                    </div>
-                </div>
+            <div className="flex justify-between items-start gap-3">
+                <p className="text-gray-600 dark:text-gray-400 text-sm min-w-0 leading-relaxed">
+                    Protect your account with a 6-digit authenticator code at sign-in.
+                </p>
                 {!step || step === "idle" ? (
-                    <div className="px-3 py-1 bg-gold/10 text-amber-600 dark:text-gold border border-gold/20 text-xs font-bold rounded-lg flex items-center gap-1">
+                    <div className="shrink-0 px-3 py-1 bg-gold/10 text-amber-600 dark:text-gold border border-gold/20 text-xs font-bold rounded-lg flex items-center gap-1 whitespace-nowrap">
                         <AlertTriangle size={12} /> Disabled
                     </div>
                 ) : null}
             </div>
 
             {step === "idle" && (
-                <div className="mt-6 flex justify-end">
+                <div className="mt-4 flex justify-end">
                     <Button
                         size="smd"
                         onClick={handleStart}
                         isLoading={loading}
-                        className="w-auto"
+                        className="w-full sm:w-auto"
                     >
                         Setup 2FA
                     </Button>
@@ -212,11 +190,11 @@ export function TwoFactorSetup({ isEnabled, onUpdate }: TwoFactorSetupProps) {
             )}
 
             {step === "setup" && (
-                <div className="mt-6 bg-gray-50/80 dark:bg-[#151925] rounded-lg p-6 border border-dashboard animate-in fade-in zoom-in-95 duration-200">
+                <div className="mt-4 bg-gray-50/80 dark:bg-[#151925] rounded-lg p-4 sm:p-6 border border-dashboard animate-in fade-in zoom-in-95 duration-200">
                     <h3 className="font-bold text-gray-700 dark:text-white mb-4">
                         Scan QR Code
                     </h3>
-                    <div className="flex flex-col md:flex-row gap-8">
+                    <div className="flex flex-col md:flex-row gap-5 md:gap-8">
                         <div className="bg-white p-4 rounded-lg border border-dashboard w-fit mx-auto md:mx-0">
                             {qrCode.startsWith("data:") ? (
                                 <img
@@ -232,13 +210,13 @@ export function TwoFactorSetup({ isEnabled, onUpdate }: TwoFactorSetupProps) {
                             )}
                         </div>
 
-                        <div className="flex-1 space-y-4">
+                        <div className="flex-1 min-w-0 space-y-4">
                             <div>
                                 <label className="text-xs font-bold uppercase text-gray-600 dark:text-gray-400 mb-1 block">
                                     Manual Entry Code
                                 </label>
-                                <div className="flex items-center gap-2">
-                                    <code className="bg-white dark:bg-[#0B0E14] border border-dashboard px-3 py-1.5 rounded-lg text-sm font-mono tabular-nums text-gray-800 dark:text-gray-200 tracking-wider break-all">
+                                <div className="flex items-center gap-2 min-w-0">
+                                    <code className="bg-white dark:bg-[#0B0E14] border border-dashboard px-3 py-1.5 rounded-lg text-sm font-mono tabular-nums text-gray-800 dark:text-gray-200 tracking-wider break-all min-w-0">
                                         {secret}
                                     </code>
                                     <Button
@@ -253,7 +231,7 @@ export function TwoFactorSetup({ isEnabled, onUpdate }: TwoFactorSetupProps) {
                                                 "Copied to clipboard"
                                             );
                                         }}
-                                        className="h-8 w-8 rounded-lg text-gray-600 dark:text-gray-300"
+                                        className="h-8 w-8 shrink-0 rounded-lg text-gray-600 dark:text-gray-300"
                                     >
                                         <Copy size={14} />
                                     </Button>
@@ -267,7 +245,7 @@ export function TwoFactorSetup({ isEnabled, onUpdate }: TwoFactorSetupProps) {
                                 <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
                                     Enter the 6-digit code generated by your authenticator app.
                                 </p>
-                                <div className="flex gap-2">
+                                <div className="flex flex-col sm:flex-row gap-2">
                                     <input
                                         type="text"
                                         value={code}
@@ -276,12 +254,13 @@ export function TwoFactorSetup({ isEnabled, onUpdate }: TwoFactorSetupProps) {
                                         }
                                         maxLength={6}
                                         aria-label="6-digit verification code"
-                                        className="w-full max-w-[200px] px-4 py-2 bg-white dark:bg-[#0B0E14] text-gray-800 dark:text-white border border-dashboard rounded-lg focus:outline-none focus:border-gold font-mono tabular-nums text-center tracking-widest text-lg"
+                                        className="w-full sm:max-w-[200px] px-4 py-2 bg-white dark:bg-[#0B0E14] text-gray-800 dark:text-white border border-dashboard rounded-lg focus:outline-none focus:border-gold font-mono tabular-nums text-center tracking-widest text-lg"
                                     />
                                     <Button
                                         size="smd"
                                         onClick={handleVerify}
                                         disabled={loading || code.length < 6}
+                                        className="w-full sm:w-auto"
                                     >
                                         {loading && (
                                             <Loader2

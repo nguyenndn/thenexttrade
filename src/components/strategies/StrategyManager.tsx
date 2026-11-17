@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import { AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
-import { Plus, Search, ArrowUpDown, ChevronDown, Check, BookOpen } from "lucide-react";
+import { Plus, Search, ArrowUpDown, ChevronDown, Check, BookOpen, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import {
     DropdownMenu,
@@ -106,6 +106,7 @@ export function StrategyManager({
 
     const [searchQuery, setSearchQuery] = useState("");
     const [filterType, setFilterType] = useState<"all" | "playbook" | "standard">("all");
+    const [showMobileBenchmarks, setShowMobileBenchmarks] = useState(false);
     const [sortBy, setSortBy] = useState<"name" | "pnl" | "winRate" | "trades">(
         "name"
     );
@@ -140,37 +141,43 @@ export function StrategyManager({
     };
 
     // Merge real strategies with "ghost" strategies found in performance
-    const allStrategies = [...strategies];
-    const enrichedPerformance = performance.map((perf) => {
-        let matchingStrategy = strategies.find((s) => s.name === perf.strategy);
+    const { allStrategies, enrichedPerformance } = useMemo(() => {
+        const merged = [...strategies];
+        const enriched = performance.map((perf) => {
+            let matchingStrategy = strategies.find(
+                (s) => s.name === perf.strategy
+            );
 
-        if (!matchingStrategy) {
-            const tempStrategy: Strategy = {
-                id: `temp-${perf.strategy}`,
-                name: perf.strategy,
-                description: "Unsaved strategy detected from trade history.",
-                rules: null,
-                color: "#9CA3AF",
-                isPlaybook: false,
-                setupType: null,
-                timeframes: [],
-                pairs: [],
-                idealEntry: null,
-                idealStopLoss: null,
-                idealTakeProfit: null,
-                riskRewardMin: null,
-                referenceImages: [],
+            if (!matchingStrategy) {
+                const tempStrategy: Strategy = {
+                    id: `temp-${perf.strategy}`,
+                    name: perf.strategy,
+                    description:
+                        "Unsaved strategy detected from trade history.",
+                    rules: null,
+                    color: "#9CA3AF",
+                    isPlaybook: false,
+                    setupType: null,
+                    timeframes: [],
+                    pairs: [],
+                    idealEntry: null,
+                    idealStopLoss: null,
+                    idealTakeProfit: null,
+                    riskRewardMin: null,
+                    referenceImages: [],
+                };
+                merged.push(tempStrategy);
+                matchingStrategy = tempStrategy;
+            }
+
+            return {
+                ...perf,
+                color: matchingStrategy.color,
+                isPlaybook: matchingStrategy.isPlaybook,
             };
-            allStrategies.push(tempStrategy);
-            matchingStrategy = tempStrategy;
-        }
-
-        return {
-            ...perf,
-            color: matchingStrategy.color,
-            isPlaybook: matchingStrategy.isPlaybook,
-        };
-    });
+        });
+        return { allStrategies: merged, enrichedPerformance: enriched };
+    }, [strategies, performance]);
 
     const playbookCount = allStrategies.filter((s) => s.isPlaybook).length;
     const standardCount = allStrategies.filter((s) => !s.isPlaybook).length;
@@ -212,7 +219,7 @@ export function StrategyManager({
 
             return 0;
         });
-    }, [allStrategies, searchQuery, sortBy, enrichedPerformance]);
+    }, [allStrategies, searchQuery, filterType, sortBy, enrichedPerformance]);
 
     const confirmDelete = (id: string, name: string) => {
         setStrategyToDelete({ id, name });
@@ -270,7 +277,7 @@ export function StrategyManager({
                         variant="outline"
                         size="smd"
                         onClick={() => { setDefaultPlaybook(true); setShowModal(true); }}
-                        className="flex items-center justify-center gap-2 border-primary/30 text-primary hover:bg-primary/10"
+                        className="flex-1 sm:flex-initial flex items-center justify-center gap-2 border-primary/30 text-primary hover:bg-primary/10"
                     >
                         <BookOpen size={16} strokeWidth={2.5} />
                         New Playbook
@@ -279,7 +286,7 @@ export function StrategyManager({
                         variant="primary"
                         size="smd"
                         onClick={() => { setDefaultPlaybook(false); setShowModal(true); }}
-                        className="flex items-center justify-center gap-2 shadow-lg shadow-amber-500/25"
+                        className="flex-1 sm:flex-initial flex items-center justify-center gap-2 shadow-lg shadow-amber-500/25"
                     >
                         <Plus size={18} strokeWidth={2.5} />
                         New Strategy
@@ -302,14 +309,52 @@ export function StrategyManager({
                             )}
                             {enrichedPerformance.length > 0 && (
                                 <>
-                                    <StrategyPerformanceChart
-                                        data={enrichedPerformance}
-                                        currency={currency}
-                                    />
-                                    <StrategyComparisonTable
-                                        data={enrichedPerformance}
-                                        currency={currency}
-                                    />
+                                    <div className="md:hidden">
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            size="smd"
+                                            onClick={() =>
+                                                setShowMobileBenchmarks(
+                                                    (prev) => !prev
+                                                )
+                                            }
+                                            className="w-full flex items-center justify-between border-dashboard bg-white dark:bg-[#1E2028] text-gray-700 dark:text-gray-200 font-bold"
+                                        >
+                                            <span className="flex items-center gap-2">
+                                                <BarChart3
+                                                    size={16}
+                                                    className="text-primary"
+                                                />
+                                                Performance Benchmarks
+                                            </span>
+                                            <ChevronDown
+                                                size={16}
+                                                className={cn(
+                                                    "text-gray-500 transition-transform duration-200",
+                                                    showMobileBenchmarks &&
+                                                        "rotate-180"
+                                                )}
+                                            />
+                                        </Button>
+                                    </div>
+                                    <div
+                                        className={cn(
+                                            "space-y-4",
+                                            showMobileBenchmarks
+                                                ? "block"
+                                                : "hidden md:block"
+                                        )}
+                                    >
+                                        <StrategyPerformanceChart
+                                            data={enrichedPerformance}
+                                            currency={currency}
+                                        />
+                                        <StrategyComparisonTable
+                                            data={enrichedPerformance}
+                                            currency={currency}
+                                        />
+                                    </div>
                                 </>
                             )}
                         </>
@@ -320,7 +365,7 @@ export function StrategyManager({
             {allStrategies.length > 0 && (
                 <div className="bg-white dark:bg-[#1E2028] border border-dashboard rounded-xl p-4 shadow-sm mt-6">
                     <div className="flex flex-col lg:flex-row gap-4 justify-between items-stretch lg:items-center">
-                        <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center flex-1">
+                        <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center flex-1 min-w-0">
                             <div className="w-full sm:max-w-xs">
                                 <PremiumInput
                                     icon={Search}
@@ -331,13 +376,13 @@ export function StrategyManager({
                             </div>
 
                             {/* Filter Type Pills */}
-                            <div className="flex items-center gap-1 p-1 bg-gray-50 dark:bg-white/5 rounded-lg border border-dashboard self-start sm:self-auto">
+                            <div className="flex items-center gap-1 p-1 bg-gray-50 dark:bg-white/5 rounded-lg border border-dashboard self-start sm:self-auto max-w-full overflow-x-auto scrollbar-hide">
                                 <Button
                                     type="button"
                                     variant={filterType === "all" ? "gold" : "ghost"}
                                     size="sm"
                                     onClick={() => setFilterType("all")}
-                                    className="h-auto px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap"
+                                    className="h-auto shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap"
                                 >
                                     All (<span className="font-mono tabular-nums">{allStrategies.length}</span>)
                                 </Button>
@@ -346,9 +391,9 @@ export function StrategyManager({
                                     variant={filterType === "playbook" ? "gold" : "ghost"}
                                     size="sm"
                                     onClick={() => setFilterType("playbook")}
-                                    className="h-auto px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 whitespace-nowrap"
+                                    className="h-auto shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 whitespace-nowrap"
                                 >
-                                    <BookOpen size={13} />
+                                    <BookOpen size={13} className="hidden sm:block shrink-0" />
                                     Playbooks (<span className="font-mono tabular-nums">{playbookCount}</span>)
                                 </Button>
                                 <Button
@@ -356,7 +401,7 @@ export function StrategyManager({
                                     variant={filterType === "standard" ? "gold" : "ghost"}
                                     size="sm"
                                     onClick={() => setFilterType("standard")}
-                                    className="h-auto px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap"
+                                    className="h-auto shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap"
                                 >
                                     Standard (<span className="font-mono tabular-nums">{standardCount}</span>)
                                 </Button>

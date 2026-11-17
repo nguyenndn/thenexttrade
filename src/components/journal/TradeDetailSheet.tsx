@@ -286,7 +286,7 @@ export function TradeDetailSheet({
                 </VisuallyHidden>
 
                 {/* Header Section */}
-                <div className="sticky top-0 z-10 bg-white/95 dark:bg-[#0D111C]/95 backdrop-blur-md border-b border-dashboard px-6 py-4">
+                <div className="sticky top-0 z-10 bg-white/95 dark:bg-[#0D111C]/95 backdrop-blur-md border-b border-dashboard px-4 sm:px-6 py-3.5 sm:py-4">
                     <div className="flex items-center justify-between gap-2">
                         <div className="flex items-center gap-4">
                             <h2 className="text-lg font-bold text-gray-700 dark:text-white">
@@ -317,42 +317,42 @@ export function TradeDetailSheet({
                             </Button>
                             <SheetClose
                                 aria-label="Close trade details"
-                                className="rounded-lg h-10 w-10 p-0 border border-dashboard bg-white dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 flex items-center justify-center text-gray-600 dark:text-white transition-colors"
+                                className="rounded-lg h-9 w-9 sm:h-10 sm:w-10 p-0 border border-dashboard bg-white dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 flex items-center justify-center text-gray-600 dark:text-white transition-colors"
                             >
-                                <X size={20} />
+                                <X size={18} className="sm:w-5 sm:h-5" />
                             </SheetClose>
                         </div>
                     </div>
                 </div>
 
-                <div className="p-6 space-y-5">
+                <div className="p-4 sm:p-6 space-y-4 sm:space-y-5">
                     {/* Hero Card - Premium Glass/Glow Effect */}
-                    <div className="relative bg-white dark:bg-[#1E2028] rounded-xl p-6 md:p-8 shadow-xl border border-dashboard overflow-hidden group">
+                    <div className="relative bg-white dark:bg-[#1E2028] rounded-xl p-4 sm:p-6 md:p-8 shadow-xl border border-dashboard overflow-hidden group">
                         {/* Decorative Glow */}
                         <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-gold/10 rounded-full blur-[100px] pointer-events-none group-hover:bg-gold/20 transition-all duration-700"></div>
 
-                        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+                        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-8">
                             {/* Left: Symbol & Type */}
-                            <div className="flex items-center gap-6">
+                            <div className="flex items-center gap-2 sm:gap-6">
                                 <Button
                                     variant="outline"
                                     size="icon"
                                     onClick={onPrev}
                                     disabled={!hasPrev}
                                     aria-label="Previous Trade"
-                                    className="h-10 w-10 rounded-lg bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-600 dark:text-gray-300 disabled:opacity-30 disabled:cursor-not-allowed transition-all hover:scale-105 active:scale-95"
+                                    className="w-8 h-8 sm:w-10 sm:h-10 shrink-0 rounded-lg bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-600 dark:text-gray-300 disabled:opacity-30 disabled:cursor-not-allowed transition-all hover:scale-105 active:scale-95"
                                 >
-                                    <ArrowLeft size={18} strokeWidth={2} />
+                                    <ArrowLeft size={16} strokeWidth={2} className="sm:w-[18px] sm:h-[18px]" />
                                 </Button>
 
-                                <div>
-                                    <div className="flex items-center gap-3 mb-2">
-                                        <h1 className="text-4xl md:text-5xl font-black text-gray-700 dark:text-white tracking-tighter">
+                                <div className="min-w-0">
+                                    <div className="flex items-center gap-2 sm:gap-3 mb-1.5 sm:mb-2">
+                                        <h1 className="text-xl sm:text-4xl md:text-5xl font-black text-gray-700 dark:text-white tracking-tighter truncate">
                                             {entry.symbol}
                                         </h1>
                                         <span
                                             className={cn(
-                                                "px-3 py-1.5 rounded-lg text-xs font-black text-white uppercase tracking-wider shadow-lg",
+                                                "px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-black text-white uppercase tracking-wider shadow-lg shrink-0",
                                                 isBuy ? "shadow-emerald-500/20" : "shadow-red-500/20",
                                                 typeColor
                                             )}
@@ -360,10 +360,10 @@ export function TradeDetailSheet({
                                             {entry.type}
                                         </span>
                                     </div>
-                                    <div className="flex items-center gap-3 text-gray-600 dark:text-gray-300 font-mono tabular-nums text-sm md:text-base font-bold">
+                                    <div className="flex items-center gap-2 sm:gap-3 text-gray-600 dark:text-gray-300 font-mono tabular-nums text-xs sm:text-sm md:text-base font-bold">
                                         <span>{entry.entryPrice}</span>
                                         <span className="text-gray-300 dark:text-white/20">
-                                            <ArrowRight size={16} />
+                                            <ArrowRight size={14} className="sm:w-4 sm:h-4" />
                                         </span>
                                         <span
                                             className={
@@ -381,24 +381,24 @@ export function TradeDetailSheet({
                             </div>
 
                             {/* Right: PnL Big Number */}
-                            <div className="flex items-center gap-6">
+                            <div className="flex items-center gap-2 sm:gap-6">
                                 <div className="text-right">
                                     <div
                                         className={cn(
-                                            "text-4xl md:text-5xl font-black font-mono tabular-nums tracking-tighter flex items-center justify-end gap-2",
+                                            "text-xl sm:text-4xl md:text-5xl font-black font-mono tabular-nums tracking-tighter flex items-center justify-end gap-1.5 sm:gap-2",
                                             pnlColor
                                         )}
                                     >
                                         {isWin ? (
-                                            <TrendingUp size={32} />
+                                            <TrendingUp className="w-5 h-5 sm:w-8 sm:h-8 shrink-0" />
                                         ) : (
-                                            <TrendingDown size={32} />
+                                            <TrendingDown className="w-5 h-5 sm:w-8 sm:h-8 shrink-0" />
                                         )}
                                         {formatDashboardCurrency(entry.pnl || 0, entryCurrency, {
                                             signDisplay: "always",
                                         })}
                                     </div>
-                                    <div className="text-gray-500 font-mono tabular-nums text-xs font-black uppercase tracking-widest mt-2">
+                                    <div className="text-gray-500 font-mono tabular-nums text-[11px] sm:text-xs font-black uppercase tracking-widest mt-1 sm:mt-2">
                                         {percentGain !== null
                                             ? `${percentGain > 0 ? "+" : ""}${percentGain.toFixed(2)}% Gain`
                                             : "—"}
@@ -411,9 +411,9 @@ export function TradeDetailSheet({
                                     onClick={onNext}
                                     disabled={!hasNext}
                                     aria-label="Next Trade"
-                                    className="h-10 w-10 rounded-lg bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-600 dark:text-gray-300 disabled:opacity-30 disabled:cursor-not-allowed transition-all hover:scale-105 active:scale-95"
+                                    className="w-8 h-8 sm:w-10 sm:h-10 shrink-0 rounded-lg bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-600 dark:text-gray-300 disabled:opacity-30 disabled:cursor-not-allowed transition-all hover:scale-105 active:scale-95"
                                 >
-                                    <ArrowRight size={18} strokeWidth={2} />
+                                    <ArrowRight size={16} strokeWidth={2} className="sm:w-[18px] sm:h-[18px]" />
                                 </Button>
                             </div>
                         </div>
@@ -467,7 +467,7 @@ export function TradeDetailSheet({
                             className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 pt-2"
                         >
                             {activeCoachPlan ? (
-                                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-6 shadow-xl pt-2">
+                                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-4 sm:p-6 shadow-xl">
                                     <h3 className="text-xs font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-4 flex items-center gap-2">
                                         <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
                                         Trader's Current Focus
@@ -498,7 +498,7 @@ export function TradeDetailSheet({
                                     </div>
                                 </div>
                             ) : (
-                                <div className="p-8 text-center text-gray-500 bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-xl">
+                                <div className="p-4 sm:p-8 text-center text-gray-500 bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-xl">
                                     <Brain
                                         size={48}
                                         className="mx-auto mb-4 opacity-20 text-gray-400"
@@ -539,7 +539,7 @@ export function TradeDetailSheet({
 
                                     <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-dashboard">
                                         {/* Left Column: Trade Info & Costs */}
-                                        <div className="p-8 space-y-8">
+                                        <div className="p-4 sm:p-8 space-y-6 sm:space-y-8">
                                             {/* Trade Information */}
                                             <div>
                                                 <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-4 flex items-center gap-2">
@@ -549,7 +549,7 @@ export function TradeDetailSheet({
                                                     />{" "}
                                                     Execution Timeline
                                                 </h4>
-                                                <div className="space-y-4">
+                                                <div className="space-y-3 sm:space-y-4">
                                                     <div className="flex justify-between items-center bg-gray-50/80 dark:bg-[#151925] p-3 rounded-lg border border-dashboard">
                                                         <span className="text-xs text-gray-600 font-bold uppercase tracking-wider">
                                                             Volume
@@ -594,9 +594,9 @@ export function TradeDetailSheet({
                                                     />{" "}
                                                     Transaction Fees
                                                 </h4>
-                                                <div className="grid grid-cols-3 gap-3">
-                                                    <div className="bg-gray-50/80 dark:bg-[#151925] p-3 rounded-lg border border-dashboard flex flex-col items-center justify-center text-center">
-                                                        <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1">
+                                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
+                                                    <div className="bg-gray-50/80 dark:bg-[#151925] p-2.5 sm:p-3 rounded-lg border border-dashboard flex flex-row sm:flex-col items-center justify-between sm:justify-center text-left sm:text-center">
+                                                        <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider sm:mb-1">
                                                             Commission
                                                         </span>
                                                         <span
@@ -613,8 +613,8 @@ export function TradeDetailSheet({
                                                             )}
                                                         </span>
                                                     </div>
-                                                    <div className="bg-gray-50/80 dark:bg-[#151925] p-3 rounded-lg border border-dashboard flex flex-col items-center justify-center text-center">
-                                                        <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1">
+                                                    <div className="bg-gray-50/80 dark:bg-[#151925] p-2.5 sm:p-3 rounded-lg border border-dashboard flex flex-row sm:flex-col items-center justify-between sm:justify-center text-left sm:text-center">
+                                                        <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider sm:mb-1">
                                                             Swap
                                                         </span>
                                                         <span
@@ -631,8 +631,8 @@ export function TradeDetailSheet({
                                                             )}
                                                         </span>
                                                     </div>
-                                                    <div className="bg-gray-50/80 dark:bg-[#151925] p-3 rounded-lg border border-dashboard flex flex-col items-center justify-center text-center">
-                                                        <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1">
+                                                    <div className="bg-gray-50/80 dark:bg-[#151925] p-2.5 sm:p-3 rounded-lg border border-dashboard flex flex-row sm:flex-col items-center justify-between sm:justify-center text-left sm:text-center">
+                                                        <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider sm:mb-1">
                                                             Total Fees
                                                         </span>
                                                         <span
@@ -654,7 +654,7 @@ export function TradeDetailSheet({
                                         </div>
 
                                         {/* Right Column: Price & Results */}
-                                        <div className="p-8 space-y-8 bg-gray-50/30 dark:bg-white/[0.01]">
+                                        <div className="p-4 sm:p-8 space-y-6 sm:space-y-8 bg-gray-50/30 dark:bg-white/[0.01]">
                                             {/* Price Summary */}
                                             <div>
                                                 <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-4 flex items-center gap-2">
@@ -727,7 +727,7 @@ export function TradeDetailSheet({
                                             </div>
 
                                             {/* Trade Results Hub */}
-                                            <div className="bg-gray-50/80 dark:bg-[#151925] p-6 rounded-lg border border-dashboard shadow-inner relative overflow-hidden">
+                                            <div className="bg-gray-50/80 dark:bg-[#151925] p-4 sm:p-6 rounded-lg border border-dashboard shadow-inner relative overflow-hidden">
                                                 <div
                                                     className={cn(
                                                         "absolute inset-0 opacity-[0.03] pattern-diagonal-lines pattern-size-4 pattern-bg-white",
@@ -794,7 +794,7 @@ export function TradeDetailSheet({
                                                         <div className="flex items-center gap-3">
                                                             <span
                                                                 className={cn(
-                                                                    "text-4xl font-black font-mono tabular-nums tracking-tighter",
+                                                                    "text-2xl sm:text-4xl font-black font-mono tabular-nums tracking-tighter",
                                                                     pnlColor
                                                                 )}
                                                             >
@@ -835,7 +835,7 @@ export function TradeDetailSheet({
                                     Trade Analysis
                                 </h3>
 
-                                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-xl p-5 space-y-5">
+                                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-xl p-4 sm:p-5 space-y-5">
                                     {/* Market Context - Economic Events */}
                                     <div className="bg-amber-50/50 dark:bg-amber-500/5 p-4 rounded-lg border border-amber-200/50 dark:border-amber-500/20">
                                         <h4 className="text-[10px] font-black text-amber-700 dark:text-amber-400 uppercase tracking-widest mb-3 flex items-center gap-2">
@@ -1186,7 +1186,7 @@ export function TradeDetailSheet({
 
                     {/* Screenshots - Always visible at bottom */}
                     {safeEntryImages.length > 0 && (
-                        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-dashboard">
+                        <div className="bg-white dark:bg-[#1E2028] p-4 sm:p-6 rounded-xl border border-dashboard">
                             <h4 className="text-xs font-bold text-gray-600 uppercase tracking-widest mb-4 flex items-center gap-2">
                                 <div className="w-1.5 h-3 bg-gold rounded-full"></div>
                                 Trade Screenshots

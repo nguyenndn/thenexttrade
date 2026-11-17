@@ -328,20 +328,20 @@ export function StrategyModal({
                 } transition-all duration-300 overflow-hidden`}
             >
                 {/* Fixed Header */}
-                <div className="flex items-center justify-between p-5 sm:p-6 border-b border-dashboard shrink-0 bg-white dark:bg-[#0D111C]">
-                    <div className="flex items-center gap-3">
+                <div className="flex items-center justify-between gap-2 p-4 sm:p-6 border-b border-dashboard shrink-0 bg-white dark:bg-[#0D111C]">
+                    <div className="flex items-center gap-3 min-w-0">
                         {formData.isPlaybook && (
-                            <div className="w-9 h-9 rounded-lg bg-amber-500/10 flex items-center justify-center text-gold">
+                            <div className="w-9 h-9 rounded-lg bg-amber-500/10 flex items-center justify-center text-gold shrink-0">
                                 <BookOpen size={18} />
                             </div>
                         )}
-                        <div>
-                            <h2 className="text-lg sm:text-xl font-bold text-gray-700 dark:text-white">
+                        <div className="min-w-0">
+                            <h2 className="text-lg sm:text-xl font-bold text-gray-700 dark:text-white truncate">
                                 {strategy
                                     ? formData.isPlaybook ? "Edit Playbook" : "Edit Strategy"
                                     : formData.isPlaybook ? "New Playbook" : "New Strategy"}
                             </h2>
-                            <p className="text-xs text-gray-500">
+                            <p className="text-xs text-gray-500 line-clamp-1">
                                 {formData.isPlaybook
                                     ? "Define your A+ setup rules and reference charts"
                                     : "Create a strategy tag to group your trades"}
@@ -349,7 +349,7 @@ export function StrategyModal({
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
                         {/* Preset Templates Dropdown */}
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -357,9 +357,10 @@ export function StrategyModal({
                                     type="button"
                                     variant="outline"
                                     size="sm"
-                                    className="hidden sm:flex items-center gap-1.5 text-xs text-gold dark:text-amber-400 border-amber-500/30 hover:bg-amber-500/10 font-bold"
+                                    className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 text-xs text-gold dark:text-amber-400 border-amber-500/30 hover:bg-amber-500/10 font-bold"
                                 >
-                                    <span>Templates</span>
+                                    <span className="sm:hidden">Presets</span>
+                                    <span className="hidden sm:inline">Templates</span>
                                     <ChevronDown size={12} />
                                 </Button>
                             </DropdownMenuTrigger>
@@ -808,7 +809,7 @@ export function StrategyModal({
                                                             variant="destructive"
                                                             size="icon"
                                                             onClick={() => removeImage(idx)}
-                                                            className="absolute top-1.5 right-1.5 w-6 h-6 p-0 rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md"
+                                                            className="absolute top-1.5 right-1.5 w-6 h-6 p-0 rounded-lg flex items-center justify-center opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity shadow-md"
                                                             aria-label={`Remove image ${idx + 1}`}
                                                         >
                                                             <Trash2 size={12} />

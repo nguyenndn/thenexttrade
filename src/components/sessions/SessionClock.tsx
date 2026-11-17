@@ -47,25 +47,25 @@ export function SessionClock({ data, currency = "USD" }: SessionClockProps) {
         {
             id: "SYDNEY",
             label: "Sydney",
-            time: "21:00 - 06:00 UTC",
+            timeRange: "21:00 - 06:00",
             color: "#F59E0B",
         },
         {
             id: "TOKYO",
             label: "Tokyo",
-            time: "00:00 - 09:00 UTC",
+            timeRange: "00:00 - 09:00",
             color: "#EF4444",
         },
         {
             id: "LONDON",
             label: "London",
-            time: "07:00 - 16:00 UTC",
+            timeRange: "07:00 - 16:00",
             color: "#3B82F6",
         },
         {
             id: "NEW_YORK",
             label: "New York",
-            time: "12:00 - 21:00 UTC",
+            timeRange: "12:00 - 21:00",
             color: "#10B981",
         },
     ];
@@ -74,8 +74,8 @@ export function SessionClock({ data, currency = "USD" }: SessionClockProps) {
         value.trim().toUpperCase().replace(/[\s-]+/g, "_");
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-xl border border-dashboard shadow-sm h-full transition-shadow hover:shadow-md">
-            <div className="flex justify-between items-start mb-6">
+        <div className="bg-white dark:bg-[#1E2028] p-4 sm:p-6 rounded-xl border border-dashboard shadow-sm h-full transition-shadow hover:shadow-md">
+            <div className="flex justify-between items-start mb-4 sm:mb-6">
                 <div>
                     <h3 className="font-bold text-gray-700 dark:text-white mb-2">
                         Market Sessions
@@ -90,7 +90,7 @@ export function SessionClock({ data, currency = "USD" }: SessionClockProps) {
                 <Clock className="text-gray-300 dark:text-gray-600" size={24} />
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
                 {sessions.map((session) => {
                     const isActive = getSessionStatus(session.id);
                     const normalizedTarget = normalizeSessionId(session.id);
@@ -101,7 +101,7 @@ export function SessionClock({ data, currency = "USD" }: SessionClockProps) {
                     return (
                         <div
                             key={session.id}
-                            className={`p-4 rounded-lg border transition-all ${
+                            className={`p-3 sm:p-4 rounded-lg border transition-all ${
                                 isActive
                                     ? "bg-gray-50 dark:bg-white/5 border-dashboard ring-1 ring-primary/20"
                                     : "border-transparent hover:bg-gray-50 dark:hover:bg-white/5"
@@ -127,7 +127,8 @@ export function SessionClock({ data, currency = "USD" }: SessionClockProps) {
                                     )}
                                 </div>
                                 <span className="text-xs text-gray-500 font-mono">
-                                    {session.time}
+                                    {session.timeRange}
+                                    <span className="hidden sm:inline"> UTC</span>
                                 </span>
                             </div>
 

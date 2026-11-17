@@ -349,10 +349,10 @@ export function TopMedalStrip({
                             </div>
 
                             {/* Divider */}
-                            <div className="w-full border-b border-dashed border-dashboard my-3" />
+                            <div className="hidden sm:block w-full border-b border-dashed border-dashboard my-3" />
 
                             {/* Description body */}
-                            <p className="text-xs text-gray-400 dark:text-gray-600 italic leading-relaxed py-2">
+                            <p className="hidden sm:block text-xs text-gray-400 dark:text-gray-600 italic leading-relaxed py-2">
                                 {getEmptySlotLabel(type)}
                             </p>
                         </div>
@@ -434,10 +434,10 @@ export function TopMedalStrip({
                         </div>
 
                         {/* Divider */}
-                        <div className="w-full border-b border-dashboard my-3" />
+                        <div className="hidden sm:block w-full border-b border-dashboard my-3" />
 
                         {/* Bottom Section: 2x2 Stats Grid with Aligned Colons */}
-                        <div className="grid grid-cols-2 gap-x-4 gap-y-2.5 w-full text-xs">
+                        <div className="hidden sm:grid grid-cols-2 gap-x-4 gap-y-2.5 w-full text-xs">
                             {stats2x2.map((stat, i) => (
                                 <div
                                     key={i}

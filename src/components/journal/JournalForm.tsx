@@ -16,7 +16,6 @@ import {
     ChevronDown,
     ClipboardList,
     BookOpen,
-    Layers,
     CheckSquare,
     Square,
     ShieldCheck,
@@ -132,6 +131,7 @@ export default function JournalForm({
 
     const [playbookChecks, setPlaybookChecks] = useState<Record<number, boolean>>({});
     const [formLightboxIndex, setFormLightboxIndex] = useState<number | null>(null);
+    const [showSyncedFieldsMobile, setShowSyncedFieldsMobile] = useState(false);
     const [customTagInput, setCustomTagInput] = useState("");
     const [activeRules, setActiveRules] = useState<any[]>([]);
     const [ruleChecks, setRuleChecks] = useState<
@@ -512,23 +512,50 @@ export default function JournalForm({
                         This trade was synced from MT5. Core data is locked. You
                         can edit notes and psychology.
                     </div>
-                    <div className="md:hidden flex items-start gap-2 py-2 px-3 bg-gold/10 text-amber-600 dark:text-gold rounded-lg border border-gold/20 text-xs font-medium">
-                        <AlertCircle size={14} className="shrink-0 mt-0.5" />
-                        <div className="flex flex-col gap-0.5">
-                            <span className="font-bold">Synced from MT5</span>
-                            <span className="font-normal opacity-90 text-[11px]">
-                                For detailed strategy and chart tracking, import
-                                your trades from a desktop browser. You can
-                                still quick-review your psychology here.
+                    <Button
+                        type="button"
+                        variant="outline"
+                        aria-expanded={showSyncedFieldsMobile}
+                        onClick={() =>
+                            setShowSyncedFieldsMobile((prev) => !prev)
+                        }
+                        className="md:hidden w-full h-auto py-2.5 px-3 justify-between text-left bg-gold/10 hover:bg-gold/15 border-gold/25 text-amber-700 dark:text-gold rounded-lg"
+                    >
+                        <div className="min-w-0 flex-1">
+                            <div className="flex items-center gap-1.5 text-xs font-bold truncate">
+                                <AlertCircle size={14} className="shrink-0" />
+                                <span className="truncate">
+                                    MT5 Synced · {formData.symbol || "—"} ·{" "}
+                                    {formData.type} ·{" "}
+                                    {formData.lotSize || "0"} lots
+                                </span>
+                            </div>
+                            <span className="block text-[11px] font-medium opacity-85 mt-0.5">
+                                {showSyncedFieldsMobile
+                                    ? "Tap to hide locked fields"
+                                    : "Tap to view locked fields"}
                             </span>
                         </div>
-                    </div>
+                        <ChevronDown
+                            size={16}
+                            className={`shrink-0 transition-transform duration-200 ${
+                                showSyncedFieldsMobile ? "rotate-180" : ""
+                            }`}
+                        />
+                    </Button>
                 </>
             )}
 
 
 
             <form onSubmit={handleSubmit} className="space-y-4">
+                <div
+                    className={
+                        isSynced && !showSyncedFieldsMobile
+                            ? "hidden md:block space-y-4"
+                            : "space-y-4"
+                    }
+                >
                 {/* Main Info Card */}
                 <div className="bg-white dark:bg-[#1E2028] p-4 sm:p-5 rounded-xl border border-dashboard shadow-sm space-y-4">
                     <h3 className="text-base font-bold font-sans tracking-tight text-gray-700 dark:text-white flex items-center gap-2">
@@ -791,6 +818,7 @@ export default function JournalForm({
                             />
                         </div>
                     </div>
+                </div>
                 </div>
 
                 {/* Analysis */}
@@ -1110,10 +1138,10 @@ export default function JournalForm({
                                                 </div>
                                                 <div className="grid grid-cols-4 gap-1.5">
                                                     {[
-                                                        { grade: "A+", label: "A+ Textbook", color: "text-emerald-600 bg-emerald-500/10 border-emerald-500/30" },
-                                                        { grade: "A", label: "A Standard", color: "text-amber-600 dark:text-gold bg-gold/10 border-gold/30" },
-                                                        { grade: "B", label: "B Acceptable", color: "text-amber-600 bg-amber-500/10 border-amber-500/30" },
-                                                        { grade: "C", label: "C Impulsive", color: "text-red-600 bg-red-500/10 border-red-500/30" },
+                                                        { grade: "A+", desc: "Textbook", color: "text-emerald-600 bg-emerald-500/10 border-emerald-500/30" },
+                                                        { grade: "A", desc: "Standard", color: "text-amber-600 dark:text-gold bg-gold/10 border-gold/30" },
+                                                        { grade: "B", desc: "Acceptable", color: "text-amber-600 bg-amber-500/10 border-amber-500/30" },
+                                                        { grade: "C", desc: "Impulsive", color: "text-red-600 bg-red-500/10 border-red-500/30" },
                                                     ].map((g) => (
                                                         <Button
                                                             key={g.grade}
@@ -1126,7 +1154,13 @@ export default function JournalForm({
                                                                     : "bg-white/60 dark:bg-white/5 border-dashboard text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
                                                             }`}
                                                         >
-                                                            {g.label}
+                                                            <span>
+                                                                {g.grade}
+                                                                <span className="hidden sm:inline">
+                                                                    {" "}
+                                                                    {g.desc}
+                                                                </span>
+                                                            </span>
                                                         </Button>
                                                     ))}
                                                 </div>
@@ -1646,7 +1680,7 @@ export default function JournalForm({
                                                 e.currentTarget.style.display = "none";
                                             }}
                                         />
-                                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
+                                        <div className="absolute inset-0 bg-black/40 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
                                             <Button
                                                 type="button"
                                                 variant="destructive"

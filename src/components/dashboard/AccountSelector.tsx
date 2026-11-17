@@ -43,10 +43,12 @@ function AccountLabelDisplay({ account }: { account: TradingAccount }) {
     return (
         <span className="inline-flex items-center gap-1.5 truncate">
             {platform && (
-                <span className="text-gray-500 font-normal">{platform}</span>
+                <span className="hidden sm:inline text-gray-500 font-normal">
+                    {platform}
+                </span>
             )}
             <span className={typeColor}>{displayType}</span>
-            <span className="text-gray-600 dark:text-gray-300">
+            <span className="text-gray-600 dark:text-gray-300 truncate">
                 - {broker} <span className="text-gray-500 font-mono tabular-nums">{accNumber}</span>
             </span>
         </span>

@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import { LeaderboardRow } from "./LeaderboardRow";
 import type { LeaderboardEntry, LeaderboardType } from "../actions";
 
@@ -13,7 +14,10 @@ interface LeaderboardTableProps {
 }
 
 // Tab-specific column headers
-function getHeaders(type: LeaderboardType) {
+function getHeaders(
+    type: LeaderboardType,
+    sortBy: "percentage" | "currency" = "currency"
+) {
     switch (type) {
         case "xp":
             return [
@@ -36,8 +40,20 @@ function getHeaders(type: LeaderboardType) {
         case "sprint":
         case "trading":
             return [
-                { label: "Net PnL", className: "" },
-                { label: "Win Rate", className: "hidden sm:table-cell" },
+                {
+                    label: "Net PnL",
+                    className:
+                        sortBy === "currency"
+                            ? "table-cell"
+                            : "hidden sm:table-cell",
+                },
+                {
+                    label: "Win Rate",
+                    className:
+                        sortBy === "percentage"
+                            ? "table-cell"
+                            : "hidden sm:table-cell",
+                },
                 { label: "Trades", className: "hidden md:table-cell" },
             ];
         default:
@@ -46,8 +62,11 @@ function getHeaders(type: LeaderboardType) {
 }
 
 // Get colSpan for separator row
-function getColSpan(type: LeaderboardType) {
-    return 3 + getHeaders(type).length; // rank + user + dynamic cols + percentile
+function getColSpan(
+    type: LeaderboardType,
+    sortBy: "percentage" | "currency" = "currency"
+) {
+    return 3 + getHeaders(type, sortBy).length; // rank + user + dynamic cols + percentile
 }
 
 export function LeaderboardTable({
@@ -59,7 +78,7 @@ export function LeaderboardTable({
     sortBy = "currency",
 }: LeaderboardTableProps) {
     const isUserInTop = entries.some((e) => e.userId === currentUserId);
-    const headers = getHeaders(type);
+    const headers = getHeaders(type, sortBy);
 
     if (entries.length === 0 && !myEntry) {
         return (
@@ -106,7 +125,7 @@ export function LeaderboardTable({
                                     {h.label}
                                 </th>
                             ))}
-                            <th className="py-3 px-3 text-right">%</th>
+                            <th className="hidden sm:table-cell py-3 px-3 text-right">%</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-dashboard">
@@ -125,7 +144,7 @@ export function LeaderboardTable({
                             <>
                                 <tr>
                                     <td
-                                        colSpan={getColSpan(type)}
+                                        colSpan={getColSpan(type, sortBy)}
                                         className="py-2 px-6"
                                     >
                                         <div className="border-t-2 border-dashed border-dashboard" />
@@ -145,8 +164,4 @@ export function LeaderboardTable({
             </div>
         </div>
     );
-}
-
-function cn(...classes: (string | false | undefined)[]) {
-    return classes.filter(Boolean).join(" ");
 }

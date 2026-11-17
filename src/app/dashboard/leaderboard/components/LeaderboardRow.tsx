@@ -68,7 +68,6 @@ export function LeaderboardRow({
                         )}
                     >
                         {entry.avatar ? (
-                            // eslint-disable-next-line @next/next/no-img-element
                             <img
                                 src={entry.avatar}
                                 alt={entry.name}
@@ -183,7 +182,14 @@ export function LeaderboardRow({
 
             {(type === "trading" || type === "sprint") && (
                 <>
-                    <td className="py-3.5 px-3">
+                    <td
+                        className={cn(
+                            "py-3.5 px-3",
+                            sortBy === "currency"
+                                ? "table-cell"
+                                : "hidden sm:table-cell"
+                        )}
+                    >
                         {entry.pnl === null ? (
                             <span className="text-sm font-semibold text-gray-400 dark:text-gray-500 tabular-nums">
                                 —
@@ -204,7 +210,14 @@ export function LeaderboardRow({
                             </span>
                         )}
                     </td>
-                    <td className="py-3.5 px-3 hidden sm:table-cell">
+                    <td
+                        className={cn(
+                            "py-3.5 px-3",
+                            sortBy === "percentage"
+                                ? "table-cell"
+                                : "hidden sm:table-cell"
+                        )}
+                    >
                         {entry.winRate == null ? (
                             <span className="text-sm font-semibold text-gray-400 dark:text-gray-500 tabular-nums">
                                 Hidden
@@ -232,8 +245,8 @@ export function LeaderboardRow({
                 </>
             )}
 
-            {/* Percentile — always show */}
-            <td className="py-3.5 px-3 text-right">
+            {/* Percentile — hidden on mobile */}
+            <td className="hidden sm:table-cell py-3.5 px-3 text-right">
                 <span className="text-xs font-bold text-green-500 tabular-nums">
                     {entry.percentile.toFixed(1)}%
                 </span>

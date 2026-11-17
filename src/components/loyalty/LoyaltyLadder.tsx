@@ -59,7 +59,7 @@ export function LoyaltyLadder({ progress, onOpenClaim, claimingLevel }: LoyaltyL
               }`}
             >
               {/* Left Column: Required Volume (Lots) */}
-              <div className="w-16 sm:w-20 text-right shrink-0 flex flex-col justify-center">
+              <div className="hidden sm:flex w-16 sm:w-20 text-right shrink-0 flex-col justify-center">
                 <span className="block font-mono text-sm sm:text-base font-black text-gray-900 dark:text-white">
                   {tier.requiredLots.toLocaleString()}
                 </span>
@@ -120,9 +120,12 @@ export function LoyaltyLadder({ progress, onOpenClaim, claimingLevel }: LoyaltyL
               {/* Right Details Panel: Tier Info & Reward Action */}
               <div className="flex-1 min-w-0 p-3 sm:p-4 rounded-lg border border-gray-100 dark:border-white/5 bg-gray-50/40 dark:bg-white/[0.015] hover:border-gray-200 dark:hover:border-white/10 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="min-w-0">
-                  <div className="flex items-center gap-2 mb-0.5">
-                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-gray-400">
+                  <div className="flex items-center gap-2 mb-0.5 flex-wrap">
+                    <span className="text-[10px] font-mono tabular-nums font-bold uppercase tracking-wider text-gray-400">
                       Level {tier.level}
+                      <span className="sm:hidden text-amber-600 dark:text-amber-400">
+                        {" "}· {tier.requiredLots.toLocaleString()} Lots
+                      </span>
                     </span>
                     <span className="text-sm font-black text-gray-900 dark:text-white truncate">
                       {tier.name}
@@ -142,7 +145,12 @@ export function LoyaltyLadder({ progress, onOpenClaim, claimingLevel }: LoyaltyL
                     )}
                   </p>
 
-                  <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-1 line-clamp-1">
+                  <p
+                    className={cn(
+                      "text-[11px] text-gray-500 dark:text-gray-400 mt-1 line-clamp-1",
+                      !tier.isUnlocked && !isCurrentTier && "hidden sm:block"
+                    )}
+                  >
                     {tier.perkDescription}
                   </p>
                 </div>

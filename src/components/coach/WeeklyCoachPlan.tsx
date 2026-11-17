@@ -22,6 +22,12 @@ interface ActionItem {
     status: string;
 }
 
+interface LegacyActionItem {
+    label: string;
+    detail: string;
+    ctaHref?: string | null;
+}
+
 interface WeeklyCoachPlanProps {
     plan: {
         id: string;
@@ -30,7 +36,7 @@ interface WeeklyCoachPlanProps {
         keepDoing: string | null;
         fixNext: string | null;
         items?: ActionItem[];
-        nextActions?: any[]; // legacy fallback
+        nextActions?: LegacyActionItem[]; // legacy fallback
     };
 }
 
@@ -84,7 +90,7 @@ export function WeeklyCoachPlan({ plan }: WeeklyCoachPlanProps) {
     };
 
     return (
-        <div className="relative overflow-hidden rounded-lg border border-amber-500/20 dark:border-gold/15 bg-gradient-to-br from-amber-500/[0.04] via-transparent to-transparent dark:from-gold/[0.02] dark:to-transparent backdrop-blur-md p-6 space-y-6 shadow-sm">
+        <div className="relative overflow-hidden rounded-lg border border-amber-500/20 dark:border-gold/15 bg-gradient-to-br from-amber-500/[0.04] via-transparent to-transparent dark:from-gold/[0.02] dark:to-transparent backdrop-blur-md p-4 sm:p-6 space-y-4 sm:space-y-6 shadow-sm">
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div className="space-y-1">
@@ -97,7 +103,7 @@ export function WeeklyCoachPlan({ plan }: WeeklyCoachPlanProps) {
                             Weekly Coach Action Plan
                         </span>
                     </div>
-                    <h3 className="text-xl font-black text-gray-800 dark:text-white leading-tight">
+                    <h3 className="text-lg sm:text-xl font-black text-gray-800 dark:text-white leading-tight">
                         {plan.title}
                     </h3>
                     <p className="text-sm font-medium text-gray-600 dark:text-gray-300">

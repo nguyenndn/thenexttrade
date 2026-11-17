@@ -59,6 +59,7 @@ export default function JournalStats({ stats, currency = "USD" }: StatsProps) {
                     ? "bg-rose-50 dark:bg-rose-500/10"
                     : "bg-gray-100 dark:bg-white/5",
             desc: "Broker fees deducted",
+            hideOnMobile: true,
         },
         {
             title: "Total Swap",
@@ -77,6 +78,7 @@ export default function JournalStats({ stats, currency = "USD" }: StatsProps) {
                       ? "bg-rose-50 dark:bg-rose-500/10"
                       : "bg-gray-100 dark:bg-white/5",
             desc: "Overnight rollover fees",
+            hideOnMobile: true,
         },
         {
             title: "W/L Ratio",
@@ -96,6 +98,7 @@ export default function JournalStats({ stats, currency = "USD" }: StatsProps) {
             color: "text-amber-600 dark:text-gold",
             bg: "bg-gold/10",
             desc: "Traded volume",
+            hideOnMobile: true,
         },
     ];
 
@@ -106,7 +109,7 @@ export default function JournalStats({ stats, currency = "USD" }: StatsProps) {
                 return (
                     <div
                         key={index}
-                        className="rounded-xl border border-dashboard bg-white dark:bg-[#1E2028] p-3.5 sm:p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-default"
+                        className={`${card.hideOnMobile ? "hidden sm:block " : ""}rounded-xl border border-dashboard bg-white dark:bg-[#1E2028] p-3.5 sm:p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-default`}
                     >
                         <div className="flex items-center gap-3">
                             <div

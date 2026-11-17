@@ -20,6 +20,7 @@ import {
   AlertCircle,
   ArrowRight,
   CheckCircle2,
+  ChevronDown,
 } from "lucide-react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Button } from "@/components/ui/Button";
@@ -51,6 +52,7 @@ export function LoyaltyDashboardClient({
     broker?: string;
   } | null>(null);
   const [claimingLevel, setClaimingLevel] = useState<number | null>(null);
+  const [showMobileRules, setShowMobileRules] = useState(false);
 
   const selectedAccount = useMemo(() => {
     if (eligibleAccounts.length === 0) return null;
@@ -157,8 +159,9 @@ export function LoyaltyDashboardClient({
       <PageHeader
         title="Loyalty Program & Volume Rewards"
         description="Accumulate XAUUSD / GOLD trading lots per verified Partner IB REAL account to unlock 10 milestone tiers and direct USDT payouts."
+        hideDescriptionOnMobile
       >
-        <div className="px-3 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20 text-xs font-bold text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
+        <div className="px-3 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20 text-[11px] sm:text-xs font-bold text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
           <Coins size={14} className="text-amber-500 shrink-0" />
           <span>XAUUSD / GOLD Only · Per IB Real Account</span>
         </div>
@@ -174,7 +177,7 @@ export function LoyaltyDashboardClient({
                 Verified Partner IB Real Accounts ({eligibleAccounts.length})
               </span>
             </div>
-            <span className="text-[11px] text-gray-500 dark:text-gray-400">
+            <span className="hidden sm:inline text-[11px] text-gray-500 dark:text-gray-400">
               Volume & milestones are calculated independently for each IB REAL account (XAUUSD / GOLD only).
             </span>
           </div>
@@ -278,11 +281,34 @@ export function LoyaltyDashboardClient({
           />
         </div>
 
-        <div className="lg:col-span-4 space-y-6">
-          <LoyaltyEligibilityCard
-            progress={activeProgress}
-            selectedAccount={selectedAccount}
-          />
+        <div className="lg:col-span-4 space-y-3 lg:space-y-6">
+          <div className="lg:hidden">
+            <Button
+              type="button"
+              variant="outline"
+              size="smd"
+              onClick={() => setShowMobileRules((prev) => !prev)}
+              className="w-full flex items-center justify-between border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] text-gray-800 dark:text-gray-200 font-bold"
+            >
+              <span className="flex items-center gap-2 text-xs sm:text-sm">
+                <ShieldCheck size={16} className="text-amber-500 shrink-0" />
+                Qualifying Rules &amp; Payout Criteria
+              </span>
+              <ChevronDown
+                size={16}
+                className={cn(
+                  "text-gray-400 transition-transform duration-200",
+                  showMobileRules && "rotate-180"
+                )}
+              />
+            </Button>
+          </div>
+          <div className={cn(showMobileRules ? "block" : "hidden lg:block")}>
+            <LoyaltyEligibilityCard
+              progress={activeProgress}
+              selectedAccount={selectedAccount}
+            />
+          </div>
         </div>
       </div>
 

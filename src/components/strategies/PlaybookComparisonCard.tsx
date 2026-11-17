@@ -93,7 +93,10 @@ export function PlaybookComparisonCard({
                             </p>
                         </div>
                         <div className="text-center px-1">
-                            <p className="text-[10px] uppercase font-bold text-gray-400 mb-0.5">Profit Factor</p>
+                            <p className="text-[10px] uppercase font-bold text-gray-400 mb-0.5">
+                                <span className="sm:hidden">PF</span>
+                                <span className="hidden sm:inline">PROFIT FACTOR</span>
+                            </p>
                             <p className="text-base sm:text-lg font-black text-gray-800 dark:text-white leading-tight">
                                 {playbook.profitFactor >= 99 ? "MAX" : playbook.profitFactor.toFixed(2)}
                             </p>
@@ -131,7 +134,10 @@ export function PlaybookComparisonCard({
                             </p>
                         </div>
                         <div className="text-center px-1">
-                            <p className="text-[10px] uppercase font-bold text-gray-400 mb-0.5">Profit Factor</p>
+                            <p className="text-[10px] uppercase font-bold text-gray-400 mb-0.5">
+                                <span className="sm:hidden">PF</span>
+                                <span className="hidden sm:inline">PROFIT FACTOR</span>
+                            </p>
                             <p className="text-base sm:text-lg font-black text-gray-800 dark:text-white leading-tight">
                                 {discretionary.profitFactor >= 99 ? "MAX" : discretionary.profitFactor.toFixed(2)}
                             </p>

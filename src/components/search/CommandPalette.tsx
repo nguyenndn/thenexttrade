@@ -213,7 +213,7 @@ export function CommandPalette({
                 animate={{ x: "-50%", y: 0, scale: 1, opacity: 1 }}
                 exit={{ x: "-50%", y: 16, scale: 0.96, opacity: 0 }}
                 transition={SPRING_SOFT}
-                className="absolute left-1/2 top-[30%] w-full max-w-[640px] px-4"
+                className="absolute left-1/2 top-[10%] sm:top-[25%] w-full max-w-[640px] px-4"
             >
                 <Command
                     className="rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] shadow-2xl overflow-hidden"
@@ -221,7 +221,7 @@ export function CommandPalette({
                     filter={customFilter}
                 >
                     {/* Search Input */}
-                    <div className="relative border-b border-gray-200 dark:border-white/10 px-4">
+                    <div className="relative border-b border-gray-200 dark:border-white/10 px-3 sm:px-4">
                         <CommandInput
                             placeholder="Search tools, EAs, guides..."
                             autoFocus
@@ -238,20 +238,20 @@ export function CommandPalette({
                                     }
                                 }
                             }}
-                            className="flex h-14 w-full bg-transparent py-3 text-lg text-center outline-none placeholder:text-gray-500 dark:placeholder:text-gray-600 border-none px-10"
+                            className="flex h-12 sm:h-14 w-full bg-transparent py-3 text-base sm:text-lg text-left outline-none placeholder:text-gray-500 dark:placeholder:text-gray-600 border-none pr-10"
                         />
                         <Button
                             variant="outline"
                             size="icon"
                             onClick={() => setOpen(false)}
                             aria-label="Close command palette"
-                            className="absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                            className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
                         >
                             <X size={16} />
                         </Button>
                     </div>
 
-                    <CommandList className="max-h-[360px] overflow-y-auto p-2">
+                    <CommandList className="max-h-[55dvh] sm:max-h-[360px] overflow-y-auto p-2">
                         <CommandEmpty className="py-2">
                             {searchQuery.trim() ? (
                                 <Button
@@ -360,7 +360,7 @@ export function CommandPalette({
                     </CommandList>
 
                     {/* Footer */}
-                    <div className="flex items-center justify-between px-4 py-2.5 border-t border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/[0.02] text-xs text-gray-500">
+                    <div className="hidden sm:flex items-center justify-between px-4 py-2.5 border-t border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/[0.02] text-xs text-gray-500">
                         <div className="flex items-center gap-4">
                             <span className="flex items-center gap-1">
                                 <kbd className="px-1.5 py-0.5 rounded-lg bg-gray-200 dark:bg-white/10 text-gray-600 dark:text-gray-300 font-mono text-[10px]">

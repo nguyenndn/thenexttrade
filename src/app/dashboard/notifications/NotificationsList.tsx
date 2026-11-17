@@ -167,7 +167,7 @@ export function NotificationsList({ initialNotifications }: Props) {
             {/* Notifications List */}
             <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm overflow-hidden">
                 {notifications.length === 0 ? (
-                    <div className="p-16 text-center">
+                    <div className="p-8 sm:p-16 text-center">
                         <h3 className="text-lg font-bold text-gray-700 dark:text-gray-200">
                             No notifications
                         </h3>
@@ -191,13 +191,13 @@ export function NotificationsList({ initialNotifications }: Props) {
                                     id={`notification-${n.id}`}
                                     onClick={() => toggleExpand(n.id)}
                                     className={cn(
-                                        "group p-5 hover:bg-gray-50/80 dark:hover:bg-white/[0.03] transition-all duration-300 cursor-pointer border-l-2",
+                                        "group p-3.5 sm:p-5 hover:bg-gray-50/80 dark:hover:bg-white/[0.03] transition-all duration-300 cursor-pointer border-l-2",
                                         expandedIds[n.id]
                                             ? "bg-amber-500/[0.02] dark:bg-amber-500/[0.01] border-l-amber-500"
                                             : "border-l-transparent"
                                     )}
                                 >
-                                    <div className="flex gap-4">
+                                    <div className="flex gap-3 sm:gap-4">
                                         {/* Icon */}
                                         <div
                                             className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${config.bg}`}

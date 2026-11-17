@@ -40,7 +40,7 @@ export function DailyWinRateChart({
                     <h3 className="font-bold text-gray-700 dark:text-white text-sm">
                         Daily Win Rate
                     </h3>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                    <p className="hidden sm:block text-xs text-gray-500 dark:text-gray-400">
                         Win percentage by trading day
                     </p>
                 </div>

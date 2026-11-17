@@ -41,10 +41,10 @@ export function TargetProgressBar({ data }: TargetProgressBarProps) {
                 <div className="flex items-center gap-2">
                     <span className="text-xs font-bold uppercase tracking-wider text-gray-600 dark:text-gray-400">{label}</span>
                     {targetType === "PERCENT" && rawTargetValue && baseBalance ? (
-                        <span className="text-[11px] font-medium text-gray-600 dark:text-gray-400">({rawTargetValue}% of {formatMoney(baseBalance)})</span>
+                        <span className="hidden sm:inline text-[11px] font-medium text-gray-600 dark:text-gray-400">({rawTargetValue}% of {formatMoney(baseBalance)})</span>
                     ) : null}
                 </div>
-                <span className={cn("inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold border", badgeConfig.cls)}>
+                <span className={cn("inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold border shrink-0", badgeConfig.cls)}>
                     <badgeConfig.icon size={11} />
                     <span>{badgeConfig.text}</span>
                 </span>

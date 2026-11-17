@@ -24,6 +24,7 @@ import {
     Trophy,
     PenLine,
     RefreshCw,
+    ChevronDown,
     type LucideIcon,
 } from "lucide-react";
 import { ReportPreview, type ReportPreviewData } from "./ReportPreview";
@@ -34,6 +35,12 @@ import {
     type PreviewData,
 } from "./DraggablePreviewTable";
 import { Button } from "@/components/ui/Button";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import Link from "next/link";
 import type { GenerateReportResult } from "./report-generate-types";
 import type { getReports } from "@/actions/reports";
@@ -336,10 +343,79 @@ export function ReportsDashboard({
         toast.success("Downloaded successfully");
     };
 
+    const activeReport =
+        REPORT_TYPES.find((r) => r.id === selectedType) ?? REPORT_TYPES[0];
+    const ActiveReportIcon = activeReport.icon;
+
     return (
         <div className="space-y-4 animate-in fade-in duration-500">
-            {/* Report Type Selection */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+            {/* Mobile Report Type Switcher (< md) */}
+            <div className="md:hidden">
+                <DropdownMenu className="w-full block">
+                    <DropdownMenuTrigger asChild>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            className="w-full justify-between h-11 px-3.5 rounded-lg bg-white dark:bg-[#1E2028] border-dashboard"
+                        >
+                            <span className="flex items-center gap-2.5 min-w-0">
+                                <span className="p-1.5 rounded-lg bg-gold text-white shrink-0">
+                                    <ActiveReportIcon
+                                        size={15}
+                                        strokeWidth={2.5}
+                                    />
+                                </span>
+                                <span className="font-bold text-sm text-gray-800 dark:text-white truncate">
+                                    {activeReport.name}
+                                </span>
+                                <span className="text-[9px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded-lg border bg-gold/10 text-amber-600 dark:text-gold border-gold/20 shrink-0">
+                                    {activeReport.format}
+                                </span>
+                            </span>
+                            <ChevronDown
+                                size={16}
+                                className="text-gray-400 shrink-0"
+                            />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="start" className="p-1.5">
+                        {REPORT_TYPES.map((report) => {
+                            const isSelected = selectedType === report.id;
+                            return (
+                                <DropdownMenuItem
+                                    key={report.id}
+                                    onClick={() => handleSelectType(report.id)}
+                                    className={cn(
+                                        "flex items-center justify-between gap-3 py-2.5 px-3 rounded-lg",
+                                        isSelected &&
+                                            "bg-amber-500/10 text-amber-600 dark:text-gold font-bold"
+                                    )}
+                                >
+                                    <span className="flex items-center gap-2.5 min-w-0">
+                                        <report.icon
+                                            size={16}
+                                            className={
+                                                isSelected
+                                                    ? "text-amber-500 shrink-0"
+                                                    : "text-gray-500 shrink-0"
+                                            }
+                                        />
+                                        <span className="truncate text-sm">
+                                            {report.name}
+                                        </span>
+                                    </span>
+                                    <span className="text-[9px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded-lg border border-dashboard text-gray-500 shrink-0">
+                                        {report.format}
+                                    </span>
+                                </DropdownMenuItem>
+                            );
+                        })}
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </div>
+
+            {/* Desktop Report Type Selection (>= md) */}
+            <div className="hidden md:grid md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
                 {REPORT_TYPES.map((report) => {
                     const isSelected = selectedType === report.id;
 
@@ -428,6 +504,7 @@ export function ReportsDashboard({
                                 }
                                 disabled={reviewLoading}
                                 aria-label="Refresh reports"
+                                className="shrink-0"
                             >
                                 <RefreshCw
                                     size={15}
@@ -435,7 +512,7 @@ export function ReportsDashboard({
                                         reviewLoading ? "animate-spin" : ""
                                     }
                                 />
-                                Refresh
+                                <span className="hidden sm:inline">Refresh</span>
                             </Button>
                             <GenerateReportButton
                                 type={
@@ -489,20 +566,22 @@ export function ReportsDashboard({
 
                     {/* Mission reward panel */}
                     {lastGenerateResult?.missionReward?.claimable && (
-                        <div className="flex items-center gap-3 bg-amber-500/5 dark:bg-amber-500/10 border border-amber-500/20 rounded-xl p-4">
-                            <div className="p-2 bg-amber-500/10 rounded-lg">
-                                <Trophy size={18} className="text-amber-500" />
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-3 bg-amber-500/5 dark:bg-amber-500/10 border border-amber-500/20 rounded-xl p-4">
+                            <div className="flex items-center gap-3 flex-1">
+                                <div className="p-2 bg-amber-500/10 rounded-lg shrink-0">
+                                    <Trophy size={18} className="text-amber-500" />
+                                </div>
+                                <div className="flex-1">
+                                    <p className="text-sm font-bold text-gray-800 dark:text-white">
+                                        Weekly Review Generated!
+                                    </p>
+                                    <p className="text-xs text-gray-600 dark:text-gray-400">
+                                        Your execution telemetry and discipline have been updated.
+                                    </p>
+                                </div>
                             </div>
-                            <div className="flex-1">
-                                <p className="text-sm font-bold text-gray-800 dark:text-white">
-                                    Weekly Review Generated!
-                                </p>
-                                <p className="text-xs text-gray-600 dark:text-gray-400">
-                                    Your execution telemetry and discipline have been updated.
-                                </p>
-                            </div>
-                            <Link href="/dashboard/leaderboard">
-                                <Button variant="primary" size="smd">
+                            <Link href="/dashboard/leaderboard" className="w-full sm:w-auto">
+                                <Button variant="primary" size="smd" className="w-full sm:w-auto">
                                     View Leaderboard
                                 </Button>
                             </Link>
@@ -704,30 +783,41 @@ export function ReportsDashboard({
                     {csvPreview &&
                         (selectedType === "trades" ||
                             selectedType === "tax") && (
-                            <div className="bg-white dark:bg-[#1E2028] p-5 md:p-8 rounded-xl border border-dashboard shadow-sm animate-in fade-in duration-500">
-                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                            <div className="bg-white dark:bg-[#1E2028] p-4 sm:p-5 md:p-8 rounded-xl border border-dashboard shadow-sm animate-in fade-in duration-500">
+                                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 md:mb-6">
                                     <div>
                                         <h3 className="font-black text-gray-700 dark:text-white text-lg tracking-tight">
                                             CSV Preview
                                         </h3>
-                                        <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
+                                        <p className="hidden md:block text-sm font-medium text-gray-600 dark:text-gray-300">
                                             Review data and remove unnecessary
                                             columns before downloading.
                                         </p>
                                     </div>
+                                    <div className="md:hidden rounded-lg bg-gray-50 dark:bg-[#151925] border border-dashboard px-3.5 py-3 text-xs font-semibold text-gray-700 dark:text-gray-200 flex items-center gap-2.5">
+                                        <FileSpreadsheet
+                                            size={16}
+                                            className="text-amber-500 shrink-0"
+                                        />
+                                        <span>
+                                            {csvPreview.rows.length} trades ready for CSV export
+                                        </span>
+                                    </div>
                                     <Button
                                         onClick={handleDownloadCustomCSV}
-                                        className="w-full sm:w-auto"
+                                        className="w-full md:w-auto"
                                     >
                                         <Download size={18} strokeWidth={2.5} />
                                         Download Final CSV
                                     </Button>
                                 </div>
 
-                                <DraggablePreviewTable
-                                    initialData={csvPreview}
-                                    onChange={setCsvEditedData}
-                                />
+                                <div className="hidden md:block">
+                                    <DraggablePreviewTable
+                                        initialData={csvPreview}
+                                        onChange={setCsvEditedData}
+                                    />
+                                </div>
                             </div>
                         )}
                 </>

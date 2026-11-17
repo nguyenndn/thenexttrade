@@ -12,7 +12,6 @@ import {
     ShieldCheck,
     CloudSync,
     KeyRound,
-    AlertCircle,
     ExternalLink,
     Server,
     Hash,
@@ -206,7 +205,21 @@ export function AccountSettingsModal({
         return () => {
             isMounted = false;
         };
-    }, [isOpen, account?.id, account?.name, account?.server, account?.currency, account?.color, account?.hasSavedPassword, account?.hasCredentials]);
+    }, [
+        isOpen,
+        account?.id,
+        account?.name,
+        account?.server,
+        account?.currency,
+        account?.color,
+        account?.hasSavedPassword,
+        account?.hasCredentials,
+        account?.credential,
+        account?.weeklyTarget,
+        account?.weeklyTargetType,
+        account?.monthlyTarget,
+        account?.monthlyTargetType,
+    ]);
 
     // Body scroll lock
     useEffect(() => {
@@ -340,7 +353,7 @@ export function AccountSettingsModal({
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header */}
-                <div className="flex items-center justify-between px-6 py-4 border-b border-dashboard relative bg-white dark:bg-[#1E2028] z-10 shrink-0">
+                <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 sm:py-4 border-b border-dashboard relative bg-white dark:bg-[#1E2028] z-10 shrink-0">
                     <h2 className="text-lg font-bold text-gray-900 dark:text-white">
                         Account Settings
                     </h2>
@@ -356,7 +369,7 @@ export function AccountSettingsModal({
                 </div>
 
                 {/* Content */}
-                <div className="p-6 space-y-6 overflow-y-auto custom-scrollbar">
+                <div className="p-4 sm:p-6 space-y-5 sm:space-y-6 overflow-y-auto custom-scrollbar">
                     {/* General Settings */}
                     <div className="space-y-4">
                         <PremiumInput
@@ -500,7 +513,7 @@ export function AccountSettingsModal({
                                         {server || account.server || "Not configured"}
                                     </span>
                                 </div>
-                                <div className="px-4 py-2.5 min-w-0">
+                                <div className="px-3 sm:px-4 py-2.5 min-w-0">
                                     <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider flex items-center gap-1.5 mb-0.5">
                                         <Monitor size={12} className="text-gray-400 shrink-0" />
                                         Platform & Base
@@ -515,10 +528,13 @@ export function AccountSettingsModal({
                                                     type="button"
                                                     variant="outline"
                                                     size="sm"
-                                                    className="h-6 px-2 py-0 text-[11px] font-bold rounded-md border-dashboard bg-white dark:bg-[#1E2028] text-gray-700 dark:text-gray-200 flex items-center gap-1 shrink-0"
+                                                    className="h-6 px-2 py-0 text-[11px] font-bold rounded-lg border-dashboard bg-white dark:bg-[#1E2028] text-gray-700 dark:text-gray-200 flex items-center gap-1 shrink-0"
                                                     aria-label="Select account currency"
                                                 >
-                                                    <span>
+                                                    <span className="sm:hidden">
+                                                        {currency}
+                                                    </span>
+                                                    <span className="hidden sm:inline">
                                                         {
                                                             getCurrencyInfo(
                                                                 currency,
@@ -656,7 +672,7 @@ export function AccountSettingsModal({
                 </div>
 
                 {/* Footer */}
-                <div className="px-6 py-4 border-t border-dashboard flex items-center justify-between gap-3 bg-white dark:bg-[#1E2028] shrink-0">
+                <div className="px-4 sm:px-6 py-3.5 sm:py-4 border-t border-dashboard flex items-center justify-between gap-3 bg-white dark:bg-[#1E2028] shrink-0">
                     <Button
                         variant="destructive"
                         size="smd"

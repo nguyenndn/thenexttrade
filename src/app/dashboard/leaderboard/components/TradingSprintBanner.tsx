@@ -195,7 +195,7 @@ export function TradingSprintBanner({
                 {/* Top Row: Meta Badge & Countdown */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div className="space-y-1.5">
-                        <div className="inline-flex items-center gap-2 rounded-lg border border-gold/30 bg-gold/10 px-3 py-1 text-xs font-bold text-amber-700 dark:text-gold">
+                        <div className="inline-flex flex-wrap items-center gap-2 rounded-lg border border-gold/30 bg-gold/10 px-3 py-1 text-xs font-bold text-amber-700 dark:text-gold">
                             <span className="relative flex h-2 w-2">
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
@@ -240,14 +240,14 @@ export function TradingSprintBanner({
                 </div>
 
                 {/* Dynamic Prize Pool Cards */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="grid grid-cols-3 gap-2 sm:gap-3">
                     {prizes.slice(0, 3).map((item, idx) => {
                         const isFirst = item.place === 1;
                         const isSecond = item.place === 2;
                         return (
                             <div
                                 key={item.place || idx}
-                                className={`rounded-lg border p-4 relative overflow-hidden shadow-xs bg-gray-50/80 dark:bg-[#151925] ${
+                                className={`rounded-lg border p-2.5 sm:p-4 relative overflow-hidden shadow-xs bg-gray-50/80 dark:bg-[#151925] ${
                                     isFirst
                                         ? "border-gold/40"
                                         : "border-dashboard"
@@ -262,9 +262,9 @@ export function TradingSprintBanner({
                                               : "bg-amber-600/70"
                                     }`}
                                 />
-                                <div className="flex items-center justify-between">
+                                <div className="flex items-center justify-between gap-1">
                                     <span
-                                        className={`text-[11px] font-black uppercase tracking-wider ${
+                                        className={`text-[10px] sm:text-[11px] font-black uppercase tracking-wider truncate ${
                                             isFirst
                                                 ? "text-amber-600 dark:text-gold"
                                                 : "text-gray-600 dark:text-gray-300"
@@ -273,7 +273,7 @@ export function TradingSprintBanner({
                                         {isFirst ? "1st Place" : isSecond ? "2nd Place" : "3rd Place"}
                                     </span>
                                     <span
-                                        className={`rounded-lg px-2 py-0.5 text-[10px] font-extrabold border ${
+                                        className={`hidden sm:inline-block rounded-lg px-2 py-0.5 text-[10px] font-extrabold border ${
                                             isFirst
                                                 ? "bg-gold/10 text-amber-600 dark:text-gold border-gold/20"
                                                 : "bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 border-dashboard"
@@ -282,11 +282,11 @@ export function TradingSprintBanner({
                                         {isFirst ? "Champion" : isSecond ? "Runner-up" : "Podium"}
                                     </span>
                                 </div>
-                                <div className="text-2xl font-black font-mono tabular-nums text-gray-900 dark:text-white mt-2">
+                                <div className="text-base sm:text-2xl font-black font-mono tabular-nums text-gray-900 dark:text-white mt-1 sm:mt-2">
                                     ${item.prize.toLocaleString()}{" "}
-                                    <span className="text-xs font-bold text-gray-500">USD</span>
+                                    <span className="hidden sm:inline text-xs font-bold text-gray-500">USD</span>
                                 </div>
-                                <p className="text-xs text-gray-600 dark:text-gray-400 mt-1 font-medium">
+                                <p className="hidden sm:block text-xs text-gray-600 dark:text-gray-400 mt-1 font-medium">
                                     {item.reward}
                                 </p>
                             </div>
@@ -354,9 +354,9 @@ export function TradingSprintBanner({
                                     Only closed trades synced within the sprint window count towards the leaderboard.
                                 </p>
                             </div>
-                            <div className="flex flex-wrap items-center gap-2">
+                            <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
                                 <Select value={selectedAccountId} onValueChange={setSelectedAccountId}>
-                                    <SelectTrigger className="h-9 w-[220px] text-xs font-semibold font-mono tabular-nums rounded-lg">
+                                    <SelectTrigger className="h-9 w-full sm:w-[220px] text-xs font-semibold font-mono tabular-nums rounded-lg">
                                         <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -371,7 +371,7 @@ export function TradingSprintBanner({
                                     size="sm"
                                     onClick={handleJoin}
                                     isLoading={isJoining}
-                                    className="h-9 text-xs font-bold rounded-lg bg-gold hover:bg-amber-600 !text-white shrink-0"
+                                    className="h-9 w-full sm:w-auto text-xs font-bold rounded-lg bg-gold hover:bg-amber-600 !text-white shrink-0"
                                 >
                                     {userEnrollment ? "Update Account" : "Enroll Account"}
                                 </Button>
@@ -380,7 +380,7 @@ export function TradingSprintBanner({
                                         variant="outline"
                                         size="sm"
                                         onClick={() => setIsSwitching(false)}
-                                        className="h-9 text-xs rounded-lg"
+                                        className="h-9 w-full sm:w-auto text-xs rounded-lg"
                                     >
                                         Cancel
                                     </Button>
@@ -392,7 +392,7 @@ export function TradingSprintBanner({
 
                 {/* Guardrails & Rules Footer */}
                 <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-dashboard">
-                    <div className="flex flex-wrap items-center gap-2 text-xs font-semibold font-mono tabular-nums text-gray-600 dark:text-gray-300">
+                    <div className="hidden sm:flex flex-wrap items-center gap-2 text-xs font-semibold font-mono tabular-nums text-gray-600 dark:text-gray-300">
                         <span className="inline-flex items-center gap-1.5 rounded-lg bg-gray-100 dark:bg-[#151925] px-2.5 py-1">
                             <ShieldCheck size={14} className="text-emerald-500" />
                             Min {minTrades} Closed Trades

@@ -11,24 +11,38 @@ import { Button } from "@/components/ui/Button";
 import { SPRING_SOFT, backdropVariants, panelVariants } from "@/lib/animations";
 import { formatDashboardCurrency, getCurrencyInfo } from "@/lib/utils/cent-account";
 
+export interface DayTradeItem {
+    id?: string;
+    symbol?: string;
+    type?: string;
+    netPnl?: number;
+    pnl?: number | null;
+    lotSize?: number | null;
+    commission?: number | null;
+    swap?: number | null;
+    result?: string | null;
+}
+
+export interface DayTradeStats {
+    buys: number;
+    sells: number;
+    totalTrades: number;
+    totalLots?: number;
+    bestTrade: number;
+    worstTrade: number;
+    avgHoldTimeMinutes: number;
+    totalCommission?: number;
+    totalSwap?: number;
+    commissionsAndFees: number;
+    winrate: number;
+    profitFactor: number;
+    expectancy: number;
+}
+
 interface DayTradeListProps {
     date: string;
-    trades: any[];
-    stats?: {
-        buys: number;
-        sells: number;
-        totalTrades: number;
-        totalLots?: number;
-        bestTrade: number;
-        worstTrade: number;
-        avgHoldTimeMinutes: number;
-        totalCommission?: number;
-        totalSwap?: number;
-        commissionsAndFees: number;
-        winrate: number;
-        profitFactor: number;
-        expectancy: number;
-    };
+    trades: DayTradeItem[];
+    stats?: DayTradeStats;
     startBalance?: number;
     endBalance?: number;
     accountId?: string;
@@ -57,8 +71,6 @@ export function DayTradeList({
 
     // Growth calculation
     const growth = startBalance ? (netPnl / startBalance) * 100 : 0;
-
-    const deposit = 0; // Deposit data placeholder
 
     // Body scroll lock: locked while mounted (open + exit), released on unmount.
     useEffect(() => {
@@ -111,13 +123,13 @@ export function DayTradeList({
                 <div className="overflow-y-auto flex-1 custom-scrollbar">
                     {/* Net PnL Section */}
                     <div className="px-6 py-4">
-                        <div className="flex justify-between items-end pl-4">
+                        <div className="flex justify-between items-end">
                             <div className="border-l-[3px] border-[#3B82F6] pl-4">
                                 <p className="text-[10px] font-bold text-gray-600 dark:text-gray-300 uppercase tracking-widest mb-1">
                                     Net P&L
                                 </p>
                                 <h3
-                                    className={`text-[2.25rem] font-bold leading-tight tracking-tight ${netPnl >= 0 ? "text-[#3B82F6]" : "text-red-500"}`}
+                                    className={`text-2xl sm:text-[2.25rem] font-bold leading-tight tracking-tight ${netPnl >= 0 ? "text-[#3B82F6]" : "text-red-500"}`}
                                 >
                                     {formatDashboardCurrency(netPnl, currency, {
                                         signDisplay: "always",
@@ -172,14 +184,6 @@ export function DayTradeList({
                         </div>
 
                         <div className="space-y-4">
-                            <div className="flex justify-between items-center text-sm">
-                                <span className="text-gray-600 dark:text-gray-300">
-                                    Deposit
-                                </span>
-                                <span className="font-bold text-gray-700 dark:text-white">
-                                    {formatDashboardCurrency(deposit, currency)}
-                                </span>
-                            </div>
                             <div className="flex justify-between items-center text-sm">
                                 <span className="text-gray-600 dark:text-gray-300">
                                     Commission
@@ -270,34 +274,34 @@ export function DayTradeList({
                             </span>
                         </div>
 
-                        <div className="flex justify-between text-xs mb-6 text-gray-600 dark:text-gray-300">
-                            <span>
-                                Buys{" "}
-                                <span className="font-bold text-gray-700 dark:text-white ml-1">
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 p-3 rounded-xl bg-gray-50 dark:bg-white/[0.03] border border-dashboard text-xs mb-5 text-gray-600 dark:text-gray-300">
+                            <div className="flex items-center justify-between sm:justify-start gap-1">
+                                <span>Buys</span>
+                                <span className="font-bold font-mono tabular-nums text-gray-700 dark:text-white">
                                     {stats?.buys || 0}
                                 </span>
-                            </span>
-                            <span>
-                                Sells{" "}
-                                <span className="font-bold text-gray-700 dark:text-white ml-1">
+                            </div>
+                            <div className="flex items-center justify-between sm:justify-start gap-1">
+                                <span>Sells</span>
+                                <span className="font-bold font-mono tabular-nums text-gray-700 dark:text-white">
                                     {stats?.sells || 0}
                                 </span>
-                            </span>
-                            <span>
-                                Trades{" "}
-                                <span className="font-bold text-gray-700 dark:text-white ml-1">
+                            </div>
+                            <div className="flex items-center justify-between sm:justify-start gap-1">
+                                <span>Trades</span>
+                                <span className="font-bold font-mono tabular-nums text-gray-700 dark:text-white">
                                     {stats?.totalTrades || trades.length}
                                 </span>
-                            </span>
-                            <span>
-                                Lots{" "}
-                                <span className="font-bold text-[#3B82F6] dark:text-[#60A5FA] ml-1">
+                            </div>
+                            <div className="flex items-center justify-between sm:justify-start gap-1">
+                                <span>Lots</span>
+                                <span className="font-bold font-mono tabular-nums text-[#3B82F6] dark:text-[#60A5FA]">
                                     {totalLots.toLocaleString("en-US", {
                                         minimumFractionDigits: 2,
                                         maximumFractionDigits: 2,
                                     })}
                                 </span>
-                            </span>
+                            </div>
                         </div>
 
                         <div className="space-y-4">

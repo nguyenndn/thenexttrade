@@ -32,8 +32,8 @@ export function StrategyPerformanceChart({
     currency = "USD",
 }: Props) {
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-6 rounded-lg border border-dashboard shadow-sm">
-            <h3 className="text-lg font-bold text-gray-700 dark:text-white mb-6">
+        <div className="bg-white dark:bg-[#1E2028] p-4 sm:p-6 rounded-lg border border-dashboard shadow-sm">
+            <h3 className="text-lg font-bold text-gray-700 dark:text-white mb-4 sm:mb-6">
                 Strategy Performance
             </h3>
 
@@ -46,7 +46,7 @@ export function StrategyPerformanceChart({
                 >
                     <ComposedChart
                         data={data}
-                        margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                        margin={{ top: 12, right: 8, left: 0, bottom: 5 }}
                         barSize={40}
                     >
                         <CartesianGrid
@@ -63,6 +63,7 @@ export function StrategyPerformanceChart({
                         />
                         <YAxis
                             yAxisId="left"
+                            width={48}
                             axisLine={false}
                             tickLine={false}
                             tick={{ fill: "#9CA3AF", fontSize: 12 }}
@@ -75,6 +76,7 @@ export function StrategyPerformanceChart({
                         <YAxis
                             yAxisId="right"
                             orientation="right"
+                            width={48}
                             axisLine={false}
                             tickLine={false}
                             tick={{ fill: "#9CA3AF", fontSize: 12 }}

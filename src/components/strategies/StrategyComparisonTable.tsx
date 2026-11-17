@@ -36,7 +36,7 @@ export function StrategyComparisonTable({
 
     return (
         <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard overflow-hidden shadow-sm">
-            <div className="px-6 py-4 border-b border-dashboard">
+            <div className="px-4 py-3 sm:px-6 sm:py-4 border-b border-dashboard">
                 <h3 className="font-bold text-gray-700 dark:text-white text-lg">
                     Strategy Comparison
                 </h3>
@@ -49,16 +49,16 @@ export function StrategyComparisonTable({
                 <table className="w-full text-sm text-left">
                     <thead className="bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-300 font-medium uppercase text-xs">
                         <tr>
-                            <th className="px-6 py-3 min-w-[150px]">
+                            <th className="px-3 py-3 sm:px-6 min-w-[120px] sm:min-w-[150px]">
                                 Strategy
                             </th>
-                            <th className="px-6 py-3 text-center">Win Rate</th>
-                            <th className="px-6 py-3 text-center">
+                            <th className="px-3 py-3 sm:px-6 text-center">Win Rate</th>
+                            <th className="px-3 py-3 sm:px-6 text-center">
                                 Profit Factor
                             </th>
-                            <th className="px-6 py-3 text-right">Total P&L</th>
-                            <th className="px-6 py-3 text-right">Avg Trade</th>
-                            <th className="px-6 py-3 text-center">Trades</th>
+                            <th className="px-3 py-3 sm:px-6 text-right">Total P&L</th>
+                            <th className="hidden md:table-cell px-3 py-3 sm:px-6 text-right">Avg Trade</th>
+                            <th className="px-3 py-3 sm:px-6 text-center">Trades</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-dashboard">
@@ -67,8 +67,8 @@ export function StrategyComparisonTable({
                                 key={item.strategy}
                                 className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
                             >
-                                <td className="px-6 py-4">
-                                    <div className="flex items-center gap-3">
+                                <td className="px-3 py-3 sm:px-6 sm:py-4">
+                                    <div className="flex items-center gap-2 sm:gap-3">
                                         <div
                                             className="w-3 h-3 rounded-full flex-shrink-0"
                                             style={{
@@ -87,7 +87,7 @@ export function StrategyComparisonTable({
                                 </td>
 
                                 {/* Win Rate */}
-                                <td className="px-6 py-4">
+                                <td className="px-3 py-3 sm:px-6 sm:py-4">
                                     <div className="flex flex-col items-center gap-1">
                                         <span
                                             className={cn(
@@ -99,7 +99,7 @@ export function StrategyComparisonTable({
                                         >
                                             {(item.winRate ?? 0).toFixed(1)}%
                                         </span>
-                                        <div className="w-20 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                                        <div className="hidden sm:flex w-20 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                                             <div
                                                 className={cn(
                                                     "h-full rounded-full",
@@ -116,7 +116,7 @@ export function StrategyComparisonTable({
                                 </td>
 
                                 {/* Profit Factor */}
-                                <td className="px-6 py-4 text-center">
+                                <td className="px-3 py-3 sm:px-6 sm:py-4 text-center">
                                     <span
                                         className={cn(
                                             "px-2.5 py-1 rounded-lg font-bold font-mono tabular-nums text-xs inline-flex items-center gap-1",
@@ -137,11 +137,11 @@ export function StrategyComparisonTable({
                                 </td>
 
                                 {/* Total P&L */}
-                                <td className="px-6 py-4 text-right">
+                                <td className="px-3 py-3 sm:px-6 sm:py-4 text-right">
                                     <div className="flex flex-col items-end">
                                         <span
                                             className={cn(
-                                                "font-bold font-mono tabular-nums text-base",
+                                                "font-bold font-mono tabular-nums text-sm sm:text-base",
                                                 item.totalPnL >= 0
                                                     ? "text-emerald-500"
                                                     : "text-red-500"
@@ -154,7 +154,7 @@ export function StrategyComparisonTable({
                                             )}
                                         </span>
                                         {/* Visualization bar */}
-                                        <div className="w-24 h-1 bg-gray-200 dark:bg-gray-700 rounded-full mt-1 overflow-hidden flex justify-end">
+                                        <div className="hidden sm:flex w-24 h-1 bg-gray-200 dark:bg-gray-700 rounded-full mt-1 overflow-hidden justify-end">
                                             <div
                                                 className={cn(
                                                     "h-full rounded-full opacity-50",
@@ -171,7 +171,7 @@ export function StrategyComparisonTable({
                                 </td>
 
                                 {/* Avg Trade */}
-                                <td className="px-6 py-4 text-right">
+                                <td className="hidden md:table-cell px-3 py-3 sm:px-6 sm:py-4 text-right">
                                     <div className="flex items-center justify-end gap-1">
                                         <span
                                             className={cn(
@@ -209,17 +209,19 @@ export function StrategyComparisonTable({
                                 </td>
 
                                 {/* Trades Count */}
-                                <td className="px-6 py-4 flex flex-col items-center">
-                                    <span className="font-bold font-mono tabular-nums text-gray-700 dark:text-white">
-                                        {item.totalTrades}
-                                    </span>
-                                    <div className="w-16 h-1 bg-gray-200 dark:bg-gray-700 rounded-full mt-1 overflow-hidden">
-                                        <div
-                                            className="h-full bg-gold rounded-full"
-                                            style={{
-                                                width: `${(item.totalTrades / maxTrades) * 100}%`,
-                                            }}
-                                        />
+                                <td className="px-3 py-3 sm:px-6 sm:py-4 text-center">
+                                    <div className="flex flex-col items-center">
+                                        <span className="font-bold font-mono tabular-nums text-gray-700 dark:text-white">
+                                            {item.totalTrades}
+                                        </span>
+                                        <div className="hidden sm:flex w-16 h-1 bg-gray-200 dark:bg-gray-700 rounded-full mt-1 overflow-hidden">
+                                            <div
+                                                className="h-full bg-gold rounded-full"
+                                                style={{
+                                                    width: `${(item.totalTrades / maxTrades) * 100}%`,
+                                                }}
+                                            />
+                                        </div>
                                     </div>
                                 </td>
                             </tr>

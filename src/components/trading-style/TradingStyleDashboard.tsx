@@ -2,11 +2,12 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Calendar, RotateCcw } from "lucide-react";
+import { ArrowRight, Calendar, ChevronDown, RotateCcw } from "lucide-react";
 import { ARCHETYPES, type ArchetypeId } from "@/config/trading-style-data";
 import type { TradingStyleSaved } from "@/app/dashboard/settings/trading-style/page";
 import { Button } from "@/components/ui/Button";
 import { buttonVariants } from "@/components/ui/button-variants";
+import { cn } from "@/lib/utils";
 import { DimensionBars } from "@/components/trading-style/DimensionBars";
 import { ArchetypeCard, ArchetypeMoves } from "@/components/trading-style/ArchetypeCard";
 import { PrescriptionCard } from "@/components/trading-style/PrescriptionCard";
@@ -22,6 +23,8 @@ export function TradingStyleDashboard({
 }: TradingStyleDashboardProps) {
     const [result, setResult] = useState<TradingStyleSaved | null>(initialResult);
     const [isRetaking, setIsRetaking] = useState(false);
+    const [isProfileExpanded, setIsProfileExpanded] = useState(false);
+    const [isRoadmapExpanded, setIsRoadmapExpanded] = useState(false);
 
     useEffect(() => {
         setResult(initialResult);
@@ -37,7 +40,7 @@ export function TradingStyleDashboard({
         return (
             <div className="relative overflow-hidden rounded-xl border border-dashboard bg-white/90 p-5 shadow-sm backdrop-blur-sm sm:p-8 dark:bg-[#1E2028]/90">
                 {isRetaking && (
-                    <div className="mb-6 flex items-center justify-between border-b border-dashboard pb-4">
+                    <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-dashboard pb-4">
                         <div>
                             <p className="text-[10px] font-bold uppercase tracking-wider text-amber-700 dark:text-gold">
                                 Recalibration Mode
@@ -51,7 +54,7 @@ export function TradingStyleDashboard({
                             variant="outline"
                             size="sm"
                             onClick={() => setIsRetaking(false)}
-                            className="text-xs font-bold"
+                            className="w-full sm:w-auto text-xs font-bold"
                         >
                             Cancel & Return to Results
                         </Button>
@@ -131,19 +134,59 @@ export function TradingStyleDashboard({
 
                     {/* Tactical & Behavioral Profile Card */}
                     <div className="rounded-xl border border-dashboard bg-white/90 p-5 shadow-sm backdrop-blur-sm sm:p-6 dark:bg-[#1E2028]/90">
-                        <div className="mb-4 border-b border-gray-100 pb-3 dark:border-white/[0.06]">
-                            <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                                Tactical & Behavioral Profile
-                            </h3>
-                            <p className="mt-0.5 text-xs text-gray-400 dark:text-gray-500">
-                                Execution tendencies, blindspots, and recommended focal points
-                            </p>
+                        <div
+                            className={cn(
+                                "flex items-start justify-between gap-3 md:mb-4 md:border-b md:border-gray-100 md:pb-3 md:dark:border-white/[0.06]",
+                                isProfileExpanded &&
+                                    "mb-4 border-b border-gray-100 pb-3 dark:border-white/[0.06]"
+                            )}
+                        >
+                            <div className="min-w-0">
+                                <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                                    Tactical & Behavioral Profile
+                                </h3>
+                                <p className="mt-0.5 text-xs text-gray-400 dark:text-gray-500">
+                                    Execution tendencies, blindspots, and recommended focal points
+                                </p>
+                            </div>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={() =>
+                                    setIsProfileExpanded((prev) => !prev)
+                                }
+                                aria-expanded={isProfileExpanded}
+                                aria-label={
+                                    isProfileExpanded
+                                        ? "Collapse Tactical & Behavioral Profile"
+                                        : "Expand Tactical & Behavioral Profile"
+                                }
+                                className="md:hidden shrink-0 h-8 px-2.5 text-xs font-bold gap-1"
+                            >
+                                <span>
+                                    {isProfileExpanded ? "Hide" : "Show"}
+                                </span>
+                                <ChevronDown
+                                    size={14}
+                                    className={cn(
+                                        "transition-transform duration-200",
+                                        isProfileExpanded && "rotate-180"
+                                    )}
+                                />
+                            </Button>
                         </div>
-                        <ArchetypeCard
-                            archetype={archetype}
-                            showHeader={false}
-                            showMoves={false}
-                        />
+                        <div
+                            className={cn(
+                                !isProfileExpanded && "hidden md:block"
+                            )}
+                        >
+                            <ArchetypeCard
+                                archetype={archetype}
+                                showHeader={false}
+                                showMoves={false}
+                            />
+                        </div>
                     </div>
                 </div>
 
@@ -154,18 +197,58 @@ export function TradingStyleDashboard({
 
                     {/* Action Roadmap (Keystone & Follow-up moves) */}
                     <div className="rounded-xl border border-dashboard bg-white/90 p-5 shadow-sm backdrop-blur-sm sm:p-6 dark:bg-[#1E2028]/90">
-                        <div className="mb-4 border-b border-gray-100 pb-3 dark:border-white/[0.06]">
-                            <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
-                                Execution Discipline
-                            </span>
-                            <h3 className="mt-0.5 text-base font-bold tracking-tight text-gray-950 sm:text-lg dark:text-white">
-                                Action Roadmap
-                            </h3>
-                            <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
-                                Immediate steps to calibrate execution and preserve capital
-                            </p>
+                        <div
+                            className={cn(
+                                "flex items-start justify-between gap-3 md:mb-4 md:border-b md:border-gray-100 md:pb-3 md:dark:border-white/[0.06]",
+                                isRoadmapExpanded &&
+                                    "mb-4 border-b border-gray-100 pb-3 dark:border-white/[0.06]"
+                            )}
+                        >
+                            <div className="min-w-0">
+                                <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
+                                    Execution Discipline
+                                </span>
+                                <h3 className="mt-0.5 text-base font-bold tracking-tight text-gray-950 sm:text-lg dark:text-white">
+                                    Action Roadmap
+                                </h3>
+                                <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
+                                    Immediate steps to calibrate execution and preserve capital
+                                </p>
+                            </div>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={() =>
+                                    setIsRoadmapExpanded((prev) => !prev)
+                                }
+                                aria-expanded={isRoadmapExpanded}
+                                aria-label={
+                                    isRoadmapExpanded
+                                        ? "Collapse Action Roadmap"
+                                        : "Expand Action Roadmap"
+                                }
+                                className="md:hidden shrink-0 h-8 px-2.5 text-xs font-bold gap-1"
+                            >
+                                <span>
+                                    {isRoadmapExpanded ? "Hide" : "Show"}
+                                </span>
+                                <ChevronDown
+                                    size={14}
+                                    className={cn(
+                                        "transition-transform duration-200",
+                                        isRoadmapExpanded && "rotate-180"
+                                    )}
+                                />
+                            </Button>
                         </div>
-                        <ArchetypeMoves archetype={archetype} />
+                        <div
+                            className={cn(
+                                !isRoadmapExpanded && "hidden md:block"
+                            )}
+                        >
+                            <ArchetypeMoves archetype={archetype} />
+                        </div>
                     </div>
 
                     {/* Secondary Intelligence link card */}

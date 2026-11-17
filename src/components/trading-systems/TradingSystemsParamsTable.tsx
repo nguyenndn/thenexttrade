@@ -46,7 +46,7 @@ export function TradingSystemsParamsTable({
     };
 
     return (
-        <div className="rounded-xl border border-dashboard bg-white dark:bg-[#1E2028] p-6 shadow-sm overflow-hidden flex flex-col gap-5">
+        <div className="rounded-xl p-0 border-0 shadow-none sm:p-6 sm:border sm:border-dashboard sm:shadow-sm bg-transparent sm:bg-white dark:sm:bg-[#1E2028] overflow-hidden flex flex-col gap-5">
             {/* Table Header Action Row */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <h3 className="text-base font-black text-gray-800 dark:text-white uppercase tracking-wider flex items-center gap-2 shrink-0">
@@ -68,7 +68,7 @@ export function TradingSystemsParamsTable({
             </div>
 
             {/* Table Content */}
-            <div className="overflow-x-auto -mx-6 px-6">
+            <div className="overflow-x-auto sm:-mx-6 sm:px-6">
                 {filteredParameters.length > 0 ? (
                     <table className="w-full text-left text-xs font-semibold">
                         <thead>
@@ -97,7 +97,7 @@ export function TradingSystemsParamsTable({
                                             </span>
 
                                             {/* Copy Indicator overlay */}
-                                            <span className="opacity-0 group-hover/row:opacity-100 transition-opacity text-[10px] text-gray-400 flex items-center shrink-0">
+                                            <span className="opacity-100 sm:opacity-0 sm:group-hover/row:opacity-100 transition-opacity text-[10px] text-gray-400 flex items-center shrink-0">
                                                 {isCopied ? (
                                                     <span className="text-emerald-500 font-black text-[9px] bg-emerald-500/10 px-1.5 py-0.5 rounded-lg border border-emerald-500/20 animate-in zoom-in-95">
                                                         Copied

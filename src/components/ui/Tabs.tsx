@@ -54,7 +54,7 @@ export function TabsList({ children, className }: TabsListProps) {
     return (
         <div
             className={cn(
-                "flex items-center gap-1 bg-[#F1F3F5] dark:bg-[#1A1D27] p-1 rounded-lg border border-dashboard w-fit",
+                "flex items-center gap-1 bg-[#F1F3F5] dark:bg-[#1A1D27] p-1 rounded-lg border border-dashboard w-fit max-w-full overflow-x-auto scrollbar-hide",
                 className
             )}
         >
@@ -104,7 +104,7 @@ export function TabsTrigger({
             variant="ghost"
             onClick={() => context.setActiveTab(value)}
             className={cn(
-                "relative px-4 py-1.5 h-auto rounded-lg text-sm font-bold transition-all duration-300 flex items-center gap-2 z-10 hover:bg-transparent border",
+                "relative px-3 sm:px-4 py-1.5 h-auto rounded-lg text-xs sm:text-sm font-bold transition-all duration-300 flex items-center gap-1.5 sm:gap-2 z-10 hover:bg-transparent border shrink-0 whitespace-nowrap",
                 isActive
                     ? activeTextClassName || "text-gray-700 dark:text-white"
                     : "text-gray-600 hover:text-gray-700 dark:text-gray-500 dark:hover:text-gray-200 border-transparent",

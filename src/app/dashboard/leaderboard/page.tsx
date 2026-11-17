@@ -16,6 +16,7 @@ import { MyStatsView } from "./components/MyStatsView";
 import { TradingSetupModal } from "./components/TradingSetupModal";
 import { RankUpModal } from "./components/RankUpModal";
 import { LeaderboardSidebar } from "./components/LeaderboardSidebar";
+import { LeaderboardMobileDrawer } from "./components/LeaderboardMobileDrawer";
 import { TradingSprintBanner } from "./components/TradingSprintBanner";
 
 import { getTier } from "@/lib/gamification";
@@ -173,6 +174,7 @@ export default async function LeaderboardPage({ searchParams }: PageProps) {
             <PageHeader
                 title="Trading Arena & Leaderboard"
                 description="Live institutional execution telemetry, monthly battles, and discipline rankings."
+                hideDescriptionOnMobile
             />
 
             {/* Trading Sprint Banner (Dynamically shown ONLY when active competition exists) */}
@@ -186,13 +188,16 @@ export default async function LeaderboardPage({ searchParams }: PageProps) {
             )}
 
             {/* Tabs */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <Suspense fallback={null}>
-                    <LeaderboardTabs
-                        activeType={type}
-                        hasActiveCompetition={hasActiveCompetition}
-                    />
-                </Suspense>
+            <div className="flex items-center justify-between gap-2.5 min-w-0">
+                <div className="min-w-0 flex-1">
+                    <Suspense fallback={null}>
+                        <LeaderboardTabs
+                            activeType={type}
+                            hasActiveCompetition={hasActiveCompetition}
+                        />
+                    </Suspense>
+                </div>
+                {user && <LeaderboardMobileDrawer initialData={sidebarData} />}
             </div>
 
             {/* Setup Prompt for Trading Leaderboard */}
@@ -203,7 +208,7 @@ export default async function LeaderboardPage({ searchParams }: PageProps) {
             {/* Main Grid Layout */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
                 {/* Left Column: Leaderboard Content */}
-                <div className="lg:col-span-2 space-y-6">
+                <div className="lg:col-span-2 space-y-6 min-w-0">
                     {/* Content */}
                     {isMyStats ? (
                         <MyStatsView
@@ -229,7 +234,7 @@ export default async function LeaderboardPage({ searchParams }: PageProps) {
 
                 {/* Right Column: Settings & Personal Stats Sidebar */}
                 {user && (
-                    <div className="lg:col-span-1">
+                    <div className="hidden lg:block lg:col-span-1">
                         <LeaderboardSidebar initialData={sidebarData} />
                     </div>
                 )}

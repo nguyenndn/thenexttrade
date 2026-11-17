@@ -95,7 +95,7 @@ export function SyncHealthCenter({
 
     return (
         <Dialog open={isOpen} onOpenChange={onOpenChange}>
-            <DialogContent className="max-w-4xl p-6 bg-white dark:bg-[#1E2028] border-dashboard dark:border-white/[0.08] overflow-hidden rounded-2xl">
+            <DialogContent className="max-w-4xl p-4 sm:p-6 bg-white dark:bg-[#1E2028] border-dashboard dark:border-white/[0.08] overflow-hidden rounded-2xl">
                 <DialogHeader className="border-b border-dashboard/80 dark:border-white/[0.08] pb-4 flex flex-row items-center justify-between">
                     <div>
                         <DialogTitle className="flex items-center gap-2 text-xl font-black text-gray-800 dark:text-white">
