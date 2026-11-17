@@ -49,6 +49,18 @@ import {
     SupportedBroker,
 } from "@/lib/validations/vip-request";
 
+interface CloudSyncJobSnapshot {
+    id?: string;
+    status: string;
+    message?: string | null;
+    progressPercent?: number | null;
+    dealsReceived?: number | null;
+    errorMessage?: string | null;
+    errorCode?: string | null;
+    createdAt?: string | Date | null;
+    completedAt?: string | Date | null;
+}
+
 interface CloudSyncModalProps {
     isOpen: boolean;
     onClose: () => void;
@@ -69,6 +81,23 @@ interface CloudSyncModalProps {
     };
     onUpdated?: () => void;
     onSyncStarted?: (accountId: string, jobId?: string) => void;
+}
+
+const openCloudSyncModalAccountIds = new Set<string>();
+const handledCloudSyncJobIds = new Set<string>();
+
+export function isCloudSyncModalOpenForAccount(accountId: string): boolean {
+    return openCloudSyncModalAccountIds.has(accountId);
+}
+
+export function markCloudSyncJobHandledOnClient(jobId?: string | null): void {
+    if (!jobId) return;
+    handledCloudSyncJobIds.add(jobId);
+}
+
+export function wasCloudSyncJobHandledOnClient(jobId?: string | null): boolean {
+    if (!jobId) return false;
+    return handledCloudSyncJobIds.has(jobId);
 }
 
 export function CloudSyncModal({
@@ -97,7 +126,9 @@ export function CloudSyncModal({
     );
     const [loadingStatus, setLoadingStatus] = useState(false);
     const [hasCredentials, setHasCredentials] = useState(initialHasCredentials);
-    const [latestJob, setLatestJob] = useState<any>(account.latestJob || null);
+    const [latestJob, setLatestJob] = useState<CloudSyncJobSnapshot | null>(
+        account.latestJob || null
+    );
     const [_jobWaitSeconds, setJobWaitSeconds] = useState(0);
     const [server, setServer] = useState(account.server || "");
     const [broker, setBroker] = useState<string | null>(account.broker || null);
@@ -120,15 +151,54 @@ export function CloudSyncModal({
 
     const [isCancelling, setIsCancelling] = useState(false);
 
-    const waitTimerRef = useRef<NodeJS.Timeout | null>(null);
+    const waitTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+    const pollInFlightRef = useRef(false);
+    const latestJobRef = useRef<CloudSyncJobSnapshot | null>(latestJob);
+    const onUpdatedRef = useRef(onUpdated);
+    const onCloseRef = useRef(onClose);
+    const onSyncStartedRef = useRef(onSyncStarted);
+
+    useEffect(() => {
+        latestJobRef.current = latestJob;
+    }, [latestJob]);
+
+    useEffect(() => {
+        onUpdatedRef.current = onUpdated;
+        onCloseRef.current = onClose;
+        onSyncStartedRef.current = onSyncStarted;
+    }, [onUpdated, onClose, onSyncStarted]);
+
+    // Register open modal ownership so background list poller never duplicates requests
+    useEffect(() => {
+        if (!isOpen || !account.id) return;
+        openCloudSyncModalAccountIds.add(account.id);
+        return () => {
+            openCloudSyncModalAccountIds.delete(account.id);
+        };
+    }, [isOpen, account.id]);
+
+    const handleModalClose = () => {
+        const currentJob = latestJobRef.current;
+        if (
+            currentJob &&
+            (currentJob.status === "PENDING" ||
+                currentJob.status === "PROCESSING") &&
+            !wasCloudSyncJobHandledOnClient(currentJob.id)
+        ) {
+            onSyncStartedRef.current?.(account.id, currentJob.id);
+        }
+        onCloseRef.current();
+    };
 
     const handleCancelSync = async () => {
         setIsCancelling(true);
         try {
+            const currentJobId = latestJobRef.current?.id as string | undefined;
             const res = await cancelCloudSyncJob(account.id);
             if (res.success) {
+                markCloudSyncJobHandledOnClient(currentJobId);
                 toast.info("Sync cancelled.");
-                setLatestJob((prev: any) =>
+                setLatestJob((prev) =>
                     prev
                         ? {
                               ...prev,
@@ -141,14 +211,16 @@ export function CloudSyncModal({
             } else {
                 toast.error(res.error || "Failed to cancel sync.");
             }
-        } catch (err: any) {
-            toast.error(err.message || "Failed to cancel sync.");
+        } catch (err: unknown) {
+            toast.error(
+                err instanceof Error ? err.message : "Failed to cancel sync."
+            );
         } finally {
             setIsCancelling(false);
         }
     };
 
-    // Refresh sync status when opened
+    // Refresh sync status once when modal opens for an account
     useEffect(() => {
         if (!isOpen || !account.id) return;
         let isMounted = true;
@@ -216,18 +288,18 @@ export function CloudSyncModal({
         return () => {
             isMounted = false;
         };
-    }, [isOpen, account.id, account.hasSavedPassword, account.hasCredentials, account.server, account.broker, account.currency, account.latestJob]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isOpen, account.id]);
+
+    const activePollingJobId =
+        latestJob &&
+        (latestJob.status === "PENDING" || latestJob.status === "PROCESSING")
+            ? String(latestJob.id || "active")
+            : null;
 
     // Timer to track elapsed seconds while syncing / waiting for worker
     useEffect(() => {
-        const active =
-            isSyncing ||
-            isSaving ||
-            Boolean(
-                latestJob &&
-                    (latestJob.status === "PENDING" ||
-                        latestJob.status === "PROCESSING")
-            );
+        const active = isSyncing || isSaving || Boolean(activePollingJobId);
         if (!isOpen || !active) {
             setJobWaitSeconds(0);
             if (waitTimerRef.current) clearInterval(waitTimerRef.current);
@@ -241,17 +313,35 @@ export function CloudSyncModal({
         return () => {
             if (waitTimerRef.current) clearInterval(waitTimerRef.current);
         };
-    }, [isOpen, isSyncing, isSaving, latestJob]);
+    }, [isOpen, isSyncing, isSaving, activePollingJobId]);
 
-    // Poll active job status if job is PENDING or PROCESSING
+    // Single serialized poller (in-flight guard + 2.5s -> 4s backoff) while modal is open
     useEffect(() => {
-        if (!isOpen || !latestJob) return;
-        if (latestJob.status !== "PENDING" && latestJob.status !== "PROCESSING")
-            return;
+        if (!isOpen || !account.id || !activePollingJobId) return;
 
-        const interval = setInterval(async () => {
-            const res = await getCloudSyncStatus(account.id);
-            if (res.success) {
+        let cancelled = false;
+        let timeoutId: ReturnType<typeof setTimeout> | null = null;
+        let pollCount = 0;
+
+        const scheduleNext = () => {
+            if (cancelled) return;
+            const delayMs = pollCount < 4 ? 2500 : 4000;
+            timeoutId = setTimeout(runPoll, delayMs);
+        };
+
+        const runPoll = async () => {
+            if (cancelled) return;
+            if (pollInFlightRef.current) {
+                scheduleNext();
+                return;
+            }
+
+            pollInFlightRef.current = true;
+            pollCount += 1;
+            try {
+                const res = await getCloudSyncStatus(account.id);
+                if (cancelled || !res.success) return;
+
                 if (res.currency) {
                     setAccountCurrency(res.currency);
                 }
@@ -261,23 +351,39 @@ export function CloudSyncModal({
                         res.latestJob.status === "COMPLETED" ||
                         res.latestJob.status === "FAILED"
                     ) {
+                        cancelled = true;
                         setIsSyncing(false);
-                        if (res.latestJob.status === "COMPLETED") {
-                            toast.success(
-                                `Cloud sync completed: ${res.latestJob.dealsReceived || 0} deals synced.`
-                            );
-                            onUpdated?.();
-                            onClose();
-                        } else {
-                            toast.error(formatSyncErrorMessage(res.latestJob));
+                        if (!wasCloudSyncJobHandledOnClient(res.latestJob.id)) {
+                            markCloudSyncJobHandledOnClient(res.latestJob.id);
+                            if (res.latestJob.status === "COMPLETED") {
+                                toast.success(
+                                    `Cloud sync completed: ${res.latestJob.dealsReceived || 0} deals synced.`
+                                );
+                                onUpdatedRef.current?.();
+                                onCloseRef.current();
+                            } else {
+                                toast.error(formatSyncErrorMessage(res.latestJob));
+                            }
                         }
+                        return;
                     }
                 }
+            } catch {
+                // Transient network error — retry on next scheduled backoff tick
+            } finally {
+                pollInFlightRef.current = false;
             }
-        }, 2000);
 
-        return () => clearInterval(interval);
-    }, [isOpen, latestJob, account.id, onUpdated, onClose]);
+            scheduleNext();
+        };
+
+        scheduleNext();
+
+        return () => {
+            cancelled = true;
+            if (timeoutId) clearTimeout(timeoutId);
+        };
+    }, [isOpen, account.id, activePollingJobId]);
 
     // Unified handle for saving password and/or triggering sync
     const handleAction = async () => {
@@ -350,49 +456,54 @@ export function CloudSyncModal({
                 syncPeriod === "custom"
                     ? { from: customFromDate, to: customToDate }
                     : undefined;
-            const syncRes: any = await triggerCloudSync(account.id, syncPeriod, customRange);
+            const syncRes = await triggerCloudSync(
+                account.id,
+                syncPeriod,
+                customRange
+            );
             if (syncRes.success) {
-                if (syncRes.status === "COMPLETED") {
+                const returnedStatus = String(syncRes.status || "PENDING");
+                if (returnedStatus === "COMPLETED") {
                     // Ensure the animated Importing view is visible for at least 1.2s if cached/instant
                     const elapsed = Date.now() - startedAtMs;
                     if (elapsed < 1200) {
                         await new Promise((r) => setTimeout(r, 1200 - elapsed));
                     }
+                    markCloudSyncJobHandledOnClient(syncRes.jobId);
                     toast.success(
                         `Cloud Sync Completed: #${account.accountNumber || account.name}`,
                         {
                             description:
                                 syncRes.message ||
-                                `Imported ${syncRes.dealsReceived ?? 0} deals.`,
+                                "Cloud sync completed successfully.",
                         }
                     );
                     setLatestJob({
                         id: syncRes.jobId,
                         status: "COMPLETED",
-                        dealsReceived: syncRes.dealsReceived ?? 0,
                         createdAt: new Date().toISOString(),
                         completedAt: new Date().toISOString(),
                         message: syncRes.message || "Cloud sync completed successfully.",
                     });
                     setIsSyncing(false);
-                    onUpdated?.();
-                    onClose();
+                    onUpdatedRef.current?.();
+                    onCloseRef.current();
                 } else {
                     setLatestJob({
                         id: syncRes.jobId,
-                        status: syncRes.status || "PENDING",
+                        status: returnedStatus,
                         createdAt: new Date().toISOString(),
                         message: syncRes.message || "Queued for worker pickup...",
                     });
-                    onSyncStarted?.(account.id, syncRes.jobId);
-                    onUpdated?.();
                 }
             } else {
                 toast.error(syncRes.error || "Failed to trigger sync.");
                 setIsSyncing(false);
             }
-        } catch (err: any) {
-            toast.error(err.message || "Failed to trigger sync.");
+        } catch (err: unknown) {
+            toast.error(
+                err instanceof Error ? err.message : "Failed to trigger sync."
+            );
             setIsSyncing(false);
         }
     };
@@ -428,7 +539,14 @@ export function CloudSyncModal({
         : "Synchronizing closed positions and account balance...";
 
     return (
-        <Dialog open={isOpen} onOpenChange={onClose}>
+        <Dialog
+            open={isOpen}
+            onOpenChange={(nextOpen) => {
+                if (!nextOpen) {
+                    handleModalClose();
+                }
+            }}
+        >
             <DialogContent className="max-w-md rounded-2xl p-5 sm:p-6">
                 {isJobActive ? (
                     <div className="py-6 px-2 flex flex-col items-center text-center space-y-4">

@@ -6,6 +6,7 @@ import {
     useEffect,
     useState,
     useCallback,
+    useRef,
     type ReactNode,
 } from "react";
 import { usePathname } from "next/navigation";
@@ -65,7 +66,7 @@ interface ProState {
 }
 
 interface ProContextValue extends ProState {
-    refetch: () => void;
+    refetch: (force?: boolean) => void;
     getAccountStatus: (accountId: string) => AccountProStatus | null;
 }
 
@@ -106,6 +107,8 @@ export function useProAccess() {
 
 const MAX_RETRIES = 3;
 const RETRY_BASE_MS = 2_000;
+const STALE_TIME_MS = 2 * 60 * 1000; // 2 minutes cooldown for route/focus triggers
+const BACKGROUND_POLL_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes background guard
 
 interface ProProviderProps {
     children: ReactNode;
@@ -130,18 +133,66 @@ export function ProProvider({ children, initialProStatus }: ProProviderProps) {
     });
 
     const pathname = usePathname();
+    const inFlightRef = useRef(false);
+    const pendingForceRef = useRef(false);
+    const lastFetchedAtRef = useRef<number>(initialProStatus ? Date.now() : 0);
+    const hasSeenFirstPathnameRef = useRef(false);
+    const isInitialSsrPropRef = useRef(true);
 
-    // Fix 1: Exponential backoff retry — covers transient 401/network errors
-    const fetchProStatus = useCallback(() => {
+    // Sync fresh SSR props when router.refresh() re-runs DashboardLayout
+    useEffect(() => {
+        if (isInitialSsrPropRef.current) {
+            isInitialSsrPropRef.current = false;
+            return;
+        }
+        if (!initialProStatus) return;
+
+        lastFetchedAtRef.current = Date.now();
+        setState({
+            isPro: initialProStatus.isPro ?? false,
+            status: initialProStatus.status ?? "NONE",
+            source: initialProStatus.source ?? null,
+            expiresAt: initialProStatus.expiresAt ?? null,
+            policyState: initialProStatus.policyState ?? "ACTIVE",
+            trialInfo: initialProStatus.trialInfo ?? null,
+            activityInfo: initialProStatus.activityInfo ?? null,
+            fundingInfo: initialProStatus.fundingInfo ?? null,
+            loading: false,
+            activeAccountCount: initialProStatus.activeAccountCount ?? 0,
+            accounts: initialProStatus.accounts ?? [],
+            mainAccountId: initialProStatus.mainAccountId ?? null,
+        });
+    }, [initialProStatus]);
+
+    // Deduplicated fetch with staleTime cooldown + exponential backoff retry
+    const fetchProStatus = useCallback((force: boolean = false) => {
+        if (inFlightRef.current) {
+            if (force) {
+                pendingForceRef.current = true;
+            }
+            return;
+        }
+
+        if (
+            !force &&
+            lastFetchedAtRef.current > 0 &&
+            Date.now() - lastFetchedAtRef.current < STALE_TIME_MS
+        ) {
+            return;
+        }
+
+        inFlightRef.current = true;
         let attempts = 0;
 
         function attempt() {
+            let retrying = false;
             fetch("/api/pro-status")
                 .then((r) => {
                     if (!r.ok) throw new Error(`HTTP ${r.status}`);
                     return r.json();
                 })
                 .then((data) => {
+                    lastFetchedAtRef.current = Date.now();
                     setState({
                         isPro: data.isPro || false,
                         status: data.status || "NONE",
@@ -161,9 +212,19 @@ export function ProProvider({ children, initialProStatus }: ProProviderProps) {
                     attempts++;
                     if (attempts < MAX_RETRIES) {
                         // 2s, 4s, 6s backoff — fits within 12s test timeout
+                        retrying = true;
                         setTimeout(attempt, RETRY_BASE_MS * attempts);
-                    } else {
-                        setState((prev) => ({ ...prev, loading: false }));
+                        return;
+                    }
+                    setState((prev) => ({ ...prev, loading: false }));
+                })
+                .finally(() => {
+                    if (!retrying) {
+                        inFlightRef.current = false;
+                        if (pendingForceRef.current) {
+                            pendingForceRef.current = false;
+                            fetchProStatus(true);
+                        }
                     }
                 });
         }
@@ -171,26 +232,31 @@ export function ProProvider({ children, initialProStatus }: ProProviderProps) {
         attempt();
     }, []);
 
-    // Fetch on mount
+    // Fetch on mount ONLY when SSR did not already supply initialProStatus
     useEffect(() => {
-        fetchProStatus();
-    }, [fetchProStatus]);
-
-    // Fix 2: Refetch on client-side route change (ProProvider stays mounted across pages)
-    useEffect(() => {
-        fetchProStatus();
+        if (!initialProStatus) {
+            fetchProStatus(true);
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [pathname]);
+    }, []);
 
-    // Re-fetch when tab regains focus (covers same-window tab switching)
+    // Revalidate on client-side route change only when stale (> 2m)
+    useEffect(() => {
+        if (!hasSeenFirstPathnameRef.current) {
+            hasSeenFirstPathnameRef.current = true;
+            return;
+        }
+        fetchProStatus(false);
+    }, [pathname, fetchProStatus]);
+
+    // Revalidate when tab regains focus only when stale (> 2m), deduped in-flight
     useEffect(() => {
         const handleVisibilityChange = () => {
             if (document.visibilityState === "visible") {
-                fetchProStatus();
+                fetchProStatus(false);
             }
         };
-        // window.focus catches admin actions done in a different browser tab
-        const handleFocus = () => fetchProStatus();
+        const handleFocus = () => fetchProStatus(false);
 
         document.addEventListener("visibilitychange", handleVisibilityChange);
         window.addEventListener("focus", handleFocus);
@@ -203,15 +269,22 @@ export function ProProvider({ children, initialProStatus }: ProProviderProps) {
         };
     }, [fetchProStatus]);
 
-    // Poll every 30s (visible tab only) — background guard for long-lived sessions
+    // Background poll every 5 minutes (visible tab only) for long-lived sessions
     useEffect(() => {
         const interval = setInterval(() => {
             if (document.visibilityState === "visible") {
-                fetchProStatus();
+                fetchProStatus(false);
             }
-        }, 30_000);
+        }, BACKGROUND_POLL_INTERVAL_MS);
         return () => clearInterval(interval);
     }, [fetchProStatus]);
+
+    const refetch = useCallback(
+        (force: boolean = true) => {
+            fetchProStatus(force);
+        },
+        [fetchProStatus]
+    );
 
     const getAccountStatus = useCallback(
         (accountId: string): AccountProStatus | null => {
@@ -225,7 +298,7 @@ export function ProProvider({ children, initialProStatus }: ProProviderProps) {
 
     const value: ProContextValue = {
         ...state,
-        refetch: fetchProStatus,
+        refetch,
         getAccountStatus,
     };
 

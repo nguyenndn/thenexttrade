@@ -93,6 +93,45 @@ export default async function DashboardLayout({
                       status: r.status,
                       source: r.source,
                       expiresAt: r.expiresAt?.toISOString() ?? null,
+                      policyState: r.policyState ?? "ACTIVE",
+                      trialInfo: r.trialInfo
+                          ? {
+                                isTrial: r.trialInfo.isTrial,
+                                daysRemaining: r.trialInfo.daysRemaining,
+                                trialEndsAt:
+                                    r.trialInfo.trialEndsAt.toISOString(),
+                            }
+                          : null,
+                      activityInfo: r.activityInfo
+                          ? {
+                                rolling30dLots: r.activityInfo.rolling30dLots,
+                                minLotsRequired: r.activityInfo.minLotsRequired,
+                                daysSinceLastTrade:
+                                    r.activityInfo.daysSinceLastTrade,
+                                lastTradeAt:
+                                    r.activityInfo.lastTradeAt?.toISOString() ??
+                                    null,
+                                policyState: r.activityInfo.policyState,
+                                reason: r.activityInfo.reason,
+                            }
+                          : null,
+                      fundingInfo: r.fundingInfo
+                          ? {
+                                verified: r.fundingInfo.verified,
+                                verifiedAt:
+                                    r.fundingInfo.verifiedAt?.toISOString() ??
+                                    null,
+                                lastVerifiedAt:
+                                    r.fundingInfo.lastVerifiedAt?.toISOString() ??
+                                    null,
+                                graceUntil:
+                                    r.fundingInfo.graceUntil?.toISOString() ??
+                                    null,
+                                amount: r.fundingInfo.amount,
+                                inGrace: r.fundingInfo.inGrace,
+                                expired: r.fundingInfo.expired,
+                            }
+                          : null,
                       activeAccountCount: r.activeAccountCount,
                       mainAccountId: profile?.mainTradingAccountId ?? null,
                       accounts: r.accounts.map((a) => ({
@@ -103,6 +142,10 @@ export default async function DashboardLayout({
                           isPro: a.isPro,
                           source: a.source,
                           expiresAt: a.expiresAt?.toISOString() ?? null,
+                          policyState: a.policyState,
+                          rolling30dLots: a.rolling30dLots ?? 0,
+                          daysSinceLastTrade: a.daysSinceLastTrade ?? null,
+                          fundingVerified: a.fundingVerified ?? false,
                       })),
                   },
                   tourState: getDashboardTourState(dbUser?.settings),

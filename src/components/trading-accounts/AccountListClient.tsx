@@ -50,6 +50,11 @@ import { toast } from "sonner";
 import { trackEvent } from "@/lib/track";
 import { isSyncHealthCenterEnabled } from "@/lib/feature-flags";
 import { getCloudSyncStatus, cancelCloudSyncJob } from "@/actions/cloud-sync";
+import {
+    isCloudSyncModalOpenForAccount,
+    markCloudSyncJobHandledOnClient,
+    wasCloudSyncJobHandledOnClient,
+} from "./CloudSyncModal";
 import { BROKER_INFO } from "@/lib/validations/vip-request";
 
 interface TradingAccount {
@@ -199,88 +204,139 @@ export function AccountListClient({
         }));
     };
 
-    // Polling active background sync jobs every 3 seconds
+    const bgPollInFlightRef = useRef(false);
+
+    // Background poller (only for accounts whose CloudSyncModal was closed mid-sync;
+    // serialized with in-flight guard + 2.5s -> 4s backoff)
     useEffect(() => {
         const accountIds = Object.keys(activeSyncingAccounts);
         if (accountIds.length === 0) return;
 
-        const interval = setInterval(async () => {
-            for (const accountId of accountIds) {
-                const syncInfo = activeSyncingAccounts[accountId];
-                if (!syncInfo) continue;
+        let cancelled = false;
+        let timeoutId: ReturnType<typeof setTimeout> | null = null;
+        let pollCount = 0;
 
-                const targetAccount = initialAccounts.find(
-                    (a) => a.id === accountId
-                );
-                const accLabel = targetAccount?.accountNumber
-                    ? `#${targetAccount.accountNumber}`
-                    : targetAccount?.name || "Account";
+        const scheduleNext = () => {
+            if (cancelled) return;
+            const delayMs = pollCount < 4 ? 2500 : 4000;
+            timeoutId = setTimeout(runBackgroundPoll, delayMs);
+        };
 
-                // Hard safety net: 10 minutes timeout (supports sequential queue under high concurrency)
-                if (Date.now() - syncInfo.startedAt > 600000) {
-                    toast.error(`Cloud Sync Failed: ${accLabel}`, {
-                        description:
-                            "Unable to sync trade history. Please try again.",
-                        duration: 8000,
-                    });
+        const runBackgroundPoll = async () => {
+            if (cancelled) return;
+            if (
+                bgPollInFlightRef.current ||
+                (typeof document !== "undefined" &&
+                    document.visibilityState === "hidden")
+            ) {
+                scheduleNext();
+                return;
+            }
 
-                    // Proactively mark job failed in background
-                    cancelCloudSyncJob(accountId, "Cloud sync timed out after 10m in queue.").catch(() => { });
+            bgPollInFlightRef.current = true;
+            pollCount += 1;
+            let shouldRefreshPage = false;
 
-                    setActiveSyncingAccounts((prev) => {
-                        const next = { ...prev };
-                        delete next[accountId];
-                        return next;
-                    });
+            try {
+                for (const accountId of accountIds) {
+                    if (cancelled) break;
+                    // Never double-poll while CloudSyncModal is open for this account
+                    if (isCloudSyncModalOpenForAccount(accountId)) continue;
 
-                    startTransition(() => {
-                        router.refresh();
-                    });
-                    continue;
-                }
+                    const syncInfo = activeSyncingAccounts[accountId];
+                    if (!syncInfo) continue;
 
-                try {
-                    const res = await getCloudSyncStatus(accountId);
-                    if (!res.success || !res.latestJob) continue;
+                    const targetAccount = initialAccounts.find(
+                        (a) => a.id === accountId
+                    );
+                    const accLabel = targetAccount?.accountNumber
+                        ? `#${targetAccount.accountNumber}`
+                        : targetAccount?.name || "Account";
 
-                    if (res.latestJob.status === "COMPLETED") {
-                        toast.success(
-                            `Cloud Sync Completed: ${accLabel} synced successfully!`,
-                            {
-                                description:
-                                    res.latestJob.message ||
-                                    `Imported ${res.latestJob.dealsReceived || 0} deals.`,
-                            }
-                        );
-                        setActiveSyncingAccounts((prev) => {
-                            const next = { ...prev };
-                            delete next[accountId];
-                            return next;
-                        });
-                        startTransition(() => {
-                            router.refresh();
-                        });
-                    } else if (res.latestJob.status === "FAILED") {
+                    // Hard safety net: 10 minutes timeout (supports sequential queue under high concurrency)
+                    if (Date.now() - syncInfo.startedAt > 600000) {
                         toast.error(`Cloud Sync Failed: ${accLabel}`, {
-                            description: formatSyncErrorMessage(res.latestJob),
+                            description:
+                                "Unable to sync trade history. Please try again.",
                             duration: 8000,
                         });
+
+                        cancelCloudSyncJob(
+                            accountId,
+                            "Cloud sync timed out after 10m in queue."
+                        ).catch(() => {});
+
                         setActiveSyncingAccounts((prev) => {
                             const next = { ...prev };
                             delete next[accountId];
                             return next;
                         });
-                        startTransition(() => {
-                            router.refresh();
-                        });
+                        continue;
                     }
-                } catch {
-                    // Network error during poll, retry next interval
-                }
-            }
-        }, 3000);
 
-        return () => clearInterval(interval);
+                    try {
+                        const res = await getCloudSyncStatus(accountId);
+                        if (!res.success || !res.latestJob) continue;
+
+                        if (
+                            res.latestJob.status === "COMPLETED" ||
+                            res.latestJob.status === "FAILED"
+                        ) {
+                            const alreadyHandled = wasCloudSyncJobHandledOnClient(
+                                res.latestJob.id
+                            );
+                            markCloudSyncJobHandledOnClient(res.latestJob.id);
+
+                            setActiveSyncingAccounts((prev) => {
+                                const next = { ...prev };
+                                delete next[accountId];
+                                return next;
+                            });
+
+                            if (!alreadyHandled) {
+                                if (res.latestJob.status === "COMPLETED") {
+                                    toast.success(
+                                        `Cloud Sync Completed: ${accLabel} synced successfully!`,
+                                        {
+                                            description:
+                                                res.latestJob.message ||
+                                                `Imported ${res.latestJob.dealsReceived || 0} deals.`,
+                                        }
+                                    );
+                                    shouldRefreshPage = true;
+                                } else {
+                                    toast.error(`Cloud Sync Failed: ${accLabel}`, {
+                                        description: formatSyncErrorMessage(
+                                            res.latestJob
+                                        ),
+                                        duration: 8000,
+                                    });
+                                }
+                            }
+                        }
+                    } catch {
+                        // Network error during poll, retry next scheduled tick
+                    }
+                }
+            } finally {
+                bgPollInFlightRef.current = false;
+            }
+
+            if (shouldRefreshPage && !cancelled) {
+                startTransition(() => {
+                    router.refresh();
+                });
+            }
+
+            scheduleNext();
+        };
+
+        scheduleNext();
+
+        return () => {
+            cancelled = true;
+            if (timeoutId) clearTimeout(timeoutId);
+        };
     }, [activeSyncingAccounts, initialAccounts, router]);
 
     // Consumes each query-param trigger exactly once. history.replaceState does

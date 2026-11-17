@@ -1,6 +1,7 @@
 "use server";
 
 import path from "path";
+import { after } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth-cache";
 import { revalidatePath } from "next/cache";
@@ -185,19 +186,26 @@ const MAX_SYNC_WORKERS = Math.max(
     parseInt(process.env.MT5_SYNC_CONCURRENCY || "4", 10) || 4
 );
 
+interface QueuedCloudSyncItem {
+    params: ApkCloudSyncJobParams;
+    resolveDone: () => void;
+}
+
 interface CloudSyncQueueState {
-    queue: ApkCloudSyncJobParams[];
+    queue: QueuedCloudSyncItem[];
     activeJobIds: Set<string>;
+    completionPromises: Map<string, Promise<void>>;
 }
 
 function getCloudSyncQueueState(): CloudSyncQueueState {
     const g = globalThis as unknown as {
         __mt5CloudSyncQueuePool?: CloudSyncQueueState;
     };
-    if (!g.__mt5CloudSyncQueuePool) {
+    if (!g.__mt5CloudSyncQueuePool || !g.__mt5CloudSyncQueuePool.completionPromises) {
         g.__mt5CloudSyncQueuePool = {
             queue: [],
             activeJobIds: new Set<string>(),
+            completionPromises: new Map<string, Promise<void>>(),
         };
     }
     return g.__mt5CloudSyncQueuePool;
@@ -212,7 +220,7 @@ function getCloudSyncQueueState(): CloudSyncQueueState {
 function getJobQueuePosition(jobId: string): number {
     const state = getCloudSyncQueueState();
     if (state.activeJobIds.has(jobId)) return 0;
-    const idx = state.queue.findIndex((item) => item.jobId === jobId);
+    const idx = state.queue.findIndex((item) => item.params.jobId === jobId);
     if (idx === -1) return -1;
     return idx + 1;
 }
@@ -220,9 +228,10 @@ function getJobQueuePosition(jobId: string): number {
 function pumpCloudSyncWorkers(): void {
     const state = getCloudSyncQueueState();
     while (state.activeJobIds.size < MAX_SYNC_WORKERS && state.queue.length > 0) {
-        const nextTask = state.queue.shift();
-        if (!nextTask) break;
+        const nextItem = state.queue.shift();
+        if (!nextItem) break;
 
+        const { params: nextTask, resolveDone } = nextItem;
         state.activeJobIds.add(nextTask.jobId);
 
         void (async () => {
@@ -240,9 +249,29 @@ function pumpCloudSyncWorkers(): void {
                 await executeApkCloudSyncJob(nextTask);
             } finally {
                 state.activeJobIds.delete(nextTask.jobId);
+                state.completionPromises.delete(nextTask.jobId);
+                resolveDone();
                 pumpCloudSyncWorkers();
             }
         })();
+    }
+}
+
+function scheduleCloudSyncExecution(jobId: string): void {
+    const state = getCloudSyncQueueState();
+    const completion = state.completionPromises.get(jobId);
+    try {
+        after(async () => {
+            pumpCloudSyncWorkers();
+            if (completion) {
+                await completion;
+            }
+        });
+    } catch {
+        // Fallback when invoked outside a Next.js request scope (e.g., CLI or tests)
+        setTimeout(() => {
+            pumpCloudSyncWorkers();
+        }, 0);
     }
 }
 
@@ -250,11 +279,17 @@ function enqueueCloudSyncJob(params: ApkCloudSyncJobParams): number {
     const state = getCloudSyncQueueState();
     const hasFreeLane =
         state.activeJobIds.size < MAX_SYNC_WORKERS && state.queue.length === 0;
-    state.queue.push(params);
+
+    let resolveDone!: () => void;
+    const completion = new Promise<void>((resolve) => {
+        resolveDone = resolve;
+    });
+
+    state.completionPromises.set(params.jobId, completion);
+    state.queue.push({ params, resolveDone });
+
     const waitingPosition = hasFreeLane ? 0 : state.queue.length;
-    setTimeout(() => {
-        pumpCloudSyncWorkers();
-    }, 0);
+    scheduleCloudSyncExecution(params.jobId);
     return waitingPosition;
 }
 
@@ -592,6 +627,15 @@ async function executeApkCloudSyncJob(params: ApkCloudSyncJobParams) {
             }),
         ]);
 
+        try {
+            revalidatePath("/dashboard/accounts");
+            revalidatePath("/dashboard");
+            revalidatePath("/dashboard/journal");
+            revalidatePath("/dashboard/analytics");
+        } catch {
+            // Ignore if executed outside Next.js request/after context
+        }
+
         return {
             success: true as const,
             status: "COMPLETED" as const,
@@ -796,8 +840,6 @@ export async function triggerCloudSync(
             .catch(() => { });
     }
 
-    revalidatePath("/dashboard/accounts");
-
     return {
         success: true,
         jobId: job.id,
@@ -888,13 +930,6 @@ export async function getCloudSyncStatus(accountId: string) {
                 errorMessage: timeoutReason,
             };
         }
-    } else if (latestJob && latestJob.status === "COMPLETED") {
-        try {
-            revalidatePath("/dashboard/accounts");
-            revalidatePath("/dashboard");
-            revalidatePath("/dashboard/journal");
-            revalidatePath("/dashboard/analytics");
-        } catch { }
     }
 
     const hasSavedPassword = Boolean(account.credential?.encryptedPassword);
@@ -1014,7 +1049,16 @@ export async function cancelCloudSyncJob(accountId: string, reason?: string) {
 
     // Drop any pending queued jobs for this account immediately
     const qState = getCloudSyncQueueState();
-    qState.queue = qState.queue.filter((item) => item.accountId !== accountId);
+    const droppedItems = qState.queue.filter(
+        (item) => item.params.accountId === accountId
+    );
+    qState.queue = qState.queue.filter(
+        (item) => item.params.accountId !== accountId
+    );
+    for (const item of droppedItems) {
+        qState.completionPromises.delete(item.params.jobId);
+        item.resolveDone();
+    }
 
     await prisma.mt5ImportJob.updateMany({
         where: {
