@@ -325,6 +325,7 @@ export default function SettingsClient() {
                                             alt={formData.name || "Profile"}
                                             width={100}
                                             height={100}
+                                            unoptimized={formData.image.startsWith("http")}
                                             className="w-full h-full object-cover"
                                             onError={() =>
                                                 setFailedAvatarSrc(

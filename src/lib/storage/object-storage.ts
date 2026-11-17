@@ -22,6 +22,40 @@ function getAssetPublicBaseUrl(): string {
     ).replace(/\/+$/, "");
 }
 
+/**
+ * Prefix public R2 directories with `dev/` in local development so local uploads
+ * never collide with Production keys on a shared Cloudflare R2 bucket.
+ */
+export function resolveStorageDirectory(
+    directory: string,
+    nodeEnv: string | undefined = process.env.NODE_ENV
+): string {
+    const cleanDir = directory.replace(/^\/+|\/+$/g, "");
+    if (nodeEnv === "development") {
+        return cleanDir.startsWith("dev/") ? cleanDir : `dev/${cleanDir}`;
+    }
+    return cleanDir;
+}
+
+/**
+ * Guard R2 object deletion by environment namespace:
+ * - `development` may ONLY delete `dev/*` objects (never touches Production assets).
+ * - `production` (and non-dev) may ONLY delete non-`dev/*` objects (never touches Local Dev assets).
+ */
+export function canDeleteAssetKeyInEnv(
+    key: string,
+    nodeEnv: string | undefined = process.env.NODE_ENV
+): boolean {
+    const cleanKey = key.replace(/^\/+/, "");
+    if (!cleanKey || cleanKey.startsWith("mt5/") || cleanKey.includes("..")) {
+        return false;
+    }
+    if (nodeEnv === "development") {
+        return cleanKey.startsWith("dev/");
+    }
+    return !cleanKey.startsWith("dev/");
+}
+
 export const isR2Configured = Boolean(
     R2_ENDPOINT &&
         R2_BUCKET &&
@@ -64,8 +98,9 @@ export async function uploadPublicAsset(
         .basename(originalFilename, ext)
         .replace(/[^a-z0-9]/gi, "-")
         .toLowerCase();
+    const scopedDirectory = resolveStorageDirectory(directory);
     const uniqueFilename = `${sanitizedName}-${crypto.randomUUID()}${ext}`;
-    const key = `${directory}/${uniqueFilename}`;
+    const key = `${scopedDirectory}/${uniqueFilename}`;
 
     try {
         await r2Client.send(
@@ -108,7 +143,7 @@ export async function deletePublicAsset(url: string): Promise<boolean> {
         }
 
         const key = parsed.pathname.replace(/^\/+/, "");
-        if (!key || key.startsWith("mt5/") || key.includes("..")) {
+        if (!canDeleteAssetKeyInEnv(key)) {
             return false;
         }
 

@@ -30,6 +30,7 @@ export function UserMenu({
     isLoading = false,
 }: UserMenuProps) {
     const [isOpen, setIsOpen] = useState(false);
+    const [failedAvatarSrc, setFailedAvatarSrc] = useState<string | null>(null);
     const pathname = usePathname();
     const dashboardUrl = useDashboardUrl();
 
@@ -38,6 +39,7 @@ export function UserMenu({
         image: user?.image || null,
         username: user?.profile?.username || "User",
     };
+    const showAvatar = Boolean(userData.image) && failedAvatarSrc !== userData.image;
 
     const userXp = user?.profile?.xp ?? 0;
     const tierProgress = getTierProgress(userXp);
@@ -65,13 +67,15 @@ export function UserMenu({
                     aria-label="User menu"
                 >
                     <div className="w-8 h-8 rounded-full bg-white dark:bg-white/10 overflow-hidden border border-white dark:border-white/10 shadow-sm shrink-0">
-                        {userData.image ? (
+                        {showAvatar && userData.image ? (
                             <Image
                                 src={userData.image}
                                 alt={userData.name || "User"}
                                 width={32}
                                 height={32}
+                                unoptimized={userData.image.startsWith("http")}
                                 className="object-cover w-full h-full"
+                                onError={() => setFailedAvatarSrc(userData.image)}
                             />
                         ) : (
                             <div className="w-full h-full flex items-center justify-center text-gray-500 bg-gray-100 dark:bg-white/5">

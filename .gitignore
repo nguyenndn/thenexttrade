@@ -94,4 +94,7 @@ mt5-cloud-sync/trade-cache/
 mt5-cloud-sync/unidbg-workdir/
 mt5-cloud-sync/unidbg-runner/target/
 
+# Local /brag launch video render outputs
+brag-output*/
+
 

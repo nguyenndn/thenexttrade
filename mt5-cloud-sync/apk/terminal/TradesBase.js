@@ -618,6 +618,7 @@ class TradesBase {
     accessPoints,
     login,
     password,
+    periodMode = null,
     fromMs,
     toMs
   }) {
@@ -667,6 +668,7 @@ class TradesBase {
       String(fromMs),
       '--to',
       String(toMs),
+      ...(periodMode ? ['--period', String(periodMode)] : []),
       '--apk',
       apkPath
     ];
@@ -732,6 +734,7 @@ class TradesBase {
     login = null,
     password = null,
     server = null,
+    period = null,
     days = 30,
     from = null,
     to = null,
@@ -806,6 +809,13 @@ class TradesBase {
         ? srv.access
         : ['43.216.248.23:443', '18.169.198.62:443', '54.208.226.140:443'];
 
+    const effectivePeriodMode =
+      period !== null && period !== undefined && String(period).trim() !== ''
+        ? String(period).trim()
+        : parsedFromSec === null && parsedToSec === null
+        ? String(daysNum)
+        : null;
+
     // Execute live libcommon.so JNI sync via Unidbg Mt5NativeRunner (queued asynchronously, CONCURRENCY = 1)
     let nativeResult = null;
     try {
@@ -815,6 +825,7 @@ class TradesBase {
         accessPoints,
         login: numericLogin,
         password: pwd,
+        periodMode: effectivePeriodMode,
         fromMs,
         toMs
       });
@@ -837,6 +848,13 @@ class TradesBase {
     }
 
     if (nativeResult && nativeResult.success) {
+      const resolvedFromMs = Number(nativeResult.fromMs || fromMs);
+      const resolvedToMs = Number(nativeResult.toMs || toMs);
+      const brokerTzMin = Number(nativeResult.brokerTimeZoneMinutes ?? 0);
+      const resolvedRangeLabel =
+        effectivePeriodMode === '1'
+          ? `Broker Today (${new Date(resolvedFromMs).toISOString().slice(0, 10)})`
+          : `${new Date(resolvedFromMs).toISOString().slice(0, 10)} -> ${new Date(resolvedToMs).toISOString().slice(0, 10)}`;
       const tradeInfo = nativeResult.tradeInfo || {};
       const posSummaryRaw = nativeResult.positionSummary || {};
       const nativePositions = Array.isArray(nativeResult.positions) ? nativeResult.positions : [];
@@ -1059,9 +1077,10 @@ class TradesBase {
         login: numericLogin,
         server: serverName,
         days: daysNum,
-        from: new Date(fromMs).toISOString(),
-        to: new Date(toMs).toISOString(),
-        rangeLabel,
+        from: new Date(resolvedFromMs).toISOString(),
+        to: new Date(resolvedToMs).toISOString(),
+        brokerTimeZoneMinutes: brokerTzMin,
+        rangeLabel: resolvedRangeLabel,
         currency,
         accountInfo: accountInfoPayload,
         heartbeatEnvelope,

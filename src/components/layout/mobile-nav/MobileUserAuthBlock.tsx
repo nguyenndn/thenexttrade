@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -25,19 +28,24 @@ export function MobileUserAuthBlock({
     dashboardUrl,
     onClose,
 }: MobileUserAuthBlockProps) {
+    const [failedAvatarSrc, setFailedAvatarSrc] = useState<string | null>(null);
+
     if (user) {
+        const showAvatar = Boolean(user.image) && failedAvatarSrc !== user.image;
         return (
             <div className="p-4 space-y-1">
                 {/* Avatar + name */}
                 <div className="flex items-center gap-3 px-3 py-3 rounded-lg mb-2 bg-gray-50 dark:bg-white/5">
                     <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-primary/30 shrink-0">
-                        {user.image ? (
+                        {showAvatar && user.image ? (
                             <Image
                                 src={user.image}
                                 alt={user.name || "User"}
                                 width={40}
                                 height={40}
+                                unoptimized={user.image.startsWith("http")}
                                 className="object-cover w-full h-full"
+                                onError={() => setFailedAvatarSrc(user.image ?? null)}
                             />
                         ) : (
                             <div className="w-full h-full flex items-center justify-center bg-gray-200 dark:bg-white/10">

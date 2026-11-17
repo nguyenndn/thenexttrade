@@ -1043,6 +1043,52 @@ public class Mt5NativeRunner extends AbstractJni {
 
     private static final long BROKER_CACHE_TTL_MS = 7L * 24L * 3600_000L;
 
+    /**
+     * Ported 1:1 from MetaTrader 5 Android APK HistoryPeriodCalculator (Loh6 @ DEX 0x67f168)
+     * anchored to live MT5 Broker Server Clock (TradeTime.tradeTime @ libcommon.so 0x39d9b0).
+     */
+    public static long[] computeBrokerPeriodRangeMs(
+            String periodMode,
+            long brokerNowMs,
+            long fallbackFromMs,
+            long fallbackToMs
+    ) {
+        Calendar brokerCal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        brokerCal.setTimeInMillis(brokerNowMs);
+        brokerCal.set(Calendar.HOUR_OF_DAY, 0);
+        brokerCal.set(Calendar.MINUTE, 0);
+        brokerCal.set(Calendar.SECOND, 0);
+        brokerCal.set(Calendar.MILLISECOND, 0);
+        long startOfBrokerToday = brokerCal.getTimeInMillis();
+
+        brokerCal.set(Calendar.HOUR_OF_DAY, 23);
+        brokerCal.set(Calendar.MINUTE, 59);
+        brokerCal.set(Calendar.SECOND, 59);
+        brokerCal.set(Calendar.MILLISECOND, 999);
+        long endOfBrokerToday = brokerCal.getTimeInMillis();
+
+        if (periodMode == null || periodMode.trim().isEmpty()) {
+            return new long[]{fallbackFromMs, fallbackToMs};
+        }
+        String cleanMode = periodMode.trim().toLowerCase(Locale.ROOT);
+        if ("custom".equals(cleanMode)) {
+            return new long[]{fallbackFromMs, fallbackToMs};
+        }
+        if ("all".equals(cleanMode)) {
+            return new long[]{Math.min(fallbackFromMs, startOfBrokerToday), Math.max(fallbackToMs, endOfBrokerToday)};
+        }
+        if ("1".equals(cleanMode) || "today".equals(cleanMode)) {
+            return new long[]{startOfBrokerToday, endOfBrokerToday};
+        }
+        try {
+            int days = Integer.parseInt(cleanMode);
+            if (days > 1) {
+                return new long[]{startOfBrokerToday - (long) days * 86_400_000L, endOfBrokerToday};
+            }
+        } catch (NumberFormatException ignored) {}
+        return new long[]{fallbackFromMs, fallbackToMs};
+    }
+
     private String[] discoverBrokerViaCdn(
             String serverName,
             String fallbackCompany,
@@ -1152,7 +1198,7 @@ public class Mt5NativeRunner extends AbstractJni {
             long toMs,
             File outputJsonFile
     ) {
-        runSync(serverName, companyName, accessPointAddrs, login, password, fromMs, toMs, outputJsonFile, null);
+        runSync(serverName, companyName, accessPointAddrs, login, password, fromMs, toMs, outputJsonFile, null, null);
     }
 
     public void runSync(
@@ -1165,6 +1211,21 @@ public class Mt5NativeRunner extends AbstractJni {
             long toMs,
             File outputJsonFile,
             File brokerCacheFile
+    ) {
+        runSync(serverName, companyName, accessPointAddrs, login, password, fromMs, toMs, outputJsonFile, brokerCacheFile, null);
+    }
+
+    public void runSync(
+            String serverName,
+            String companyName,
+            String[] accessPointAddrs,
+            long login,
+            String password,
+            long fromMs,
+            long toMs,
+            File outputJsonFile,
+            File brokerCacheFile,
+            String periodMode
     ) {
         DvmObject<?> context = vm.resolveClass("android/content/Context").newObject(null);
 
@@ -1426,14 +1487,22 @@ public class Mt5NativeRunner extends AbstractJni {
 
         boolean historyRequested = false;
         int historyRequestStep = -1;
+        long historyRequestTimeMs = 0L;
+        long lastCountChangeTimeMs = 0L;
+        boolean countsChangedSinceReq = false;
         int authStep = -1;
         int prevPosCnt = -1;
         int prevDealsCnt = -1;
+        int prevOrdCnt = -1;
         boolean prevStepHadTraffic = true;
         boolean retriedLiveCdn = false;
         boolean completed = false;
+        long effectiveFromMs = fromMs;
+        long effectiveToMs = toMs;
+        int brokerTzMinutes = 0;
+        long pumpStartTimeMs = System.currentTimeMillis();
 
-        for (int step = 0; step < 600; step++) {
+        for (int step = 0; step < 4000; step++) {
             emulator.getBackend().mem_write(cNetworkPtr + 0x1298, intOne);
             emulator.getBackend().mem_write(cNetworkPtr + 0x129c, intOne);
             int sockFd = emulator.getMemory().pointer(cSocketThreadPtr + 0x140).getInt(0);
@@ -1557,16 +1626,29 @@ public class Mt5NativeRunner extends AbstractJni {
                 authStep = step;
                 System.out.println("[Pump] AUTHORIZED (status=" + status + ") at step " + step + "! fragHead=0x" + Long.toHexString(fragHead));
             }
-            if (authStep == -1 && step >= 35) {
+            if (authStep == -1 && step >= 40 && (System.currentTimeMillis() - pumpStartTimeMs) >= 15000L) {
                 System.out.println("[Pump] Authentication timed out at step " + step + " (status=" + status + ")");
                 break;
             }
             if (authStep != -1 && !historyRequested && stateB540 == 4) {
-                long nativeToMs = toMs + 12L * 3600_000L;
-                int hp0 = termTradeObj.callJniMethodInt(emulator, "tradeHistoryPeriod(IJJ)Z", 0, fromMs, nativeToMs);
-                int hp1 = termTradeObj.callJniMethodInt(emulator, "tradeHistoryPeriod(IJJ)Z", 1, fromMs, nativeToMs);
+                // Read exact live MT5 Broker Server Clock via libcommon.so TradeTime.timeZone (0x39da00) & TradeTime.tradeTime (0x39d9b0)
+                Number tzNum = module.callFunction(emulator, 0x39da00, vm.getJNIEnv(), 0);
+                brokerTzMinutes = tzNum != null ? tzNum.intValue() : 0;
+                Number tradeTimeNum = module.callFunction(emulator, 0x39d9b0, vm.getJNIEnv(), 0);
+                long nativeTradeTimeSec = tradeTimeNum != null ? tradeTimeNum.longValue() : 0L;
+                long brokerNowMs = (nativeTradeTimeSec > 1_500_000_000L && nativeTradeTimeSec < 4_102_444_800L)
+                        ? (nativeTradeTimeSec * 1000L)
+                        : (System.currentTimeMillis() + (long) brokerTzMinutes * 60_000L);
+                long[] resolvedRange = computeBrokerPeriodRangeMs(periodMode, brokerNowMs, fromMs, toMs);
+                effectiveFromMs = resolvedRange[0];
+                effectiveToMs = resolvedRange[1];
+                System.out.printf("[TradeTime] period=%s tzMinutes=%d brokerNowSec=%d effectiveRange=[%d..%d]%n",
+                        String.valueOf(periodMode), brokerTzMinutes, nativeTradeTimeSec, effectiveFromMs, effectiveToMs);
+
+                int hp0 = termTradeObj.callJniMethodInt(emulator, "tradeHistoryPeriod(IJJ)Z", 0, effectiveFromMs, effectiveToMs);
+                int hp1 = termTradeObj.callJniMethodInt(emulator, "tradeHistoryPeriod(IJJ)Z", 1, effectiveFromMs, effectiveToMs);
                 System.out.printf("[Pump] Step %d: Requested tradeHistoryPeriod(%d..%d) (sync6220=%d, stateB540=%d) => hp0=%d hp1=%d%n",
-                        step, fromMs, nativeToMs, sync6220, stateB540, hp0 & 0xff, hp1 & 0xff);
+                        step, effectiveFromMs, effectiveToMs, sync6220, stateB540, hp0 & 0xff, hp1 & 0xff);
                 if ((hp0 & 0xff) != 0 || (hp1 & 0xff) != 0) {
                     historyRequested = true;
                     historyRequestStep = step;
@@ -1581,6 +1663,12 @@ public class Mt5NativeRunner extends AbstractJni {
                             module.callFunction(emulator, 0x2ccdc0, cSocketThreadPtr);
                         }
                     }
+                    historyRequestTimeMs = System.currentTimeMillis();
+                    lastCountChangeTimeMs = historyRequestTimeMs;
+                    countsChangedSinceReq = false;
+                    prevPosCnt = termTradeObj.callJniMethodInt(emulator, "tradeHistoryPositionsCount()I");
+                    prevDealsCnt = termTradeObj.callJniMethodInt(emulator, "tradeHistoryDealsCount()I");
+                    prevOrdCnt = termTradeObj.callJniMethodInt(emulator, "tradeHistoryOrdersCount()I");
                 }
             }
             if (authStep != -1) {
@@ -1592,15 +1680,32 @@ public class Mt5NativeRunner extends AbstractJni {
                 long doneGen = emulator.getMemory().pointer(cTradesBasePtr + 0x7a28).getLong(0);
                 System.out.printf("[Pump] Step %d: status=%d sync6220=%d stateB540=%d ready=%d deals=%d positions=%d orders=%d recv=%d%n",
                         step, status, sync6220, stateB540, isReady, dealsCnt, posCnt, ordCnt, totalRecvInStep);
-                boolean countsStable = (posCnt == prevPosCnt && dealsCnt == prevDealsCnt);
+
+                long nowMs = System.currentTimeMillis();
+                boolean countsStable = (posCnt == prevPosCnt && dealsCnt == prevDealsCnt && ordCnt == prevOrdCnt);
+                if (!countsStable && historyRequested && step > historyRequestStep) {
+                    countsChangedSinceReq = true;
+                    lastCountChangeTimeMs = nowMs;
+                }
                 prevPosCnt = posCnt;
                 prevDealsCnt = dealsCnt;
+                prevOrdCnt = ordCnt;
+
                 boolean networkQuiet = (totalRecvInStep == 0);
-                boolean hasResultsReady = (dealsCnt > 0 || posCnt > 0) && step >= historyRequestStep + 1;
-                boolean emptyResultsSettled = step >= historyRequestStep + 3 && networkQuiet;
-                if (historyRequested && isReady == 1 && reqGen == doneGen
-                        && ((countsStable && networkQuiet) || (countsStable && step >= historyRequestStep + 6) || step >= historyRequestStep + 520)
-                        && (hasResultsReady || emptyResultsSettled)) {
+                long elapsedSinceReqMs = historyRequested ? (nowMs - historyRequestTimeMs) : 0L;
+                long stableDurationMs = historyRequested ? (nowMs - lastCountChangeTimeMs) : 0L;
+                boolean settledAfterNewData = countsChangedSinceReq
+                        && elapsedSinceReqMs >= 500L
+                        && stableDurationMs >= 450L
+                        && (networkQuiet || stableDurationMs >= 900L);
+                boolean settledWithNoDelta = !countsChangedSinceReq
+                        && elapsedSinceReqMs >= 2200L
+                        && stableDurationMs >= 1000L
+                        && (networkQuiet || elapsedSinceReqMs >= 2800L);
+                boolean hitSafetyCeiling = (elapsedSinceReqMs >= 90000L && countsStable) || step >= historyRequestStep + 3500;
+
+                if (historyRequested && step > historyRequestStep && isReady == 1 && reqGen == doneGen
+                        && ((countsStable && (settledAfterNewData || settledWithNoDelta)) || hitSafetyCeiling)) {
                     DvmObject<?> tradeInfoObj = vm.resolveClass("net/metaquotes/metatrader5/types/TradeInfoRecord").newObject(new LinkedHashMap<String, Object>());
                     termTradeObj.callJniMethodInt(emulator, "tradeGetInfo(Lnet/metaquotes/metatrader5/types/TradeInfoRecord;)Z", tradeInfoObj);
                     DvmObject<?> posSummaryObj = vm.resolveClass("net/metaquotes/metatrader5/types/PositionViewInfo").newObject(new LinkedHashMap<String, Object>());
@@ -1629,8 +1734,9 @@ public class Mt5NativeRunner extends AbstractJni {
                                 writer.write(",\"server\":" + toJson(serverName));
                                 writer.write(",\"company\":" + toJson(companyName));
                                 writer.write(",\"login\":" + login);
-                                writer.write(",\"fromMs\":" + fromMs);
-                                writer.write(",\"toMs\":" + toMs);
+                                writer.write(",\"fromMs\":" + effectiveFromMs);
+                                writer.write(",\"toMs\":" + effectiveToMs);
+                                writer.write(",\"brokerTimeZoneMinutes\":" + brokerTzMinutes);
                                 writer.write(",\"tradeAllowed\":" + (trdAllowed != 0));
                                 writer.write(",\"tradeInfo\":" + toJson(tradeInfoMap));
                                 writer.write(",\"positionSummary\":" + toJson(posSummaryMap));
@@ -1650,14 +1756,14 @@ public class Mt5NativeRunner extends AbstractJni {
                                     Map<String, Object> m = fieldsOf(posObj);
                                     long closeTime = ((Number) m.getOrDefault("closeTime", 0L)).longValue();
                                     long closeTimeMs = closeTime > 10000000000L ? closeTime : closeTime * 1000L;
-                                    if (closeTimeMs >= fromMs && closeTimeMs <= toMs) {
+                                    if (closeTimeMs >= effectiveFromMs && closeTimeMs <= effectiveToMs) {
                                         if (!firstPos) writer.write(",");
                                         firstPos = false;
                                         writer.write(toJson(m));
                                         olderPosStreak = 0;
-                                    } else if (closeTimeMs < fromMs) {
+                                    } else if (closeTimeMs < effectiveFromMs) {
                                         olderPosStreak++;
-                                        if (olderPosStreak >= 200) {
+                                        if (posCnt > 2500 && olderPosStreak >= 2000) {
                                             fieldStore.remove(posObj);
                                             break;
                                         }
@@ -1680,15 +1786,15 @@ public class Mt5NativeRunner extends AbstractJni {
                                     Map<String, Object> m = fieldsOf(dealObj);
                                     long date = ((Number) m.getOrDefault("date", 0L)).longValue();
                                     long dateMs = date > 10000000000L ? date : date * 1000L;
-                                    if (dateMs >= fromMs && dateMs <= toMs) {
+                                    if (dateMs >= effectiveFromMs && dateMs <= effectiveToMs) {
                                         if (!firstDeal) writer.write(",");
                                         firstDeal = false;
                                         writer.write(toJson(m));
                                         dealsWritten++;
                                         olderDealStreak = 0;
-                                    } else if (dateMs < fromMs) {
+                                    } else if (dateMs < effectiveFromMs) {
                                         olderDealStreak++;
-                                        if (olderDealStreak >= 200) {
+                                        if (dealsCnt > 2500 && olderDealStreak >= 2000) {
                                             fieldStore.remove(dealObj);
                                             break;
                                         }
@@ -1715,12 +1821,12 @@ public class Mt5NativeRunner extends AbstractJni {
                             Map<String, Object> m = fieldsOf(posObj);
                             long closeTime = ((Number) m.getOrDefault("closeTime", 0L)).longValue();
                             long closeTimeMs = closeTime > 10000000000L ? closeTime : closeTime * 1000L;
-                            if (closeTimeMs >= fromMs && closeTimeMs <= toMs) {
+                            if (closeTimeMs >= effectiveFromMs && closeTimeMs <= effectiveToMs) {
                                 positionsOut.add(m);
                                 olderPosStreak = 0;
-                            } else if (closeTimeMs < fromMs) {
+                            } else if (closeTimeMs < effectiveFromMs) {
                                 olderPosStreak++;
-                                if (olderPosStreak >= 200) {
+                                if (posCnt > 2500 && olderPosStreak >= 2000) {
                                     break;
                                 }
                             }
@@ -1737,12 +1843,12 @@ public class Mt5NativeRunner extends AbstractJni {
                             Map<String, Object> m = fieldsOf(dealObj);
                             long date = ((Number) m.getOrDefault("date", 0L)).longValue();
                             long dateMs = date > 10000000000L ? date : date * 1000L;
-                            if (dateMs >= fromMs && dateMs <= toMs) {
+                            if (dateMs >= effectiveFromMs && dateMs <= effectiveToMs) {
                                 dealsOut.add(m);
                                 olderDealStreak = 0;
-                            } else if (dateMs < fromMs) {
+                            } else if (dateMs < effectiveFromMs) {
                                 olderDealStreak++;
-                                if (olderDealStreak >= 200) {
+                                if (dealsCnt > 2500 && olderDealStreak >= 2000) {
                                     break;
                                 }
                             }
@@ -1753,8 +1859,9 @@ public class Mt5NativeRunner extends AbstractJni {
                         payload.put("server", serverName);
                         payload.put("company", companyName);
                         payload.put("login", login);
-                        payload.put("fromMs", fromMs);
-                        payload.put("toMs", toMs);
+                        payload.put("fromMs", effectiveFromMs);
+                        payload.put("toMs", effectiveToMs);
+                        payload.put("brokerTimeZoneMinutes", brokerTzMinutes);
                         payload.put("tradeAllowed", trdAllowed != 0);
                         payload.put("tradeInfo", tradeInfoMap);
                         payload.put("positionSummary", posSummaryMap);
@@ -1917,6 +2024,7 @@ public class Mt5NativeRunner extends AbstractJni {
         String workDirPath = "unidbg-workdir";
         String outputJsonPath = null;
         String brokerCachePath = null;
+        String periodMode = null;
         String searchBrokerQuery = null;
 
         for (int i = 0; i < args.length - 1; i++) {
@@ -1929,6 +2037,7 @@ public class Mt5NativeRunner extends AbstractJni {
                 case "--password": password = args[++i]; break;
                 case "--from": fromMs = Long.parseLong(args[++i]); break;
                 case "--to": toMs = Long.parseLong(args[++i]); break;
+                case "--period": periodMode = args[++i]; break;
                 case "--apk": apkPath = args[++i]; break;
                 case "--workdir": workDirPath = args[++i]; break;
                 case "--broker-cache": brokerCachePath = args[++i]; break;
@@ -1951,7 +2060,7 @@ public class Mt5NativeRunner extends AbstractJni {
 
         File outputJsonFile = outputJsonPath != null ? new File(outputJsonPath) : null;
         File brokerCacheFile = brokerCachePath != null ? new File(brokerCachePath) : null;
-        runner.runSync(serverName, companyName, accessPoints, login, password, fromMs, toMs, outputJsonFile, brokerCacheFile);
+        runner.runSync(serverName, companyName, accessPoints, login, password, fromMs, toMs, outputJsonFile, brokerCacheFile, periodMode);
         System.exit(0);
     }
 }

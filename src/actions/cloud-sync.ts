@@ -173,6 +173,7 @@ interface ApkCloudSyncJobParams {
     accountNumber: string;
     serverName: string;
     password: string;
+    period: string;
     fromDate: Date;
     toDate: Date;
     platform: string;
@@ -301,6 +302,7 @@ async function executeApkCloudSyncJob(params: ApkCloudSyncJobParams) {
         accountNumber,
         serverName,
         password,
+        period,
         fromDate,
         toDate,
         platform,
@@ -321,11 +323,12 @@ async function executeApkCloudSyncJob(params: ApkCloudSyncJobParams) {
 
         const cloudSync = getApkCloudSyncService();
 
-        // Step 1 & Step 2: Login + Load Trade History in [fromDate, toDate]
+        // Step 1 & Step 2: Login + Load Trade History in [fromDate, toDate] aligned to live MT5 Broker Server Clock
         const syncResult = await cloudSync.step2GetHistoryAndSync({
             serverName,
             login: accountNumber,
             password,
+            period,
             from: fromDate.toISOString(),
             to: toDate.toISOString(),
             limit: 500000,
@@ -584,6 +587,15 @@ async function executeApkCloudSyncJob(params: ApkCloudSyncJobParams) {
             where: { accountId },
         });
 
+        const resolvedRangeFrom =
+            syncResult.from && !Number.isNaN(new Date(syncResult.from).getTime())
+                ? new Date(syncResult.from)
+                : fromDate;
+        const resolvedRangeTo =
+            syncResult.to && !Number.isNaN(new Date(syncResult.to).getTime())
+                ? new Date(syncResult.to)
+                : toDate;
+
         await prisma.$transaction([
             prisma.syncHistory.create({
                 data: {
@@ -621,6 +633,8 @@ async function executeApkCloudSyncJob(params: ApkCloudSyncJobParams) {
                     status: "COMPLETED",
                     progressPercent: 100,
                     dealsReceived: received,
+                    rangeFrom: resolvedRangeFrom,
+                    rangeTo: resolvedRangeTo,
                     message: summaryMessage.slice(0, MAX_DB_STATUS_MESSAGE_LEN),
                     completedAt: new Date(),
                 },
@@ -818,6 +832,7 @@ export async function triggerCloudSync(
         accountNumber: String(account.accountNumber || "").trim(),
         serverName: String(account.server || "STARTRADERFinancial-Demo").trim(),
         password: resolvedPassword,
+        period: String(period),
         fromDate,
         toDate,
         platform: account.platform || "MT5",

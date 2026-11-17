@@ -140,6 +140,8 @@ export function PublicProfileCard({
     isLoggedIn?: boolean;
 }) {
     const tilt = useTilt();
+    const [failedAvatarSrc, setFailedAvatarSrc] = useState<string | null>(null);
+    const showAvatar = Boolean(profile.image) && failedAvatarSrc !== profile.image;
     const joinDate = format(new Date(profile.joinedDate), "MMM yyyy");
     const scoreInfo =
         profile.stats.tradeScore !== null && profile.visibility.showTradeScore
@@ -205,13 +207,15 @@ export function PublicProfileCard({
                             <div className="flex items-center gap-4">
                                 <div className="shrink-0 rounded-full border border-amber-500/40 bg-amber-500/5 p-[2px] shadow-sm">
                                     <div className="h-16 w-16 overflow-hidden rounded-full bg-white p-[2px] dark:bg-[#151925]">
-                                        {profile.image ? (
+                                        {showAvatar && profile.image ? (
                                             <Image
                                                 src={profile.image}
                                                 alt={profile.name}
                                                 width={64}
                                                 height={64}
+                                                unoptimized={profile.image.startsWith("http")}
                                                 className="h-full w-full rounded-full object-cover"
+                                                onError={() => setFailedAvatarSrc(profile.image)}
                                             />
                                         ) : (
                                             <div className="flex h-full w-full items-center justify-center rounded-full bg-amber-50 dark:bg-amber-500/10 text-2xl font-black text-amber-500">

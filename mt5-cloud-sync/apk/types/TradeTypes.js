@@ -875,8 +875,11 @@ const EntityHistoryPeriod = Object.freeze({
  * DEX offset: 0x67f168
  */
 class HistoryPeriodCalculator_Loh6 {
-  static b(period, customFromMs = 0, customToMs = 0) {
-    const now = new Date();
+  static b(period, customFromMs = 0, customToMs = 0, brokerNowMs = null) {
+    const now =
+      typeof brokerNowMs === 'number' && Number.isFinite(brokerNowMs) && brokerNowMs > 0
+        ? new Date(brokerNowMs)
+        : new Date();
     const endOfToday = new Date(
       Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 23, 59, 59, 999)
     ).getTime();
