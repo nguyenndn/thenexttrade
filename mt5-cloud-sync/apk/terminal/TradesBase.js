@@ -3,6 +3,7 @@ const path = require('path');
 const {
   enqueueNativeRun,
   cleanWorkDir,
+  getBrokerEndpointCachePath,
   restoreAccountTradeCache,
   persistAccountTradeCache,
   execJavaAsync
@@ -687,8 +688,17 @@ class TradesBase {
 
     return enqueueNativeRun(workDir, async (slotWorkDir) => {
       await restoreAccountTradeCache(cacheRootDir, slotWorkDir, serverName, login);
+      const brokerCacheFile = getBrokerEndpointCachePath(cacheRootDir, serverName, login);
       const outputJsonFile = path.join(slotWorkDir, 'sync-output.json');
-      const args = [...argsPrefix, '--workdir', slotWorkDir, '--output', outputJsonFile];
+      const args = [
+        ...argsPrefix,
+        '--workdir',
+        slotWorkDir,
+        '--broker-cache',
+        brokerCacheFile,
+        '--output',
+        outputJsonFile
+      ];
       const stdout = await execJavaAsync(javaExe, args, {
         cwd: execCwd,
         timeout: 600000

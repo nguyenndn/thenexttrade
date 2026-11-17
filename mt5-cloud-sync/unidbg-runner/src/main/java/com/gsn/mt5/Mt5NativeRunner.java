@@ -31,6 +31,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -288,7 +289,7 @@ public class Mt5NativeRunner extends AbstractJni {
                 try {
                     if (len == 9) {
                         packetsInCurrentReadCall++;
-                        if (packetsInCurrentReadCall > 32) {
+                        if (packetsInCurrentReadCall > 64) {
                             emulator.getMemory().setErrno(11); // EAGAIN
                             b.reg_write(Arm64Const.UC_ARM64_REG_X0, -1L);
                             return;
@@ -297,9 +298,9 @@ public class Mt5NativeRunner extends AbstractJni {
                     ByteBuffer bb = ByteBuffer.allocate(len);
                     int n = socketChannel.read(bb);
                     if (n == 0) {
-                        int maxWait = (len > 9) ? 50 : (packetsInCurrentReadCall <= 1 ? 5 : 0);
+                        int maxWait = (len > 9) ? 110 : (packetsInCurrentReadCall <= 1 ? 6 : 0);
                         for (int wait = 0; wait < maxWait && n == 0; wait++) {
-                            try { Thread.sleep(10); } catch (InterruptedException ignored) {}
+                            try { Thread.sleep(3); } catch (InterruptedException ignored) {}
                             n = socketChannel.read(bb);
                         }
                     }
@@ -1040,6 +1041,107 @@ public class Mt5NativeRunner extends AbstractJni {
         return toJson(String.valueOf(val));
     }
 
+    private static final long BROKER_CACHE_TTL_MS = 7L * 24L * 3600_000L;
+
+    private String[] discoverBrokerViaCdn(
+            String serverName,
+            String fallbackCompany,
+            String[] fallbackAccess,
+            String[] metaOut,
+            File brokerCacheFile
+    ) {
+        String resolvedCompany = fallbackCompany;
+        String resolvedWebsite = "www.metaquotes.net";
+        String resolvedLogoHash = "49753489EC9EDED255EC6E72CEC59912";
+        String[] resolvedAccess = fallbackAccess;
+
+        DvmObject<?> brokerApiObj = vm.resolveClass("net/metaquotes/brokers/BrokerInfoAPI").newObject(null);
+        StringObject apiPath = brokerApiObj.callJniMethodObject(emulator, "b()Ljava/lang/String;");
+        StringObject apiQueryServer = brokerApiObj.callJniMethodObject(
+                emulator,
+                "c(Ljava/lang/String;)Ljava/lang/String;",
+                new StringObject(vm, serverName)
+        );
+
+        if (apiPath != null && apiQueryServer != null) {
+            String[] cdnHosts = new String[]{
+                "https://api1.cdnfx.net",
+                "https://api2.cdnfx.net",
+                "https://api3.cdnfx.net"
+            };
+            for (String cdnHost : cdnHosts) {
+                try {
+                    URL url = new URL(cdnHost + apiPath.getValue());
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setRequestMethod("POST");
+                    conn.setConnectTimeout(3000);
+                    conn.setReadTimeout(3000);
+                    conn.setDoOutput(true);
+                    conn.setRequestProperty("User-Agent", "MetaTrader 5 Android");
+                    conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                    byte[] postBytes = apiQueryServer.getValue().getBytes(StandardCharsets.UTF_8);
+                    try (OutputStream os = conn.getOutputStream()) {
+                        os.write(postBytes);
+                    }
+                    if (conn.getResponseCode() == 200) {
+                        byte[] respBytes;
+                        try (InputStream is = conn.getInputStream()) {
+                            respBytes = is.readAllBytes();
+                        }
+                        String json = new String(respBytes, StandardCharsets.UTF_8);
+                        Matcher mComp = Pattern.compile("\"company\"\\s*:\\s*\"([^\"]+)\"").matcher(json);
+                        if (mComp.find()) resolvedCompany = mComp.group(1);
+                        Matcher mWeb = Pattern.compile("\"website\"\\s*:\\s*\"([^\"]+)\"").matcher(json);
+                        if (mWeb.find()) resolvedWebsite = mWeb.group(1);
+                        Matcher mLogo = Pattern.compile("\"logoHash\"\\s*:\\s*\"([^\"]+)\"").matcher(json);
+                        if (mLogo.find()) resolvedLogoHash = mLogo.group(1);
+
+                        Matcher mAccessBlock = Pattern.compile("\"access\"\\s*:\\s*\\[(.*?)\\]", Pattern.DOTALL).matcher(json);
+                        List<String> publicEndpoints = new ArrayList<>();
+                        while (mAccessBlock.find()) {
+                            String block = mAccessBlock.group(1);
+                            Matcher mIp = Pattern.compile("\"([^\"]+)\"").matcher(block);
+                            while (mIp.find()) {
+                                String ep = mIp.group(1).trim();
+                                if (!ep.startsWith("10.") && !ep.startsWith("127.") && !ep.startsWith("192.168.")) {
+                                    publicEndpoints.add(ep);
+                                }
+                            }
+                            if (!publicEndpoints.isEmpty()) break;
+                        }
+                        if (!publicEndpoints.isEmpty()) {
+                            resolvedAccess = publicEndpoints.toArray(new String[0]);
+                            System.out.println("[BrokerInfoAPI] Discovered live broker \"" + resolvedCompany + "\" access=" + Arrays.toString(resolvedAccess));
+                            if (brokerCacheFile != null) {
+                                try {
+                                    if (brokerCacheFile.getParentFile() != null) {
+                                        brokerCacheFile.getParentFile().mkdirs();
+                                    }
+                                    Map<String, Object> cacheMap = new LinkedHashMap<>();
+                                    cacheMap.put("serverName", serverName);
+                                    cacheMap.put("company", resolvedCompany);
+                                    cacheMap.put("website", resolvedWebsite);
+                                    cacheMap.put("logoHash", resolvedLogoHash);
+                                    cacheMap.put("access", Arrays.asList(resolvedAccess));
+                                    cacheMap.put("cachedAt", System.currentTimeMillis());
+                                    Files.writeString(brokerCacheFile.toPath(), toJson(cacheMap), StandardCharsets.UTF_8);
+                                } catch (Exception ignored) {}
+                            }
+                            break;
+                        }
+                    }
+                } catch (Exception e) {
+                    System.out.println("[BrokerInfoAPI] CDN lookup warning (" + cdnHost + "): " + e.getMessage());
+                }
+            }
+        }
+
+        metaOut[0] = resolvedCompany;
+        metaOut[1] = resolvedWebsite;
+        metaOut[2] = resolvedLogoHash;
+        return resolvedAccess;
+    }
+
     public void runSync(
             String serverName,
             String companyName,
@@ -1049,6 +1151,20 @@ public class Mt5NativeRunner extends AbstractJni {
             long fromMs,
             long toMs,
             File outputJsonFile
+    ) {
+        runSync(serverName, companyName, accessPointAddrs, login, password, fromMs, toMs, outputJsonFile, null);
+    }
+
+    public void runSync(
+            String serverName,
+            String companyName,
+            String[] accessPointAddrs,
+            long login,
+            String password,
+            long fromMs,
+            long toMs,
+            File outputJsonFile,
+            File brokerCacheFile
     ) {
         DvmObject<?> context = vm.resolveClass("android/content/Context").newObject(null);
 
@@ -1105,73 +1221,51 @@ public class Mt5NativeRunner extends AbstractJni {
         DvmClass listClass = vm.resolveClass("java/util/List");
         vm.resolveClass("java/util/ArrayList", listClass);
 
-        DvmObject<?> brokerApiObj = vm.resolveClass("net/metaquotes/brokers/BrokerInfoAPI").newObject(null);
-        StringObject apiPath = brokerApiObj.callJniMethodObject(emulator, "b()Ljava/lang/String;");
-        StringObject apiQueryServer = brokerApiObj.callJniMethodObject(emulator, "c(Ljava/lang/String;)Ljava/lang/String;", new StringObject(vm, serverName));
-        DvmObject<?> dnsPrefsObj = vm.resolveClass("net/metaquotes/dns/DNSPrefs").newObject(null);
-        StringObject dnsHost = dnsPrefsObj.callJniMethodObject(emulator, "a()Ljava/lang/String;");
-        System.out.println("[BrokerInfoAPI] dnsHost=" + (dnsHost != null ? dnsHost.getValue() : "null")
-                + " path=" + (apiPath != null ? apiPath.getValue() : "null")
-                + " queryServer=" + (apiQueryServer != null ? apiQueryServer.getValue() : "null"));
-
         String resolvedCompany = companyName;
         String resolvedWebsite = "www.metaquotes.net";
         String resolvedLogoHash = "49753489EC9EDED255EC6E72CEC59912";
         String[] resolvedAccess = accessPointAddrs;
+        boolean usedCachedBroker = false;
 
-        if (apiPath != null && apiQueryServer != null) {
-            String[] cdnHosts = new String[]{"https://api1.cdnfx.net", "https://api2.cdnfx.net", "https://api3.cdnfx.net"};
-            for (String cdnHost : cdnHosts) {
+        if (brokerCacheFile != null && brokerCacheFile.isFile()) {
+            long ageMs = System.currentTimeMillis() - brokerCacheFile.lastModified();
+            if (ageMs >= 0 && ageMs <= BROKER_CACHE_TTL_MS) {
                 try {
-                    URL url = new URL(cdnHost + apiPath.getValue());
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setRequestMethod("POST");
-                    conn.setConnectTimeout(5000);
-                    conn.setReadTimeout(5000);
-                    conn.setDoOutput(true);
-                    conn.setRequestProperty("User-Agent", "MetaTrader 5 Android");
-                    conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                    byte[] postBytes = apiQueryServer.getValue().getBytes(StandardCharsets.UTF_8);
-                    try (OutputStream os = conn.getOutputStream()) {
-                        os.write(postBytes);
-                    }
-                    if (conn.getResponseCode() == 200) {
-                        byte[] respBytes;
-                        try (InputStream is = conn.getInputStream()) {
-                            respBytes = is.readAllBytes();
+                    String cachedJson = Files.readString(brokerCacheFile.toPath(), StandardCharsets.UTF_8);
+                    Matcher mComp = Pattern.compile("\"company\"\\s*:\\s*\"([^\"]+)\"").matcher(cachedJson);
+                    if (mComp.find()) resolvedCompany = mComp.group(1);
+                    Matcher mWeb = Pattern.compile("\"website\"\\s*:\\s*\"([^\"]+)\"").matcher(cachedJson);
+                    if (mWeb.find()) resolvedWebsite = mWeb.group(1);
+                    Matcher mLogo = Pattern.compile("\"logoHash\"\\s*:\\s*\"([^\"]+)\"").matcher(cachedJson);
+                    if (mLogo.find()) resolvedLogoHash = mLogo.group(1);
+                    Matcher mAccessBlock = Pattern.compile("\"access\"\\s*:\\s*\\[(.*?)\\]", Pattern.DOTALL).matcher(cachedJson);
+                    if (mAccessBlock.find()) {
+                        List<String> cachedEps = new ArrayList<>();
+                        Matcher mIp = Pattern.compile("\"([^\"]+)\"").matcher(mAccessBlock.group(1));
+                        while (mIp.find()) {
+                            String ep = mIp.group(1).trim();
+                            if (!ep.isEmpty()) cachedEps.add(ep);
                         }
-                        String json = new String(respBytes, StandardCharsets.UTF_8);
-                        Matcher mComp = Pattern.compile("\"company\"\\s*:\\s*\"([^\"]+)\"").matcher(json);
-                        if (mComp.find()) resolvedCompany = mComp.group(1);
-                        Matcher mWeb = Pattern.compile("\"website\"\\s*:\\s*\"([^\"]+)\"").matcher(json);
-                        if (mWeb.find()) resolvedWebsite = mWeb.group(1);
-                        Matcher mLogo = Pattern.compile("\"logoHash\"\\s*:\\s*\"([^\"]+)\"").matcher(json);
-                        if (mLogo.find()) resolvedLogoHash = mLogo.group(1);
-
-                        Matcher mAccessBlock = Pattern.compile("\"access\"\\s*:\\s*\\[(.*?)\\]", Pattern.DOTALL).matcher(json);
-                        List<String> publicEndpoints = new ArrayList<>();
-                        while (mAccessBlock.find()) {
-                            String block = mAccessBlock.group(1);
-                            Matcher mIp = Pattern.compile("\"([^\"]+)\"").matcher(block);
-                            while (mIp.find()) {
-                                String ep = mIp.group(1).trim();
-                                if (!ep.startsWith("10.") && !ep.startsWith("127.") && !ep.startsWith("192.168.")) {
-                                    publicEndpoints.add(ep);
-                                }
-                            }
-                            if (!publicEndpoints.isEmpty()) break;
-                        }
-                        if (!publicEndpoints.isEmpty()) {
-                            resolvedAccess = publicEndpoints.toArray(new String[0]);
-                            System.out.println("[BrokerInfoAPI] Discovered live broker \"" + resolvedCompany + "\" access=" + Arrays.toString(resolvedAccess));
-                            break;
+                        if (!cachedEps.isEmpty()) {
+                            resolvedAccess = cachedEps.toArray(new String[0]);
+                            usedCachedBroker = true;
+                            System.out.println("[BrokerInfoAPI] Using 7d cached broker \"" + resolvedCompany + "\" access=" + Arrays.toString(resolvedAccess));
                         }
                     }
-                } catch (Exception e) {
-                    System.out.println("[BrokerInfoAPI] CDN lookup warning (" + cdnHost + "): " + e.getMessage());
-                }
+                } catch (Exception ignored) {}
+            } else if (ageMs > BROKER_CACHE_TTL_MS) {
+                try { brokerCacheFile.delete(); } catch (Exception ignored) {}
             }
         }
+
+        if (!usedCachedBroker) {
+            String[] metaOut = new String[]{resolvedCompany, resolvedWebsite, resolvedLogoHash};
+            resolvedAccess = discoverBrokerViaCdn(serverName, resolvedCompany, resolvedAccess, metaOut, brokerCacheFile);
+            resolvedCompany = metaOut[0];
+            resolvedWebsite = metaOut[1];
+            resolvedLogoHash = metaOut[2];
+        }
+
         companyName = resolvedCompany;
         accessPointAddrs = resolvedAccess;
 
@@ -1335,9 +1429,11 @@ public class Mt5NativeRunner extends AbstractJni {
         int authStep = -1;
         int prevPosCnt = -1;
         int prevDealsCnt = -1;
+        boolean prevStepHadTraffic = true;
+        boolean retriedLiveCdn = false;
         boolean completed = false;
 
-        for (int step = 0; step < 400; step++) {
+        for (int step = 0; step < 600; step++) {
             emulator.getBackend().mem_write(cNetworkPtr + 0x1298, intOne);
             emulator.getBackend().mem_write(cNetworkPtr + 0x129c, intOne);
             int sockFd = emulator.getMemory().pointer(cSocketThreadPtr + 0x140).getInt(0);
@@ -1345,6 +1441,60 @@ public class Mt5NativeRunner extends AbstractJni {
                 System.out.println("[Pump] Step " + step + ": calling StepConnect (0x2ce414)...");
                 module.callFunction(emulator, 0x2ce414, cSocketThreadPtr);
                 sockFd = emulator.getMemory().pointer(cSocketThreadPtr + 0x140).getInt(0);
+                if (sockFd == -1 && usedCachedBroker && !retriedLiveCdn) {
+                    retriedLiveCdn = true;
+                    System.out.println("[Pump] Cached accessPoints unreachable, refreshing live broker endpoints via CDN...");
+                    String[] metaOut = new String[]{companyName, resolvedWebsite, resolvedLogoHash};
+                    accessPointAddrs = discoverBrokerViaCdn(serverName, companyName, accessPointAddrs, metaOut, brokerCacheFile);
+                    companyName = metaOut[0];
+                    StringObject[] freshApObjs = new StringObject[accessPointAddrs.length];
+                    int[] freshPrio = new int[accessPointAddrs.length];
+                    for (int i = 0; i < accessPointAddrs.length; i++) {
+                        freshApObjs[i] = new StringObject(vm, accessPointAddrs[i]);
+                        freshPrio[i] = i;
+                    }
+                    serversBaseClass.callStaticJniMethodInt(
+                            emulator,
+                            "addServer(Landroid/content/Context;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;IIZ[Ljava/lang/String;[I[Ljava/lang/String;[Ljava/lang/String;)Z",
+                            context,
+                            new StringObject(vm, companyName),
+                            new StringObject(vm, metaOut[1]),
+                            new StringObject(vm, metaOut[2]),
+                            new StringObject(vm, serverName),
+                            0,
+                            500,
+                            true,
+                            new ArrayObject(freshApObjs),
+                            new IntArray(vm, freshPrio),
+                            null,
+                            null
+                    );
+                    ByteArray freshHash = serversBaseObj.callJniMethodObject(
+                            emulator,
+                            "getServerHash(Ljava/lang/String;)[B",
+                            new StringObject(vm, serverName)
+                    );
+                    netMgr.callJniMethodInt(
+                            emulator,
+                            "networkSetAccount(JLjava/lang/String;Ljava/lang/String;[BZZ)Z",
+                            login,
+                            new StringObject(vm, password),
+                            new StringObject(vm, ""),
+                            freshHash,
+                            true,
+                            false
+                    );
+                    module.callFunction(
+                            emulator,
+                            0x2a2c1c,
+                            vm.getJNIEnv(),
+                            netMgr.hashCode(),
+                            vm.addLocalObject(new StringObject(vm, "")),
+                            0
+                    );
+                    module.callFunction(emulator, 0x2ce414, cSocketThreadPtr);
+                    sockFd = emulator.getMemory().pointer(cSocketThreadPtr + 0x140).getInt(0);
+                }
                 if (sockFd == -1) {
                     System.out.println("[Pump] TCP connection failed, stopping pump.");
                     break;
@@ -1356,8 +1506,8 @@ public class Mt5NativeRunner extends AbstractJni {
                 if (emulator.getMemory().pointer(cSocketThreadPtr + 0x2e0).getLong(0) != 0) {
                     module.callFunction(emulator, 0x2ccdc0, cSocketThreadPtr);
                 }
-                try { Thread.sleep(100); } catch (InterruptedException ignored) {}
-                for (int r = 0; r < 24; r++) {
+                try { Thread.sleep(prevStepHadTraffic ? 20 : 40); } catch (InterruptedException ignored) {}
+                for (int r = 0; r < 48; r++) {
                     lastRecvBytes = 0;
                     packetsInCurrentReadCall = 0;
                     emulator.getBackend().mem_write(cNetworkPtr + 0x1298, intOne);
@@ -1398,6 +1548,7 @@ public class Mt5NativeRunner extends AbstractJni {
                     }
                 }
             }
+            prevStepHadTraffic = (totalRecvInStep > 0);
             int status = netMgr.callJniMethodInt(emulator, "networkConnectionStatus()I");
             int sync6220 = emulator.getMemory().pointer(cTerminalPtr + 0x6220).getInt(0);
             int stateB540 = emulator.getMemory().pointer(cTerminalPtr + 0xb540).getInt(0);
@@ -1406,7 +1557,7 @@ public class Mt5NativeRunner extends AbstractJni {
                 authStep = step;
                 System.out.println("[Pump] AUTHORIZED (status=" + status + ") at step " + step + "! fragHead=0x" + Long.toHexString(fragHead));
             }
-            if (authStep == -1 && step >= 15) {
+            if (authStep == -1 && step >= 35) {
                 System.out.println("[Pump] Authentication timed out at step " + step + " (status=" + status + ")");
                 break;
             }
@@ -1445,9 +1596,11 @@ public class Mt5NativeRunner extends AbstractJni {
                 prevPosCnt = posCnt;
                 prevDealsCnt = dealsCnt;
                 boolean networkQuiet = (totalRecvInStep == 0);
-                if (historyRequested && step >= historyRequestStep + 2 && isReady == 1 && reqGen == doneGen
-                        && ((countsStable && networkQuiet) || (countsStable && step >= historyRequestStep + 6) || step >= historyRequestStep + 360)
-                        && (dealsCnt > 0 || posCnt > 0 || step >= historyRequestStep + 4)) {
+                boolean hasResultsReady = (dealsCnt > 0 || posCnt > 0) && step >= historyRequestStep + 1;
+                boolean emptyResultsSettled = step >= historyRequestStep + 3 && networkQuiet;
+                if (historyRequested && isReady == 1 && reqGen == doneGen
+                        && ((countsStable && networkQuiet) || (countsStable && step >= historyRequestStep + 6) || step >= historyRequestStep + 520)
+                        && (hasResultsReady || emptyResultsSettled)) {
                     DvmObject<?> tradeInfoObj = vm.resolveClass("net/metaquotes/metatrader5/types/TradeInfoRecord").newObject(new LinkedHashMap<String, Object>());
                     termTradeObj.callJniMethodInt(emulator, "tradeGetInfo(Lnet/metaquotes/metatrader5/types/TradeInfoRecord;)Z", tradeInfoObj);
                     DvmObject<?> posSummaryObj = vm.resolveClass("net/metaquotes/metatrader5/types/PositionViewInfo").newObject(new LinkedHashMap<String, Object>());
@@ -1763,6 +1916,7 @@ public class Mt5NativeRunner extends AbstractJni {
         String apkPath = "bin/metatrader5.apk";
         String workDirPath = "unidbg-workdir";
         String outputJsonPath = null;
+        String brokerCachePath = null;
         String searchBrokerQuery = null;
 
         for (int i = 0; i < args.length - 1; i++) {
@@ -1777,6 +1931,7 @@ public class Mt5NativeRunner extends AbstractJni {
                 case "--to": toMs = Long.parseLong(args[++i]); break;
                 case "--apk": apkPath = args[++i]; break;
                 case "--workdir": workDirPath = args[++i]; break;
+                case "--broker-cache": brokerCachePath = args[++i]; break;
                 case "--output": outputJsonPath = args[++i]; break;
             }
         }
@@ -1795,7 +1950,8 @@ public class Mt5NativeRunner extends AbstractJni {
                 .toArray(String[]::new);
 
         File outputJsonFile = outputJsonPath != null ? new File(outputJsonPath) : null;
-        runner.runSync(serverName, companyName, accessPoints, login, password, fromMs, toMs, outputJsonFile);
+        File brokerCacheFile = brokerCachePath != null ? new File(brokerCachePath) : null;
+        runner.runSync(serverName, companyName, accessPoints, login, password, fromMs, toMs, outputJsonFile, brokerCacheFile);
         System.exit(0);
     }
 }

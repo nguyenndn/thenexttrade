@@ -7,20 +7,22 @@ const MAX_CONCURRENCY = Math.max(
   parseInt(process.env.MT5_SYNC_CONCURRENCY || '4', 10) || 4
 );
 
-const CACHE_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days auto-expiry
+const CACHE_TTL_MS = 7 * 24 * 60 * 60 * 1000; // Strict 7-day auto-expiry
+const CACHE_SWEEP_INTERVAL_MS = 12 * 60 * 60 * 1000; // Periodic 12h sweep for idle servers
+const DEFAULT_CACHE_ROOT_DIR = path.join(__dirname, 'trade-cache');
 const MAX_CACHE_TOTAL_BYTES =
-  Math.max(128, parseInt(process.env.MT5_TRADE_CACHE_MAX_MB || '1536', 10) || 1536) *
+  Math.max(128, parseInt(process.env.MT5_TRADE_CACHE_MAX_MB || '1024', 10) || 1024) *
   1024 *
-  1024; // Hard cap: 1.5 GB total across all cached accounts
+  1024; // Hard cap: 1 GB total across all cached accounts
 
 /**
  * Process-wide 4-lane FIFO worker pool for Mt5NativeRunner (Unidbg ARM64 libcommon.so).
  * Guarantees:
  * 1. CONCURRENCY = 4 (configurable via MT5_SYNC_CONCURRENCY): Up to 4 Java processes run in parallel.
  * 2. Fixed slot isolation (`slot-1` .. `slot-4`): Concurrent runs never collide on `servers.dat` / `accounts.dat`.
- * 3. Bounded `.dat` Trade Cache (`trade-cache/<server>__<login>`): Persists ONLY `deals_*.dat` & `history_*.dat`
- *    so repeat syncs on 100k-500k deal accounts download only delta deals in seconds, bounded strictly by
- *    7-day TTL + 1.5 GB LRU cap, while `slot-N` temp files (`symbols`, `spread`, `json`) are wiped immediately.
+ * 3. Bounded `.dat` Cache (`trade-cache/<server>__<login>`): Persists `symbols`, `groups`, `selected`, `deals_*`, & `history_*`
+ *    so repeat syncs download only delta deals in seconds, bounded strictly by
+ *    7-day TTL + 1 GB LRU cap, while `slot-N` temp files (`accounts.dat`, `spread`, `json`) are wiped immediately.
  */
 if (!globalThis.__mt5NativeRunnerPool) {
   const freeSlots = [];
@@ -83,13 +85,59 @@ function isTradeDatFilename(filename) {
   return /^(deals|history)_\d{4}\.\d{2}\.dat$/i.test(filename);
 }
 
+function isServerBaseDatFilename(filename, login) {
+  const cleanLogin = String(login || '0').replace(/[^0-9]/g, '');
+  if (!cleanLogin) return false;
+  const lower = String(filename || '').toLowerCase();
+  return (
+    lower === `symbols-${cleanLogin}.dat` ||
+    lower === `groups-${cleanLogin}.dat` ||
+    lower === `selected-${cleanLogin}.dat`
+  );
+}
+
+function getBrokerEndpointCachePath(cacheRootDir, serverName, login) {
+  return path.join(
+    cacheRootDir,
+    getAccountCacheKey(serverName, login),
+    'broker-endpoint.json'
+  );
+}
+
+async function isCacheDirExpired(cacheDir, now = Date.now()) {
+  try {
+    const markerPath = path.join(cacheDir, '.last_used');
+    if (fs.existsSync(markerPath)) {
+      const lastUsedMs = Number(await fs.promises.readFile(markerPath, 'utf8')) || 0;
+      if (lastUsedMs > 0 && now - lastUsedMs > CACHE_TTL_MS) {
+        return true;
+      }
+      if (lastUsedMs > 0) {
+        return false;
+      }
+    }
+    const st = await fs.promises.stat(cacheDir);
+    return now - st.mtimeMs > CACHE_TTL_MS;
+  } catch {
+    return false;
+  }
+}
+
 async function restoreAccountTradeCache(cacheRootDir, slotWorkDir, serverName, login) {
   try {
+    await pruneAccountTradeCache(cacheRootDir);
+
     const cacheDir = path.join(cacheRootDir, getAccountCacheKey(serverName, login));
     if (!fs.existsSync(cacheDir)) return 0;
 
+    if (await isCacheDirExpired(cacheDir)) {
+      await cleanWorkDir(cacheDir);
+      return 0;
+    }
+
     const cleanServer = String(serverName || '').replace(/[^a-zA-Z0-9._-]/g, '');
-    const slotTradesDir = path.join(
+    const cleanLogin = String(login || '0').replace(/[^0-9]/g, '');
+    const slotServerBaseDir = path.join(
       slotWorkDir,
       'rootfs',
       'data',
@@ -98,18 +146,22 @@ async function restoreAccountTradeCache(cacheRootDir, slotWorkDir, serverName, l
       'net.metaquotes.metatrader5',
       'files',
       'bases',
-      cleanServer,
-      'trades',
-      String(login)
+      cleanServer
     );
+    const slotTradesDir = path.join(slotServerBaseDir, 'trades', cleanLogin);
     await fs.promises.mkdir(slotTradesDir, { recursive: true });
 
     const entries = await fs.promises.readdir(cacheDir);
     let copied = 0;
     for (const file of entries) {
-      if (!isTradeDatFilename(file)) continue;
-      await fs.promises.copyFile(path.join(cacheDir, file), path.join(slotTradesDir, file));
-      copied++;
+      const srcPath = path.join(cacheDir, file);
+      if (isTradeDatFilename(file)) {
+        await fs.promises.copyFile(srcPath, path.join(slotTradesDir, file));
+        copied++;
+      } else if (isServerBaseDatFilename(file, cleanLogin)) {
+        await fs.promises.copyFile(srcPath, path.join(slotServerBaseDir, file));
+        copied++;
+      }
     }
     return copied;
   } catch {
@@ -120,7 +172,8 @@ async function restoreAccountTradeCache(cacheRootDir, slotWorkDir, serverName, l
 async function persistAccountTradeCache(cacheRootDir, slotWorkDir, serverName, login) {
   try {
     const cleanServer = String(serverName || '').replace(/[^a-zA-Z0-9._-]/g, '');
-    const slotTradesDir = path.join(
+    const cleanLogin = String(login || '0').replace(/[^0-9]/g, '');
+    const slotServerBaseDir = path.join(
       slotWorkDir,
       'rootfs',
       'data',
@@ -129,21 +182,28 @@ async function persistAccountTradeCache(cacheRootDir, slotWorkDir, serverName, l
       'net.metaquotes.metatrader5',
       'files',
       'bases',
-      cleanServer,
-      'trades',
-      String(login)
+      cleanServer
     );
-    if (!fs.existsSync(slotTradesDir)) return;
+    if (!fs.existsSync(slotServerBaseDir)) return;
 
-    const entries = await fs.promises.readdir(slotTradesDir);
-    const datFiles = entries.filter(isTradeDatFilename);
-    if (datFiles.length === 0) return;
+    const slotTradesDir = path.join(slotServerBaseDir, 'trades', cleanLogin);
+    const tradeDatFiles = fs.existsSync(slotTradesDir)
+      ? (await fs.promises.readdir(slotTradesDir)).filter(isTradeDatFilename)
+      : [];
+    const serverDatFiles = (await fs.promises.readdir(slotServerBaseDir)).filter((f) =>
+      isServerBaseDatFilename(f, cleanLogin)
+    );
+
+    if (tradeDatFiles.length === 0 && serverDatFiles.length === 0) return;
 
     const cacheDir = path.join(cacheRootDir, getAccountCacheKey(serverName, login));
     await fs.promises.mkdir(cacheDir, { recursive: true });
 
-    for (const file of datFiles) {
+    for (const file of tradeDatFiles) {
       await fs.promises.copyFile(path.join(slotTradesDir, file), path.join(cacheDir, file));
+    }
+    for (const file of serverDatFiles) {
+      await fs.promises.copyFile(path.join(slotServerBaseDir, file), path.join(cacheDir, file));
     }
     await fs.promises.writeFile(path.join(cacheDir, '.last_used'), String(Date.now()), 'utf8');
 
@@ -192,7 +252,7 @@ async function pruneAccountTradeCache(cacheRootDir) {
       statsList.push({ fullDir, lastUsedMs, dirBytes });
     }
 
-    // 2. Hard size cap eviction (LRU — oldest used evicted first if total > 1.5 GB)
+    // 2. Hard size cap eviction (LRU — oldest used evicted first if total > 1 GB)
     let totalBytes = statsList.reduce((acc, item) => acc + item.dirBytes, 0);
     if (totalBytes > MAX_CACHE_TOTAL_BYTES) {
       statsList.sort((a, b) => a.lastUsedMs - b.lastUsedMs);
@@ -260,11 +320,26 @@ function execJavaAsync(javaExe, args, options = {}) {
   });
 }
 
+if (!globalThis.__mt5TradeCacheSweepTimer) {
+  const sweepTimer = setInterval(() => {
+    void pruneAccountTradeCache(DEFAULT_CACHE_ROOT_DIR);
+  }, CACHE_SWEEP_INTERVAL_MS);
+  if (typeof sweepTimer.unref === 'function') {
+    sweepTimer.unref();
+  }
+  globalThis.__mt5TradeCacheSweepTimer = sweepTimer;
+  void pruneAccountTradeCache(DEFAULT_CACHE_ROOT_DIR);
+}
+
 module.exports = {
   MAX_CONCURRENCY,
+  CACHE_TTL_MS,
+  MAX_CACHE_TOTAL_BYTES,
   enqueueNativeRun,
   getNativeQueuePendingCount,
   cleanWorkDir,
+  getAccountCacheKey,
+  getBrokerEndpointCachePath,
   restoreAccountTradeCache,
   persistAccountTradeCache,
   pruneAccountTradeCache,
