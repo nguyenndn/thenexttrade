@@ -26,7 +26,7 @@ export function SecuritySettings() {
     };
 
     return (
-        <div className="w-full space-y-5">
+        <div className="w-full space-y-2 md:space-y-5">
             {/* ── Security Header Card ── */}
             <div className="hidden sm:block bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-5">
                 <div className="flex items-center justify-between gap-4">

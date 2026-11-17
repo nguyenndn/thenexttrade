@@ -106,9 +106,9 @@ export function AccountTable({
     const [cloudSyncAccount, setCloudSyncAccount] = useState<any>(null);
 
     return (
-        <div className="w-full overflow-hidden rounded-lg border border-dashboard/80 bg-white shadow-sm dark:border-white/[0.08] dark:bg-[#1E2028]">
-            {/* Mobile Card View (< md) */}
-            <div className="md:hidden divide-y divide-dashboard/60 dark:divide-white/[0.04]">
+        <div className="w-full">
+            {/* Mobile Card View (< md) — separated standalone cards */}
+            <div className="md:hidden space-y-2">
                 {accounts.map((account) => {
                     const isMain = account.id === mainAccountId;
                     const hasSynced = !!account.lastSync;
@@ -139,7 +139,10 @@ export function AccountTable({
                         account.eligibility?.status === "PENDING";
 
                     return (
-                        <div key={`mobile-${account.id}`} className="p-4 space-y-3">
+                        <div
+                            key={`mobile-${account.id}`}
+                            className="rounded-xl border border-dashboard/80 bg-white p-3 sm:p-4 shadow-sm space-y-2.5 dark:border-white/[0.08] dark:bg-[#1E2028]"
+                        >
                             {/* Card Top: Star + Name + Badges + Menu */}
                             <div className="flex items-start justify-between gap-2">
                                 <div className="flex items-start gap-2.5 min-w-0">
@@ -283,20 +286,20 @@ export function AccountTable({
                             </div>
 
                             {/* 2x2 Matrix Specs Card */}
-                            <div className="grid grid-cols-2 rounded-lg border border-dashboard/80 dark:border-white/[0.08] bg-gray-50/50 dark:bg-white/[0.02] divide-x divide-y divide-dashboard/60 dark:divide-white/[0.05] overflow-hidden text-xs">
-                                <div className="p-2.5">
+                            <div className="grid grid-cols-2 rounded-xl border border-dashboard/80 dark:border-white/[0.08] bg-gray-50/50 dark:bg-white/[0.02] [&>*:nth-child(even)]:border-l [&>*:nth-child(n+3)]:border-t [&>*]:border-dashboard/60 dark:[&>*]:border-white/[0.06] overflow-hidden text-xs">
+                                <div className="py-2 px-2.5">
                                     <span className="text-[10px] uppercase font-bold text-gray-400 block mb-0.5">Server</span>
                                     <span className="font-bold text-gray-800 dark:text-gray-200 truncate block" title={account.server || "Server Unknown"}>
                                         {account.server || "—"}
                                     </span>
                                 </div>
-                                <div className="p-2.5">
+                                <div className="py-2 px-2.5">
                                     <span className="text-[10px] uppercase font-bold text-gray-400 block mb-0.5">Broker</span>
                                     <span className="font-bold text-gray-800 dark:text-gray-200 truncate block">
                                         {account.broker || "MetaTrader 5"}
                                     </span>
                                 </div>
-                                <div className="p-2.5">
+                                <div className="py-2 px-2.5">
                                     <span className="text-[10px] uppercase font-bold text-gray-400 block mb-0.5">Balance</span>
                                     <span className="font-bold text-gray-900 dark:text-white tabular-nums block truncate">
                                         {formatAccountBalance(balance, account.currency, account.server)}
@@ -307,7 +310,7 @@ export function AccountTable({
                                         </span>
                                     )}
                                 </div>
-                                <div className="p-2.5">
+                                <div className="py-2 px-2.5">
                                     <span className="text-[10px] uppercase font-bold text-gray-400 block mb-0.5">Telemetry</span>
                                     <div className="flex items-center gap-1.5 truncate">
                                         {isAccountSyncing ? (
@@ -391,7 +394,8 @@ export function AccountTable({
             </div>
 
             {/* Desktop Table View (>= md) */}
-            <div className="hidden md:block overflow-x-auto">
+            <div className="hidden md:block overflow-hidden rounded-xl border border-dashboard/80 bg-white shadow-sm dark:border-white/[0.08] dark:bg-[#1E2028]">
+                <div className="overflow-x-auto">
                 <table className="w-full border-collapse text-left">
                     <thead className="bg-gray-50 dark:bg-white/5 text-xs uppercase text-gray-500 dark:text-gray-400 font-bold tracking-wider border-b border-dashboard">
                         <tr>
@@ -815,6 +819,7 @@ export function AccountTable({
                         })}
                     </tbody>
                 </table>
+                </div>
             </div>
 
             {cloudSyncAccount && (

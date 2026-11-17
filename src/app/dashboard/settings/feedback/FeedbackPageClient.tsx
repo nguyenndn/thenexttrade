@@ -167,9 +167,9 @@ export default function FeedbackPageClient({
     }
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-2 md:space-y-4">
             {/* Top Toolbar / Bulk Selection Bar */}
-            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-3 px-4 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-2.5 sm:p-3 px-3 sm:px-4 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-3">
                 <div className="flex items-center gap-3">
                     <Button
                         variant="ghost"
@@ -205,7 +205,7 @@ export default function FeedbackPageClient({
                     )}
                 </div>
 
-                <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+                <div className="flex items-center gap-1.5 sm:gap-2 w-full sm:w-auto justify-end">
                     <AnimatePresence>
                         {selectedIds.size > 0 && (
                             <motion.div
@@ -249,7 +249,7 @@ export default function FeedbackPageClient({
             </div>
 
             {/* Feedback Cards */}
-            <div className="space-y-3">
+            <div className="space-y-2 md:space-y-3">
                 {feedbacks.map((fb) => {
                     const isBug = fb.type === "BUG";
                     const status = statusConfig[fb.status] || statusConfig.OPEN;
@@ -260,7 +260,7 @@ export default function FeedbackPageClient({
                         <div
                             key={fb.id}
                             className={cn(
-                                "bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-4 sm:p-5 shadow-sm transition-all",
+                                "bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-3.5 sm:p-5 shadow-sm transition-all",
                                 "border-l-4",
                                 isBug
                                     ? "border-l-red-500"

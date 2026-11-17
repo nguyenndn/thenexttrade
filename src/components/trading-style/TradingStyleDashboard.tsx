@@ -38,9 +38,9 @@ export function TradingStyleDashboard({
     // ─────────────── Quiz / Assessment flow state (Retake inside Dashboard) ───────────────
     if (!result || !archetype || isRetaking) {
         return (
-            <div className="relative overflow-hidden rounded-xl border border-dashboard bg-white/90 p-5 shadow-sm backdrop-blur-sm sm:p-8 dark:bg-[#1E2028]/90">
+            <div className="relative overflow-hidden rounded-xl border border-dashboard bg-white/90 p-3.5 shadow-sm backdrop-blur-sm sm:p-8 dark:bg-[#1E2028]/90">
                 {isRetaking && (
-                    <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-dashboard pb-4">
+                    <div className="mb-3 sm:mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-3 border-b border-dashboard pb-3 sm:pb-4">
                         <div>
                             <p className="text-[10px] font-bold uppercase tracking-wider text-amber-700 dark:text-gold">
                                 Recalibration Mode
@@ -78,10 +78,10 @@ export function TradingStyleDashboard({
 
     // ─────────────── Result state: Executive Trader Cockpit ───────────────
     return (
-        <div className="space-y-6">
+        <div className="space-y-2 md:space-y-6">
             {/* 1. Hero Cockpit Card */}
-            <div className="relative overflow-hidden rounded-xl border border-dashboard bg-white/90 p-6 shadow-sm backdrop-blur-sm dark:bg-[#1E2028]/90">
-                <div className="relative flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+            <div className="relative overflow-hidden rounded-xl border border-dashboard bg-white/90 p-4 sm:p-6 shadow-sm backdrop-blur-sm dark:bg-[#1E2028]/90">
+                <div className="relative flex flex-col gap-3 sm:gap-4 sm:flex-row sm:items-start sm:justify-between">
                     <div className="min-w-0 max-w-2xl">
                         <h2 className="text-2xl font-black tracking-tight text-gray-950 sm:text-3xl dark:text-white">
                             {archetype.name}
@@ -111,12 +111,12 @@ export function TradingStyleDashboard({
             </div>
 
             {/* 2. Asymmetric 2-Column Grid */}
-            <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-12">
+            <div className="grid grid-cols-1 items-start gap-2 md:gap-6 lg:grid-cols-12">
                 {/* Left Column: Diagnostic Profile & 6 Dimensions */}
-                <div className="space-y-6 lg:col-span-7">
+                <div className="space-y-2 md:space-y-6 lg:col-span-7">
                     {/* Dimension Matrix Card */}
-                    <div className="rounded-xl border border-dashboard bg-white/90 p-5 shadow-sm backdrop-blur-sm sm:p-6 dark:bg-[#1E2028]/90">
-                        <div className="mb-4 flex items-center justify-between border-b border-gray-100 pb-3 dark:border-white/[0.06]">
+                    <div className="rounded-xl border border-dashboard bg-white/90 p-4 shadow-sm backdrop-blur-sm sm:p-6 dark:bg-[#1E2028]/90">
+                        <div className="mb-3 sm:mb-4 flex items-center justify-between border-b border-gray-100 pb-3 dark:border-white/[0.06]">
                             <div>
                                 <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
                                     6 Core Behavioral Dimensions
@@ -133,12 +133,12 @@ export function TradingStyleDashboard({
                     </div>
 
                     {/* Tactical & Behavioral Profile Card */}
-                    <div className="rounded-xl border border-dashboard bg-white/90 p-5 shadow-sm backdrop-blur-sm sm:p-6 dark:bg-[#1E2028]/90">
+                    <div className="rounded-xl border border-dashboard bg-white/90 p-4 shadow-sm backdrop-blur-sm sm:p-6 dark:bg-[#1E2028]/90">
                         <div
                             className={cn(
                                 "flex items-start justify-between gap-3 md:mb-4 md:border-b md:border-gray-100 md:pb-3 md:dark:border-white/[0.06]",
                                 isProfileExpanded &&
-                                    "mb-4 border-b border-gray-100 pb-3 dark:border-white/[0.06]"
+                                    "mb-3 sm:mb-4 border-b border-gray-100 pb-3 dark:border-white/[0.06]"
                             )}
                         >
                             <div className="min-w-0">
@@ -191,17 +191,17 @@ export function TradingStyleDashboard({
                 </div>
 
                 {/* Right Column: Behavioral Correction Plan & Action Roadmap */}
-                <div className="space-y-6 lg:col-span-5">
+                <div className="space-y-2 md:space-y-6 lg:col-span-5">
                     {/* Behavioral Correction Plan (Prescription Card) */}
                     <PrescriptionCard archetype={archetype} columns={1} />
 
                     {/* Action Roadmap (Keystone & Follow-up moves) */}
-                    <div className="rounded-xl border border-dashboard bg-white/90 p-5 shadow-sm backdrop-blur-sm sm:p-6 dark:bg-[#1E2028]/90">
+                    <div className="rounded-xl border border-dashboard bg-white/90 p-4 shadow-sm backdrop-blur-sm sm:p-6 dark:bg-[#1E2028]/90">
                         <div
                             className={cn(
                                 "flex items-start justify-between gap-3 md:mb-4 md:border-b md:border-gray-100 md:pb-3 md:dark:border-white/[0.06]",
                                 isRoadmapExpanded &&
-                                    "mb-4 border-b border-gray-100 pb-3 dark:border-white/[0.06]"
+                                    "mb-3 sm:mb-4 border-b border-gray-100 pb-3 dark:border-white/[0.06]"
                             )}
                         >
                             <div className="min-w-0">
@@ -252,7 +252,7 @@ export function TradingStyleDashboard({
                     </div>
 
                     {/* Secondary Intelligence link card */}
-                    <div className="flex flex-col gap-3 rounded-xl border border-dashboard bg-white/90 p-5 shadow-sm backdrop-blur-sm sm:p-6 dark:bg-[#1E2028]/90">
+                    <div className="flex flex-col gap-3 rounded-xl border border-dashboard bg-white/90 p-4 shadow-sm backdrop-blur-sm sm:p-6 dark:bg-[#1E2028]/90">
                         <div>
                             <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
                                 Telemetry Audit

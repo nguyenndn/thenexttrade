@@ -284,21 +284,24 @@ export function LicenseAccountsPanel({
     };
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard dark:border-white/[0.08] p-5 shadow-sm space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-gold/10 border border-gold/20 flex items-center justify-center text-amber-600 dark:text-gold shrink-0">
-                        <Key size={18} />
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard dark:border-white/[0.08] p-3 sm:p-5 shadow-sm space-y-2.5 sm:space-y-4">
+            <div className="flex items-center sm:items-center justify-between gap-2 sm:gap-3">
+                <div className="flex items-center sm:items-start gap-2.5 sm:gap-3 min-w-0">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-gold/10 border border-gold/20 flex items-center justify-center text-amber-600 dark:text-gold shrink-0">
+                        <Key size={16} className="sm:w-[18px] sm:h-[18px]" />
                     </div>
-                    <div>
+                    <div className="min-w-0">
                         <div className="flex items-center gap-2 flex-wrap">
-                            <h3 className="text-sm sm:text-base font-bold text-gray-900 dark:text-white">
+                            <h3 className="text-sm sm:text-base font-bold text-gray-900 dark:text-white truncate">
                                 EA License Keys
                             </h3>
-                            <span className="px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-gold/10 text-amber-600 dark:text-gold border border-gold/20">
+                            <span className="hidden sm:inline-flex px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-gold/10 text-amber-600 dark:text-gold border border-gold/20">
                                 1 Account License = Unlocks All 3 EAs
                             </span>
                         </div>
+                        <p className="sm:hidden text-[11px] text-gray-500 dark:text-gray-400 truncate mt-0.5">
+                            1 account license unlocks all 3 MT5 EAs
+                        </p>
                         <p className="hidden sm:block text-xs text-gray-500 dark:text-gray-400 mt-0.5">
                             Each MT5 trading account verified under our IB
                             network receives 1 unified License Key that unlocks
@@ -307,31 +310,33 @@ export function LicenseAccountsPanel({
                         </p>
                     </div>
                 </div>
-                <div className="flex items-center gap-2 flex-wrap shrink-0">
+                <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
                     {!hasApprovedLicense ? (
                         <Link
                             href="/dashboard/accounts?action=add&intent=unlock-pro"
                             className={cn(
                                 buttonVariants({ variant: "outline", size: "sm" }),
-                                "rounded-lg text-xs font-bold text-amber-600 dark:text-gold border-gold/30 hover:bg-gold/10 inline-flex items-center gap-1.5"
+                                "rounded-lg h-8 px-2.5 sm:px-3 text-xs font-bold text-amber-600 dark:text-gold border-gold/30 hover:bg-gold/10 inline-flex items-center gap-1"
                             )}
                         >
-                            <Crown size={14} className="text-amber-500" />
-                            <span>Unlock Partner Pro Free</span>
-                            <ArrowRight size={13} />
+                            <Crown size={13} className="text-amber-500 shrink-0" />
+                            <span className="sm:hidden">Unlock Pro</span>
+                            <span className="hidden sm:inline">Unlock Partner Pro Free</span>
+                            <ArrowRight size={12} className="hidden sm:inline" />
                         </Link>
                     ) : vipLink ? (
                         <a
                             href={vipLink}
                             target="_blank"
                             rel="noopener noreferrer"
+                            aria-label="VIP Telegram"
                             className={cn(
                                 buttonVariants({ variant: "outline", size: "sm" }),
-                                "rounded-lg text-xs font-bold text-amber-600 dark:text-gold border-gold/30 hover:bg-gold/10 inline-flex items-center gap-1.5"
+                                "rounded-lg h-8 w-8 px-0 sm:w-auto sm:px-3 text-xs font-bold text-amber-600 dark:text-gold border-gold/30 hover:bg-gold/10 inline-flex items-center justify-center gap-1.5"
                             )}
                         >
                             <Send size={13} />
-                            <span>VIP Telegram</span>
+                            <span className="hidden sm:inline">VIP Telegram</span>
                         </a>
                     ) : null}
                     <Button
@@ -356,10 +361,11 @@ export function LicenseAccountsPanel({
                             variant="gold"
                             size="sm"
                             onClick={() => setShowAddForm(true)}
-                            className="rounded-lg font-bold !text-white shrink-0"
+                            className="rounded-lg h-8 px-2.5 sm:px-3 text-xs font-bold !text-white shrink-0 gap-1 sm:gap-1.5"
                         >
-                            <Plus size={15} />
-                            <span>Register Trading Account</span>
+                            <Plus size={14} />
+                            <span className="sm:hidden">Register</span>
+                            <span className="hidden sm:inline">Register Trading Account</span>
                         </Button>
                     )}
                 </div>
@@ -416,7 +422,7 @@ export function LicenseAccountsPanel({
             )}
 
             {showAddForm && (
-                <div className="p-4 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-dashboard dark:border-white/[0.08] space-y-4">
+                <div className="p-3 sm:p-4 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-dashboard dark:border-white/[0.08] space-y-2.5 sm:space-y-4">
                     {userTradingAccounts.length === 0 ? (
                         <div className="py-6 px-4 text-center space-y-3">
                             <div className="w-11 h-11 rounded-lg bg-gold/10 border border-gold/20 flex items-center justify-center text-amber-600 dark:text-gold mx-auto">
@@ -499,7 +505,7 @@ export function LicenseAccountsPanel({
                                 )}
                             </div>
 
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-64 overflow-y-auto pr-1">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5 max-h-64 overflow-y-auto pr-1">
                                 {userTradingAccounts.map((acc) => {
                                     const hasAccountNum = Boolean(
                                         acc.accountNumber &&
@@ -719,7 +725,166 @@ export function LicenseAccountsPanel({
             )}
 
             {items.length > 0 && (
-                <div className="divide-y divide-gray-100 dark:divide-white/[0.06] border border-dashboard dark:border-white/[0.08] rounded-xl overflow-hidden">
+                <>
+                    {/* Mobile Compact 2-Row Account License Cards (< md) */}
+                    <div className="md:hidden space-y-2">
+                        {items.map((item) => {
+                            const isRevealed = Boolean(revealedIds[item.id]);
+                            const hasKeyAvailable =
+                                item.status === "APPROVED" &&
+                                Boolean(
+                                    item.maskedLicenseKey ||
+                                        item.licenseKey ||
+                                        item.tradingAccountId
+                                );
+                            const displayedKey =
+                                isRevealed &&
+                                (revealedKeys[item.id] || item.licenseKey)
+                                    ? revealedKeys[item.id] || item.licenseKey
+                                    : item.maskedLicenseKey ||
+                                      (item.licenseKey
+                                          ? maskSyncApiKey(item.licenseKey)
+                                          : "TNT-••••-••••-••••");
+
+                            return (
+                                <div
+                                    key={`mobile-${item.id}`}
+                                    className="p-2.5 rounded-xl bg-gray-50/70 dark:bg-[#151925]/80 border border-dashboard dark:border-white/[0.08] space-y-2"
+                                >
+                                    {/* Row 1: #Account + Broker + Status + Delete */}
+                                    <div className="flex items-center justify-between gap-2">
+                                        <div className="flex items-center gap-1.5 min-w-0">
+                                            <span className="font-mono tabular-nums text-xs font-extrabold text-gray-900 dark:text-white shrink-0">
+                                                #{item.accountNumber}
+                                            </span>
+                                            <span className="px-1.5 py-0.5 rounded-md bg-white dark:bg-white/[0.06] border border-dashboard dark:border-white/10 text-[10px] font-bold text-gray-600 dark:text-gray-300 truncate">
+                                                {item.broker}
+                                            </span>
+                                        </div>
+
+                                        <div className="flex items-center gap-1.5 shrink-0">
+                                            {item.status === "APPROVED" ? (
+                                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                                                    <CheckCircle2 size={10} />
+                                                    IB Verified
+                                                </span>
+                                            ) : item.status === "PENDING" ? (
+                                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-gold/10 text-amber-600 dark:text-gold border border-gold/20">
+                                                    <Clock size={10} />
+                                                    Pending
+                                                </span>
+                                            ) : (
+                                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20">
+                                                    <XCircle size={10} />
+                                                    {item.status}
+                                                </span>
+                                            )}
+
+                                            <Button
+                                                type="button"
+                                                variant="ghost"
+                                                size="icon"
+                                                aria-label={`Remove account #${item.accountNumber}`}
+                                                disabled={busyId === item.id}
+                                                onClick={() =>
+                                                    handleRemoveOrCancel(item)
+                                                }
+                                                className="h-6 w-6 p-0 rounded-md text-gray-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-500/10"
+                                            >
+                                                <Trash2 size={13} />
+                                            </Button>
+                                        </div>
+                                    </div>
+
+                                    {/* Row 2: Integrated Single-Line Key Bar or Status Info */}
+                                    {hasKeyAvailable ? (
+                                        <div className="flex items-center justify-between gap-1.5 pl-2.5 pr-1 py-1 rounded-lg bg-white dark:bg-[#1E2028] border border-dashboard dark:border-white/10">
+                                            <div className="flex items-center gap-1.5 min-w-0 flex-1">
+                                                <Shield
+                                                    size={12}
+                                                    className="text-amber-500 shrink-0"
+                                                />
+                                                <span
+                                                    className={cn(
+                                                        "font-mono tabular-nums text-xs font-bold text-amber-600 dark:text-gold",
+                                                        isRevealed
+                                                            ? "break-all"
+                                                            : "truncate"
+                                                    )}
+                                                >
+                                                    {displayedKey}
+                                                </span>
+                                            </div>
+                                            <div className="flex items-center gap-1 shrink-0">
+                                                <Button
+                                                    type="button"
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    disabled={
+                                                        loadingKeyId === item.id
+                                                    }
+                                                    aria-label={
+                                                        isRevealed
+                                                            ? "Hide license key"
+                                                            : "Show license key"
+                                                    }
+                                                    onClick={() =>
+                                                        handleToggleRevealLicenseKey(
+                                                            item
+                                                        )
+                                                    }
+                                                    className="h-7 w-7 p-0 rounded-lg text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10"
+                                                >
+                                                    {isRevealed ? (
+                                                        <EyeOff size={13} />
+                                                    ) : (
+                                                        <Eye size={13} />
+                                                    )}
+                                                </Button>
+                                                <Button
+                                                    type="button"
+                                                    variant="gold"
+                                                    size="sm"
+                                                    disabled={
+                                                        loadingKeyId === item.id
+                                                    }
+                                                    onClick={() =>
+                                                        handleCopyLicenseItem(
+                                                            item
+                                                        )
+                                                    }
+                                                    className="h-7 px-2.5 rounded-lg text-[11px] font-bold !text-white gap-1"
+                                                >
+                                                    {copiedId === item.id ? (
+                                                        <>
+                                                            <Check size={12} />
+                                                            <span>Copied</span>
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <Copy size={12} />
+                                                            <span>Copy</span>
+                                                        </>
+                                                    )}
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <p className="text-[11px] text-gray-500 dark:text-gray-400 leading-snug">
+                                            {item.rejectReason
+                                                ? `Reason: ${item.rejectReason}`
+                                                : item.status === "PENDING"
+                                                  ? "License Key unlocks once IB attribution is verified."
+                                                  : "License Key unavailable."}
+                                        </p>
+                                    )}
+                                </div>
+                            );
+                        })}
+                    </div>
+
+                    {/* Desktop Account License List (>= md) */}
+                    <div className="hidden md:block divide-y divide-gray-100 dark:divide-white/[0.06] border border-dashboard dark:border-white/[0.08] rounded-xl overflow-hidden">
                     {items.map((item) => {
                         const isRevealed = Boolean(revealedIds[item.id]);
                         return (
@@ -894,7 +1059,8 @@ export function LicenseAccountsPanel({
                             </div>
                         );
                     })}
-                </div>
+                    </div>
+                </>
             )}
         </div>
     );

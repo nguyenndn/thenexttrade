@@ -31,9 +31,6 @@ export function DashboardSystemDetailView({
     );
     const [downloading, setDownloading] = useState(false);
 
-    const guideType =
-        product.type === "INDICATOR" ? "MT5_INDICATOR" : "MT5_EA";
-
     const handleDownload = async () => {
         if (isLocked || downloading) return;
         setDownloading(true);
@@ -100,7 +97,7 @@ export function DashboardSystemDetailView({
         navItems.find((n) => n.id === activeTab) || navItems[0];
 
     return (
-        <div className="space-y-5 pb-8">
+        <div className="space-y-2 md:space-y-5 pb-4 md:pb-8">
             <SystemDetailHeader
                 product={product}
                 fallbackDescription={system?.description}
@@ -116,8 +113,8 @@ export function DashboardSystemDetailView({
                     onSelect={setActiveTab}
                 />
 
-                <div className="flex-1 min-w-0 p-5 sm:p-7">
-                    <div className="mb-6 pb-4 border-b border-dashboard dark:border-white/[0.08]">
+                <div className="flex-1 min-w-0 p-3.5 sm:p-7">
+                    <div className="mb-3 sm:mb-6 pb-3 sm:pb-4 border-b border-dashboard dark:border-white/[0.08]">
                         <div className="flex items-center gap-2 mb-1.5">
                             <div className="w-6 h-6 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500">
                                 <currentNavItem.icon size={13} />
@@ -135,7 +132,6 @@ export function DashboardSystemDetailView({
                     <SystemDetailSections
                         activeTab={activeTab}
                         system={system}
-                        guideType={guideType}
                     />
                 </div>
             </div>

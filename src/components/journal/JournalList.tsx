@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { Edit2, Pencil, ArrowUpDown, Brain } from "lucide-react";
+import { Edit2, ArrowUpDown, Brain, ArrowRight, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
 import { utcTime, cn } from "@/lib/utils";
@@ -15,7 +15,6 @@ import { MistakesCell } from "@/components/journal/cells/MistakesCell";
 import { DashboardFilter } from "@/components/dashboard/DashboardFilter";
 import { PaginationControl } from "@/components/ui/PaginationControl";
 import { TradeTypeBadge } from "@/components/ui/TradeTypeBadge";
-import { StatusBadge } from "@/components/ui/StatusBadge";
 import { PnLDisplay } from "@/components/ui/PnLDisplay";
 import { useDebouncedCallback } from "use-debounce";
 import dynamic from "next/dynamic";
@@ -450,7 +449,7 @@ export default function JournalList({
 
             <div
                 id="onborda-journal-filters"
-                className="flex flex-col lg:flex-row lg:items-center justify-end gap-3 mb-4"
+                className="flex flex-col lg:flex-row lg:items-center justify-end gap-1.5 md:gap-3 mb-0 md:mb-4"
             >
                 <DashboardFilter
                     currentAccountId={accountId || undefined}
@@ -465,7 +464,7 @@ export default function JournalList({
                 </div>
             )}
 
-            <div className="mt-6">
+            <div className="mt-0 md:mt-6">
                 <JournalTableFilters
                         searchTerm={searchTerm}
                         setSearchTerm={setSearchTerm}
@@ -486,7 +485,7 @@ export default function JournalList({
                     />
 
                     {displayedEntries.length === 0 ? (
-                        <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-xl border-2 border-dashed border-dashboard mt-6 shadow-sm">
+                        <div className="text-center py-12 md:py-16 bg-white dark:bg-[#1E2028] rounded-xl border-2 border-dashed border-dashboard mt-2 md:mt-6 shadow-sm">
                             {/* Animated Folder Icon */}
                             <div className="relative w-20 h-20 mb-6 mx-auto">
                                 <div className="absolute inset-0 rounded-full bg-amber-500/10 dark:bg-amber-500/5 animate-[journal-ping_3s_cubic-bezier(0,0,0.2,1)_infinite]" />
@@ -571,7 +570,7 @@ export default function JournalList({
                     ) : (
                         <div
                             id="onborda-journal-list"
-                            className="bg-white dark:bg-[#1E2028] mt-6 rounded-xl shadow-sm border border-dashboard overflow-x-auto custom-scrollbar"
+                            className="bg-white dark:bg-[#1E2028] mt-2 md:mt-6 rounded-xl shadow-sm border border-dashboard overflow-x-auto custom-scrollbar"
                         >
                             {/* Desktop View */}
                             <div className="hidden md:block overflow-x-auto w-full">
@@ -954,210 +953,131 @@ export default function JournalList({
                                 </table>
                             </div>
 
-                            {/* Mobile View */}
-                            <div className="md:hidden flex flex-col gap-2.5 p-3">
+                            {/* Mobile View — Compact MT5 Execution History Rows */}
+                            <div className="md:hidden divide-y divide-gray-100 dark:divide-white/[0.06]">
                                 {isLoading ? (
                                     <div className="text-center text-gray-600 py-8">
                                         Loading...
                                     </div>
                                 ) : (
-                                    displayedEntries.map((entry) => (
-                                        <div
-                                            key={entry.id}
-                                            role="button"
-                                            tabIndex={0}
-                                            onClick={() => {
-                                                setSelectedDetailEntry(entry);
-                                                setIsDetailOpen(true);
-                                            }}
-                                            onKeyDown={(e) => {
-                                                if (
-                                                    e.key === "Enter" ||
-                                                    e.key === " "
-                                                ) {
-                                                    e.preventDefault();
-                                                    setSelectedDetailEntry(
-                                                        entry
-                                                    );
+                                    displayedEntries.map((entry) => {
+                                        const pnlVal = Number(entry.pnl ?? 0);
+                                        const entryCurr = normalizeCurrencyCode(
+                                            entry.account?.currency || effectiveCurrency,
+                                            entry.account?.server
+                                        );
+                                        const isCentSuffix =
+                                            entryCurr === "USC" ||
+                                            entryCurr === "EUC" ||
+                                            entryCurr === "GBX";
+                                        const formattedPnl = `${pnlVal > 0 ? "+" : ""}${pnlVal.toLocaleString(
+                                            "en-US",
+                                            {
+                                                minimumFractionDigits: 2,
+                                                maximumFractionDigits: 2,
+                                            }
+                                        )}${isCentSuffix ? ` ${entryCurr}` : ""}`;
+                                        const lotVal = Number(entry.lotSize ?? 0);
+                                        const formattedLots =
+                                            Number.isFinite(lotVal) &&
+                                            Math.abs(lotVal * 100 - Math.round(lotVal * 100)) < 1e-6
+                                                ? lotVal.toFixed(2)
+                                                : String(entry.lotSize ?? "0.00");
+                                        const isBuy = entry.type === "BUY";
+
+                                        return (
+                                            <div
+                                                key={entry.id}
+                                                role="button"
+                                                tabIndex={0}
+                                                onClick={() => {
+                                                    setSelectedDetailEntry(entry);
                                                     setIsDetailOpen(true);
-                                                }
-                                            }}
-                                            className="bg-gray-50/80 dark:bg-[#151925] p-3 sm:p-4 rounded-xl border relative transition-shadow duration-150 hover:shadow-md border-dashboard cursor-pointer"
-                                        >
-                                            {/* Header Row */}
-                                            <div className="flex items-center gap-2 sm:gap-3 mb-2.5 sm:mb-3">
-                                                <div className="flex items-center gap-2 flex-1 min-w-0">
-                                                    <span className="font-bold text-gray-700 dark:text-white text-base sm:text-lg truncate">
+                                                }}
+                                                onKeyDown={(e) => {
+                                                    if (
+                                                        e.key === "Enter" ||
+                                                        e.key === " "
+                                                    ) {
+                                                        e.preventDefault();
+                                                        setSelectedDetailEntry(entry);
+                                                        setIsDetailOpen(true);
+                                                    }
+                                                }}
+                                                className="px-3.5 py-2.5 hover:bg-gray-50/70 dark:hover:bg-white/[0.03] active:bg-gray-100/70 dark:active:bg-white/[0.05] transition-colors cursor-pointer select-none"
+                                            >
+                                                {/* Line 1: Symbol + Net PnL */}
+                                                <div className="flex items-baseline justify-between gap-2">
+                                                    <span className="text-[13px] font-bold tracking-tight text-slate-800 dark:text-white truncate">
                                                         {entry.symbol}
                                                     </span>
-                                                    <TradeTypeBadge
-                                                        type={entry.type}
-                                                    />
-                                                    <StatusBadge
-                                                        status={entry.status}
-                                                    />
-                                                </div>
-                                                <div className="flex items-center gap-1.5 shrink-0">
-                                                    <TooltipProvider
-                                                        delayDuration={200}
-                                                    >
-                                                        <Tooltip>
-                                                            <TooltipTrigger asChild>
-                                                                <Button
-                                                                    type="button"
-                                                                    variant="outline"
-                                                                    size="icon"
-                                                                    aria-label={`View Details for ${entry.symbol}`}
-                                                                    onClick={(e) => {
-                                                                        e.stopPropagation();
-                                                                        setSelectedDetailEntry(
-                                                                            entry
-                                                                        );
-                                                                        setIsDetailOpen(
-                                                                            true
-                                                                        );
-                                                                    }}
-                                                                    onKeyDown={(e) =>
-                                                                        e.stopPropagation()
-                                                                    }
-                                                                    className="w-8 h-8 rounded-lg bg-white dark:bg-[#1E2028] border border-dashboard flex items-center justify-center text-gray-400 hover:text-gold dark:hover:text-amber-400 hover:border-amber-500/30 hover:bg-amber-500/5 dark:hover:bg-amber-500/10 transition-all"
-                                                                >
-                                                                    <Brain
-                                                                        size={14}
-                                                                        className="text-amber-600 dark:text-gold transition-transform duration-150 hover:scale-110"
-                                                                    />
-                                                                </Button>
-                                                            </TooltipTrigger>
-                                                            <TooltipContent
-                                                                side="bottom"
-                                                                className="bg-gray-700 dark:bg-gray-800 text-white border border-gray-600/20 shadow-md font-bold"
-                                                            >
-                                                                Details
-                                                            </TooltipContent>
-                                                        </Tooltip>
-                                                    </TooltipProvider>
-                                                    <Button
-                                                        type="button"
-                                                        variant="ghost"
-                                                        size="icon"
-                                                        aria-label="Edit trade"
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            handleEdit(entry);
-                                                        }}
-                                                        onKeyDown={(e) =>
-                                                            e.stopPropagation()
-                                                        }
-                                                        className="w-8 h-8 rounded-lg text-gray-500 hover:text-gold dark:text-gray-400 dark:hover:text-amber-400 hover:bg-amber-500/10 transition-colors"
-                                                    >
-                                                        <Pencil size={14} />
-                                                    </Button>
-                                                </div>
-                                            </div>
-
-                                            {/* Info Grid */}
-                                            <div className="grid grid-cols-2 gap-y-2.5 text-sm">
-                                                <div>
-                                                    <p className="text-xs text-gray-500 mb-0.5">
-                                                        Open Time
-                                                    </p>
-                                                    <p className="font-mono tabular-nums font-medium text-gray-700 dark:text-gray-300">
-                                                        {utcTime(
-                                                            entry.entryDate,
-                                                            "dd MMM HH:mm"
+                                                    <span
+                                                        className={cn(
+                                                            "text-[13px] font-bold font-mono tabular-nums shrink-0",
+                                                            pnlVal > 0
+                                                                ? "text-blue-600 dark:text-primary"
+                                                                : pnlVal < 0
+                                                                  ? "text-red-600 dark:text-red-400"
+                                                                  : "text-slate-800 dark:text-gray-200"
                                                         )}
-                                                    </p>
-                                                </div>
-                                                <div>
-                                                    <p className="text-xs text-gray-500 mb-0.5">
-                                                        Net Profit
-                                                    </p>
-                                                    <PnLDisplay
-                                                        value={entry.pnl}
-                                                        currency={normalizeCurrencyCode(
-                                                            entry.account?.currency || effectiveCurrency,
-                                                            entry.account?.server
-                                                        )}
-                                                    />
-                                                </div>
-                                                <div>
-                                                    <p className="text-xs text-gray-500 mb-0.5">
-                                                        Volume
-                                                    </p>
-                                                    <p className="font-mono tabular-nums text-gray-700 dark:text-gray-300">
-                                                        {(entry as any)
-                                                            .lotSize || "0.00"}
-                                                    </p>
-                                                </div>
-                                                <div>
-                                                    <p className="text-xs text-gray-500 mb-0.5">
-                                                        Close Time
-                                                    </p>
-                                                    <p className="font-mono tabular-nums font-medium text-gray-700 dark:text-gray-300">
-                                                        {entry.exitDate
-                                                            ? utcTime(
-                                                                  entry.exitDate
-                                                              )
-                                                            : "-"}
-                                                    </p>
-                                                </div>
-                                                {entry.commission ? (
-                                                    <div>
-                                                        <p className="text-xs text-gray-500 mb-0.5">
-                                                            Commission
-                                                        </p>
-                                                        <p className="font-mono tabular-nums text-xs font-semibold text-red-500/90 dark:text-red-400/90">
-                                                            {formatDashboardCurrency(
-                                                                entry.commission,
-                                                                normalizeCurrencyCode(
-                                                                    entry.account?.currency || effectiveCurrency,
-                                                                    entry.account?.server
-                                                                )
-                                                            )}
-                                                        </p>
-                                                    </div>
-                                                ) : null}
-                                                {entry.swap ? (
-                                                    <div>
-                                                        <p className="text-xs text-gray-500 mb-0.5">
-                                                            Swap
-                                                        </p>
-                                                        <p
-                                                            className={cn(
-                                                                "font-mono tabular-nums text-xs font-semibold",
-                                                                entry.swap > 0
-                                                                    ? "text-emerald-600 dark:text-primary"
-                                                                    : "text-red-500/90 dark:text-red-400/90"
-                                                            )}
-                                                        >
-                                                            {formatDashboardCurrency(
-                                                                entry.swap,
-                                                                normalizeCurrencyCode(
-                                                                    entry.account?.currency || effectiveCurrency,
-                                                                    entry.account?.server
-                                                                ),
-                                                                { signDisplay: "always" }
-                                                            )}
-                                                        </p>
-                                                    </div>
-                                                ) : null}
-                                            </div>
-
-                                            {/* Tags & Mistakes Summary */}
-                                            {entry.strategy && (
-                                                <div className="flex flex-wrap gap-1 mt-2.5">
-                                                    <span className="px-2 py-0.5 text-[10px] font-medium bg-gold/10 text-amber-600 dark:text-gold rounded-lg border border-gold/20">
-                                                        {entry.strategy}
+                                                    >
+                                                        {formattedPnl}
                                                     </span>
                                                 </div>
-                                            )}
-                                        </div>
-                                    ))
+
+                                                {/* Line 2: Direction + Volume */}
+                                                <div className="flex items-center gap-1.5 mt-0.5">
+                                                    <span
+                                                        className={cn(
+                                                            "text-xs font-extrabold uppercase tracking-tight",
+                                                            isBuy
+                                                                ? "text-blue-600 dark:text-blue-400"
+                                                                : "text-red-600 dark:text-red-400"
+                                                        )}
+                                                    >
+                                                        {entry.type}
+                                                    </span>
+                                                    <span className="text-xs font-medium text-slate-500 dark:text-gray-400 tabular-nums">
+                                                        {formattedLots} lots
+                                                    </span>
+                                                </div>
+
+                                                {/* Line 3: Entry → Exit Price + Date › */}
+                                                <div className="flex items-center justify-between gap-2 mt-1.5">
+                                                    <div className="flex items-center gap-1.5 font-mono tabular-nums text-xs font-semibold text-slate-700 dark:text-gray-300 min-w-0 truncate">
+                                                        <span className="truncate">
+                                                            {entry.entryPrice}
+                                                        </span>
+                                                        <ArrowRight
+                                                            size={12}
+                                                            className="text-slate-500 dark:text-gray-400 shrink-0"
+                                                        />
+                                                        <span className="truncate">
+                                                            {entry.exitPrice ?? "Open"}
+                                                        </span>
+                                                    </div>
+
+                                                    <div className="flex items-center gap-0.5 text-xs font-medium text-slate-500 dark:text-gray-400 shrink-0 whitespace-nowrap">
+                                                        <span>
+                                                            {utcTime(
+                                                                entry.exitDate || entry.entryDate,
+                                                                "MMM dd, yyyy"
+                                                            )}
+                                                        </span>
+                                                        <ChevronRight
+                                                            size={13}
+                                                            className="text-slate-400 dark:text-gray-500 shrink-0"
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        );
+                                    })
                                 )}
                             </div>
 
                             {/* New Pagination Control */}
-                            <div className="p-4 md:px-6 md:py-4 border-t border-dashboard bg-gray-50/50 dark:bg-white/[0.02]">
+                            <div className="p-3 md:px-6 md:py-4 border-t border-dashboard bg-gray-50/50 dark:bg-white/[0.02]">
                                 <PaginationControl
                                     currentPage={meta.page}
                                     totalPages={meta.totalPages}
@@ -1225,6 +1145,7 @@ export default function JournalList({
                             setIsDetailOpen(false);
                             setSelectedDetailEntry(null);
                         }}
+                        onEdit={(item) => handleEdit(item as JournalEntry)}
                         onDeleted={(deletedId) => {
                             setEntries((prev) =>
                                 prev.filter((item) => item.id !== deletedId)

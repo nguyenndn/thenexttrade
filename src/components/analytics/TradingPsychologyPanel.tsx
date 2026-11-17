@@ -52,8 +52,8 @@ export function TradingPsychologyPanel({ data, confidence }: TradingPsychologyPa
     const optimalRR = rrOptimizer.find((r) => r.isOptimal) || rrOptimizer[0];
 
     return (
-        <div className="space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="space-y-2 md:space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-3">
                 <div className="flex items-center gap-2.5">
                     <div className="p-2 rounded-lg bg-gold/10 border border-gold/20 text-amber-600 dark:text-gold">
                         <Brain className="w-5 h-5" />
@@ -70,7 +70,7 @@ export function TradingPsychologyPanel({ data, confidence }: TradingPsychologyPa
                 )}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-4">
                 {/* 1. Disposition Effect Card */}
                 <div className="p-5 rounded-xl bg-white dark:bg-[#1E2028] border border-dashboard dark:border-white/[0.08] shadow-sm space-y-4">
                     <div className="flex items-center justify-between">

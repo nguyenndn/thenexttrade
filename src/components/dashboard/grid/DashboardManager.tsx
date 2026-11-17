@@ -815,8 +815,8 @@ export function DashboardManager({
     );
 
     return (
-        <div className="space-y-6">
-            <div className="flex flex-col 2xl:flex-row items-stretch 2xl:items-center justify-between gap-4 w-full">
+        <div className="space-y-2 md:space-y-6">
+            <div className="flex flex-col 2xl:flex-row items-stretch 2xl:items-center justify-between gap-2 md:gap-4 w-full">
                 <div
                     className={cn(
                         "w-full 2xl:w-auto",
@@ -854,9 +854,9 @@ export function DashboardManager({
             {/* Grid Area */}
             <div
                 className={cn(
-                    "min-h-[500px] transition-[background-color,border-color] duration-200 -mx-2",
+                    "min-h-[500px] transition-[background-color,border-color] duration-200 -my-1 mx-0 sm:my-0 sm:-mx-2",
                     isEditable &&
-                        "bg-gray-50/70 dark:bg-gray-800/20 rounded-xl border-2 border-dashed border-amber-500/30 dark:border-amber-400/25 p-0"
+                        "bg-gray-50/70 dark:bg-gray-800/20 rounded-xl border-2 border-dashed border-amber-500/30 dark:border-amber-400/25 p-0 my-0"
                 )}
             >
                 {layout.length === 0 ? (
@@ -899,7 +899,7 @@ export function DashboardManager({
                             const WidgetComponent = widgetConfig.component;
 
                             return (
-                                <div key={item.i} className="p-2">
+                                <div key={item.i} className="py-1 px-0 sm:p-2">
                                     <WidgetWrapper
                                         id={item.i}
                                         isEditable={isEditable}

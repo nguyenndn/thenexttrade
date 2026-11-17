@@ -74,12 +74,12 @@ export function PrescriptionCard({
         <section
             aria-label="Tailored Action Plan"
             className={cn(
-                "rounded-xl border border-dashboard bg-white p-5 shadow-sm sm:p-6 dark:bg-[#1E2028]",
+                "rounded-xl border border-dashboard bg-white p-4 shadow-sm sm:p-6 dark:bg-[#1E2028]",
                 className
             )}
         >
             {/* Header Title */}
-            <div className="mb-5 flex flex-col items-start gap-2 border-b border-gray-100 pb-4 sm:flex-row sm:items-center sm:justify-between dark:border-white/[0.06]">
+            <div className="mb-3 sm:mb-5 flex flex-col items-start gap-2 border-b border-gray-100 pb-3 sm:pb-4 sm:flex-row sm:items-center sm:justify-between dark:border-white/[0.06]">
                 <div>
                     <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
                         Corrective Architecture
@@ -96,7 +96,7 @@ export function PrescriptionCard({
             </div>
 
             {/* Diagnostic Diagnosis Box (Behavioral Leak Radar) */}
-            <div className="mb-5 rounded-xl border border-rose-500/20 bg-rose-500/[0.03] p-4 sm:p-5 dark:border-rose-500/25 dark:bg-rose-950/[0.12]">
+            <div className="mb-3 sm:mb-5 rounded-xl border border-rose-500/20 bg-rose-500/[0.03] p-3.5 sm:p-5 dark:border-rose-500/25 dark:bg-rose-950/[0.12]">
                 <div className="flex flex-wrap items-center gap-2">
                     <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400">
                         BEHAVIORAL LEAK RADAR
@@ -122,7 +122,7 @@ export function PrescriptionCard({
             {/* Solutions Grid */}
             <div
                 className={cn(
-                    "grid gap-4",
+                    "grid gap-2 md:gap-4",
                     columns === 1
                         ? "grid-cols-1"
                         : "grid-cols-1 md:grid-cols-3"
@@ -131,7 +131,7 @@ export function PrescriptionCard({
                 {solutions.map((item) => (
                     <div
                         key={item.stepNum}
-                        className="group flex flex-col justify-between rounded-xl border border-dashboard bg-gray-50/70 p-5 shadow-sm transition-all hover:border-gold/40 hover:shadow-md dark:bg-[#151925]"
+                        className="group flex flex-col justify-between rounded-xl border border-dashboard bg-gray-50/70 p-3.5 sm:p-5 shadow-sm transition-all hover:border-gold/40 hover:shadow-md dark:bg-[#151925]"
                     >
                         <div>
                             {/* Top Step & Badge Row */}

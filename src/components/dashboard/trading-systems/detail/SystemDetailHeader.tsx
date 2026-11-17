@@ -38,8 +38,8 @@ export function SystemDetailHeader({
         "Institutional execution algorithm designed for disciplined trading on MetaTrader 5.";
 
     return (
-        <div className="space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="space-y-2 md:space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-3">
                 <Link
                     href="/dashboard/trading-systems"
                     className="group inline-flex items-center gap-1.5 text-xs font-bold text-gray-600 dark:text-gray-400 hover:text-amber-600 dark:hover:text-gold transition-colors w-fit"
@@ -55,7 +55,7 @@ export function SystemDetailHeader({
                 </span>
             </div>
 
-            <div className="rounded-xl border border-dashboard dark:border-white/[0.08] bg-white dark:bg-[#1E2028] p-5 sm:p-6 shadow-sm space-y-4">
+            <div className="rounded-xl border border-dashboard dark:border-white/[0.08] bg-white dark:bg-[#1E2028] p-3.5 sm:p-6 shadow-sm space-y-2.5 sm:space-y-4">
                 <div className="flex items-start gap-4">
                     <div className="w-12 h-12 rounded-lg bg-gold/10 border border-gold/20 flex items-center justify-center shrink-0 text-amber-600 dark:text-gold">
                         {product.type === "MANUAL_ASSIST" ? (

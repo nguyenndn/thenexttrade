@@ -170,7 +170,7 @@ export default async function LeaderboardPage({ searchParams }: PageProps) {
     const isMyStats = type === "mystats";
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-2 md:space-y-6">
             <PageHeader
                 title="Trading Arena & Leaderboard"
                 description="Live institutional execution telemetry, monthly battles, and discipline rankings."
@@ -188,7 +188,7 @@ export default async function LeaderboardPage({ searchParams }: PageProps) {
             )}
 
             {/* Tabs */}
-            <div className="flex items-center justify-between gap-2.5 min-w-0">
+            <div className="flex items-center justify-between gap-1.5 sm:gap-2.5 min-w-0">
                 <div className="min-w-0 flex-1">
                     <Suspense fallback={null}>
                         <LeaderboardTabs
@@ -206,9 +206,9 @@ export default async function LeaderboardPage({ searchParams }: PageProps) {
                 !leaderboard.hasLeaderboardAccount && <TradingSetupModal />}
 
             {/* Main Grid Layout */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 md:gap-6 items-start">
                 {/* Left Column: Leaderboard Content */}
-                <div className="lg:col-span-2 space-y-6 min-w-0">
+                <div className="lg:col-span-2 space-y-2 md:space-y-6 min-w-0">
                     {/* Content */}
                     {isMyStats ? (
                         <MyStatsView

@@ -316,7 +316,7 @@ export function TopMedalStrip({
     ];
 
     return (
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-2 md:gap-4 md:grid-cols-3">
             {padded.map((entry, index) => {
                 const rank = index + 1;
                 const config = RANK_CONFIGS[index];
@@ -325,7 +325,7 @@ export function TopMedalStrip({
                     return (
                         <div
                             key={`empty-${rank}`}
-                            className="flex flex-col rounded-xl border border-dashed border-dashboard bg-gray-50/20 dark:bg-white/[0.01] p-4 text-left select-none text-gray-400 dark:text-gray-500"
+                            className="flex flex-col rounded-xl border border-dashed border-dashboard bg-gray-50/20 dark:bg-white/[0.01] p-3 sm:p-4 text-left select-none text-gray-400 dark:text-gray-500"
                         >
                             {/* Header placeholder */}
                             <div className="flex items-center justify-between gap-3">
@@ -375,7 +375,7 @@ export function TopMedalStrip({
                             }
                         }}
                         className={cn(
-                            "group flex flex-col items-stretch h-auto rounded-xl border p-4 text-left cursor-pointer transition shadow-sm bg-white dark:bg-[#1E2028] font-normal",
+                            "group flex flex-col items-stretch h-auto rounded-xl border p-3 sm:p-4 text-left cursor-pointer transition shadow-sm bg-white dark:bg-[#1E2028] font-normal",
                             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
                             config.borderColor,
                             config.hoverBorderColor,

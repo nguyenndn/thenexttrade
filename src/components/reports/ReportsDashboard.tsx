@@ -348,7 +348,7 @@ export function ReportsDashboard({
     const ActiveReportIcon = activeReport.icon;
 
     return (
-        <div className="space-y-4 animate-in fade-in duration-500">
+        <div className="space-y-2 md:space-y-4 animate-in fade-in duration-500">
             {/* Mobile Report Type Switcher (< md) */}
             <div className="md:hidden">
                 <DropdownMenu className="w-full block">
@@ -480,9 +480,9 @@ export function ReportsDashboard({
 
             {/* Review Reports Inline (Weekly/Monthly) */}
             {isReviewType && (
-                <div className="animate-in fade-in duration-500 space-y-4">
+                <div className="animate-in fade-in duration-500 space-y-2 md:space-y-4">
                     {/* Generate Report Button */}
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-4 shadow-sm">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-3 bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-3 sm:p-4 shadow-sm">
                         <div>
                             <p className="text-sm font-bold text-gray-700 dark:text-white">
                                 {selectedType === "weekly-review"
@@ -494,7 +494,7 @@ export function ReportsDashboard({
                                 data.
                             </p>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1.5 sm:gap-2">
                             <Button
                                 type="button"
                                 variant="outline"
@@ -611,18 +611,18 @@ export function ReportsDashboard({
             {/* Export Controls (for PDF/CSV types) */}
             {isExportType && (
                 <>
-                    <div className="bg-white dark:bg-[#1E2028] p-5 md:p-8 rounded-xl border border-dashboard shadow-sm hover:shadow-md transition-shadow">
-                        <h3 className="font-black text-gray-700 dark:text-white mb-6 flex items-center gap-3 text-lg tracking-tight">
+                    <div className="bg-white dark:bg-[#1E2028] p-4 md:p-8 rounded-xl border border-dashboard shadow-sm hover:shadow-md transition-shadow">
+                        <h3 className="font-black text-gray-700 dark:text-white mb-3 md:mb-6 flex items-center gap-3 text-lg tracking-tight">
                             <div className="p-2 bg-amber-500/10 text-amber-500 rounded-lg">
                                 <Calendar size={20} />
                             </div>
                             Configure Report Range
                         </h3>
 
-                        <div className="flex flex-col xl:flex-row gap-4 items-end">
-                            <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-5 w-full">
+                        <div className="flex flex-col xl:flex-row gap-2.5 md:gap-4 items-end">
+                            <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-2.5 md:gap-5 w-full">
                                 <div>
-                                    <label className="text-xs font-black uppercase tracking-wider text-gray-600 dark:text-gray-300 mb-2.5 block">
+                                    <label className="text-xs font-black uppercase tracking-wider text-gray-600 dark:text-gray-300 mb-1.5 md:mb-2.5 block">
                                         Start Date
                                     </label>
                                     <input
@@ -651,7 +651,7 @@ export function ReportsDashboard({
                                     />
                                 </div>
                                 <div>
-                                    <label className="text-xs font-black uppercase tracking-wider text-gray-600 dark:text-gray-300 mb-2.5 block">
+                                    <label className="text-xs font-black uppercase tracking-wider text-gray-600 dark:text-gray-300 mb-1.5 md:mb-2.5 block">
                                         End Date
                                     </label>
                                     <input
@@ -700,11 +700,11 @@ export function ReportsDashboard({
                         </div>
 
                         {/* Quick Select Pills */}
-                        <div className="flex flex-col sm:flex-row sm:items-center gap-3 mt-8 pt-6 border-t border-dashboard">
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mt-4 md:mt-8 pt-3 md:pt-6 border-t border-dashboard">
                             <span className="text-[10px] font-black text-gray-600 dark:text-gray-300 uppercase tracking-widest sm:mr-2">
                                 Quick Presets:
                             </span>
-                            <div className="flex flex-wrap items-center gap-2.5">
+                            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2.5">
                                 {[
                                     {
                                         label: "This Month",
@@ -784,7 +784,7 @@ export function ReportsDashboard({
                         (selectedType === "trades" ||
                             selectedType === "tax") && (
                             <div className="bg-white dark:bg-[#1E2028] p-4 sm:p-5 md:p-8 rounded-xl border border-dashboard shadow-sm animate-in fade-in duration-500">
-                                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 md:mb-6">
+                                <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 md:gap-4 md:mb-6">
                                     <div>
                                         <h3 className="font-black text-gray-700 dark:text-white text-lg tracking-tight">
                                             CSV Preview

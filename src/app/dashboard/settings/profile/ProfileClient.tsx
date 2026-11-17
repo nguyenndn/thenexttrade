@@ -115,7 +115,7 @@ function PrivacyToggleCard({
     return (
         <div
             className={`
-      flex items-center justify-between gap-4 p-4 rounded-lg border transition-all
+      flex items-center justify-between gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg border transition-all
       ${
           enabled
               ? "bg-gray-50/80 dark:bg-[#151925] border-dashboard"
@@ -255,7 +255,7 @@ export default function ProfileClient({
     ).length;
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-2 md:space-y-6">
             {/* Profile Settings Card (Header + Toggle + Headline) */}
             <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm overflow-hidden">
                 {/* Header + Toggle Row */}
@@ -445,12 +445,12 @@ export default function ProfileClient({
 
                     {/* Privacy Presets Segmented Control */}
                     {isPrivacyPresetsEnabled() && (
-                        <div className="border-b border-dashboard px-5 py-4 bg-gray-50/50 dark:bg-white/[0.01]">
-                            <h4 className="text-xs font-black uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-3 flex items-center gap-2">
+                        <div className="border-b border-dashboard px-3.5 sm:px-5 py-3 sm:py-4 bg-gray-50/50 dark:bg-white/[0.01]">
+                            <h4 className="text-xs font-black uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-2.5 sm:mb-3 flex items-center gap-2">
                                 <Shield size={12} className="text-amber-600 dark:text-gold" />
                                 Privacy Presets
                             </h4>
-                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-2">
                                 {(() => {
                                     const currentActivePreset = (() => {
                                         if (!settings.isPublicProfile) return "PRIVATE";
@@ -532,7 +532,7 @@ export default function ProfileClient({
                     )}
 
                     {/* Toggle Grid */}
-                    <div className="p-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="p-3 sm:p-4 grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
                         {visibilityItems.map((item) => (
                             <PrivacyToggleCard
                                 key={item.key}
@@ -601,7 +601,7 @@ export default function ProfileClient({
                         </div>
                     </div>
 
-                    <div className="p-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="p-3 sm:p-4 grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
                         <PrivacyToggleCard
                             icon={DollarSign}
                             title="Dollar Amounts"

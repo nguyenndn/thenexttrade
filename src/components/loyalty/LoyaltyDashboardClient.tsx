@@ -154,7 +154,7 @@ export function LoyaltyDashboardClient({
   };
 
   return (
-    <div className="w-full space-y-6">
+    <div className="w-full space-y-2 md:space-y-6">
       {/* Top Banner Header */}
       <PageHeader
         title="Loyalty Program & Volume Rewards"
@@ -169,7 +169,7 @@ export function LoyaltyDashboardClient({
 
       {/* IB Real Account Selector Bar (Phương án A) */}
       {eligibleAccounts.length > 0 ? (
-        <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-4 sm:p-5 shadow-sm space-y-3">
+        <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-3.5 sm:p-5 shadow-sm space-y-2 sm:space-y-3">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex items-center gap-2">
               <ShieldCheck size={16} className="text-amber-500 shrink-0" />
@@ -182,7 +182,7 @@ export function LoyaltyDashboardClient({
             </span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3">
             {eligibleAccounts.map((acc) => {
               const isSelected = selectedAccount?.accountId === acc.accountId;
               return (
@@ -233,7 +233,7 @@ export function LoyaltyDashboardClient({
           </div>
         </div>
       ) : (
-        <div className="rounded-xl border border-amber-500/25 bg-amber-500/5 dark:bg-amber-500/10 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="rounded-xl border border-amber-500/25 bg-amber-500/5 dark:bg-amber-500/10 p-3.5 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-4">
           <div className="flex items-start gap-3">
             <AlertCircle
               size={18}
@@ -272,7 +272,7 @@ export function LoyaltyDashboardClient({
       />
 
       {/* Main 8:4 Balanced Responsive Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-2 md:gap-6 items-start">
         <div className="lg:col-span-8">
           <LoyaltyLadder
             progress={activeProgress}
@@ -281,7 +281,7 @@ export function LoyaltyDashboardClient({
           />
         </div>
 
-        <div className="lg:col-span-4 space-y-3 lg:space-y-6">
+        <div className="lg:col-span-4 space-y-2 lg:space-y-6">
           <div className="lg:hidden">
             <Button
               type="button"

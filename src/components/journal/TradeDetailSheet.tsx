@@ -27,6 +27,7 @@ import {
     Calendar,
     BookOpen,
     Trash2,
+    Pencil,
 } from "lucide-react";
 import { PlaybookLightbox } from "@/components/strategies/PlaybookLightbox";
 import { cn } from "@/lib/utils";
@@ -137,6 +138,7 @@ interface TradeDetailSheetProps {
     strategies?: StrategyReference[];
     isOpen: boolean;
     onClose: () => void;
+    onEdit?: (entry: JournalDetailEntry) => void;
     onDeleted?: (deletedId: string) => void;
     onNext?: () => void;
     onPrev?: () => void;
@@ -150,6 +152,7 @@ export function TradeDetailSheet({
     strategies = [],
     isOpen,
     onClose,
+    onEdit,
     onDeleted,
     onNext,
     onPrev,
@@ -269,8 +272,8 @@ export function TradeDetailSheet({
 
     return (
         <Sheet open={isOpen} onOpenChange={onClose}>
-            {/* Main Sheet Container - Solid Dark Mode BG #0D111C */}
-            <SheetContent className="sm:max-w-4xl p-0 gap-0 bg-white dark:bg-[#0D111C] border-l border-dashboard dark:border-white/10 shadow-2xl overflow-y-auto scrollbar-hide">
+            {/* Main Sheet Container - Fixed flex column so header never overlaps scrolled content */}
+            <SheetContent className="flex flex-col h-dvh sm:max-w-4xl p-0 gap-0 bg-white dark:bg-[#0D111C] border-l border-dashboard dark:border-white/10 shadow-2xl overflow-hidden [&>button.absolute]:hidden">
                 {/* 
  A11y Requirement: Radix DialogContent requires a DialogTitle. 
  Since we build our own visual header below, we hide the official one for screen readers.
@@ -285,15 +288,31 @@ export function TradeDetailSheet({
                     </SheetHeader>
                 </VisuallyHidden>
 
-                {/* Header Section */}
-                <div className="sticky top-0 z-10 bg-white/95 dark:bg-[#0D111C]/95 backdrop-blur-md border-b border-dashboard px-4 sm:px-6 py-3.5 sm:py-4">
+                {/* Fixed Non-Scrolling Header Section */}
+                <div className="shrink-0 relative z-30 bg-white dark:bg-[#0D111C] border-b border-dashboard px-4 sm:px-6 py-3 sm:py-4">
                     <div className="flex items-center justify-between gap-2">
-                        <div className="flex items-center gap-4">
-                            <h2 className="text-lg font-bold text-gray-700 dark:text-white">
+                        <div className="flex items-center gap-4 min-w-0">
+                            <h2 className="text-base sm:text-lg font-bold text-gray-700 dark:text-white truncate">
                                 Trade Details
                             </h2>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                            {onEdit && (
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="smd"
+                                    aria-label="Edit trade"
+                                    onClick={() => {
+                                        onClose();
+                                        onEdit(entry);
+                                    }}
+                                    className="rounded-lg font-bold flex items-center gap-1.5"
+                                >
+                                    <Pencil size={14} strokeWidth={2.2} />
+                                    <span className="hidden sm:inline">Edit</span>
+                                </Button>
+                            )}
                             {canDeleteManualTrade && (
                                 <Button
                                     type="button"
@@ -325,7 +344,7 @@ export function TradeDetailSheet({
                     </div>
                 </div>
 
-                <div className="p-4 sm:p-6 space-y-4 sm:space-y-5">
+                <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain scrollbar-hide p-3 sm:p-6 space-y-3 sm:space-y-5">
                     {/* Hero Card - Premium Glass/Glow Effect */}
                     <div className="relative bg-white dark:bg-[#1E2028] rounded-xl p-4 sm:p-6 md:p-8 shadow-xl border border-dashboard overflow-hidden group">
                         {/* Decorative Glow */}
@@ -419,52 +438,62 @@ export function TradeDetailSheet({
                         </div>
                     </div>
 
-                    <Tabs defaultValue="metrics" className="w-full">
-                        <div className="overflow-x-auto scrollbar-hide flex"><TabsList className="w-auto inline-flex h-auto mb-5 shrink-0">
+                    <Tabs defaultValue="metrics" className="w-full" tabsId="trade-detail-tabs">
+                        <TabsList
+                            className={cn(
+                                "w-full grid gap-0 bg-transparent dark:bg-transparent p-0 rounded-none border-0 border-b border-dashboard mb-0 overflow-visible sm:w-auto sm:inline-flex sm:gap-1 sm:bg-[#F1F3F5] sm:dark:bg-[#1A1D27] sm:p-1 sm:rounded-lg sm:border sm:mb-5",
+                                entry.tradePlan ? "grid-cols-4" : "grid-cols-3"
+                            )}
+                        >
                             <TabsTrigger
                                 value="metrics"
-                                className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:hover:border-white/10"
-                                activeIndicatorClassName="!bg-gradient-to-r from-gold to-amber-600 shadow-md shadow-amber-500/20 border-0"
-                                activeTextClassName="!text-white"
+                                className="w-full sm:w-auto justify-center px-1.5 sm:px-4 py-2.5 sm:py-1.5 rounded-none sm:rounded-lg text-xs sm:text-sm font-bold whitespace-nowrap border-0 sm:border border-transparent sm:hover:border-gray-200 sm:dark:hover:border-white/10 gap-1.5 sm:gap-2 min-w-0"
+                                activeIndicatorClassName="inset-[auto_0_0_0] h-[2px] !bg-gold shadow-none rounded-full border-0 sm:inset-0 sm:h-auto sm:rounded-lg sm:shadow-md sm:shadow-amber-500/20"
+                                activeTextClassName="text-amber-600 dark:text-amber-400 sm:!text-white"
                             >
-                                <BarChart3 size={16} />
-                                Trade Metrics
+                                <BarChart3 className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+                                <span className="sm:hidden truncate">Metrics</span>
+                                <span className="hidden sm:inline">Trade Metrics</span>
                             </TabsTrigger>
                             <TabsTrigger
                                 value="tags"
-                                className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:hover:border-white/10"
-                                activeIndicatorClassName="!bg-gradient-to-r from-gold to-amber-600 shadow-md shadow-amber-500/20 border-0"
-                                activeTextClassName="!text-white"
+                                className="w-full sm:w-auto justify-center px-1.5 sm:px-4 py-2.5 sm:py-1.5 rounded-none sm:rounded-lg text-xs sm:text-sm font-bold whitespace-nowrap border-0 sm:border border-transparent sm:hover:border-gray-200 sm:dark:hover:border-white/10 gap-1.5 sm:gap-2 min-w-0"
+                                activeIndicatorClassName="inset-[auto_0_0_0] h-[2px] !bg-gold shadow-none rounded-full border-0 sm:inset-0 sm:h-auto sm:rounded-lg sm:shadow-md sm:shadow-amber-500/20"
+                                activeTextClassName="text-amber-600 dark:text-amber-400 sm:!text-white"
                             >
-                                <Tag size={16} />
-                                Trade Context
+                                <Tag className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+                                <span className="sm:hidden truncate">Context</span>
+                                <span className="hidden sm:inline">Trade Context</span>
                             </TabsTrigger>
                             {entry.tradePlan && (
                                 <TabsTrigger
                                     value="comparison"
-                                    className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:hover:border-white/10"
-                                    activeIndicatorClassName="!bg-gradient-to-r from-gold to-amber-600 shadow-md shadow-amber-500/20 border-0"
-                                    activeTextClassName="!text-white"
+                                    className="w-full sm:w-auto justify-center px-1.5 sm:px-4 py-2.5 sm:py-1.5 rounded-none sm:rounded-lg text-xs sm:text-sm font-bold whitespace-nowrap border-0 sm:border border-transparent sm:hover:border-gray-200 sm:dark:hover:border-white/10 gap-1.5 sm:gap-2 min-w-0"
+                                    activeIndicatorClassName="inset-[auto_0_0_0] h-[2px] !bg-gold shadow-none rounded-full border-0 sm:inset-0 sm:h-auto sm:rounded-lg sm:shadow-md sm:shadow-amber-500/20"
+                                    activeTextClassName="text-amber-600 dark:text-amber-400 sm:!text-white"
                                 >
-                                    <Scale size={16} />
-                                    Plan vs Actual
+                                    <Scale className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+                                    <span className="sm:hidden truncate">Plan</span>
+                                    <span className="hidden sm:inline">Plan vs Actual</span>
                                 </TabsTrigger>
                             )}
                             <TabsTrigger
                                 value="ai-insights"
-                                className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:hover:border-white/10"
-                                activeIndicatorClassName="!bg-gradient-to-r from-gold to-amber-600 shadow-md shadow-amber-500/20 border-0"
-                                activeTextClassName="!text-white"
+                                className="w-full sm:w-auto justify-center px-1.5 sm:px-4 py-2.5 sm:py-1.5 rounded-none sm:rounded-lg text-xs sm:text-sm font-bold whitespace-nowrap border-0 sm:border border-transparent sm:hover:border-gray-200 sm:dark:hover:border-white/10 gap-1.5 sm:gap-2 min-w-0"
+                                activeIndicatorClassName="inset-[auto_0_0_0] h-[2px] !bg-gold shadow-none rounded-full border-0 sm:inset-0 sm:h-auto sm:rounded-lg sm:shadow-md sm:shadow-amber-500/20"
+                                activeTextClassName="text-amber-600 dark:text-amber-400 sm:!text-white"
                             >
-                                <Brain size={16} />
-                                AI Insights
+                                <Brain className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+                                <span className="sm:hidden truncate">
+                                    {entry.tradePlan ? "AI" : "AI Insights"}
+                                </span>
+                                <span className="hidden sm:inline">AI Insights</span>
                             </TabsTrigger>
                         </TabsList>
-                        </div>
 
                         <TabsContent
                             value="ai-insights"
-                            className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 pt-2"
+                            className="mt-3 sm:mt-6 space-y-4 sm:space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 pt-0 sm:pt-2"
                         >
                             {activeCoachPlan ? (
                                 <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-4 sm:p-6 shadow-xl">
@@ -517,11 +546,11 @@ export function TradeDetailSheet({
 
                         <TabsContent
                             value="metrics"
-                            className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500"
+                            className="mt-3 sm:mt-6 space-y-4 sm:space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500"
                         >
                             {/* Unified Performance Card - Premium Grid Layout */}
-                            <div className="space-y-6 pt-2">
-                                <h3 className="text-xs font-black uppercase tracking-widest text-gray-500 mb-6 flex items-center gap-2 pl-2">
+                            <div className="space-y-2.5 sm:space-y-6 pt-0 sm:pt-2">
+                                <h3 className="text-xs font-black uppercase tracking-widest text-gray-500 mb-2.5 sm:mb-6 flex items-center gap-2 pl-1 sm:pl-2">
                                     <BarChart3 size={14} />
                                     Performance Summary
                                 </h3>
@@ -826,11 +855,11 @@ export function TradeDetailSheet({
 
                         <TabsContent
                             value="tags"
-                            className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500"
+                            className="mt-3 sm:mt-6 space-y-4 sm:space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500"
                         >
                             {/* Unified Analysis Card - Premium Grid Layout */}
-                            <div className="space-y-6 pt-2">
-                                <h3 className="text-xs font-black uppercase tracking-widest text-gray-500 mb-4 flex items-center gap-2 pl-2">
+                            <div className="space-y-2.5 sm:space-y-6 pt-0 sm:pt-2">
+                                <h3 className="text-xs font-black uppercase tracking-widest text-gray-500 mb-2.5 sm:mb-4 flex items-center gap-2 pl-1 sm:pl-2">
                                     <Brain size={14} />
                                     Trade Analysis
                                 </h3>
@@ -1171,9 +1200,9 @@ export function TradeDetailSheet({
                         {entry.tradePlan && (
                             <TabsContent
                                 value="comparison"
-                                className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500"
+                                className="mt-3 sm:mt-6 space-y-4 sm:space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500"
                             >
-                                <div className="pt-2">
+                                <div className="pt-0 sm:pt-2">
                                     <PlanVsActualPanel
                                         plan={entry.tradePlan}
                                         entry={entry}

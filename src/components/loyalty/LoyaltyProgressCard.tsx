@@ -94,7 +94,50 @@ export function LoyaltyProgressCard({ progress }: LoyaltyProgressCardProps) {
       </div>
 
       {/* 2x2 Matrix Card (Design System Invariant) */}
-      <div className="grid grid-cols-2 rounded-lg border border-gray-200 dark:border-white/10 divide-x divide-y divide-gray-200 dark:divide-white/10 bg-gray-50/50 dark:bg-white/[0.01] overflow-hidden">
+      {/* Mobile Unified 2x2 Matrix Card (< sm) */}
+      <div className="sm:hidden grid grid-cols-2 rounded-xl border border-dashboard bg-white dark:bg-[#1E2028] shadow-sm overflow-hidden [&>*:nth-child(even)]:border-l [&>*:nth-child(n+3)]:border-t [&>*]:border-dashboard/70 dark:[&>*]:border-white/[0.06]">
+        <div className="py-2 px-2.5 min-w-0">
+          <span className="block text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-0.5 truncate">
+            Active MT5 Accounts
+          </span>
+          <span className="font-mono tabular-nums text-xs font-bold text-gray-900 dark:text-white truncate block">
+            {eligibility.activeLiveAccounts} Live Connected
+          </span>
+        </div>
+
+        <div className="py-2 px-2.5 min-w-0">
+          <span className="block text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-0.5 truncate">
+            Verified Trades
+          </span>
+          <span className="font-mono tabular-nums text-xs font-bold text-gray-900 dark:text-white truncate block">
+            {eligibility.totalClosedTrades.toLocaleString()} Executed
+          </span>
+        </div>
+
+        <div className="py-2 px-2.5 min-w-0">
+          <span className="block text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-0.5 truncate">
+            Next Milestone
+          </span>
+          <span className="font-mono tabular-nums text-xs font-bold text-amber-600 dark:text-amber-400 truncate block">
+            {nextTier ? `Level ${nextTier.level} (${nextTier.name})` : "Max Tier"}
+          </span>
+        </div>
+
+        <div className="py-2 px-2.5 min-w-0">
+          <span className="block text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-0.5 truncate">
+            Next Reward Unlock
+          </span>
+          <span className="font-mono tabular-nums text-xs font-bold text-gray-900 dark:text-white flex items-center gap-1 truncate">
+            <Zap size={12} className="text-amber-500 shrink-0" />
+            <span className="truncate">
+              {nextTier ? (nextTier.cashAmount > 0 ? `$${nextTier.cashAmount.toLocaleString()} USDT` : "Pro System") : "Complete"}
+            </span>
+          </span>
+        </div>
+      </div>
+
+      {/* Desktop Grid (>= sm) */}
+      <div className="hidden sm:grid grid-cols-2 rounded-lg border border-gray-200 dark:border-white/10 divide-x divide-y divide-gray-200 dark:divide-white/10 bg-gray-50/50 dark:bg-white/[0.01] overflow-hidden">
         <div className="p-3">
           <span className="block text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-0.5">
             Active MT5 Accounts

@@ -11,13 +11,11 @@ import {
 interface SystemDetailSectionsProps {
     activeTab: string;
     system?: SystemData;
-    guideType: "MT5_EA" | "MT5_INDICATOR";
 }
 
 export function SystemDetailSections({
     activeTab,
     system,
-    guideType,
 }: SystemDetailSectionsProps) {
     const specItems = system?.specHighlights?.length
         ? system.specHighlights
@@ -53,7 +51,6 @@ export function SystemDetailSections({
     if (activeTab === "guide") {
         return (
             <SystemDetailInstallSection
-                guideType={guideType}
                 setupSteps={system?.setupSteps}
             />
         );
@@ -68,8 +65,23 @@ export function SystemDetailSections({
     }
 
     return (
-        <div className="space-y-6">
-            <div className="grid grid-cols-1 sm:grid-cols-2 rounded-xl border border-dashboard dark:border-white/[0.08] bg-gray-50/50 dark:bg-white/[0.02] divide-y sm:divide-x divide-dashboard dark:divide-white/[0.08] overflow-hidden">
+        <div className="space-y-2 md:space-y-6">
+            {/* Mobile Unified 2x2 Matrix Card (< sm) */}
+            <div className="sm:hidden grid grid-cols-2 rounded-xl border border-dashboard bg-white dark:bg-[#1E2028] shadow-sm overflow-hidden [&>*:nth-child(even)]:border-l [&>*:nth-child(n+3)]:border-t [&>*]:border-dashboard/70 dark:[&>*]:border-white/[0.06]">
+                {specItems.map((spec, i) => (
+                    <div key={i} className="py-2 px-2.5 min-w-0">
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 truncate">
+                            {spec.label}
+                        </p>
+                        <p className="text-xs font-bold text-gray-900 dark:text-white mt-0.5 truncate tabular-nums">
+                            {spec.value}
+                        </p>
+                    </div>
+                ))}
+            </div>
+
+            {/* Desktop Grid (>= sm) */}
+            <div className="hidden sm:grid sm:grid-cols-2 rounded-xl border border-dashboard dark:border-white/[0.08] bg-gray-50/50 dark:bg-white/[0.02] divide-y sm:divide-x divide-dashboard dark:divide-white/[0.08] overflow-hidden">
                 {specItems.map((spec, i) => (
                     <div key={i} className="p-4">
                         <p className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
@@ -84,10 +96,10 @@ export function SystemDetailSections({
 
             {system?.functions && system.functions.length > 0 && (
                 <div>
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-2 sm:mb-3">
                         Core Architecture &amp; Capabilities
                     </h4>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
                         {system.functions.map((func, idx) => (
                             <div
                                 key={idx}

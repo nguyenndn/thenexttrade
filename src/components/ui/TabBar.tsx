@@ -125,10 +125,10 @@ export function TabBar({
     return (
         <div
             className={cn(
-                "max-w-full bg-[#F1F3F5] dark:bg-[#1A1D27] p-1 rounded-lg border border-dashboard h-auto overflow-x-auto scrollbar-hide",
+                "w-full grid grid-flow-col auto-cols-fr gap-0 bg-transparent dark:bg-transparent p-0 rounded-none border-0 border-b border-dashboard h-auto overflow-visible md:max-w-full md:bg-[#F1F3F5] md:dark:bg-[#1A1D27] md:p-1 md:rounded-lg md:border md:overflow-x-auto scrollbar-hide",
                 equalWidth
-                    ? "w-full flex lg:w-auto lg:inline-flex"
-                    : "w-auto inline-flex",
+                    ? "md:w-full md:flex lg:w-auto lg:inline-flex"
+                    : "md:w-auto md:inline-flex",
                 className
             )}
         >
@@ -175,15 +175,20 @@ export function TabBar({
                         key={tab.href}
                         href={targetHref}
                         className={cn(
-                            "rounded-lg px-2.5 sm:px-4 py-1.5 text-xs sm:text-sm font-bold transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2 border whitespace-nowrap shrink-0",
-                            equalWidth && "flex-1 text-center lg:flex-none",
+                            "relative rounded-none md:rounded-lg px-1 md:px-4 py-2.5 md:py-1.5 text-[11px] min-[390px]:text-xs md:text-sm font-bold transition-colors md:transition-all duration-200 flex items-center justify-center gap-1 md:gap-2 border-0 md:border whitespace-nowrap min-w-0 md:shrink-0",
+                            equalWidth && "md:flex-1 md:text-center lg:flex-none",
                             isActive
-                                ? "bg-gold text-white shadow-md shadow-amber-500/20 border-transparent"
-                                : "text-gray-600 dark:text-gray-300 border-transparent hover:text-gray-900 dark:hover:text-white"
+                                ? "text-amber-600 dark:text-amber-400 md:bg-gold md:text-white md:shadow-md md:shadow-amber-500/20 md:border-transparent"
+                                : "text-gray-500 dark:text-gray-400 md:text-gray-600 md:dark:text-gray-300 border-transparent hover:text-gray-900 dark:hover:text-white"
                         )}
                     >
-                        {Icon && <Icon size={14} className="sm:w-4 sm:h-4" />}
-                        <span>{tab.label}</span>
+                        {Icon && (
+                            <Icon className="hidden min-[380px]:block md:block w-3.5 h-3.5 md:w-4 md:h-4 shrink-0" />
+                        )}
+                        <span className="truncate">{tab.label}</span>
+                        {isActive && (
+                            <span className="md:hidden absolute inset-x-0 bottom-0 h-[2px] rounded-full bg-gold" />
+                        )}
                     </Link>
                 );
             })}

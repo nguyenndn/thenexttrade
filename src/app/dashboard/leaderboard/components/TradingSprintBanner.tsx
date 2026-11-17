@@ -187,13 +187,13 @@ export function TradingSprintBanner({
     };
 
     return (
-        <div className="relative overflow-hidden rounded-xl border border-gold/30 bg-white dark:bg-[#1E2028] p-5 sm:p-7 shadow-sm">
+        <div className="relative overflow-hidden rounded-xl border border-gold/30 bg-white dark:bg-[#1E2028] p-3.5 sm:p-7 shadow-sm">
             {/* Ambient Background Accents */}
             <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-gold/10 blur-3xl pointer-events-none" />
 
-            <div className="relative z-10 space-y-6">
+            <div className="relative z-10 space-y-2.5 md:space-y-6">
                 {/* Top Row: Meta Badge & Countdown */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-4">
                     <div className="space-y-1.5">
                         <div className="inline-flex flex-wrap items-center gap-2 rounded-lg border border-gold/30 bg-gold/10 px-3 py-1 text-xs font-bold text-amber-700 dark:text-gold">
                             <span className="relative flex h-2 w-2">
@@ -240,7 +240,7 @@ export function TradingSprintBanner({
                 </div>
 
                 {/* Dynamic Prize Pool Cards */}
-                <div className="grid grid-cols-3 gap-2 sm:gap-3">
+                <div className="grid grid-cols-3 gap-1.5 sm:gap-3">
                     {prizes.slice(0, 3).map((item, idx) => {
                         const isFirst = item.place === 1;
                         const isSecond = item.place === 2;

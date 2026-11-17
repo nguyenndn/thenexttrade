@@ -390,6 +390,7 @@ export function EmailLabClient({
             <PageHeader
                 title="Email Lab"
                 description="Test, preview, and verify system-generated transactional HTML email templates."
+                showOnMobile
             >
                 <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white dark:bg-[#1E2028] border border-dashboard text-xs font-semibold text-gray-600 dark:text-gray-300">
                     <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />

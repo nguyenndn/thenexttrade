@@ -1,122 +1,32 @@
 "use client";
 
-import { useProAccess } from "@/components/pro/ProProvider";
 import { Crown, Timer, AlertTriangle, ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState, useCallback } from "react";
+import { useResolvedProStatus } from "@/components/pro/useResolvedProStatus";
 
 /**
  * Compact Pro status bar for mobile main content area.
- * Visible immediately on mobile (390px+) without requiring the drawer to open.
- * Only renders for non-NONE states (ACTIVE, GRACE, REVOKED, EXPIRED) or NONE with upgrade CTA.
- * Hidden on desktop (lg:hidden) since the sidebar widget handles desktop.
- *
- * @param hideFreeNudge When true, suppress only the FREE-PLAN upgrade nudge (used for
- *   brand-new / no-data users so onboarding isn't drowned in CTAs). Real Pro statuses
- *   (ACTIVE / GRACE / REVOKED / EXPIRED) always render — a freshly approved user with no
- *   trades yet must still see their Pro status on mobile, where the sidebar widget is hidden.
+ * Note: "ACTIVE" VIP state is now rendered as a compact inline "VIP" badge
+ * directly beside the trader's name in GreetingHeader, so no full-width banner
+ * occupies vertical space when VIP is active.
  */
-export function MobileProStatusBanner({ hideFreeNudge = false }: { hideFreeNudge?: boolean }) {
-    const proAccess = useProAccess();
-    const searchParams = useSearchParams();
-    const currentAccountId = searchParams?.get("accountId") ?? undefined;
+export function MobileProStatusBanner({
+    hideFreeNudge = false,
+}: {
+    hideFreeNudge?: boolean;
+}) {
+    const { loading, currentStatus, isPro, expiresAt } = useResolvedProStatus();
 
-    // State to hold the actively selected account ID, resolved client-side to prevent SSR hydration mismatch
-    const [activeAccountId, setActiveAccountId] = useState<string | null>(null);
+    if (loading) return null;
 
-    // Helper to read cookie on the client side
-    const getCookie = useCallback((name: string) => {
-        if (typeof window === "undefined" || typeof document === "undefined")
-            return null;
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) return parts.pop()?.split(";").shift() || null;
-        return null;
-    }, []);
+    // VIP Active is displayed inline beside userName in GreetingHeader on mobile
+    if (currentStatus === "ACTIVE") return null;
 
-    useEffect(() => {
-        // 1. Initial resolution on mount/render
-        const urlAccountId = searchParams?.get("accountId");
-        const cookieAccountId = getCookie("last_account_id");
-        setActiveAccountId(
-            urlAccountId || cookieAccountId || proAccess.mainAccountId || null
-        );
-
-        // 2. Event listener for account changes
-        const handleAccountChange = (e: Event) => {
-            const customEvent = e as CustomEvent<string>;
-            if (customEvent.detail) {
-                setActiveAccountId(customEvent.detail);
-            }
-        };
-
-        window.addEventListener("tnt_account_changed", handleAccountChange);
-        return () => {
-            window.removeEventListener(
-                "tnt_account_changed",
-                handleAccountChange
-            );
-        };
-    }, [currentAccountId, proAccess.mainAccountId, searchParams, getCookie]);
-
-    if (proAccess.loading) return null;
-
-    const realAccounts = proAccess.accounts.filter(
-        (a) => a.tradingAccountId && a.tradingAccountId !== ""
-    );
-    const validAccountFromActiveId = activeAccountId
-        ? realAccounts.find((a) => a.tradingAccountId === activeAccountId)
-        : null;
-    const validMainAccount = proAccess.mainAccountId
-        ? realAccounts.find((a) => a.tradingAccountId === proAccess.mainAccountId)
-        : null;
-
-    const activeAccount =
-        validAccountFromActiveId ||
-        validMainAccount ||
-        realAccounts[0] ||
-        null;
-
-    const rawStatus = activeAccount
-        ? activeAccount.status
-        : proAccess.status || "NONE";
-
-    const hasNoPartnerAccounts =
-        proAccess.activityInfo?.reason ===
-            "No trading accounts linked to supported partner brokers." ||
-        (realAccounts.length > 0 &&
-            realAccounts.every((a) => a.status === "NONE"));
-
-    const currentStatus =
-        hasNoPartnerAccounts || rawStatus === "NONE" || rawStatus === "REVOKED" ? "NONE" : rawStatus;
-    const isPro = currentStatus === "NONE" ? false : (activeAccount ? activeAccount.isPro : proAccess.isPro);
-    const expiresAt = activeAccount
-        ? activeAccount.expiresAt
-        : proAccess.expiresAt;
-
-    // Brand-new / no-data users: hide only the "Free Plan" upgrade nudge.
-    // Real Pro statuses (ACTIVE/GRACE/REVOKED/EXPIRED) always render so the user's
-    // Pro status stays visible on mobile even before they have trade data.
     if (hideFreeNudge && currentStatus === "NONE") return null;
-
-    if (currentStatus === "ACTIVE") {
-        return (
-            <div className="md:hidden mb-3 flex items-center gap-2 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 px-3 py-2">
-                <Crown className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400">
-                    VIP Active
-                </span>
-                <span className="ml-auto rounded-lg bg-emerald-100 dark:bg-emerald-500/20 px-2 py-0.5 text-[10px] font-bold uppercase text-emerald-600 dark:text-emerald-400">
-                    VIP
-                </span>
-            </div>
-        );
-    }
 
     if (currentStatus === "GRACE") {
         return (
-            <div className="md:hidden mb-3 flex items-center gap-2 rounded-lg bg-amber-50 dark:bg-gold/10 border border-amber-200 dark:border-gold/20 px-3 py-2">
+            <div className="md:hidden mb-0 flex items-center gap-2 rounded-lg bg-amber-50 dark:bg-gold/10 border border-amber-200 dark:border-gold/20 px-3 py-2">
                 <Timer className="h-4 w-4 text-amber-600 dark:text-gold shrink-0" />
                 <div className="flex-1 min-w-0">
                     <span className="text-xs font-bold text-amber-700 dark:text-gold">
@@ -144,7 +54,7 @@ export function MobileProStatusBanner({ hideFreeNudge = false }: { hideFreeNudge
 
     if (currentStatus === "EXPIRED") {
         return (
-            <div className="md:hidden mb-3 flex items-center gap-2 rounded-lg bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 px-3 py-2">
+            <div className="md:hidden mb-0 flex items-center gap-2 rounded-lg bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 px-3 py-2">
                 <AlertTriangle className="h-4 w-4 text-amber-600 dark:text-amber-400 shrink-0" />
                 <span className="text-xs font-bold text-amber-700 dark:text-amber-400 flex-1">
                     VIP Expired
@@ -159,10 +69,9 @@ export function MobileProStatusBanner({ hideFreeNudge = false }: { hideFreeNudge
         );
     }
 
-    // NONE - show upgrade nudge (compact), unless suppressed by active onboarding/setup banners
     if (!isPro && !hideFreeNudge) {
         return (
-            <div className="md:hidden mb-3 flex items-center gap-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-dashboard px-3 py-2">
+            <div className="md:hidden mb-0 flex items-center gap-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-dashboard px-3 py-2">
                 <Crown className="h-4 w-4 text-gray-400 dark:text-gray-500 shrink-0" />
                 <span className="text-xs text-gray-500 dark:text-gray-400 flex-1">
                     Free Plan

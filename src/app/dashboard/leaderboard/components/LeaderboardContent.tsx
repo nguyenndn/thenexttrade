@@ -45,10 +45,10 @@ export function LeaderboardContent({
     const rest = entries.slice(3);
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-2 md:space-y-6">
             {/* Top Performers Section */}
             <div className="bg-white dark:bg-[#151925] rounded-xl border border-dashboard shadow-sm overflow-hidden">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 px-4 sm:px-6 py-4 border-b border-dashboard">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4 px-3.5 sm:px-6 py-3 sm:py-4 border-b border-dashboard">
                     <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-lg bg-yellow-50 dark:bg-yellow-500/10 flex items-center justify-center shrink-0">
                             <Trophy size={16} className="text-yellow-500" />
@@ -74,7 +74,7 @@ export function LeaderboardContent({
                         </div>
                     )}
                 </div>
-                <div className="p-4">
+                <div className="p-2.5 sm:p-4">
                     <TopMedalStrip
                         entries={top3}
                         currentUserId={currentUserId}
@@ -87,7 +87,7 @@ export function LeaderboardContent({
 
             {/* Rankings Table Section */}
             <div className="bg-white dark:bg-[#151925] rounded-xl border border-dashboard shadow-sm overflow-hidden">
-                <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-dashboard flex-wrap gap-3">
+                <div className="flex items-center justify-between px-3.5 sm:px-6 py-3 sm:py-4 border-b border-dashboard flex-wrap gap-2 sm:gap-3">
                     <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-lg bg-amber-50 dark:bg-amber-500/10 flex items-center justify-center shrink-0">
                             <Medal size={16} className="text-amber-500" />

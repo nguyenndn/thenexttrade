@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 import { toast } from "sonner";
 import {
@@ -87,38 +87,44 @@ export function SessionDashboard({
     const [data, setData] = useState<SessionData | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
-    const fetchData = async (signal: AbortSignal) => {
-        try {
-            setIsLoading(true);
-            const params = new URLSearchParams();
+    const fetchData = useCallback(
+        async (signal: AbortSignal) => {
+            try {
+                setIsLoading(true);
+                const params = new URLSearchParams();
 
-            if (fromStr) params.append("startDate", fromStr);
-            if (toStr) params.append("endDate", toStr);
-            if (accountId) params.append("accountId", accountId);
+                if (fromStr) params.append("startDate", fromStr);
+                if (toStr) params.append("endDate", toStr);
+                if (accountId) params.append("accountId", accountId);
 
-            const res = await fetch(`/api/analytics/sessions?${params}`, {
-                signal,
-            });
-            if (!res.ok) throw new Error("Failed to fetch");
+                const res = await fetch(`/api/analytics/sessions?${params}`, {
+                    signal,
+                });
+                if (!res.ok) throw new Error("Failed to fetch");
 
-            const json = await res.json();
-            setData(json);
-        } catch (error: unknown) {
-            if (error instanceof DOMException && error.name === "AbortError") {
-                return;
+                const json = await res.json();
+                setData(json);
+            } catch (error: unknown) {
+                if (
+                    error instanceof DOMException &&
+                    error.name === "AbortError"
+                ) {
+                    return;
+                }
+                if (error instanceof Error && error.name === "AbortError") {
+                    return;
+                }
+                toast.error(
+                    error instanceof Error
+                        ? error.message
+                        : "Failed to load session data"
+                );
+            } finally {
+                setIsLoading(false);
             }
-            if (error instanceof Error && error.name === "AbortError") {
-                return;
-            }
-            toast.error(
-                error instanceof Error
-                    ? error.message
-                    : "Failed to load session data"
-            );
-        } finally {
-            setIsLoading(false);
-        }
-    };
+        },
+        [fromStr, toStr, accountId]
+    );
 
     useEffect(() => {
         const controller = new AbortController();
@@ -127,14 +133,14 @@ export function SessionDashboard({
         return () => {
             controller.abort();
         };
-    }, [fromStr, toStr, accountId]);
+    }, [fetchData]);
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-2 md:space-y-4">
             {isLoading ? (
                 <SessionLoadingSkeleton />
             ) : !data || data.sessionStats.length === 0 ? (
-                <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-xl border-2 border-dashed border-dashboard mt-8">
+                <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-xl border-2 border-dashed border-dashboard mt-2 md:mt-8">
                     {/* Animated Clock Icon */}
                     <div className="relative w-20 h-20 mb-6 mx-auto">
                         <div className="absolute inset-0 rounded-full bg-primary/10 dark:bg-primary/5 animate-[session-ping_3s_cubic-bezier(0,0,0.2,1)_infinite]" />
@@ -221,8 +227,74 @@ export function SessionDashboard({
                         />
                     )}
 
-                    {/* Quick Stats */}
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {/* Quick Stats — Mobile Unified 2x2 Matrix (< sm) */}
+                    <div className="sm:hidden grid grid-cols-2 rounded-xl border border-dashboard bg-white dark:bg-[#1E2028] shadow-sm overflow-hidden [&>*:nth-child(even)]:border-l [&>*:nth-child(n+3)]:border-t [&>*]:border-dashboard/70 dark:[&>*]:border-white/[0.06]">
+                        {[
+                            {
+                                label: "Best Session",
+                                value: data.bestSession
+                                    ? data.sessionStats.find(
+                                          (s) => s.session === data.bestSession
+                                      )?.displayName || ""
+                                    : "-",
+                                icon: TrendingUp,
+                                color: "text-green-500",
+                            },
+                            {
+                                label: "Worst Session",
+                                value: data.worstSession
+                                    ? data.sessionStats.find(
+                                          (s) => s.session === data.worstSession
+                                      )?.displayName || ""
+                                    : "-",
+                                icon: TrendingDown,
+                                color: "text-red-500",
+                            },
+                            {
+                                label: "Best Hour",
+                                value:
+                                    data.bestHour !== null
+                                        ? `${data.bestHour.toString().padStart(2, "0")}:00 UTC`
+                                        : "-",
+                                icon: Sun,
+                                color: "text-yellow-500",
+                            },
+                            {
+                                label: "Worst Hour",
+                                value:
+                                    data.worstHour !== null
+                                        ? `${data.worstHour.toString().padStart(2, "0")}:00 UTC`
+                                        : "-",
+                                icon: Moon,
+                                color: "text-gray-600",
+                            },
+                        ].map((stat) => {
+                            const Icon = stat.icon;
+                            return (
+                                <div
+                                    key={stat.label}
+                                    className="py-2 px-2.5 min-w-0 flex items-center gap-2"
+                                >
+                                    <div
+                                        className={`w-8 h-8 rounded-lg shrink-0 flex items-center justify-center bg-gray-50 dark:bg-white/5 ${stat.color}`}
+                                    >
+                                        <Icon size={15} />
+                                    </div>
+                                    <div className="min-w-0 flex-1">
+                                        <span className="text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-wider font-bold block truncate">
+                                            {stat.label}
+                                        </span>
+                                        <p className="text-sm font-bold tabular-nums text-gray-700 dark:text-white truncate">
+                                            {stat.value}
+                                        </p>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+
+                    {/* Quick Stats — Desktop Grid (>= sm) */}
+                    <div className="hidden sm:grid sm:grid-cols-2 md:grid-cols-4 sm:gap-4">
                         <QuickStatCard
                             label="Best Session"
                             value={
@@ -270,7 +342,7 @@ export function SessionDashboard({
                     </div>
 
                     {/* Main Charts */}
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 md:gap-4">
                         <div className="lg:col-span-2">
                             <SessionPerformance
                                 data={data.sessionStats}
@@ -328,9 +400,9 @@ function QuickStatCard({
 
 function SessionLoadingSkeleton() {
     return (
-        <div className="space-y-4 animate-pulse">
+        <div className="space-y-2 md:space-y-4 animate-pulse">
             <div className="h-24 bg-gray-100 dark:bg-white/5 rounded-lg w-full" />
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
                 {[1, 2, 3, 4].map((i) => (
                     <div
                         key={i}
@@ -338,7 +410,7 @@ function SessionLoadingSkeleton() {
                     />
                 ))}
             </div>
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 md:gap-4">
                 <div className="lg:col-span-2 h-80 bg-gray-100 dark:bg-white/5 rounded-lg" />
                 <div className="lg:col-span-1 h-80 bg-gray-100 dark:bg-white/5 rounded-lg" />
             </div>

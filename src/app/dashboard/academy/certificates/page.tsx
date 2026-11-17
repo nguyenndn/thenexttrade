@@ -81,12 +81,12 @@ export default async function CertificatesPage() {
         : null;
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-2 md:space-y-4">
             <PageHeader
                 title="Certificates"
                 description="Earn certificates by passing all quizzes in each level."
             >
-                <div className="flex items-center gap-3 text-sm font-bold w-full sm:w-auto">
+                <div className="flex items-center gap-1.5 sm:gap-3 text-sm font-bold w-full sm:w-auto">
                     <div className="flex items-center justify-center gap-1.5 !text-white bg-gold px-3 py-1.5 rounded-lg shadow-sm font-mono tabular-nums flex-1 sm:flex-none">
                         <Trophy size={14} />
                         <span>
@@ -127,7 +127,7 @@ export default async function CertificatesPage() {
 
             {/* Not yet completed — locked master card teaser */}
             {!allLevelsCompleted && (
-                <div className="relative rounded-xl border-2 border-dashed border-gold/30 bg-gold/5 p-4 sm:p-6 flex items-center gap-4">
+                <div className="relative rounded-xl border-2 border-dashed border-gold/30 bg-gold/5 p-3.5 sm:p-6 flex items-center gap-3 sm:gap-4">
                     <div className="w-12 h-12 rounded-lg bg-gold/10 flex items-center justify-center flex-shrink-0">
                         <Lock size={20} className="text-amber-600 dark:text-gold" />
                     </div>
@@ -147,7 +147,7 @@ export default async function CertificatesPage() {
             )}
 
             {/* Level Certificates Grid */}
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4">
                 {levels.map((level) => {
                     const cert = certMap.get(level.id);
                     const modulesWithQuiz = level.modules.filter((m) => m.quiz);
@@ -179,7 +179,7 @@ export default async function CertificatesPage() {
                 })}
             </div>
 
-            <div className="text-center pt-4">
+            <div className="text-center pt-1 md:pt-4">
                 <Link
                     href="/dashboard/academy"
                     className="inline-flex items-center gap-2 px-6 py-3 text-sm font-bold text-gray-600 dark:text-gray-300 bg-white dark:bg-[#1E2028] border border-dashboard rounded-lg shadow-sm hover:border-gold/40 hover:text-amber-600 dark:hover:text-gold transition-colors"

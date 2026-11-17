@@ -22,7 +22,7 @@ export function LoyaltyEligibilityCard({
   const target3Met = Boolean(selectedAccount && eligibility.hasPartnerBrokerAccount);
 
   return (
-    <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-5 sm:p-6 shadow-sm space-y-4">
+    <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-3.5 sm:p-6 shadow-sm space-y-2 sm:space-y-4">
       <div>
         <h3 className="text-base font-black text-gray-900 dark:text-white tracking-tight">
           Qualifying Rules & Payout Criteria

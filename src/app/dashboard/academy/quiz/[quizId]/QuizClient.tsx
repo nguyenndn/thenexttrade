@@ -107,8 +107,8 @@ export function QuizClient({
     const maxQuestionIndex = Math.max(0, quiz.questions.length - 1);
     const initialQuestionIndex =
         typeof draft?.currentQuestion === "number" &&
-        Number.isInteger(draft.currentQuestion) &&
-        draft.currentQuestion >= 0
+            Number.isInteger(draft.currentQuestion) &&
+            draft.currentQuestion >= 0
             ? Math.min(draft.currentQuestion, maxQuestionIndex)
             : 0;
     const [currentQuestion, setCurrentQuestion] = useState(
@@ -242,10 +242,10 @@ export function QuizClient({
                         <span>
                             {moduleLessons.length > 0
                                 ? Math.round(
-                                      (completedInModule /
-                                          moduleLessons.length) *
-                                          100
-                                  )
+                                    (completedInModule /
+                                        moduleLessons.length) *
+                                    100
+                                )
                                 : 0}
                             %
                         </span>
@@ -414,9 +414,9 @@ export function QuizClient({
     );
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-2 md:space-y-4">
             {/* Breadcrumb */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4">
                 <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm min-w-0 flex-wrap font-semibold">
                     <Link
                         href="/dashboard/academy"
@@ -444,7 +444,7 @@ export function QuizClient({
                         </>
                     )}
                 </div>
-                <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm font-bold w-full sm:w-auto">
+                <div className="flex items-center gap-1.5 sm:gap-3 text-xs sm:text-sm font-bold w-full sm:w-auto">
                     {firstLessonSlug && (
                         <Link
                             href={`/dashboard/academy/lessons/${firstLessonSlug}`}
@@ -462,9 +462,9 @@ export function QuizClient({
             </div>
 
             {/* Grid: Main Content (2 cols) + Sidebar (1 col) */}
-            <div className="grid lg:grid-cols-3 gap-4">
+            <div className="grid lg:grid-cols-3 gap-2 md:gap-4">
                 {/* ── Main Content ── */}
-                <div className="lg:col-span-2 space-y-4">
+                <div className="lg:col-span-2 space-y-2 md:space-y-4">
                     {/* Result Screen */}
                     {result ? (
                         <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm overflow-hidden">
@@ -609,12 +609,12 @@ export function QuizClient({
 
                                 {/* Question */}
                                 {question && (
-                                    <div className="p-4 sm:p-6">
-                                        <h2 className="text-lg font-bold text-gray-700 dark:text-white mb-6">
+                                    <div className="p-3.5 sm:p-6">
+                                        <h2 className="text-lg font-bold text-gray-700 dark:text-white mb-4 sm:mb-6">
                                             {question.text}
                                         </h2>
 
-                                        <div className="space-y-3">
+                                        <div className="space-y-2 sm:space-y-3">
                                             {question.options.map(
                                                 (option, idx) => {
                                                     const isSelected =
@@ -667,7 +667,7 @@ export function QuizClient({
                             </div>
 
                             {/* Navigation */}
-                            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-4 sm:p-6 flex items-center justify-between gap-4">
+                            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-3.5 sm:p-6 flex items-center justify-between gap-2 sm:gap-4">
                                 <Button
                                     variant="outline"
                                     onClick={handlePrev}
@@ -692,8 +692,8 @@ export function QuizClient({
                                                 idx === currentQuestion
                                                     ? "bg-primary scale-125 hover:bg-primary"
                                                     : answers[q.id]
-                                                      ? "bg-primary/40 hover:bg-primary/60"
-                                                      : "bg-gray-200 dark:bg-white/10 hover:bg-gray-300"
+                                                        ? "bg-primary/40 hover:bg-primary/60"
+                                                        : "bg-gray-200 dark:bg-white/10 hover:bg-gray-300"
                                             )}
                                         />
                                     ))}
@@ -735,37 +735,37 @@ export function QuizClient({
             {/* Mobile Sidebar Drawer */}
             <AnimatePresence>
                 {mobileMenuOpen && (
-                <motion.div
-                    variants={backdropVariants}
-                    initial="initial"
-                    animate="animate"
-                    exit="exit"
-                    transition={{ type: "tween", duration: 0.2 }}
-                    className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm lg:hidden"
-                    onClick={() => setMobileMenuOpen(false)}
-                >
                     <motion.div
-                        initial={{ x: "100%" }}
-                        animate={{ x: 0 }}
-                        exit={{ x: "100%" }}
-                        transition={SPRING_SOFT}
-                        className="absolute right-0 top-0 bottom-0 w-3/4 max-w-xs bg-white dark:bg-[#1E2028] shadow-2xl p-6 overflow-y-auto"
-                        onClick={(e) => e.stopPropagation()}
+                        variants={backdropVariants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        transition={{ type: "tween", duration: 0.2 }}
+                        className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm lg:hidden"
+                        onClick={() => setMobileMenuOpen(false)}
                     >
-                        <div className="flex justify-between items-center mb-6">
-                            <h3 className="font-bold text-lg">Quiz Info</h3>
-                            <Button
-                                variant="outline"
-                                size="icon"
-                                onClick={() => setMobileMenuOpen(false)}
-                                aria-label="Close menu"
-                            >
-                                <X size={20} />
-                            </Button>
-                        </div>
-                        <div className="space-y-4">{sidebarContent}</div>
+                        <motion.div
+                            initial={{ x: "100%" }}
+                            animate={{ x: 0 }}
+                            exit={{ x: "100%" }}
+                            transition={SPRING_SOFT}
+                            className="absolute right-0 top-0 bottom-0 w-3/4 max-w-xs bg-white dark:bg-[#1E2028] shadow-2xl p-6 overflow-y-auto"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <div className="flex justify-between items-center mb-6">
+                                <h3 className="font-bold text-lg">Quiz Info</h3>
+                                <Button
+                                    variant="outline"
+                                    size="icon"
+                                    onClick={() => setMobileMenuOpen(false)}
+                                    aria-label="Close menu"
+                                >
+                                    <X size={20} />
+                                </Button>
+                            </div>
+                            <div className="space-y-4">{sidebarContent}</div>
+                        </motion.div>
                     </motion.div>
-                </motion.div>
                 )}
             </AnimatePresence>
 

@@ -81,13 +81,13 @@ export function AnalyticsDashboard({
     const isEmpty = !data || data.summary.totalTrades === 0;
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-2 md:space-y-4">
             {isEmpty ? (
                 <AnalyticsEmptyState />
             ) : (
                 <>
                     {/* Charts Row 1 - Full Width */}
-                    <div className="grid grid-cols-1 gap-4">
+                    <div className="grid grid-cols-1 gap-2 md:gap-4">
                         <TargetProgressWidget accountId={accountId} currency={data.currency} />
                         <EquityCurve
                             data={data.equityCurve}
@@ -104,7 +104,7 @@ export function AnalyticsDashboard({
                     </div>
 
                     {/* Charts Row 2 - Two Columns */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 md:gap-4">
                         <PairPerformance data={data.pairPerformance} currency={data.currency} />
                         <DayPerformance data={data.dayOfWeekPerformance} currency={data.currency} />
                     </div>
@@ -116,9 +116,9 @@ export function AnalyticsDashboard({
 
 export function AnalyticsLoadingSkeleton() {
     return (
-        <div className="space-y-4 animate-pulse">
+        <div className="space-y-2 md:space-y-4 animate-pulse">
             <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded-lg w-48" />
-            <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-5 gap-2 md:gap-4">
                 {[...Array(5)].map((_, i) => (
                     <div
                         key={i}
@@ -126,7 +126,7 @@ export function AnalyticsLoadingSkeleton() {
                     />
                 ))}
             </div>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 md:gap-4">
                 <div className="h-80 bg-gray-200 dark:bg-gray-700 rounded-lg" />
                 <div className="h-80 bg-gray-200 dark:bg-gray-700 rounded-lg" />
             </div>
@@ -136,7 +136,7 @@ export function AnalyticsLoadingSkeleton() {
 
 function AnalyticsEmptyState() {
     return (
-        <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-lg border-2 border-dashed border-dashboard mt-8">
+        <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-xl border-2 border-dashed border-dashboard mt-2 md:mt-8">
             {/* Animated BarChart Icon */}
             <div className="relative w-20 h-20 mb-6 mx-auto">
                 <div className="absolute inset-0 rounded-full bg-primary/10 dark:bg-primary/5 animate-[analytics-ping_3s_cubic-bezier(0,0,0.2,1)_infinite]" />

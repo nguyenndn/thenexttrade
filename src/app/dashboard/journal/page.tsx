@@ -206,7 +206,7 @@ export default async function JournalPage({
         ]);
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-2 md:space-y-4">
             <JournalList
                 initialEntries={entries}
                 meta={meta}

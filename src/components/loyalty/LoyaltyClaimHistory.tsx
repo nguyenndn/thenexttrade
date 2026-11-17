@@ -45,9 +45,9 @@ export function LoyaltyClaimHistory({ claims = [] }: LoyaltyClaimHistoryProps) {
   };
 
   return (
-    <div className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-5 sm:p-7 shadow-sm space-y-6">
+    <div className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-3.5 sm:p-7 shadow-sm space-y-3 sm:space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-gray-100 dark:border-white/10">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5 sm:gap-4 pb-3 sm:pb-4 border-b border-gray-100 dark:border-white/10">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="p-1 rounded-lg bg-gold/10 text-amber-600 dark:text-gold border border-gold/20">

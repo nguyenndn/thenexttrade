@@ -11,7 +11,7 @@ interface SystemsListProps {
 
 export function SystemsList({ products, isLocked }: SystemsListProps) {
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2 sm:gap-5">
             {products.length === 0 ? (
                 <div className="col-span-1 sm:col-span-2 lg:col-span-3 2xl:col-span-4 text-center py-16 bg-white dark:bg-[#1E2028] rounded-xl border-2 border-dashed border-dashboard">
                     {/* Animated Bot Icon */}

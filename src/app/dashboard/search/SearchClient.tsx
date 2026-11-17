@@ -126,7 +126,7 @@ export default function SearchClient() {
     };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-2 md:space-y-6">
             {/* Header */}
             <PageHeader
                 title="Search Results"
@@ -140,7 +140,7 @@ export default function SearchClient() {
             {/* Interactive Search Bar */}
             <form
                 onSubmit={handleFormSubmit}
-                className="rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 p-5 shadow-sm"
+                className="rounded-xl bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 p-3.5 sm:p-5 shadow-sm"
             >
                 <label
                     htmlFor="dashboard-search-query"
@@ -148,7 +148,7 @@ export default function SearchClient() {
                 >
                     Search Platform Index
                 </label>
-                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
                     <div className="relative flex-1 flex items-center rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-gray-200 dark:border-white/10 focus-within:border-gold focus-within:ring-2 focus-within:ring-gold/15 transition-all px-3.5 py-2">
                         <Search
                             size={18}
@@ -192,7 +192,7 @@ export default function SearchClient() {
             </form>
 
             {/* Results Area */}
-            <div className="space-y-4">
+            <div className="space-y-2 md:space-y-4">
                 {isLoading ? (
                     <div className="flex justify-center py-12">
                         <Loader2
@@ -203,7 +203,7 @@ export default function SearchClient() {
                 ) : hasSearched && activeQuery ? (
                     <>
                         {results.length > 0 ? (
-                            <div className="grid gap-3">
+                            <div className="grid gap-2 md:gap-3">
                                 {results.map((result) => (
                                     <Link
                                         key={`${result.type}-${result.id}`}

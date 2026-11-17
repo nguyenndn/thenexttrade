@@ -328,11 +328,11 @@ export function DashboardFilter({
     return (
         <div
             className={cn(
-                "flex flex-col md:flex-row md:flex-nowrap items-stretch md:items-center gap-3 w-full md:w-auto",
+                "flex flex-col md:flex-row md:flex-nowrap items-stretch md:items-center gap-1.5 md:gap-3 w-full md:w-auto",
                 className
             )}
         >
-            <div className="flex items-center gap-2 w-full md:w-auto flex-1 md:flex-initial">
+            <div className="flex items-center gap-1.5 sm:gap-2 w-full md:w-auto flex-1 md:flex-initial">
                 <Button
                     onClick={handleSyncNow}
                     disabled={

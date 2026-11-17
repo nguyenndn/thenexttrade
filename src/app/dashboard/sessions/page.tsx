@@ -46,13 +46,13 @@ export default async function SessionAnalysisPage({
     const tradingDataState = await getUserTradingDataState(user.id);
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-2 md:space-y-4">
             <PageHeader
                 title="Sessions"
                 description="Analyze your performance by market session."
                 hideDescriptionOnMobile
             />
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-4">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-2 lg:gap-3 mb-0 md:mb-4">
                 <TabBar tabs={ANALYTICS_TABS} />
                 {tradingDataState.hasTradeData && (
                     <DashboardFilter
@@ -64,8 +64,8 @@ export default async function SessionAnalysisPage({
 
             <Suspense
                 fallback={
-                    <div className="space-y-4">
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="space-y-2 md:space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-4">
                             {[1, 2, 3].map((i) => (
                                 <div
                                     key={i}

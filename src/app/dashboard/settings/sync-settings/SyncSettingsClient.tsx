@@ -231,7 +231,7 @@ export default function SyncSettingsClient() {
     const progressPercent = Math.round((completedCount / STEPS.length) * 100);
 
     return (
-        <div className="w-full space-y-5">
+        <div className="w-full space-y-2 md:space-y-5">
             {/* ═══════════════════════════════════════════════════════════════════
  HERO BANNER
  ═══════════════════════════════════════════════════════════════════ */}
@@ -240,7 +240,7 @@ export default function SyncSettingsClient() {
                 <div className="absolute -top-24 -right-24 w-64 h-64 bg-amber-500/10 dark:bg-amber-500/15 rounded-full blur-[80px] pointer-events-none" />
                 <div className="absolute -bottom-20 -left-20 w-48 h-48 bg-amber-500/5 dark:bg-amber-500/10 rounded-full blur-[60px] pointer-events-none" />
 
-                <div className="relative px-4 sm:px-6 py-5 sm:py-6">
+                <div className="relative px-3.5 sm:px-6 py-4 sm:py-6">
                     <div className="flex items-start gap-4">
                         <div className="w-12 h-12 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
                             <Unplug size={22} className="text-emerald-500" />
@@ -292,8 +292,8 @@ export default function SyncSettingsClient() {
  API KEY MANAGEMENT
  ═══════════════════════════════════════════════════════════════════ */}
             <div className="rounded-xl border border-dashboard bg-white dark:bg-[#1E2028] overflow-hidden shadow-sm">
-                <div className="px-4 sm:px-6 py-5">
-                    <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
+                <div className="px-3.5 sm:px-6 py-4 sm:py-5">
+                    <div className="flex flex-wrap items-center justify-between gap-2.5 sm:gap-3 mb-3.5 sm:mb-5">
                         <div className="flex items-center gap-2.5">
                             <div className="w-8 h-8 rounded-lg bg-amber-500/10 dark:bg-amber-500/15 flex items-center justify-center ring-1 ring-amber-200/50 dark:ring-amber-500/20">
                                 <Key size={15} className="text-amber-500" />
@@ -303,7 +303,7 @@ export default function SyncSettingsClient() {
                             </h2>
                         </div>
                         {keyData.hasKey && (
-                            <div className="flex items-center gap-2 w-full sm:w-auto">
+                            <div className="flex items-center gap-1.5 sm:gap-2 w-full sm:w-auto">
                                 <Button
                                     onClick={generateKey}
                                     variant="outline"
@@ -464,9 +464,9 @@ export default function SyncSettingsClient() {
  QUICK START (INTERACTIVE ONBOARDING CHECKLIST)
  ═══════════════════════════════════════════════════════════════════ */}
             <div className="rounded-xl border border-dashboard bg-white dark:bg-[#1E2028] overflow-hidden shadow-sm">
-                <div className="px-4 sm:px-6 py-5">
+                <div className="px-3.5 sm:px-6 py-4 sm:py-5">
                     {/* Header with Progress Indicator */}
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-4 mb-3.5 sm:mb-5">
                         <div className="flex items-center gap-2.5">
                             <div className="w-8 h-8 rounded-lg bg-gold/10 border border-gold/20 flex items-center justify-center">
                                 <Download size={15} className="text-amber-600 dark:text-gold" />
@@ -508,7 +508,7 @@ export default function SyncSettingsClient() {
                     </div>
 
                     {/* Interactive Step Items */}
-                    <div className="space-y-2.5">
+                    <div className="space-y-2 sm:space-y-2.5">
                         {STEPS.map((stepItem) => {
                             const isDone = stepItem.done;
                             return (
@@ -587,7 +587,7 @@ export default function SyncSettingsClient() {
                     </div>
 
                     {/* Trading Systems Link */}
-                    <div className="mt-6 pt-4 border-t border-dashboard space-y-3">
+                    <div className="mt-3 sm:mt-6 pt-3 sm:pt-4 border-t border-dashboard space-y-2.5 sm:space-y-3">
                         <div className="flex flex-wrap gap-3">
                             <Link
                                 href="/dashboard/trading-systems"

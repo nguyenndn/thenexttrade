@@ -199,9 +199,9 @@ export function DashboardHero({
                 return (
                     <>
                         <div className="flex items-center justify-center gap-3">
-                            <div className="relative w-14 h-14">
+                            <div className="relative w-11 h-11 sm:w-14 sm:h-14">
                                 <svg
-                                    className="w-14 h-14 -rotate-90"
+                                    className="w-11 h-11 sm:w-14 sm:h-14 -rotate-90"
                                     viewBox="0 0 56 56"
                                 >
                                     <circle
@@ -228,7 +228,7 @@ export function DashboardHero({
                                         className="transition-[stroke-dasharray] duration-500 ease-out"
                                     />
                                 </svg>
-                                <span className="absolute inset-0 flex items-center justify-center text-xs font-black text-gray-700 dark:text-white">
+                                <span className="absolute inset-0 flex items-center justify-center text-[11px] sm:text-xs font-black text-gray-700 dark:text-white">
                                     <NumberTicker
                                         value={winRate}
                                         suffix="%"
@@ -246,9 +246,9 @@ export function DashboardHero({
                 return (
                     <>
                         <div className="flex items-center justify-center gap-3">
-                            <div className="relative w-14 h-14">
+                            <div className="relative w-11 h-11 sm:w-14 sm:h-14">
                                 <svg
-                                    className="w-14 h-14 -rotate-90"
+                                    className="w-11 h-11 sm:w-14 sm:h-14 -rotate-90"
                                     viewBox="0 0 56 56"
                                 >
                                     <circle
@@ -277,7 +277,7 @@ export function DashboardHero({
                                         />
                                     )}
                                 </svg>
-                                <span className="absolute inset-0 flex items-center justify-center text-xs font-black text-gray-700 dark:text-white">
+                                <span className="absolute inset-0 flex items-center justify-center text-[11px] sm:text-xs font-black text-gray-700 dark:text-white">
                                     {tradeScore !== null ? (
                                         <NumberTicker
                                             value={tradeScore}
@@ -506,10 +506,10 @@ export function DashboardHero({
     return (
         <div
             id="onborda-hero"
-            className="relative overflow-hidden rounded-xl bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 px-4 py-3 sm:px-6 sm:py-4 shadow-sm"
+            className="relative overflow-hidden rounded-xl bg-white dark:bg-[#151925] border border-dashboard dark:border-white/10 p-0 lg:px-6 lg:py-4 shadow-sm"
         >
 
-            <div className="relative z-10 grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            <div className="relative z-10 grid grid-cols-2 lg:grid-cols-4 gap-0 lg:gap-6 [&>*:nth-child(even)]:border-l [&>*:nth-child(n+3)]:border-t lg:[&>*:nth-child(n+3)]:border-t-0 lg:[&>*]:border-l lg:[&>*:first-child]:border-l-0 [&>*]:border-dashboard/70 dark:[&>*]:border-white/[0.08]">
                 {heroWidgets.map((type, idx) => {
                     const config = HERO_WIDGETS_CONFIG[type];
                     return (
@@ -520,18 +520,16 @@ export function DashboardHero({
                             onDragOver={(e) => handleDragOver(e, idx)}
                             onDragEnd={handleDragEnd}
                             className={cn(
-                                "text-center relative group/hero-card rounded-lg transition-all duration-300 outline outline-2 outline-dashed",
+                                "text-center relative group/hero-card rounded-none lg:rounded-lg transition-all duration-300 outline outline-2 outline-dashed min-w-0",
                                 isEditable
-                                    ? "outline-amber-500/40 p-2 bg-amber-500/[0.02] -m-2 cursor-grab active:cursor-grabbing"
-                                    : "outline-amber-500/0",
+                                    ? "outline-amber-500/40 p-2.5 lg:p-2 bg-amber-500/[0.02] lg:-m-2 cursor-grab active:cursor-grabbing"
+                                    : "outline-amber-500/0 py-2 px-2.5 sm:py-3 sm:px-4 lg:p-0",
                                 draggedIndex === idx &&
-                                    "opacity-40 scale-[0.98] outline-amber-500 bg-amber-500/5",
-                                idx > 0 &&
-                                    "border-l-0 lg:border-l border-gray-200 dark:border-gray-800"
+                                    "opacity-40 scale-[0.98] outline-amber-500 bg-amber-500/5"
                             )}
                         >
-                            <div className="mb-1.5 flex items-center justify-center gap-1.5">
-                                <p className="text-xs font-bold uppercase tracking-wider text-gray-600 dark:text-gray-300">
+                            <div className="mb-1 sm:mb-1.5 flex items-center justify-center gap-1 sm:gap-1.5">
+                                <p className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-gray-600 dark:text-gray-300 truncate">
                                     {config.label}
                                 </p>
                                 <MetricHelp metricId={config.metricId as any} />
@@ -589,7 +587,7 @@ export function DashboardHero({
                                 )}
                             </div>
 
-                            <div className="h-16 flex flex-col items-center justify-center">
+                            <div className="min-h-[44px] sm:h-16 flex flex-col items-center justify-center">
                                 {renderWidgetContent(type)}
                             </div>
                         </div>

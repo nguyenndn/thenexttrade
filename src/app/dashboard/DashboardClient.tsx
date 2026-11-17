@@ -160,13 +160,13 @@ export default function DashboardClient(data: DashboardPageData) {
                 />
             </div>
 
-            <div className="mt-4 space-y-4 lg:mt-5 lg:space-y-5">
+            <div className="mt-2 space-y-2 lg:mt-5 lg:space-y-5">
                 {/* Sample Mode Active Banner */}
                 <SampleModeBanner />
 
                 {/* Active Experiment Banner */}
                 {effectiveData.growthViewModel?.activeExperiment && (
-                    <div className="mb-4">
+                    <div className="mb-0 lg:mb-4">
                         <ExperimentProgress
                             experiment={
                                 effectiveData.growthViewModel.activeExperiment
@@ -178,7 +178,7 @@ export default function DashboardClient(data: DashboardPageData) {
                 {/* Completed Experiment Result Card */}
                 {!effectiveData.growthViewModel?.activeExperiment &&
                     effectiveData.growthViewModel?.completedExperiment && (
-                        <div className="mb-4">
+                        <div className="mb-0 lg:mb-4">
                             <ExperimentResult
                                 experiment={
                                     effectiveData.growthViewModel

@@ -71,7 +71,7 @@ export function Header({
 
     return (
         <>
-            <header className="mx-3 mt-2.5 mb-2.5 sm:mx-4 sm:mt-3 sm:mb-3 rounded-xl bg-white/100 dark:bg-[#1E2028] shadow-sm border border-dashboard h-14 sm:h-16 px-3 sm:px-4 lg:px-6 flex items-center justify-between gap-2 z-40 relative transition-all duration-100 ease-in-out">
+            <header className="mx-2.5 mt-2 mb-2 sm:mx-4 sm:mt-3 sm:mb-3 rounded-xl bg-white/100 dark:bg-[#1E2028] shadow-sm border border-dashboard h-14 sm:h-16 px-3 sm:px-4 lg:px-6 flex items-center justify-between gap-2 z-40 relative transition-all duration-100 ease-in-out">
                 {/* Left Section: Toggle + Logo */}
                 <div className="flex items-center gap-2 sm:gap-4 min-w-0">
                     {/* Desktop Toggle + Logo (Toggle FIRST) */}

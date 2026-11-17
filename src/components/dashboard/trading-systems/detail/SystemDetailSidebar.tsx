@@ -35,7 +35,7 @@ export function SystemDetailSidebar({
                 </span>
             </div>
 
-            <div className="flex md:flex-col overflow-x-auto p-2.5 gap-1 scrollbar-hide md:sticky md:top-4">
+            <div className="flex md:flex-col overflow-x-auto p-2 md:p-2.5 gap-1.5 md:gap-1 scrollbar-hide md:sticky md:top-4">
                 {items.map((item) => {
                     const isActive = activeTab === item.id;
                     const Icon = item.icon;

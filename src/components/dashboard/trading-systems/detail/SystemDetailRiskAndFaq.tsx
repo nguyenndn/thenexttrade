@@ -12,7 +12,7 @@ export function SystemDetailRiskSection({
     riskControls?: SystemRiskControl[];
 }) {
     return (
-        <div className="space-y-5">
+        <div className="space-y-2 md:space-y-5">
             <div className="p-4 rounded-xl border border-amber-500/30 bg-amber-500/[0.05] dark:bg-amber-500/[0.08] flex items-start gap-3.5">
                 <AlertTriangle
                     className="text-amber-500 shrink-0 mt-0.5"
@@ -85,7 +85,7 @@ export function SystemDetailFaqSection({ faqs }: { faqs?: SystemFaq[] }) {
     }
 
     return (
-        <div className="space-y-3">
+        <div className="space-y-2 md:space-y-3">
             {faqs.map((faq, idx) => (
                 <div
                     key={idx}

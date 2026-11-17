@@ -191,7 +191,7 @@ export function NotificationsList({ initialNotifications }: Props) {
                                     id={`notification-${n.id}`}
                                     onClick={() => toggleExpand(n.id)}
                                     className={cn(
-                                        "group p-3.5 sm:p-5 hover:bg-gray-50/80 dark:hover:bg-white/[0.03] transition-all duration-300 cursor-pointer border-l-2",
+                                        "group p-3 sm:p-5 hover:bg-gray-50/80 dark:hover:bg-white/[0.03] transition-all duration-300 cursor-pointer border-l-2",
                                         expandedIds[n.id]
                                             ? "bg-amber-500/[0.02] dark:bg-amber-500/[0.01] border-l-amber-500"
                                             : "border-l-transparent"

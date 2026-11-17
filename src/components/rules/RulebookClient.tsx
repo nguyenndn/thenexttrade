@@ -8,9 +8,18 @@ import {
     AlertCircle,
     RefreshCw,
     BarChart2,
+    ChevronDown,
+    Check,
 } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/Tabs";
 import { Button } from "@/components/ui/Button";
+import {
+    DropdownMenu,
+    DropdownMenuTrigger,
+    DropdownMenuContent,
+    DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import { cn } from "@/lib/utils";
 import { TradingRuleCard } from "./TradingRuleCard";
 import { TradingRuleModal } from "./TradingRuleModal";
 import { addStarterRules, getRulesComplianceStats } from "@/actions/rulebook";
@@ -91,14 +100,19 @@ export function RulebookClient({
             ? initialRules
             : initialRules.filter((r) => r.category === selectedCategory);
 
+    const currentCategoryLabel =
+        categories.find((c) => c.value === selectedCategory)?.label ??
+        "All Rules";
+
     return (
         <>
             <PageHeader
                 title="Trading Rulebook & Compliance"
                 description="Establish clear risk parameters, entry filters, and audit your rule compliance."
                 hideDescriptionOnMobile
+                className="hidden md:flex page-header-mobile-empty"
             >
-                <div className="flex items-center gap-3">
+                <div className="hidden md:flex items-center gap-3">
                     {activeTab === "rulebook" && (
                         <Button
                             variant="primary"
@@ -121,36 +135,95 @@ export function RulebookClient({
                 onValueChange={setActiveTab}
                 tabsId="rules-tabs"
             >
-                <div className="overflow-x-auto scrollbar-hide flex">
-                    <TabsList className="bg-[#F1F3F5] dark:bg-[#1A1D27] border border-dashboard rounded-lg p-1 gap-1 shrink-0">
-                        <TabsTrigger
-                            value="rulebook"
-                            className="rounded-lg px-3 sm:px-4 py-1.5 text-sm font-bold transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2 border whitespace-nowrap flex-1 text-center lg:flex-none border-transparent hover:border-transparent text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
-                            activeIndicatorClassName="!bg-gradient-to-r from-gold to-amber-600 shadow-md shadow-amber-500/20 border-0 !-inset-[1px]"
-                            activeTextClassName="!text-white"
-                        >
-                            <Shield size={14} className="sm:w-4 sm:h-4" />
-                            Rulebook
-                        </TabsTrigger>
-                        <TabsTrigger
-                            value="compliance"
-                            className="rounded-lg px-3 sm:px-4 py-1.5 text-sm font-bold transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2 border whitespace-nowrap flex-1 text-center lg:flex-none border-transparent hover:border-transparent text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
-                            activeIndicatorClassName="!bg-gradient-to-r from-gold to-amber-600 shadow-md shadow-amber-500/20 border-0 !-inset-[1px]"
-                            activeTextClassName="!text-white"
-                        >
-                            <ClipboardCheck
-                                size={14}
-                                className="sm:w-4 sm:h-4"
-                            />
+                <TabsList className="w-full grid grid-cols-2 gap-0 bg-transparent dark:bg-transparent p-0 rounded-none border-0 border-b border-dashboard overflow-visible sm:w-auto sm:inline-flex sm:bg-[#F1F3F5] sm:dark:bg-[#1A1D27] sm:border sm:rounded-lg sm:p-1 sm:gap-1">
+                    <TabsTrigger
+                        value="rulebook"
+                        className="w-full sm:w-auto justify-center rounded-none sm:rounded-lg px-2 sm:px-4 py-2.5 sm:py-1.5 text-xs sm:text-sm font-bold transition-all duration-300 flex items-center gap-1.5 sm:gap-2 border-0 sm:border whitespace-nowrap border-transparent hover:border-transparent min-w-0"
+                        activeIndicatorClassName="inset-[auto_0_0_0] h-[2px] !bg-gold shadow-none rounded-full border-0 sm:!-inset-[1px] sm:h-auto sm:rounded-lg sm:shadow-md sm:shadow-amber-500/20"
+                        activeTextClassName="text-amber-600 dark:text-amber-400 sm:!text-white"
+                    >
+                        <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+                        <span className="truncate">Rulebook</span>
+                    </TabsTrigger>
+                    <TabsTrigger
+                        value="compliance"
+                        className="w-full sm:w-auto justify-center rounded-none sm:rounded-lg px-2 sm:px-4 py-2.5 sm:py-1.5 text-xs sm:text-sm font-bold transition-all duration-300 flex items-center gap-1.5 sm:gap-2 border-0 sm:border whitespace-nowrap border-transparent hover:border-transparent min-w-0"
+                        activeIndicatorClassName="inset-[auto_0_0_0] h-[2px] !bg-gold shadow-none rounded-full border-0 sm:!-inset-[1px] sm:h-auto sm:rounded-lg sm:shadow-md sm:shadow-amber-500/20"
+                        activeTextClassName="text-amber-600 dark:text-amber-400 sm:!text-white"
+                    >
+                        <ClipboardCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+                        <span className="sm:hidden truncate">Compliance</span>
+                        <span className="hidden sm:inline">
                             Compliance Analytics
-                        </TabsTrigger>
-                    </TabsList>
-                </div>
+                        </span>
+                    </TabsTrigger>
+                </TabsList>
 
                 {/* --- RULEBOOK TAB --- */}
-                <TabsContent value="rulebook" className="space-y-6">
-                    {/* Category Filter Selector */}
-                    <div className="flex flex-nowrap sm:flex-wrap gap-1.5 overflow-x-auto scrollbar-hide max-w-full pb-2.5 sm:pb-4 border-b border-dashboard/80 dark:border-white/[0.08]">
+                <TabsContent value="rulebook" className="mt-2 md:mt-6 space-y-2 md:space-y-6">
+                    {/* Mobile Rulebook Toolbar (< md): Category Dropdown + Add Rule CTA */}
+                    <div className="flex md:hidden items-center justify-between gap-2 bg-white dark:bg-[#1E2028] p-2 rounded-xl border border-dashboard shadow-sm">
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="smd"
+                                    className="flex-1 justify-between px-3 font-semibold text-xs text-gray-700 dark:text-gray-200 border-dashboard bg-gray-50/80 dark:bg-[#151925] min-w-0"
+                                >
+                                    <span className="truncate">
+                                        Category:{" "}
+                                        <span className="text-gold dark:text-amber-400 font-bold">
+                                            {currentCategoryLabel}
+                                        </span>
+                                    </span>
+                                    <ChevronDown size={14} className="text-gray-400 shrink-0 ml-1" />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent
+                                align="start"
+                                className="w-56 rounded-xl bg-white dark:bg-[#1E2028] border border-dashboard"
+                            >
+                                {categories.map((cat) => (
+                                    <DropdownMenuItem
+                                        key={cat.value}
+                                        onClick={() =>
+                                            setSelectedCategory(cat.value)
+                                        }
+                                        className={cn(
+                                            "flex items-center justify-between gap-2 text-xs font-semibold cursor-pointer rounded-lg",
+                                            selectedCategory === cat.value &&
+                                                "text-amber-600 dark:text-gold font-bold bg-amber-500/10"
+                                        )}
+                                    >
+                                        <span>{cat.label}</span>
+                                        {selectedCategory === cat.value && (
+                                            <Check
+                                                size={14}
+                                                className="text-amber-600 dark:text-gold shrink-0"
+                                            />
+                                        )}
+                                    </DropdownMenuItem>
+                                ))}
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+
+                        <Button
+                            variant="primary"
+                            size="smd"
+                            onClick={() => {
+                                setRuleToEdit(null);
+                                setIsRuleModalOpen(true);
+                            }}
+                            className="shrink-0 flex items-center gap-1.5 shadow-sm px-3"
+                        >
+                            <Plus size={15} strokeWidth={2.5} />
+                            <span>Add Rule</span>
+                        </Button>
+                    </div>
+
+                    {/* Desktop Category Filter Selector (>= md) */}
+                    <div className="hidden md:flex flex-wrap gap-1.5 pb-4 border-b border-dashboard/80 dark:border-white/[0.08]">
                         {categories.map((cat) => (
                             <Button
                                 key={cat.value}
@@ -170,7 +243,7 @@ export function RulebookClient({
                     </div>
 
                     {filteredRules.length === 0 ? (
-                        <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm max-w-xl mx-auto mt-6">
+                        <div className="text-center py-12 sm:py-16 bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm max-w-xl mx-auto mt-0 md:mt-6">
                             <div className="w-12 h-12 rounded-lg bg-amber-50 dark:bg-gold/15 flex items-center justify-center mx-auto mb-4 text-amber-600 dark:text-gold">
                                 <Shield size={24} />
                             </div>
@@ -181,7 +254,7 @@ export function RulebookClient({
                                 Define entry checklists or risk boundaries.
                                 Alternatively, set up starter rules below.
                             </p>
-                            <div className="mt-6 flex flex-col sm:flex-row justify-center gap-3">
+                            <div className="mt-5 sm:mt-6 flex flex-col sm:flex-row justify-center gap-2 sm:gap-3 px-4">
                                 <Button
                                     variant="outline"
                                     size="smd"
@@ -206,7 +279,7 @@ export function RulebookClient({
                             </div>
                         </div>
                     ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-6">
                             {filteredRules.map((rule) => (
                                 <TradingRuleCard
                                     key={rule.id}
@@ -220,7 +293,7 @@ export function RulebookClient({
                 </TabsContent>
 
                 {/* --- COMPLIANCE TAB --- */}
-                <TabsContent value="compliance">
+                <TabsContent value="compliance" className="mt-2 md:mt-6">
                     {loadingStats ? (
                         <div className="flex flex-col items-center justify-center py-16 space-y-3">
                             <RefreshCw
@@ -239,11 +312,11 @@ export function RulebookClient({
                             </p>
                         </div>
                     ) : (
-                        <div className="space-y-6">
+                        <div className="space-y-2 md:space-y-6">
                             {/* Compliance Overview Grid */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-6">
                                 {/* Stats Table */}
-                                <div className="bg-white dark:bg-[#1E2028] border border-dashboard/80 dark:border-white/[0.08] p-5 rounded-xl">
+                                <div className="bg-white dark:bg-[#1E2028] border border-dashboard/80 dark:border-white/[0.08] p-3.5 sm:p-5 rounded-xl">
                                     <h3 className="text-sm font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
                                         <BarChart2
                                             size={16}
@@ -298,7 +371,7 @@ export function RulebookClient({
                                 </div>
 
                                 {/* Focus / Advice panel */}
-                                <div className="bg-white dark:bg-[#1E2028] border border-dashboard/80 dark:border-white/[0.08] p-5 rounded-xl flex flex-col justify-between">
+                                <div className="bg-white dark:bg-[#1E2028] border border-dashboard/80 dark:border-white/[0.08] p-3.5 sm:p-5 rounded-xl flex flex-col justify-between">
                                     <div>
                                         <h3 className="text-sm font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
                                             <AlertCircle

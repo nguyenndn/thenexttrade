@@ -7,7 +7,8 @@ import {
     AnimatedEveningIcon,
 } from "@/components/dashboard/GreetingIcons";
 import { tradingQuotes } from "@/config/quotes";
-import { Quote } from "lucide-react";
+import { Quote, Crown } from "lucide-react";
+import { useResolvedProStatus } from "@/components/pro/useResolvedProStatus";
 
 // Motivational quotes for new users who haven't started trading yet
 const newUserQuotes = [
@@ -44,6 +45,8 @@ export function GreetingHeader({
     currentAccountId: _currentAccountId,
     hideFilters = false,
 }: GreetingHeaderProps) {
+    const { loading: proLoading, currentStatus } = useResolvedProStatus();
+    const isVipActive = !proLoading && currentStatus === "ACTIVE";
     const [mounted, setMounted] = useState(false);
     const [greeting, setGreeting] = useState({
         text: "Welcome",
@@ -122,11 +125,22 @@ export function GreetingHeader({
             >
                 <div className="flex items-center gap-2 mb-0 md:mb-1.5">
                     {greeting.icon}
-                    <h1 className="text-lg sm:text-xl font-black text-gray-700 dark:text-white tracking-tight">
-                        {greeting.text},{" "}
-                        <span className="text-amber-500 dark:text-amber-400 uppercase">
-                            {userName}
+                    <h1 className="text-lg sm:text-xl font-black text-gray-700 dark:text-white tracking-tight inline-flex items-baseline flex-wrap gap-1.5">
+                        <span>
+                            {greeting.text},{" "}
+                            <span className="text-amber-500 dark:text-amber-400 uppercase">
+                                {userName}
+                            </span>
                         </span>
+                        {isVipActive && (
+                            <span className="lg:hidden inline-flex items-center gap-0.5 text-[11px] font-extrabold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+                                <Crown
+                                    className="h-3 w-3 shrink-0 -mt-px"
+                                    strokeWidth={2.4}
+                                />
+                                VIP
+                            </span>
+                        )}
                     </h1>
                 </div>
                 <div className="hidden md:flex min-h-[24px] items-start gap-2 max-w-2xl">

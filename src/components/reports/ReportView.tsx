@@ -462,7 +462,7 @@ export function ReportView({
 
     if (reports.length === 0) {
         return (
-            <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-xl border-2 border-dashed border-dashboard mt-8">
+            <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-xl border-2 border-dashed border-dashboard mt-2 md:mt-8">
                 <div className="w-16 h-16 mb-6 mx-auto bg-gold/10 border border-gold/20 rounded-xl flex items-center justify-center">
                     <Calendar
                         size={28}
@@ -493,10 +493,12 @@ export function ReportView({
     const canPrev = currentIndex < reports.length - 1;
     const canNext = currentIndex > 0;
 
+    const NetPnlIcon = report.netPnL >= 0 ? TrendingUp : TrendingDown;
+
     return (
-        <div className="space-y-4">
+        <div className="space-y-2 md:space-y-4">
             {/* Period Navigator */}
-            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard px-5 py-4 shadow-sm hover:shadow-md transition-shadow duration-200 flex items-center justify-between">
+            <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard px-3.5 sm:px-5 py-2.5 sm:py-4 shadow-sm hover:shadow-md transition-shadow duration-200 flex items-center justify-between">
                 <Button
                     variant="ghost"
                     size="sm"
@@ -533,8 +535,99 @@ export function ReportView({
             {/* Weekly Coach Plan checklist */}
             {report.coachPlan && <WeeklyCoachPlan plan={report.coachPlan} />}
 
-            {/* Core Stats Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {/* Core Stats — Mobile Unified 2x2 Matrix (< sm) */}
+            <div className="sm:hidden grid grid-cols-2 rounded-xl border border-dashboard bg-white dark:bg-[#1E2028] shadow-sm overflow-hidden [&>*:nth-child(even)]:border-l [&>*:nth-child(n+3)]:border-t [&>*]:border-dashboard/70 dark:[&>*]:border-white/[0.06]">
+                <div className="py-2 px-2.5 min-w-0 flex items-center justify-between gap-2">
+                    <div className="min-w-0">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 block truncate">
+                            Net P/L
+                        </span>
+                        <p className="text-sm font-black font-mono tabular-nums text-gray-800 dark:text-white truncate">
+                            {formatDashboardCurrency(report.netPnL, currency, {
+                                signDisplay: "always",
+                            })}
+                        </p>
+                        {report.prevPnL !== null &&
+                            report.prevPnL !== undefined && (
+                                <DeltaBadge
+                                    current={report.netPnL}
+                                    previous={report.prevPnL}
+                                    currency={currency}
+                                />
+                            )}
+                    </div>
+                    <div
+                        className={`w-8 h-8 rounded-lg shrink-0 flex items-center justify-center ${
+                            report.netPnL >= 0
+                                ? "bg-emerald-500/10 text-emerald-500"
+                                : "bg-red-500/10 text-red-500"
+                        }`}
+                    >
+                        <NetPnlIcon size={15} />
+                    </div>
+                </div>
+
+                <div className="py-2 px-2.5 min-w-0 flex items-center justify-between gap-2">
+                    <div className="min-w-0">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 block truncate">
+                            Win Rate
+                        </span>
+                        <p className="text-sm font-black font-mono tabular-nums text-gray-800 dark:text-white truncate">
+                            {report.winRate.toFixed(1)}%
+                        </p>
+                        {report.prevWinRate !== null &&
+                            report.prevWinRate !== undefined && (
+                                <DeltaBadge
+                                    current={report.winRate}
+                                    previous={report.prevWinRate}
+                                    isPercent
+                                />
+                            )}
+                    </div>
+                    <div
+                        className={`w-8 h-8 rounded-lg shrink-0 flex items-center justify-center ${
+                            report.winRate >= 50
+                                ? "bg-emerald-500/10 text-emerald-500"
+                                : "bg-amber-500/10 text-amber-500"
+                        }`}
+                    >
+                        <Target size={15} />
+                    </div>
+                </div>
+
+                <div className="py-2 px-2.5 min-w-0 flex items-center justify-between gap-2">
+                    <div className="min-w-0">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 block truncate">
+                            Total Trades
+                        </span>
+                        <p className="text-sm font-black font-mono tabular-nums text-gray-800 dark:text-white truncate">
+                            {report.totalTrades}
+                        </p>
+                    </div>
+                    <div className="w-8 h-8 rounded-lg shrink-0 flex items-center justify-center bg-gold/10 text-amber-600 dark:text-gold">
+                        <BarChart3 size={15} />
+                    </div>
+                </div>
+
+                <div className="py-2 px-2.5 min-w-0 flex items-center justify-between gap-2">
+                    <div className="min-w-0">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 block truncate">
+                            Profit Factor
+                        </span>
+                        <p className="text-sm font-black font-mono tabular-nums text-gray-800 dark:text-white truncate">
+                            {!isFinite(report.profitFactor)
+                                ? "∞"
+                                : report.profitFactor.toFixed(2)}
+                        </p>
+                    </div>
+                    <div className="w-8 h-8 rounded-lg shrink-0 flex items-center justify-center bg-amber-500/10 text-amber-500">
+                        <TrendingUp size={15} />
+                    </div>
+                </div>
+            </div>
+
+            {/* Core Stats Grid — Desktop (>= sm) */}
+            <div className="hidden sm:grid sm:grid-cols-2 md:grid-cols-4 sm:gap-4">
                 <StatCard
                     label="Net P/L"
                     value={formatDashboardCurrency(report.netPnL, currency, {
@@ -604,9 +697,9 @@ export function ReportView({
             </div>
 
             {/* Secondary Stats — Mobile 2x2 Matrix Card (< sm) */}
-            <div className="grid grid-cols-2 divide-x divide-y divide-gray-200/60 dark:divide-white/5 border border-dashboard rounded-xl bg-white dark:bg-[#1E2028] shadow-sm overflow-hidden sm:hidden">
-                <div className="px-3.5 py-3 min-w-0">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 block mb-0.5">
+            <div className="sm:hidden grid grid-cols-2 rounded-xl border border-dashboard bg-white dark:bg-[#1E2028] shadow-sm overflow-hidden [&>*:nth-child(even)]:border-l [&>*:nth-child(n+3)]:border-t [&>*]:border-dashboard/70 dark:[&>*]:border-white/[0.06]">
+                <div className="py-2 px-2.5 min-w-0">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 block mb-0.5 truncate">
                         Avg Win
                     </span>
                     <span className="text-sm font-black font-mono tabular-nums text-emerald-500 block truncate">
@@ -615,8 +708,8 @@ export function ReportView({
                         })}
                     </span>
                 </div>
-                <div className="px-3.5 py-3 min-w-0">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 block mb-0.5">
+                <div className="py-2 px-2.5 min-w-0">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 block mb-0.5 truncate">
                         Avg Loss
                     </span>
                     <span className="text-sm font-black font-mono tabular-nums text-red-500 block truncate">
@@ -627,8 +720,8 @@ export function ReportView({
                         )}
                     </span>
                 </div>
-                <div className="px-3.5 py-3 min-w-0 border-l-0">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 block mb-0.5">
+                <div className="py-2 px-2.5 min-w-0">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 block mb-0.5 truncate">
                         Largest Win
                     </span>
                     <span className="text-sm font-black font-mono tabular-nums text-emerald-500 block truncate">
@@ -637,8 +730,8 @@ export function ReportView({
                         })}
                     </span>
                 </div>
-                <div className="px-3.5 py-3 min-w-0">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 block mb-0.5">
+                <div className="py-2 px-2.5 min-w-0">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 block mb-0.5 truncate">
                         Largest Loss
                     </span>
                     <span className="text-sm font-black font-mono tabular-nums text-red-500 block truncate">
@@ -692,7 +785,7 @@ export function ReportView({
             </div>
 
             {/* Breakdowns + Psychology Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 md:gap-4">
                 <BreakdownTable
                     data={report.bySymbol}
                     title="Performance by Symbol"
@@ -730,7 +823,7 @@ export function ReportView({
             </div>
 
             {/* Best/Worst Trades */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4">
                 <TradesList
                     trades={report.bestTrades}
                     title="Best Trades"

@@ -445,14 +445,14 @@ export function AccountListClient({
     };
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-2 md:space-y-4">
             {/* Page Header */}
             <PageHeader
                 title="Account Hub"
                 description="Connect and manage MT5 accounts."
             >
                 {/* Mobile Action Bar (< md) */}
-                <div className="flex md:hidden items-center gap-2 w-full mt-2 sm:mt-0">
+                <div className="flex md:hidden items-center gap-1.5 w-full">
                     <Button
                         variant="gold"
                         size="smd"
@@ -620,16 +620,16 @@ export function AccountListClient({
 
             {/* Account Grid */}
             {isPending && initialAccounts.length === 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-6">
                     {[1, 2, 3].map((i) => (
                         <div
                             key={i}
-                            className="h-64 bg-gray-100 dark:bg-gray-800 rounded-lg animate-pulse"
+                            className="h-64 bg-gray-100 dark:bg-gray-800 rounded-xl animate-pulse"
                         />
                     ))}
                 </div>
             ) : initialAccounts.length === 0 ? (
-                <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-lg border-2 border-dashed border-dashboard mt-8 shadow-sm">
+                <div className="text-center py-12 md:py-16 bg-white dark:bg-[#1E2028] rounded-xl border-2 border-dashed border-dashboard mt-2 md:mt-8 shadow-sm">
                     <div className="flex flex-col items-center justify-center text-center max-w-md mx-auto px-4">
                         <div className="w-16 h-16 mb-5 rounded-lg bg-primary/10 dark:bg-primary/15 border border-primary/20 flex items-center justify-center text-primary shadow-sm">
                             <Wallet size={30} strokeWidth={1.75} />
@@ -678,9 +678,9 @@ export function AccountListClient({
                     </div>
                 </div>
             ) : (
-                <div className="space-y-5 w-full mt-6">
+                <div className="space-y-2 md:space-y-5 w-full mt-0 md:mt-6">
                     {/* Financial Telemetry Strip */}
-                    <div className="flex flex-wrap items-center justify-between gap-4 p-4 sm:px-6 rounded-lg bg-white dark:bg-[#1E2028] border border-dashboard/80 dark:border-white/[0.08] shadow-sm">
+                    <div className="flex flex-wrap items-center justify-between gap-3 sm:gap-4 px-3 py-2.5 sm:p-4 sm:px-6 rounded-xl bg-white dark:bg-[#1E2028] border border-dashboard/80 dark:border-white/[0.08] shadow-sm">
                         <div>
                             <span className="text-[10px] font-black uppercase tracking-wider text-gray-400 dark:text-gray-500 block mb-0.5">
                                 Total Balance
@@ -790,7 +790,7 @@ export function AccountListClient({
 
                     {/* Pagination */}
                     {meta && (
-                        <div className="mt-6">
+                        <div className="mt-2 md:mt-6">
                             <PaginationControl
                                 currentPage={meta.page}
                                 totalPages={meta.totalPages}

@@ -294,9 +294,9 @@ export default function SettingsClient() {
     const showAvatarImage = Boolean(formData.image) && failedAvatarSrc !== formData.image;
 
     return (
-        <div className="w-full min-w-0 space-y-5">
+        <div className="w-full min-w-0 space-y-2 md:space-y-5">
             {/* ── Unified Profile Card ── */}
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={handleSubmit} className="space-y-2 md:space-y-5">
             <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard overflow-hidden shadow-sm">
                 {/* Gradient Banner + Avatar */}
                 <div className="h-28 bg-gradient-to-r from-amber-500/20 via-amber-500/10 to-transparent dark:from-amber-500/25 dark:via-amber-500/10 dark:to-transparent relative">
@@ -532,7 +532,7 @@ export default function SettingsClient() {
                         </h2>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
                         {TRADING_GOALS.map((g) => {
                             const Icon = g.icon;
                             const isSelected = formData.tradingGoal === g.id;
@@ -548,7 +548,7 @@ export default function SettingsClient() {
                                         }))
                                     }
                                     className={cn(
-                                        "flex items-center justify-start gap-3.5 p-4 h-auto rounded-lg border text-left transition-all duration-200 w-full font-normal active:scale-[0.98]",
+                                        "flex items-center justify-start gap-3 sm:gap-3.5 p-3 sm:p-4 h-auto rounded-lg border text-left transition-all duration-200 w-full font-normal active:scale-[0.98]",
                                         isSelected
                                             ? "border-amber-500 bg-amber-500/5 dark:bg-amber-500/10 shadow-sm shadow-amber-500/10 hover:bg-amber-500/10"
                                             : "border-dashboard bg-transparent hover:border-amber-500/35 dark:hover:border-amber-500/25 hover:bg-gray-50/50 dark:hover:bg-white/[0.01]"
@@ -639,7 +639,7 @@ export default function SettingsClient() {
                         )}
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2 items-start">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 pt-2 items-start">
                         {/* Network Selection via DropdownMenu */}
                         <div className="space-y-1.5 flex flex-col">
                             <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider">

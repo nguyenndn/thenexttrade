@@ -265,14 +265,14 @@ export function StrategyManager({
     };
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-2 md:space-y-4">
             {/* Page Header — same pattern as /dashboard/accounts */}
             <PageHeader
                 title="Strategies"
                 description="Track edge expectancy, benchmark playbook setups, and audit strategy performance."
                 mobileFullWidthButton
             >
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5 sm:gap-2">
                     <Button
                         variant="outline"
                         size="smd"
@@ -295,7 +295,7 @@ export function StrategyManager({
             </PageHeader>
 
             {/* Performance Chart & Playbook Comparison */}
-            <div className="space-y-4">
+            <div className="space-y-2 md:space-y-4">
                 {strategies.length > 0 &&
                     (isLoadingPerformance ? (
                         <StrategiesLoadingSkeleton />
@@ -340,7 +340,7 @@ export function StrategyManager({
                                     </div>
                                     <div
                                         className={cn(
-                                            "space-y-4",
+                                            "space-y-2 md:space-y-4",
                                             showMobileBenchmarks
                                                 ? "block"
                                                 : "hidden md:block"
@@ -363,20 +363,73 @@ export function StrategyManager({
 
             {/* Toolbar */}
             {allStrategies.length > 0 && (
-                <div className="bg-white dark:bg-[#1E2028] border border-dashboard rounded-xl p-4 shadow-sm mt-6">
-                    <div className="flex flex-col lg:flex-row gap-4 justify-between items-stretch lg:items-center">
-                        <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center flex-1 min-w-0">
-                            <div className="w-full sm:max-w-xs">
+                <div className="bg-white dark:bg-[#1E2028] border border-dashboard rounded-xl pt-2.5 px-2.5 pb-0 sm:p-4 shadow-sm mt-0 md:mt-6">
+                    <div className="flex flex-col lg:flex-row gap-2 lg:gap-4 justify-between items-stretch lg:items-center">
+                        <div className="flex items-center sm:flex-row gap-1.5 sm:gap-3 flex-1 min-w-0">
+                            <div className="flex-1 min-w-0 sm:max-w-xs">
                                 <PremiumInput
                                     icon={Search}
                                     aria-label="Search setups"
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
+                                    className="py-2 sm:py-2.5 text-xs sm:text-sm"
                                 />
                             </div>
 
-                            {/* Filter Type Pills */}
-                            <div className="flex items-center gap-1 p-1 bg-gray-50 dark:bg-white/5 rounded-lg border border-dashboard self-start sm:self-auto max-w-full overflow-x-auto scrollbar-hide">
+                            {/* Mobile Sort Dropdown — inline with Search (< sm) */}
+                            <div className="sm:hidden shrink-0">
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            aria-label="Sort strategies"
+                                            className="h-[38px] px-2.5 rounded-lg flex items-center gap-1.5 border border-dashboard bg-gray-50/80 dark:bg-[#151925] text-xs font-bold text-gray-700 dark:text-gray-300"
+                                        >
+                                            <ArrowUpDown
+                                                size={14}
+                                                className="text-gray-500 shrink-0"
+                                            />
+                                            <span className="max-w-[76px] truncate">
+                                                {currentSortLabel}
+                                            </span>
+                                            <ChevronDown
+                                                size={13}
+                                                className="text-gray-400 shrink-0"
+                                            />
+                                        </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent
+                                        align="end"
+                                        className="min-w-[180px]"
+                                    >
+                                        {sortOptions.map((option) => (
+                                            <DropdownMenuItem
+                                                key={option.value}
+                                                onClick={() =>
+                                                    setSortBy(option.value)
+                                                }
+                                                className={cn(
+                                                    "flex items-center justify-between gap-2",
+                                                    sortBy === option.value &&
+                                                        "text-primary font-semibold"
+                                                )}
+                                            >
+                                                {option.label}
+                                                {sortBy === option.value && (
+                                                    <Check
+                                                        size={14}
+                                                        className="text-primary"
+                                                    />
+                                                )}
+                                            </DropdownMenuItem>
+                                        ))}
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                            </div>
+
+                            {/* Desktop Filter Type Pills (>= sm) */}
+                            <div className="hidden sm:flex items-center gap-1 p-1 bg-gray-50 dark:bg-white/5 rounded-lg border border-dashboard self-auto max-w-full overflow-x-auto scrollbar-hide">
                                 <Button
                                     type="button"
                                     variant={filterType === "all" ? "gold" : "ghost"}
@@ -393,7 +446,7 @@ export function StrategyManager({
                                     onClick={() => setFilterType("playbook")}
                                     className="h-auto shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 whitespace-nowrap"
                                 >
-                                    <BookOpen size={13} className="hidden sm:block shrink-0" />
+                                    <BookOpen size={13} className="shrink-0" />
                                     Playbooks (<span className="font-mono tabular-nums">{playbookCount}</span>)
                                 </Button>
                                 <Button
@@ -408,49 +461,105 @@ export function StrategyManager({
                             </div>
                         </div>
 
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button
-                                    variant="outline"
-                                    size="smd"
-                                    className="flex items-center gap-2 border border-dashboard bg-white dark:bg-[#1E2028] text-gray-700 dark:text-gray-300 self-end lg:self-auto"
+                        {/* Desktop Sort Dropdown (>= sm) */}
+                        <div className="hidden sm:block self-end lg:self-auto shrink-0">
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button
+                                        variant="outline"
+                                        size="smd"
+                                        className="flex items-center gap-2 border border-dashboard bg-white dark:bg-[#1E2028] text-gray-700 dark:text-gray-300"
+                                    >
+                                        <ArrowUpDown
+                                            size={16}
+                                            className="text-gray-500"
+                                        />
+                                        <span>{currentSortLabel}</span>
+                                        <ChevronDown
+                                            size={14}
+                                            className="text-gray-500"
+                                        />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent
+                                    align="end"
+                                    className="min-w-[180px]"
                                 >
-                                    <ArrowUpDown
-                                        size={16}
-                                        className="text-gray-500"
-                                    />
-                                    <span>{currentSortLabel}</span>
-                                    <ChevronDown
-                                        size={14}
-                                        className="text-gray-500"
-                                    />
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent
-                                align="end"
-                                className="min-w-[180px]"
-                            >
-                                {sortOptions.map((option) => (
-                                    <DropdownMenuItem
-                                        key={option.value}
-                                        onClick={() => setSortBy(option.value)}
+                                    {sortOptions.map((option) => (
+                                        <DropdownMenuItem
+                                            key={option.value}
+                                            onClick={() => setSortBy(option.value)}
+                                            className={cn(
+                                                "flex items-center justify-between gap-2",
+                                                sortBy === option.value &&
+                                                    "text-primary font-semibold"
+                                            )}
+                                        >
+                                            {option.label}
+                                            {sortBy === option.value && (
+                                                <Check
+                                                    size={14}
+                                                    className="text-primary"
+                                                />
+                                            )}
+                                        </DropdownMenuItem>
+                                    ))}
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </div>
+                    </div>
+
+                    {/* Mobile Underline Tabs (< sm): All · Playbooks · Standard */}
+                    <div className="sm:hidden grid grid-cols-3 border-t border-dashboard/70 dark:border-white/[0.06] -mx-2.5 px-1 mt-2.5">
+                        {[
+                            {
+                                key: "all" as const,
+                                label: "All",
+                                count: allStrategies.length,
+                            },
+                            {
+                                key: "playbook" as const,
+                                label: "Playbooks",
+                                count: playbookCount,
+                            },
+                            {
+                                key: "standard" as const,
+                                label: "Standard",
+                                count: standardCount,
+                            },
+                        ].map((tab) => {
+                            const isActive = filterType === tab.key;
+                            return (
+                                <Button
+                                    key={tab.key}
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => setFilterType(tab.key)}
+                                    className={cn(
+                                        "relative h-auto py-2 px-1 rounded-none text-xs font-bold flex items-center justify-center gap-1 hover:bg-transparent border-0 whitespace-nowrap",
+                                        isActive
+                                            ? "text-amber-600 dark:text-amber-400"
+                                            : "text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
+                                    )}
+                                >
+                                    <span>{tab.label}</span>
+                                    <span
                                         className={cn(
-                                            "flex items-center justify-between gap-2",
-                                            sortBy === option.value &&
-                                                "text-primary font-semibold"
+                                            "font-mono tabular-nums text-[11px]",
+                                            isActive
+                                                ? "text-amber-600 dark:text-amber-400"
+                                                : "text-gray-400 dark:text-gray-500"
                                         )}
                                     >
-                                        {option.label}
-                                        {sortBy === option.value && (
-                                            <Check
-                                                size={14}
-                                                className="text-primary"
-                                            />
-                                        )}
-                                    </DropdownMenuItem>
-                                ))}
-                            </DropdownMenuContent>
-                        </DropdownMenu>
+                                        ({tab.count})
+                                    </span>
+                                    {isActive && (
+                                        <span className="absolute inset-x-2 bottom-0 h-[2px] rounded-full bg-gold" />
+                                    )}
+                                </Button>
+                            );
+                        })}
                     </div>
                 </div>
             )}
@@ -459,7 +568,7 @@ export function StrategyManager({
             {filteredStrategies.length > 0 ? (
                 <div
                     id="onborda-strategy-list"
-                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6"
+                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-6 mt-0 md:mt-6"
                 >
                     {filteredStrategies.map((strategy) => {
                         const perf = performance.find(
@@ -489,7 +598,7 @@ export function StrategyManager({
                 <StrategyEmptyState onAdd={() => setShowModal(true)} />
             )}
 
-            <div className="mt-8">
+            <div className="mt-0 md:mt-8">
                 <PaginationControl
                     currentPage={page}
                     totalPages={meta.totalPages}

@@ -25,9 +25,9 @@ export function LoyaltyLadder({ progress, onOpenClaim, claimingLevel }: LoyaltyL
   const sortedTiers = [...tiers].sort((a, b) => a.level - b.level);
 
   return (
-    <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-5 sm:p-7 shadow-sm relative overflow-hidden">
+    <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-3.5 sm:p-7 shadow-sm relative overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between gap-3 mb-6 pb-4 border-b border-gray-100 dark:border-white/10">
+      <div className="flex items-center justify-between gap-3 mb-3 sm:mb-6 pb-3 sm:pb-4 border-b border-gray-100 dark:border-white/10">
         <div>
           <span className="text-[11px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
             Roadmap Ladder
@@ -45,7 +45,7 @@ export function LoyaltyLadder({ progress, onOpenClaim, claimingLevel }: LoyaltyL
       </div>
 
       {/* The Sleek Vertical Timeline Container */}
-      <div className="space-y-4">
+      <div className="space-y-2 sm:space-y-4">
         {sortedTiers.map((tier, idx) => {
           const isCurrentTier = currentTier?.level === tier.level;
 

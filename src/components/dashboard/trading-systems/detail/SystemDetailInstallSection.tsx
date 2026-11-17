@@ -2,21 +2,18 @@
 
 import type { SystemSetupStep } from "@/config/trading-systems-data";
 import { Mt5WebRequestUrlList } from "@/components/trading-accounts/Mt5WebRequestUrlList";
-import { InstallationWizard } from "../InstallationWizard";
 
 interface SystemDetailInstallSectionProps {
-    guideType: "MT5_EA" | "MT5_INDICATOR";
     setupSteps?: SystemSetupStep[];
 }
 
 export function SystemDetailInstallSection({
-    guideType,
     setupSteps,
 }: SystemDetailInstallSectionProps) {
     return (
-        <div className="space-y-6">
+        <div className="space-y-2 md:space-y-6">
             {/* WebRequest Whitelist Quick Copy */}
-            <div className="rounded-xl border border-dashboard dark:border-white/[0.08] p-4 sm:p-5 bg-gray-50/40 dark:bg-[#151925]">
+            <div className="rounded-xl border border-dashboard dark:border-white/[0.08] p-3.5 sm:p-5 bg-gray-50/40 dark:bg-[#151925]">
                 <h4 className="text-xs font-bold uppercase tracking-wider text-gray-800 dark:text-white mb-1">
                     MT5 WebRequest Whitelist (Main + Backup Servers)
                 </h4>
@@ -31,10 +28,10 @@ export function SystemDetailInstallSection({
             {/* EA-Specific Setup Checklist */}
             {setupSteps && setupSteps.length > 0 && (
                 <div>
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-2 sm:mb-3">
                         System-Specific Deployment Checklist
                     </h4>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
                         {setupSteps.map((stepItem) => (
                             <div
                                 key={stepItem.step}
@@ -56,11 +53,6 @@ export function SystemDetailInstallSection({
                     </div>
                 </div>
             )}
-
-            {/* Interactive MT5 File Installation Wizard */}
-            <div className="rounded-xl border border-dashboard dark:border-white/[0.08] p-4 sm:p-6 bg-gray-50/30 dark:bg-white/[0.01]">
-                <InstallationWizard type={guideType} />
-            </div>
         </div>
     );
 }

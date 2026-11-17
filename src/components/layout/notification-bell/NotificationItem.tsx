@@ -14,12 +14,14 @@ interface NotificationItemProps {
     notification: NormalizedNotification;
     onMarkAsRead: (id: string) => void;
     onClose: () => void;
+    compactMobile?: boolean;
 }
 
 export function NotificationItem({
     notification: n,
     onMarkAsRead,
     onClose,
+    compactMobile = false,
 }: NotificationItemProps) {
     const router = useRouter();
     const { icon: Icon, bg, color } = getNotificationConfig(n.type, n.title);
@@ -82,7 +84,8 @@ export function NotificationItem({
 
             <div
                 className={cn(
-                    "w-8 h-8 rounded-lg flex items-center justify-center shrink-0 self-center transition-transform group-hover:scale-105",
+                    "w-9 h-9 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center shrink-0 transition-transform group-hover:scale-105",
+                    compactMobile ? "self-start mt-0.5" : "self-center",
                     bg,
                     color
                 )}
@@ -91,10 +94,11 @@ export function NotificationItem({
             </div>
 
             <div className="flex-1 min-w-0 pr-1">
-                <div className="flex justify-between items-baseline mb-1 gap-2">
+                <div className="flex justify-between items-start mb-1 gap-2">
                     <h4
                         className={cn(
-                            "text-xs truncate tracking-tight",
+                            "text-xs tracking-tight",
+                            compactMobile ? "line-clamp-2 leading-snug" : "truncate",
                             !n.isRead
                                 ? "text-gray-900 dark:text-white font-bold"
                                 : "text-gray-700 dark:text-gray-300 font-medium"
@@ -102,13 +106,27 @@ export function NotificationItem({
                     >
                         {cleanNotificationTitle(n.title)}
                     </h4>
-                    <span className="text-[10px] font-mono text-gray-400 shrink-0 whitespace-nowrap">
-                        {timeAgo}
-                    </span>
+                    {compactMobile ? (
+                        !n.isRead && (
+                            <span
+                                aria-hidden="true"
+                                className="w-2 h-2 rounded-full bg-amber-500 shrink-0 mt-1"
+                            />
+                        )
+                    ) : (
+                        <span className="text-[10px] font-mono text-gray-400 shrink-0 whitespace-nowrap">
+                            {timeAgo}
+                        </span>
+                    )}
                 </div>
                 <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2 leading-relaxed">
                     {n.message}
                 </p>
+                {compactMobile && (
+                    <span className="mt-1 block text-[11px] font-mono text-gray-400">
+                        {timeAgo}
+                    </span>
+                )}
             </div>
         </div>
     );

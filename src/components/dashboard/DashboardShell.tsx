@@ -47,7 +47,7 @@ export function DashboardShell({
                 />
 
                 {/* Main Content Area */}
-                <main className="flex-1 overflow-y-auto overflow-x-hidden px-3 sm:px-4 pt-0 pb-[calc(5.25rem+env(safe-area-inset-bottom))] lg:p-4 lg:pt-0 w-full custom-scrollbar">
+                <main className="flex-1 overflow-y-auto overflow-x-hidden px-2.5 sm:px-4 pt-0 pb-[calc(5.25rem+env(safe-area-inset-bottom))] lg:p-4 lg:pt-0 w-full custom-scrollbar">
                     <div className="w-full max-w-full">{children}</div>
                 </main>
             </div>

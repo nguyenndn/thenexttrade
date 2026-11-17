@@ -146,8 +146,8 @@ function PeriodComparison({
     ];
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-4 sm:p-6">
-            <div className="flex items-center gap-2.5 mb-4 sm:mb-5">
+        <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-3.5 sm:p-6">
+            <div className="flex items-center gap-2.5 mb-2.5 sm:mb-5">
                 <div className="p-2 rounded-lg bg-gold/10 border border-gold/20">
                     <Activity size={18} className="text-amber-600 dark:text-gold" />
                 </div>
@@ -159,15 +159,41 @@ function PeriodComparison({
                 </div>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">
+            {/* Mobile Unified 2x2 Matrix (< sm) */}
+            <div className="sm:hidden grid grid-cols-2 rounded-xl border border-dashboard bg-white dark:bg-[#1E2028] shadow-sm overflow-hidden [&>*:nth-child(even)]:border-l [&>*:nth-child(n+3)]:border-t [&>*]:border-dashboard/70 dark:[&>*]:border-white/[0.06]">
                 {cards.map((card) => (
                     <div
                         key={card.label}
-                        className={`text-center p-3 sm:p-4 rounded-lg bg-gray-50/80 dark:bg-[#151925] border-t-[3px] ${card.accent} ${
+                        className={`py-2 px-2.5 min-w-0 ${
                             card.label === "Strengths"
-                                ? "col-span-2 sm:col-span-1"
+                                ? "col-span-2 flex items-center justify-between gap-2"
                                 : ""
                         }`}
+                    >
+                        <div className="min-w-0">
+                            <p className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-0.5 truncate">
+                                {card.label}
+                            </p>
+                            <div className="flex items-center gap-1.5 min-w-0">
+                                <span className="text-sm font-black font-mono tabular-nums text-gray-800 dark:text-white truncate">
+                                    {card.value}
+                                </span>
+                                {card.delta}
+                            </div>
+                        </div>
+                        <p className="text-[11px] font-mono tabular-nums text-gray-400 dark:text-gray-500 truncate mt-0.5">
+                            was {card.prev}
+                        </p>
+                    </div>
+                ))}
+            </div>
+
+            {/* Desktop Grid (>= sm) */}
+            <div className="hidden sm:grid sm:grid-cols-3 lg:grid-cols-5 sm:gap-3">
+                {cards.map((card) => (
+                    <div
+                        key={card.label}
+                        className={`text-center p-3 sm:p-4 rounded-lg bg-gray-50/80 dark:bg-[#151925] border-t-[3px] ${card.accent}`}
                     >
                         <p className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5 sm:mb-2">
                             {card.label}
@@ -666,7 +692,7 @@ function EmptyState({ totalTrades }: { totalTrades: number }) {
     const progress = Math.min(100, (totalTrades / 20) * 100);
     const isZeroTrades = totalTrades === 0;
     return (
-        <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-xl border-2 border-dashed border-dashboard mt-8">
+        <div className="text-center py-16 bg-white dark:bg-[#1E2028] rounded-xl border-2 border-dashed border-dashboard mt-2 md:mt-8">
             <div className="w-16 h-16 mb-6 mx-auto bg-gold/10 border border-gold/20 rounded-xl flex items-center justify-center">
                 <Brain
                     size={28}
@@ -765,9 +791,9 @@ export function IntelligenceDashboard({
     }
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-2 md:space-y-4">
             {/* Header */}
-            <div className="flex flex-wrap items-center gap-2 text-sm text-gray-600 dark:text-gray-300 mb-6">
+            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-sm text-gray-600 dark:text-gray-300 mb-0 md:mb-6">
                 <div className="flex items-center gap-1.5">
                     <Crosshair size={14} className="text-primary" />
                     <span>
@@ -793,7 +819,7 @@ export function IntelligenceDashboard({
             </div>
 
             {/* TheNextTrade Discipline Coach */}
-            <div className="mb-6">
+            <div className="mb-0 md:mb-6">
                 <AiCoachCard
                     accountId={accountId}
                     timezone={timezone}
@@ -826,14 +852,14 @@ export function IntelligenceDashboard({
             <ScoreAndRiskPanel data={data} />
 
             {/* Radar Charts Grid (50% / 50% split) */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 md:gap-4">
                 <BehavioralRadarChart data={data} />
                 <BiasProfileWidget accountId={accountId} />
             </div>
 
             {/* Score History Chart — rendered below as full width if available */}
             {scoreHistory && scoreHistory.length >= 3 && (
-                <div className="mt-2">
+                <div className="mt-0 md:mt-2">
                     <ScoreHistoryChart data={scoreHistory} />
                 </div>
             )}
@@ -857,7 +883,7 @@ export function IntelligenceProSections({
     return (
         <>
             {data.hasEnoughData && (
-                <div className="mt-6 bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-4 sm:p-5">
+                <div className="mt-0 md:mt-6 bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-4 sm:p-5">
                     <EdgeLeakDetector
                         issues={data.issues}
                         strengths={data.strengths}
@@ -869,7 +895,7 @@ export function IntelligenceProSections({
             {data.totalAnalyzed > 0 && (
                 <div
                     className={cn(
-                        "mt-4 bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-4 sm:p-5",
+                        "mt-0 md:mt-4 bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-4 sm:p-5",
                         suppressDuplicateMobileTeaser && "hidden md:block"
                     )}
                 >

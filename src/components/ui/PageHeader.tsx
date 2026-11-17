@@ -8,6 +8,7 @@ interface PageHeaderProps {
     className?: string;
     mobileFullWidthButton?: boolean;
     hideDescriptionOnMobile?: boolean;
+    showOnMobile?: boolean;
     accentColor?: "gold" | "primary";
 }
 
@@ -18,18 +19,31 @@ export function PageHeader({
     className,
     mobileFullWidthButton,
     hideDescriptionOnMobile = false,
+    showOnMobile = false,
     accentColor = "gold",
 }: PageHeaderProps) {
+    const hideEntireWrapperOnMobile = !showOnMobile && !children;
+
     return (
         <div
             id="onborda-page-header"
             className={cn(
-                "flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-2",
+                hideEntireWrapperOnMobile
+                    ? "hidden md:flex md:flex-row md:items-center justify-between gap-4 mb-2 page-header-mobile-empty"
+                    : cn(
+                          "flex flex-col md:flex-row md:items-center justify-between gap-2 md:gap-4",
+                          showOnMobile ? "mb-2" : "mb-0 md:mb-2"
+                      ),
                 className
             )}
         >
-            {/* Left: Gradient accent bar + text */}
-            <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+            {/* Left: Gradient accent bar + text (hidden on < md unless showOnMobile) */}
+            <div
+                className={cn(
+                    showOnMobile ? "flex" : "hidden md:flex",
+                    "items-center gap-3 sm:gap-4 min-w-0"
+                )}
+            >
                 {/* Gradient Bar */}
                 <div
                     className={cn(
@@ -62,10 +76,10 @@ export function PageHeader({
             {children && (
                 <div
                     className={cn(
-                        "flex items-center justify-start sm:justify-end shrink-0",
+                        "flex items-center justify-start md:justify-end shrink-0",
                         mobileFullWidthButton
-                            ? "w-full sm:w-auto [&>*]:w-full [&>*]:sm:w-auto"
-                            : "w-full sm:w-auto"
+                            ? "w-full md:w-auto [&>*]:w-full [&>*]:md:w-auto"
+                            : "w-full md:w-auto"
                     )}
                 >
                     {children}

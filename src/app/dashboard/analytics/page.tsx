@@ -116,7 +116,7 @@ export default async function AnalyticsPage({
     const endDate = parseLocalEndOfDay(endDateParam, accountTimezone);
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-2 md:space-y-4">
             <PageHeader
                 title="Analytics"
                 description="Analyze your trading performance."
@@ -133,7 +133,7 @@ export default async function AnalyticsPage({
                     />
                 )}
             </PageHeader>
-            <div id="onborda-analytics-tabs" className="mb-4">
+            <div id="onborda-analytics-tabs" className="mb-0 md:mb-4">
                 <TabBar tabs={ANALYTICS_TABS} />
             </div>
             <Suspense
@@ -377,7 +377,7 @@ async function AnalyticsDataWrapper({
 
     if (stats.totalTrades === 0) {
         return (
-            <div className="space-y-6">
+            <div className="space-y-2 md:space-y-6">
                 <AnalyticsDashboard
                     data={data}
                     accountId={accountId}
@@ -425,7 +425,7 @@ async function AnalyticsDataWrapper({
     );
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-2 md:space-y-6">
             <AnalyticsDashboard
                 data={data}
                 accountId={accountId}

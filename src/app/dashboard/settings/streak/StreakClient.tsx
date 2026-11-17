@@ -129,11 +129,11 @@ export default function StreakClient() {
     }));
 
     return (
-        <div className="w-full grid grid-cols-1 xl:grid-cols-5 gap-6 items-stretch">
+        <div className="w-full grid grid-cols-1 xl:grid-cols-5 gap-2 md:gap-6 items-stretch">
             {/* Left Column: Login Info (40%) */}
             <div className="xl:col-span-2 h-full">
                 {/* 1. Hero Section: Current Streak & Check-in */}
-                <div className="bg-white dark:bg-[#1E2028] p-5 sm:p-8 rounded-xl border border-dashboard shadow-sm flex flex-col relative overflow-hidden h-full">
+                <div className="bg-white dark:bg-[#1E2028] p-4 sm:p-8 rounded-xl border border-dashboard shadow-sm flex flex-col relative overflow-hidden h-full">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-gold to-transparent opacity-50"></div>
 
                     {/* TOP PART: Stats & Action */}
@@ -189,14 +189,14 @@ export default function StreakClient() {
                     <div className="w-full h-px bg-gray-100 dark:bg-white/5 my-0"></div>
 
                     {/* BOTTOM PART: Rewards Timeline */}
-                    <div className="flex-1 w-full bg-gray-50/80 dark:bg-[#151925] rounded-lg mt-4 overflow-hidden flex flex-col border border-dashboard">
-                        <div className="p-4 pb-2">
+                    <div className="flex-1 w-full bg-gray-50/80 dark:bg-[#151925] rounded-lg mt-2.5 sm:mt-4 overflow-hidden flex flex-col border border-dashboard">
+                        <div className="p-3 sm:p-4 pb-2">
                             <h4 className="text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
                                 Upcoming Rewards
                             </h4>
                         </div>
 
-                        <div className="flex-1 overflow-y-auto px-4 pb-4 space-y-3 custom-scrollbar">
+                        <div className="flex-1 overflow-y-auto px-3 sm:px-4 pb-3 sm:pb-4 space-y-2 sm:space-y-3 custom-scrollbar">
                             {MILESTONES.map((milestone, index) => {
                                 const isAchieved = streak >= milestone.days;
                                 const isNext =
@@ -266,8 +266,8 @@ export default function StreakClient() {
             </div>
 
             {/* Right Column: Calendar Wrapper (60%) */}
-            <div className="bg-white dark:bg-[#1E2028] p-4 sm:p-6 rounded-xl border border-dashboard shadow-sm h-full flex flex-col xl:col-span-3">
-                <div className="flex items-center justify-between mb-4 sm:mb-6">
+            <div className="bg-white dark:bg-[#1E2028] p-3.5 sm:p-6 rounded-xl border border-dashboard shadow-sm h-full flex flex-col xl:col-span-3">
+                <div className="flex items-center justify-between mb-3 sm:mb-6">
                     <h3 className="font-bold text-gray-700 dark:text-white">
                         Monthly History
                     </h3>

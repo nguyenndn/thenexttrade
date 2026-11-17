@@ -13,7 +13,7 @@ export function SampleModeBanner() {
     if (!isSampleMode) return null;
 
     return (
-        <div className="relative overflow-hidden rounded-xl border border-amber-500/30 bg-amber-500/[0.06] p-3 sm:p-4 mb-4 transition-all duration-300">
+        <div className="relative overflow-hidden rounded-xl border border-amber-500/30 bg-amber-500/[0.06] p-3 sm:p-4 mb-2 md:mb-4 transition-all duration-300">
             <div className="relative z-10 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 {/* Left Info Section */}
                 <div className="flex items-start gap-3">

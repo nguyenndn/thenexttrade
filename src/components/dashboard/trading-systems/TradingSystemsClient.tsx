@@ -84,42 +84,44 @@ export function TradingSystemsClient({
             />
 
             {/* Unified Tabs */}
-            <Tabs defaultValue={defaultTab} className="w-full">
-                <div className="overflow-x-auto scrollbar-hide -mx-1 px-1">
-                    <TabsList className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-1 gap-1 shrink-0 w-auto inline-flex">
-                        <TabsTrigger
-                            value="MT5_EA"
-                            className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-dashboard dark:hover:border-white/10"
-                            activeIndicatorClassName="!bg-gradient-to-r from-gold to-amber-600 shadow-md shadow-amber-500/20 border-0"
-                            activeTextClassName="!text-white"
-                        >
-                            <CustomBotIcon size={14} className="sm:w-4 sm:h-4" />
-                            <span>Expert Advisor</span>
-                            {eaCount > 0 && (
-                                <span className="flex items-center justify-center min-w-[18px] h-[18px] rounded-full text-[10px] font-extrabold px-1 bg-white dark:bg-[#1A1D27] text-gold shadow-sm ml-1">
-                                    {eaCount}
-                                </span>
-                            )}
-                        </TabsTrigger>
-                        <TabsTrigger
-                            value="MT5_INDICATOR"
-                            className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-dashboard dark:hover:border-white/10"
-                            activeIndicatorClassName="!bg-gradient-to-r from-gold to-amber-600 shadow-md shadow-amber-500/20 border-0"
-                            activeTextClassName="!text-white"
-                        >
-                            <BarChart2 size={14} className="sm:w-4 sm:h-4" />
-                            <span>Indicators</span>
-                            {indicatorCount > 0 && (
-                                <span className="flex items-center justify-center min-w-[18px] h-[18px] rounded-full text-[10px] font-extrabold px-1 bg-white dark:bg-[#1A1D27] text-gold shadow-sm ml-1">
-                                    {indicatorCount}
-                                </span>
-                            )}
-                        </TabsTrigger>
-                    </TabsList>
-                </div>
+            <Tabs
+                defaultValue={defaultTab}
+                className="w-full"
+                tabsId="trading-systems-tabs"
+            >
+                <TabsList className="w-full grid grid-cols-2 gap-0 bg-transparent dark:bg-transparent p-0 rounded-none border-0 border-b border-dashboard overflow-visible sm:bg-gray-50 sm:dark:bg-white/5 sm:border sm:border-gray-200 sm:dark:border-white/10 sm:rounded-xl sm:p-1 sm:gap-1 sm:w-auto sm:inline-flex">
+                    <TabsTrigger
+                        value="MT5_EA"
+                        className="w-full sm:w-auto justify-center px-2 sm:px-4 py-2.5 sm:py-1.5 rounded-none sm:rounded-lg text-xs sm:text-sm font-bold whitespace-nowrap border-0 sm:border border-transparent sm:hover:border-dashboard sm:dark:hover:border-white/10 gap-1.5 sm:gap-2 min-w-0"
+                        activeIndicatorClassName="inset-[auto_0_0_0] h-[2px] !bg-gold shadow-none rounded-full border-0 sm:inset-0 sm:h-auto sm:rounded-lg sm:shadow-md sm:shadow-amber-500/20"
+                        activeTextClassName="text-amber-600 dark:text-amber-400 sm:!text-white"
+                    >
+                        <CustomBotIcon size={14} className="sm:w-4 sm:h-4 shrink-0" />
+                        <span className="truncate">Expert Advisor</span>
+                        {eaCount > 0 && (
+                            <span className="flex items-center justify-center min-w-[18px] h-[18px] rounded-full text-[10px] font-extrabold font-mono tabular-nums px-1 bg-amber-500/15 text-amber-600 dark:text-gold sm:bg-white sm:dark:bg-[#1A1D27] sm:shadow-sm shrink-0">
+                                {eaCount}
+                            </span>
+                        )}
+                    </TabsTrigger>
+                    <TabsTrigger
+                        value="MT5_INDICATOR"
+                        className="w-full sm:w-auto justify-center px-2 sm:px-4 py-2.5 sm:py-1.5 rounded-none sm:rounded-lg text-xs sm:text-sm font-bold whitespace-nowrap border-0 sm:border border-transparent sm:hover:border-dashboard sm:dark:hover:border-white/10 gap-1.5 sm:gap-2 min-w-0"
+                        activeIndicatorClassName="inset-[auto_0_0_0] h-[2px] !bg-gold shadow-none rounded-full border-0 sm:inset-0 sm:h-auto sm:rounded-lg sm:shadow-md sm:shadow-amber-500/20"
+                        activeTextClassName="text-amber-600 dark:text-amber-400 sm:!text-white"
+                    >
+                        <BarChart2 size={14} className="sm:w-4 sm:h-4 shrink-0" />
+                        <span className="truncate">Indicators</span>
+                        {indicatorCount > 0 && (
+                            <span className="flex items-center justify-center min-w-[18px] h-[18px] rounded-full text-[10px] font-extrabold font-mono tabular-nums px-1 bg-amber-500/15 text-amber-600 dark:text-gold sm:bg-white sm:dark:bg-[#1A1D27] sm:shadow-sm shrink-0">
+                                {indicatorCount}
+                            </span>
+                        )}
+                    </TabsTrigger>
+                </TabsList>
 
                 {/* Content Area */}
-                <div className="min-h-[500px] mt-6">
+                <div className="min-h-[500px] mt-2 md:mt-6">
                     <TabsContent
                         value="MT5_EA"
                         className="animate-in fade-in slide-in-from-bottom-4 duration-500 mt-0"

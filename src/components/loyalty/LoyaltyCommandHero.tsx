@@ -27,10 +27,10 @@ export function LoyaltyCommandHero({
 
 
   return (
-    <div className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-5 sm:p-7 shadow-sm relative overflow-hidden">
+    <div className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925] p-3.5 sm:p-7 shadow-sm relative overflow-hidden">
 
       {/* Top Bar: Level Badge, Live Telemetry Beacon, and Milestones Claimed */}
-      <div className="flex flex-wrap items-center justify-between gap-4 pb-5 border-b border-gray-100 dark:border-white/10 relative z-10">
+      <div className="flex flex-wrap items-center justify-between gap-2.5 sm:gap-4 pb-3 sm:pb-5 border-b border-gray-100 dark:border-white/10 relative z-10">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-lg bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/20 text-amber-500 flex items-center justify-center shrink-0 shadow-xs">
             <Award size={20} />
@@ -64,7 +64,7 @@ export function LoyaltyCommandHero({
       </div>
 
       {/* Main 3-Column Command Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center pt-5 relative z-10">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-2.5 lg:gap-6 items-center pt-3 sm:pt-5 relative z-10">
         {/* Column 1: Giant Cumulative Lot Counter (4 cols) */}
         <div className="lg:col-span-4 space-y-1.5">
           <span className="text-xs font-bold text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
@@ -149,7 +149,55 @@ export function LoyaltyCommandHero({
         </div>
 
         {/* Column 3: 2x2 Telemetry Matrix (3 cols) */}
-        <div className="hidden sm:block lg:col-span-3">
+        <div className="lg:col-span-3">
+          {/* Mobile Unified 2x2 Matrix Card (< sm) */}
+          <div className="sm:hidden grid grid-cols-2 rounded-xl border border-dashboard bg-white dark:bg-[#1E2028] shadow-sm overflow-hidden [&>*:nth-child(even)]:border-l [&>*:nth-child(n+3)]:border-t [&>*]:border-dashboard/70 dark:[&>*]:border-white/[0.06]">
+            <div className="py-2 px-2.5 min-w-0">
+              <span className="block text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-0.5 truncate">
+                IB Real Account
+              </span>
+              <span className="font-mono tabular-nums text-xs font-bold text-gray-900 dark:text-white flex items-center gap-1 truncate">
+                <Activity size={12} className="text-amber-500 shrink-0" />
+                <span className="truncate">
+                  {selectedAccount
+                    ? `#${selectedAccount.accountNumber}`
+                    : "None Verified"}
+                </span>
+              </span>
+            </div>
+
+            <div className="py-2 px-2.5 min-w-0">
+              <span className="block text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-0.5 truncate">
+                XAUUSD Trades
+              </span>
+              <span className="font-mono tabular-nums text-xs font-bold text-gray-900 dark:text-white truncate block">
+                {eligibility.totalClosedTrades.toLocaleString()} Closed
+              </span>
+            </div>
+
+            <div className="py-2 px-2.5 min-w-0">
+              <span className="block text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-0.5 truncate">
+                IB Attribution
+              </span>
+              <span className="text-xs font-bold text-amber-600 dark:text-amber-400 flex items-center gap-1 truncate">
+                <ShieldCheck size={12} className="shrink-0" />
+                <span className="truncate">
+                  {selectedAccount ? "Verified IB Real" : "Unverified"}
+                </span>
+              </span>
+            </div>
+
+            <div className="py-2 px-2.5 min-w-0">
+              <span className="block text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-0.5 truncate">
+                Next Milestone
+              </span>
+              <span className="font-mono tabular-nums text-xs font-bold text-gray-900 dark:text-white truncate block">
+                {nextTier ? `L${nextTier.level} · ${nextTier.requiredLots}L` : "Completed"}
+              </span>
+            </div>
+          </div>
+
+          {/* Desktop Grid (>= sm) */}
           <div className="hidden sm:grid grid-cols-2 rounded-lg border border-gray-200 dark:border-white/10 divide-x divide-y divide-gray-200 dark:divide-white/10 bg-gray-50/50 dark:bg-white/[0.015] overflow-hidden">
             <div className="p-3">
               <span className="block text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-0.5">

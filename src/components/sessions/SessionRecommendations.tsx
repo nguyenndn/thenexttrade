@@ -74,7 +74,7 @@ export function SessionRecommendations({
 
     return (
         <div className="bg-white dark:bg-[#151925] p-4 sm:p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-xs">
-            <div className="flex items-center gap-3 mb-4 sm:mb-5">
+            <div className="flex items-center gap-3 mb-3 sm:mb-5">
                 <div className="w-9 h-9 rounded-lg bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/20 text-amber-500 flex items-center justify-center">
                     <Lightbulb size={18} />
                 </div>
@@ -88,7 +88,7 @@ export function SessionRecommendations({
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-2 md:gap-4">
                 {recommendations.map((rec, index) => {
                     const styling = configMap[rec.type] || configMap.neutral;
                     const IconComponent = styling.icon;
@@ -141,7 +141,7 @@ export function SessionRecommendations({
             </div>
 
             {hiddenCount > 0 && (
-                <div className="mt-3 sm:hidden">
+                <div className="mt-2 sm:hidden">
                     <Button
                         type="button"
                         variant="outline"

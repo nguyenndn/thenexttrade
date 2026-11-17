@@ -247,7 +247,7 @@ export function JournalTableFilters({
     );
 
     return (
-        <div className="flex items-center justify-between gap-2 md:gap-4 bg-white dark:bg-[#1E2028] p-3 sm:p-4 rounded-xl shadow-sm border border-dashboard">
+        <div className="flex items-center justify-between gap-2 md:gap-4 bg-white dark:bg-[#1E2028] p-2 sm:p-4 rounded-xl shadow-sm border border-dashboard">
             <div className="flex items-center gap-2 md:gap-4 flex-1 min-w-0">
                 {/* Search */}
                 <div className="flex items-center gap-2 px-3 md:px-4 h-9 md:h-auto md:py-2 bg-gray-50/80 dark:bg-[#151925] rounded-lg border border-dashboard focus-within:border-gold focus-within:ring-2 focus-within:ring-amber-500/20 transition-all flex-1 md:flex-none md:w-56 min-w-0">

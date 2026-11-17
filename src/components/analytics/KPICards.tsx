@@ -100,52 +100,112 @@ export function KPICards({ summary, currency }: KPICardsProps) {
     ];
 
     return (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-5">
-            {cards.map((card, index) => {
-                const Icon = card.icon;
+        <>
+            {/* Mobile Unified 2x2 Matrix (< sm) */}
+            <div className="sm:hidden grid grid-cols-2 rounded-xl border border-dashboard bg-white dark:bg-[#1E2028] shadow-sm overflow-hidden [&>*:nth-child(even)]:border-l [&>*:nth-child(n+3)]:border-t [&>*]:border-dashboard/70 dark:[&>*]:border-white/[0.06]">
+                {cards.map((card, index) => {
+                    const Icon = card.icon;
+                    let colorClass = "text-gray-700 dark:text-white";
+                    if (
+                        card.title === "Total P&L" &&
+                        card.color.includes("emerald")
+                    ) {
+                        colorClass = "text-[#00C888]";
+                    } else if (card.color.includes("red")) {
+                        colorClass = "text-red-500";
+                    }
+                    const isFullSpan = index === cards.length - 1 && cards.length % 2 === 1;
 
-                // Set text color properly aligned with Journal style - clean and strong
-                let colorClass = "text-gray-700 dark:text-white";
-                if (card.title === "Total P&L" && card.color.includes("emerald"))
-                    colorClass = "text-[#00C888]";
-                else if (card.color.includes("red"))
-                    colorClass = "text-red-500";
-
-                return (
-                    <div
-                        key={index}
-                        className={`bg-white dark:bg-[#1E2028] p-3.5 sm:p-6 rounded-xl border border-dashboard shadow-sm hover:shadow-md transition-shadow duration-200 group border-t-4 ${card.color.replace("text-", "border-t-")}`}
-                    >
-                        <div className="flex items-center gap-3 mb-3 sm:mb-4">
-                            <div
-                                className={`p-2 sm:p-3 rounded-lg ${card.bg} text-opacity-80 group-hover:bg-opacity-100 transition-colors shadow-sm relative z-10`}
-                            >
-                                <Icon
-                                    size={20}
-                                    className={card.color}
-                                    strokeWidth={2.5}
-                                />
-                            </div>
-                        </div>
-                        <h3 className="text-[11px] font-bold uppercase tracking-widest text-gray-600 dark:text-gray-300 mb-1 sm:mb-1.5 relative z-10">
-                            {card.title}
-                        </h3>
-                        <p
-                            className={`text-lg sm:text-2xl font-bold font-mono tabular-nums tracking-tight ${colorClass} relative z-10 truncate`}
+                    return (
+                        <div
+                            key={index}
+                            className={`py-2 px-2.5 min-w-0 flex items-center gap-2 ${isFullSpan ? "col-span-2 justify-between" : ""}`}
                         >
-                            {card.value}
-                        </p>
-                        {card.description && (
-                            <p className="text-xs text-gray-500 font-medium mt-1.5 flex items-center gap-1.5 relative z-10">
-                                <span
-                                    className={`w-1.5 h-1.5 rounded-full shrink-0 ${card.color.replace("text-", "bg-")}`}
-                                ></span>
-                                {card.description}
+                            <div className="flex items-center gap-2 min-w-0">
+                                <div
+                                    className={`w-8 h-8 rounded-lg shrink-0 flex items-center justify-center ${card.bg}`}
+                                >
+                                    <Icon
+                                        size={15}
+                                        className={card.color}
+                                        strokeWidth={2.25}
+                                    />
+                                </div>
+                                <div className="min-w-0">
+                                    <p className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 truncate">
+                                        {card.title}
+                                    </p>
+                                    <p
+                                        className={`text-sm font-black font-mono tabular-nums tracking-tight ${colorClass} truncate`}
+                                    >
+                                        {card.value}
+                                    </p>
+                                </div>
+                            </div>
+                            {isFullSpan && card.description && (
+                                <span className="text-[11px] text-gray-500 font-medium flex items-center gap-1.5 shrink-0">
+                                    <span
+                                        className={`w-1.5 h-1.5 rounded-full shrink-0 ${card.color.replace("text-", "bg-")}`}
+                                    />
+                                    {card.description}
+                                </span>
+                            )}
+                        </div>
+                    );
+                })}
+            </div>
+
+            {/* Desktop Grid (>= sm) */}
+            <div className="hidden sm:grid sm:grid-cols-3 lg:grid-cols-5 sm:gap-5">
+                {cards.map((card, index) => {
+                    const Icon = card.icon;
+
+                    // Set text color properly aligned with Journal style - clean and strong
+                    let colorClass = "text-gray-700 dark:text-white";
+                    if (
+                        card.title === "Total P&L" &&
+                        card.color.includes("emerald")
+                    )
+                        colorClass = "text-[#00C888]";
+                    else if (card.color.includes("red"))
+                        colorClass = "text-red-500";
+
+                    return (
+                        <div
+                            key={index}
+                            className={`bg-white dark:bg-[#1E2028] p-3.5 sm:p-6 rounded-xl border border-dashboard shadow-sm hover:shadow-md transition-shadow duration-200 group border-t-4 ${card.color.replace("text-", "border-t-")}`}
+                        >
+                            <div className="flex items-center gap-3 mb-3 sm:mb-4">
+                                <div
+                                    className={`p-2 sm:p-3 rounded-lg ${card.bg} text-opacity-80 group-hover:bg-opacity-100 transition-colors shadow-sm relative z-10`}
+                                >
+                                    <Icon
+                                        size={20}
+                                        className={card.color}
+                                        strokeWidth={2.5}
+                                    />
+                                </div>
+                            </div>
+                            <h3 className="text-[11px] font-bold uppercase tracking-widest text-gray-600 dark:text-gray-300 mb-1 sm:mb-1.5 relative z-10">
+                                {card.title}
+                            </h3>
+                            <p
+                                className={`text-lg sm:text-2xl font-bold font-mono tabular-nums tracking-tight ${colorClass} relative z-10 truncate`}
+                            >
+                                {card.value}
                             </p>
-                        )}
-                    </div>
-                );
-            })}
-        </div>
+                            {card.description && (
+                                <p className="text-xs text-gray-500 font-medium mt-1.5 flex items-center gap-1.5 relative z-10">
+                                    <span
+                                        className={`w-1.5 h-1.5 rounded-full shrink-0 ${card.color.replace("text-", "bg-")}`}
+                                    ></span>
+                                    {card.description}
+                                </p>
+                            )}
+                        </div>
+                    );
+                })}
+            </div>
+        </>
     );
 }

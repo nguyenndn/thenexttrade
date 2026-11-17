@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Bell, Check } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/Button";
 import { useNotifications } from "@/hooks/useNotifications";
 import { NotificationTabNav } from "./notification-bell/NotificationTabNav";
 import { NotificationItem } from "./notification-bell/NotificationItem";
+import { MobileNotificationSheet } from "./notification-bell/MobileNotificationSheet";
 import {
     categorizeNotification,
     computeUnreadCounts,
@@ -21,10 +22,19 @@ import {
 
 export function NotificationBell() {
     const [isOpen, setIsOpen] = useState(false);
+    const [isMobileViewport, setIsMobileViewport] = useState(false);
     const [activeTab, setActiveTab] = useState<TabType>("All");
     const router = useRouter();
     const { notifications, unreadCount, markAsRead, isLoading } =
         useNotifications(20);
+
+    useEffect(() => {
+        const mql = window.matchMedia("(max-width: 639px)");
+        const update = () => setIsMobileViewport(mql.matches);
+        update();
+        mql.addEventListener("change", update);
+        return () => mql.removeEventListener("change", update);
+    }, []);
 
     const normalizedNotifications = useMemo<NormalizedNotification[]>(() => {
         return notifications.map((n) => ({
@@ -44,6 +54,40 @@ export function NotificationBell() {
             return n.category === activeTab;
         });
     }, [normalizedNotifications, activeTab]);
+
+    if (isMobileViewport) {
+        return (
+            <>
+                <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    aria-label="Notifications"
+                    onClick={() => setIsOpen(true)}
+                    className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-gray-200 dark:border-white/10 relative text-gray-600 hover:text-gray-700 dark:text-gray-500 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-100 shrink-0"
+                >
+                    <Bell size={20} />
+                    {unreadCount > 0 && (
+                        <span className="absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 text-[10px] font-bold text-white bg-red-500 rounded-full border-2 border-white dark:border-[#1E2028]">
+                            {unreadCount > 9 ? "9+" : unreadCount}
+                        </span>
+                    )}
+                </Button>
+
+                <MobileNotificationSheet
+                    isOpen={isOpen}
+                    onOpenChange={setIsOpen}
+                    activeTab={activeTab}
+                    onSelectTab={setActiveTab}
+                    unreadCounts={unreadCounts}
+                    unreadCount={unreadCount}
+                    notifications={filteredNotifications}
+                    isLoading={isLoading}
+                    onMarkAsRead={markAsRead}
+                />
+            </>
+        );
+    }
 
     return (
         <Popover open={isOpen} onOpenChange={setIsOpen}>

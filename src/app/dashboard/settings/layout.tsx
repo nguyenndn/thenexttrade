@@ -61,7 +61,7 @@ export default function SettingsLayout({
         : baseNavItems;
 
     return (
-        <div className="space-y-4 min-w-0">
+        <div className="space-y-2 md:space-y-4 min-w-0">
             {/* ── Page Header — consistent with other dashboard pages ── */}
             <PageHeader
                 title="Settings"

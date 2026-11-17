@@ -241,7 +241,72 @@ export function MyStatsView({
                 {/* ═══════════════════════════════════════════════════════════ */}
                 {/* QUICK STATS GRID */}
                 {/* ═══════════════════════════════════════════════════════════ */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 border-t border-dashboard">
+                {/* Mobile Unified 2x2 Matrix Card (< sm) */}
+                <div className="sm:hidden p-2.5 border-t border-dashboard bg-gray-50/40 dark:bg-[#151925]/60">
+                    <div className="grid grid-cols-2 rounded-xl border border-dashboard bg-white dark:bg-[#1E2028] shadow-sm overflow-hidden [&>*:nth-child(even)]:border-l [&>*:nth-child(n+3)]:border-t [&>*]:border-dashboard/70 dark:[&>*]:border-white/[0.06]">
+                        {[
+                            {
+                                icon: Star,
+                                label: "Edge Score",
+                                value: value.toLocaleString(),
+                                color: "text-amber-600 dark:text-gold",
+                                iconBg: "bg-gold/10 border-gold/20",
+                            },
+                            {
+                                icon: Flame,
+                                label: "Streak",
+                                value: `${streak}d`,
+                                color: "text-amber-600 dark:text-gold",
+                                iconBg: "bg-gold/10 border-gold/20",
+                            },
+                            {
+                                icon: BookOpen,
+                                label: "Lessons",
+                                value: String(lessonsCompleted),
+                                color: "text-emerald-500",
+                                iconBg: "bg-emerald-500/10 border-emerald-500/20",
+                            },
+                            {
+                                icon: TrendingUp,
+                                label: "Trades",
+                                value: String(totalTrades),
+                                color: "text-amber-600 dark:text-gold",
+                                iconBg: "bg-gold/10 border-gold/20",
+                            },
+                        ].map((item) => {
+                            const StatIcon = item.icon;
+                            return (
+                                <div
+                                    key={item.label}
+                                    className="py-2 px-2.5 flex items-center gap-2.5 min-w-0"
+                                >
+                                    <div
+                                        className={cn(
+                                            "w-8 h-8 rounded-lg border flex items-center justify-center shrink-0",
+                                            item.iconBg
+                                        )}
+                                    >
+                                        <StatIcon
+                                            size={15}
+                                            className={item.color}
+                                        />
+                                    </div>
+                                    <div className="min-w-0">
+                                        <div className="text-[10px] font-bold text-gray-500 uppercase tracking-wider truncate">
+                                            {item.label}
+                                        </div>
+                                        <div className="text-sm font-black text-gray-700 dark:text-white font-mono tabular-nums truncate leading-tight mt-0.5">
+                                            {item.value}
+                                        </div>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+
+                {/* Desktop Grid (>= sm) */}
+                <div className="hidden sm:grid sm:grid-cols-4 border-t border-dashboard">
                     <QuickStat
                         icon={Star}
                         label="Edge Score"
@@ -275,8 +340,8 @@ export function MyStatsView({
                 {/* BADGES & ACHIEVEMENTS */}
                 {/* ═══════════════════════════════════════════════════════════ */}
                 {badges.length > 0 && (
-                    <div className="px-4 py-4 sm:px-6 sm:py-5 border-t border-dashboard">
-                        <div className="flex items-center justify-between mb-4">
+                    <div className="px-3.5 py-3.5 sm:px-6 sm:py-5 border-t border-dashboard">
+                        <div className="flex items-center justify-between mb-3 sm:mb-4">
                             <h3 className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">
                                 <Award size={12} className="inline-block mr-1 align-[-1px]" /> Badges & Achievements
                             </h3>
@@ -284,7 +349,7 @@ export function MyStatsView({
                                 {earnedCount}/{badges.length}
                             </span>
                         </div>
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
                             {badges.map((badge) => (
                                 <BadgeItem key={badge.code} badge={badge} />
                             ))}

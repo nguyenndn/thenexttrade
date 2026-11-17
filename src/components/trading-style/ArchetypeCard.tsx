@@ -22,7 +22,7 @@ export function ArchetypeCard({
     className,
 }: ArchetypeCardProps) {
     return (
-        <div className={className ? `space-y-6 ${className}` : "space-y-6"}>
+        <div className={className ? `space-y-3 sm:space-y-6 ${className}` : "space-y-3 sm:space-y-6"}>
             {showHeader && (
                 <div>
                     <h3 className="text-xl sm:text-2xl font-black tracking-tight text-gray-900 dark:text-white">
@@ -34,7 +34,7 @@ export function ArchetypeCard({
                 </div>
             )}
 
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-3 sm:gap-5 sm:grid-cols-2">
                 <section>
                     <h4 className="mb-2.5 font-mono text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
                         Execution Strengths
@@ -91,7 +91,7 @@ export function ArchetypeCard({
                 <h4 className="mb-2.5 font-mono text-[10px] font-bold uppercase tracking-wider text-amber-700 dark:text-gold">
                     Priority Focus Areas
                 </h4>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-1.5 sm:gap-2">
                     {archetype.focus.map((f) => (
                         <span
                             key={f}
@@ -119,7 +119,7 @@ export function ArchetypeMoves({
     className?: string;
 }) {
     return (
-        <section className={className ? `space-y-3 ${className}` : "space-y-3"}>
+        <section className={className ? `space-y-2 sm:space-y-3 ${className}` : "space-y-2 sm:space-y-3"}>
             <div>
                 <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-amber-700 dark:text-gold">
                     Keystone First Move

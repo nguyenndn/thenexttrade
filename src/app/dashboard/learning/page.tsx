@@ -102,13 +102,13 @@ export default async function MyLearningPage() {
     });
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-2 md:space-y-6">
             <PageHeader
                 title="Learning Modules"
                 description="Track your progress and continue your trading education."
             />
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-6">
                 {courses.map((course) => (
                     <div
                         key={course.id}
@@ -126,7 +126,7 @@ export default async function MyLearningPage() {
                             </div>
                         </div>
 
-                        <div className="p-4 sm:p-6 flex-1 flex flex-col">
+                        <div className="p-3.5 sm:p-6 flex-1 flex flex-col">
                             <div className="flex items-start justify-between gap-2 mb-2">
                                 <h3 className="font-bold text-lg text-gray-700 dark:text-white group-hover:text-amber-600 dark:group-hover:text-gold transition-colors">
                                     {course.title}

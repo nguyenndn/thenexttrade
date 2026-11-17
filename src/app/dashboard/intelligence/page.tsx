@@ -99,7 +99,7 @@ export default async function IntelligencePage({
     }
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-2 md:space-y-4">
             <PageHeader
                 title="Trading Intelligence"
                 description="Execution leak radar, discipline scoring, and behavioral pattern detection from your trade history."
@@ -115,7 +115,7 @@ export default async function IntelligencePage({
                     />
                 )}
             </PageHeader>
-            <div className="mb-4">
+            <div className="mb-0 md:mb-4">
                 <TabBar tabs={ANALYTICS_TABS} />
             </div>
             <Suspense
@@ -196,13 +196,13 @@ async function IntelligenceDataLoader({
 
 function IntelligenceLoadingSkeleton() {
     return (
-        <div className="space-y-4 animate-in fade-in">
-            <div className="flex items-center gap-3">
+        <div className="space-y-2 md:space-y-4 animate-in fade-in">
+            <div className="flex items-center gap-1.5 sm:gap-3">
                 <div className="h-6 w-40 bg-gray-200 dark:bg-white/5 rounded-lg animate-pulse" />
                 <div className="h-6 w-20 bg-gray-200 dark:bg-white/5 rounded-lg animate-pulse" />
             </div>
             <div className="h-20 bg-gray-200 dark:bg-white/5 rounded-xl animate-pulse" />
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 md:gap-4">
                 {[1, 2, 3].map((i) => (
                     <div
                         key={i}

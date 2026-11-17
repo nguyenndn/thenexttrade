@@ -60,8 +60,8 @@ export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
     const currency = data.currency || "USD";
 
     return (
-        <div className="bg-white dark:bg-[#1E2028] p-4 sm:p-6 rounded-xl border border-dashboard shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div className="flex justify-between items-center gap-3 mb-6">
+        <div className="bg-white dark:bg-[#1E2028] p-3.5 sm:p-6 rounded-xl border border-dashboard shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="flex justify-between items-center gap-2 sm:gap-3 mb-3 sm:mb-6">
                 <h3 className="font-bold text-gray-700 dark:text-white text-lg">
                     Report Preview
                 </h3>
@@ -75,13 +75,56 @@ export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
             </div>
 
             {/* Summary Card */}
-            <div className="bg-gradient-to-br from-amber-500/10 to-amber-600/5 p-4 sm:p-6 rounded-lg mb-8 border border-amber-500/20">
-                <h4 className="text-base sm:text-lg font-bold text-gray-700 dark:text-white mb-4 sm:mb-6 flex items-center gap-2">
+            <div className="bg-gradient-to-br from-amber-500/10 to-amber-600/5 p-3 sm:p-6 rounded-xl mb-3 md:mb-8 border border-amber-500/20">
+                <h4 className="text-base sm:text-lg font-bold text-gray-700 dark:text-white mb-2.5 sm:mb-6 flex items-center gap-2">
                     <span className="w-1 h-6 bg-gold rounded-full shrink-0"></span>
                     Performance Summary: {data.period}
                 </h4>
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {/* Mobile Unified 2x2 Matrix (< sm) */}
+                <div className="sm:hidden grid grid-cols-2 rounded-xl border border-dashboard bg-white dark:bg-[#1E2028] shadow-sm overflow-hidden [&>*:nth-child(even)]:border-l [&>*:nth-child(n+3)]:border-t [&>*]:border-dashboard/70 dark:[&>*]:border-white/[0.06]">
+                    <div className="py-2 px-2.5 min-w-0">
+                        <p className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-0.5 truncate">
+                            Net P/L
+                        </p>
+                        <p
+                            className={`text-sm font-black font-mono tabular-nums truncate ${data.summary.netPnL >= 0 ? "text-primary" : "text-red-500"}`}
+                        >
+                            {formatDashboardCurrency(
+                                data.summary.netPnL,
+                                currency,
+                                { signDisplay: "always" }
+                            )}
+                        </p>
+                    </div>
+                    <div className="py-2 px-2.5 min-w-0">
+                        <p className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-0.5 truncate">
+                            Win Rate
+                        </p>
+                        <p className="text-sm font-black font-mono tabular-nums text-gray-700 dark:text-white truncate">
+                            {data.summary.winRate.toFixed(0)}%
+                        </p>
+                    </div>
+                    <div className="py-2 px-2.5 min-w-0">
+                        <p className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-0.5 truncate">
+                            Total Trades
+                        </p>
+                        <p className="text-sm font-black font-mono tabular-nums text-gray-700 dark:text-white truncate">
+                            {data.summary.totalTrades}
+                        </p>
+                    </div>
+                    <div className="py-2 px-2.5 min-w-0">
+                        <p className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-0.5 truncate">
+                            Profit Factor
+                        </p>
+                        <p className="text-sm font-black font-mono tabular-nums text-gray-700 dark:text-white truncate">
+                            {data.summary.profitFactor.toFixed(2)}
+                        </p>
+                    </div>
+                </div>
+
+                {/* Desktop Grid (>= sm) */}
+                <div className="hidden sm:grid sm:grid-cols-2 md:grid-cols-4 gap-4">
                     <div>
                         <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">
                             Net P/L
@@ -123,13 +166,13 @@ export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-8">
                 {/* By Strategy */}
                 <div>
-                    <h4 className="font-bold text-gray-700 dark:text-white mb-4 text-sm uppercase tracking-wider text-gray-600">
+                    <h4 className="font-bold text-gray-700 dark:text-white mb-2 md:mb-4 text-sm uppercase tracking-wider text-gray-600">
                         By Strategy
                     </h4>
-                    <div className="space-y-3">
+                    <div className="space-y-2 md:space-y-3">
                         {data.byStrategy.slice(0, 5).map((strat) => (
                             <div
                                 key={strat.name}
@@ -167,10 +210,10 @@ export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
 
                 {/* By Pair */}
                 <div>
-                    <h4 className="font-bold text-gray-700 dark:text-white mb-4 text-sm uppercase tracking-wider text-gray-600">
+                    <h4 className="font-bold text-gray-700 dark:text-white mb-2 md:mb-4 text-sm uppercase tracking-wider text-gray-600">
                         Top Pairs
                     </h4>
-                    <div className="space-y-3">
+                    <div className="space-y-2 md:space-y-3">
                         {data.byPair.slice(0, 5).map((pair) => (
                             <div
                                 key={pair.symbol}
@@ -203,8 +246,8 @@ export function ReportPreview({ data, onDownload }: ReportPreviewProps) {
             </div>
 
             {/* Recent Trades Table */}
-            <div className="mt-8">
-                <h4 className="font-bold text-gray-700 dark:text-white mb-4 text-sm uppercase tracking-wider text-gray-600">
+            <div className="mt-3 md:mt-8">
+                <h4 className="font-bold text-gray-700 dark:text-white mb-2 md:mb-4 text-sm uppercase tracking-wider text-gray-600">
                     Recent Trades
                 </h4>
                 <div className="overflow-x-auto rounded-lg border border-dashboard">

@@ -247,6 +247,7 @@ export function utcTime(
         | "dd MMM HH:mm"
         | "dd MMM yyyy"
         | "MMM dd"
+        | "MMM dd, yyyy"
         | "MMM dd, HH:mm"
         | "yyyy-MM-dd HH:mm"
         | "yyyy-MM-dd" = "HH:mm"
@@ -282,6 +283,8 @@ export function utcTime(
             return `${dd} ${mon} ${yyyy}`;
         case "MMM dd":
             return `${mon} ${dd}`;
+        case "MMM dd, yyyy":
+            return `${mon} ${dd}, ${yyyy}`;
         case "MMM dd, HH:mm":
             return `${mon} ${dd}, ${hh}:${mm}`;
         case "yyyy-MM-dd HH:mm":
