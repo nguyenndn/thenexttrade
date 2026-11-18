@@ -10,7 +10,7 @@ import { Suspense } from "react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "17 Free Professional Forex Trading Calculators & Tools | TheNextTrade",
+    title: "17 Free Professional Forex Trading Calculators & Tools",
     description:
         "Free forex calculators: position size, pip value, margin, risk/reward, Fibonacci, and drawdown. No sign-up needed.",
     alternates: {

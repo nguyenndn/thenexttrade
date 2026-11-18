@@ -15,8 +15,10 @@ export const metadata: Metadata = {
         title: "Trading Library - Free Forex Articles & Guides",
         description:
             "Comprehensive forex trading articles and educational guides.",
+        url: "/knowledge",
+        siteName: "TheNextTrade",
         type: "website",
-        images: ["/library-og.jpg"],
+        images: ["/og-image.jpg?v=2"],
     },
     twitter: {
         card: "summary_large_image",

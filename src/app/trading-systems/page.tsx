@@ -22,7 +22,7 @@ import { getSystemBySlug } from "@/config/trading-systems-data";
 import { buttonVariants } from "@/components/ui/button-variants";
 
 export const metadata: Metadata = {
-    title: "MT5 Trading Systems & Expert Advisors | TheNextTrade",
+    title: "MT5 Trading Systems & Expert Advisors",
     description:
         "Professional MetaTrader 5 Expert Advisors and trade management tools. Get GoldScalperNinja EA, GSN Shadow Matrix, and Trade Manager with an eligible partner account.",
     alternates: {

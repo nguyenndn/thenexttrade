@@ -48,12 +48,13 @@ export async function generateMetadata({
 
     if (!system) {
         return {
-            title: "System Not Found | TheNextTrade",
+            title: "System Not Found",
+            robots: { index: false, follow: false },
         };
     }
 
     return {
-        title: `${system.title} Specs & Parameters | TheNextTrade`,
+        title: `${system.title} — MT5 Specs & Parameters`,
         description: system.description,
         alternates: {
             canonical: `/trading-systems/${system.slug}`,

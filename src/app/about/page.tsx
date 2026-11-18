@@ -26,7 +26,9 @@ import { DynamicFirefly } from "@/components/ui/DynamicFirefly";
 export const revalidate = 86400;
 
 export const metadata: Metadata = {
-    title: "About TheNextTrade — From Blown Accounts to Disciplined Execution",
+    title: {
+        absolute: "About TheNextTrade — From Blown Accounts to Disciplined Execution",
+    },
     description:
         "The story behind TheNextTrade. After years of losses and scattered learning, I built a free forex education and journaling platform so new traders don't repeat my mistakes.",
     alternates: {

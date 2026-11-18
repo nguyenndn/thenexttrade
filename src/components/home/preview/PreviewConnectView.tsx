@@ -1,36 +1,60 @@
-import { CheckCircle2, Cpu, ShieldCheck, Zap } from "lucide-react";
+import { CheckCircle2, ShieldCheck, Zap } from "lucide-react";
 
 export function PreviewConnectView() {
     return (
         <div className="h-full flex flex-col justify-between gap-2 animate-in fade-in duration-300">
-            {/* Live Connection Banner */}
-            <div className="p-2 sm:p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 dark:bg-emerald-500/[0.06] flex items-center justify-between shrink-0">
-                <div className="flex items-center gap-2">
-                    <div className="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
-                        <Cpu size={15} />
+            {/* Live MT5 → TheNextTrade Streaming Telemetry Banner */}
+            <div className="p-2 sm:p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 dark:bg-emerald-500/[0.07] flex items-center justify-between gap-2 shrink-0">
+                <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                    {/* MT5 → Streaming Packet Track → TheNextTrade (matching brag.mp4 Scene 3) */}
+                    <div
+                        aria-hidden="true"
+                        className="flex items-center gap-1.5 sm:gap-2 shrink-0 select-none"
+                    >
+                        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/15 flex flex-col items-center justify-center shadow-xs shrink-0">
+                            <span className="font-mono text-[9.5px] sm:text-[10px] font-black leading-none text-gray-800 dark:text-slate-200">MT5</span>
+                            <span className="font-mono text-[6.5px] sm:text-[7px] font-bold leading-none text-amber-600 dark:text-amber-400 mt-0.5">CLOUD</span>
+                        </div>
+
+                        <div className="relative w-16 sm:w-24 h-6 flex items-center overflow-hidden">
+                            <div className="w-full border-t-[1.5px] border-dashed border-gray-300 dark:border-white/20" />
+                            <span className="absolute top-1/2 h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-amber-500 shadow-[0_0_10px_#F59E0B] animate-mt5-packet" />
+                            <span className="absolute top-1/2 h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-emerald-500 shadow-[0_0_10px_#10B981] animate-mt5-packet-delayed" />
+                        </div>
+
+                        <div className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-500/15 dark:bg-emerald-500/15 border border-emerald-500/35 flex items-center justify-center shadow-xs shrink-0">
+                            <img
+                                src="/images/logo_thenexttrade_brain.png"
+                                alt=""
+                                width={20}
+                                height={20}
+                                className="w-4 h-4 sm:w-5 sm:h-5 object-contain"
+                            />
+                        </div>
                     </div>
-                    <div>
+
+                    <div className="min-w-0">
                         <div className="flex items-center gap-1.5">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                            <span className="text-xs font-bold text-gray-900 dark:text-white">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+                            <span className="text-[11px] sm:text-xs font-bold text-gray-900 dark:text-white truncate">
                                 Trade Manager EA
                             </span>
                         </div>
-                        <span className="text-[10px] text-gray-500 dark:text-gray-400">
-                            Vantage Live Server · Latency{" "}
+                        <span className="text-[9px] sm:text-[10px] text-gray-500 dark:text-gray-400 block truncate">
+                            Vantage Live Server ·{" "}
                             <span className="font-mono tabular-nums font-semibold text-gray-700 dark:text-gray-300">
                                 12ms
                             </span>
                         </span>
                     </div>
                 </div>
-                <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 font-mono tabular-nums text-[9px] font-black uppercase tracking-wider">
-                    Synced 12s ago
+                <span className="hidden sm:inline-flex px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 font-mono tabular-nums text-[9px] font-black uppercase tracking-wider shrink-0">
+                    Synced just now
                 </span>
             </div>
 
             {/* Live Auto-Synced Executions */}
-            <div className="p-2.5 rounded-lg bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 shadow-sm flex-1 flex flex-col justify-center">
+            <div className="p-2.5 rounded-xl bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 shadow-sm flex-1 flex flex-col justify-center">
                 <div className="flex items-center justify-between mb-1.5 shrink-0">
                     <div className="flex items-center gap-1.5">
                         <Zap size={11} className="text-gold" />
@@ -44,7 +68,6 @@ export function PreviewConnectView() {
                 </div>
 
                 <div className="space-y-1.5">
-                    {/* Execution 1 */}
                     <div className="p-1.5 sm:p-2 rounded-lg bg-gray-50/80 dark:bg-white/[0.02] border border-gray-100 dark:border-white/10 flex items-center justify-between">
                         <div className="flex items-center gap-2">
                             <span className="px-1.5 py-0.5 rounded-lg text-[8px] font-black uppercase bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400">
@@ -78,7 +101,6 @@ export function PreviewConnectView() {
                         </div>
                     </div>
 
-                    {/* Execution 2 */}
                     <div className="p-1.5 sm:p-2 rounded-lg bg-gray-50/80 dark:bg-white/[0.02] border border-gray-100 dark:border-white/10 flex items-center justify-between">
                         <div className="flex items-center gap-2">
                             <span className="px-1.5 py-0.5 rounded-lg text-[8px] font-black uppercase bg-red-100 dark:bg-red-500/20 text-red-700 dark:text-red-400">
@@ -113,7 +135,7 @@ export function PreviewConnectView() {
             </div>
 
             {/* Sync summary bar */}
-            <div className="px-2.5 py-1.5 rounded-lg bg-gold/[0.08] dark:bg-gold/[0.04] border border-gold/20 flex items-center justify-between text-[10px] shrink-0">
+            <div className="px-2.5 py-1.5 rounded-xl bg-gold/[0.08] dark:bg-gold/[0.04] border border-gold/20 flex items-center justify-between text-[10px] shrink-0">
                 <span className="text-gray-600 dark:text-gray-300 font-medium">
                     MT5 Chart / VPS Auto Heartbeat
                 </span>

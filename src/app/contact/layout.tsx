@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Contact Us — Get in Touch with TheNextTrade",
+    title: "Contact Us — Support & Partnership Desk",
     description:
         "Have questions about our trading tools, Academy courses, or need technical support? Send us a message and our team will respond within 24 hours.",
     alternates: {

@@ -44,7 +44,10 @@ export async function generateMetadata({
     });
 
     if (!lesson || lesson.status !== "published") {
-        return { title: "Lesson Not Found | TheNextTrade Academy" };
+        return {
+            title: "Lesson Not Found",
+            robots: { index: false, follow: false },
+        };
     }
 
     const description =
@@ -52,7 +55,7 @@ export async function generateMetadata({
         `${lesson.title} — ${lesson.module.level.title}. Learn forex trading step by step with TheNextTrade Academy.`;
 
     return {
-        title: `${lesson.title} | TheNextTrade Academy`,
+        title: `${lesson.title} — Academy`,
         description,
         alternates: {
             canonical: `/academy/lesson/${slug}`,

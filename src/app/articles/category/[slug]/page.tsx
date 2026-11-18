@@ -1,4 +1,4 @@
-import { redirect } from "next/navigation";
+import { permanentRedirect } from "next/navigation";
 
 /**
  * Category browsing moved from /articles/category/[slug] to
@@ -10,5 +10,5 @@ export default async function ArticleCategoryPage({
     params: Promise<{ slug: string }>;
 }) {
     const { slug } = await params;
-    redirect(`/knowledge?category=${encodeURIComponent(slug)}`);
+    permanentRedirect(`/knowledge?category=${encodeURIComponent(slug)}`);
 }

@@ -855,6 +855,27 @@ textarea,
     100% { transform: translateX(1000%); }
 }
 
+@keyframes mt5PacketFlow {
+    0% {
+        left: -6px;
+        opacity: 0;
+        transform: translateY(-50%) scale(0.75);
+    }
+    12% {
+        opacity: 1;
+        transform: translateY(-50%) scale(1);
+    }
+    88% {
+        opacity: 1;
+        transform: translateY(-50%) scale(1);
+    }
+    100% {
+        left: calc(100% - 4px);
+        opacity: 0;
+        transform: translateY(-50%) scale(0.75);
+    }
+}
+
 @keyframes border-flow-teaser-new {
     from { stroke-dashoffset: 0; }
     to { stroke-dashoffset: -360; }
@@ -877,6 +898,14 @@ textarea,
 
 .animate-laser-flow {
     animation: laserFlow 4s linear infinite;
+}
+
+.animate-mt5-packet {
+    animation: mt5PacketFlow 1.8s linear infinite;
+}
+
+.animate-mt5-packet-delayed {
+    animation: mt5PacketFlow 1.8s linear infinite -0.9s;
 }
 
 .animate-flow-teaser-new {

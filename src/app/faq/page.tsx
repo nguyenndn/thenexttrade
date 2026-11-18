@@ -19,7 +19,7 @@ import { getAuthUser } from "@/lib/auth-cache";
 export const revalidate = 86400;
 
 export const metadata: Metadata = {
-    title: "Frequently Asked Questions (FAQ) | TheNextTrade",
+    title: "Frequently Asked Questions (FAQ)",
     description:
         "Find answers to all your questions about TheNextTrade platform, MT5 EA sync, Trading Journal, AI coach, 17 free calculators, and risk management.",
     alternates: {

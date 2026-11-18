@@ -11,14 +11,14 @@ export async function GET() {
     const academyEnabled = await isAcademyEnabled();
 
     const feed = new RSS({
-        title: "The Next Trade",
+        title: "TheNextTrade",
         description:
-            "Latest insights, analysis, and educational content from The Next Trade.",
+            "Latest MT5 execution insights, risk math guides, and market analysis from TheNextTrade.",
         site_url: baseUrl,
         feed_url: `${baseUrl}/feed.xml`,
         language: "en-us",
         pubDate: new Date(),
-        copyright: `All rights reserved ${new Date().getFullYear()}, The Next Trade`,
+        copyright: `All rights reserved ${new Date().getFullYear()}, TheNextTrade`,
     });
 
     // 1. Articles
@@ -42,7 +42,7 @@ export async function GET() {
             url: `${baseUrl}/articles/${article.slug}`,
             guid: article.id,
             date: article.publishedAt || article.createdAt,
-            author: article.author.name || "The Next Trade Team",
+            author: article.author.name || "TheNextTrade Team",
             categories: [article.category.name],
         });
     });
@@ -81,7 +81,7 @@ export async function GET() {
                 url: `${baseUrl}/academy/lesson/${lesson.slug}`,
                 guid: `academy-${lesson.id}`,
                 date: lesson.updatedAt,
-                author: "The Next Trade Academy",
+                author: "TheNextTrade Academy",
                 categories: ["Academy", lesson.module.level.title],
             });
         });

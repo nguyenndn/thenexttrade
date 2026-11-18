@@ -20,13 +20,16 @@ export async function generateMetadata({
     const { userId } = await params;
     const data = await getMasterCertificateShareData(userId);
     if (!data) {
-        return { title: "Certificate Not Found | TheNextTrade" };
+        return {
+            title: "Certificate Not Found",
+            robots: { index: false, follow: false },
+        };
     }
 
     const description = `${data.displayName} completed all ${data.levelCount} levels of the TheNextTrade Academy with a ${data.avgScore}% average score — Master Trader Certified.`;
 
     return {
-        title: `Master Certificate | ${data.displayName} | TheNextTrade`,
+        title: `Master Certificate — ${data.displayName}`,
         description,
         alternates: {
             canonical: `/certificate/master/${userId}`,

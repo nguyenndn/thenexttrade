@@ -5,8 +5,10 @@ import { HomeFeedSkeleton } from "@/components/ui/LoadingSkeleton";
 import { SaaSHeroSection } from "@/components/home/SaaSHeroSection";
 import { HomeTrustMetrics } from "@/components/home/HomeTrustMetrics";
 import { DynamicFirefly } from "@/components/ui/DynamicFirefly";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth-cache";
+import { getBaseUrl, absoluteUrl } from "@/lib/url";
 import dynamic from "next/dynamic";
 import type { Metadata } from "next";
 
@@ -16,6 +18,9 @@ export const metadata: Metadata = {
         "Sync Demo & Live MT5 trades via EA with zero password sharing. Spot revenge sizing, enforce hard stop-loss rules, and access 17 free risk calculators.",
     alternates: {
         canonical: "/",
+        types: {
+            "application/rss+xml": "/feed.xml",
+        },
     },
     openGraph: {
         title: "TheNextTrade — The Discipline OS for MT5 Traders",
@@ -129,6 +134,29 @@ export default async function Home() {
 
     return (
         <main className="min-h-screen bg-white dark:bg-transparent overflow-x-clip">
+            <JsonLd
+                type="SoftwareApplication"
+                data={{
+                    name: "TheNextTrade",
+                    applicationCategory: "FinanceApplication",
+                    operatingSystem: "Web Browser, MetaTrader 5",
+                    url: getBaseUrl(),
+                    image: absoluteUrl("/og-image.jpg?v=2"),
+                    description:
+                        "Automated MT5 trading journal, behavioral leak radar, 10-trade discipline sprints, and 17 free forex risk calculators.",
+                    offers: {
+                        "@type": "Offer",
+                        price: "0",
+                        priceCurrency: "USD",
+                    },
+                    featureList: [
+                        "Zero-password MT5 trade sync via Trade Manager EA and Cloud Sync",
+                        "Behavioral Leak Radar for revenge sizing and moved stop-losses",
+                        "17 free forex risk and position size calculators",
+                        "10-trade discipline sprint coaching",
+                    ],
+                }}
+            />
             <PublicHeader user={user} />
             <Suspense fallback={<HomeFeedSkeleton />}>
                 <HomeFeed

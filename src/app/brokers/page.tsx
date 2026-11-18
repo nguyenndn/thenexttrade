@@ -4,7 +4,7 @@ import { ToolsPageShell } from "@/components/tools/ToolsPageShell";
 import BrokersClient from "./BrokersClient";
 
 export const metadata: Metadata = {
-    title: "Verified Forex Brokers & Infrastructure Partners | TheNextTrade",
+    title: "Verified Forex Brokers & Infrastructure Partners",
     description:
         "Reviews of regulated forex brokers, VPS hosting, and crypto platforms.",
     alternates: {

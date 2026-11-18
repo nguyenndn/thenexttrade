@@ -13,6 +13,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // 1. Static Routes - Main pages
     const mainRoutes = [
         { path: "", priority: 1.0, frequency: "daily" as const },
+        { path: "/get-started", priority: 0.85, frequency: "monthly" as const },
         { path: "/about", priority: 0.8, frequency: "monthly" as const },
         ...(academyEnabled
             ? [{ path: "/academy", priority: 0.9, frequency: "weekly" as const }]

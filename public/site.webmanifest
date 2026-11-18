@@ -1,5 +1,5 @@
 {
-  "name": "TheNextTrade — Trading Tools & Academy",
+  "name": "TheNextTrade — The Discipline OS for MT5 Traders",
   "short_name": "TheNextTrade",
   "icons": [
     {
@@ -13,7 +13,7 @@
       "type": "image/png"
     }
   ],
-  "theme_color": "#0F1117",
-  "background_color": "#0F1117",
+  "theme_color": "#F59E0B",
+  "background_color": "#090d16",
   "display": "standalone"
 }

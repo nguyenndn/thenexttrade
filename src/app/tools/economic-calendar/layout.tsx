@@ -17,8 +17,10 @@ export const metadata: Metadata = {
         title: "Economic Calendar - Forex News & Events",
         description:
             "Real-time economic calendar with high-impact news events.",
+        url: "/tools/economic-calendar",
+        siteName: "TheNextTrade",
         type: "website",
-        images: ["/economic-calendar-og.jpg"],
+        images: ["/og-image.jpg?v=2"],
     },
     twitter: {
         card: "summary_large_image",

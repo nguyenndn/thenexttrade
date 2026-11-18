@@ -20,13 +20,16 @@ export async function generateMetadata({
     const { id } = await params;
     const data = await getCertificateShareData(id);
     if (!data) {
-        return { title: "Certificate Not Found | TheNextTrade" };
+        return {
+            title: "Certificate Not Found",
+            robots: { index: false, follow: false },
+        };
     }
 
     const description = `${data.displayName} earned the Level ${data.levelOrder}: ${data.levelTitle} certificate on TheNextTrade Academy with a ${data.score}% score.`;
 
     return {
-        title: `Certificate | ${data.displayName} | TheNextTrade`,
+        title: `Certificate — ${data.displayName}`,
         description,
         alternates: {
             canonical: `/certificate/${id}`,

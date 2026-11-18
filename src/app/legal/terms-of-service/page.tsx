@@ -7,7 +7,7 @@ import {
 import { TELEGRAM_CHANNEL_URL } from "@/config/telegram";
 
 export const metadata: Metadata = {
-    title: "Terms of Service — TheNextTrade",
+    title: "Terms of Service",
     description:
         "Terms governing your use of TheNextTrade's MT5 expert advisors, indicators, trading journal, and community tools. Review your rights, responsibilities, and acceptable use.",
     alternates: {

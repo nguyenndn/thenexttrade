@@ -8,7 +8,8 @@ import { utcTime } from "@/lib/utils";
 import { ShareTradeModal } from "./ShareTradeModal";
 import {
     Share2,
-    ArrowLeft,
+    ChevronLeft,
+    ChevronRight,
     ArrowRight,
     TrendingUp,
     TrendingDown,
@@ -272,8 +273,8 @@ export function TradeDetailSheet({
 
     return (
         <Sheet open={isOpen} onOpenChange={onClose}>
-            {/* Main Sheet Container - Fixed flex column so header never overlaps scrolled content */}
-            <SheetContent className="flex flex-col h-dvh sm:max-w-4xl p-0 gap-0 bg-white dark:bg-[#0D111C] border-l border-dashboard dark:border-white/10 shadow-2xl overflow-hidden [&>button.absolute]:hidden">
+            {/* Main Sheet Container - Compact ~20% narrower drawer (720px max) */}
+            <SheetContent className="flex flex-col h-dvh sm:max-w-[720px] p-0 gap-0 bg-white dark:bg-[#0D111C] border-l border-dashboard dark:border-white/10 shadow-2xl overflow-hidden [&>button.absolute]:hidden">
                 {/* 
  A11y Requirement: Radix DialogContent requires a DialogTitle. 
  Since we build our own visual header below, we hide the official one for screen readers.
@@ -288,83 +289,106 @@ export function TradeDetailSheet({
                     </SheetHeader>
                 </VisuallyHidden>
 
-                {/* Fixed Non-Scrolling Header Section */}
-                <div className="shrink-0 relative z-30 bg-white dark:bg-[#0D111C] border-b border-dashboard px-4 sm:px-6 py-3 sm:py-4">
-                    <div className="flex items-center justify-end gap-1.5 sm:gap-2">
+                {/* Fixed Non-Scrolling Minimal Icon Header */}
+                <div className="shrink-0 relative z-30 bg-white dark:bg-[#0D111C] border-b border-dashboard px-3.5 sm:px-5 py-2">
+                    <div className="flex items-center justify-between gap-2">
+                        <span className="text-[11px] font-mono tabular-nums text-gray-400 dark:text-gray-500 truncate">
+                            {entry.externalTicket
+                                ? `#${entry.externalTicket}`
+                                : utcTime(entry.entryDate, "MMM dd, yyyy")}
+                        </span>
+
+                        {/* Right: Pure Frameless Action Icons (Edit, Delete, Share, Close) */}
+                        <div className="flex items-center gap-1 shrink-0">
                             {onEdit && (
                                 <Button
                                     type="button"
-                                    variant="outline"
-                                    size="smd"
+                                    variant="ghost"
+                                    size="icon"
                                     aria-label="Edit trade"
+                                    title="Edit trade"
                                     onClick={() => {
                                         onClose();
                                         onEdit(entry);
                                     }}
-                                    className="rounded-lg font-bold flex items-center gap-1.5"
+                                    className="h-8 w-8 rounded-lg bg-transparent border-none shadow-none text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100/80 dark:hover:bg-white/5"
                                 >
-                                    <Pencil size={14} strokeWidth={2.2} />
-                                    <span className="hidden sm:inline">Edit</span>
+                                    <Pencil size={15} strokeWidth={1.9} />
                                 </Button>
                             )}
+
                             {canDeleteManualTrade && (
                                 <Button
                                     type="button"
-                                    variant="outline"
-                                    size="smd"
+                                    variant="ghost"
+                                    size="icon"
                                     aria-label="Delete trade"
+                                    title="Delete trade"
                                     onClick={() => setShowDeleteConfirm(true)}
-                                    className="rounded-lg font-bold text-red-600 dark:text-red-400 border-red-500/30 hover:bg-red-500/10 hover:border-red-500/50 flex items-center gap-1.5 transition-colors"
+                                    className="h-8 w-8 rounded-lg bg-transparent border-none shadow-none text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400 hover:bg-red-500/10"
                                 >
-                                    <Trash2 size={15} strokeWidth={2.2} />
-                                    <span className="hidden sm:inline">Delete</span>
+                                    <Trash2 size={15} strokeWidth={1.9} />
                                 </Button>
                             )}
+
                             <Button
-                                size="smd"
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                aria-label="Share trade"
+                                title="Share trade"
                                 onClick={() => setShowShareModal(true)}
-                                className="bg-gold hover:bg-amber-600 !text-white shadow-md shadow-amber-500/25 rounded-lg font-bold flex items-center gap-1.5 transition-all border-none"
+                                className="h-8 w-8 rounded-lg bg-transparent border-none shadow-none text-amber-600 hover:text-amber-700 dark:text-gold dark:hover:text-amber-300 hover:bg-amber-500/10"
                             >
-                                <Share2 size={15} strokeWidth={2.5} />
-                                Share
+                                <Share2 size={15} strokeWidth={2} />
                             </Button>
+
+                            <span
+                                className="h-3.5 w-px bg-gray-200 dark:bg-white/10 mx-1"
+                                aria-hidden="true"
+                            />
+
                             <SheetClose
                                 aria-label="Close trade details"
-                                className="rounded-lg h-9 w-9 sm:h-10 sm:w-10 p-0 border border-dashboard bg-white dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 flex items-center justify-center text-gray-600 dark:text-white transition-colors"
+                                title="Close"
+                                className="rounded-lg h-8 w-8 p-0 border-none bg-transparent hover:bg-gray-100/80 dark:hover:bg-white/5 flex items-center justify-center text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors cursor-pointer"
                             >
-                                <X size={18} className="sm:w-5 sm:h-5" />
+                                <X size={16} strokeWidth={2} />
                             </SheetClose>
                         </div>
+                    </div>
                 </div>
 
-                <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain scrollbar-hide p-3 sm:p-6 space-y-3 sm:space-y-5">
-                    {/* Hero Card - Premium Glass/Glow Effect */}
-                    <div className="relative bg-white dark:bg-[#1E2028] rounded-xl p-4 sm:p-6 md:p-8 shadow-xl border border-dashboard overflow-hidden group">
-                        {/* Decorative Glow */}
-                        <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-gold/10 rounded-full blur-[100px] pointer-events-none group-hover:bg-gold/20 transition-all duration-700"></div>
+                <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain scrollbar-hide p-3 sm:p-4 md:p-5 space-y-3 sm:space-y-4">
+                    {/* Hero Card - Original Side Chevron Positions at Compact 28px Scale */}
+                    <div className="relative bg-white dark:bg-[#1E2028] rounded-xl p-3.5 sm:p-5 shadow-sm border border-dashboard overflow-hidden group">
+                        {/* Subtle Decorative Glow */}
+                        <div className="absolute top-0 right-0 w-[240px] h-[240px] bg-gold/10 rounded-full blur-[90px] pointer-events-none group-hover:bg-gold/15 transition-all duration-700"></div>
 
-                        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-8">
-                            {/* Left: Symbol & Type */}
-                            <div className="flex items-center gap-2 sm:gap-6">
+                        <div className="relative z-10 flex items-center justify-between gap-2 sm:gap-4">
+                            {/* Left: Compact Prev Button + Symbol, Side & Price Trajectory */}
+                            <div className="flex items-center gap-2 sm:gap-3.5 min-w-0">
                                 <Button
-                                    variant="outline"
+                                    type="button"
+                                    variant="ghost"
                                     size="icon"
                                     onClick={onPrev}
                                     disabled={!hasPrev}
-                                    aria-label="Previous Trade"
-                                    className="w-8 h-8 sm:w-10 sm:h-10 shrink-0 rounded-lg bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-600 dark:text-gray-300 disabled:opacity-30 disabled:cursor-not-allowed transition-all hover:scale-105 active:scale-95"
+                                    aria-label="Previous trade"
+                                    title="Previous trade"
+                                    className="h-7 w-7 shrink-0 rounded-lg bg-gray-100/80 dark:bg-white/[0.04] hover:bg-gray-200/80 dark:hover:bg-white/10 border-none shadow-none text-gray-600 dark:text-gray-300 disabled:opacity-25 disabled:cursor-not-allowed transition-colors"
                                 >
-                                    <ArrowLeft size={16} strokeWidth={2} className="sm:w-[18px] sm:h-[18px]" />
+                                    <ChevronLeft size={15} strokeWidth={2} />
                                 </Button>
 
                                 <div className="min-w-0">
-                                    <div className="flex items-center gap-2 sm:gap-3 mb-1.5 sm:mb-2">
-                                        <h1 className="text-xl sm:text-4xl md:text-5xl font-black text-gray-700 dark:text-white tracking-tighter truncate">
+                                    <div className="flex items-center gap-2 sm:gap-2.5 mb-1">
+                                        <h1 className="text-lg sm:text-2xl md:text-[28px] leading-none font-black text-gray-800 dark:text-white tracking-tight truncate">
                                             {entry.symbol}
                                         </h1>
                                         <span
                                             className={cn(
-                                                "px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-black text-white uppercase tracking-wider shadow-lg shrink-0",
+                                                "px-2 py-0.5 sm:px-2.5 sm:py-0.5 rounded-lg text-[10px] font-black text-white uppercase tracking-wider shadow-sm shrink-0",
                                                 isBuy ? "shadow-emerald-500/20" : "shadow-red-500/20",
                                                 typeColor
                                             )}
@@ -372,10 +396,10 @@ export function TradeDetailSheet({
                                             {entry.type}
                                         </span>
                                     </div>
-                                    <div className="flex items-center gap-2 sm:gap-3 text-gray-600 dark:text-gray-300 font-mono tabular-nums text-xs sm:text-sm md:text-base font-bold">
+                                    <div className="flex items-center gap-1.5 sm:gap-2 text-gray-600 dark:text-gray-300 font-mono tabular-nums text-xs sm:text-[13px] font-bold">
                                         <span>{entry.entryPrice}</span>
-                                        <span className="text-gray-300 dark:text-white/20">
-                                            <ArrowRight size={14} className="sm:w-4 sm:h-4" />
+                                        <span className="text-gray-300 dark:text-white/25">
+                                            <ArrowRight size={12} className="sm:w-3.5 sm:h-3.5" />
                                         </span>
                                         <span
                                             className={
@@ -392,25 +416,25 @@ export function TradeDetailSheet({
                                 </div>
                             </div>
 
-                            {/* Right: PnL Big Number */}
-                            <div className="flex items-center gap-2 sm:gap-6">
+                            {/* Right: PnL Big Number + Compact Next Button */}
+                            <div className="flex items-center gap-2 sm:gap-3.5 shrink-0">
                                 <div className="text-right">
                                     <div
                                         className={cn(
-                                            "text-xl sm:text-4xl md:text-5xl font-black font-mono tabular-nums tracking-tighter flex items-center justify-end gap-1.5 sm:gap-2",
+                                            "text-lg sm:text-2xl md:text-[28px] leading-none font-black font-mono tabular-nums tracking-tight flex items-center justify-end gap-1.5",
                                             pnlColor
                                         )}
                                     >
                                         {isWin ? (
-                                            <TrendingUp className="w-5 h-5 sm:w-8 sm:h-8 shrink-0" />
+                                            <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
                                         ) : (
-                                            <TrendingDown className="w-5 h-5 sm:w-8 sm:h-8 shrink-0" />
+                                            <TrendingDown className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
                                         )}
                                         {formatDashboardCurrency(entry.pnl || 0, entryCurrency, {
                                             signDisplay: "always",
                                         })}
                                     </div>
-                                    <div className="text-gray-500 font-mono tabular-nums text-[11px] sm:text-xs font-black uppercase tracking-widest mt-1 sm:mt-2">
+                                    <div className="text-gray-500 font-mono tabular-nums text-[10px] sm:text-[11px] font-bold uppercase tracking-wider mt-1">
                                         {percentGain !== null
                                             ? `${percentGain > 0 ? "+" : ""}${percentGain.toFixed(2)}% Gain`
                                             : "—"}
@@ -418,14 +442,16 @@ export function TradeDetailSheet({
                                 </div>
 
                                 <Button
-                                    variant="outline"
+                                    type="button"
+                                    variant="ghost"
                                     size="icon"
                                     onClick={onNext}
                                     disabled={!hasNext}
-                                    aria-label="Next Trade"
-                                    className="w-8 h-8 sm:w-10 sm:h-10 shrink-0 rounded-lg bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-600 dark:text-gray-300 disabled:opacity-30 disabled:cursor-not-allowed transition-all hover:scale-105 active:scale-95"
+                                    aria-label="Next trade"
+                                    title="Next trade"
+                                    className="h-7 w-7 shrink-0 rounded-lg bg-gray-100/80 dark:bg-white/[0.04] hover:bg-gray-200/80 dark:hover:bg-white/10 border-none shadow-none text-gray-600 dark:text-gray-300 disabled:opacity-25 disabled:cursor-not-allowed transition-colors"
                                 >
-                                    <ArrowRight size={16} strokeWidth={2} className="sm:w-[18px] sm:h-[18px]" />
+                                    <ChevronRight size={15} strokeWidth={2} />
                                 </Button>
                             </div>
                         </div>
@@ -434,49 +460,49 @@ export function TradeDetailSheet({
                     <Tabs defaultValue="metrics" className="w-full" tabsId="trade-detail-tabs">
                         <TabsList
                             className={cn(
-                                "w-full grid gap-0 bg-transparent dark:bg-transparent p-0 rounded-none border-0 border-b border-dashboard mb-0 overflow-visible sm:w-auto sm:inline-flex sm:gap-1 sm:bg-[#F1F3F5] sm:dark:bg-[#1A1D27] sm:p-1 sm:rounded-lg sm:border sm:mb-5",
+                                "w-full grid gap-0 bg-transparent dark:bg-transparent p-0 rounded-none border-0 border-b border-dashboard mb-0 overflow-visible sm:w-auto sm:inline-flex sm:gap-1 sm:bg-[#F1F3F5] sm:dark:bg-[#1A1D27] sm:p-1 sm:rounded-lg sm:border sm:mb-3.5",
                                 entry.tradePlan ? "grid-cols-4" : "grid-cols-3"
                             )}
                         >
                             <TabsTrigger
                                 value="metrics"
-                                className="w-full sm:w-auto justify-center px-1 sm:px-4 py-2 sm:py-1.5 rounded-none sm:rounded-lg text-[11px] sm:text-sm font-bold whitespace-nowrap border-0 sm:border border-transparent sm:hover:border-gray-200 sm:dark:hover:border-white/10 gap-1 sm:gap-2 min-w-0"
-                                activeIndicatorClassName="inset-[auto_0_0_0] h-[2px] !bg-gold shadow-none rounded-full border-0 sm:inset-0 sm:h-auto sm:rounded-lg sm:shadow-md sm:shadow-amber-500/20"
+                                className="w-full sm:w-auto justify-center px-1 sm:px-3 py-1.5 sm:py-1 rounded-none sm:rounded-lg text-[11px] sm:text-xs font-bold whitespace-nowrap border-0 sm:border border-transparent sm:hover:border-gray-200 sm:dark:hover:border-white/10 gap-1 sm:gap-1.5 min-w-0"
+                                activeIndicatorClassName="inset-[auto_0_0_0] h-[2px] !bg-gold shadow-none rounded-full border-0 sm:inset-0 sm:h-auto sm:rounded-lg sm:shadow-sm sm:shadow-amber-500/20"
                                 activeTextClassName="text-amber-600 dark:text-amber-400 sm:!text-white"
                             >
-                                <BarChart3 className="w-3 h-3 sm:w-4 sm:h-4 shrink-0" />
+                                <BarChart3 className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" />
                                 <span className="sm:hidden truncate">Metrics</span>
                                 <span className="hidden sm:inline">Trade Metrics</span>
                             </TabsTrigger>
                             <TabsTrigger
                                 value="tags"
-                                className="w-full sm:w-auto justify-center px-1 sm:px-4 py-2 sm:py-1.5 rounded-none sm:rounded-lg text-[11px] sm:text-sm font-bold whitespace-nowrap border-0 sm:border border-transparent sm:hover:border-gray-200 sm:dark:hover:border-white/10 gap-1 sm:gap-2 min-w-0"
-                                activeIndicatorClassName="inset-[auto_0_0_0] h-[2px] !bg-gold shadow-none rounded-full border-0 sm:inset-0 sm:h-auto sm:rounded-lg sm:shadow-md sm:shadow-amber-500/20"
+                                className="w-full sm:w-auto justify-center px-1 sm:px-3 py-1.5 sm:py-1 rounded-none sm:rounded-lg text-[11px] sm:text-xs font-bold whitespace-nowrap border-0 sm:border border-transparent sm:hover:border-gray-200 sm:dark:hover:border-white/10 gap-1 sm:gap-1.5 min-w-0"
+                                activeIndicatorClassName="inset-[auto_0_0_0] h-[2px] !bg-gold shadow-none rounded-full border-0 sm:inset-0 sm:h-auto sm:rounded-lg sm:shadow-sm sm:shadow-amber-500/20"
                                 activeTextClassName="text-amber-600 dark:text-amber-400 sm:!text-white"
                             >
-                                <Tag className="w-3 h-3 sm:w-4 sm:h-4 shrink-0" />
+                                <Tag className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" />
                                 <span className="sm:hidden truncate">Context</span>
                                 <span className="hidden sm:inline">Trade Context</span>
                             </TabsTrigger>
                             {entry.tradePlan && (
                                 <TabsTrigger
                                     value="comparison"
-                                    className="w-full sm:w-auto justify-center px-1 sm:px-4 py-2 sm:py-1.5 rounded-none sm:rounded-lg text-[11px] sm:text-sm font-bold whitespace-nowrap border-0 sm:border border-transparent sm:hover:border-gray-200 sm:dark:hover:border-white/10 gap-1 sm:gap-2 min-w-0"
-                                    activeIndicatorClassName="inset-[auto_0_0_0] h-[2px] !bg-gold shadow-none rounded-full border-0 sm:inset-0 sm:h-auto sm:rounded-lg sm:shadow-md sm:shadow-amber-500/20"
+                                    className="w-full sm:w-auto justify-center px-1 sm:px-3 py-1.5 sm:py-1 rounded-none sm:rounded-lg text-[11px] sm:text-xs font-bold whitespace-nowrap border-0 sm:border border-transparent sm:hover:border-gray-200 sm:dark:hover:border-white/10 gap-1 sm:gap-1.5 min-w-0"
+                                    activeIndicatorClassName="inset-[auto_0_0_0] h-[2px] !bg-gold shadow-none rounded-full border-0 sm:inset-0 sm:h-auto sm:rounded-lg sm:shadow-sm sm:shadow-amber-500/20"
                                     activeTextClassName="text-amber-600 dark:text-amber-400 sm:!text-white"
                                 >
-                                    <Scale className="w-3 h-3 sm:w-4 sm:h-4 shrink-0" />
+                                    <Scale className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" />
                                     <span className="sm:hidden truncate">Plan</span>
                                     <span className="hidden sm:inline">Plan vs Actual</span>
                                 </TabsTrigger>
                             )}
                             <TabsTrigger
                                 value="ai-insights"
-                                className="w-full sm:w-auto justify-center px-1 sm:px-4 py-2 sm:py-1.5 rounded-none sm:rounded-lg text-[11px] sm:text-sm font-bold whitespace-nowrap border-0 sm:border border-transparent sm:hover:border-gray-200 sm:dark:hover:border-white/10 gap-1 sm:gap-2 min-w-0"
-                                activeIndicatorClassName="inset-[auto_0_0_0] h-[2px] !bg-gold shadow-none rounded-full border-0 sm:inset-0 sm:h-auto sm:rounded-lg sm:shadow-md sm:shadow-amber-500/20"
+                                className="w-full sm:w-auto justify-center px-1 sm:px-3 py-1.5 sm:py-1 rounded-none sm:rounded-lg text-[11px] sm:text-xs font-bold whitespace-nowrap border-0 sm:border border-transparent sm:hover:border-gray-200 sm:dark:hover:border-white/10 gap-1 sm:gap-1.5 min-w-0"
+                                activeIndicatorClassName="inset-[auto_0_0_0] h-[2px] !bg-gold shadow-none rounded-full border-0 sm:inset-0 sm:h-auto sm:rounded-lg sm:shadow-sm sm:shadow-amber-500/20"
                                 activeTextClassName="text-amber-600 dark:text-amber-400 sm:!text-white"
                             >
-                                <Brain className="w-3 h-3 sm:w-4 sm:h-4 shrink-0" />
+                                <Brain className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" />
                                 <span className="sm:hidden truncate">
                                     {entry.tradePlan ? "AI" : "AI Insights"}
                                 </span>
@@ -486,33 +512,33 @@ export function TradeDetailSheet({
 
                         <TabsContent
                             value="ai-insights"
-                            className="mt-2.5 sm:mt-6 space-y-3 sm:space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 pt-0 sm:pt-2"
+                            className="mt-2.5 sm:mt-4 space-y-3 sm:space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500"
                         >
                             {activeCoachPlan ? (
-                                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-3 sm:p-6 shadow-xl">
-                                    <h3 className="text-[10px] sm:text-xs font-black uppercase tracking-wider sm:tracking-widest text-gray-400 dark:text-gray-500 mb-3 sm:mb-4 flex items-center gap-2">
-                                        <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard p-3 sm:p-4 shadow-sm">
+                                    <h3 className="text-[10px] font-black uppercase tracking-wider sm:tracking-widest text-gray-400 dark:text-gray-500 mb-2.5 sm:mb-3 flex items-center gap-1.5">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
                                         Trader's Current Focus
                                     </h3>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-3">
                                         {(activeCoachPlan.keepDoing?.length ??
                                             0) > 0 && (
-                                            <div className="p-3 sm:p-4 bg-emerald-500/5 border border-emerald-500/20 rounded-lg">
-                                                <h4 className="text-xs sm:text-sm font-bold text-emerald-700 dark:text-emerald-400 mb-2 sm:mb-3 flex items-center gap-2">
+                                            <div className="p-3 bg-emerald-500/5 border border-emerald-500/20 rounded-lg">
+                                                <h4 className="text-xs font-bold text-emerald-700 dark:text-emerald-400 mb-1.5 flex items-center gap-2">
                                                     What's Working
                                                 </h4>
-                                                <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                                                <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
                                                     {activeCoachPlan.keepDoing}
                                                 </p>
                                             </div>
                                         )}
                                         {(activeCoachPlan.fixNext?.length ??
                                             0) > 0 && (
-                                            <div className="p-3 sm:p-4 bg-red-500/5 border border-red-500/20 rounded-lg">
-                                                <h4 className="text-xs sm:text-sm font-bold text-red-700 dark:text-red-400 mb-2 sm:mb-3 flex items-center gap-2">
+                                            <div className="p-3 bg-red-500/5 border border-red-500/20 rounded-lg">
+                                                <h4 className="text-xs font-bold text-red-700 dark:text-red-400 mb-1.5 flex items-center gap-2">
                                                     Needs Fix
                                                 </h4>
-                                                <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                                                <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
                                                     {activeCoachPlan.fixNext}
                                                 </p>
                                             </div>
@@ -520,15 +546,15 @@ export function TradeDetailSheet({
                                     </div>
                                 </div>
                             ) : (
-                                <div className="p-4 sm:p-8 text-center text-gray-500 bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-xl">
+                                <div className="p-4 sm:p-6 text-center text-gray-500 bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm">
                                     <Brain
-                                        size={48}
-                                        className="w-9 h-9 sm:w-12 sm:h-12 mx-auto mb-2.5 sm:mb-4 opacity-20 text-gray-400"
+                                        size={40}
+                                        className="w-8 h-8 sm:w-10 sm:h-10 mx-auto mb-2.5 opacity-20 text-gray-400"
                                     />
-                                    <p className="text-xs sm:text-base font-bold text-gray-600 dark:text-gray-300">
+                                    <p className="text-xs sm:text-sm font-bold text-gray-600 dark:text-gray-300">
                                         No AI Insights Available
                                     </p>
-                                    <p className="text-xs sm:text-sm mt-1.5 sm:mt-2 leading-relaxed">
+                                    <p className="text-xs mt-1 leading-relaxed max-w-md mx-auto">
                                         Log more trades and run a Weekly
                                         Review to generate personalized
                                         execution feedback.
@@ -539,63 +565,63 @@ export function TradeDetailSheet({
 
                         <TabsContent
                             value="metrics"
-                            className="mt-2.5 sm:mt-6 space-y-3 sm:space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500"
+                            className="mt-2.5 sm:mt-4 space-y-3 sm:space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500"
                         >
-                            {/* Unified Performance Card - Premium Grid Layout */}
-                            <div className="space-y-2 sm:space-y-6 pt-0 sm:pt-2">
-                                <h3 className="text-[10px] sm:text-xs font-black uppercase tracking-wider sm:tracking-widest text-gray-500 mb-2 sm:mb-6 flex items-center gap-1.5 sm:gap-2 pl-1 sm:pl-2">
-                                    <BarChart3 className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                            {/* Unified Performance Card - Compact Grid Layout */}
+                            <div className="space-y-2 sm:space-y-2.5">
+                                <h3 className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider sm:tracking-widest text-gray-500 flex items-center gap-1.5 pl-1">
+                                    <BarChart3 className="w-3 h-3" />
                                     Performance Summary
                                 </h3>
 
-                                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-xl relative overflow-hidden group">
+                                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm relative overflow-hidden group">
                                     {/* Ambient Glow based on Result */}
                                     <div
                                         className={cn(
-                                            "absolute top-0 right-0 w-[400px] h-[400px] rounded-full blur-[120px] pointer-events-none opacity-20 transition-all duration-700",
+                                            "absolute top-0 right-0 w-[320px] h-[320px] rounded-full blur-[110px] pointer-events-none opacity-15 transition-all duration-700",
                                             isWin
-                                                ? "bg-green-500 group-hover:opacity-30"
-                                                : "bg-red-500 group-hover:opacity-30"
+                                                ? "bg-green-500 group-hover:opacity-25"
+                                                : "bg-red-500 group-hover:opacity-25"
                                         )}
                                     ></div>
 
                                     <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-dashboard">
                                         {/* Left Column: Trade Info & Costs */}
-                                        <div className="p-3 sm:p-8 space-y-4 sm:space-y-8">
+                                        <div className="p-3 sm:p-5 space-y-3.5 sm:space-y-5">
                                             {/* Trade Information */}
                                             <div>
-                                                <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2.5 sm:mb-4 flex items-center gap-2">
+                                                <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 sm:mb-2.5 flex items-center gap-1.5">
                                                     <Clock
-                                                        size={12}
+                                                        size={11}
                                                         className="text-primary"
                                                     />{" "}
                                                     Execution Timeline
                                                 </h4>
-                                                <div className="space-y-2 sm:space-y-4">
-                                                    <div className="flex justify-between items-center bg-gray-50/80 dark:bg-[#151925] p-2.5 sm:p-3 rounded-lg border border-dashboard">
-                                                        <span className="text-[10px] sm:text-xs text-gray-500 sm:text-gray-600 font-bold uppercase tracking-wider">
+                                                <div className="space-y-1.5 sm:space-y-2">
+                                                    <div className="flex justify-between items-center bg-gray-50/80 dark:bg-[#151925] px-3 py-2 rounded-lg border border-dashboard">
+                                                        <span className="text-[10px] sm:text-[11px] text-gray-500 font-bold uppercase tracking-wider">
                                                             Volume
                                                         </span>
-                                                        <span className="text-xs sm:text-sm font-black text-gray-700 dark:text-white font-mono tabular-nums">
+                                                        <span className="text-xs font-black text-gray-700 dark:text-white font-mono tabular-nums">
                                                             {entry.lotSize} Lots
                                                         </span>
                                                     </div>
-                                                    <div className="flex justify-between items-center bg-gray-50/80 dark:bg-[#151925] p-2.5 sm:p-3 rounded-lg border border-dashboard">
-                                                        <span className="text-[10px] sm:text-xs text-gray-500 sm:text-gray-600 font-bold uppercase tracking-wider">
+                                                    <div className="flex justify-between items-center bg-gray-50/80 dark:bg-[#151925] px-3 py-2 rounded-lg border border-dashboard">
+                                                        <span className="text-[10px] sm:text-[11px] text-gray-500 font-bold uppercase tracking-wider">
                                                             Open
                                                         </span>
-                                                        <span className="text-xs sm:text-sm font-bold font-mono tabular-nums text-gray-700 dark:text-gray-300">
+                                                        <span className="text-xs font-bold font-mono tabular-nums text-gray-700 dark:text-gray-300">
                                                             {utcTime(
                                                                 entry.entryDate,
                                                                 "MMM dd, HH:mm"
                                                             )}
                                                         </span>
                                                     </div>
-                                                    <div className="flex justify-between items-center bg-gray-50/80 dark:bg-[#151925] p-2.5 sm:p-3 rounded-lg border border-dashboard">
-                                                        <span className="text-[10px] sm:text-xs text-gray-500 sm:text-gray-600 font-bold uppercase tracking-wider">
+                                                    <div className="flex justify-between items-center bg-gray-50/80 dark:bg-[#151925] px-3 py-2 rounded-lg border border-dashboard">
+                                                        <span className="text-[10px] sm:text-[11px] text-gray-500 font-bold uppercase tracking-wider">
                                                             Close
                                                         </span>
-                                                        <span className="text-xs sm:text-sm font-bold font-mono tabular-nums text-gray-700 dark:text-gray-300">
+                                                        <span className="text-xs font-bold font-mono tabular-nums text-gray-700 dark:text-gray-300">
                                                             {entry.exitDate
                                                                 ? utcTime(
                                                                       entry.exitDate,
@@ -609,21 +635,21 @@ export function TradeDetailSheet({
 
                                             {/* Transaction Costs */}
                                             <div>
-                                                <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2.5 sm:mb-4 flex items-center gap-2">
+                                                <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 sm:mb-2.5 flex items-center gap-1.5">
                                                     <DollarSign
-                                                        size={12}
+                                                        size={11}
                                                         className="text-yellow-500"
                                                     />{" "}
                                                     Transaction Fees
                                                 </h4>
-                                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
-                                                    <div className="bg-gray-50/80 dark:bg-[#151925] p-2.5 sm:p-3 rounded-lg border border-dashboard flex flex-row sm:flex-col items-center justify-between sm:justify-center text-left sm:text-center">
-                                                        <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider sm:mb-1">
+                                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-1.5 sm:gap-2">
+                                                    <div className="bg-gray-50/80 dark:bg-[#151925] p-2 sm:p-2.5 rounded-lg border border-dashboard flex flex-row sm:flex-col items-center justify-between sm:justify-center text-left sm:text-center">
+                                                        <span className="text-[9px] sm:text-[10px] text-gray-500 font-bold uppercase tracking-wider sm:mb-0.5">
                                                             Commission
                                                         </span>
                                                         <span
                                                             className={cn(
-                                                                "text-xs font-black font-mono tabular-nums",
+                                                                "text-[11px] sm:text-xs font-black font-mono tabular-nums",
                                                                 (entry.commission || 0) < 0
                                                                     ? "text-red-500"
                                                                     : "text-gray-700 dark:text-white"
@@ -635,13 +661,13 @@ export function TradeDetailSheet({
                                                             )}
                                                         </span>
                                                     </div>
-                                                    <div className="bg-gray-50/80 dark:bg-[#151925] p-2.5 sm:p-3 rounded-lg border border-dashboard flex flex-row sm:flex-col items-center justify-between sm:justify-center text-left sm:text-center">
-                                                        <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider sm:mb-1">
+                                                    <div className="bg-gray-50/80 dark:bg-[#151925] p-2 sm:p-2.5 rounded-lg border border-dashboard flex flex-row sm:flex-col items-center justify-between sm:justify-center text-left sm:text-center">
+                                                        <span className="text-[9px] sm:text-[10px] text-gray-500 font-bold uppercase tracking-wider sm:mb-0.5">
                                                             Swap
                                                         </span>
                                                         <span
                                                             className={cn(
-                                                                "text-xs font-black font-mono tabular-nums",
+                                                                "text-[11px] sm:text-xs font-black font-mono tabular-nums",
                                                                 (entry.swap || 0) < 0
                                                                     ? "text-red-500"
                                                                     : "text-gray-700 dark:text-white"
@@ -653,13 +679,13 @@ export function TradeDetailSheet({
                                                             )}
                                                         </span>
                                                     </div>
-                                                    <div className="bg-gray-50/80 dark:bg-[#151925] p-2.5 sm:p-3 rounded-lg border border-dashboard flex flex-row sm:flex-col items-center justify-between sm:justify-center text-left sm:text-center">
-                                                        <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider sm:mb-1">
+                                                    <div className="bg-gray-50/80 dark:bg-[#151925] p-2 sm:p-2.5 rounded-lg border border-dashboard flex flex-row sm:flex-col items-center justify-between sm:justify-center text-left sm:text-center">
+                                                        <span className="text-[9px] sm:text-[10px] text-gray-500 font-bold uppercase tracking-wider sm:mb-0.5">
                                                             Total Fees
                                                         </span>
                                                         <span
                                                             className={cn(
-                                                                "text-xs font-black font-mono tabular-nums",
+                                                                "text-[11px] sm:text-xs font-black font-mono tabular-nums",
                                                                 ((entry.commission || 0) + (entry.swap || 0)) < 0
                                                                     ? "text-red-500"
                                                                     : "text-gray-700 dark:text-white"
@@ -676,12 +702,12 @@ export function TradeDetailSheet({
                                         </div>
 
                                         {/* Right Column: Price & Results */}
-                                        <div className="p-3 sm:p-8 space-y-4 sm:space-y-8 bg-gray-50/30 dark:bg-white/[0.01]">
+                                        <div className="p-3 sm:p-5 space-y-3.5 sm:space-y-5 bg-gray-50/30 dark:bg-white/[0.01]">
                                             {/* Price Summary */}
                                             <div>
-                                                <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2.5 sm:mb-4 flex items-center gap-2">
+                                                <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 sm:mb-2.5 flex items-center gap-1.5">
                                                     <TrendingUp
-                                                        size={12}
+                                                        size={11}
                                                         className={cn(
                                                             isWin
                                                                 ? "text-green-500"
@@ -690,32 +716,32 @@ export function TradeDetailSheet({
                                                     />{" "}
                                                     Price Execution
                                                 </h4>
-                                                <div className="grid grid-cols-2 gap-2 sm:gap-4">
-                                                    <div className="bg-gray-50/80 dark:bg-[#151925] p-2.5 sm:p-4 rounded-lg border border-dashboard shadow-sm">
-                                                        <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1 block">
+                                                <div className="grid grid-cols-2 gap-2 sm:gap-2.5">
+                                                    <div className="bg-gray-50/80 dark:bg-[#151925] p-2.5 sm:p-3 rounded-lg border border-dashboard shadow-xs">
+                                                        <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-0.5 block">
                                                             Entry Price
                                                         </span>
-                                                        <span className="text-sm sm:text-lg font-black text-gray-700 dark:text-white font-mono tabular-nums">
+                                                        <span className="text-xs sm:text-sm font-black text-gray-700 dark:text-white font-mono tabular-nums">
                                                             {entry.entryPrice}
                                                         </span>
                                                     </div>
-                                                    <div className="relative bg-gray-50/80 dark:bg-[#151925] p-2.5 sm:p-4 rounded-lg border border-dashboard shadow-sm">
-                                                        <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1 flex items-center justify-between gap-1">
+                                                    <div className="relative bg-gray-50/80 dark:bg-[#151925] p-2.5 sm:p-3 rounded-lg border border-dashboard shadow-xs">
+                                                        <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-0.5 flex items-center justify-between gap-1">
                                                             Exit Price
                                                             {isTPHit && (
-                                                                <span className="text-[9px] bg-green-500 text-white px-1.5 py-0.5 rounded-lg tracking-widest font-black shadow-sm shadow-green-500/20">
-                                                                    <Target size={10} className="inline-block mr-1 align-[-1px]" /> TP HIT
+                                                                <span className="text-[9px] bg-green-500 text-white px-1.5 py-0.5 rounded-lg tracking-wider font-black shadow-xs shadow-green-500/20">
+                                                                    <Target size={9} className="inline-block mr-0.5 align-[-1px]" /> TP
                                                                 </span>
                                                             )}
                                                             {isSLHit && (
-                                                                <span className="text-[9px] bg-red-500 text-white px-1.5 py-0.5 rounded-lg tracking-widest font-black shadow-sm shadow-red-500/20">
-                                                                    <ShieldAlert size={10} className="inline-block mr-1 align-[-1px]" /> SL HIT
+                                                                <span className="text-[9px] bg-red-500 text-white px-1.5 py-0.5 rounded-lg tracking-wider font-black shadow-xs shadow-red-500/20">
+                                                                    <ShieldAlert size={9} className="inline-block mr-0.5 align-[-1px]" /> SL
                                                                 </span>
                                                             )}
                                                         </span>
                                                         <span
                                                             className={cn(
-                                                                "text-sm sm:text-lg font-black font-mono tabular-nums",
+                                                                "text-xs sm:text-sm font-black font-mono tabular-nums",
                                                                 isTPHit
                                                                     ? "text-green-500"
                                                                     : isSLHit
@@ -727,20 +753,20 @@ export function TradeDetailSheet({
                                                                 "---"}
                                                         </span>
                                                     </div>
-                                                    <div className="bg-gray-50/80 dark:bg-[#151925] p-2.5 sm:p-4 rounded-lg border border-dashboard shadow-sm opacity-80">
-                                                        <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1 block">
+                                                    <div className="bg-gray-50/80 dark:bg-[#151925] p-2.5 sm:p-3 rounded-lg border border-dashboard shadow-xs opacity-80">
+                                                        <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-0.5 block">
                                                             Stop Loss
                                                         </span>
-                                                        <span className="text-xs sm:text-sm font-bold text-gray-700 dark:text-gray-300 font-mono tabular-nums">
+                                                        <span className="text-xs font-bold text-gray-700 dark:text-gray-300 font-mono tabular-nums">
                                                             {entry.stopLoss ||
                                                                 "---"}
                                                         </span>
                                                     </div>
-                                                    <div className="bg-gray-50/80 dark:bg-[#151925] p-2.5 sm:p-4 rounded-lg border border-dashboard shadow-sm opacity-80">
-                                                        <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1 block">
+                                                    <div className="bg-gray-50/80 dark:bg-[#151925] p-2.5 sm:p-3 rounded-lg border border-dashboard shadow-xs opacity-80">
+                                                        <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-0.5 block">
                                                             Take Profit
                                                         </span>
-                                                        <span className="text-xs sm:text-sm font-bold text-gray-700 dark:text-gray-300 font-mono tabular-nums">
+                                                        <span className="text-xs font-bold text-gray-700 dark:text-gray-300 font-mono tabular-nums">
                                                             {entry.takeProfit ||
                                                                 "---"}
                                                         </span>
@@ -749,7 +775,7 @@ export function TradeDetailSheet({
                                             </div>
 
                                             {/* Trade Results Hub */}
-                                            <div className="bg-gray-50/80 dark:bg-[#151925] p-3 sm:p-6 rounded-lg border border-dashboard shadow-inner relative overflow-hidden">
+                                            <div className="bg-gray-50/80 dark:bg-[#151925] p-3 sm:p-4 rounded-lg border border-dashboard shadow-inner relative overflow-hidden">
                                                 <div
                                                     className={cn(
                                                         "absolute inset-0 opacity-[0.03] pattern-diagonal-lines pattern-size-4 pattern-bg-white",
@@ -759,22 +785,22 @@ export function TradeDetailSheet({
                                                     )}
                                                 ></div>
 
-                                                <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 sm:mb-5 relative z-10 flex items-center gap-2">
+                                                <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2.5 sm:mb-3 relative z-10 flex items-center gap-1.5">
                                                     <Medal
-                                                        size={12}
+                                                        size={11}
                                                         className={pnlColor}
                                                     />{" "}
                                                     Final Outcome
                                                 </h4>
 
-                                                <div className="grid grid-cols-2 gap-3 sm:gap-6 relative z-10">
+                                                <div className="grid grid-cols-2 gap-2.5 sm:gap-4 relative z-10">
                                                     <div>
-                                                        <span className="text-[10px] text-gray-500 sm:text-gray-600 font-bold uppercase tracking-wider block mb-1">
+                                                        <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider block mb-0.5">
                                                             Gross Profit
                                                         </span>
                                                         <span
                                                             className={cn(
-                                                                "text-sm sm:text-xl font-black font-mono tabular-nums",
+                                                                "text-xs sm:text-base font-black font-mono tabular-nums",
                                                                 (entry.grossProfit ?? (entry.pnl != null ? entry.pnl - (entry.commission || 0) - (entry.swap || 0) : 0)) >= 0
                                                                     ? "text-green-500"
                                                                     : "text-red-500"
@@ -791,13 +817,13 @@ export function TradeDetailSheet({
                                                         </span>
                                                     </div>
                                                     <div>
-                                                        <span className="text-[10px] text-gray-500 sm:text-gray-600 font-bold uppercase tracking-wider block mb-1">
+                                                        <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider block mb-0.5">
                                                             Percent Gain
                                                         </span>
                                                         <div className="flex items-center gap-2">
                                                             <span
                                                                 className={cn(
-                                                                    "text-sm sm:text-xl font-black font-mono tabular-nums",
+                                                                    "text-xs sm:text-base font-black font-mono tabular-nums",
                                                                     percentGain !== null
                                                                         ? pnlColor
                                                                         : "text-gray-500"
@@ -809,14 +835,14 @@ export function TradeDetailSheet({
                                                             </span>
                                                         </div>
                                                     </div>
-                                                    <div className="col-span-2 pt-2.5 sm:pt-4 border-t border-dashboard">
-                                                        <span className="text-[10px] text-gray-500 sm:text-gray-600 font-bold uppercase tracking-wider block mb-1 sm:mb-2">
+                                                    <div className="col-span-2 pt-2.5 sm:pt-3 border-t border-dashboard">
+                                                        <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider block mb-1">
                                                             Net Profit
                                                         </span>
-                                                        <div className="flex items-center gap-2 sm:gap-3">
+                                                        <div className="flex items-center gap-2">
                                                             <span
                                                                 className={cn(
-                                                                    "text-lg sm:text-4xl font-black font-mono tabular-nums tracking-tighter",
+                                                                    "text-base sm:text-2xl font-black font-mono tabular-nums tracking-tight",
                                                                     pnlColor
                                                                 )}
                                                             >
@@ -828,8 +854,8 @@ export function TradeDetailSheet({
                                                                 ) || "0.00"}
                                                             </span>
                                                             {isWin && (
-                                                                <span className="bg-green-500/10 text-green-500 p-1.5 sm:p-2 rounded-lg shadow-lg shadow-green-500/20">
-                                                                    <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5" />
+                                                                <span className="bg-green-500/10 text-green-500 p-1 sm:p-1.5 rounded-lg shadow-xs shadow-green-500/20">
+                                                                    <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                                                 </span>
                                                             )}
                                                         </div>
@@ -844,26 +870,26 @@ export function TradeDetailSheet({
 
                         <TabsContent
                             value="tags"
-                            className="mt-2.5 sm:mt-6 space-y-3 sm:space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500"
+                            className="mt-2.5 sm:mt-4 space-y-3 sm:space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500"
                         >
-                            {/* Unified Analysis Card - Premium Grid Layout */}
-                            <div className="space-y-2 sm:space-y-6 pt-0 sm:pt-2">
-                                <h3 className="text-[10px] sm:text-xs font-black uppercase tracking-wider sm:tracking-widest text-gray-500 mb-2 sm:mb-4 flex items-center gap-1.5 sm:gap-2 pl-1 sm:pl-2">
-                                    <Brain className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                            {/* Unified Analysis Card - Compact Grid Layout */}
+                            <div className="space-y-2 sm:space-y-2.5">
+                                <h3 className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider sm:tracking-widest text-gray-500 flex items-center gap-1.5 pl-1">
+                                    <Brain className="w-3 h-3" />
                                     Trade Analysis
                                 </h3>
 
-                                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-xl p-3 sm:p-5 space-y-3.5 sm:space-y-5">
+                                <div className="bg-white dark:bg-[#1E2028] rounded-xl border border-dashboard shadow-sm p-3 sm:p-4 space-y-3 sm:space-y-4">
                                     {/* Market Context - Economic Events */}
-                                    <div className="bg-amber-50/50 dark:bg-amber-500/5 p-3 sm:p-4 rounded-lg border border-amber-200/50 dark:border-amber-500/20">
-                                        <h4 className="text-[10px] font-black text-amber-700 dark:text-amber-400 uppercase tracking-widest mb-3 flex items-center gap-2">
-                                            <Calendar size={13} className="text-amber-500" />
+                                    <div className="bg-amber-50/50 dark:bg-amber-500/5 p-3 rounded-lg border border-amber-200/50 dark:border-amber-500/20">
+                                        <h4 className="text-[10px] font-black text-amber-700 dark:text-amber-400 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+                                            <Calendar size={12} className="text-amber-500" />
                                             Market Context (Economic Calendar)
                                         </h4>
                                         {marketEvents.length > 0 ? (
-                                            <div className="space-y-2">
+                                            <div className="space-y-1.5">
                                                 {marketEvents.map((ev) => (
-                                                    <div key={ev.id} className="flex items-center justify-between bg-white dark:bg-[#1E2028] p-2.5 rounded-lg border border-dashboard text-xs">
+                                                    <div key={ev.id} className="flex items-center justify-between bg-white dark:bg-[#1E2028] p-2 rounded-lg border border-dashboard text-xs">
                                                         <div className="flex items-center gap-2">
                                                             <span className={cn(
                                                                 "px-1.5 py-0.5 rounded-lg text-[10px] font-bold uppercase",
@@ -871,7 +897,7 @@ export function TradeDetailSheet({
                                                             )}>
                                                                 {ev.currency} • {ev.impact}
                                                             </span>
-                                                            <span className="font-semibold text-gray-800 dark:text-gray-200">{ev.title}</span>
+                                                            <span className="font-semibold text-gray-800 dark:text-gray-200 text-xs">{ev.title}</span>
                                                         </div>
                                                         <span className="text-[11px] font-mono tabular-nums text-gray-500 dark:text-gray-400">
                                                             {new Date(ev.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -887,13 +913,13 @@ export function TradeDetailSheet({
                                     </div>
 
                                     {/* Strategy / Playbook Benchmark Panel */}
-                                    <div className="bg-gray-50/80 dark:bg-[#151925] p-3 sm:p-4 rounded-lg border border-dashboard space-y-2.5 sm:space-y-3">
+                                    <div className="bg-gray-50/80 dark:bg-[#151925] p-3 rounded-lg border border-dashboard space-y-2.5">
                                         <div className="flex items-center justify-between flex-wrap gap-2">
-                                            <div className="flex items-center gap-2">
+                                            <div className="flex items-center gap-1.5">
                                                 {currentStrategy?.isPlaybook ? (
-                                                    <BookOpen size={14} className="text-primary" />
+                                                    <BookOpen size={13} className="text-primary" />
                                                 ) : (
-                                                    <Target size={14} className="text-amber-600 dark:text-gold" />
+                                                    <Target size={13} className="text-amber-600 dark:text-gold" />
                                                 )}
                                                 <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest">
                                                     {currentStrategy?.isPlaybook ? "Playbook Setup" : "Strategy"}
@@ -902,7 +928,7 @@ export function TradeDetailSheet({
 
                                             {/* Grade badge */}
                                             {entry.playbookGrade && (
-                                                <span className={`px-2.5 py-0.5 rounded-lg text-xs font-black uppercase tracking-wider ${
+                                                <span className={`px-2 py-0.5 rounded-lg text-[11px] font-black uppercase tracking-wider ${
                                                     entry.playbookGrade === "A+"
                                                         ? "bg-emerald-500/15 text-emerald-500 border border-emerald-500/30"
                                                         : entry.playbookGrade === "A"
@@ -919,19 +945,19 @@ export function TradeDetailSheet({
                                         {entry.strategy ? (
                                             <div className="flex items-center gap-2 flex-wrap">
                                                 <span
-                                                    className="px-3 py-1 rounded-lg text-xs font-black uppercase tracking-wider border inline-flex items-center gap-1.5"
+                                                    className="px-2.5 py-0.5 rounded-lg text-[11px] font-black uppercase tracking-wider border inline-flex items-center gap-1.5"
                                                     style={{
                                                         backgroundColor: `${strategyColor}15`,
                                                         color: strategyColor,
                                                         borderColor: `${strategyColor}30`,
                                                     }}
                                                 >
-                                                    <span className="w-2 h-2 rounded-full" style={{ backgroundColor: strategyColor }} />
+                                                    <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: strategyColor }} />
                                                     {currentStrategy?.name || entry.strategy}
                                                 </span>
 
                                                 {currentStrategy?.setupType && (
-                                                    <span className="px-2 py-0.5 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 text-xs font-bold">
+                                                    <span className="px-2 py-0.5 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 text-[11px] font-bold">
                                                         {currentStrategy.setupType}
                                                     </span>
                                                 )}
@@ -944,7 +970,7 @@ export function TradeDetailSheet({
 
                                         {/* Playbook Benchmark Details */}
                                         {currentStrategy?.isPlaybook && (
-                                            <div className="pt-2 border-t border-dashboard/50 space-y-2.5">
+                                            <div className="pt-2 border-t border-dashboard/50 space-y-2">
                                                 {/* Ideal Specs */}
                                                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
                                                     {currentStrategy.idealEntry && (
@@ -995,31 +1021,31 @@ export function TradeDetailSheet({
 
                                     {/* Entry Reason & Exit Reason */}
                                     {(entry.entryReason || entry.exitReason) && (
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-4">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-3">
                                             {entry.entryReason && (
-                                                <div className="bg-gray-50/80 dark:bg-[#151925] p-3 sm:p-4 rounded-lg border border-dashboard">
-                                                    <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1.5 sm:mb-2 flex items-center gap-2">
+                                                <div className="bg-gray-50/80 dark:bg-[#151925] p-3 rounded-lg border border-dashboard">
+                                                    <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1.5 flex items-center gap-1.5">
                                                         <MessageSquare
-                                                            size={12}
+                                                            size={11}
                                                             className="text-amber-600 dark:text-gold"
                                                         />{" "}
                                                         Entry Reason
                                                     </h4>
-                                                    <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                                                    <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
                                                         {entry.entryReason}
                                                     </p>
                                                 </div>
                                             )}
                                             {entry.exitReason && (
-                                                <div className="bg-gray-50/80 dark:bg-[#151925] p-3 sm:p-4 rounded-lg border border-dashboard">
-                                                    <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1.5 sm:mb-2 flex items-center gap-2">
+                                                <div className="bg-gray-50/80 dark:bg-[#151925] p-3 rounded-lg border border-dashboard">
+                                                    <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1.5 flex items-center gap-1.5">
                                                         <MessageSquare
-                                                            size={12}
+                                                            size={11}
                                                             className="text-amber-600 dark:text-gold"
                                                         />{" "}
                                                         Exit Reason
                                                     </h4>
-                                                    <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                                                    <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
                                                         {entry.exitReason}
                                                     </p>
                                                 </div>
@@ -1028,13 +1054,13 @@ export function TradeDetailSheet({
                                     )}
 
                                     {/* Psychological State - Full Width */}
-                                    <div className="bg-gray-50/80 dark:bg-[#151925] p-3 sm:p-4 rounded-lg border border-dashboard relative overflow-hidden">
-                                        <div className="absolute -bottom-6 -right-6 text-gold/5 -rotate-12 pointer-events-none">
-                                            <Brain size={120} strokeWidth={1} />
+                                    <div className="bg-gray-50/80 dark:bg-[#151925] p-3 rounded-lg border border-dashboard relative overflow-hidden">
+                                        <div className="absolute -bottom-5 -right-5 text-gold/5 -rotate-12 pointer-events-none">
+                                            <Brain size={96} strokeWidth={1} />
                                         </div>
-                                        <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2.5 sm:mb-3 flex items-center gap-2 relative z-10">
+                                        <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 flex items-center gap-1.5 relative z-10">
                                             <Brain
-                                                size={12}
+                                                size={11}
                                                 className="text-amber-600 dark:text-gold"
                                             />{" "}
                                             Psychological State
@@ -1043,22 +1069,22 @@ export function TradeDetailSheet({
                                             {entry.emotionBefore ||
                                             entry.emotionAfter ||
                                             entry.confidenceLevel ? (
-                                                <div className="space-y-2.5 sm:space-y-3">
-                                                    <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                                                <div className="space-y-2">
+                                                    <div className="flex flex-wrap gap-1.5">
                                                         {entry.emotionBefore && (
-                                                            <span className="px-2.5 py-1 sm:px-4 sm:py-2 bg-gold/10 text-amber-600 dark:text-gold rounded-lg text-[11px] sm:text-xs font-black uppercase tracking-wider border border-gold/20">
+                                                            <span className="px-2.5 py-1 bg-gold/10 text-amber-600 dark:text-gold rounded-lg text-[10px] sm:text-[11px] font-black uppercase tracking-wider border border-gold/20">
                                                                 Before:{" "}
                                                                 {entry.emotionBefore}
                                                             </span>
                                                         )}
                                                         {entry.emotionAfter && (
-                                                            <span className="px-2.5 py-1 sm:px-4 sm:py-2 bg-gold/10 text-amber-600 dark:text-gold rounded-lg text-[11px] sm:text-xs font-black uppercase tracking-wider border border-gold/20">
+                                                            <span className="px-2.5 py-1 bg-gold/10 text-amber-600 dark:text-gold rounded-lg text-[10px] sm:text-[11px] font-black uppercase tracking-wider border border-gold/20">
                                                                 After:{" "}
                                                                 {entry.emotionAfter}
                                                             </span>
                                                         )}
                                                         {entry.confidenceLevel && (
-                                                            <span className="px-2.5 py-1 sm:px-4 sm:py-2 bg-amber-500/10 text-amber-600 dark:text-gold rounded-lg text-[11px] sm:text-xs font-mono tabular-nums font-black uppercase tracking-wider border border-amber-500/20">
+                                                            <span className="px-2.5 py-1 bg-amber-500/10 text-amber-600 dark:text-gold rounded-lg text-[10px] sm:text-[11px] font-mono tabular-nums font-black uppercase tracking-wider border border-amber-500/20">
                                                                 Confidence:{" "}
                                                                 {entry.confidenceLevel}
                                                                 /5
@@ -1067,26 +1093,26 @@ export function TradeDetailSheet({
                                                         {entry.followedPlan !== null &&
                                                             entry.followedPlan !== undefined && (
                                                                 <span
-                                                                    className={`px-2.5 py-1 sm:px-4 sm:py-2 rounded-lg text-[11px] sm:text-xs font-black uppercase tracking-wider border ${
+                                                                    className={`px-2.5 py-1 rounded-lg text-[10px] sm:text-[11px] font-black uppercase tracking-wider border ${
                                                                         entry.followedPlan
                                                                             ? "bg-green-500/10 text-green-500 border-green-500/20"
                                                                             : "bg-red-500/10 text-red-500 border-red-500/20"
                                                                     }`}
                                                                 >
                                                                     {entry.followedPlan
-                                                                        ? (<><Check size={12} className="inline-block mr-1 align-[-1px]" /> Followed Plan</>)
-                                                                        : (<><X size={12} className="inline-block mr-1 align-[-1px]" /> Deviated</>)}
+                                                                        ? (<><Check size={11} className="inline-block mr-1 align-[-1px]" /> Followed Plan</>)
+                                                                        : (<><X size={11} className="inline-block mr-1 align-[-1px]" /> Deviated</>)}
                                                                 </span>
                                                             )}
                                                     </div>
                                                     {entry.notesPsychology && (
-                                                        <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 italic border-l-2 border-gold/30 pl-3">
+                                                        <p className="text-xs text-gray-600 dark:text-gray-400 italic border-l-2 border-gold/30 pl-2.5">
                                                             {entry.notesPsychology}
                                                         </p>
                                                     )}
                                                 </div>
                                             ) : (
-                                                <div className="py-1 sm:py-2">
+                                                <div className="py-1">
                                                     <EmptyState
                                                         icon={Brain}
                                                         title="Mindset Not Recorded"
@@ -1098,21 +1124,21 @@ export function TradeDetailSheet({
                                     </div>
 
                                     {/* Custom Tags */}
-                                    <div className="pt-3.5 sm:pt-5 border-t border-dashboard">
-                                        <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2.5 sm:mb-3 flex items-center gap-2">
+                                    <div className="pt-3 border-t border-dashboard">
+                                        <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 flex items-center gap-1.5">
                                             <Tag
-                                                size={12}
+                                                size={11}
                                                 className="text-primary"
                                             />{" "}
                                             Filtering Tags
                                         </h4>
-                                        <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                                        <div className="flex flex-wrap gap-1.5">
                                             {entry.tags &&
                                             entry.tags.length > 0 ? (
                                                 entry.tags.map((tag) => (
                                                     <span
                                                         key={tag}
-                                                        className="px-2.5 py-1 sm:px-4 sm:py-2 bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 rounded-lg text-[11px] sm:text-xs font-bold uppercase tracking-wider border border-dashboard hover:bg-gray-200 dark:hover:bg-white/10 transition-colors cursor-default"
+                                                        className="px-2.5 py-1 bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 rounded-lg text-[10px] sm:text-[11px] font-bold uppercase tracking-wider border border-dashboard hover:bg-gray-200 dark:hover:bg-white/10 transition-colors cursor-default"
                                                     >
                                                         {tag}
                                                     </span>
@@ -1130,15 +1156,15 @@ export function TradeDetailSheet({
                                     </div>
 
                                     {/* Mistakes */}
-                                    <div className="pt-3.5 sm:pt-5 border-t border-dashboard">
-                                        <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2.5 sm:mb-3 flex items-center gap-2">
+                                    <div className="pt-3 border-t border-dashboard">
+                                        <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 flex items-center gap-1.5">
                                             <ShieldAlert
-                                                size={12}
+                                                size={11}
                                                 className="text-red-500"
                                             />{" "}
                                             Execution Flaws
                                         </h4>
-                                        <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                                        <div className="flex flex-wrap gap-1.5">
                                             {entry.mistakes &&
                                             entry.mistakes.length > 0 ? (
                                                 entry.mistakes.map(
@@ -1152,9 +1178,9 @@ export function TradeDetailSheet({
                                                                 key={
                                                                     mistakeCode
                                                                 }
-                                                                className="px-2.5 py-1 sm:px-4 sm:py-2 bg-red-500/10 text-red-500 rounded-lg text-[11px] sm:text-xs font-black uppercase tracking-wider border border-red-500/20 flex items-center gap-1.5 sm:gap-2"
+                                                                className="px-2.5 py-1 bg-red-500/10 text-red-500 rounded-lg text-[10px] sm:text-[11px] font-black uppercase tracking-wider border border-red-500/20 flex items-center gap-1.5"
                                                             >
-                                                                <ShieldAlert size={13} className="shrink-0" />
+                                                                <ShieldAlert size={12} className="shrink-0" />
                                                                 <span>
                                                                     {mistake
                                                                         ? mistake.name
@@ -1165,15 +1191,15 @@ export function TradeDetailSheet({
                                                     }
                                                 )
                                             ) : (
-                                                <div className="w-full p-3 sm:p-4 border border-primary/20 bg-primary/5 rounded-lg flex items-center justify-center gap-2.5 sm:gap-3">
-                                                    <div className="w-8 h-8 sm:w-10 sm:h-10 shrink-0 rounded-lg bg-primary/20 text-primary flex items-center justify-center">
-                                                        <Medal className="w-4 h-4 sm:w-5 sm:h-5" />
+                                                <div className="w-full p-2.5 sm:p-3 border border-primary/20 bg-primary/5 rounded-lg flex items-center justify-center gap-2.5">
+                                                    <div className="w-7 h-7 sm:w-8 sm:h-8 shrink-0 rounded-lg bg-primary/20 text-primary flex items-center justify-center">
+                                                        <Medal className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                                     </div>
                                                     <div>
-                                                        <p className="text-xs sm:text-base font-bold text-gray-700 dark:text-white">
+                                                        <p className="text-xs sm:text-sm font-bold text-gray-700 dark:text-white">
                                                             Flawless Execution
                                                         </p>
-                                                        <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+                                                        <p className="text-xs text-gray-600 dark:text-gray-400">
                                                             No trading mistakes
                                                             were recorded for
                                                             this entry.
@@ -1189,9 +1215,9 @@ export function TradeDetailSheet({
                         {entry.tradePlan && (
                             <TabsContent
                                 value="comparison"
-                                className="mt-3 sm:mt-6 space-y-4 sm:space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500"
+                                className="mt-2.5 sm:mt-4 space-y-3 sm:space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500"
                             >
-                                <div className="pt-0 sm:pt-2">
+                                <div>
                                     <PlanVsActualPanel
                                         plan={entry.tradePlan}
                                         entry={entry}
@@ -1204,12 +1230,12 @@ export function TradeDetailSheet({
 
                     {/* Screenshots - Always visible at bottom */}
                     {safeEntryImages.length > 0 && (
-                        <div className="bg-white dark:bg-[#1E2028] p-4 sm:p-6 rounded-xl border border-dashboard">
-                            <h4 className="text-xs font-bold text-gray-600 uppercase tracking-widest mb-4 flex items-center gap-2">
-                                <div className="w-1.5 h-3 bg-gold rounded-full"></div>
+                        <div className="bg-white dark:bg-[#1E2028] p-3.5 sm:p-4 rounded-xl border border-dashboard">
+                            <h4 className="text-[10px] sm:text-[11px] font-black text-gray-600 uppercase tracking-widest mb-3 flex items-center gap-2">
+                                <div className="w-1 h-3 bg-gold rounded-full"></div>
                                 Trade Screenshots
                             </h4>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 {safeEntryImages.map((imgUrl, idx) => (
                                         <a
                                             key={idx}

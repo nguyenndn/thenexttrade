@@ -19,20 +19,20 @@ export async function GET() {
         : "";
 
     const content = `# TheNextTrade
-> Professional Forex Trading Tools, Trading Playbook & Market Analytics Platform
+> The Discipline OS for MT5 Traders — Automated Trade Journal, Behavioral Leak Radar & Free Risk Calculators
 
 ## About
-TheNextTrade offers 18 free forex calculators, a trade journal with MT5 sync, and live market data. Built for retail traders who want repeatable decisions.
+TheNextTrade offers zero-password MT5 trade sync via EA, behavioral leak analytics, 10-trade discipline sprints, and 17 free forex risk calculators. Built for retail and funded traders who want to protect their capital and enforce trading rules.
 
 ## Main Sections
 
-### Trading Playbook & Journal (The Pro Trader OS)
+### Trading Playbook & Journal (The Discipline OS)
 - Trading Playbook Studio: Build and manage systematic trade setups with defined entry, SL, TP, and reference charts.
 - Pre-Flight Execution Checklist: Live compliance scoring to prevent impulsive trades.
 - Automated Trade Journal: Multi-broker MT5 sync with edge analytics and psychology leak detection.
-- URL: ${baseUrl}/dashboard/strategies
+- URL: ${baseUrl}/get-started
 
-### Trading Tools (18 Free Calculators)
+### Trading Tools (17 Free Calculators)
 Professional-grade financial calculators for forex risk management and analysis.
 
 **Risk Management:**
@@ -70,7 +70,7 @@ Comprehensive, in-depth guides on core trading topics.
 ### Articles & Analysis
 In-depth trading articles, market analysis, and educational content.
 - Categories: Technical Analysis, Fundamental Analysis, Trading Psychology, Risk Management
-- URL: ${baseUrl}/articles
+- URL: ${baseUrl}/knowledge
 
 ### Broker Reviews
 Honest, data-driven forex broker comparisons and reviews.

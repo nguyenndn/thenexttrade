@@ -17,8 +17,10 @@ export const metadata: Metadata = {
         title: "Forex Market Hours Monitor - Live Trading Sessions",
         description:
             "Visualize major forex market sessions and identify high-volatility trading opportunities.",
+        url: "/tools/market-hours",
+        siteName: "TheNextTrade",
         type: "website",
-        images: ["/market-hours-og.jpg"],
+        images: ["/og-image.jpg?v=2"],
     },
     twitter: {
         card: "summary_large_image",

@@ -10,6 +10,7 @@ import dynamic from "next/dynamic";
 import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
 import { CookieConsentBanner } from "@/components/layout/CookieConsentBanner";
 import { getBaseUrl, absoluteUrl } from "@/lib/url";
+import { TELEGRAM_CHANNEL_URL } from "@/config/telegram";
 
 const SystemAnnouncementBanner = dynamic(
     () =>
@@ -44,16 +45,36 @@ export const metadata: Metadata = {
     description:
         "Sync Demo & Live MT5 trades via EA with zero password sharing. Spot revenge sizing, enforce hard stop-loss rules, and access 17 free risk calculators.",
     keywords: [
-        "Forex",
-        "Trading Journal",
-        "Position Calculator",
-        "Trading Education",
-        "CRM",
-        "Risk Management",
+        "TheNextTrade",
+        "MT5 Trading Journal",
+        "MT5 Auto Sync",
+        "Forex Position Size Calculator",
+        "Forex Risk Management",
+        "Trading Discipline",
     ],
-    authors: [{ name: "TheNextTrade Team" }],
-    creator: "TheNextTrade Team",
+    authors: [{ name: "TheNextTrade Team", url: "https://thenexttrade.app/about" }],
+    creator: "TheNextTrade",
+    publisher: "TheNextTrade",
+    category: "finance",
     manifest: "/manifest.json",
+    robots: {
+        index: true,
+        follow: true,
+        googleBot: {
+            index: true,
+            follow: true,
+            "max-video-preview": -1,
+            "max-image-preview": "large",
+            "max-snippet": -1,
+        },
+    },
+    ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+        ? {
+              verification: {
+                  google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+              },
+          }
+        : {}),
     openGraph: {
         type: "website",
         locale: "en_US",
@@ -109,7 +130,7 @@ export const viewport: Viewport = {
     viewportFit: "cover",
     themeColor: [
         { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-        { media: "(prefers-color-scheme: dark)", color: "#2b2344" },
+        { media: "(prefers-color-scheme: dark)", color: "#090d16" },
     ],
 };
 
@@ -140,10 +161,6 @@ export default function RootLayout({
                     </>
                 )}
                 <meta name="apple-mobile-web-app-capable" content="yes" />
-                <link
-                    rel="apple-touch-icon"
-                    href="/icons/apple-touch-icon.png"
-                />
                 <script
                     dangerouslySetInnerHTML={{
                         __html: `
@@ -242,15 +259,27 @@ for (var r of registrations) { r.unregister(); }
                         type="Organization"
                         data={{
                             name: "TheNextTrade",
+                            alternateName: "TheNextTrade Discipline OS",
                             url: getBaseUrl(),
-                            logo: absoluteUrl("/logo.png"),
+                            logo: {
+                                "@type": "ImageObject",
+                                url: absoluteUrl("/android-chrome-512x512.png"),
+                                width: 512,
+                                height: 512,
+                            },
+                            image: absoluteUrl("/og-image.jpg?v=2"),
                             description:
-                                "Forex trading tools, trade journal, and market analysis for retail traders.",
+                                "The Discipline OS for MT5 Traders — automated MT5 trade telemetry via EA, behavioral leak radar, and 17 free forex risk calculators.",
                             foundingDate: "2024",
-                            sameAs: ["https://twitter.com/thenexttrade"],
+                            sameAs: [
+                                "https://x.com/thenexttrade",
+                                "https://twitter.com/thenexttrade",
+                                TELEGRAM_CHANNEL_URL,
+                            ],
                             contactPoint: {
                                 "@type": "ContactPoint",
                                 contactType: "customer support",
+                                email: "support@thenexttrade.app",
                                 url: absoluteUrl("/contact"),
                             },
                         }}

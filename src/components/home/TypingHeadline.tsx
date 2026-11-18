@@ -15,7 +15,7 @@ const HOLD_MS = 2200;
 
 export function TypingHeadline() {
     const [phraseIndex, setPhraseIndex] = useState(0);
-    const [displayedText, setDisplayedText] = useState("");
+    const [displayedText, setDisplayedText] = useState(PHRASES[0]);
     const [isDeleting, setIsDeleting] = useState(false);
 
     const currentPhrase = PHRASES[phraseIndex];

@@ -1,4 +1,4 @@
-import { redirect } from "next/navigation";
+import { permanentRedirect } from "next/navigation";
 
 /**
  * Redirect /articles/tags/[slug] → /knowledge?tag=[slug]
@@ -10,5 +10,5 @@ export default async function TagPage({
     params: Promise<{ slug: string }>;
 }) {
     const { slug } = await params;
-    redirect(`/knowledge?tag=${encodeURIComponent(slug)}`);
+    permanentRedirect(`/knowledge?tag=${encodeURIComponent(slug)}`);
 }

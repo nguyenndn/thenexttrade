@@ -17,7 +17,10 @@ export async function generateMetadata({
     const profile = await getPublicProfileData(username);
 
     if (!profile) {
-        return { title: "Profile Not Found | TheNextTrade" };
+        return {
+            title: "Profile Not Found",
+            robots: { index: false, follow: false },
+        };
     }
 
     const canonicalUsername = profile.username || username;
@@ -28,7 +31,7 @@ export async function generateMetadata({
     const description = `${displayName}'s public trading profile for the last 90 days, based on ${profile.performanceWindow.qualifyingClosedTrades} synced closed trades. ${statsLine}`;
 
     return {
-        title: `${displayName} (@${canonicalUsername}) | TheNextTrade`,
+        title: `${displayName} (@${canonicalUsername})`,
         description,
         alternates: {
             canonical: `/trader/${canonicalUsername}`,

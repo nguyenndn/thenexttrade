@@ -9,10 +9,10 @@ export function DisciplineCockpit() {
             <div className="pointer-events-none absolute -left-20 -top-20 h-64 w-64 rounded-full bg-gold/[0.04] blur-[80px]" />
 
             {/* 1. TOP STATUS BAR */}
-            <div className="flex items-center border-b border-gray-200 dark:border-white/[0.08] px-5 py-3 sm:px-7 bg-gray-50/70 dark:bg-[#151925]">
-                <div className="flex flex-wrap items-center gap-3">
-                    <div className="flex items-center gap-2 text-xs font-bold text-gray-800 dark:text-gray-100 tracking-wide">
-                        <div className="w-5 h-5 rounded-lg bg-gold/10 text-gold flex items-center justify-center">
+            <div className="flex items-center justify-center border-b border-gray-200 dark:border-white/[0.08] px-4 py-3 sm:px-7 bg-gray-50/70 dark:bg-[#151925]">
+                <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1.5 sm:gap-3 text-center">
+                    <div className="flex items-center justify-center gap-2 text-xs font-bold text-gray-800 dark:text-gray-100 tracking-wide">
+                        <div className="w-5 h-5 rounded-lg bg-gold/10 text-gold flex items-center justify-center shrink-0">
                             <Target size={13} />
                         </div>
                         <span className="uppercase text-[11px] font-extrabold tracking-wider text-gray-900 dark:text-white">
@@ -22,8 +22,8 @@ export function DisciplineCockpit() {
 
                     <span className="hidden sm:inline-block h-3.5 w-px bg-gray-300 dark:bg-white/10" />
 
-                    <div className="flex items-center gap-2">
-                        <span className="relative flex h-2 w-2">
+                    <div className="flex items-center justify-center gap-2">
+                        <span className="relative flex h-2 w-2 shrink-0">
                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                             <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
                         </span>
@@ -102,8 +102,8 @@ export function DisciplineCockpit() {
             </div>
 
             {/* 4. VALUE FLOW FOOTER */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-3.5 md:gap-4 border-t border-gray-200 dark:border-white/[0.08] px-4 py-3 sm:px-6 lg:px-7 bg-gray-50/70 dark:bg-[#151925] text-xs text-gray-600 dark:text-gray-400">
-                <div className="flex flex-wrap items-center gap-2 sm:gap-3 lg:gap-6 font-mono tabular-nums font-semibold text-[11px] lg:text-xs">
+            <div className="flex flex-col items-center md:flex-row md:items-center justify-center md:justify-between gap-3 md:gap-4 border-t border-gray-200 dark:border-white/[0.08] px-4 py-3.5 sm:px-6 lg:px-7 bg-gray-50/70 dark:bg-[#151925] text-xs text-gray-600 dark:text-gray-400 text-center md:text-left">
+                <div className="flex flex-wrap items-center justify-center md:justify-start gap-2.5 sm:gap-3 lg:gap-6 font-mono tabular-nums font-semibold text-[11px] lg:text-xs">
                     <span className="flex items-center gap-1.5 text-gray-800 dark:text-gray-200 whitespace-nowrap">
                         <span className="w-1.5 h-1.5 rounded-full bg-gold" />
                         1. Auto-log
@@ -122,7 +122,7 @@ export function DisciplineCockpit() {
 
                 <Link
                     href="/auth/signup"
-                    className="inline-flex items-center gap-1.5 font-sans font-bold text-gold hover:underline text-[11px] lg:text-xs whitespace-nowrap shrink-0 self-start md:self-auto"
+                    className="inline-flex items-center justify-center gap-1.5 font-sans font-bold text-gold hover:underline text-[11px] lg:text-xs whitespace-nowrap shrink-0 self-center md:self-auto"
                 >
                     <span>Sync My MT5 — Free</span>
                     <ArrowRight size={13} className="shrink-0" />

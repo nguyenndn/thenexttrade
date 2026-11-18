@@ -7,7 +7,7 @@ import {
 import { TELEGRAM_CHANNEL_URL } from "@/config/telegram";
 
 export const metadata: Metadata = {
-    title: "Cookie Policy — TheNextTrade",
+    title: "Cookie Policy",
     description:
         "How TheNextTrade uses essential cookies, local storage, and optional opt-in analytics cookies.",
     alternates: {

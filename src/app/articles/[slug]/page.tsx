@@ -34,6 +34,7 @@ import { parseHowToSteps, minutesToIsoDuration } from "@/lib/parseHowToSteps";
 import { parseFaq } from "@/lib/parseFaq";
 import { splitArticleTitle } from "@/lib/utils";
 import { getAuthUser } from "@/lib/auth-cache";
+import { absoluteUrl } from "@/lib/url";
 
 // CACHING: Cache article data + processed content for 60 seconds
 const generateId = (text: string) => {
@@ -108,14 +109,14 @@ export async function generateMetadata({
 
     if (!article) {
         return {
-            title: "Article Not Found | TheNextTrade",
+            title: "Article Not Found",
             robots: { index: false, follow: false },
         };
     }
 
     const resolvedTitle = article.metaTitle?.trim()
-        ? article.metaTitle.trim()
-        : `${article.title} | TheNextTrade`;
+        ? article.metaTitle.trim().replace(/\s*[|—-]\s*TheNextTrade\s*$/i, "")
+        : article.title;
     const resolvedSocialTitle = article.metaTitle?.trim() || article.title;
     const resolvedDescription =
         article.metaDescription?.trim() ||
@@ -206,15 +207,30 @@ export default async function ArticlePage({
                 data={{
                     headline: article.title,
                     description: article.excerpt || article.title,
-                    image: article.thumbnail ? [article.thumbnail] : [],
+                    image: article.thumbnail
+                        ? [article.thumbnail]
+                        : [absoluteUrl("/og-image.jpg?v=2")],
                     datePublished: (article.publishedAt
                         ? new Date(article.publishedAt)
                         : new Date(article.createdAt)
                     ).toISOString(),
                     dateModified: new Date(article.updatedAt).toISOString(),
                     author: {
+                        "@type": article.author.name ? "Person" : "Organization",
                         name: article.author.name || "TheNextTrade Team",
-                        url: `${process.env.NEXT_PUBLIC_APP_URL || "https://thenexttrade.app"}/about`,
+                        url: absoluteUrl("/about"),
+                    },
+                    publisher: {
+                        "@type": "Organization",
+                        name: "TheNextTrade",
+                        logo: {
+                            "@type": "ImageObject",
+                            url: absoluteUrl("/android-chrome-512x512.png"),
+                        },
+                    },
+                    mainEntityOfPage: {
+                        "@type": "WebPage",
+                        "@id": absoluteUrl(`/articles/${slug}`),
                     },
                 }}
             />

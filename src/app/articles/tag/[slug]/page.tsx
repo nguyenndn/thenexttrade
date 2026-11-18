@@ -1,4 +1,4 @@
-import { redirect } from "next/navigation";
+import { permanentRedirect } from "next/navigation";
 
 /**
  * The old sitemap emitted /articles/tag/[slug] (singular) URLs.
@@ -10,5 +10,5 @@ export default async function ArticleTagPage({
     params: Promise<{ slug: string }>;
 }) {
     const { slug } = await params;
-    redirect(`/knowledge?tag=${encodeURIComponent(slug)}`);
+    permanentRedirect(`/knowledge?tag=${encodeURIComponent(slug)}`);
 }

@@ -22,7 +22,7 @@ import { isAcademyEnabled } from "@/app/admin/academy/actions";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Complete Guide to Forex Risk Management | TheNextTrade",
+    title: "Complete Guide to Forex Risk Management",
     description:
         "Position sizing, drawdown and risk-of-ruin, with free calculators to protect your trading capital.",
     keywords: [
@@ -162,10 +162,23 @@ export default async function RiskManagementPage() {
                     headline: "Complete Guide to Forex Risk Management",
                     description: metadata.description,
                     url: `${baseUrl}/knowledge/risk-management`,
-                    author: { "@type": "Organization", name: "TheNextTrade" },
+                    image: [`${baseUrl}/og-image.jpg?v=2`],
+                    author: {
+                        "@type": "Organization",
+                        name: "TheNextTrade",
+                        url: `${baseUrl}/about`,
+                    },
                     publisher: {
                         "@type": "Organization",
                         name: "TheNextTrade",
+                        logo: {
+                            "@type": "ImageObject",
+                            url: `${baseUrl}/android-chrome-512x512.png`,
+                        },
+                    },
+                    mainEntityOfPage: {
+                        "@type": "WebPage",
+                        "@id": `${baseUrl}/knowledge/risk-management`,
                     },
                     isAccessibleForFree: true,
                 }}

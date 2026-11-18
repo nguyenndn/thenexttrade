@@ -8,7 +8,7 @@ import {
 import { TELEGRAM_CHANNEL_URL } from "@/config/telegram";
 
 export const metadata: Metadata = {
-    title: "Privacy Policy — TheNextTrade",
+    title: "Privacy Policy",
     description:
         "How TheNextTrade collects, uses, and protects your personal and trading journal data. Transparent practices, lifetime journal retention while active, and full user control.",
     alternates: {

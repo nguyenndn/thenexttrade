@@ -8,9 +8,20 @@ import { OnboardingChecklist } from "@/components/get-started/OnboardingChecklis
 import type { UserProgress } from "@/components/get-started/OnboardingChecklist";
 
 export const metadata: Metadata = {
-    title: "Get Started - TheNextTrade",
+    title: "Get Started — Connect MT5 & Sync Your Trades",
     description:
         "Start your TheNextTrade workspace, connect MT5, sync your first trade, and begin reviewing your trading edge.",
+    alternates: {
+        canonical: "/get-started",
+    },
+    openGraph: {
+        title: "Get Started — Connect MT5 & Sync Your Trades",
+        description:
+            "Start your TheNextTrade workspace, connect MT5, sync your first trade, and begin reviewing your trading edge.",
+        url: "/get-started",
+        siteName: "TheNextTrade",
+        type: "website",
+    },
 };
 
 export const dynamic = "force-dynamic";

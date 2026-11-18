@@ -23,7 +23,7 @@ import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Trading Knowledge Base — Articles, Guides & Market Analysis | TheNextTrade",
+    title: "Trading Knowledge Base — Articles, Guides & Market Analysis",
     description:
         "Articles and guides on forex execution, risk management mathematics, session dynamics, and trading psychology.",
     alternates: {

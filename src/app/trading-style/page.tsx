@@ -4,7 +4,7 @@ import { ToolsPageShell } from "@/components/tools/ToolsPageShell";
 import { QuizFlow } from "@/components/trading-style/QuizFlow";
 
 export const metadata: Metadata = {
-    title: "Know Your Trading Style — Free 3-Minute Trading Psychology Quiz | TheNextTrade",
+    title: "Know Your Trading Style — Free 3-Minute Trading Psychology Quiz",
     description:
         "Answer 14 questions and get your XAU/USD trading archetype — plus a personalised plan of courses, journaling habits and risk rules to fix your leaks.",
     alternates: {

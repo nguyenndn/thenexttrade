@@ -1,5 +1,5 @@
 import { MetadataRoute } from "next";
-import { getBaseUrl, absoluteUrl } from "@/lib/url";
+import { getBaseUrl } from "@/lib/url";
 
 export default function robots(): MetadataRoute.Robots {
     const baseUrl = getBaseUrl();
@@ -8,7 +8,7 @@ export default function robots(): MetadataRoute.Robots {
         rules: [
             {
                 userAgent: "*",
-                allow: "/",
+                allow: ["/", "/api/og/"],
                 disallow: [
                     "/admin/",
                     "/dashboard/",
@@ -16,6 +16,8 @@ export default function robots(): MetadataRoute.Robots {
                     "/onboarding/",
                     "/auth/",
                     "/maintenance",
+                    "/forbidden",
+                    "/offline",
                     "/share/",
                 ],
             },

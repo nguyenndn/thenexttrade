@@ -530,13 +530,10 @@ export function CloudSyncModal({
 
     const importStageSubtitle = isSaving
         ? "Storing account credentials securely"
-        : latestJob?.message && latestJob.status === "PROCESSING"
+        : latestJob?.status === "PROCESSING" &&
+          latestJob.message?.startsWith("Importing ")
         ? latestJob.message
-        : _jobWaitSeconds < 2
-        ? "Waiting to start securely"
-        : _jobWaitSeconds < 6
-        ? `Authenticating #${account.accountNumber || account.name} on ${server || account.server || "MT5"}`
-        : "Synchronizing closed positions and account balance...";
+        : null;
 
     return (
         <Dialog
@@ -555,7 +552,7 @@ export function CloudSyncModal({
                                 Importing {account.name || brokerDisplayName}
                             </DialogTitle>
                             <DialogDescription>
-                                {importStageSubtitle}
+                                {importStageSubtitle || importStageTitle}
                             </DialogDescription>
                         </DialogHeader>
 
@@ -664,9 +661,11 @@ export function CloudSyncModal({
                                     </span>
                                 )}
                             </p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">
-                                {importStageSubtitle}
-                            </p>
+                            {importStageSubtitle && (
+                                <p className="text-xs text-gray-500 dark:text-gray-400">
+                                    {importStageSubtitle}
+                                </p>
+                            )}
                         </div>
 
                         {/* Forward-Streaming Progress Bar */}

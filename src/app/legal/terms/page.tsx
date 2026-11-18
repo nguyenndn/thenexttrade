@@ -1,6 +1,6 @@
-import { redirect } from "next/navigation";
+import { permanentRedirect } from "next/navigation";
 
 export default function TermsRedirectPage() {
-    redirect("/legal/terms-of-service");
+    permanentRedirect("/legal/terms-of-service");
 }
 

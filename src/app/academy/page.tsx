@@ -13,7 +13,7 @@ import type { Metadata } from "next";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-    title: "The Trader's Ascent | TheNextTrade Academy",
+    title: "The Trader's Ascent — Structured Forex Academy",
     description:
         "12 structured levels from liquidity models to risk math and execution discipline. The zero-fluff forex curriculum built for consistent funded traders.",
     alternates: {
@@ -24,14 +24,14 @@ export const metadata: Metadata = {
         description: "Market structure, liquidity mechanics, and cold risk math.",
         url: "/academy",
         siteName: "TheNextTrade",
-        images: ["/academy-og.jpg"],
+        images: ["/images/og-academy.png"],
         type: "website",
     },
     twitter: {
         card: "summary_large_image",
         title: "The Trader's Ascent | TheNextTrade Academy",
         description: "Market structure, liquidity mechanics, and cold risk math.",
-        images: ["/academy-og.jpg"],
+        images: ["/images/og-academy.png"],
     },
 };
 

@@ -1113,11 +1113,11 @@ export function getToolMetadata(slug: string): Metadata {
     const tool = getToolBySlug(slug);
     if (!tool) {
         return {
-            title: "Trading Tool | TheNextTrade",
+            title: "Trading Tool",
         };
     }
 
-    const title = `${tool.title} — Free Online Forex Calculator | TheNextTrade`;
+    const title = `${tool.title} — Free Online Forex Calculator`;
     const description = `${tool.description} Free, instant calculation with zero sign-up required.`;
 
     return {
