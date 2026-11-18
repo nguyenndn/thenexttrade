@@ -475,9 +475,17 @@ export async function sendReleaseAnnouncementBroadcast(
             });
         }
 
+        const suppressedEmails = await (
+            await import("@/lib/email/unsubscribe")
+        ).getSuppressedMarketingEmails();
+        const { buildMarketingUnsubscribeUrls } = await import(
+            "@/lib/email/unsubscribe"
+        );
+
         const optedInRecipients = targetUsers.filter(
             (recipient) =>
                 Boolean(recipient.email) &&
+                !suppressedEmails.has(recipient.email!.trim().toLowerCase()) &&
                 canSendEmailCategory(recipient.settings, "marketing")
         );
         const skippedPreferencesCount =
@@ -495,6 +503,10 @@ export async function sendReleaseAnnouncementBroadcast(
 
         for (const recipient of optedInRecipients) {
             if (!recipient.email) continue;
+            const unsubUrls = buildMarketingUnsubscribeUrls(
+                recipient.email,
+                appUrl
+            );
             const html = buildEAUpdateEmailHtml({
                 userName: recipient.name || "Trader",
                 eaName: product.name,
@@ -505,12 +517,17 @@ export async function sendReleaseAnnouncementBroadcast(
                         : ["Algorithmic performance enhancements and risk improvements."],
                 downloadUrl: `${appUrl}/dashboard/trading-systems`,
                 changelogUrl: `${appUrl}/trading-systems/${product.slug}`,
+                unsubscribeUrl: unsubUrls.pageUrl,
             });
 
             const sendRes = await sendEmailWithDetails({
                 to: recipient.email,
                 subject,
                 html,
+                headers: {
+                    "List-Unsubscribe": `<${unsubUrls.oneClickApiUrl}>, <${unsubUrls.pageUrl}>`,
+                    "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+                },
             });
 
             if (sendRes.success) {

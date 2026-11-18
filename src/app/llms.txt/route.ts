@@ -20,6 +20,12 @@ export async function GET() {
 
     const content = `# TheNextTrade
 > The Discipline OS for MT5 Traders — Automated Trade Journal, Behavioral Leak Radar & Free Risk Calculators
+> Official Domain: ${baseUrl}
+
+## Entity Identity & Disambiguation
+TheNextTrade (${baseUrl}) is a web-based MetaTrader 5 (MT5) trading journal, behavioral leak radar, and suite of 17 free forex risk calculators.
+- NOT affiliated with "NextTrade" Nigerian crypto/gift-card apps ("usenexttrade"), "The Next Trade" Kerala stock institute (thenexttradeofficial.com), "nexttrade.com" brokerage, or "austin-starks/NextTrade" (NexusTrade).
+- Pricing: $0 free tier + 7-day full VIP trial (no credit card). Permanent VIP & MT5 EAs are $0 subscription via authorized partner broker sponsorship ($200+ balance held 100% in the trader's own broker account).
 
 ## About
 TheNextTrade offers zero-password MT5 trade sync via EA, behavioral leak analytics, 10-trade discipline sprints, and 17 free forex risk calculators. Built for retail and funded traders who want to protect their capital and enforce trading rules.
@@ -81,6 +87,8 @@ Honest, data-driven forex broker comparisons and reviews.
 - AI Plugin manifest: ${baseUrl}/.well-known/ai-plugin.json
 - Structured data (JSON-LD): Organization, WebSite, Course, FAQPage, SoftwareApplication, HowTo
 - LLMs file: ${baseUrl}/llms.txt
+- Full LLMs corpus (complete tools, pricing comparison & latest guides): ${baseUrl}/llms-full.txt
+- IndexNow key: ${baseUrl}/indexnow-key.txt
 - Sitemap: ${baseUrl}/sitemap.xml
 - Robots: ${baseUrl}/robots.txt
 

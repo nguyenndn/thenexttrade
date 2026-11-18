@@ -133,7 +133,8 @@ export async function generateMetadata({
             images: article.thumbnail ? [article.thumbnail] : undefined,
             publishedTime: article.publishedAt
                 ? new Date(article.publishedAt).toISOString()
-                : undefined,
+                : new Date(article.createdAt).toISOString(),
+            modifiedTime: new Date(article.updatedAt).toISOString(),
             section: article.category.name,
             tags: ["Forex", "Trading", "Finance"],
         },
@@ -168,14 +169,19 @@ export default async function ArticlePage({
         notFound();
     }
 
-    const formattedDate = new Date(article.createdAt).toLocaleDateString(
-        "en-US",
-        {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-        }
+    const publishedDateObj = new Date(
+        article.publishedAt || article.createdAt
     );
+    const updatedDateObj = new Date(article.updatedAt);
+    const showUpdatedLabel =
+        updatedDateObj.getTime() - publishedDateObj.getTime() >
+        24 * 60 * 60 * 1000;
+    const displayDateObj = showUpdatedLabel ? updatedDateObj : publishedDateObj;
+    const formattedDate = displayDateObj.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+    });
 
     // C8: processedContent is pre-computed inside getCachedArticle (runs once per 60s)
     const { processedContent } = article;
@@ -404,7 +410,9 @@ export default async function ArticlePage({
                         {/* Date */}
                         <div className="flex items-center gap-1.5 font-mono tabular-nums">
                             <Calendar size={13} className="text-amber-600 dark:text-gold" />
-                            <span>{formattedDate}</span>
+                            <time dateTime={displayDateObj.toISOString()}>
+                                {showUpdatedLabel ? `Updated ${formattedDate}` : formattedDate}
+                            </time>
                         </div>
 
                         <span className="text-gray-300 dark:text-gray-700">

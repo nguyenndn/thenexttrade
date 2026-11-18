@@ -118,6 +118,7 @@ export const metadata: Metadata = {
     alternates: {
         types: {
             "application/rss+xml": "/feed.xml",
+            "text/plain": "/llms.txt",
         },
     },
     metadataBase: new URL(getBaseUrl()),

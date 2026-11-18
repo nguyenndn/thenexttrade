@@ -54,6 +54,7 @@ export interface SendEmailOptions {
     html: string;
     text?: string;
     replyTo?: string;
+    headers?: Record<string, string>;
 }
 
 export interface SendEmailResult {
@@ -68,6 +69,7 @@ export async function sendEmailWithDetails({
     html,
     text,
     replyTo,
+    headers,
 }: SendEmailOptions): Promise<SendEmailResult> {
     const { transporter, from } = getTransporter();
 
@@ -86,6 +88,7 @@ export async function sendEmailWithDetails({
             subject,
             html,
             text,
+            ...(headers ? { headers } : {}),
         });
         return { success: true, messageId: info.messageId };
     } catch (error: any) {
@@ -130,13 +133,13 @@ export const EMAIL_GOLD_COLORS = {
  * bg-gold (#F59E0B), text-white (#FFFFFF), font-bold (700), rounded-lg (8px), shadow-amber-500/20.
  */
 export const GOLD_CTA_BUTTON_STYLE =
-    "display: inline-block; background-color: #F59E0B; color: #FFFFFF !important; text-decoration: none; padding: 10px 24px; border-radius: 8px; font-size: 14px; font-weight: 700; line-height: 20px; letter-spacing: 0.1px; text-align: center; vertical-align: middle; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.22); mso-padding-alt: 0;";
+    "display: inline-block; box-sizing: border-box; background-color: #F59E0B; color: #FFFFFF !important; border: 1px solid #F59E0B; text-decoration: none; padding: 10px 24px; border-radius: 8px; font-size: 14px; font-weight: 700; line-height: 20px; letter-spacing: 0.1px; text-align: center; vertical-align: middle; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.22); mso-padding-alt: 0;";
 
 /**
  * Clean Secondary Button (Outline on White Card — design/ui-guide.md variant="outline")
  */
 export const GOLD_SECONDARY_BUTTON_STYLE =
-    "display: inline-block; background-color: #FFFFFF; color: #374151 !important; border: 1px solid #E5E7EB; text-decoration: none; padding: 9px 22px; border-radius: 8px; font-size: 14px; font-weight: 700; line-height: 20px; text-align: center; vertical-align: middle;";
+    "display: inline-block; box-sizing: border-box; background-color: #FFFFFF; color: #374151 !important; border: 1px solid #E5E7EB; text-decoration: none; padding: 10px 22px; border-radius: 8px; font-size: 14px; font-weight: 700; line-height: 20px; letter-spacing: 0.1px; text-align: center; vertical-align: middle; mso-padding-alt: 0;";
 
 /**
  * Dark Code / License Key Box Style (design/ui-guide.md §1.1 #1E2028 Card with #F59E0B Gold Border)
@@ -151,6 +154,7 @@ export interface UnifiedEmailOptions {
     preheader?: string;
     bodyHtml: string;
     appUrl?: string;
+    unsubscribeUrl?: string;
 }
 
 export function buildUnifiedEmailHtml(options: UnifiedEmailOptions): string {
@@ -158,6 +162,8 @@ export function buildUnifiedEmailHtml(options: UnifiedEmailOptions): string {
         options.appUrl ||
         process.env.NEXT_PUBLIC_APP_URL ||
         "https://thenexttrade.app";
+    const unsubscribeHref =
+        options.unsubscribeUrl || `${appUrl}/dashboard/settings`;
     const assetBaseUrl =
         appUrl.includes("localhost") || appUrl.includes("127.0.0.1")
             ? "https://thenexttrade.app"
@@ -229,7 +235,7 @@ export function buildUnifiedEmailHtml(options: UnifiedEmailOptions): string {
        <p style="margin:4px 0 0 0;color:#6B7280;">You received this email because of your registration or activity on our platform.</p>
        <p style="margin:12px 0 0 0;">
         <a href="${appUrl}/dashboard/settings" style="color:#F59E0B;text-decoration:none;font-weight:700;">Manage Preferences</a> · 
-        <a href="${appUrl}/dashboard/settings" style="color:#6B7280;text-decoration:none;">Unsubscribe</a>
+        <a href="${unsubscribeHref}" style="color:#6B7280;text-decoration:none;">Unsubscribe</a>
        </p>
       </td>
      </tr>
@@ -466,11 +472,11 @@ export function buildEALicenseEmailHtml(data: EALicenseEmailData): string {
     </div>
 
     <!-- CTAs -->
-    <div style="text-align: center; margin: 28px 0 16px 0;">
-      <a href="${data.downloadUrl}" style="${GOLD_CTA_BUTTON_STYLE} margin-right: 8px;">
+    <div style="text-align: center; margin: 24px 0 12px 0; font-size: 0;">
+      <a href="${data.downloadUrl}" style="${GOLD_CTA_BUTTON_STYLE} margin: 5px;">
         Download EA (.ex5) →
       </a>
-      <a href="${data.guideUrl}" style="${GOLD_SECONDARY_BUTTON_STYLE}">
+      <a href="${data.guideUrl}" style="${GOLD_SECONDARY_BUTTON_STYLE} margin: 5px;">
         Video Tutorial
       </a>
     </div>
@@ -494,6 +500,7 @@ export interface EAUpdateEmailData {
     releaseHighlights: string[];
     downloadUrl: string;
     changelogUrl: string;
+    unsubscribeUrl?: string;
 }
 
 export function buildEAUpdateEmailHtml(data: EAUpdateEmailData): string {
@@ -530,11 +537,11 @@ export function buildEAUpdateEmailHtml(data: EAUpdateEmailData): string {
       <em>Your existing lifetime license key remains valid. Simply replace the old <code>.ex5</code> file on your MT5 terminal and restart the chart.</em>
     </p>
 
-    <div style="text-align: center; margin: 28px 0 16px 0;">
-      <a href="${data.downloadUrl}" style="${GOLD_CTA_BUTTON_STYLE} margin-right: 8px;">
+    <div style="text-align: center; margin: 24px 0 12px 0; font-size: 0;">
+      <a href="${data.downloadUrl}" style="${GOLD_CTA_BUTTON_STYLE} margin: 5px;">
         Download ${data.version} Update →
       </a>
-      <a href="${data.changelogUrl}" style="${GOLD_SECONDARY_BUTTON_STYLE}">
+      <a href="${data.changelogUrl}" style="${GOLD_SECONDARY_BUTTON_STYLE} margin: 5px;">
         Full Changelog
       </a>
     </div>
@@ -546,6 +553,7 @@ export function buildEAUpdateEmailHtml(data: EAUpdateEmailData): string {
         preheader: `Discover what's new in ${data.eaName} version ${data.version}.`,
         bodyHtml,
         appUrl,
+        unsubscribeUrl: data.unsubscribeUrl,
     });
 }
 

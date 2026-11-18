@@ -7,6 +7,7 @@ import {
     getEmailPreferences,
     DEFAULT_EMAIL_PREFERENCES,
 } from "@/lib/email/preferences";
+import { syncMarketingSuppressionForUserEmail } from "@/lib/email/unsubscribe";
 import { getDashboardTourState } from "@/lib/onboarding/tour-state";
 
 export async function GET() {
@@ -122,6 +123,11 @@ export async function PUT(request: Request) {
                 },
             },
         });
+
+        await syncMarketingSuppressionForUserEmail(
+            user.email,
+            Boolean(merged.marketing && !merged.unsubscribedAll)
+        );
     }
 
     // Persist dashboard product tour state inside User.settings.dashboardTour

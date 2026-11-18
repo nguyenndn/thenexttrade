@@ -4,6 +4,8 @@ import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { cache } from "@/lib/cache";
+import { absoluteUrl } from "@/lib/url";
+import { notifyIndexNow } from "@/lib/seo/indexnow";
 
 // DTO Schema
 const articleSchema = z.object({
@@ -317,6 +319,14 @@ export async function POST(request: Request) {
         const article = await prisma.article.create({
             data,
         });
+
+        if (article.status === "PUBLISHED") {
+            void notifyIndexNow([
+                absoluteUrl(`/articles/${article.slug}`),
+                absoluteUrl("/knowledge"),
+                absoluteUrl("/llms-full.txt"),
+            ]);
+        }
 
         return NextResponse.json(article, { status: 201 });
     } catch (error) {

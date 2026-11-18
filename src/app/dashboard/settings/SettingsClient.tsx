@@ -825,8 +825,8 @@ export default function SettingsClient() {
                                 },
                                 {
                                     key: "marketing",
-                                    title: "Product & Feature Updates",
-                                    desc: "Announcements about new features and content",
+                                    title: "Marketing & Product Updates",
+                                    desc: "Promotional campaigns, feature releases, and special offers. System & account notifications are always sent.",
                                 },
                             ] as const
                         ).map((row) => {

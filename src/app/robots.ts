@@ -23,7 +23,18 @@ export default function robots(): MetadataRoute.Robots {
             },
             {
                 userAgent: "GPTBot",
-                allow: "/",
+                allow: ["/", "/api/og/"],
+                disallow: [
+                    "/admin/",
+                    "/dashboard/",
+                    "/api/",
+                    "/maintenance",
+                    "/share/",
+                ],
+            },
+            {
+                userAgent: "OAI-SearchBot",
+                allow: ["/", "/api/og/"],
                 disallow: [
                     "/admin/",
                     "/dashboard/",
@@ -37,7 +48,26 @@ export default function robots(): MetadataRoute.Robots {
                 allow: "/",
             },
             {
+                userAgent: "Bingbot",
+                allow: ["/", "/api/og/"],
+                disallow: [
+                    "/admin/",
+                    "/dashboard/",
+                    "/api/",
+                    "/onboarding/",
+                    "/auth/",
+                    "/maintenance",
+                    "/forbidden",
+                    "/offline",
+                    "/share/",
+                ],
+            },
+            {
                 userAgent: "Google-Extended",
+                allow: "/",
+            },
+            {
+                userAgent: "Applebot-Extended",
                 allow: "/",
             },
             {

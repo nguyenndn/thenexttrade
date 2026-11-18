@@ -180,6 +180,8 @@ export default async function RiskManagementPage() {
                         "@type": "WebPage",
                         "@id": `${baseUrl}/knowledge/risk-management`,
                     },
+                    datePublished: "2026-01-15T00:00:00.000Z",
+                    dateModified: "2026-11-18T00:00:00.000Z",
                     isAccessibleForFree: true,
                 }}
             />
@@ -219,10 +221,18 @@ export default async function RiskManagementPage() {
                         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
                             {/* Column Left: Staggered Content */}
                             <div className="md:col-span-7 lg:col-span-8 text-left space-y-4">
-                                {/* Category Badge */}
-                                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-gold/10 border border-gold/20 text-amber-600 dark:text-gold text-xs font-black uppercase tracking-widest">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                    <span>Pillar Guide</span>
+                                {/* Category Badge + Freshness Signal */}
+                                <div className="flex flex-wrap items-center gap-2.5">
+                                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-gold/10 border border-gold/20 text-amber-600 dark:text-gold text-xs font-black uppercase tracking-widest">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                        <span>Pillar Guide</span>
+                                    </div>
+                                    <time
+                                        dateTime="2026-11-18"
+                                        className="text-xs font-mono tabular-nums font-semibold text-gray-500 dark:text-gray-400"
+                                    >
+                                        Last Updated: Nov 2026
+                                    </time>
                                 </div>
 
                                 {/* Title with icon backdrop */}

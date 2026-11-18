@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/api-auth";
+import { absoluteUrl } from "@/lib/url";
+import { notifyIndexNow } from "@/lib/seo/indexnow";
 import { z } from "zod";
 
 const updateArticleSchema = z.object({
@@ -177,6 +179,14 @@ export async function PUT(
             where: { id: params.id },
             data,
         });
+
+        if (article.status === "PUBLISHED") {
+            void notifyIndexNow([
+                absoluteUrl(`/articles/${article.slug}`),
+                absoluteUrl("/knowledge"),
+                absoluteUrl("/llms-full.txt"),
+            ]);
+        }
 
         return NextResponse.json(article);
     } catch (error: any) {
