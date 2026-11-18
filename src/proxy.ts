@@ -223,11 +223,11 @@ function addSecurityHeaders(
     }
     const csp = [
         "default-src 'self'",
-        "script-src 'self' 'unsafe-inline' https://*.supabase.co https://*.google.com https://*.googleapis.com https://*.googletagmanager.com https://challenges.cloudflare.com",
+        "script-src 'self' 'unsafe-inline' https://*.supabase.co https://*.google.com https://*.googleapis.com https://*.googletagmanager.com https://challenges.cloudflare.com https://static.cloudflareinsights.com",
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
         `img-src 'self' blob: data: https://*.supabase.co https://*.googleusercontent.com https://*.gravatar.com https://*.unsplash.com https://flagcdn.com https://images.unsplash.com https://cdn.jsdelivr.net https://*.r2.dev https://thenexttrade.app https://*.thenexttrade.app https://thenexttrade.com https://*.thenexttrade.com https://thenexttrade.io https://*.thenexttrade.io${r2ImgHost}`,
         "font-src 'self' data: https://fonts.gstatic.com",
-        "connect-src 'self' https://*.supabase.co https://*.google-analytics.com https://*.googleapis.com wss://*.supabase.co https://challenges.cloudflare.com https://cdn.jsdelivr.net",
+        "connect-src 'self' https://*.supabase.co https://*.google-analytics.com https://*.googleapis.com wss://*.supabase.co https://challenges.cloudflare.com https://cdn.jsdelivr.net https://cloudflareinsights.com",
         "frame-src https://challenges.cloudflare.com",
         "worker-src 'self' blob:",
         "object-src 'none'",
@@ -306,7 +306,7 @@ export async function proxy(request: NextRequest) {
     const isDev = process.env.NODE_ENV !== "production";
 
     // 0. Sync blocked IPs (non-blocking) — always against the trusted origin
-    syncBlockedIPs(INTERNAL_BASE_URL).catch(() => {});
+    syncBlockedIPs(INTERNAL_BASE_URL).catch(() => { });
 
     // 0.5 Check blocked IP
     if (blockedIPSet.has(ip)) {

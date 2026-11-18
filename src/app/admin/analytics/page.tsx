@@ -6,10 +6,10 @@ import {
     RefreshCw,
     Download,
     BarChart3,
-    FileText,
     Users,
     MousePointerClick,
     Clock,
+    ShieldAlert,
 } from "lucide-react";
 import { format, subDays } from "date-fns";
 import { AnalyticsSummary } from "@/components/admin/analytics/AnalyticsSummary";
@@ -104,29 +104,45 @@ export default function AnalyticsDashboard() {
     } | null>(null);
     const [loading, setLoading] = useState(true);
     const [realTime, setRealTime] = useState(0);
+    const [adBlockDetected, setAdBlockDetected] = useState(false);
 
     const fetchData = useCallback(async () => {
         setLoading(true);
         try {
             const fromStr = format(dateRange.start, "yyyy-MM-dd");
             const toStr = format(dateRange.end, "yyyy-MM-dd");
-            const [aRes, eRes, cRes] = await Promise.all([
-                fetch(`/api/admin/analytics?from=${fromStr}&to=${toStr}`),
-                fetch(`/api/admin/analytics/events?from=${fromStr}&to=${toStr}`),
-                fetch(
-                    `/api/admin/analytics/campaigns?from=${fromStr}&to=${toStr}`
-                ),
+
+            let hasBlockError = false;
+            const safeFetch = async (url: string) => {
+                try {
+                    const res = await fetch(url);
+                    if (!res.ok) return null;
+                    return await res.json();
+                } catch {
+                    hasBlockError = true;
+                    return null;
+                }
+            };
+
+            const [aData, eData, cData] = await Promise.allSettled([
+                safeFetch(`/api/admin/analytics?from=${fromStr}&to=${toStr}`),
+                safeFetch(`/api/admin/analytics/activity?from=${fromStr}&to=${toStr}`),
+                safeFetch(`/api/admin/analytics/campaigns?from=${fromStr}&to=${toStr}`),
             ]);
-            if (aRes.ok) {
-                const d = await aRes.json();
-                setData(d);
-                setRealTime(d.summary.realTimeVisitors);
+
+            if (aData.status === "fulfilled" && aData.value) {
+                setData(aData.value);
+                setRealTime(aData.value.summary?.realTimeVisitors || 0);
             }
-            if (eRes.ok) {
-                setEventsData(await eRes.json());
+            if (eData.status === "fulfilled" && eData.value) {
+                setEventsData(eData.value);
             }
-            if (cRes.ok) {
-                setCampaignData(await cRes.json());
+            if (cData.status === "fulfilled" && cData.value) {
+                setCampaignData(cData.value);
+            }
+
+            if (hasBlockError) {
+                setAdBlockDetected(true);
             }
         } catch {
             /* silent */
@@ -263,8 +279,51 @@ export default function AnalyticsDashboard() {
                     </TabsList>
                 </div>
 
+                {/* AdBlock notice */}
+                {adBlockDetected && (
+                    <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-3.5 flex items-center justify-between gap-3 text-xs text-amber-700 dark:text-amber-300">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                            <ShieldAlert size={16} className="text-amber-500 shrink-0" />
+                            <span>
+                                An ad blocker extension was detected blocking analytics requests. Please allowlist <strong>thenexttrade.app</strong> for full real-time telemetry.
+                            </span>
+                        </div>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={fetchData}
+                            className="h-7 px-2.5 text-xs rounded-lg shrink-0"
+                        >
+                            <RefreshCw size={12} className={loading ? "animate-spin" : ""} />
+                            <span>Retry</span>
+                        </Button>
+                    </div>
+                )}
+
                 {/* Loading skeleton */}
                 {loading && !data && <LoadingSkeleton />}
+
+                {/* Fallback if no data and not loading */}
+                {!loading && !data && (
+                    <div className="rounded-xl border border-dashed border-gray-300 dark:border-white/10 p-10 text-center bg-white dark:bg-[#1E2028]">
+                        <ShieldAlert size={32} className="text-amber-500 mx-auto mb-2" />
+                        <h3 className="text-sm font-bold text-gray-800 dark:text-white">
+                            Unable to display analytics
+                        </h3>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 max-w-md mx-auto">
+                            A browser extension (AdBlock, uBlock, or Brave Shields) blocked the request. Please allowlist thenexttrade.app or pause your ad blocker for this tab.
+                        </p>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={fetchData}
+                            className="mt-4 rounded-lg text-xs font-bold"
+                        >
+                            <RefreshCw size={13} className="mr-1.5" />
+                            <span>Retry Loading</span>
+                        </Button>
+                    </div>
+                )}
 
                 {/* Overview Tab */}
                 {tab === "overview" && data && (
