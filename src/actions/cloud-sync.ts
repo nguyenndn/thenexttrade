@@ -45,7 +45,7 @@ function sanitizeCloudSyncError(raw: unknown, fallback: string): string {
     if (!text) return fallback;
 
     if (/timed out|ETIMEDOUT|SIGTERM/i.test(text)) {
-        return "Connection to MT5 server timed out while loading trade history. Please try a shorter date range or try again.";
+        return "The MT5 server did not respond in time. Please try again in a few minutes.";
     }
 
     if (isInternalError(raw)) {
@@ -53,6 +53,41 @@ function sanitizeCloudSyncError(raw: unknown, fallback: string): string {
     }
 
     return toPublicErrorMessage(raw, fallback).slice(0, MAX_DB_ERROR_MESSAGE_LEN);
+}
+
+// Failures that are usually caused by a cold trade cache or a slow broker server:
+// a single automatic retry reuses the partially primed .dat cache and normally succeeds.
+const RETRYABLE_CLOUD_SYNC_ERROR_CODES = new Set([
+    "HISTORY_TIMEOUT",
+    "TERMINAL_NOT_READY",
+    "RUNNER_FAILED",
+]);
+
+const CLOUD_SYNC_RETRY_DELAY_MS = 2000;
+
+function isRetryableCloudSyncFailure(errorCode: unknown): boolean {
+    return RETRYABLE_CLOUD_SYNC_ERROR_CODES.has(String(errorCode || ""));
+}
+
+function describeCloudSyncFailure(
+    errorCode: unknown,
+    rawMessage: unknown,
+    serverName: string
+): string {
+    const code = String(errorCode || "");
+    if (code === "AUTH_FAILED") {
+        return `Unable to log in to ${serverName}. Please verify the account number, password and server name.`;
+    }
+    if (code === "TERMINAL_NOT_READY") {
+        return `MT5 server ${serverName} did not finish synchronizing this account. Please try again in a few minutes.`;
+    }
+    if (code === "HISTORY_TIMEOUT") {
+        return `MT5 server ${serverName} was too slow to return trade history. Please try again in a few minutes.`;
+    }
+    return sanitizeCloudSyncError(
+        rawMessage,
+        "Failed to authenticate or load trade history from MT5 server."
+    );
 }
 
 function resolveSavedPassword(
@@ -323,28 +358,83 @@ async function executeApkCloudSyncJob(params: ApkCloudSyncJobParams) {
 
         const cloudSync = getApkCloudSyncService();
 
+        // Cold account (no cached `.dat` base): the first sync legitimately needs a larger budget.
+        let isFirstSync = false;
+        try {
+            isFirstSync = !(await cloudSync.hasWarmTradeCache({
+                serverName,
+                login: accountNumber,
+            }));
+        } catch {
+            isFirstSync = false;
+        }
+
+        if (isFirstSync) {
+            await prisma.mt5ImportJob
+                .update({
+                    where: { id: jobId },
+                    data: {
+                        message:
+                            "First-time sync: preparing trade history base (may take a few minutes)...",
+                    },
+                })
+                .catch(() => {});
+        }
+
         // Step 1 & Step 2: Login + Load Trade History in [fromDate, toDate] aligned to live MT5 Broker Server Clock
-        const syncResult = await cloudSync.step2GetHistoryAndSync({
-            serverName,
-            login: accountNumber,
-            password,
-            period,
-            from: fromDate.toISOString(),
-            to: toDate.toISOString(),
-            limit: 500000,
-            autoPush: false,
-        });
+        const runSyncAttempt = () =>
+            cloudSync.step2GetHistoryAndSync({
+                serverName,
+                login: accountNumber,
+                password,
+                period,
+                from: fromDate.toISOString(),
+                to: toDate.toISOString(),
+                limit: 500000,
+                autoPush: false,
+            });
+
+        let syncResult = await runSyncAttempt();
+
+        // One automatic retry for transient failures (cold cache / slow broker server).
+        // First syncs already ran with the enlarged budget, so retrying them would just double the wait.
+        if (
+            !isFirstSync &&
+            !syncResult?.success &&
+            isRetryableCloudSyncFailure(syncResult?.errorCode)
+        ) {
+            console.warn(
+                `[CloudSync] Job ${jobId} attempt 1 failed (${syncResult?.errorCode}); retrying once.`
+            );
+            await prisma.mt5ImportJob
+                .update({
+                    where: { id: jobId },
+                    data: {
+                        progressPercent: 30,
+                        message: "MT5 server was slow. Retrying sync (2/2)...",
+                    },
+                })
+                .catch(() => {});
+            await new Promise((resolve) =>
+                setTimeout(resolve, CLOUD_SYNC_RETRY_DELAY_MS)
+            );
+            syncResult = await runSyncAttempt();
+        }
 
         if (!syncResult || !syncResult.success) {
-            const errMsg = sanitizeCloudSyncError(
+            const failureCode = String(
+                syncResult?.errorCode || "AUTH_OR_SYNC_FAILED"
+            );
+            const errMsg = describeCloudSyncFailure(
+                failureCode,
                 syncResult?.error,
-                "Failed to authenticate or load trade history from MT5 server."
+                serverName
             );
             await prisma.mt5ImportJob.update({
                 where: { id: jobId },
                 data: {
                     status: "FAILED",
-                    errorCode: "AUTH_OR_SYNC_FAILED",
+                    errorCode: failureCode,
                     errorMessage: errMsg,
                     completedAt: new Date(),
                 },

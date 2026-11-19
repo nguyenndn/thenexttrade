@@ -81,6 +81,17 @@ export function formatSyncErrorMessage(
     }
 
     const rawMsg = (job.errorMessage || job.message || "").trim();
+
+    // Server-specific slow-response messages are already user-safe — show them as-is.
+    if (
+        (job.errorCode === "HISTORY_TIMEOUT" ||
+            job.errorCode === "TERMINAL_NOT_READY") &&
+        rawMsg &&
+        !isInternalError(rawMsg)
+    ) {
+        return rawMsg;
+    }
+
     if (!rawMsg || isInternalError(rawMsg)) {
         return "Unable to sync trade history. Please try again or request sync support.";
     }

@@ -84,6 +84,7 @@ export function SyncRequestsClient({
     } | null>(null);
     const [diagnosticsJob, setDiagnosticsJob] = useState<UnifiedSyncItem | null>(null);
     const [copiedId, setCopiedId] = useState(false);
+    const [copiedJson, setCopiedJson] = useState(false);
     const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
     const [isBulkDeleteModalOpen, setIsBulkDeleteModalOpen] = useState(false);
     const [isBulkDeleting, setIsBulkDeleting] = useState(false);
@@ -95,6 +96,33 @@ export function SyncRequestsClient({
             setCopiedId(true);
             toast.success("ID copied to clipboard.");
             setTimeout(() => setCopiedId(false), 2000);
+        }
+    };
+
+    const buildDiagnosticsJson = (job: UnifiedSyncItem) =>
+        JSON.stringify(
+            {
+                id: job.id,
+                type: job.type,
+                status: job.status,
+                unifiedStatus: job.unifiedStatus,
+                account: job.account,
+                user: job.user,
+                cloudJob: job.cloudJob,
+                createdAt: job.createdAt,
+            },
+            null,
+            2
+        );
+
+    const handleCopyJson = async (job: UnifiedSyncItem) => {
+        try {
+            await navigator.clipboard.writeText(buildDiagnosticsJson(job));
+            setCopiedJson(true);
+            toast.success("JSON copied to clipboard.");
+            setTimeout(() => setCopiedJson(false), 2000);
+        } catch {
+            toast.error("Failed to copy JSON.");
         }
     };
 
@@ -812,6 +840,9 @@ export function SyncRequestsClient({
                         exit="exit"
                         transition={{ type: "tween", duration: 0.2 }}
                         className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+                        onMouseDown={(e) => {
+                            if (e.target === e.currentTarget) setDiagnosticsJob(null);
+                        }}
                     >
                         <motion.div
                             variants={panelVariants}
@@ -819,7 +850,7 @@ export function SyncRequestsClient({
                             animate="animate"
                             exit="exit"
                             transition={SPRING_SOFT}
-                            className="w-full max-w-xl rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 shadow-2xl space-y-5"
+                            className="w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E2028] p-6 shadow-2xl space-y-5"
                         >
                             <div className="flex items-start justify-between">
                                 <div className="flex items-center gap-3">
@@ -954,24 +985,28 @@ export function SyncRequestsClient({
 
                             {/* Raw Parameters JSON Block */}
                             <div>
-                                <span className="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider block mb-1.5">
-                                    Raw Request Metadata
-                                </span>
-                                <pre className="p-3 rounded-lg bg-gray-900 text-gray-200 font-mono text-[11px] overflow-x-auto max-h-48 custom-scrollbar border border-gray-800">
-                                    {JSON.stringify(
-                                        {
-                                            id: diagnosticsJob.id,
-                                            type: diagnosticsJob.type,
-                                            status: diagnosticsJob.status,
-                                            unifiedStatus: diagnosticsJob.unifiedStatus,
-                                            account: diagnosticsJob.account,
-                                            user: diagnosticsJob.user,
-                                            cloudJob: diagnosticsJob.cloudJob,
-                                            createdAt: diagnosticsJob.createdAt,
-                                        },
-                                        null,
-                                        2
-                                    )}
+                                <div className="flex items-center justify-between mb-1.5">
+                                    <span className="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider block">
+                                        Raw Request Metadata
+                                    </span>
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => handleCopyJson(diagnosticsJob)}
+                                        className="h-7 px-2.5 rounded-lg text-[11px] font-bold gap-1.5"
+                                        aria-label="Copy raw request metadata as JSON"
+                                    >
+                                        {copiedJson ? (
+                                            <Check size={12} className="text-emerald-500" />
+                                        ) : (
+                                            <Copy size={12} />
+                                        )}
+                                        Copy JSON
+                                    </Button>
+                                </div>
+                                <pre className="p-3 rounded-lg bg-gray-900 text-gray-200 font-mono text-[11px] overflow-x-auto max-h-64 custom-scrollbar border border-gray-800">
+                                    {buildDiagnosticsJson(diagnosticsJob)}
                                 </pre>
                             </div>
 

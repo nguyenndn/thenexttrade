@@ -3,8 +3,10 @@ const path = require('path');
 const {
   enqueueNativeRun,
   cleanWorkDir,
+  DEFAULT_CACHE_ROOT_DIR,
   getBrokerEndpointCachePath,
   restoreAccountTradeCache,
+  hasWarmTradeCache,
   persistAccountTradeCache,
   execJavaAsync
 } = require('../../NativeQueue');
@@ -50,6 +52,32 @@ const {
  *
  * ZERO dependency on MT5 Desktop (terminal64.exe / Python MetaTrader5 IPC).
  */
+const RUNNER_STAGE_PATTERN =
+  /\[Pump\] (AUTHORIZED|Authentication|Terminal sync|History response|Pump deadline|Requested|Sync failed)|\[Socket\] Connect|Connected TCP|\[TradeTime\]|\[BrokerInfoAPI\]|\[Unidbg\] MetaTrader5\.initialize/;
+
+function summarizeRunnerLog(raw) {
+  const text = String(raw || '');
+  if (!text) return '';
+  const stageLines = [];
+  for (const line of text.split(/\r?\n/)) {
+    if (stageLines.length >= 40) break;
+    if (RUNNER_STAGE_PATTERN.test(line)) stageLines.push(line.slice(0, 240));
+  }
+  const tail = text.length > 2000 ? text.slice(-2000) : text;
+  return `${stageLines.join('\n')}\n... (tail)\n${tail}`;
+}
+
+function logRunnerFailure(serverName, login, stdout, stderr, errorCode, message) {
+  try {
+    console.error(
+      `[MT5NativeRunner] sync failed server=${serverName} login=${login} code=${errorCode || 'UNKNOWN'} message=${message || 'unknown'}\n` +
+        `--- stdout stages ---\n${summarizeRunnerLog(stdout)}\n--- stderr ---\n${summarizeRunnerLog(stderr)}`
+    );
+  } catch {
+    // Diagnostics must never break the sync path
+  }
+}
+
 class TradesBase {
   static _instance = null;
 
@@ -608,6 +636,14 @@ class TradesBase {
   }
 
   /**
+   * True when this account already has a cached MT5 `.dat` base on disk.
+   * Used by the CRM layer to describe first-time vs warm syncs before starting.
+   */
+  async hasWarmTradeCache(serverName, login) {
+    return hasWarmTradeCache(DEFAULT_CACHE_ROOT_DIR, serverName, login);
+  }
+
+  /**
    * Executes the Android ARM64 libcommon.so JNI harness (Unidbg Mt5NativeRunner)
    * to perform live MT5 server authentication (NetworkManager.networkSetAccount / networkConnect)
    * and retrieve trade history via TerminalTrade.tradeHistoryPeriod / tradeHistoryPositionAt / tradeHistoryDealAt.
@@ -648,6 +684,10 @@ class TradesBase {
       return null;
     }
 
+    const cacheRootDir = DEFAULT_CACHE_ROOT_DIR;
+    // No warm `.dat` base yet => the terminal must download the history base: give it a larger budget.
+    const firstSync = !(await hasWarmTradeCache(cacheRootDir, serverName, login));
+
     const accessArg =
       Array.isArray(accessPoints) && accessPoints.length > 0
         ? accessPoints.join(',')
@@ -669,6 +709,7 @@ class TradesBase {
       '--to',
       String(toMs),
       ...(periodMode ? ['--period', String(periodMode)] : []),
+      ...(firstSync ? ['--first-sync'] : []),
       '--apk',
       apkPath
     ];
@@ -686,8 +727,6 @@ class TradesBase {
       return null;
     }
 
-    const cacheRootDir = path.join(cloudSyncRoot, 'trade-cache');
-
     return enqueueNativeRun(workDir, async (slotWorkDir) => {
       await restoreAccountTradeCache(cacheRootDir, slotWorkDir, serverName, login);
       const brokerCacheFile = getBrokerEndpointCachePath(cacheRootDir, serverName, login);
@@ -701,16 +740,45 @@ class TradesBase {
         '--output',
         outputJsonFile
       ];
-      const stdout = await execJavaAsync(javaExe, args, {
-        cwd: execCwd,
-        timeout: 600000
-      });
+
+      let stdout = '';
+      let stderr = '';
+      try {
+        const runResult = await execJavaAsync(javaExe, args, {
+          cwd: execCwd,
+          // First sync downloads the `.dat` base and legitimately runs longer than a warm sync.
+          timeout: firstSync ? 900000 : 600000
+        });
+        stdout = runResult.stdout || '';
+        stderr = runResult.stderr || '';
+      } catch (err) {
+        logRunnerFailure(
+          serverName,
+          login,
+          err.stdout,
+          err.stderr,
+          err.errorCode,
+          err.message
+        );
+        throw err;
+      }
 
       await persistAccountTradeCache(cacheRootDir, slotWorkDir, serverName, login);
 
       if (fs.existsSync(outputJsonFile)) {
         const fileJsonText = await fs.promises.readFile(outputJsonFile, 'utf8');
-        return JSON.parse(fileJsonText);
+        const parsedOutput = JSON.parse(fileJsonText);
+        if (parsedOutput && parsedOutput.success === false) {
+          logRunnerFailure(
+            serverName,
+            login,
+            stdout,
+            stderr,
+            parsedOutput.errorCode,
+            parsedOutput.error
+          );
+        }
+        return parsedOutput;
       }
 
       const startMarker = '__MT5_JSON_START__';
@@ -833,6 +901,7 @@ class TradesBase {
       return {
         success: false,
         connected: false,
+        errorCode: err?.errorCode || 'RUNNER_FAILED',
         error:
           err?.message ||
           'Unable to load trade history from MT5 server. Please try again.'
@@ -843,6 +912,7 @@ class TradesBase {
       return {
         success: false,
         connected: false,
+        errorCode: nativeResult.errorCode || 'SYNC_FAILED',
         error: nativeResult.error || `Failed to sync trade history from ${serverName}`
       };
     }

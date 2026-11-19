@@ -40,6 +40,27 @@ public class Mt5NativeRunner extends AbstractJni {
     private static final String ANDROID_FILES_DIR = "/data/user/0/net.metaquotes.metatrader5/files";
     private static final boolean VERBOSE_TRACE = "1".equals(System.getenv("MT5_VERBOSE_TRACE"));
 
+    // Hard ceilings so a stalled broker/endpoint fails with a precise error instead of
+    // silently burning the whole 4000-step pump budget (~5 minutes).
+    private static final int CONNECT_TIMEOUT_MS = (int) envLong("MT5_CONNECT_TIMEOUT_MS", 8_000L);
+    private static final long TERMINAL_READY_TIMEOUT_MS = envLong("MT5_TERMINAL_READY_TIMEOUT_MS", 120_000L);
+    private static final long HISTORY_TIMEOUT_MS = envLong("MT5_HISTORY_TIMEOUT_MS", 240_000L);
+    private static final long PUMP_TIMEOUT_MS = envLong("MT5_PUMP_TIMEOUT_MS", 480_000L);
+    // First sync for an account has no warm `.dat` base, so it legitimately needs a larger budget.
+    private static final long FIRST_SYNC_HISTORY_TIMEOUT_MS = envLong("MT5_FIRST_SYNC_HISTORY_TIMEOUT_MS", 600_000L);
+    private static final long FIRST_SYNC_PUMP_TIMEOUT_MS = envLong("MT5_FIRST_SYNC_PUMP_TIMEOUT_MS", 900_000L);
+
+    private static long envLong(String key, long defaultValue) {
+        try {
+            String raw = System.getenv(key);
+            if (raw == null || raw.trim().isEmpty()) return defaultValue;
+            long parsed = Long.parseLong(raw.trim());
+            return parsed > 0 ? parsed : defaultValue;
+        } catch (NumberFormatException ignored) {
+            return defaultValue;
+        }
+    }
+
     private final AndroidEmulator emulator;
     private final VM vm;
     private final Module module;
@@ -50,6 +71,10 @@ public class Mt5NativeRunner extends AbstractJni {
     private SocketChannel socketChannel;
     private int lastRecvBytes = 0;
     private int packetsInCurrentReadCall = 0;
+    // Cumulative wire telemetry: proves whether a slow sync is downloading data or stuck idle.
+    private long totalRecvBytes = 0L;
+    private long totalSendBytes = 0L;
+    private volatile long lastNetActivityMs = 0L;
     private static final int VIRTUAL_SOCKET_FD = 100;
 
     private static String readUtf16Le(Backend backend, long addr, int maxChars) {
@@ -205,13 +230,23 @@ public class Mt5NativeRunner extends AbstractJni {
                     socketChannel.socket().setSendBufferSize(1024 * 1024);
                     socketChannel.socket().setTcpNoDelay(true);
                     socketChannel.socket().setSoTimeout(10000);
-                    socketChannel.connect(new InetSocketAddress(host, port));
+                    InetSocketAddress target = new InetSocketAddress(host, port);
+                    if (target.isUnresolved()) {
+                        throw new IOException("Unable to resolve MT5 access point host " + host);
+                    }
+                    // Bounded connect: a black-holed access point must fail fast so the terminal
+                    // rotates to the next endpoint instead of stalling ~130s per dead IP.
+                    socketChannel.socket().connect(target, CONNECT_TIMEOUT_MS);
                     socketChannel.configureBlocking(false);
                     byte[] fdBytes = ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(VIRTUAL_SOCKET_FD).array();
                     b.mem_write(thiz + 0x140, fdBytes);
                     System.out.println("[Socket] Connected TCP to " + host + ":" + port + " (fd=" + VIRTUAL_SOCKET_FD + ")");
                 } catch (Exception e) {
-                    System.out.println("[Socket] Connect failed: " + e);
+                    System.out.println("[Socket] Connect failed (" + host + ":" + port + "): " + e);
+                    if (socketChannel != null) {
+                        try { socketChannel.close(); } catch (Exception ignored) {}
+                    }
+                    socketChannel = null;
                 }
             }
             @Override public void onAttach(UnHook unHook) {}
@@ -262,6 +297,10 @@ public class Mt5NativeRunner extends AbstractJni {
                         if (w <= 0) break;
                         total += w;
                     }
+                    if (total > 0) {
+                        totalSendBytes += total;
+                        lastNetActivityMs = System.currentTimeMillis();
+                    }
                     System.out.println("[Socket] sendto(fd=" + fd + ", len=" + len + ") => " + total);
                     b.reg_write(Arm64Const.UC_ARM64_REG_X0, (long) total);
                 } catch (Exception e) {
@@ -306,6 +345,8 @@ public class Mt5NativeRunner extends AbstractJni {
                     }
                     if (n > 0) {
                         lastRecvBytes += n;
+                        totalRecvBytes += n;
+                        lastNetActivityMs = System.currentTimeMillis();
                         byte[] data = Arrays.copyOf(bb.array(), n);
                         b.mem_write(buf, data);
                         b.reg_write(Arm64Const.UC_ARM64_REG_X0, (long) n);
@@ -1227,6 +1268,22 @@ public class Mt5NativeRunner extends AbstractJni {
             File brokerCacheFile,
             String periodMode
     ) {
+        runSync(serverName, companyName, accessPointAddrs, login, password, fromMs, toMs, outputJsonFile, brokerCacheFile, periodMode, false);
+    }
+
+    public void runSync(
+            String serverName,
+            String companyName,
+            String[] accessPointAddrs,
+            long login,
+            String password,
+            long fromMs,
+            long toMs,
+            File outputJsonFile,
+            File brokerCacheFile,
+            String periodMode,
+            boolean firstSyncMode
+    ) {
         DvmObject<?> context = vm.resolveClass("android/content/Context").newObject(null);
 
         DvmClass metaTrader5Class = vm.resolveClass("net/metaquotes/metatrader5/MetaTrader5");
@@ -1501,8 +1558,21 @@ public class Mt5NativeRunner extends AbstractJni {
         long effectiveToMs = toMs;
         int brokerTzMinutes = 0;
         long pumpStartTimeMs = System.currentTimeMillis();
+        long authSucceededTimeMs = -1L;
+        String failureCode = null;
+        String failureMessage = null;
+        // First sync (no warm `.dat` base) gets a larger budget; warm syncs keep tight ceilings.
+        long historyTimeoutMs = firstSyncMode ? FIRST_SYNC_HISTORY_TIMEOUT_MS : HISTORY_TIMEOUT_MS;
+        long pumpTimeoutMs = firstSyncMode ? FIRST_SYNC_PUMP_TIMEOUT_MS : PUMP_TIMEOUT_MS;
+        int maxPumpSteps = firstSyncMode ? 12000 : 4000;
+        long lastTelemetryLogMs = pumpStartTimeMs;
+        long completedTimeMs = 0L;
+        System.out.println("[Pump] Mode: " + (firstSyncMode ? "FIRST_SYNC" : "WARM")
+                + " historyTimeoutMs=" + historyTimeoutMs
+                + " pumpTimeoutMs=" + pumpTimeoutMs
+                + " maxSteps=" + maxPumpSteps);
 
-        for (int step = 0; step < 4000; step++) {
+        for (int step = 0; step < maxPumpSteps; step++) {
             emulator.getBackend().mem_write(cNetworkPtr + 0x1298, intOne);
             emulator.getBackend().mem_write(cNetworkPtr + 0x129c, intOne);
             int sockFd = emulator.getMemory().pointer(cSocketThreadPtr + 0x140).getInt(0);
@@ -1624,11 +1694,46 @@ public class Mt5NativeRunner extends AbstractJni {
             long fragHead = emulator.getMemory().pointer(cSocketThreadPtr + 0x428).getLong(0);
             if ((status == 3 || status == 4) && authStep == -1) {
                 authStep = step;
+                authSucceededTimeMs = System.currentTimeMillis();
                 System.out.println("[Pump] AUTHORIZED (status=" + status + ") at step " + step + "! fragHead=0x" + Long.toHexString(fragHead));
             }
             if (authStep == -1 && step >= 40 && (System.currentTimeMillis() - pumpStartTimeMs) >= 15000L) {
+                failureCode = "AUTH_FAILED";
+                failureMessage = "Failed to authenticate with MT5 server " + serverName + " for account " + login;
                 System.out.println("[Pump] Authentication timed out at step " + step + " (status=" + status + ")");
                 break;
+            }
+            long pumpNowMs = System.currentTimeMillis();
+            if (authStep != -1 && authSucceededTimeMs > 0 && !historyRequested
+                    && (pumpNowMs - authSucceededTimeMs) >= TERMINAL_READY_TIMEOUT_MS) {
+                failureCode = "TERMINAL_NOT_READY";
+                failureMessage = "MT5 terminal did not finish synchronizing account " + login + " on " + serverName + " in time.";
+                System.out.println("[Pump] Terminal sync exceeded " + TERMINAL_READY_TIMEOUT_MS + "ms before history request at step " + step);
+                break;
+            }
+            if (historyRequested && (pumpNowMs - historyRequestTimeMs) >= historyTimeoutMs) {
+                failureCode = "HISTORY_TIMEOUT";
+                failureMessage = "Timed out waiting for MT5 trade history response from " + serverName;
+                System.out.println("[Pump] History response exceeded " + historyTimeoutMs + "ms at step " + step);
+                break;
+            }
+            if ((pumpNowMs - pumpStartTimeMs) >= pumpTimeoutMs) {
+                failureCode = authStep == -1 ? "AUTH_FAILED" : "HISTORY_TIMEOUT";
+                failureMessage = authStep == -1
+                        ? "Failed to authenticate with MT5 server " + serverName + " for account " + login
+                        : "Timed out waiting for MT5 trade history response from " + serverName;
+                System.out.println("[Pump] Pump deadline " + pumpTimeoutMs + "ms exceeded at step " + step);
+                break;
+            }
+            // Wire telemetry every 5s: distinguishes "downloading the base" from "stuck idle".
+            if (pumpNowMs - lastTelemetryLogMs >= 5000L) {
+                lastTelemetryLogMs = pumpNowMs;
+                long idleMs = lastNetActivityMs > 0
+                        ? (pumpNowMs - lastNetActivityMs)
+                        : (pumpNowMs - pumpStartTimeMs);
+                System.out.printf("[Net] step=%d recvKB=%d sendKB=%d idleMs=%d authorized=%s historyRequested=%s%n",
+                        step, totalRecvBytes / 1024, totalSendBytes / 1024, idleMs,
+                        authStep >= 0, historyRequested);
             }
             if (authStep != -1 && !historyRequested && stateB540 == 4) {
                 // Read exact live MT5 Broker Server Clock via libcommon.so TradeTime.timeZone (0x39da00) & TradeTime.tradeTime (0x39d9b0)
@@ -1737,6 +1842,7 @@ public class Mt5NativeRunner extends AbstractJni {
                                 writer.write(",\"fromMs\":" + effectiveFromMs);
                                 writer.write(",\"toMs\":" + effectiveToMs);
                                 writer.write(",\"brokerTimeZoneMinutes\":" + brokerTzMinutes);
+                                writer.write(",\"firstSync\":" + firstSyncMode);
                                 writer.write(",\"tradeAllowed\":" + (trdAllowed != 0));
                                 writer.write(",\"tradeInfo\":" + toJson(tradeInfoMap));
                                 writer.write(",\"positionSummary\":" + toJson(posSummaryMap));
@@ -1805,6 +1911,7 @@ public class Mt5NativeRunner extends AbstractJni {
                             }
                             System.out.println("__MT5_JSON_FILE_WRITTEN__");
                             completed = true;
+                            completedTimeMs = System.currentTimeMillis();
                             break;
                         } catch (IOException ioEx) {
                             System.out.println("[Unidbg] Failed writing output JSON file: " + ioEx.getMessage());
@@ -1862,6 +1969,7 @@ public class Mt5NativeRunner extends AbstractJni {
                         payload.put("fromMs", effectiveFromMs);
                         payload.put("toMs", effectiveToMs);
                         payload.put("brokerTimeZoneMinutes", brokerTzMinutes);
+                        payload.put("firstSync", firstSyncMode);
                         payload.put("tradeAllowed", trdAllowed != 0);
                         payload.put("tradeInfo", tradeInfoMap);
                         payload.put("positionSummary", posSummaryMap);
@@ -1874,18 +1982,42 @@ public class Mt5NativeRunner extends AbstractJni {
                         System.out.println(toJson(payload));
                         System.out.println("__MT5_JSON_END__");
                         completed = true;
+                        completedTimeMs = System.currentTimeMillis();
                         break;
                     }
                 }
             }
         }
 
+        long pumpEndTimeMs = System.currentTimeMillis();
+        System.out.printf(
+                "[Telemetry] completed=%s firstSync=%s elapsedMs=%d authToReadyMs=%d requestToDoneMs=%d recvKB=%d sendKB=%d lastNetIdleMs=%d%n",
+                completed,
+                firstSyncMode,
+                pumpEndTimeMs - pumpStartTimeMs,
+                (authSucceededTimeMs > 0 && historyRequestTimeMs > 0)
+                        ? (historyRequestTimeMs - authSucceededTimeMs) : -1L,
+                historyRequestTimeMs > 0
+                        ? ((completedTimeMs > 0 ? completedTimeMs : pumpEndTimeMs) - historyRequestTimeMs) : -1L,
+                totalRecvBytes / 1024,
+                totalSendBytes / 1024,
+                lastNetActivityMs > 0 ? (pumpEndTimeMs - lastNetActivityMs) : -1L);
+
         if (!completed) {
+            String resolvedCode = failureCode != null
+                    ? failureCode
+                    : (authStep == -1 ? "AUTH_FAILED" : "HISTORY_TIMEOUT");
+            String resolvedMessage = failureMessage != null
+                    ? failureMessage
+                    : (authStep == -1
+                        ? "Failed to authenticate with MT5 server " + serverName + " for account " + login
+                        : "Timed out waiting for MT5 trade history response from " + serverName);
+            System.out.println("[Pump] Sync failed: code=" + resolvedCode + " message=" + resolvedMessage);
             Map<String, Object> errPayload = new LinkedHashMap<>();
             errPayload.put("success", false);
-            errPayload.put("error", authStep == -1
-                    ? "Failed to authenticate with MT5 server " + serverName + " for account " + login
-                    : "Timed out waiting for MT5 trade history response from " + serverName);
+            errPayload.put("errorCode", resolvedCode);
+            errPayload.put("error", resolvedMessage);
+            errPayload.put("firstSync", firstSyncMode);
             String errJson = toJson(errPayload);
             if (outputJsonFile != null) {
                 try {
@@ -2026,6 +2158,12 @@ public class Mt5NativeRunner extends AbstractJni {
         String brokerCachePath = null;
         String periodMode = null;
         String searchBrokerQuery = null;
+        boolean firstSyncMode = false;
+        for (String arg : args) {
+            if ("--first-sync".equals(arg)) {
+                firstSyncMode = true;
+            }
+        }
 
         for (int i = 0; i < args.length - 1; i++) {
             switch (args[i]) {
@@ -2060,7 +2198,7 @@ public class Mt5NativeRunner extends AbstractJni {
 
         File outputJsonFile = outputJsonPath != null ? new File(outputJsonPath) : null;
         File brokerCacheFile = brokerCachePath != null ? new File(brokerCachePath) : null;
-        runner.runSync(serverName, companyName, accessPoints, login, password, fromMs, toMs, outputJsonFile, brokerCacheFile, periodMode);
+        runner.runSync(serverName, companyName, accessPoints, login, password, fromMs, toMs, outputJsonFile, brokerCacheFile, periodMode, firstSyncMode);
         System.exit(0);
     }
 }

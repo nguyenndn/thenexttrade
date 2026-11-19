@@ -157,6 +157,17 @@ class CloudSyncService {
   }
 
   /**
+   * True when the account already has a warm MT5 `.dat` base on disk.
+   * A cold account uses the larger first-sync budget inside the native runner.
+   */
+  async hasWarmTradeCache({ serverName, login } = {}) {
+    return this.tradesBase.hasWarmTradeCache(
+      String(serverName || '').trim(),
+      String(login || '').trim()
+    );
+  }
+
+  /**
    * STEP 2: Fetch Trade History by [from, to] and optionally push directly to GSN-CRM
    * (/api/ea/heartbeat + /api/ea/trades in batches of <= 500 trades per TRADE_SYNC_SPECIFICATION.md)
    */

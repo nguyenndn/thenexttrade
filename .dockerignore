@@ -20,3 +20,7 @@ test-results
 coverage
 *.tsbuildinfo
 prisma/backups
+
+# MT5 trade cache (persisted via Docker volume at runtime)
+mt5-cloud-sync/trade-cache
+mt5-cloud-sync/unidbg-workdir

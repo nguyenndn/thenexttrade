@@ -9,7 +9,10 @@ const MAX_CONCURRENCY = Math.max(
 
 const CACHE_TTL_MS = 7 * 24 * 60 * 60 * 1000; // Strict 7-day auto-expiry
 const CACHE_SWEEP_INTERVAL_MS = 12 * 60 * 60 * 1000; // Periodic 12h sweep for idle servers
-const DEFAULT_CACHE_ROOT_DIR = path.join(__dirname, 'trade-cache');
+// Configurable so the trade cache can live on a persistent volume (survives container redeploys).
+const DEFAULT_CACHE_ROOT_DIR = process.env.MT5_TRADE_CACHE_DIR
+  ? path.resolve(process.env.MT5_TRADE_CACHE_DIR)
+  : path.join(__dirname, 'trade-cache');
 const MAX_CACHE_TOTAL_BYTES =
   Math.max(128, parseInt(process.env.MT5_TRADE_CACHE_MAX_MB || '1024', 10) || 1024) *
   1024 *
@@ -169,6 +172,24 @@ async function restoreAccountTradeCache(cacheRootDir, slotWorkDir, serverName, l
   }
 }
 
+/**
+ * True when the account already has a usable `.dat` base on disk.
+ * A cold account needs the larger first-sync budget in the native runner.
+ */
+async function hasWarmTradeCache(cacheRootDir, serverName, login) {
+  try {
+    const cacheDir = path.join(cacheRootDir, getAccountCacheKey(serverName, login));
+    if (!fs.existsSync(cacheDir)) return false;
+    if (await isCacheDirExpired(cacheDir)) return false;
+    const entries = await fs.promises.readdir(cacheDir);
+    return entries.some(
+      (file) => isTradeDatFilename(file) || isServerBaseDatFilename(file, login)
+    );
+  } catch {
+    return false;
+  }
+}
+
 async function persistAccountTradeCache(cacheRootDir, slotWorkDir, serverName, login) {
   try {
     const cleanServer = String(serverName || '').replace(/[^a-zA-Z0-9._-]/g, '');
@@ -297,24 +318,23 @@ function execJavaAsync(javaExe, args, options = {}) {
         windowsHide: true,
         ...options
       },
-      (err, stdout) => {
+      (err, stdout, stderr) => {
         if (err) {
-          if (err.killed || err.signal === 'SIGTERM' || err.code === 'ETIMEDOUT') {
-            reject(
-              new Error(
-                'Connection to MT5 server timed out while loading trade history. Please try a shorter date range or try again.'
-              )
-            );
-            return;
-          }
-          reject(
-            new Error(
-              'Unable to load trade history from MT5 server. Please verify your server and credentials or try again.'
-            )
+          const timedOut = err.killed || err.signal === 'SIGTERM' || err.code === 'ETIMEDOUT';
+          const runErr = new Error(
+            timedOut
+              ? 'The MT5 runner timed out while loading trade history. Please try again.'
+              : 'Unable to load trade history from MT5 server. Please verify your server and credentials or try again.'
           );
+          runErr.errorCode = timedOut ? 'HISTORY_TIMEOUT' : 'RUNNER_FAILED';
+          runErr.stdout = stdout || '';
+          runErr.stderr = stderr || '';
+          runErr.exitCode = err.code;
+          runErr.signal = err.signal;
+          reject(runErr);
           return;
         }
-        resolve(stdout);
+        resolve({ stdout, stderr });
       }
     );
   });
@@ -333,6 +353,7 @@ if (!globalThis.__mt5TradeCacheSweepTimer) {
 
 module.exports = {
   MAX_CONCURRENCY,
+  DEFAULT_CACHE_ROOT_DIR,
   CACHE_TTL_MS,
   MAX_CACHE_TOTAL_BYTES,
   enqueueNativeRun,
@@ -341,6 +362,7 @@ module.exports = {
   getAccountCacheKey,
   getBrokerEndpointCachePath,
   restoreAccountTradeCache,
+  hasWarmTradeCache,
   persistAccountTradeCache,
   pruneAccountTradeCache,
   execJavaAsync

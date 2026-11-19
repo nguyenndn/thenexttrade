@@ -96,7 +96,7 @@ class BrokerInfoAPI {
 
     return enqueueNativeRun(workDir, async (slotWorkDir) => {
       try {
-        const stdout = await execJavaAsync(
+        const { stdout } = await execJavaAsync(
           javaExe,
           ['-jar', runnerJar, '--search-broker', cleanQuery, '--apk', apkPath, '--workdir', slotWorkDir],
           {

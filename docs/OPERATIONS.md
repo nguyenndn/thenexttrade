@@ -143,6 +143,31 @@ Linux VPS / Container baseline:
 - Preferred: 6 vCPU, 12 GB RAM, 100 GB NVMe, 300 Mbit/s port, 2 snapshots.
 - Smaller 4 vCPU / 8 GB Linux instance is acceptable for early traffic (comfortable for Next.js + OpenJDK UniDBG runner), though leaves less headroom if co-locating PostgreSQL on the same box.
 
+### MT5 Cloud Sync trade cache (persistent volume)
+
+`mt5-cloud-sync` keeps a per-account trade `.dat` cache (`deals_YYYY.MM.dat`, `history_YYYY.MM.dat`, account `.dat` files), so repeat syncs download only the delta. If that cache is lost on every redeploy, the first sync after a deploy must re-download full history and can exceed the runner budget.
+
+- The `Dockerfile` sets `MT5_TRADE_CACHE_DIR=/app/mt5-cloud-sync/trade-cache` and declares it as a `VOLUME`.
+- On Coolify (or any Docker host) mount a **persistent volume** at `/app/mt5-cloud-sync/trade-cache`, writable by uid `1001` (the `nextjs` user).
+- Entries are evicted automatically after 7 days of inactivity or when the cache exceeds the size cap — no manual cleanup needed.
+
+Tuning env vars (defaults shown):
+
+```env
+MT5_TRADE_CACHE_DIR=/app/mt5-cloud-sync/trade-cache
+MT5_TRADE_CACHE_MAX_MB=1024
+MT5_SYNC_CONCURRENCY=4
+MT5_CONNECT_TIMEOUT_MS=8000
+MT5_TERMINAL_READY_TIMEOUT_MS=120000
+MT5_HISTORY_TIMEOUT_MS=240000
+MT5_PUMP_TIMEOUT_MS=480000
+MT5_JAVA_HEAP=-Xmx768m
+```
+
+**Behavior:** a failed sync caused by a cold cache or a slow broker server (`HISTORY_TIMEOUT`, `TERMINAL_NOT_READY`, `RUNNER_FAILED`) is retried once automatically before the job is marked `FAILED`. First-time syncs (no cached `.dat` base) run with a larger budget and are not auto-retried.
+
+How periods map to broker time, why a "Today" sync still needs a base, the full timeout table, telemetry log format and troubleshooting playbook: see `docs/MT5-CLOUD-SYNC-HISTORY.md`.
+
 ## Backup Rules
 
 Back up outside the VPS.

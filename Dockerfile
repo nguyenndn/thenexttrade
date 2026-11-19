@@ -79,6 +79,13 @@ COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
 # Copy mt5-cloud-sync (contains index.js, apk/, bin/mt5-native-runner.jar, bin/metatrader5.apk, bin/lib/)
 COPY --from=builder --chown=nextjs:nodejs /app/mt5-cloud-sync ./mt5-cloud-sync
 
+# Persistent volume for the MT5 trade `.dat` cache: keeps syncs warm across redeploys,
+# so a cold container no longer has to re-download the full trade history.
+ENV MT5_TRADE_CACHE_DIR=/app/mt5-cloud-sync/trade-cache
+RUN mkdir -p /app/mt5-cloud-sync/trade-cache \
+    && chown -R nextjs:nodejs /app/mt5-cloud-sync/trade-cache
+VOLUME ["/app/mt5-cloud-sync/trade-cache"]
+
 USER nextjs
 
 EXPOSE 3000

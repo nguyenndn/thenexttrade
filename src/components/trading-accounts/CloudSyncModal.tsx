@@ -110,7 +110,7 @@ export function CloudSyncModal({
     const [password, setPassword] = useState("");
     const [loadedSavedPassword, setLoadedSavedPassword] = useState("");
     const isPasswordDirtyRef = useRef(false);
-    const [syncPeriod, setSyncPeriod] = useState("30");
+    const [syncPeriod, setSyncPeriod] = useState("1");
     const [customFromDate, setCustomFromDate] = useState(() => {
         const d = new Date();
         d.setDate(d.getDate() - 30);
