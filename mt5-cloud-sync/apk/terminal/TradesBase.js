@@ -67,6 +67,21 @@ function summarizeRunnerLog(raw) {
   return `${stageLines.join('\n')}\n... (tail)\n${tail}`;
 }
 
+function logRunnerSuccess(serverName, login, stdout, output) {
+  try {
+    const text = String(stdout || '');
+    const mode = (text.match(/\[Pump\] Mode:[^\r\n]*/) || [])[0] || '';
+    const telemetry = (text.match(/\[Telemetry\][^\r\n]*/) || [])[0] || '';
+    console.info(
+      `[MT5NativeRunner] sync ok server=${serverName} login=${login} firstSync=${
+        output?.firstSync === true
+      } ${mode} ${telemetry}`.trim()
+    );
+  } catch {
+    // Diagnostics must never break the sync path
+  }
+}
+
 function logRunnerFailure(serverName, login, stdout, stderr, errorCode, message) {
   try {
     console.error(
@@ -777,6 +792,8 @@ class TradesBase {
             parsedOutput.errorCode,
             parsedOutput.error
           );
+        } else {
+          logRunnerSuccess(serverName, login, stdout, parsedOutput);
         }
         return parsedOutput;
       }
@@ -790,7 +807,11 @@ class TradesBase {
       }
 
       const jsonText = stdout.slice(sIdx + startMarker.length, eIdx).trim();
-      return JSON.parse(jsonText);
+      const parsedStdout = JSON.parse(jsonText);
+      if (parsedStdout?.success !== false) {
+        logRunnerSuccess(serverName, login, stdout, parsedStdout);
+      }
+      return parsedStdout;
     });
   }
 

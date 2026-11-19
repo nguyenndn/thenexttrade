@@ -148,7 +148,8 @@ download apart from a stalled connection.
 | `authToReadyMs` near the 120 s ceiling | Slow account snapshot | Consider raising `MT5_TERMINAL_READY_TIMEOUT_MS` |
 | `requestToDoneMs` near the history ceiling, bytes climbing | Base larger than budget | First sync → raise `MT5_FIRST_SYNC_HISTORY_TIMEOUT_MS` |
 
-Failure lines from `TradesBase` add a bounded log tail on the Node side:
+`TradesBase` re-logs the runner's own stage lines into the Node process log — a bounded tail on
+failure, and one compact line on success:
 
 ```
 [MT5NativeRunner] sync failed server=... login=... code=HISTORY_TIMEOUT message=...
@@ -156,10 +157,19 @@ Failure lines from `TradesBase` add a bounded log tail on the Node side:
 ... (tail)
 ```
 
+```
+[MT5NativeRunner] sync ok server=... login=... firstSync=false [Pump] Mode: WARM historyTimeoutMs=240000 pumpTimeoutMs=480000 maxSteps=4000 [Telemetry] completed=true firstSync=false elapsedMs=... authToReadyMs=... requestToDoneMs=... recvKB=... sendKB=... lastNetIdleMs=...
+```
+
+On success the raw `[Net]` stream is not emitted (stdout is captured by `execFile`); the single
+`sync ok` line carries the mode and the phase timings needed to tell a slow download from a stalled
+connection. This is the line to grep in container logs when a job takes far longer than the ~20 s
+warm baseline.
+
 The diagnostic modal in `/admin/cloud-sync-logs` (eye icon on a row) has a **Copy JSON** button that
 copies the whole job record — mode, range, progress, `dealsReceived`, `errorCode`, `errorMessage` —
-which is what to attach to a bug report. Note it holds the job summary only: `[Net]`/`[Telemetry]`
-lines exist solely in the container logs.
+which is what to attach to a bug report. Note it holds the job summary only; runner timings live in
+the container log line above.
 
 ---
 
