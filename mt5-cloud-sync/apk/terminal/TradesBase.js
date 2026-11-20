@@ -785,15 +785,16 @@ class TradesBase {
       ];
 
       // Budgets for Mt5NativeRunner (it reads them from the environment).
-      // A large history base is streamed by the broker over ~30 request cycles, so
-      // the runner-side defaults (240 s history / 480 s pump) can cut a healthy warm
-      // sync that is still receiving data. Both stay below the Node spawn timeout
-      // below, so a genuinely hung runner is still killed by execFile.
+      // A warm sync on a large account measures ~180-340 s end to end and the cost
+      // is fixed per session, not proportional to the requested range, so the
+      // runner-side defaults must sit well above that band. Ordering is
+      // history < pump < Node spawn timeout below, so a genuinely hung runner is
+      // still killed by execFile.
       // Real environment values win, so Coolify can still override these.
       const runnerEnv = {
         ...process.env,
-        MT5_HISTORY_TIMEOUT_MS: process.env.MT5_HISTORY_TIMEOUT_MS || '420000',
-        MT5_PUMP_TIMEOUT_MS: process.env.MT5_PUMP_TIMEOUT_MS || '540000'
+        MT5_HISTORY_TIMEOUT_MS: process.env.MT5_HISTORY_TIMEOUT_MS || '540000',
+        MT5_PUMP_TIMEOUT_MS: process.env.MT5_PUMP_TIMEOUT_MS || '600000'
       };
 
       let stdout = '';
@@ -803,7 +804,7 @@ class TradesBase {
           cwd: execCwd,
           env: runnerEnv,
           // First sync downloads the `.dat` base and legitimately runs longer than a warm sync.
-          timeout: firstSync ? 900000 : 600000
+          timeout: firstSync ? 900000 : 720000
         });
         stdout = runResult.stdout || '';
         stderr = runResult.stderr || '';

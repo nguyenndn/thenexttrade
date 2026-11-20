@@ -84,10 +84,10 @@ server-side with no internal jargon.
 | TCP connect (per access point) | 8 s | 8 s | `MT5_CONNECT_TIMEOUT_MS` |
 | Auth allowed | 15 s | 15 s | — |
 | Terminal ready after auth | 120 s | 120 s | `MT5_TERMINAL_READY_TIMEOUT_MS` |
-| History request → response | 420 s | 600 s | `MT5_HISTORY_TIMEOUT_MS` / `MT5_FIRST_SYNC_HISTORY_TIMEOUT_MS` |
-| Whole pump | 540 s | 900 s | `MT5_PUMP_TIMEOUT_MS` / `MT5_FIRST_SYNC_PUMP_TIMEOUT_MS` |
+| History request → response | 540 s | 600 s | `MT5_HISTORY_TIMEOUT_MS` / `MT5_FIRST_SYNC_HISTORY_TIMEOUT_MS` |
+| Whole pump | 600 s | 900 s | `MT5_PUMP_TIMEOUT_MS` / `MT5_FIRST_SYNC_PUMP_TIMEOUT_MS` |
 | Pump step budget | 4 000 | 12 000 | — |
-| Node `execFile` timeout | 600 s | 900 s | — |
+| Node `execFile` timeout | 720 s | 900 s | — |
 
 The pump/job ceilings are always lower than the Node timeout so the runner can return a structured
 `errorCode` JSON instead of being killed with `SIGTERM`.
@@ -158,7 +158,7 @@ failure, and one compact line on success:
 ```
 
 ```
-[MT5NativeRunner] sync ok server=... login=... firstSync=false [Pump] Mode: WARM historyTimeoutMs=420000 pumpTimeoutMs=540000 maxSteps=4000 [Net] samples=47 firstStep=120 lastStep=3962 lastRecvKB=709 lastIdleMs=2262 [Telemetry] completed=true firstSync=false elapsedMs=... authToReadyMs=... requestToDoneMs=... recvKB=... sendKB=... lastNetIdleMs=...
+[MT5NativeRunner] sync ok server=... login=... firstSync=false [Pump] Mode: WARM historyTimeoutMs=540000 pumpTimeoutMs=600000 maxSteps=4000 [Net] samples=47 firstStep=120 lastStep=3962 lastRecvKB=709 lastIdleMs=2262 [Telemetry] completed=true firstSync=false elapsedMs=... authToReadyMs=... requestToDoneMs=... recvKB=... sendKB=... lastNetIdleMs=...
 ```
 
 On success the raw `[Net]` stream is not emitted (stdout is captured by `execFile`); the single
@@ -194,8 +194,8 @@ MT5_SYNC_CONCURRENCY=4
 # Runner budgets (warm)
 MT5_CONNECT_TIMEOUT_MS=8000
 MT5_TERMINAL_READY_TIMEOUT_MS=120000
-MT5_HISTORY_TIMEOUT_MS=420000
-MT5_PUMP_TIMEOUT_MS=540000
+MT5_HISTORY_TIMEOUT_MS=540000
+MT5_PUMP_TIMEOUT_MS=600000
 
 # Runner budgets (first sync)
 MT5_FIRST_SYNC_HISTORY_TIMEOUT_MS=600000
