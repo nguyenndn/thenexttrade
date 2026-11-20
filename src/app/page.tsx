@@ -205,7 +205,7 @@ function HomeFeed({ isLoggedIn, quote }: HomeFeedProps) {
 
             {/* STEP 02 / 04 · Execution & Discipline (MT5 Trading Systems & EAs) */}
             <FadeIn delay={0.1} direction="up">
-                <MT5TeaserCTA isLoggedIn={isLoggedIn} />
+                <MT5TeaserCTA />
             </FadeIn>
 
             {/* STEP 03 / 04 · Zero-Fee Capital Preservation (Broker-Funded Sponsorship) */}

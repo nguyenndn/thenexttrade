@@ -30,7 +30,7 @@ export function MT5SuiteConsole() {
                 </span>
             </div>
 
-            {/* 3 Core Trading System Cards */}
+            {/* Core Trading System Cards */}
             <div className="space-y-3 relative z-10">
                 {TRADING_SYSTEM_ITEMS.map((item, idx) => {
                     const Icon = item.icon;

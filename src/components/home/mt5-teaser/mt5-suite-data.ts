@@ -1,4 +1,4 @@
-import { Bot, SlidersHorizontal, Shield, type LucideIcon } from "lucide-react";
+import { Bot, SlidersHorizontal, Shield, Layers, type LucideIcon } from "lucide-react";
 
 export interface TradingSystemItem {
     title: string;
@@ -33,5 +33,13 @@ export const TRADING_SYSTEM_ITEMS: TradingSystemItem[] = [
         icon: Shield,
         iconColor: "text-emerald-500 bg-emerald-500/10 border-emerald-500/20",
         desc: "For drawdown defense: Adaptive dual-grid & counter-hedge recovery system with EMA-34 lot braking.",
+    },
+    {
+        title: "GSN SNR System",
+        tag: "SEMI-AUTO LIMIT EA",
+        tagColor: "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border-cyan-500/20",
+        icon: Layers,
+        iconColor: "text-cyan-500 bg-cyan-500/10 border-cyan-500/20",
+        desc: "For level-based entries: Malaysian candle-body SNR + ICT OTE limit zones with hard SL, 1:2 R:R & no market chasing.",
     },
 ];

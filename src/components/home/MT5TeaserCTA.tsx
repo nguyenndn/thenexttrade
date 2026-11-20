@@ -5,14 +5,8 @@ import { buttonVariants } from "@/components/ui/button-variants";
 import { cn } from "@/lib/utils";
 import { MT5SuiteConsole } from "./mt5-teaser/MT5SuiteConsole";
 
-interface MT5TeaserCTAProps {
-    isLoggedIn?: boolean;
-}
-
-export function MT5TeaserCTA({ isLoggedIn = false }: MT5TeaserCTAProps) {
-    const secondaryUrl = isLoggedIn
-        ? "/dashboard/accounts"
-        : "/auth/signup?next=/dashboard/accounts&source=automated_execution_cta";
+export function MT5TeaserCTA() {
+    const secondaryUrl = "/trading-systems#how-unlock-works";
 
     return (
         <div id="systems-preview" className="relative w-full overflow-hidden border-t border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-transparent">
@@ -72,14 +66,14 @@ export function MT5TeaserCTA({ isLoggedIn = false }: MT5TeaserCTAProps) {
                                 </h2>
 
                                 <p className="mt-3 text-sm text-gray-600 dark:text-gray-400 font-semibold leading-relaxed">
-                                    Trade manually? Use GSN Trade Manager for 1-click lot sizing, auto SL/TP, and live journal sync. Prefer hands-free execution? Deploy GoldScalperNinja EA and GSN Shadow Matrix to trade XAU/USD automatically with hard-coded stop-loss rules.
+                                    Trade manually? Use GSN Trade Manager for 1-click lot sizing, auto SL/TP, and live journal sync. Prefer hands-free execution? Deploy GoldScalperNinja EA and GSN Shadow Matrix to trade XAU/USD automatically with hard-coded stop-loss rules. Or let GSN SNR System place candle-body support &amp; resistance limit orders at a fixed 1:2 risk-reward.
                                 </p>
                             </div>
 
                             {/* Trust Bullets */}
                             <div className="space-y-2.5 border-t border-dashed border-gray-200 dark:border-white/10 pt-5">
                                 {[
-                                    "Manual Co-Pilot (Trade Manager) + 2 Automated EAs (GoldScalperNinja & Shadow Matrix)",
+                                    "Manual Co-Pilot (Trade Manager) + 3 MT5 EAs (GoldScalperNinja, Shadow Matrix & SNR System)",
                                     "Zero MT5 password required — syncs & verifies securely via EA on Demo or Live",
                                     "Capital stays in your regulated account — we never touch your funds",
                                 ].map((text, idx) => (

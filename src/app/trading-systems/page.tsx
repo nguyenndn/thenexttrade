@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 
 import { TradingSystemsPageShell } from "@/components/trading-systems/TradingSystemsPageShell";
+import { HowUnlockWorks } from "@/components/trading-systems/HowUnlockWorks";
 import {
     TradingSystemCard,
     type TradingSystemCardData,
@@ -229,7 +230,10 @@ export default async function TradingSystemsIndexPage() {
                 )}
             </section>
 
-            {/* Block 3: Frequently Asked Questions - 2 Column Architecture */}
+            {/* Block 3: How Unlock Works */}
+            <HowUnlockWorks />
+
+            {/* Block 4: Frequently Asked Questions - 2 Column Architecture */}
             <section className="mb-14 scroll-mt-24">
                 <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-white/70 dark:bg-[#111318]/50 p-6 sm:p-10 shadow-lg backdrop-blur-sm">
                     <div className="mb-10 text-center max-w-3xl mx-auto space-y-2">
