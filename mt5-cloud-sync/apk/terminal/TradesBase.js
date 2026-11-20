@@ -67,6 +67,34 @@ function summarizeRunnerLog(raw) {
   return `${stageLines.join('\n')}\n... (tail)\n${tail}`;
 }
 
+/**
+ * Compact digest of the `[Net]` pump samples the runner prints every 5 s.
+ *
+ * `lastStep` vs the pump step budget (maxSteps) is what separates "the pump loop
+ * simply ran out of its fixed step allowance" from "the pump finished early and
+ * the time went somewhere else" — the two causes lead to different fixes.
+ */
+function summarizePumpNet(raw) {
+  const text = String(raw || '');
+  let samples = 0;
+  let firstStep = null;
+  let lastStep = null;
+  let lastRecvKb = '?';
+  let lastIdleMs = '?';
+  for (const line of text.split(/\r?\n/)) {
+    if (!line.includes('[Net]')) continue;
+    const stepMatch = line.match(/step=(\d+)/);
+    if (!stepMatch) continue;
+    samples += 1;
+    if (firstStep === null) firstStep = stepMatch[1];
+    lastStep = stepMatch[1];
+    lastRecvKb = (line.match(/recvKB=(\d+)/) || [])[1] || '?';
+    lastIdleMs = (line.match(/idleMs=(\d+)/) || [])[1] || '?';
+  }
+  if (samples === 0) return '[Net] samples=0';
+  return `[Net] samples=${samples} firstStep=${firstStep} lastStep=${lastStep} lastRecvKB=${lastRecvKb} lastIdleMs=${lastIdleMs}`;
+}
+
 function logRunnerSuccess(serverName, login, stdout, output) {
   try {
     const text = String(stdout || '');
@@ -75,7 +103,7 @@ function logRunnerSuccess(serverName, login, stdout, output) {
     console.info(
       `[MT5NativeRunner] sync ok server=${serverName} login=${login} firstSync=${
         output?.firstSync === true
-      } ${mode} ${telemetry}`.trim()
+      } ${mode} ${summarizePumpNet(text)} ${telemetry}`.trim()
     );
   } catch {
     // Diagnostics must never break the sync path

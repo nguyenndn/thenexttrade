@@ -158,13 +158,21 @@ failure, and one compact line on success:
 ```
 
 ```
-[MT5NativeRunner] sync ok server=... login=... firstSync=false [Pump] Mode: WARM historyTimeoutMs=420000 pumpTimeoutMs=540000 maxSteps=4000 [Telemetry] completed=true firstSync=false elapsedMs=... authToReadyMs=... requestToDoneMs=... recvKB=... sendKB=... lastNetIdleMs=...
+[MT5NativeRunner] sync ok server=... login=... firstSync=false [Pump] Mode: WARM historyTimeoutMs=420000 pumpTimeoutMs=540000 maxSteps=4000 [Net] samples=47 firstStep=120 lastStep=3962 lastRecvKB=709 lastIdleMs=2262 [Telemetry] completed=true firstSync=false elapsedMs=... authToReadyMs=... requestToDoneMs=... recvKB=... sendKB=... lastNetIdleMs=...
 ```
 
 On success the raw `[Net]` stream is not emitted (stdout is captured by `execFile`); the single
-`sync ok` line carries the mode and the phase timings needed to tell a slow download from a stalled
-connection. This is the line to grep in container logs when a job takes far longer than the ~20 s
-warm baseline.
+`sync ok` line carries the mode, a digest of the pump samples and the phase timings. This is the line
+to grep in container logs when a job takes far longer than the warm baseline.
+
+The `[Net]` digest is what separates "the pump loop ran out of its step allowance" from "the pump
+finished early and the time went somewhere else":
+
+| Digest | Meaning | Action |
+|---|---|---|
+| `lastStep` close to `maxSteps` (4000 warm / 12000 first sync) | The pump burned its whole allowance; `samples × 5 s` is the pumping wall time | Reduce the fixed cost — lower idle `Thread.sleep` or exit earlier once history is done |
+| `lastStep` well below `maxSteps` | The pump finished; the remaining time is terminal setup/extraction | Profile the phase after the pump, not the pump loop |
+| `samples=0` | Runner never reached the pumping stage | Look at the failure path / stage lines instead |
 
 The diagnostic modal in `/admin/cloud-sync-logs` (eye icon on a row) has a **Copy JSON** button that
 copies the whole job record — mode, range, progress, `dealsReceived`, `errorCode`, `errorMessage` —
