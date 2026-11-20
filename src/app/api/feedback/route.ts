@@ -7,6 +7,7 @@ import { NotificationType, NotificationPriority } from "@prisma/client";
 import { NOTIFICATION_ROUTES } from "@/lib/notification-routes";
 import { checkAuthRateLimit } from "@/lib/security/auth-rate-limit";
 import { AUTH_ERRORS } from "@/lib/security/auth-errors";
+import { getClientIpFromHeaders } from "@/lib/security/client-ip";
 
 const createFeedbackSchema = z.object({
     type: z.enum(["BUG", "FEATURE"], {
@@ -20,12 +21,7 @@ const createFeedbackSchema = z.object({
 });
 
 async function getClientIP(): Promise<string> {
-    const h = await headers();
-    const realIp = h.get("x-real-ip")?.trim();
-    if (realIp) return realIp;
-    const vercelIp = h.get("x-vercel-forwarded-for")?.split(",")[0]?.trim();
-    if (vercelIp) return vercelIp;
-    return h.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "127.0.0.1";
+    return getClientIpFromHeaders(await headers());
 }
 
 export async function POST(req: Request) {

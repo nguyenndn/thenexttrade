@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { headers } from "next/headers";
 import NextTopLoader from "nextjs-toploader";
 import "./globals.css";
 
@@ -138,12 +139,15 @@ export const viewport: Viewport = {
     ],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
     children,
 }: Readonly<{
     children: React.ReactNode;
 }>) {
     const gaMeasurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+    // CSP nonce set by src/proxy.ts on the forwarded request. Reading request
+    // headers makes this layout dynamic, which a per-request nonce requires.
+    const nonce = (await headers()).get("x-nonce") ?? undefined;
 
     return (
         <html lang="en" suppressHydrationWarning>
@@ -166,6 +170,7 @@ export default function RootLayout({
                 )}
                 <meta name="apple-mobile-web-app-capable" content="yes" />
                 <script
+                    nonce={nonce}
                     dangerouslySetInnerHTML={{
                         __html: `
  (function(){
@@ -183,6 +188,7 @@ export default function RootLayout({
                 />
                 {process.env.NODE_ENV === "production" ? (
                     <script
+                        nonce={nonce}
                         dangerouslySetInnerHTML={{
                             __html: `
 (function() {
@@ -224,6 +230,7 @@ export default function RootLayout({
                     />
                 ) : (
                     <script
+                        nonce={nonce}
                         dangerouslySetInnerHTML={{
                             __html: `
 if ('serviceWorker' in navigator) {

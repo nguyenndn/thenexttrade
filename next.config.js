@@ -95,22 +95,6 @@ const nextConfig = {
       ];
     }
     const isHttpsApp = (process.env.NEXT_PUBLIC_APP_URL || '').startsWith('https://');
-    const extraImgSrc = assetHostname ? ` https://${assetHostname}` : '';
-    const cspDirectives = [
-      "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' https://*.supabase.co https://*.google.com https://*.googleapis.com https://*.googletagmanager.com https://challenges.cloudflare.com",
-      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-      `img-src 'self' blob: data: https://*.supabase.co https://*.googleusercontent.com https://*.gravatar.com https://*.unsplash.com https://flagcdn.com https://images.unsplash.com https://*.r2.dev https://thenexttrade.app https://*.thenexttrade.app https://thenexttrade.com https://*.thenexttrade.com https://thenexttrade.io https://*.thenexttrade.io https://cdn.jsdelivr.net${extraImgSrc}`,
-      "font-src 'self' data: https://fonts.gstatic.com",
-      "connect-src 'self' https://*.supabase.co https://*.google-analytics.com https://*.googleapis.com wss://*.supabase.co https://challenges.cloudflare.com https://cdn.jsdelivr.net",
-      "frame-src https://challenges.cloudflare.com",
-      "worker-src 'self' blob:",
-      "object-src 'none'",
-      "base-uri 'self'",
-      "form-action 'self'",
-      "frame-ancestors 'none'",
-      ...(isHttpsApp ? ['upgrade-insecure-requests'] : []),
-    ].join('; ');
 
     return [
       {
@@ -141,10 +125,6 @@ const nextConfig = {
           {
             key: 'Permissions-Policy',
             value: 'camera=(), microphone=(), geolocation=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()'
-          },
-          {
-            key: 'Content-Security-Policy',
-            value: cspDirectives
           }
         ]
       },

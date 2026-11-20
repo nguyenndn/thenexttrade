@@ -1,13 +1,13 @@
 import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
+import { getClientIpFromHeaders } from "@/lib/security/client-ip";
 
 export async function recordSession(userId: string) {
     try {
         const headersList = await headers();
         const userAgent = headersList.get("user-agent") || "Unknown Device";
-        // IP detection (works with Vercel/proxies)
-        const forwardedFor = headersList.get("x-forwarded-for");
-        const ip = forwardedFor ? forwardedFor.split(",")[0] : "Unknown IP";
+        // IP detection (Cloudflare-aware; falls back through proxy headers)
+        const ip = getClientIpFromHeaders(headersList, "Unknown IP");
 
         // Simple Device Parsing
         let deviceName = "Unknown Device";
@@ -62,12 +62,18 @@ export async function getActiveSessions(userId: string) {
     });
 }
 
-export async function revokeSession(sessionId: string, userId: string) {
-    // Only allow revoking own sessions
+/**
+ * Remove stored session rows for every other device.
+ *
+ * This only keeps the dashboard list in sync — the actual token revocation is
+ * done by the caller via Supabase (`signOut({ scope: "others" })`), because
+ * deleting a UserSession row does not invalidate anything on its own.
+ */
+export async function clearOtherSessions(
+    userId: string,
+    currentUserAgent: string
+) {
     return await prisma.userSession.deleteMany({
-        where: {
-            id: sessionId,
-            userId: userId,
-        },
+        where: { userId, userAgent: { not: currentUserAgent } },
     });
 }

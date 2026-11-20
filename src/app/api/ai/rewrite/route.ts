@@ -3,7 +3,6 @@ import { randomUUID } from "node:crypto";
 import { requireAdmin } from "@/lib/api-auth";
 import { executeAiGateway } from "@/lib/ai-gateway/provider-router";
 import { toPublicErrorMessage } from "@/lib/errors/public-error";
-import { YoutubeTranscript } from "youtube-transcript";
 import { readFile } from "fs/promises";
 import path from "path";
 
@@ -244,6 +243,11 @@ async function scrapeMultipleSources(
                 )?.[1];
                 if (!videoId) throw new Error("Invalid YouTube URL");
 
+                // Loaded lazily: the package ships a CJS file under a
+                // "type": "module" package, which breaks static ESM imports.
+                const { YoutubeTranscript } = await import(
+                    "youtube-transcript"
+                );
                 const transcript =
                     await YoutubeTranscript.fetchTranscript(videoId);
                 const fullText = transcript.map((t) => t.text).join(" ");

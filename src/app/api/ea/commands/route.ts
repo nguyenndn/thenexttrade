@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getAuthUser } from "@/lib/auth-cache";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
+import { getClientIpFromHeaders } from "@/lib/security/client-ip";
 
 const CreateCommandSchema = z.object({
     tradingAccountId: z.string().min(1),
@@ -115,9 +116,7 @@ export async function POST(request: NextRequest) {
                 status: "PENDING",
                 expiresAt: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes
                 source: "WEB",
-                ipAddress:
-                    request.headers.get("x-forwarded-for") ||
-                    request.headers.get("x-real-ip"),
+                ipAddress: getClientIpFromHeaders(request.headers),
             },
         });
 

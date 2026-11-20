@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import {
     fetchUserSessions,
-    deleteSession,
+    revokeOtherSessions,
 } from "@/app/dashboard/settings/security/actions";
 import {
     Loader2,
@@ -27,9 +27,8 @@ interface UserSessionItem {
 export function ActiveSessionsList() {
     const [sessions, setSessions] = useState<UserSessionItem[]>([]);
     const [loading, setLoading] = useState(true);
-    const [revokingId, setRevokingId] = useState<string | null>(null);
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-    const [sessionToRevoke, setSessionToRevoke] = useState<string | null>(null);
+    const [isSigningOut, setIsSigningOut] = useState(false);
 
     const loadSessions = async () => {
         try {
@@ -46,27 +45,21 @@ export function ActiveSessionsList() {
         loadSessions();
     }, []);
 
-    const confirmRevoke = (id: string) => {
-        setSessionToRevoke(id);
-        setIsConfirmOpen(true);
-    };
+    const handleRevokeOthers = async () => {
+        setIsSigningOut(true);
 
-    const handleRevoke = async () => {
-        if (!sessionToRevoke) return;
-
-        setRevokingId(sessionToRevoke);
-        setIsConfirmOpen(false); // Close modal early or keep it? Custom is to keep loading state inside ConfirmDialog.
-
-        const res = await deleteSession(sessionToRevoke);
-        setRevokingId(null);
-        setSessionToRevoke(null);
+        const res = await revokeOtherSessions();
 
         if (res.error) {
             toast.error(res.error);
-        } else {
-            toast.success("Session revoked successfully");
-            setSessions((prev) => prev.filter((s) => s.id !== sessionToRevoke));
+            setIsSigningOut(false);
+            return;
         }
+
+        setIsConfirmOpen(false);
+        setIsSigningOut(false);
+        toast.success("Other devices have been signed out");
+        await loadSessions();
     };
 
     // Helper to categorize device icon
@@ -90,6 +83,10 @@ export function ActiveSessionsList() {
         if (typeof window === "undefined") return false;
         return userAgent === window.navigator.userAgent;
     };
+
+    const otherSessionCount = sessions.filter(
+        (session) => !isCurrentSession(session.userAgent || "")
+    ).length;
 
     if (loading) {
         return (
@@ -151,22 +148,6 @@ export function ActiveSessionsList() {
                                 </div>
                             </div>
 
-                            {!isCurrent && (
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={() => confirmRevoke(session.id)}
-                                    isLoading={revokingId === session.id}
-                                    className="shrink-0 text-gray-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10"
-                                    title="Revoke Session"
-                                    aria-label={`Revoke session on ${session.device || "Unknown Device"}`}
-                                >
-                                    {revokingId !== session.id && (
-                                        <LogOut size={18} />
-                                    )}
-                                </Button>
-                            )}
-
                             {isCurrent && (
                                 <div className="shrink-0 whitespace-nowrap text-green-500 text-xs font-bold px-2 sm:px-3">
                                     Active Now
@@ -177,18 +158,28 @@ export function ActiveSessionsList() {
                 })}
             </div>
 
+            {otherSessionCount > 0 && (
+                <div className="mt-4 flex justify-end">
+                    <Button
+                        variant="destructive"
+                        size="smd"
+                        onClick={() => setIsConfirmOpen(true)}
+                    >
+                        <LogOut size={16} />
+                        Sign out all other devices
+                    </Button>
+                </div>
+            )}
+
             <ConfirmDialog
                 isOpen={isConfirmOpen}
-                title="Revoke Session"
-                description="Are you sure you want to revoke this session? The user will be logged out."
-                confirmText="Revoke"
+                title="Sign out other devices"
+                description="Every other device signed in to your account will be signed out immediately. This device stays signed in."
+                confirmText="Sign out others"
                 cancelText="Cancel"
-                isLoading={!!revokingId}
-                onConfirm={handleRevoke}
-                onCancel={() => {
-                    setIsConfirmOpen(false);
-                    setSessionToRevoke(null);
-                }}
+                isLoading={isSigningOut}
+                onConfirm={handleRevokeOthers}
+                onCancel={() => setIsConfirmOpen(false)}
                 variant="danger"
             />
         </div>

@@ -8,6 +8,9 @@ import { z } from "zod";
 import { recordSession } from "@/lib/session";
 import { verifyTurnstile } from "@/lib/turnstile";
 import { logSecurityEvent, SECURITY_EVENT_TYPES } from "@/lib/security-logger";
+import { checkAuthRateLimit } from "@/lib/security/auth-rate-limit";
+import { AUTH_ERRORS } from "@/lib/security/auth-errors";
+import { getClientIpFromHeaders } from "@/lib/security/client-ip";
 import { headers } from "next/headers";
 
 const adminLoginSchema = z.object({
@@ -16,18 +19,17 @@ const adminLoginSchema = z.object({
 });
 
 async function getClientIP(): Promise<string> {
-    const h = await headers();
-    return h.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "127.0.0.1";
+    return getClientIpFromHeaders(await headers());
 }
 
 export async function adminLogin(formData: FormData) {
     const supabase = await createClient();
+    const ip = await getClientIP();
 
     // 1. Verify Turnstile
     const turnstileToken = formData.get("cf-turnstile-response") as string;
     const turnstileResult = await verifyTurnstile(turnstileToken);
     if (!turnstileResult.success) {
-        const ip = await getClientIP();
         logSecurityEvent({
             type: SECURITY_EVENT_TYPES.TURNSTILE_FAILED,
             ip,
@@ -48,11 +50,15 @@ export async function adminLogin(formData: FormData) {
         return { error: "Invalid email or password" };
     }
 
+    // 2b. Rate limit (shares the strict login bucket with the public sign-in)
+    if (await checkAuthRateLimit("login", ip, validated.data.email)) {
+        return { error: AUTH_ERRORS.RATE_LIMIT_GENERIC };
+    }
+
     // 3. Authenticate with Supabase
     const { error } = await supabase.auth.signInWithPassword(validated.data);
 
     if (error) {
-        const ip = await getClientIP();
         logSecurityEvent({
             type: SECURITY_EVENT_TYPES.LOGIN_FAILED,
             ip,
@@ -79,7 +85,6 @@ export async function adminLogin(formData: FormData) {
     if (profile?.role !== "ADMIN") {
         // Sign out non-admin user immediately
         await supabase.auth.signOut();
-        const ip = await getClientIP();
         logSecurityEvent({
             type: SECURITY_EVENT_TYPES.LOGIN_FAILED,
             ip,

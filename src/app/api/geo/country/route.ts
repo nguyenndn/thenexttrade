@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getGeoFromHeaders } from "@/lib/analytics";
+import { getClientIpFromHeaders } from "@/lib/security/client-ip";
 
 function isPublicIp(ip: string) {
     return !(
@@ -12,13 +13,7 @@ function isPublicIp(ip: string) {
 }
 
 function getClientIp(headers: Headers) {
-    const forwardedFor = headers.get("x-forwarded-for")?.split(",")[0]?.trim();
-    return (
-        headers.get("cf-connecting-ip") ||
-        headers.get("x-real-ip") ||
-        forwardedFor ||
-        null
-    );
+    return getClientIpFromHeaders(headers, "");
 }
 
 async function getCountryFromIp(ip: string) {

@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { getProtectedAssetStream } from "@/lib/storage/object-storage";
 import { AccountStatus, PlatformType } from "@prisma/client";
+import { getClientIpFromHeaders } from "@/lib/security/client-ip";
 
 export async function GET(
     request: NextRequest,
@@ -140,8 +141,10 @@ export async function GET(
                 productId: product.id,
                 platform: platform,
                 version: product.version,
-                ipAddress:
-                    request.headers.get("x-forwarded-for") || "unknown",
+                ipAddress: getClientIpFromHeaders(
+                    request.headers,
+                    "unknown"
+                ),
                 userAgent: request.headers.get("user-agent"),
             },
         });

@@ -11,6 +11,7 @@ import {
 } from "@/lib/trading-account-classification";
 import { normalizeBrokerKey } from "@/lib/pro-access";
 import { rateLimit } from "@/lib/rate-limit";
+import { getClientIpFromHeaders } from "@/lib/security/client-ip";
 
 const verifyIpLimiter = rateLimit({
     interval: 60_000,
@@ -23,17 +24,7 @@ const verifyKeyLimiter = rateLimit({
 });
 
 function getRequestClientIp(request: NextRequest): string {
-    const realIp = request.headers.get("x-real-ip")?.trim();
-    if (realIp) return realIp;
-    const vercelIp = request.headers
-        .get("x-vercel-forwarded-for")
-        ?.split(",")[0]
-        ?.trim();
-    if (vercelIp) return vercelIp;
-    return (
-        request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-        "127.0.0.1"
-    );
+    return getClientIpFromHeaders(request.headers);
 }
 
 interface VerifyLicensePayload {

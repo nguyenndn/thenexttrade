@@ -1,5 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { updateSession } from "@/lib/supabase/middleware";
+import { getClientIpFromHeaders } from "@/lib/security/client-ip";
 import {
     parseUserAgent,
     generateSessionId,
@@ -169,13 +170,61 @@ function isMaliciousBot(userAgent: string | null): boolean {
 }
 
 // =============================================================================
+// CONTENT SECURITY POLICY (nonce-based)
+// =============================================================================
+
+/**
+ * Per-request nonce. Next.js reads the CSP header off the forwarded request and
+ * stamps this nonce onto its own inline bootstrap scripts; our own inline
+ * scripts read `x-nonce` in the root layout. A nonce only works on dynamically
+ * rendered HTML, so pages that were static/ISR are rendered per request.
+ */
+function createNonce(): string {
+    return btoa(crypto.randomUUID());
+}
+
+function buildCsp(isHttps: boolean, nonce: string): string {
+    let r2ImgHost = "";
+    try {
+        const rawR2Url =
+            process.env.R2_PUBLIC_URL ||
+            process.env.NEXT_PUBLIC_R2_PUBLIC_URL ||
+            process.env.ASSET_PUBLIC_BASE_URL ||
+            "";
+        if (rawR2Url) {
+            r2ImgHost = ` https://${new URL(rawR2Url).hostname}`;
+        }
+    } catch {
+        /* ignore invalid R2 URL */
+    }
+
+    return [
+        "default-src 'self'",
+        // Host list kept as a fallback for browsers without 'strict-dynamic'.
+        `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https://*.supabase.co https://*.google.com https://*.googleapis.com https://*.googletagmanager.com https://challenges.cloudflare.com https://static.cloudflareinsights.com`,
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+        `img-src 'self' blob: data: https://*.supabase.co https://*.googleusercontent.com https://*.gravatar.com https://*.unsplash.com https://flagcdn.com https://images.unsplash.com https://cdn.jsdelivr.net https://*.r2.dev https://thenexttrade.app https://*.thenexttrade.app https://thenexttrade.com https://*.thenexttrade.com https://thenexttrade.io https://*.thenexttrade.io${r2ImgHost}`,
+        "font-src 'self' data: https://fonts.gstatic.com",
+        "connect-src 'self' https://*.supabase.co https://*.google-analytics.com https://*.googleapis.com wss://*.supabase.co https://challenges.cloudflare.com https://cdn.jsdelivr.net https://cloudflareinsights.com",
+        "frame-src https://challenges.cloudflare.com",
+        "worker-src 'self' blob:",
+        "object-src 'none'",
+        "base-uri 'self'",
+        "form-action 'self'",
+        "frame-ancestors 'none'",
+        ...(isHttps ? ["upgrade-insecure-requests"] : []),
+    ].join("; ");
+}
+
+// =============================================================================
 // SECURITY HEADERS (Production only)
 // =============================================================================
 
 function addSecurityHeaders(
     response: NextResponse,
     isDev: boolean,
-    isHttps: boolean
+    isHttps: boolean,
+    nonce: string
 ): void {
     if (isDev) {
         // Dev: clear HSTS to prevent browser caching issues
@@ -207,37 +256,8 @@ function addSecurityHeaders(
         "camera=(), microphone=(), geolocation=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()"
     );
 
-    // CSP — Content Security Policy (only add upgrade-insecure-requests over HTTPS)
-    let r2ImgHost = "";
-    try {
-        const rawR2Url =
-            process.env.R2_PUBLIC_URL ||
-            process.env.NEXT_PUBLIC_R2_PUBLIC_URL ||
-            process.env.ASSET_PUBLIC_BASE_URL ||
-            "";
-        if (rawR2Url) {
-            r2ImgHost = ` https://${new URL(rawR2Url).hostname}`;
-        }
-    } catch {
-        /* ignore invalid R2 URL */
-    }
-    const csp = [
-        "default-src 'self'",
-        "script-src 'self' 'unsafe-inline' https://*.supabase.co https://*.google.com https://*.googleapis.com https://*.googletagmanager.com https://challenges.cloudflare.com https://static.cloudflareinsights.com",
-        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-        `img-src 'self' blob: data: https://*.supabase.co https://*.googleusercontent.com https://*.gravatar.com https://*.unsplash.com https://flagcdn.com https://images.unsplash.com https://cdn.jsdelivr.net https://*.r2.dev https://thenexttrade.app https://*.thenexttrade.app https://thenexttrade.com https://*.thenexttrade.com https://thenexttrade.io https://*.thenexttrade.io${r2ImgHost}`,
-        "font-src 'self' data: https://fonts.gstatic.com",
-        "connect-src 'self' https://*.supabase.co https://*.google-analytics.com https://*.googleapis.com wss://*.supabase.co https://challenges.cloudflare.com https://cdn.jsdelivr.net https://cloudflareinsights.com",
-        "frame-src https://challenges.cloudflare.com",
-        "worker-src 'self' blob:",
-        "object-src 'none'",
-        "base-uri 'self'",
-        "form-action 'self'",
-        "frame-ancestors 'none'",
-        ...(isHttps ? ["upgrade-insecure-requests"] : []),
-    ].join("; ");
-
-    response.headers.set("Content-Security-Policy", csp);
+    // CSP — Content Security Policy (nonce-based; only add upgrade-insecure-requests over HTTPS)
+    response.headers.set("Content-Security-Policy", buildCsp(isHttps, nonce));
 }
 
 // =============================================================================
@@ -297,13 +317,23 @@ function logSecurityToAPI(
 
 export async function proxy(request: NextRequest) {
     const { pathname } = request.nextUrl;
-    const ip =
-        request.headers.get("x-real-ip")?.trim() ||
-        request.headers.get("x-vercel-forwarded-for")?.split(",")[0]?.trim() ||
-        request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-        "127.0.0.1";
+    const ip = getClientIpFromHeaders(request.headers);
     const userAgent = request.headers.get("user-agent");
     const isDev = process.env.NODE_ENV !== "production";
+
+    const forwardedProto = request.headers
+        .get("x-forwarded-proto")
+        ?.split(",")[0]
+        ?.trim()
+        ?.toLowerCase();
+    const isHttps = forwardedProto
+        ? forwardedProto === "https"
+        : request.nextUrl.protocol === "https:";
+
+    // Nonce + CSP for this request. Forwarded on the request so Next.js can
+    // stamp its own inline scripts and the root layout can read `x-nonce`.
+    const nonce = createNonce();
+    const csp = buildCsp(isHttps, nonce);
 
     // 0. Sync blocked IPs (non-blocking) — always against the trusted origin
     syncBlockedIPs(INTERNAL_BASE_URL).catch(() => { });
@@ -398,18 +428,13 @@ export async function proxy(request: NextRequest) {
     }
 
     // 4. Session Management (Supabase) + Route Protection
-    const response = await updateSession(request);
+    const response = await updateSession(request, {
+        "x-nonce": nonce,
+        "Content-Security-Policy": csp,
+    });
 
     // 5. Security Headers
-    const forwardedProto = request.headers
-        .get("x-forwarded-proto")
-        ?.split(",")[0]
-        ?.trim()
-        ?.toLowerCase();
-    const isHttps = forwardedProto
-        ? forwardedProto === "https"
-        : request.nextUrl.protocol === "https:";
-    addSecurityHeaders(response, isDev, isHttps);
+    addSecurityHeaders(response, isDev, isHttps, nonce);
 
     // 6. Rate limit headers for API routes
     if (rateLimitResult && rateLimitCategory) {

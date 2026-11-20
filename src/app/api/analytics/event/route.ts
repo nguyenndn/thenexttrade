@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getGeoFromHeaders, generateSessionId } from "@/lib/analytics";
 import { getAuthUser } from "@/lib/auth-cache";
+import { getClientIpFromHeaders } from "@/lib/security/client-ip";
 
 export const dynamic = "force-dynamic";
 
@@ -33,9 +34,7 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        const ip =
-            request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-            "127.0.0.1";
+        const ip = getClientIpFromHeaders(request.headers);
         const ua = request.headers.get("user-agent") ?? "";
         const sessionId = generateSessionId(ip, ua);
 

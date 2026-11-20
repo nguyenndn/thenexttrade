@@ -3,6 +3,7 @@ import { isIP } from "node:net";
 import { prisma } from "@/lib/prisma";
 import { requireSuperAdmin } from "@/lib/api-auth";
 import { blockIP } from "@/lib/security-logger";
+import { getClientIpFromHeaders } from "@/lib/security/client-ip";
 
 export const dynamic = "force-dynamic";
 
@@ -58,9 +59,7 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        const callerIp =
-            request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-            request.headers.get("x-real-ip")?.trim();
+        const callerIp = getClientIpFromHeaders(request.headers);
         if (
             ipTrimmed === "127.0.0.1" ||
             ipTrimmed === "::1" ||

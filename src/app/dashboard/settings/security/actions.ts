@@ -4,18 +4,14 @@ import { createClient as createStatelessSupabaseClient } from "@supabase/supabas
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
-import { getActiveSessions, revokeSession } from "@/lib/session";
+import { getActiveSessions, clearOtherSessions } from "@/lib/session";
 import { passwordSchema } from "@/lib/validations/auth";
 import { checkAuthRateLimit } from "@/lib/security/auth-rate-limit";
 import { AUTH_ERRORS } from "@/lib/security/auth-errors";
+import { getClientIpFromHeaders } from "@/lib/security/client-ip";
 
 async function getClientIP(): Promise<string> {
-    const h = await headers();
-    const realIp = h.get("x-real-ip")?.trim();
-    if (realIp) return realIp;
-    const vercelIp = h.get("x-vercel-forwarded-for")?.split(",")[0]?.trim();
-    if (vercelIp) return vercelIp;
-    return h.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "127.0.0.1";
+    return getClientIpFromHeaders(await headers());
 }
 
 // ==========================================
@@ -109,7 +105,7 @@ export async function fetchUserSessions() {
     return await getActiveSessions(user.id);
 }
 
-export async function deleteSession(sessionId: string) {
+export async function revokeOtherSessions() {
     const supabase = await createClient();
     const {
         data: { user },
@@ -117,10 +113,25 @@ export async function deleteSession(sessionId: string) {
 
     if (!user) return { error: "Unauthorized" };
 
-    await revokeSession(sessionId, user.id);
+    // Revoke the actual refresh tokens first — Supabase has no per-session
+    // revoke, so "others" is the narrowest scope available.
+    const { error } = await supabase.auth.signOut({ scope: "others" });
+    if (error) {
+        return { error: "Failed to sign out other devices. Please try again." };
+    }
+
+    // Keep the stored session list in sync. Without a UA we cannot tell which
+    // row belongs to this device, so leave the rows in place rather than
+    // deleting the one we are currently using.
+    const headerList = await headers();
+    const currentUserAgent = headerList.get("user-agent");
+    if (currentUserAgent) {
+        await clearOtherSessions(user.id, currentUserAgent);
+    }
+
     revalidatePath("/dashboard/settings");
     revalidatePath("/dashboard/settings/security");
-    return { success: true, message: "Session revoked" };
+    return { success: true, message: "Other devices signed out" };
 }
 
 // ==========================================

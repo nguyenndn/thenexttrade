@@ -8,6 +8,7 @@ import {
 } from "@/lib/errors/response";
 import { ErrorCode } from "@/lib/errors/ea-license";
 import { AccountStatus, PlatformType } from "@prisma/client";
+import { getClientIpFromHeaders } from "@/lib/security/client-ip";
 
 export async function GET(
     request: NextRequest,
@@ -171,8 +172,10 @@ export async function GET(
                     productId: product.id,
                     platform: PlatformType.MT5,
                     version: product.version,
-                    ipAddress:
-                        request.headers.get("x-forwarded-for") || "unknown",
+                    ipAddress: getClientIpFromHeaders(
+                        request.headers,
+                        "unknown"
+                    ),
                     userAgent: request.headers.get("user-agent"),
                 },
             });

@@ -59,18 +59,33 @@ async function getMaintenanceConfig(
 // =============================================================================
 // SESSION + ROUTE PROTECTION
 // =============================================================================
-export async function updateSession(request: NextRequest) {
-    let response = NextResponse.next({
-        request: {
-            headers: request.headers,
-        },
-    });
+export async function updateSession(
+    request: NextRequest,
+    extraRequestHeaders?: Record<string, string>
+) {
+    // Rebuild the forwarded request headers on every NextResponse.next() so the
+    // proxy-provided nonce/CSP survive cookie refreshes performed by setAll().
+    const nextWithRequestHeaders = () => {
+        if (!extraRequestHeaders) {
+            return NextResponse.next({ request: { headers: request.headers } });
+        }
+        const headers = new Headers(request.headers);
+        for (const [name, value] of Object.entries(extraRequestHeaders)) {
+            headers.set(name, value);
+        }
+        return NextResponse.next({ request: { headers } });
+    };
+
+    let response = nextWithRequestHeaders();
 
     // Create client to check session
     const supabase = createServerClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
         {
+            cookieOptions: {
+                secure: process.env.NODE_ENV === "production",
+            },
             cookies: {
                 getAll() {
                     return request.cookies.getAll();
@@ -79,11 +94,7 @@ export async function updateSession(request: NextRequest) {
                     cookiesToSet.forEach(({ name, value }) =>
                         request.cookies.set(name, value)
                     );
-                    response = NextResponse.next({
-                        request: {
-                            headers: request.headers,
-                        },
-                    });
+                    response = nextWithRequestHeaders();
                     cookiesToSet.forEach(({ name, value, options }) =>
                         response.cookies.set(name, value, options)
                     );

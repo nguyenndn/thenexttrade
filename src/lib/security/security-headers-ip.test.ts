@@ -1,12 +1,11 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 import { NextRequest, NextResponse } from "next/server";
 import { proxy } from "@/proxy";
-import { login } from "@/app/auth/actions";
+import { updateSession } from "@/lib/supabase/middleware";
 import { safeFetchWithRedirects } from "@/lib/security/ssrf";
 import { POST as postAiRewrite } from "@/app/api/ai/rewrite/route";
 import { generateSessionId } from "@/lib/analytics";
-import { checkAuthRateLimit } from "@/lib/security/auth-rate-limit";
-import { headers } from "next/headers";
+import { getClientIpFromHeaders } from "@/lib/security/client-ip";
 
 // Mock Supabase middleware for proxy
 vi.mock("@/lib/supabase/middleware", () => ({
@@ -27,21 +26,6 @@ vi.mock("@/lib/analytics", () => ({
     shouldTrackPageviewRequest: vi.fn(() => true),
 }));
 
-// Mock next/headers for auth actions
-vi.mock("next/headers", () => ({
-    headers: vi.fn(),
-}));
-
-// Mock auth rate limiter
-vi.mock("@/lib/security/auth-rate-limit", () => ({
-    checkAuthRateLimit: vi.fn(async () => true), // Return true to abort early after IP extraction
-}));
-
-// Mock Supabase server client
-vi.mock("@/lib/supabase/server", () => ({
-    createClient: vi.fn(async () => ({})),
-}));
-
 // Mock API Admin Auth for AI rewrite
 vi.mock("@/lib/api-auth", () => ({
     requireAdmin: vi.fn(async () => ({ user: { id: "admin-1", role: "ADMIN" } })),
@@ -59,6 +43,22 @@ describe("Security Headers & IP Precedence Suite (Phase 3 QA)", () => {
     });
 
     describe("1. IP Header Fallback Precedence in src/proxy.ts", () => {
+        it("prioritizes cf-connecting-ip when behind Cloudflare", async () => {
+            const req = new NextRequest("http://localhost/about", {
+                headers: {
+                    "cf-connecting-ip": "203.0.113.9",
+                    "x-real-ip": "198.51.100.1",
+                    "x-vercel-forwarded-for": "203.0.113.2, 10.0.0.1",
+                    "x-forwarded-for": "192.0.2.3, 10.0.0.2",
+                    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+                },
+            });
+
+            await proxy(req);
+
+            expect(generateSessionId).toHaveBeenCalledWith("203.0.113.9", expect.anything());
+        });
+
         it("prioritizes x-real-ip when multiple IP headers are present", async () => {
             const req = new NextRequest("http://localhost/about", {
                 headers: {
@@ -114,66 +114,51 @@ describe("Security Headers & IP Precedence Suite (Phase 3 QA)", () => {
         });
     });
 
-    describe("2. IP Header Fallback Precedence in src/app/auth/actions.ts", () => {
-        it("prioritizes x-real-ip in getClientIP during login action", async () => {
-            const mockHeaders = new Headers({
+    describe("2. Trusted client-IP helper used by auth actions", () => {
+        it("prioritizes cf-connecting-ip when behind Cloudflare", () => {
+            const h = new Headers({
+                "cf-connecting-ip": "203.0.113.9",
                 "x-real-ip": "198.51.100.1",
                 "x-vercel-forwarded-for": "203.0.113.2, 10.0.0.1",
                 "x-forwarded-for": "192.0.2.3, 10.0.0.2",
             });
-            vi.mocked(headers).mockResolvedValue(mockHeaders as any);
 
-            const formData = new FormData();
-            formData.set("email", "trader@example.com");
-            formData.set("password", "SecurePassword123!");
-
-            await login(formData);
-
-            expect(checkAuthRateLimit).toHaveBeenCalledWith("login", "198.51.100.1", "trader@example.com");
+            expect(getClientIpFromHeaders(h)).toBe("203.0.113.9");
         });
 
-        it("falls back to first IP in x-vercel-forwarded-for in getClientIP during login", async () => {
-            const mockHeaders = new Headers({
+        it("prioritizes x-real-ip when cf-connecting-ip is absent", () => {
+            const h = new Headers({
+                "x-real-ip": "198.51.100.1",
                 "x-vercel-forwarded-for": "203.0.113.2, 10.0.0.1",
                 "x-forwarded-for": "192.0.2.3, 10.0.0.2",
             });
-            vi.mocked(headers).mockResolvedValue(mockHeaders as any);
 
-            const formData = new FormData();
-            formData.set("email", "trader@example.com");
-            formData.set("password", "SecurePassword123!");
-
-            await login(formData);
-
-            expect(checkAuthRateLimit).toHaveBeenCalledWith("login", "203.0.113.2", "trader@example.com");
+            expect(getClientIpFromHeaders(h)).toBe("198.51.100.1");
         });
 
-        it("falls back to first IP in x-forwarded-for in getClientIP during login", async () => {
-            const mockHeaders = new Headers({
+        it("falls back to the first IP of x-vercel-forwarded-for", () => {
+            const h = new Headers({
+                "x-vercel-forwarded-for": "203.0.113.2, 10.0.0.1",
                 "x-forwarded-for": "192.0.2.3, 10.0.0.2",
             });
-            vi.mocked(headers).mockResolvedValue(mockHeaders as any);
 
-            const formData = new FormData();
-            formData.set("email", "trader@example.com");
-            formData.set("password", "SecurePassword123!");
-
-            await login(formData);
-
-            expect(checkAuthRateLimit).toHaveBeenCalledWith("login", "192.0.2.3", "trader@example.com");
+            expect(getClientIpFromHeaders(h)).toBe("203.0.113.2");
         });
 
-        it("defaults to 127.0.0.1 in getClientIP when no IP headers are provided", async () => {
-            const mockHeaders = new Headers({});
-            vi.mocked(headers).mockResolvedValue(mockHeaders as any);
+        it("falls back to the first IP of x-forwarded-for", () => {
+            const h = new Headers({
+                "x-forwarded-for": "192.0.2.3, 10.0.0.2",
+            });
 
-            const formData = new FormData();
-            formData.set("email", "trader@example.com");
-            formData.set("password", "SecurePassword123!");
+            expect(getClientIpFromHeaders(h)).toBe("192.0.2.3");
+        });
 
-            await login(formData);
+        it("defaults to 127.0.0.1 when no IP headers are provided", () => {
+            expect(getClientIpFromHeaders(new Headers())).toBe("127.0.0.1");
+        });
 
-            expect(checkAuthRateLimit).toHaveBeenCalledWith("login", "127.0.0.1", "trader@example.com");
+        it("honours a caller-provided fallback", () => {
+            expect(getClientIpFromHeaders(new Headers(), "Unknown IP")).toBe("Unknown IP");
         });
     });
 
@@ -227,6 +212,73 @@ describe("Security Headers & IP Precedence Suite (Phase 3 QA)", () => {
             await expect(
                 safeFetchWithRedirects("https://93.184.216.34/article")
             ).rejects.toThrow(/Unsafe URL blocked by SSRF guard/);
+        });
+    });
+
+    describe("5. CSP nonce in src/proxy.ts", () => {
+        // addSecurityHeaders() only runs outside dev, so the CSP assertions
+        // need the production branch of the proxy.
+        beforeEach(() => {
+            vi.stubEnv("NODE_ENV", "production");
+        });
+
+        afterEach(() => {
+            vi.unstubAllEnvs();
+        });
+
+        const makeRequest = () =>
+            new NextRequest("http://localhost/about", {
+                headers: {
+                    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+                },
+            });
+
+        const getScriptSrc = (csp: string) =>
+            csp
+                .split(";")
+                .map((part) => part.trim())
+                .find((part) => part.startsWith("script-src")) ?? "";
+
+        it("emits a nonce-based script-src without 'unsafe-inline' or 'unsafe-eval'", async () => {
+            const res = await proxy(makeRequest());
+            const csp = res.headers.get("content-security-policy");
+
+            expect(csp).toBeTruthy();
+            const scriptSrc = getScriptSrc(csp!);
+            expect(scriptSrc).toMatch(/'nonce-[^']+'/);
+            expect(scriptSrc).not.toContain("'unsafe-inline'");
+            expect(scriptSrc).not.toContain("'unsafe-eval'");
+            expect(scriptSrc).toContain("'strict-dynamic'");
+        });
+
+        it("forwards the same nonce to the request headers consumed by the root layout", async () => {
+            const res = await proxy(makeRequest());
+            const csp = res.headers.get("content-security-policy") ?? "";
+            const nonceInHeader = csp.match(/'nonce-([^']+)'/)?.[1];
+
+            expect(nonceInHeader).toBeTruthy();
+            expect(updateSession).toHaveBeenCalledWith(
+                expect.any(NextRequest),
+                expect.objectContaining({ "x-nonce": nonceInHeader })
+            );
+        });
+
+        it("generates a fresh nonce for each request", async () => {
+            const [first, second] = await Promise.all([
+                proxy(makeRequest()),
+                proxy(makeRequest()),
+            ]);
+
+            const firstNonce = first.headers
+                .get("content-security-policy")
+                ?.match(/'nonce-([^']+)'/)?.[1];
+            const secondNonce = second.headers
+                .get("content-security-policy")
+                ?.match(/'nonce-([^']+)'/)?.[1];
+
+            expect(firstNonce).toBeTruthy();
+            expect(secondNonce).toBeTruthy();
+            expect(firstNonce).not.toBe(secondNonce);
         });
     });
 });

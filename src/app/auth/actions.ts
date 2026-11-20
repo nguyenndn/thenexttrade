@@ -22,6 +22,7 @@ import { isDisposableEmail } from "@/lib/validations/disposable-email";
 import { headers } from "next/headers";
 import { checkAuthRateLimit } from "@/lib/security/auth-rate-limit";
 import { AUTH_ERRORS } from "@/lib/security/auth-errors";
+import { getClientIpFromHeaders } from "@/lib/security/client-ip";
 import { normalizeCountryCode } from "@/lib/country-utils";
 import { isOnboardingDone } from "@/lib/onboarding/onboarding.server";
 import { buildInitialEmailPreferences } from "@/lib/email/preferences";
@@ -52,12 +53,7 @@ function isCustomSmtpConfigured(): boolean {
 }
 
 async function getClientIP(): Promise<string> {
-    const h = await headers();
-    const realIp = h.get("x-real-ip")?.trim();
-    if (realIp) return realIp;
-    const vercelIp = h.get("x-vercel-forwarded-for")?.split(",")[0]?.trim();
-    if (vercelIp) return vercelIp;
-    return h.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "127.0.0.1";
+    return getClientIpFromHeaders(await headers());
 }
 
 export async function login(formData: FormData) {
@@ -522,6 +518,21 @@ export async function forgotPassword(formData: FormData) {
 
 export async function updatePassword(formData: FormData) {
     const supabase = await createClient();
+    const ip = await getClientIP();
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
+
+    if (
+        await checkAuthRateLimit(
+            "update_password",
+            ip,
+            user?.email ?? undefined
+        )
+    ) {
+        return { error: AUTH_ERRORS.RATE_LIMIT_GENERIC };
+    }
+
     const password = formData.get("password") as string;
     const confirmPassword = formData.get("confirmPassword") as string;
 

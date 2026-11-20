@@ -10,6 +10,7 @@ import {
     GOLD_CTA_BUTTON_STYLE,
 } from "@/lib/services/email.service";
 import { notifyAdminsOfContactMessage } from "@/lib/admin/admin-notification.server";
+import { getClientIpFromHeaders } from "@/lib/security/client-ip";
 
 const contactSchema = z.object({
     name: z.string().min(2, "Name must be at least 2 characters").max(100),
@@ -80,10 +81,7 @@ export async function submitContactForm(data: ContactFormData) {
 
         // Rate limiting check by IP and Email
         const headerList = await headers();
-        const clientIp =
-            headerList.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-            headerList.get("x-real-ip") ||
-            "unknown";
+        const clientIp = getClientIpFromHeaders(headerList, "unknown");
         const normalizedEmail = validData.email.toLowerCase().trim();
 
         if (

@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { sendSecurityAlert } from "@/lib/security/security-alerts";
 
 // ============================================================================
 // SECURITY EVENT TYPES
@@ -51,6 +52,10 @@ export async function logSecurityEvent(data: SecurityEventData): Promise<void> {
         // Silent fail — security logging should never break the app
         console.error("[SecurityLog] Failed to write event:", data.type);
     }
+
+    // Relay high-signal events to Telegram. Internally throttled per type+IP,
+    // never throws, and is a no-op unless both env vars are configured.
+    await sendSecurityAlert(data);
 }
 
 // ============================================================================
