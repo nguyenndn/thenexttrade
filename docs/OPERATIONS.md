@@ -1,6 +1,6 @@
 # Operations
 
-Last reviewed: 2026-11-11
+Last reviewed: 2026-11-23
 
 This file covers environment, self-hosting, storage, deploy, monitoring, and release operations.
 
@@ -33,6 +33,10 @@ npm run db:studio
 | `.env.local` | Local development values | No |
 | `.env.production` | Production values | No |
 
+**Authoritative inventory:** [`docs/DEPLOYMENT.md`](DEPLOYMENT.md) lists every key the code
+reads, what it does, where its value comes from, and how to rebuild production from scratch.
+`.env.example` is kept in sync with it. The snippets below are a quick reference only.
+
 Core env:
 
 ```env
@@ -49,8 +53,7 @@ SUPABASE_SERVICE_ROLE_KEY=
 Redis/rate limit:
 
 ```env
-UPSTASH_REDIS_REST_URL=
-UPSTASH_REDIS_REST_TOKEN=
+REDIS_URL=
 ```
 
 R2 storage:
@@ -83,10 +86,10 @@ GitHub License Backup & MT5 Cloud Sync (`mt5-cloud-sync`):
 GITHUB_TOKEN=
 GITHUB_LICENSE_REPO=
 GITHUB_LICENSE_PATH=accounts.csv
-CREDENTIAL_ENCRYPTION_KEY=
+MT5_IMPORT_ENCRYPTION_KEY=
 ```
 
-*(Note: `CREDENTIAL_ENCRYPTION_KEY` is required in production for AES-256-GCM `v1` encryption of `TradingAccountCredential` MT5 passwords. No separate Windows worker machine or `MT5_WORKER_SHARED_SECRET` is needed for `mt5-cloud-sync`.)*
+*(Note: `MT5_IMPORT_ENCRYPTION_KEY` is required in production for AES-256-GCM `v1` encryption of `TradingAccountCredential` MT5 passwords. It is **irreplaceable** — losing it makes every stored investor password unreadable; archive the value outside the VPS. No separate Windows worker machine or `MT5_WORKER_SHARED_SECRET` is needed for `mt5-cloud-sync`.)*
 
 Optional analytics/security:
 
@@ -101,15 +104,9 @@ NEXT_PUBLIC_DISABLE_TURNSTILE=false
 ```
 
 AI/external APIs should only be set when the feature is enabled.
-
-AI Gateway / OpenRouter:
-
-```env
-OPENROUTER_API_KEY=
-OPENROUTER_BASE_URL=https://openrouter.ai/api/v1
-OPENROUTER_SITE_URL=
-OPENROUTER_APP_NAME=TheNextTrade
-```
+AI-provider credentials (OpenRouter and others) are stored **encrypted in the database** by the
+AI Gateway (`ENCRYPTION_SECRET`) and managed in `/admin/ai` — they are not environment variables.
+Only the tool keys (`SERPER_API_KEY`, `FIRECRAWL_API_KEY`) live in env.
 
 Economic calendar:
 
@@ -126,6 +123,13 @@ Rules:
 - Economic calendar provider banners should not expose implementation details to public users.
 
 ## Production Stack
+
+**Current production:** Coolify 4.7.6 on a Contabo VPS (AMD EPYC, 6 vCPU, 11 GB RAM, 96 GB
+disk, 4 GB swap), Dockerfile build from `nguyenndn/thenexttrade@main`. Application database and
+Redis are **Coolify-managed containers on that same VPS** (Postgres 16 `thenexttrade-db`, Redis 7
+`thenexttrade-redis`); Supabase is used for **auth only**; assets and the database dump (every
+6 hours) live in Cloudflare R2. Every setting needed to rebuild it is recorded in
+[`docs/DEPLOYMENT.md`](DEPLOYMENT.md) — that file, not memory, is the source of truth.
 
 Recommended services (**100% Linux — NO Windows VPS required**):
 
@@ -149,20 +153,41 @@ Linux VPS / Container baseline:
 
 - The `Dockerfile` sets `MT5_TRADE_CACHE_DIR=/app/mt5-cloud-sync/trade-cache` and declares it as a `VOLUME`.
 - On Coolify (or any Docker host) mount a **persistent volume** at `/app/mt5-cloud-sync/trade-cache`, writable by uid `1001` (the `nextjs` user).
+- Also mount a persistent volume at `/app/mt5-cloud-sync/bases` (`mt5-cloud-sync-bases`).
 - Entries are evicted automatically after 7 days of inactivity or when the cache exceeds the size cap — no manual cleanup needed.
+
+### MT5 Cloud Sync runner workdir (tmpfs)
+
+The Unidbg runner writes hundreds of small `.dat` pages per second. On overlayfs each write
+costs ~3–4 ms of synchronous I/O, which added ~3.5 minutes to every sync on the Contabo VPS;
+on tmpfs it is ~0.003 ms. Production therefore mounts the runner workdir in RAM via Coolify's
+**Custom Docker Options**:
+
+```
+--tmpfs /app/mt5-cloud-sync/unidbg-workdir:size=2g,mode=1777
+```
+
+- This is a **speed fix, not a correctness fix** — without it syncs still succeed, just much slower.
+- It is stored in the Coolify database (`applications.custom_docker_run_options`), so it must be
+  re-entered when moving to a new VPS: see [`docs/DEPLOYMENT.md`](DEPLOYMENT.md).
+- The workdir is wiped before and after every run; nothing in it needs to survive.
+- Confirm it is active: `docker exec <container> df -h /app/mt5-cloud-sync/unidbg-workdir` → ~2 GB tmpfs,
+  and `requestToDoneMs` in the `sync ok` log line drops to the low thousands.
 
 Tuning env vars (defaults shown):
 
 ```env
 MT5_TRADE_CACHE_DIR=/app/mt5-cloud-sync/trade-cache
 MT5_TRADE_CACHE_MAX_MB=1024
-MT5_SYNC_CONCURRENCY=4
-MT5_CONNECT_TIMEOUT_MS=8000
-MT5_TERMINAL_READY_TIMEOUT_MS=120000
+MT5_SYNC_CONCURRENCY=2
 MT5_HISTORY_TIMEOUT_MS=540000
 MT5_PUMP_TIMEOUT_MS=600000
 MT5_JAVA_HEAP=-Xmx768m
 ```
+
+Two lanes are deliberate: syncs are queued per account, and each lane runs a full JVM
+(`-Xmx768m`) plus Unidbg. Raise `MT5_SYNC_CONCURRENCY` only with measurements showing the
+queue is backing up and the host has RAM to spare.
 
 **Behavior:** a failed sync caused by a cold cache or a slow broker server (`HISTORY_TIMEOUT`, `TERMINAL_NOT_READY`, `RUNNER_FAILED`) is retried once automatically before the job is marked `FAILED`. First-time syncs (no cached `.dat` base) run with a larger budget and are not auto-retried.
 
@@ -177,6 +202,16 @@ Back up outside the VPS.
 - Local generated files: copy to R2 if they must survive deploys.
 - Keep daily backups for short retention and weekly/monthly backups for longer retention.
 - Test restore regularly, not only backup creation.
+- **The application database runs on the VPS** (`thenexttrade-db`), so its Coolify scheduled
+  backup to R2 (every 6 hours, 30-day retention, RPO ≤ 6 h) is the only copy outside the
+  server. Check the
+  last execution weekly; a failing job means zero disaster recovery. See `docs/DEPLOYMENT.md` §3.1.
+- **Irreplaceable secrets** — `MT5_IMPORT_ENCRYPTION_KEY`, `ENCRYPTION_SECRET`, and Coolify's
+  `APP_KEY` (`/data/coolify/source/.env`) must be archived in a password manager. Losing them
+  loses data, not just uptime.
+- Coolify's own database holds the app config and every env value (encrypted with `APP_KEY`),
+  so a `coolify-db` dump is only restorable together with that `APP_KEY`.
+- Full guidance: [`docs/DEPLOYMENT.md`](DEPLOYMENT.md) §6.
 
 ## Reverse Proxy
 
@@ -252,4 +287,9 @@ curl -H "Authorization: Bearer $CRON_SECRET" https://<production-host>/api/cron/
 - Prisma migration reviewed.
 - Env variables set in Coolify.
 - R2, SMTP, Redis, Supabase values configured.
-- Post-deploy smoke test: home, login, dashboard, accounts, journal, admin reports, app version API.
+- Runtime settings match [`docs/DEPLOYMENT.md`](DEPLOYMENT.md) §2–§3 (build pack, volumes,
+  `custom_docker_run_options` tmpfs, domains).
+- **New `NEXT_PUBLIC_*` var?** It must also be added as `ARG`/`ENV` in the `Dockerfile`
+  builder stage, then redeployed.
+- Post-deploy smoke test: home, login, dashboard, accounts, journal, admin reports, app version API,
+  and one MT5 sync (`requestToDoneMs` in the low thousands).

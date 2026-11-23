@@ -35,6 +35,9 @@ yarn-error.log*
 .env.staging
 .env.backup.*
 !.env.example
+# Local disaster-recovery secrets (see docs/DEPLOYMENT.md §6) — never commit
+PRODUCTION-SECRETS.local.md
+*.secrets.local.md
 
 # performance test results
 performance-baseline.json

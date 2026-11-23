@@ -12,6 +12,9 @@ yarn-error.log*
 .env
 .env.*
 !.env.example
+# Local disaster-recovery secrets — must never enter an image layer
+PRODUCTION-SECRETS.local.md
+*.secrets.local.md
 graphify-out
 docs
 tests

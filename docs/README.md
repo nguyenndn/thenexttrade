@@ -15,6 +15,7 @@ This folder is the active source of truth for the product, system, operations, d
 | [FEATURE_CATALOG.md](FEATURE_CATALOG.md) | Product scope map: which features are necessary, where they belong, what to hide/remove |
 | [FEATURE_SPECS.md](FEATURE_SPECS.md) | Detailed route/function specs for bug fixing and feature continuation |
 | [OPERATIONS.md](OPERATIONS.md) | Environment, self-host stack, deploy, storage, monitoring, release ops |
+| [DEPLOYMENT.md](DEPLOYMENT.md) | **Disaster-recovery runbook**: every Coolify setting, volume, tmpfs and env var, which secrets are irreplaceable, and how to rebuild production on a new VPS |
 | [DESIGN.md](DESIGN.md) | UI standards for dashboard, auth pages, cards, buttons, metrics |
 | [EMAIL.md](EMAIL.md) | Transactional email strategy, templates needed, delivery rules |
 | [EA-TELEMETRY-INTEGRATION-GUIDE.md](EA-TELEMETRY-INTEGRATION-GUIDE.md) | Unified MQL5 3-Tier License (`GSN_EA_License.mqh`), EA Farm Telemetry, and Trade/Commission/Swap Sync (`GSN_EA_Telemetry.mqh`) |
