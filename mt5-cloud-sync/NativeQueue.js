@@ -4,7 +4,7 @@ const { execFile } = require('child_process');
 
 const MAX_CONCURRENCY = Math.max(
   1,
-  parseInt(process.env.MT5_SYNC_CONCURRENCY || '4', 10) || 4
+  parseInt(process.env.MT5_SYNC_CONCURRENCY || '2', 10) || 2
 );
 
 const CACHE_TTL_MS = 7 * 24 * 60 * 60 * 1000; // Strict 7-day auto-expiry
@@ -19,10 +19,10 @@ const MAX_CACHE_TOTAL_BYTES =
   1024; // Hard cap: 1 GB total across all cached accounts
 
 /**
- * Process-wide 4-lane FIFO worker pool for Mt5NativeRunner (Unidbg ARM64 libcommon.so).
+ * Process-wide 2-lane FIFO worker pool for Mt5NativeRunner (Unidbg ARM64 libcommon.so).
  * Guarantees:
- * 1. CONCURRENCY = 4 (configurable via MT5_SYNC_CONCURRENCY): Up to 4 Java processes run in parallel.
- * 2. Fixed slot isolation (`slot-1` .. `slot-4`): Concurrent runs never collide on `servers.dat` / `accounts.dat`.
+ * 1. CONCURRENCY = 2 (configurable via MT5_SYNC_CONCURRENCY): Up to 2 Java processes run in parallel.
+ * 2. Fixed slot isolation (`slot-1` .. `slot-2`): Concurrent runs never collide on `servers.dat` / `accounts.dat`.
  * 3. Bounded `.dat` Cache (`trade-cache/<server>__<login>`): Persists `symbols`, `groups`, `selected`, `deals_*`, & `history_*`
  *    so repeat syncs download only delta deals in seconds, bounded strictly by
  *    7-day TTL + 1 GB LRU cap, while `slot-N` temp files (`accounts.dat`, `spread`, `json`) are wiped immediately.
