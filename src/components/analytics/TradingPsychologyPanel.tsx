@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Brain, Flame, Clock, Target } from "lucide-react";
+import { Brain, Flame, Clock, Target, Bot } from "lucide-react";
 import { PsychologyDiagnosticReport } from "@/lib/analytics/psychology-engine.server";
 import { DataConfidenceBadge } from "@/components/insights/DataConfidenceBadge";
 import { DataConfidenceView } from "@/lib/trader-growth/types";
@@ -18,6 +18,7 @@ export function TradingPsychologyPanel({ data, confidence }: TradingPsychologyPa
         totalTrades,
         currency = "USD",
         insufficientData,
+        automatedAccount,
         validSlTradesCount,
         disposition,
         tilt,
@@ -42,6 +43,29 @@ export function TradingPsychologyPanel({ data, confidence }: TradingPsychologyPa
                     primary={{ label: "Connect MT5 Account", href: "/dashboard/accounts" }}
                     secondary={{ label: "Log First Trade", href: "/dashboard/journal" }}
                 />
+            </div>
+        );
+    }
+
+    // Only shown on positive evidence (every trade carries an EA magic number).
+    // Psychological scores on algorithm-placed trades would be a false claim.
+    if (automatedAccount) {
+        return (
+            <div className="p-8 rounded-xl bg-white dark:bg-[#1E2028] border border-dashboard dark:border-white/[0.08] shadow-sm text-center space-y-4">
+                <div className="w-12 h-12 mx-auto rounded-xl bg-slate-500/10 border border-slate-500/20 flex items-center justify-center text-slate-500 dark:text-slate-300">
+                    <Bot className="w-6 h-6" />
+                </div>
+                <div className="max-w-md mx-auto space-y-1.5">
+                    <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                        Automated Trading Account
+                    </h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                        Every trade here was placed by an EA, so disposition,
+                        tilt and revenge scores would describe the strategy&apos;s
+                        behaviour, not your emotions. They are not shown. Review
+                        the EA&apos;s recovery or martingale settings instead.
+                    </p>
+                </div>
             </div>
         );
     }
@@ -204,6 +228,11 @@ export function TradingPsychologyPanel({ data, confidence }: TradingPsychologyPa
                     )}
                 </div>
             </div>
+
+            <p className="px-1 text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">
+                Includes every synced trade. If this account is run by an EA,
+                these flags describe the strategy, not your emotions.
+            </p>
         </div>
     );
 }

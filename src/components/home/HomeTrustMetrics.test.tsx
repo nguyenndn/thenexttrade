@@ -21,7 +21,8 @@ describe("HomeTrustMetrics (Unified Discipline OS Section)", () => {
         // 3. The 3 Foundational Pillars (plain trader language, not invented jargon)
         expect(html).toContain("Pillar 01 · No More Manual Logging");
         expect(html).toContain("Every Trade, Logged Automatically");
-        expect(html).toContain("Manual spreadsheets fail after a red day. Attach our Trade Manager EA to your Demo or Live MT5 chart using a secure Sync Key");
+        expect(html).toContain("Manual spreadsheets fail after a red day. Stream via our Trade Manager EA on PC/VPS");
+        expect(html).toContain("1-Click Cloud Sync from mobile");
 
         expect(html).toContain("Pillar 02 · It Names The Mistake");
         expect(html).toContain("Flags Revenge Sizing");

@@ -1,11 +1,22 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect } from "vitest";
 import { z } from "zod";
+import { RULE_CATEGORIES, RULE_SEVERITIES } from "@/lib/strategies/playbook-presets";
+
+const strategyRuleItemSchema = z.object({
+    id: z.string().optional(),
+    title: z.string().min(3).max(140),
+    description: z.string().max(1000).optional().nullable(),
+    category: z.enum(RULE_CATEGORIES).default("ENTRY"),
+    severity: z.enum(RULE_SEVERITIES).default("HIGH"),
+    isActive: z.boolean().optional().default(true),
+});
 
 // Test the Zod schema validation rules for strategies and playbooks
 const strategySchema = z.object({
     name: z.string().min(1, "Name is required").max(100),
     description: z.string().optional().nullable(),
     rules: z.string().optional().nullable(),
+    ruleItems: z.array(strategyRuleItemSchema).max(30).optional(),
     color: z
         .string()
         .regex(/^#[0-9A-Fa-f]{6}$/, "Invalid color format")
@@ -93,5 +104,31 @@ describe("Strategy & Playbook Schema Validation", () => {
 
         const result = strategySchema.safeParse(invalidColor);
         expect(result.success).toBe(false);
+    });
+
+    it("validates structured ruleItems attached directly to a strategy", () => {
+        const result = strategySchema.safeParse({
+            name: "NY Killzone Sweep",
+            color: "#00C888",
+            isPlaybook: true,
+            ruleItems: [
+                {
+                    title: "Sweep of London high/low before 09:30 NY",
+                    category: "SESSION",
+                    severity: "HIGH",
+                },
+                {
+                    title: "Hard stop-loss beyond sweep candle extreme",
+                    category: "RISK",
+                    severity: "HIGH",
+                },
+            ],
+        });
+
+        expect(result.success).toBe(true);
+        if (result.success) {
+            expect(result.data.ruleItems).toHaveLength(2);
+            expect(result.data.ruleItems?.[0].category).toBe("SESSION");
+        }
     });
 });

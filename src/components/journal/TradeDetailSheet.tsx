@@ -26,7 +26,6 @@ import {
     ShieldAlert,
     Scale,
     Calendar,
-    BookOpen,
     Trash2,
     Pencil,
 } from "lucide-react";
@@ -912,17 +911,13 @@ export function TradeDetailSheet({
                                         )}
                                     </div>
 
-                                    {/* Strategy / Playbook Benchmark Panel */}
+                                    {/* Strategy Benchmark Panel */}
                                     <div className="bg-gray-50/80 dark:bg-[#151925] p-3 rounded-lg border border-dashboard space-y-2.5">
                                         <div className="flex items-center justify-between flex-wrap gap-2">
                                             <div className="flex items-center gap-1.5">
-                                                {currentStrategy?.isPlaybook ? (
-                                                    <BookOpen size={13} className="text-primary" />
-                                                ) : (
-                                                    <Target size={13} className="text-amber-600 dark:text-gold" />
-                                                )}
+                                                <Target size={13} className="text-amber-600 dark:text-gold" />
                                                 <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest">
-                                                    {currentStrategy?.isPlaybook ? "Playbook Setup" : "Strategy"}
+                                                    Strategy
                                                 </h4>
                                             </div>
 
@@ -968,30 +963,38 @@ export function TradeDetailSheet({
                                             </span>
                                         )}
 
-                                        {/* Playbook Benchmark Details */}
-                                        {currentStrategy?.isPlaybook && (
+                                        {/* Strategy Benchmark Details */}
+                                        {currentStrategy &&
+                                            (currentStrategy.idealEntry ||
+                                                currentStrategy.idealStopLoss ||
+                                                currentStrategy.riskRewardMin != null ||
+                                                safeReferenceImages.length > 0) && (
                                             <div className="pt-2 border-t border-dashboard/50 space-y-2">
                                                 {/* Ideal Specs */}
-                                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
-                                                    {currentStrategy.idealEntry && (
-                                                        <div className="p-2 rounded-lg bg-white dark:bg-[#1E2028] border border-dashboard">
-                                                            <span className="text-[10px] text-gray-400 font-bold block uppercase">Ideal Entry</span>
-                                                            <span className="font-semibold text-gray-700 dark:text-gray-200">{currentStrategy.idealEntry}</span>
-                                                        </div>
-                                                    )}
-                                                    {currentStrategy.idealStopLoss && (
-                                                        <div className="p-2 rounded-lg bg-white dark:bg-[#1E2028] border border-dashboard">
-                                                            <span className="text-[10px] text-gray-400 font-bold block uppercase">Ideal SL</span>
-                                                            <span className="font-semibold text-gray-700 dark:text-gray-200">{currentStrategy.idealStopLoss}</span>
-                                                        </div>
-                                                    )}
-                                                    {currentStrategy.riskRewardMin != null && (
-                                                        <div className="p-2 rounded-lg bg-white dark:bg-[#1E2028] border border-dashboard">
-                                                            <span className="text-[10px] text-gray-400 font-bold block uppercase">Min R:R</span>
-                                                            <span className="font-mono tabular-nums font-bold text-primary">{currentStrategy.riskRewardMin}:1</span>
-                                                        </div>
-                                                    )}
-                                                </div>
+                                                {(currentStrategy.idealEntry ||
+                                                    currentStrategy.idealStopLoss ||
+                                                    currentStrategy.riskRewardMin != null) && (
+                                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+                                                        {currentStrategy.idealEntry && (
+                                                            <div className="p-2 rounded-lg bg-white dark:bg-[#1E2028] border border-dashboard">
+                                                                <span className="text-[10px] text-gray-400 font-bold block uppercase">Ideal Entry</span>
+                                                                <span className="font-semibold text-gray-700 dark:text-gray-200">{currentStrategy.idealEntry}</span>
+                                                            </div>
+                                                        )}
+                                                        {currentStrategy.idealStopLoss && (
+                                                            <div className="p-2 rounded-lg bg-white dark:bg-[#1E2028] border border-dashboard">
+                                                                <span className="text-[10px] text-gray-400 font-bold block uppercase">Ideal SL</span>
+                                                                <span className="font-semibold text-gray-700 dark:text-gray-200">{currentStrategy.idealStopLoss}</span>
+                                                            </div>
+                                                        )}
+                                                        {currentStrategy.riskRewardMin != null && (
+                                                            <div className="p-2 rounded-lg bg-white dark:bg-[#1E2028] border border-dashboard">
+                                                                <span className="text-[10px] text-gray-400 font-bold block uppercase">Min R:R</span>
+                                                                <span className="font-mono tabular-nums font-bold text-primary">{currentStrategy.riskRewardMin}:1</span>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                )}
 
                                                 {/* Reference Charts Lightbox trigger */}
                                                 {safeReferenceImages.length > 0 && (

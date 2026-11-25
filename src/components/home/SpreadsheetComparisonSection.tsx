@@ -23,13 +23,15 @@ export function SpreadsheetComparisonSection({
                     align="center"
                     title={
                         <>
-                            Spreadsheets record history. <br className="hidden sm:inline" />
+                            Spreadsheets log history.{" "}
                             <span className="text-gold">TheNextTrade protects your capital.</span>
                         </>
                     }
                     description="Excel tells you that you lost money on Thursday. TheNextTrade tells you why: 3x revenge lot size on Gold after London close."
                     icon={Sparkles}
-                    className="mb-8"
+                    className="mb-8 max-w-none"
+                    contentClassName="max-w-none"
+                    titleClassName="text-xl sm:text-2xl md:text-[23px] lg:text-[28px] xl:text-[32px] md:whitespace-nowrap md:[text-wrap:nowrap]"
                 />
 
                 <div className="w-full">

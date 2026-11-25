@@ -1,4 +1,5 @@
 import type { DashboardPageData } from "@/app/dashboard/dashboard-data.server";
+import { computeDisciplineRitualFromTrades } from "@/lib/dashboard/discipline-ritual-types";
 
 export interface SampleTradeEntry {
     id: string;
@@ -953,4 +954,14 @@ export const SAMPLE_DASHBOARD_DATA: DashboardPageData = {
         reportNudge: true,
         coachNudge: false,
     },
+    disciplineRitual: computeDisciplineRitualFromTrades(
+        SAMPLE_TRADES.map((t) => ({
+            dateKey: t.exitDate.slice(0, 10),
+            strategy: t.strategy,
+            followedPlan: t.mistakes.length === 0,
+            emotionBefore: t.emotionBefore,
+            mistakes: t.mistakes,
+        })),
+        "2026-09-25"
+    ),
 };

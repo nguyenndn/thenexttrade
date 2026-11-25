@@ -63,10 +63,14 @@ export function WorkflowConsolePreview({
                         ))}
                     </div>
 
-                    {/* Static PREVIEW indicator */}
-                    <div className="flex items-center gap-1 text-[9px] sm:text-[10px] font-bold text-amber-600 dark:text-gold shrink-0">
+                    {/* Static Sample Telemetry indicator */}
+                    <div
+                        title="Illustrative sample telemetry preview"
+                        className="flex items-center gap-1 px-2 py-0.5 rounded-lg bg-amber-500/10 border border-amber-500/20 text-[9px] sm:text-[10px] font-bold text-amber-600 dark:text-gold shrink-0"
+                    >
                         <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-                        <span className="hidden sm:inline">PREVIEW</span>
+                        <span className="hidden sm:inline">SAMPLE TELEMETRY</span>
+                        <span className="sm:hidden">SAMPLE</span>
                     </div>
                 </div>
 
@@ -83,9 +87,9 @@ export function WorkflowConsolePreview({
                 </div>
 
                 {/* Cockpit Status Bar Footer */}
-                <div className="mt-2.5 pt-2 border-t border-gray-100 dark:border-white/10 flex items-center justify-between text-[10px] text-gray-400 shrink-0">
-                    <span className="font-mono text-[9px]">thenexttrade.app</span>
-                    <span className="text-[9px]">Click steps or tabs to explore live preview</span>
+                <div className="mt-2.5 pt-2 border-t border-gray-100 dark:border-white/10 flex items-center justify-between gap-2 text-[10px] text-gray-400 shrink-0">
+                    <span className="font-mono text-[9px]">Illustrative sample data</span>
+                    <span className="text-[9px] truncate">1-Click Sample Mode included inside dashboard</span>
                 </div>
             </div>
         </div>

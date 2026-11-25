@@ -15,7 +15,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
     title: "TheNextTrade — The Discipline OS for MT5 Traders",
     description:
-        "Sync Demo & Live MT5 trades via EA with zero password sharing. Spot revenge sizing, enforce hard stop-loss rules, and access 17 free risk calculators.",
+        "Sync Demo & Live MT5 trades via EA or 1-click Cloud Sync. Audit SMC/ICT playbooks, spot revenge sizing, enforce hard stop-loss rules, and use 17 free risk calculators.",
     alternates: {
         canonical: "/",
         types: {
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     openGraph: {
         title: "TheNextTrade — The Discipline OS for MT5 Traders",
         description:
-            "Sync Demo & Live MT5 trades via EA with zero password sharing. Spot revenge sizing, enforce hard stop-loss rules, and access 17 free risk calculators.",
+            "Sync Demo & Live MT5 trades via EA or 1-click Cloud Sync. Audit SMC/ICT playbooks, spot revenge sizing, enforce hard stop-loss rules, and use 17 free risk calculators.",
         url: "/",
         siteName: "TheNextTrade",
         images: [
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
         card: "summary_large_image",
         title: "TheNextTrade — The Discipline OS for MT5 Traders",
         description:
-            "Sync Demo & Live MT5 trades via EA with zero password sharing. Spot revenge sizing, enforce hard stop-loss rules, and access 17 free risk calculators.",
+            "Sync Demo & Live MT5 trades via EA or 1-click Cloud Sync. Audit SMC/ICT playbooks, spot revenge sizing, enforce hard stop-loss rules, and use 17 free risk calculators.",
         images: ["/og-image.jpg?v=2"],
     },
 };
@@ -198,17 +198,17 @@ function HomeFeed({ isLoggedIn, quote }: HomeFeedProps) {
                 <StartByGoalSection isLoggedIn={isLoggedIn} />
             </FadeIn>
 
-            {/* STEP 01 / 04 · Pre-Trade Risk Math (17 Web Forex Tools) */}
+            {/* STEP 02 / 04 · Pre-Trade Risk Math (17 Web Forex Tools) */}
             <FadeIn delay={0.1} direction="up">
                 <WebForexTools />
             </FadeIn>
 
-            {/* STEP 02 / 04 · Execution & Discipline (MT5 Trading Systems & EAs) */}
+            {/* STEP 03 / 04 · Execution & Discipline (MT5 Trading Systems & EAs) */}
             <FadeIn delay={0.1} direction="up">
                 <MT5TeaserCTA />
             </FadeIn>
 
-            {/* STEP 03 / 04 · Zero-Fee Capital Preservation (Broker-Funded Sponsorship) */}
+            {/* STEP 04 / 04 · Zero-Fee Capital Preservation (Broker-Funded Sponsorship) */}
             <FadeIn delay={0.1} direction="up">
                 <BrokerFundedMembershipSection isLoggedIn={isLoggedIn} />
             </FadeIn>

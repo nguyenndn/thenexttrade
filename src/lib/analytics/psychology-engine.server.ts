@@ -4,6 +4,8 @@ import {
     normalizeCurrencyCode,
     normalizeLotSize,
 } from "@/lib/utils/cent-account";
+import { findRevengeTrades } from "@/lib/analytics/revenge";
+import { resolveRevengeWindows } from "@/lib/analytics/cadence";
 
 export type DispositionEffectData = {
     avgHoldTimeWinMinutes: number;
@@ -39,6 +41,13 @@ export type PsychologyDiagnosticReport = {
     totalTrades: number;
     currency: string;
     insufficientData: boolean;
+    /**
+     * True only when every analysed trade carries an EA magic number, i.e.
+     * there is positive evidence that the account is machine-traded. Absence
+     * of magic numbers is NOT evidence of manual trading (the EA sync path
+     * does not send them), so this is never inferred from silence.
+     */
+    automatedAccount: boolean;
     validSlTradesCount: number;
     disposition: DispositionEffectData;
     tilt: TiltIndexData;
@@ -80,6 +89,7 @@ export async function calculatePsychologyDiagnostic(
                 entryDate: true,
                 exitDate: true,
                 lotSize: true,
+                magicNumber: true,
                 syncSource: true,
                 tradingSession: true,
                 account: {
@@ -108,6 +118,7 @@ export async function calculatePsychologyDiagnostic(
             totalTrades: 0,
             currency,
             insufficientData: true,
+            automatedAccount: false,
             validSlTradesCount: 0,
             disposition: {
                 avgHoldTimeWinMinutes: 0,
@@ -148,6 +159,12 @@ export async function calculatePsychologyDiagnostic(
                   server: t.account?.server,
               })
             : t.lotSize || 0;
+
+    // Machine-traded detection: only a positive signal counts. Every analysed
+    // trade must carry an EA magic number before we call the account automated.
+    const automatedAccount =
+        trades.length > 0 &&
+        trades.every((t) => (t.magicNumber ?? 0) > 0);
 
     // 1. Disposition Effect Calculation
     let winHoldTotalMinutes = 0;
@@ -203,33 +220,23 @@ export async function calculatePsychologyDiagnostic(
     }
 
     // 2. Tilt Index & Revenge Trading Detection
-    let revengeTradesCount = 0;
-    let prevTrade: (typeof trades)[number] | null = null;
-    const avgLotSize =
-        trades.reduce((s, t) => s + getNormalizedLots(t), 0) / trades.length ||
-        0.1;
-
-    trades.forEach((t) => {
-        if (
-            prevTrade &&
-            prevTrade.result === "LOSS" &&
-            prevTrade.exitDate &&
-            t.entryDate
-        ) {
-            const intervalMinutes =
-                (new Date(t.entryDate).getTime() -
-                    new Date(prevTrade.exitDate).getTime()) /
-                (1000 * 60);
-            const isRevengeInterval =
-                intervalMinutes >= 0 && intervalMinutes <= 5;
-            const isSizedUp = getNormalizedLots(t) >= avgLotSize * 1.4;
-
-            if (isRevengeInterval || isSizedUp) {
-                revengeTradesCount++;
-            }
-        }
-        prevTrade = t;
-    });
+    // Definition: @/lib/analytics/revenge — shared with the Intelligence
+    // insights and coach signals so every surface reports the same count.
+    // Windows are cadence-aware (@/lib/analytics/cadence): a scalper's burst
+    // is not judged by the 60-minute rule, a swing trader's next-day re-entry
+    // still is.
+    const revengeTradeLikes = trades.map((t) => ({
+        symbol: t.symbol,
+        result: t.result,
+        entryDate: t.entryDate,
+        exitDate: t.exitDate,
+        lots: getNormalizedLots(t),
+    }));
+    const revengeWindows = resolveRevengeWindows(revengeTradeLikes).windows;
+    const revengeTradesCount = findRevengeTrades(
+        revengeTradeLikes,
+        revengeWindows
+    ).count;
 
     const tiltScore = Math.min(
         100,
@@ -405,6 +412,7 @@ export async function calculatePsychologyDiagnostic(
         totalTrades: trades.length,
         currency,
         insufficientData,
+        automatedAccount,
         validSlTradesCount,
         disposition: {
             avgHoldTimeWinMinutes,

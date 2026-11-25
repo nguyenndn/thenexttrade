@@ -12,6 +12,8 @@ import {
     startOfMonth,
     endOfMonth,
 } from "date-fns";
+import { convertToUsdEquivalent } from "@/lib/utils/cent-account";
+import { computeRuleComplianceMetrics } from "@/lib/strategies/rule-compliance-metrics";
 
 // --- VALIDATION SCHEMAS ---
 const ruleSchema = z.object({
@@ -146,6 +148,7 @@ export async function createTradingRule(data: z.infer<typeof ruleSchema>) {
         });
 
         revalidatePath("/dashboard/rules");
+        revalidatePath("/dashboard/strategies");
         revalidatePath("/dashboard/journal");
         return { success: true, rule };
     } catch (err) {
@@ -207,6 +210,7 @@ export async function updateTradingRule(
         });
 
         revalidatePath("/dashboard/rules");
+        revalidatePath("/dashboard/strategies");
         revalidatePath("/dashboard/journal");
         return { success: true, rule };
     } catch (err) {
@@ -225,6 +229,7 @@ export async function deleteTradingRule(id: string) {
         });
 
         revalidatePath("/dashboard/rules");
+        revalidatePath("/dashboard/strategies");
         revalidatePath("/dashboard/journal");
         return { success: true };
     } catch (err) {
@@ -516,6 +521,7 @@ export async function deleteTraderGoal(id: string) {
         });
 
         revalidatePath("/dashboard/rules");
+        revalidatePath("/dashboard/strategies");
         return { success: true };
     } catch (err) {
         console.error("Delete goal error:", err);
@@ -592,45 +598,93 @@ export async function saveTradeRuleChecks(
     }
 }
 
-export async function getRulesComplianceStats() {
+export async function getRulesComplianceStats(accountId?: string) {
     const user = await getAuthUser();
     if (!user) return [];
 
-    // Fetch all active/inactive rules for this user
+    const normalizedAccountId =
+        accountId && accountId !== "all" ? accountId : undefined;
+
+    // Fetch all active/inactive rules for this user with linked strategy info
     const rules = await prisma.tradingRule.findMany({
         where: { userId: user.id },
-        select: { id: true, title: true, category: true },
+        select: {
+            id: true,
+            title: true,
+            category: true,
+            strategyId: true,
+            strategy: { select: { name: true, color: true } },
+        },
+        orderBy: [{ isActive: "desc" }, { sortOrder: "asc" }, { createdAt: "desc" }],
     });
 
     const ruleIds = rules.map((r) => r.id);
+    if (ruleIds.length === 0) return [];
 
-    // Group checks by rule ID and status
-    const checkGroups = await prisma.tradeRuleCheck.groupBy({
-        by: ["tradingRuleId", "status"],
-        where: { userId: user.id, tradingRuleId: { in: ruleIds } },
-        _count: { _all: true },
+    const rawChecks = await prisma.tradeRuleCheck.findMany({
+        where: {
+            userId: user.id,
+            tradingRuleId: { in: ruleIds },
+            ...(normalizedAccountId
+                ? { journalEntry: { accountId: normalizedAccountId } }
+                : {}),
+        },
+        select: {
+            tradingRuleId: true,
+            status: true,
+            journalEntry: {
+                select: {
+                    status: true,
+                    pnl: true,
+                    commission: true,
+                    swap: true,
+                    account: {
+                        select: {
+                            currency: true,
+                            server: true,
+                        },
+                    },
+                },
+            },
+        },
     });
 
-    return rules.map((rule) => {
-        const ruleChecks = checkGroups.filter(
-            (g) => g.tradingRuleId === rule.id
-        );
-        const followed =
-            ruleChecks.find((g) => g.status === "FOLLOWED")?._count._all || 0;
-        const broken =
-            ruleChecks.find((g) => g.status === "BROKEN")?._count._all || 0;
-        const skipped =
-            ruleChecks.find((g) => g.status === "SKIPPED")?._count._all || 0;
+    const telemetryChecks = rawChecks.map((check) => {
+        const entry = check.journalEntry;
+        const rawNet =
+            entry && entry.pnl !== null && entry.pnl !== undefined
+                ? entry.pnl + (entry.commission || 0) + (entry.swap || 0)
+                : null;
+        const netPnl =
+            rawNet !== null
+                ? normalizedAccountId
+                    ? rawNet
+                    : convertToUsdEquivalent(
+                          rawNet,
+                          entry?.account?.currency,
+                          entry?.account?.server
+                      )
+                : null;
 
         return {
-            ruleId: rule.id,
-            ruleTitle: rule.title,
-            category: rule.category,
-            followed,
-            broken,
-            skipped,
+            tradingRuleId: check.tradingRuleId,
+            status: check.status,
+            entryStatus: entry?.status ?? null,
+            netPnl,
         };
     });
+
+    return computeRuleComplianceMetrics(
+        rules.map((r) => ({
+            id: r.id,
+            title: r.title,
+            category: r.category,
+            strategyId: r.strategyId,
+            strategyName: r.strategy?.name ?? null,
+            strategyColor: r.strategy?.color ?? null,
+        })),
+        telemetryChecks
+    );
 }
 
 export async function addStarterRules() {
@@ -695,6 +749,7 @@ export async function addStarterRules() {
         }
 
         revalidatePath("/dashboard/rules");
+        revalidatePath("/dashboard/strategies");
         return { success: true };
     } catch (err) {
         console.error("Starter rules error:", err);

@@ -6,6 +6,10 @@ import {
     convertToUsdEquivalent,
     normalizeLotSize,
 } from "@/lib/utils/cent-account";
+import {
+    REVENGE_RULES,
+    isRevengeSizeUp,
+} from "@/lib/analytics/revenge";
 
 interface EmotionStats {
     emotion: string;
@@ -61,6 +65,7 @@ export async function GET(request: NextRequest) {
                 swap: true,
                 result: true,
                 entryDate: true,
+                exitDate: true,
                 lotSize: true,
                 syncSource: true,
                 emotionBefore: true,
@@ -317,12 +322,27 @@ export async function GET(request: NextRequest) {
             }
 
             // Martingale detection (check if previous trade was loss, and current size is significantly larger)
+            // Size threshold + window come from @/lib/analytics/revenge so this
+            // stays a strict subset of the shared revenge-trade definition.
             if (i > 0) {
                 const prevTrade = sortedTrades[i - 1];
                 const prevLots = getEffectiveLotSize(prevTrade);
                 if (prevTrade.result === "LOSS" && prevLots > 0) {
-                    const sizeIncrease = curLots / prevLots;
-                    if (sizeIncrease > 1.5 && curLots > avgLotSize) {
+                    const prevExitMs = (
+                        prevTrade.exitDate || prevTrade.entryDate
+                    )?.getTime();
+                    const entryMs = trade.entryDate?.getTime();
+                    const minutesAfterLoss =
+                        prevExitMs && entryMs
+                            ? (entryMs - prevExitMs) / (60 * 1000)
+                            : null;
+                    if (
+                        minutesAfterLoss !== null &&
+                        minutesAfterLoss >= 0 &&
+                        minutesAfterLoss <=
+                            REVENGE_RULES.sizeWindowHours * 60 &&
+                        isRevengeSizeUp(prevLots, curLots)
+                    ) {
                         sizingUpCount++;
                     }
                 }

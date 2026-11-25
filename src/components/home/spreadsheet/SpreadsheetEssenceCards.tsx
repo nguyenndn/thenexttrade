@@ -17,7 +17,7 @@ const essenceCards: EssenceCard[] = [
     {
         icon: PlugZap,
         label: "Zero Manual Entry",
-        copy: "Live MT5 EA streams entries, exits, and slippage automatically. No manual CSV exports or ticket copy-pasting.",
+        copy: "Live MT5 EA or 1-Click Cloud Sync logs entries, exits, and slippage automatically — even if you trade strictly on mobile.",
         hoverAnim: "group-hover:scale-110",
     },
     {
@@ -28,8 +28,8 @@ const essenceCards: EssenceCard[] = [
     },
     {
         icon: BookOpenCheck,
-        label: "Playbook Studio",
-        copy: "Targeted playbooks mapped to your live execution leaks: news spikes, widened stop-losses, and premature exits.",
+        label: "Playbooks & Rulebook",
+        copy: "5 ready-made SMC, ICT & S&R playbooks with built-in execution checklists, A+ to C setup grading, and rule compliance rates.",
         hoverAnim: "group-hover:rotate-6",
     },
     {

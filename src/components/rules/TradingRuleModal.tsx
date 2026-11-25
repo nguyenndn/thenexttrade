@@ -43,13 +43,16 @@ const ruleFormSchema = z.object({
 
 type RuleFormValues = z.infer<typeof ruleFormSchema>;
 
+import type { TradingRuleItem } from "./TradingRuleCard";
+
 interface TradingRuleModalProps {
     isOpen: boolean;
     onClose: () => void;
     onSuccess: () => void;
-    ruleToEdit?: any;
+    ruleToEdit?: TradingRuleItem | null;
     accounts: Array<{ id: string; name: string; accountNumber: string | null }>;
     strategies: Array<{ id: string; name: string }>;
+    lockGlobalStrategy?: boolean;
 }
 
 export function TradingRuleModal({
@@ -59,6 +62,7 @@ export function TradingRuleModal({
     ruleToEdit,
     accounts,
     strategies,
+    lockGlobalStrategy = false,
 }: TradingRuleModalProps) {
     const [isPending, startTransition] = useTransition();
 
@@ -92,19 +96,21 @@ export function TradingRuleModal({
                 "SESSION",
                 "MANAGEMENT",
             ];
-            const normalizedCategory: RuleFormValues["category"] =
-                validCategories.includes(ruleToEdit.category)
-                    ? ruleToEdit.category
-                    : "RISK";
+            const normalizedCategory: RuleFormValues["category"] = (
+                validCategories as readonly string[]
+            ).includes(ruleToEdit.category)
+                ? (ruleToEdit.category as RuleFormValues["category"])
+                : "RISK";
             const validSeverities: RuleFormValues["severity"][] = [
                 "LOW",
                 "MEDIUM",
                 "HIGH",
             ];
-            const normalizedSeverity: RuleFormValues["severity"] =
-                validSeverities.includes(ruleToEdit.severity)
-                    ? ruleToEdit.severity
-                    : "MEDIUM";
+            const normalizedSeverity: RuleFormValues["severity"] = (
+                validSeverities as readonly string[]
+            ).includes(ruleToEdit.severity)
+                ? (ruleToEdit.severity as RuleFormValues["severity"])
+                : "MEDIUM";
             reset({
                 title: ruleToEdit.title,
                 description: ruleToEdit.description || "",
@@ -164,10 +170,14 @@ export function TradingRuleModal({
                     <DialogTitle className="text-lg font-bold text-gray-800 dark:text-white">
                         {ruleToEdit
                             ? "Edit Trading Rule"
-                            : "Create Trading Rule"}
+                            : lockGlobalStrategy
+                              ? "Create Global Discipline Rule"
+                              : "Create Trading Rule"}
                     </DialogTitle>
                     <DialogDescription className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                        Rules will appear in your trade logging checklists.
+                        {lockGlobalStrategy && !ruleToEdit?.strategyId
+                            ? "Global rules apply across every strategy in your trade logging checklist."
+                            : "Rules will appear in your trade logging checklists."}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -213,7 +223,7 @@ export function TradingRuleModal({
                                         value={field.value}
                                     >
                                         <SelectTrigger className="w-full h-10 px-3 border border-dashboard dark:border-white/10 rounded-lg bg-gray-50 dark:bg-[#151925] text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all">
-                                            <SelectValue placeholder="Select Category" />
+                                            <SelectValue />
                                         </SelectTrigger>
                                         <SelectContent>
                                             <SelectItem value="RISK">Risk Management</SelectItem>
@@ -241,7 +251,7 @@ export function TradingRuleModal({
                                         value={field.value}
                                     >
                                         <SelectTrigger className="w-full h-10 px-3 border border-dashboard dark:border-white/10 rounded-lg bg-gray-50 dark:bg-[#151925] text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all">
-                                            <SelectValue placeholder="Select Severity" />
+                                            <SelectValue />
                                         </SelectTrigger>
                                         <SelectContent>
                                             <SelectItem value="LOW">Low</SelectItem>
@@ -255,10 +265,16 @@ export function TradingRuleModal({
                     </div>
 
                     {/* Account & Strategy Scope Grid */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                    <div
+                        className={
+                            lockGlobalStrategy && !ruleToEdit?.strategyId
+                                ? "grid grid-cols-1 gap-3"
+                                : "grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4"
+                        }
+                    >
                         <div>
                             <label className="text-[10px] font-black uppercase tracking-wider text-gray-400 dark:text-gray-500 block mb-1">
-                                Limit to Account
+                                Account Scope
                             </label>
                             <Controller
                                 control={control}
@@ -269,7 +285,7 @@ export function TradingRuleModal({
                                         value={field.value}
                                     >
                                         <SelectTrigger className="w-full h-10 px-3 border border-dashboard dark:border-white/10 rounded-lg bg-gray-50 dark:bg-[#151925] text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all">
-                                            <SelectValue placeholder="Select Account" />
+                                            <SelectValue />
                                         </SelectTrigger>
                                         <SelectContent>
                                             <SelectItem value="all">Global (All Accounts)</SelectItem>
@@ -287,33 +303,35 @@ export function TradingRuleModal({
                             />
                         </div>
 
-                        <div>
-                            <label className="text-[10px] font-black uppercase tracking-wider text-gray-400 dark:text-gray-500 block mb-1">
-                                Limit to Strategy
-                            </label>
-                            <Controller
-                                control={control}
-                                name="strategyId"
-                                render={({ field }) => (
-                                    <Select
-                                        onValueChange={field.onChange}
-                                        value={field.value}
-                                    >
-                                        <SelectTrigger className="w-full h-10 px-3 border border-dashboard dark:border-white/10 rounded-lg bg-gray-50 dark:bg-[#151925] text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all">
-                                            <SelectValue placeholder="Select Strategy" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="all">Global (All Strategies)</SelectItem>
-                                            {strategies.map((strat) => (
-                                                <SelectItem key={strat.id} value={strat.id}>
-                                                    {strat.name}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                )}
-                            />
-                        </div>
+                        {(!lockGlobalStrategy || Boolean(ruleToEdit?.strategyId)) && (
+                            <div>
+                                <label className="text-[10px] font-black uppercase tracking-wider text-gray-400 dark:text-gray-500 block mb-1">
+                                    Strategy Scope
+                                </label>
+                                <Controller
+                                    control={control}
+                                    name="strategyId"
+                                    render={({ field }) => (
+                                        <Select
+                                            onValueChange={field.onChange}
+                                            value={field.value}
+                                        >
+                                            <SelectTrigger className="w-full h-10 px-3 border border-dashboard dark:border-white/10 rounded-lg bg-gray-50 dark:bg-[#151925] text-sm text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all">
+                                                <SelectValue />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="all">Global (All Strategies)</SelectItem>
+                                                {strategies.map((strat) => (
+                                                    <SelectItem key={strat.id} value={strat.id}>
+                                                        {strat.name}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    )}
+                                />
+                            </div>
+                        )}
                     </div>
 
                     {/* Footer Actions */}

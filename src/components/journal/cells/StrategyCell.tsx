@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, MoreVertical, BookOpen } from "lucide-react";
+import { Plus, MoreVertical } from "lucide-react";
 import {
     Popover,
     PopoverContent,
@@ -33,6 +33,7 @@ export function StrategyCell({
     };
 
     const matchedStrategy = strategies.find((s) => s.name === entry.strategy);
+    const matchedColor = matchedStrategy?.color || "#6B7280";
 
     // Helper to get style for a strategy
     const getStrategyStyle = (strategyName: string) => {
@@ -60,9 +61,10 @@ export function StrategyCell({
                             className="px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase border whitespace-nowrap transition-colors inline-flex items-center gap-1"
                             style={currentStyle}
                         >
-                            {matchedStrategy?.isPlaybook && (
-                                <BookOpen size={9} className="shrink-0" />
-                            )}
+                            <span
+                                className="w-1.5 h-1.5 rounded-full shrink-0"
+                                style={{ backgroundColor: matchedColor }}
+                            />
                             {entry.strategy}
                         </span>
                     ) : (
@@ -85,7 +87,7 @@ export function StrategyCell({
                 {/* Header */}
                 <div className="flex items-center justify-between px-4 py-3 border-b border-dashboard">
                     <h4 className="font-semibold text-sm text-gray-700 dark:text-white">
-                        Strategy & Playbook Tags
+                        Strategy Tag
                     </h4>
                     <Button
                         variant="outline"
@@ -102,7 +104,7 @@ export function StrategyCell({
                     <div className="space-y-2">
                         <div className="flex items-center justify-between">
                             <label className="text-xs font-medium text-gray-600">
-                                Current Tag
+                                Current Strategy
                             </label>
                             {entry.strategy && (
                                 <Button
@@ -121,9 +123,10 @@ export function StrategyCell({
                                     className="px-3 py-1.5 rounded-lg text-xs font-bold border inline-flex items-center gap-1.5"
                                     style={currentStyle}
                                 >
-                                    {matchedStrategy?.isPlaybook && (
-                                        <BookOpen size={12} className="text-primary shrink-0" />
-                                    )}
+                                    <span
+                                        className="w-2 h-2 rounded-full shrink-0"
+                                        style={{ backgroundColor: matchedColor }}
+                                    />
                                     {entry.strategy}
                                 </span>
                             ) : (
@@ -139,7 +142,7 @@ export function StrategyCell({
                     {/* Select Strategy */}
                     <div className="space-y-2">
                         <label className="text-xs font-medium text-gray-600">
-                            Select Strategy / Playbook
+                            Select Strategy
                         </label>
                         <div className="flex flex-wrap gap-2 max-h-[200px] overflow-y-auto">
                             {strategies.length > 0 ? (
@@ -164,9 +167,13 @@ export function StrategyCell({
                                             }`}
                                             style={style}
                                         >
-                                            {strategy.isPlaybook && (
-                                                <BookOpen size={11} className="shrink-0" />
-                                            )}
+                                            <span
+                                                className="w-2 h-2 rounded-full shrink-0"
+                                                style={{
+                                                    backgroundColor:
+                                                        strategy.color || "#6B7280",
+                                                }}
+                                            />
                                             {strategy.name}
                                         </Button>
                                     );

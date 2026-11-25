@@ -8,6 +8,11 @@ import {
     convertToUsdEquivalent,
     normalizeCurrencyCode,
 } from "@/lib/utils/cent-account";
+import {
+    RULE_CATEGORIES,
+    RULE_SEVERITIES,
+    parseLegacyStrategyRules,
+} from "@/lib/strategies/playbook-presets";
 
 function revalidateStrategyDependencies() {
     revalidateTag("dashboard-stats", "max");
@@ -15,12 +20,23 @@ function revalidateStrategyDependencies() {
     revalidatePath("/dashboard/journal");
     revalidatePath("/dashboard/analytics");
     revalidatePath("/dashboard/strategies");
+    revalidatePath("/dashboard/rules");
 }
+
+const strategyRuleItemSchema = z.object({
+    id: z.string().optional(),
+    title: z.string().min(3).max(140),
+    description: z.string().max(1000).optional().nullable(),
+    category: z.enum(RULE_CATEGORIES).default("ENTRY"),
+    severity: z.enum(RULE_SEVERITIES).default("HIGH"),
+    isActive: z.boolean().optional().default(true),
+});
 
 const strategySchema = z.object({
     name: z.string().min(1).max(100),
     description: z.string().optional().nullable(),
     rules: z.string().optional().nullable(),
+    ruleItems: z.array(strategyRuleItemSchema).max(30).optional(),
     color: z
         .string()
         .transform((val) =>
@@ -67,6 +83,21 @@ export async function getStrategies(page = 1, limit = 20) {
         prisma.strategy.findMany({
             where: { userId: user.id },
             orderBy: { name: "asc" },
+            include: {
+                tradingRules: {
+                    orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+                    select: {
+                        id: true,
+                        title: true,
+                        description: true,
+                        category: true,
+                        severity: true,
+                        isActive: true,
+                        sortOrder: true,
+                        strategyId: true,
+                    },
+                },
+            },
             skip,
             take: limit,
         }),
@@ -88,7 +119,7 @@ export async function getStrategies(page = 1, limit = 20) {
     };
 }
 
-export async function createStrategy(data: z.infer<typeof strategySchema>) {
+export async function createStrategy(data: z.input<typeof strategySchema>) {
     const user = await getAuthUser();
     if (!user) return { error: "Unauthorized" };
 
@@ -96,7 +127,7 @@ export async function createStrategy(data: z.infer<typeof strategySchema>) {
     if (!validation.success) return { error: "Invalid data" };
 
     const {
-        name, description, rules, color,
+        name, description, rules, ruleItems, color,
         isPlaybook, setupType, timeframes, pairs,
         idealEntry, idealStopLoss, idealTakeProfit,
         riskRewardMin, referenceImages,
@@ -109,35 +140,57 @@ export async function createStrategy(data: z.infer<typeof strategySchema>) {
 
         if (existing) return { error: "Strategy name already exists" };
 
-        await prisma.strategy.create({
-            data: {
-                userId: user.id,
-                name,
-                description,
-                rules,
-                color: color || "#6366F1",
-                isPlaybook: isPlaybook ?? false,
-                setupType: setupType ?? null,
-                timeframes: timeframes ?? [],
-                pairs: pairs ?? [],
-                idealEntry: idealEntry ?? null,
-                idealStopLoss: idealStopLoss ?? null,
-                idealTakeProfit: idealTakeProfit ?? null,
-                riskRewardMin: riskRewardMin ?? null,
-                referenceImages: referenceImages ?? [],
-            },
+        const resolvedRules =
+            ruleItems !== undefined
+                ? ruleItems
+                : parseLegacyStrategyRules(rules);
+
+        await prisma.$transaction(async (tx) => {
+            const created = await tx.strategy.create({
+                data: {
+                    userId: user.id,
+                    name,
+                    description,
+                    rules: null,
+                    color: color || "#F59E0B",
+                    isPlaybook: isPlaybook ?? true,
+                    setupType: setupType ?? null,
+                    timeframes: timeframes ?? [],
+                    pairs: pairs ?? [],
+                    idealEntry: idealEntry ?? null,
+                    idealStopLoss: idealStopLoss ?? null,
+                    idealTakeProfit: idealTakeProfit ?? null,
+                    riskRewardMin: riskRewardMin ?? null,
+                    referenceImages: referenceImages ?? [],
+                },
+            });
+
+            if (resolvedRules.length > 0) {
+                await tx.tradingRule.createMany({
+                    data: resolvedRules.map((item, idx) => ({
+                        userId: user.id,
+                        strategyId: created.id,
+                        title: item.title.trim(),
+                        description: item.description?.trim() || null,
+                        category: item.category,
+                        severity: item.severity,
+                        isActive: item.isActive ?? true,
+                        sortOrder: idx,
+                    })),
+                });
+            }
         });
 
         revalidateStrategyDependencies();
         return { success: true };
-    } catch (error) {
+    } catch {
         return { error: "Failed to create strategy" };
     }
 }
 
 export async function updateStrategy(
     id: string,
-    data: z.infer<typeof strategySchema>
+    data: z.input<typeof strategySchema>
 ) {
     const user = await getAuthUser();
     if (!user) return { error: "Unauthorized" };
@@ -155,7 +208,7 @@ export async function updateStrategy(
             return { error: "Strategy not found or unauthorized" };
 
         const {
-            name, description, rules, color,
+            name, description, rules, ruleItems, color,
             isPlaybook, setupType, timeframes, pairs,
             idealEntry, idealStopLoss, idealTakeProfit,
             riskRewardMin, referenceImages,
@@ -171,40 +224,99 @@ export async function updateStrategy(
             }
         }
 
-        const result = await prisma.strategy.updateMany({
-            where: { id, userId: user.id },
-            data: {
-                name,
-                description: description ?? null,
-                rules: rules ?? null,
-                color: color ?? "#6366F1",
-                isPlaybook: isPlaybook ?? false,
-                setupType: setupType ?? null,
-                timeframes: timeframes ?? [],
-                pairs: pairs ?? [],
-                idealEntry: idealEntry ?? null,
-                idealStopLoss: idealStopLoss ?? null,
-                idealTakeProfit: idealTakeProfit ?? null,
-                riskRewardMin: riskRewardMin ?? null,
-                referenceImages: referenceImages ?? [],
-            },
-        });
-
-        if (result.count === 0)
-            return { error: "Strategy not found or unauthorized" };
-
-        // Journal entries store the strategy name as a plain string; rename
-        // them so historical trades stay grouped under the strategy.
-        if (validation.data.name && validation.data.name !== existing.name) {
-            await prisma.journalEntry.updateMany({
-                where: { userId: user.id, strategy: existing.name },
-                data: { strategy: validation.data.name },
+        await prisma.$transaction(async (tx) => {
+            const result = await tx.strategy.updateMany({
+                where: { id, userId: user.id },
+                data: {
+                    name,
+                    description: description ?? null,
+                    rules: ruleItems !== undefined ? null : (rules ?? null),
+                    color: color ?? "#F59E0B",
+                    isPlaybook: isPlaybook ?? true,
+                    setupType: setupType ?? null,
+                    timeframes: timeframes ?? [],
+                    pairs: pairs ?? [],
+                    idealEntry: idealEntry ?? null,
+                    idealStopLoss: idealStopLoss ?? null,
+                    idealTakeProfit: idealTakeProfit ?? null,
+                    riskRewardMin: riskRewardMin ?? null,
+                    referenceImages: referenceImages ?? [],
+                },
             });
-        }
+
+            if (result.count === 0) {
+                throw new Error("NOT_FOUND");
+            }
+
+            if (ruleItems !== undefined) {
+                const existingRules = await tx.tradingRule.findMany({
+                    where: { userId: user.id, strategyId: id },
+                    select: { id: true },
+                });
+                const existingIds = new Set(existingRules.map((r) => r.id));
+                const keptIds = new Set<string>();
+
+                for (let idx = 0; idx < ruleItems.length; idx++) {
+                    const item = ruleItems[idx];
+                    if (item.id && existingIds.has(item.id)) {
+                        keptIds.add(item.id);
+                        await tx.tradingRule.update({
+                            where: { id: item.id, userId: user.id },
+                            data: {
+                                title: item.title.trim(),
+                                description: item.description?.trim() || null,
+                                category: item.category,
+                                severity: item.severity,
+                                isActive: item.isActive ?? true,
+                                sortOrder: idx,
+                            },
+                        });
+                    } else {
+                        await tx.tradingRule.create({
+                            data: {
+                                userId: user.id,
+                                strategyId: id,
+                                title: item.title.trim(),
+                                description: item.description?.trim() || null,
+                                category: item.category,
+                                severity: item.severity,
+                                isActive: item.isActive ?? true,
+                                sortOrder: idx,
+                            },
+                        });
+                    }
+                }
+
+                const idsToDelete = Array.from(existingIds).filter(
+                    (rid) => !keptIds.has(rid)
+                );
+                if (idsToDelete.length > 0) {
+                    await tx.tradingRule.deleteMany({
+                        where: {
+                            id: { in: idsToDelete },
+                            userId: user.id,
+                            strategyId: id,
+                        },
+                    });
+                }
+            }
+
+            // Journal entries store the strategy name as a plain string; rename
+            // them so historical trades stay grouped under the strategy.
+            if (validation.data.name && validation.data.name !== existing.name) {
+                await tx.journalEntry.updateMany({
+                    where: { userId: user.id, strategy: existing.name },
+                    data: { strategy: validation.data.name },
+                });
+            }
+        });
 
         revalidateStrategyDependencies();
         return { success: true };
     } catch (error) {
+        if (error instanceof Error && error.message === "NOT_FOUND") {
+            return { error: "Strategy not found or unauthorized" };
+        }
         return { error: "Failed to update strategy" };
     }
 }
@@ -214,7 +326,7 @@ export async function deleteStrategy(id: string) {
     if (!user) return { error: "Unauthorized" };
 
     try {
-        // Fetch the name first so journal references can be cleared.
+        // Fetch the name first so journal references and strategy-scoped rules can be cleaned up.
         const existing = await prisma.strategy.findUnique({
             where: { id },
             select: { name: true, userId: true },
@@ -222,23 +334,33 @@ export async function deleteStrategy(id: string) {
         if (!existing || existing.userId !== user.id)
             return { error: "Strategy not found or unauthorized" };
 
-        const result = await prisma.strategy.deleteMany({
-            where: { id, userId: user.id },
-        });
+        await prisma.$transaction(async (tx) => {
+            await tx.tradingRule.deleteMany({
+                where: { userId: user.id, strategyId: id },
+            });
 
-        if (result.count === 0)
-            return { error: "Strategy not found or unauthorized" };
+            const result = await tx.strategy.deleteMany({
+                where: { id, userId: user.id },
+            });
 
-        // Journal entries store the strategy name as a plain string; clear
-        // it so a deleted strategy doesn't linger as a stale tag.
-        await prisma.journalEntry.updateMany({
-            where: { userId: user.id, strategy: existing.name },
-            data: { strategy: null },
+            if (result.count === 0) {
+                throw new Error("NOT_FOUND");
+            }
+
+            // Journal entries store the strategy name as a plain string; clear
+            // it so a deleted strategy doesn't linger as a stale tag.
+            await tx.journalEntry.updateMany({
+                where: { userId: user.id, strategy: existing.name },
+                data: { strategy: null },
+            });
         });
 
         revalidateStrategyDependencies();
         return { success: true };
     } catch (error) {
+        if (error instanceof Error && error.message === "NOT_FOUND") {
+            return { error: "Strategy not found or unauthorized" };
+        }
         return { error: "Failed to delete strategy" };
     }
 }
@@ -396,14 +518,13 @@ export async function getStrategyPerformance(accountId?: string) {
             discGrossLoss = 0;
 
         for (const t of allClosedTrades) {
-            const meta = t.strategy ? strategyMetaMap.get(t.strategy) : null;
-            const isPb = meta?.isPlaybook === true;
+            const hasStrategy = Boolean(t.strategy && t.strategy.trim() !== "");
             const rawPnl =
                 (t.pnl || 0) + (t.commission || 0) + (t.swap || 0);
             const pnl = normalizeTradePnl(rawPnl, t.accountId);
             const isWin = t.result === "WIN";
 
-            if (isPb) {
+            if (hasStrategy) {
                 pbTrades++;
                 pbPnL += pnl;
                 if (isWin) pbWins++;

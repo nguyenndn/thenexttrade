@@ -116,20 +116,20 @@ export function TradingRuleCard({
 
     return (
         <div
-            className="relative flex flex-col justify-between p-5 rounded-xl border transition-all duration-300 bg-white dark:bg-[#1E2028] border-dashboard/80 dark:border-white/[0.08] hover:shadow-md"
+            className="relative flex flex-col justify-between p-3.5 sm:p-4 rounded-xl border transition-all duration-300 bg-white dark:bg-[#1E2028] border-dashboard/80 dark:border-white/[0.08] hover:shadow-md min-w-0"
         >
             <div>
                 {/* Header Tags */}
-                <div className="flex items-center justify-between gap-2 mb-3">
-                    <div className="flex items-center gap-1.5 flex-wrap">
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider bg-gray-100 dark:bg-white/5 border border-dashboard dark:border-white/10 text-gray-600 dark:text-gray-400">
+                <div className="flex items-start justify-between gap-1.5 mb-2.5">
+                    <div className="flex items-center gap-1 flex-wrap min-w-0">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-wider bg-gray-100 dark:bg-white/5 border border-dashboard dark:border-white/10 text-gray-600 dark:text-gray-400">
                             {getCategoryIcon(rule.category)}
                             {rule.category}
                         </span>
                         <span
-                            className={`px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider border ${getSeverityColor(rule.severity)}`}
+                            className={`px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-wider border ${getSeverityColor(rule.severity)}`}
                         >
-                            {rule.severity} Severity
+                            {rule.severity}
                         </span>
                     </div>
 

@@ -8,6 +8,7 @@ import {
     isConfirmedStopLossExit,
 } from "@/lib/journal/trade-outcomes";
 import { isAcademyEnabled } from "@/app/admin/academy/actions";
+import { REVENGE_RULES, isRevengeSizeUp } from "@/lib/analytics/revenge";
 
 function getTradeNetPnl(trade: {
     pnl: number | null;
@@ -323,11 +324,11 @@ export async function computeTraderSignals(
                 const timeDiff =
                     next.entryDate.getTime() -
                     (current.exitDate || current.entryDate).getTime();
-                const oneDayMs = 24 * 60 * 60 * 1000;
                 if (
                     timeDiff > 0 &&
-                    timeDiff <= oneDayMs &&
-                    next.lotSize >= current.lotSize * 1.5
+                    timeDiff <=
+                        REVENGE_RULES.sizeWindowHours * 60 * 60 * 1000 &&
+                    isRevengeSizeUp(current.lotSize, next.lotSize)
                 ) {
                     hasRevengeSizeUp = true;
                     break;

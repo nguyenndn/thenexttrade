@@ -6,6 +6,12 @@ import {
     getDayOfWeekPerformance,
     getSymbolPerformance,
 } from "@/lib/analytics-queries";
+import { findRevengeTrades, type RevengeTradeLike } from "@/lib/analytics/revenge";
+import {
+    resolveRevengeWindows,
+    type TradingStyle,
+} from "@/lib/analytics/cadence";
+import { normalizeLotSize } from "@/lib/utils/cent-account";
 
 // ============================================================================
 // TYPES
@@ -115,6 +121,15 @@ async function getSessionPerformance(
 interface RevengeTrade {
     count: number;
     lossRate: number;
+    /** Same rule over the equally long period that precedes the requested one. */
+    previousCount: number;
+    /** Closed trades inside each period (the denominators of the rates). */
+    currentTrades: number;
+    previousTrades: number;
+    /** Style whose windows were used; null = canonical windows. */
+    style: TradingStyle | null;
+    /** Minutes after a loss that count as a fast re-entry (0 = scaled by burst). */
+    windowMinutes: number;
 }
 
 async function getRevengeTradePatterns(
@@ -123,47 +138,114 @@ async function getRevengeTradePatterns(
     startDate?: Date,
     endDate?: Date
 ): Promise<RevengeTrade> {
-    const dateFilter =
+    // Definition lives in @/lib/analytics/revenge so every surface reports the
+    // same count. The whole closed-trade history is scanned (the previous trade
+    // may fall outside the period); only the flagged trade's exitDate is
+    // filtered by the requested range.
+    const rows = await prisma.journalEntry.findMany({
+        where: {
+            userId,
+            status: "CLOSED",
+            ...(accountId ? { accountId } : {}),
+        },
+        select: {
+            symbol: true,
+            result: true,
+            entryDate: true,
+            exitDate: true,
+            lotSize: true,
+            syncSource: true,
+            account: {
+                select: { currency: true, server: true },
+            },
+        },
+        orderBy: { entryDate: "asc" },
+    });
+
+    const isMultiAccount = !accountId;
+    const trades: RevengeTradeLike[] = rows.map((row) => ({
+        symbol: row.symbol,
+        result: row.result,
+        entryDate: row.entryDate,
+        exitDate: row.exitDate,
+        lots:
+            isMultiAccount &&
+            (!row.syncSource || row.syncSource === "MANUAL")
+                ? normalizeLotSize(row.lotSize || 0, {
+                      symbol: row.symbol,
+                      currency: row.account?.currency,
+                      server: row.account?.server,
+                  })
+                : row.lotSize || 0,
+    }));
+
+    // Windows follow the trader's own cadence (@/lib/analytics/cadence) so a
+    // scalper is judged by bursts, not a fixed 60-minute rule, and a swing
+    // trader is judged by their own re-entry gap.
+    const resolution = resolveRevengeWindows(trades);
+    const stats = findRevengeTrades(trades, resolution.windows);
+
+    const exitMs = (index: number): number | null => {
+        const exit = trades[index].exitDate;
+        if (!exit) return null;
+        const ms = exit instanceof Date ? exit.getTime() : new Date(exit).getTime();
+        return Number.isFinite(ms) ? ms : null;
+    };
+    const indicesBetween = (from: number, to: number, inclusiveTo: boolean) =>
+        stats.indices.filter((i) => {
+            const ms = exitMs(i);
+            if (ms === null) return false;
+            return ms >= from && (inclusiveTo ? ms <= to : ms < to);
+        });
+    const tradesBetween = (from: number, to: number, inclusiveTo: boolean) =>
+        trades.filter((_, i) => {
+            const ms = exitMs(i);
+            if (ms === null) return false;
+            return ms >= from && (inclusiveTo ? ms <= to : ms < to);
+        });
+
+    const rate = (flagged: number[]) => {
+        if (flagged.length === 0) return { count: 0, lossRate: 0 };
+        const losses = flagged.filter((i) => trades[i].result === "LOSS").length;
+        return {
+            count: flagged.length,
+            lossRate: (losses / flagged.length) * 100,
+        };
+    };
+
+    const inRange =
         startDate && endDate
-            ? Prisma.sql`AND t2."exitDate" >= ${startDate} AND t2."exitDate" <= ${endDate}`
-            : Prisma.empty;
+            ? indicesBetween(startDate.getTime(), endDate.getTime(), true)
+            : stats.indices;
+    const current = rate(inRange);
 
-    const result = await prisma.$queryRaw`
- WITH ordered_trades AS (
- SELECT 
- "id",
- "symbol",
- "entryDate",
- "exitDate",
- "result",
- "pnl",
- LAG("exitDate") OVER (ORDER BY "entryDate" ASC) as "prevExitDate",
- LAG("result") OVER (ORDER BY "entryDate" ASC) as "prevResult",
- LAG("symbol") OVER (ORDER BY "entryDate" ASC) as "prevSymbol"
- FROM "journal_entries"
- WHERE "userId" = ${userId}::uuid
- AND "status" = 'CLOSED'
- AND (${accountId ? accountId : "1"} = '1' OR "accountId" = ${accountId})
- )
- SELECT 
- COUNT(*) as "revengeCount",
- SUM(CASE WHEN "result" = 'LOSS' THEN 1 ELSE 0 END) as "revengeLosses"
- FROM ordered_trades t2
- WHERE "prevResult" = 'LOSS'
- AND "entryDate" - "prevExitDate" < INTERVAL '60 minutes'
- AND "prevExitDate" IS NOT NULL
- -- Exclude trades on the same symbol entered within 15 minutes of previous exit (scale-in / split position safety block)
- AND NOT ("symbol" = "prevSymbol" AND "entryDate" - "prevExitDate" < INTERVAL '15 minutes')
- ${dateFilter}
- `;
-
-    const row = (result as any[])[0] || {};
-    const count = Number(row.revengeCount || 0);
-    const losses = Number(row.revengeLosses || 0);
+    // Previous period: same length, ending where the current one starts.
+    let previousCount = 0;
+    let previousTrades = 0;
+    let currentTrades = trades.length;
+    if (startDate && endDate) {
+        const lengthMs = endDate.getTime() - startDate.getTime();
+        const prevEndMs = startDate.getTime();
+        const prevStartMs = prevEndMs - lengthMs;
+        previousCount = rate(
+            indicesBetween(prevStartMs, prevEndMs, false)
+        ).count;
+        previousTrades = tradesBetween(prevStartMs, prevEndMs, false).length;
+        currentTrades = tradesBetween(
+            startDate.getTime(),
+            endDate.getTime(),
+            true
+        ).length;
+    }
 
     return {
-        count,
-        lossRate: count > 0 ? (losses / count) * 100 : 0,
+        count: current.count,
+        lossRate: current.lossRate,
+        previousCount,
+        currentTrades,
+        previousTrades,
+        style: resolution.style,
+        windowMinutes: resolution.windows.reentryWindowMinutes,
     };
 }
 
@@ -341,6 +423,15 @@ function calculateTradeScore(data: {
 // INSIGHT DETECTION RULES
 // ============================================================================
 
+function formatWindowMinutes(minutes: number): string {
+    if (minutes >= 120) {
+        const hours = Math.round(minutes / 60);
+        return `${hours} hours`;
+    }
+    if (minutes >= 60) return "an hour";
+    return `${minutes} minutes`;
+}
+
 function detectInsights(data: {
     stats: Awaited<ReturnType<typeof getKeyStats>>;
     revenge: RevengeTrade;
@@ -357,11 +448,36 @@ function detectInsights(data: {
 
     // Rule 1: Revenge Trading
     if (data.revenge.count >= 3) {
+        const ruleText =
+            data.revenge.style === "SCALP"
+                ? "in a burst of 3+ entries after a loss, or sized up 1.5x+"
+                : `within ${formatWindowMinutes(data.revenge.windowMinutes)} of a loss, or sized up 1.5x+`;
+        const share =
+            data.revenge.currentTrades > 0
+                ? Math.round(
+                      (data.revenge.count / data.revenge.currentTrades) * 100
+                  )
+                : null;
+        const previousShare =
+            data.revenge.previousTrades > 0
+                ? Math.round(
+                      (data.revenge.previousCount /
+                          data.revenge.previousTrades) *
+                          100
+                  )
+                : null;
+        const trend =
+            share === null || previousShare === null
+                ? ""
+                : data.revenge.previousCount === 0
+                  ? ` None in the previous period.`
+                  : ` That is ${share}% of your trades this period, vs ${previousShare}% before.`;
+
         issues.push({
             id: "revenge-trading",
             severity: data.revenge.count >= 5 ? "critical" : "warning",
             title: "Revenge Trading Detected",
-            description: `You opened ${data.revenge.count} trades within 1 hour after a loss. ${Math.round(data.revenge.lossRate)}% of those were also losses.`,
+            description: `You opened ${data.revenge.count} trades right after a loss — ${ruleText}. ${Math.round(data.revenge.lossRate)}% of those were also losses.${trend}`,
             metric: `${data.revenge.count} revenge trades`,
             icon: "AlertTriangle",
         });

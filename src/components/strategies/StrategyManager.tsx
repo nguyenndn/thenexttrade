@@ -1,10 +1,21 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
-import { Plus, Search, ArrowUpDown, ChevronDown, Check, BookOpen, BarChart3 } from "lucide-react";
+import {
+    Plus,
+    Search,
+    ArrowUpDown,
+    ChevronDown,
+    Check,
+    Shield,
+    ClipboardCheck,
+    Route,
+    LayoutTemplate,
+} from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/Tabs";
 import {
     DropdownMenu,
     DropdownMenuTrigger,
@@ -12,24 +23,36 @@ import {
     DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { StrategyModal } from "./StrategyModal";
-import { StrategyPerformanceChart } from "./StrategyPerformanceChart";
-import { StrategyComparisonTable } from "./StrategyComparisonTable";
 import { StrategyCard } from "./StrategyCard";
 import { StrategyEmptyState } from "./StrategyEmptyState";
-import { StrategiesLoadingSkeleton } from "./StrategiesLoadingSkeleton";
+import { GlobalRulesPanel } from "./GlobalRulesPanel";
+import { PlaybookGalleryPanel } from "./PlaybookGalleryPanel";
+import { PLAYBOOK_PRESETS } from "@/lib/strategies/playbook-presets";
+import {
+    StrategyCompliancePanel,
+    RuleComplianceStat,
+} from "./StrategyCompliancePanel";
+import { TradingRuleModal } from "@/components/rules/TradingRuleModal";
+import type { TradingRuleItem } from "@/components/rules/TradingRuleCard";
 import { PaginationControl } from "@/components/ui/PaginationControl";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { PremiumInput } from "@/components/ui/PremiumInput";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
     deleteStrategy,
     getStrategyPerformance,
     untagStrategy,
 } from "@/actions/strategies";
+import { getRulesComplianceStats } from "@/actions/rulebook";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { cn } from "@/lib/utils";
+import type { PlaybookSummary } from "./PlaybookComparisonCard";
 
-import { PlaybookComparisonCard, PlaybookSummary } from "./PlaybookComparisonCard";
+export type StrategiesHubTab =
+    | "strategies"
+    | "templates"
+    | "global-rules"
+    | "compliance";
 
 export interface Strategy {
     id: string;
@@ -46,6 +69,16 @@ export interface Strategy {
     idealTakeProfit: string | null;
     riskRewardMin: number | null;
     referenceImages: string[];
+    tradingRules?: Array<{
+        id: string;
+        title: string;
+        description?: string | null;
+        category: string;
+        severity: string;
+        isActive: boolean;
+        sortOrder?: number;
+        strategyId?: string | null;
+    }>;
 }
 
 export interface StrategyPerformance {
@@ -64,6 +97,10 @@ interface StrategyManagerProps {
     initialPerformance?: StrategyPerformance[];
     initialSummary?: PlaybookSummary;
     currency?: string;
+    initialTab?: StrategiesHubTab;
+    initialRules?: TradingRuleItem[];
+    initialComplianceStats?: RuleComplianceStat[];
+    accounts?: Array<{ id: string; name: string; accountNumber: string | null }>;
     meta: {
         total: number;
         page: number;
@@ -78,24 +115,36 @@ export function StrategyManager({
     initialPerformance = [],
     initialSummary,
     currency = "USD",
+    initialTab = "strategies",
+    initialRules = [],
+    initialComplianceStats = [],
+    accounts = [],
 }: StrategyManagerProps) {
     const router = useRouter();
+    const searchParams = useSearchParams();
     const page = meta.page;
     const limit = meta.limit;
 
-    // Use props directly, but if we need optimistic updates, we might need state.
-    // For now, rely on Server Action revalidation + router.refresh() if needed.
     const strategies = initialStrategies;
 
+    const [activeTab, setActiveTab] = useState<StrategiesHubTab>(initialTab);
     const [performance, setPerformance] =
         useState<StrategyPerformance[]>(initialPerformance);
-    const [summary, setSummary] = useState<PlaybookSummary | undefined>(initialSummary);
+    const [summary, setSummary] = useState<PlaybookSummary | undefined>(
+        initialSummary
+    );
+    const [complianceStats, setComplianceStats] = useState<RuleComplianceStat[]>(
+        initialComplianceStats
+    );
     const [isLoadingPerformance, setIsLoadingPerformance] = useState(false);
+
     const [showModal, setShowModal] = useState(false);
-    const [defaultPlaybook, setDefaultPlaybook] = useState(false);
     const [editingStrategy, setEditingStrategy] = useState<Strategy | null>(
         null
     );
+
+    const [isRuleModalOpen, setIsRuleModalOpen] = useState(false);
+    const [ruleToEdit, setRuleToEdit] = useState<TradingRuleItem | null>(null);
 
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const [strategyToDelete, setStrategyToDelete] = useState<{
@@ -105,11 +154,40 @@ export function StrategyManager({
     const [isDeleting, setIsDeleting] = useState(false);
 
     const [searchQuery, setSearchQuery] = useState("");
-    const [filterType, setFilterType] = useState<"all" | "playbook" | "standard">("all");
-    const [showMobileBenchmarks, setShowMobileBenchmarks] = useState(false);
     const [sortBy, setSortBy] = useState<"name" | "pnl" | "winRate" | "trades">(
         "name"
     );
+
+    const urlTab = searchParams.get("tab");
+    useEffect(() => {
+        if (
+            urlTab === "strategies" ||
+            urlTab === "templates" ||
+            urlTab === "global-rules" ||
+            urlTab === "compliance"
+        ) {
+            setActiveTab(urlTab);
+        }
+    }, [urlTab]);
+
+    useEffect(() => {
+        setComplianceStats(initialComplianceStats);
+    }, [initialComplianceStats]);
+
+    const handleTabChange = (nextTab: string) => {
+        const typedTab = nextTab as StrategiesHubTab;
+        setActiveTab(typedTab);
+        const params = new URLSearchParams(searchParams.toString());
+        if (typedTab === "strategies") {
+            params.delete("tab");
+        } else {
+            params.set("tab", typedTab);
+        }
+        const qs = params.toString();
+        router.replace(qs ? `/dashboard/strategies?${qs}` : "/dashboard/strategies", {
+            scroll: false,
+        });
+    };
 
     const sortOptions: { value: typeof sortBy; label: string }[] = [
         { value: "name", label: "Name" },
@@ -120,27 +198,28 @@ export function StrategyManager({
     const currentSortLabel =
         sortOptions.find((o) => o.value === sortBy)?.label ?? "Name";
 
-    // Only used for refresh after save/delete — NOT on initial load
-    const fetchPerformance = async () => {
+    const fetchPerformanceAndCompliance = async () => {
         try {
             setIsLoadingPerformance(true);
-            const result = await getStrategyPerformance();
-            if (result.error) throw new Error(result.error);
-            setPerformance(result.performance || []);
-            if (result.summary) setSummary(result.summary);
-        } catch (error: any) {
-            console.error(error);
+            const [perfResult, nextCompliance] = await Promise.all([
+                getStrategyPerformance(),
+                getRulesComplianceStats(),
+            ]);
+            if (perfResult.error) throw new Error(perfResult.error);
+            setPerformance(perfResult.performance || []);
+            if (perfResult.summary) setSummary(perfResult.summary);
+            setComplianceStats(nextCompliance);
+        } catch (error: unknown) {
             toast.error(
                 error instanceof Error
                     ? error.message
-                    : error?.message || "Failed to load strategy performance"
+                    : "Failed to load strategy performance"
             );
         } finally {
             setIsLoadingPerformance(false);
         }
     };
 
-    // Merge real strategies with "ghost" strategies found in performance
     const { allStrategies, enrichedPerformance } = useMemo(() => {
         const merged = [...strategies];
         const enriched = performance.map((perf) => {
@@ -165,6 +244,7 @@ export function StrategyManager({
                     idealTakeProfit: null,
                     riskRewardMin: null,
                     referenceImages: [],
+                    tradingRules: [],
                 };
                 merged.push(tempStrategy);
                 matchingStrategy = tempStrategy;
@@ -179,19 +259,16 @@ export function StrategyManager({
         return { allStrategies: merged, enrichedPerformance: enriched };
     }, [strategies, performance]);
 
-    const playbookCount = allStrategies.filter((s) => s.isPlaybook).length;
-    const standardCount = allStrategies.filter((s) => !s.isPlaybook).length;
+    const globalRulesCount = useMemo(
+        () => initialRules.filter((r) => !r.strategyId).length,
+        [initialRules]
+    );
 
     const filteredStrategies = useMemo(() => {
-        let result = allStrategies.filter((s) => {
-            const matchesSearch = s.name.toLowerCase().includes(searchQuery.toLowerCase());
-            if (!matchesSearch) return false;
-            if (filterType === "playbook") return s.isPlaybook;
-            if (filterType === "standard") return !s.isPlaybook;
-            return true;
-        });
+        const result = allStrategies.filter((s) =>
+            s.name.toLowerCase().includes(searchQuery.toLowerCase())
+        );
 
-        // PRE-COMPUTE PERFORMANCE lookup object to fix O(N^2) issue
         const perfMap = new Map<string, StrategyPerformance>();
         for (const p of enrichedPerformance) {
             perfMap.set(p.strategy, p);
@@ -219,7 +296,7 @@ export function StrategyManager({
 
             return 0;
         });
-    }, [allStrategies, searchQuery, filterType, sortBy, enrichedPerformance]);
+    }, [allStrategies, searchQuery, sortBy, enrichedPerformance]);
 
     const confirmDelete = (id: string, name: string) => {
         setStrategyToDelete({ id, name });
@@ -231,25 +308,24 @@ export function StrategyManager({
         setIsDeleting(true);
 
         try {
-            // Check if it's a temporary strategy (ghost)
             if (strategyToDelete.id.startsWith("temp-")) {
                 const result = await untagStrategy(strategyToDelete.name);
                 if (result.error) throw new Error(result.error);
-
-                router.refresh(); // Refresh to update list if needed
-                fetchPerformance(); // Re-fetch performance to clear ghost
+                router.refresh();
+                fetchPerformanceAndCompliance();
             } else {
-                // Real strategy deletion via Server Action
                 const result = await deleteStrategy(strategyToDelete.id);
                 if (result.error) throw new Error(result.error);
                 toast.success("Strategy deleted");
-                // No need to manually fetchStrategies, revalidatePath in action handles it.
-                // But we might want to refresh performance stats too.
-                router.refresh(); // Syncs server component
-                fetchPerformance();
+                router.refresh();
+                fetchPerformanceAndCompliance();
             }
-        } catch (error: any) {
-            toast.error(error.message || "Failed to delete strategy");
+        } catch (error: unknown) {
+            toast.error(
+                error instanceof Error
+                    ? error.message
+                    : "Failed to delete strategy"
+            );
         } finally {
             setIsDeleting(false);
             setIsConfirmOpen(false);
@@ -260,382 +336,311 @@ export function StrategyManager({
     const handleSave = () => {
         setShowModal(false);
         setEditingStrategy(null);
-        router.refresh(); // Refresh server data
-        fetchPerformance();
+        router.refresh();
+        fetchPerformanceAndCompliance();
+    };
+
+    const handleRuleRefresh = () => {
+        router.refresh();
+        fetchPerformanceAndCompliance();
     };
 
     return (
         <div className="space-y-2 md:space-y-4">
-            {/* Page Header — same pattern as /dashboard/accounts */}
             <PageHeader
-                title="Strategies"
-                description="Track edge expectancy, benchmark playbook setups, and audit strategy performance."
+                title="Strategies & Rules"
+                description="Define systematic trade setups, enforce global risk rules, and audit compliance."
                 mobileFullWidthButton
             >
-                <div className="flex items-center gap-1.5 sm:gap-2">
-                    <Button
-                        variant="outline"
-                        size="smd"
-                        onClick={() => { setDefaultPlaybook(true); setShowModal(true); }}
-                        className="flex-1 sm:flex-initial flex items-center justify-center gap-2 border-primary/30 text-primary hover:bg-primary/10"
-                    >
-                        <BookOpen size={16} strokeWidth={2.5} />
-                        New Playbook
-                    </Button>
+                {activeTab === "strategies" && (
                     <Button
                         variant="primary"
                         size="smd"
-                        onClick={() => { setDefaultPlaybook(false); setShowModal(true); }}
-                        className="flex-1 sm:flex-initial flex items-center justify-center gap-2 shadow-lg shadow-amber-500/25"
+                        onClick={() => {
+                            setEditingStrategy(null);
+                            setShowModal(true);
+                        }}
+                        className="w-full sm:w-auto flex items-center justify-center gap-2 shadow-lg shadow-amber-500/25"
                     >
                         <Plus size={18} strokeWidth={2.5} />
-                        New Strategy
+                        <span>New Strategy</span>
                     </Button>
-                </div>
+                )}
+                {activeTab === "global-rules" && (
+                    <Button
+                        variant="primary"
+                        size="smd"
+                        onClick={() => {
+                            setRuleToEdit(null);
+                            setIsRuleModalOpen(true);
+                        }}
+                        className="w-full sm:w-auto flex items-center justify-center gap-2 shadow-lg shadow-amber-500/25"
+                    >
+                        <Plus size={16} strokeWidth={2.5} />
+                        <span>Add Global Rule</span>
+                    </Button>
+                )}
             </PageHeader>
 
-            {/* Performance Chart & Playbook Comparison */}
-            <div className="space-y-2 md:space-y-4">
-                {strategies.length > 0 &&
-                    (isLoadingPerformance ? (
-                        <StrategiesLoadingSkeleton />
-                    ) : (
-                        <>
-                            {summary && (
-                                <PlaybookComparisonCard
-                                    summary={summary}
-                                    currency={currency}
-                                />
-                            )}
-                            {enrichedPerformance.length > 0 && (
-                                <>
-                                    <div className="md:hidden">
-                                        <Button
-                                            type="button"
-                                            variant="outline"
-                                            size="smd"
-                                            onClick={() =>
-                                                setShowMobileBenchmarks(
-                                                    (prev) => !prev
-                                                )
-                                            }
-                                            className="w-full flex items-center justify-between border-dashboard bg-white dark:bg-[#1E2028] text-gray-700 dark:text-gray-200 font-bold"
-                                        >
-                                            <span className="flex items-center gap-2">
-                                                <BarChart3
-                                                    size={16}
-                                                    className="text-primary"
-                                                />
-                                                Performance Benchmarks
-                                            </span>
-                                            <ChevronDown
-                                                size={16}
-                                                className={cn(
-                                                    "text-gray-500 transition-transform duration-200",
-                                                    showMobileBenchmarks &&
-                                                        "rotate-180"
-                                                )}
-                                            />
-                                        </Button>
-                                    </div>
-                                    <div
-                                        className={cn(
-                                            "space-y-2 md:space-y-4",
-                                            showMobileBenchmarks
-                                                ? "block"
-                                                : "hidden md:block"
-                                        )}
-                                    >
-                                        <StrategyPerformanceChart
-                                            data={enrichedPerformance}
-                                            currency={currency}
-                                        />
-                                        <StrategyComparisonTable
-                                            data={enrichedPerformance}
-                                            currency={currency}
-                                        />
-                                    </div>
-                                </>
-                            )}
-                        </>
-                    ))}
-            </div>
+            <Tabs
+                value={activeTab}
+                onValueChange={handleTabChange}
+                tabsId="strategies-hub-tabs"
+            >
+                <TabsList className="w-full grid grid-cols-4 gap-0 bg-transparent dark:bg-transparent p-0 rounded-none border-0 border-b border-dashboard overflow-visible sm:w-auto sm:inline-flex sm:bg-[#F1F3F5] sm:dark:bg-[#1A1D27] sm:border sm:rounded-lg sm:p-1 sm:gap-1">
+                    <TabsTrigger
+                        value="strategies"
+                        className="w-full sm:w-auto justify-center rounded-none sm:rounded-lg px-2 sm:px-4 py-2.5 sm:py-1.5 text-xs sm:text-sm font-bold transition-all duration-300 flex items-center gap-1.5 sm:gap-2 border-0 sm:border whitespace-nowrap border-transparent hover:border-transparent min-w-0"
+                        activeIndicatorClassName="inset-[auto_0_0_0] h-[2px] !bg-gold shadow-none rounded-full border-0 sm:!-inset-[1px] sm:h-auto sm:rounded-lg sm:shadow-md sm:shadow-amber-500/20"
+                        activeTextClassName="text-amber-600 dark:text-amber-400 sm:!text-white"
+                    >
+                        <Route className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+                        <span className="truncate">Strategies</span>
+                        <span className="hidden sm:inline font-mono tabular-nums text-xs opacity-80">
+                            ({allStrategies.length})
+                        </span>
+                    </TabsTrigger>
+                    <TabsTrigger
+                        value="templates"
+                        className="w-full sm:w-auto justify-center rounded-none sm:rounded-lg px-2 sm:px-4 py-2.5 sm:py-1.5 text-xs sm:text-sm font-bold transition-all duration-300 flex items-center gap-1.5 sm:gap-2 border-0 sm:border whitespace-nowrap border-transparent hover:border-transparent min-w-0"
+                        activeIndicatorClassName="inset-[auto_0_0_0] h-[2px] !bg-gold shadow-none rounded-full border-0 sm:!-inset-[1px] sm:h-auto sm:rounded-lg sm:shadow-md sm:shadow-amber-500/20"
+                        activeTextClassName="text-amber-600 dark:text-amber-400 sm:!text-white"
+                    >
+                        <LayoutTemplate className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+                        <span className="sm:hidden truncate">Templates</span>
+                        <span className="hidden sm:inline">Template Gallery</span>
+                        <span className="hidden sm:inline font-mono tabular-nums text-xs opacity-80">
+                            ({PLAYBOOK_PRESETS.length})
+                        </span>
+                    </TabsTrigger>
+                    <TabsTrigger
+                        value="global-rules"
+                        className="w-full sm:w-auto justify-center rounded-none sm:rounded-lg px-2 sm:px-4 py-2.5 sm:py-1.5 text-xs sm:text-sm font-bold transition-all duration-300 flex items-center gap-1.5 sm:gap-2 border-0 sm:border whitespace-nowrap border-transparent hover:border-transparent min-w-0"
+                        activeIndicatorClassName="inset-[auto_0_0_0] h-[2px] !bg-gold shadow-none rounded-full border-0 sm:!-inset-[1px] sm:h-auto sm:rounded-lg sm:shadow-md sm:shadow-amber-500/20"
+                        activeTextClassName="text-amber-600 dark:text-amber-400 sm:!text-white"
+                    >
+                        <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+                        <span className="truncate">Global Rules</span>
+                        <span className="hidden sm:inline font-mono tabular-nums text-xs opacity-80">
+                            ({globalRulesCount})
+                        </span>
+                    </TabsTrigger>
+                    <TabsTrigger
+                        value="compliance"
+                        className="w-full sm:w-auto justify-center rounded-none sm:rounded-lg px-2 sm:px-4 py-2.5 sm:py-1.5 text-xs sm:text-sm font-bold transition-all duration-300 flex items-center gap-1.5 sm:gap-2 border-0 sm:border whitespace-nowrap border-transparent hover:border-transparent min-w-0"
+                        activeIndicatorClassName="inset-[auto_0_0_0] h-[2px] !bg-gold shadow-none rounded-full border-0 sm:!-inset-[1px] sm:h-auto sm:rounded-lg sm:shadow-md sm:shadow-amber-500/20"
+                        activeTextClassName="text-amber-600 dark:text-amber-400 sm:!text-white"
+                    >
+                        <ClipboardCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+                        <span className="sm:hidden truncate">Compliance</span>
+                        <span className="hidden sm:inline">
+                            Performance & Compliance
+                        </span>
+                    </TabsTrigger>
+                </TabsList>
 
-            {/* Toolbar */}
-            {allStrategies.length > 0 && (
-                <div className="bg-white dark:bg-[#1E2028] border border-dashboard rounded-xl pt-2.5 px-2.5 pb-0 sm:p-4 shadow-sm mt-0 md:mt-6">
-                    <div className="flex flex-col lg:flex-row gap-2 lg:gap-4 justify-between items-stretch lg:items-center">
-                        <div className="flex items-center sm:flex-row gap-1.5 sm:gap-3 flex-1 min-w-0">
-                            <div className="flex-1 min-w-0 sm:max-w-xs">
-                                <PremiumInput
-                                    icon={Search}
-                                    aria-label="Search setups"
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="py-2 sm:py-2.5 text-xs sm:text-sm"
-                                />
-                            </div>
+                {/* TAB 1: STRATEGIES */}
+                <TabsContent value="strategies" className="mt-2 md:mt-6 space-y-2 md:space-y-6">
+                    {allStrategies.length > 0 && (
+                        <div className="bg-white dark:bg-[#1E2028] border border-dashboard rounded-xl p-2.5 sm:p-4 shadow-sm">
+                            <div className="flex items-center justify-between gap-2 sm:gap-4">
+                                <div className="flex-1 min-w-0 sm:max-w-xs">
+                                    <PremiumInput
+                                        icon={Search}
+                                        aria-label="Search strategies"
+                                        value={searchQuery}
+                                        onChange={(e) =>
+                                            setSearchQuery(e.target.value)
+                                        }
+                                        className="py-2 sm:py-2.5 text-xs sm:text-sm"
+                                    />
+                                </div>
 
-                            {/* Mobile Sort Dropdown — inline with Search (< sm) */}
-                            <div className="sm:hidden shrink-0">
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                        <Button
-                                            variant="outline"
-                                            size="sm"
-                                            aria-label="Sort strategies"
-                                            className="h-[38px] px-2.5 rounded-lg flex items-center gap-1.5 border border-dashboard bg-gray-50/80 dark:bg-[#151925] text-xs font-bold text-gray-700 dark:text-gray-300"
-                                        >
-                                            <ArrowUpDown
-                                                size={14}
-                                                className="text-gray-500 shrink-0"
-                                            />
-                                            <span className="max-w-[76px] truncate">
-                                                {currentSortLabel}
-                                            </span>
-                                            <ChevronDown
-                                                size={13}
-                                                className="text-gray-400 shrink-0"
-                                            />
-                                        </Button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent
-                                        align="end"
-                                        className="min-w-[180px]"
-                                    >
-                                        {sortOptions.map((option) => (
-                                            <DropdownMenuItem
-                                                key={option.value}
-                                                onClick={() =>
-                                                    setSortBy(option.value)
-                                                }
-                                                className={cn(
-                                                    "flex items-center justify-between gap-2",
-                                                    sortBy === option.value &&
-                                                        "text-primary font-semibold"
-                                                )}
+                                <div className="shrink-0">
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <Button
+                                                variant="outline"
+                                                size="smd"
+                                                aria-label="Sort strategies"
+                                                className="flex items-center gap-1.5 sm:gap-2 border border-dashboard bg-white dark:bg-[#1E2028] text-xs sm:text-sm text-gray-700 dark:text-gray-300"
                                             >
-                                                {option.label}
-                                                {sortBy === option.value && (
-                                                    <Check
-                                                        size={14}
-                                                        className="text-primary"
-                                                    />
-                                                )}
-                                            </DropdownMenuItem>
-                                        ))}
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
-                            </div>
-
-                            {/* Desktop Filter Type Pills (>= sm) */}
-                            <div className="hidden sm:flex items-center gap-1 p-1 bg-gray-50 dark:bg-white/5 rounded-lg border border-dashboard self-auto max-w-full overflow-x-auto scrollbar-hide">
-                                <Button
-                                    type="button"
-                                    variant={filterType === "all" ? "gold" : "ghost"}
-                                    size="sm"
-                                    onClick={() => setFilterType("all")}
-                                    className="h-auto shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap"
-                                >
-                                    All (<span className="font-mono tabular-nums">{allStrategies.length}</span>)
-                                </Button>
-                                <Button
-                                    type="button"
-                                    variant={filterType === "playbook" ? "gold" : "ghost"}
-                                    size="sm"
-                                    onClick={() => setFilterType("playbook")}
-                                    className="h-auto shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 whitespace-nowrap"
-                                >
-                                    <BookOpen size={13} className="shrink-0" />
-                                    Playbooks (<span className="font-mono tabular-nums">{playbookCount}</span>)
-                                </Button>
-                                <Button
-                                    type="button"
-                                    variant={filterType === "standard" ? "gold" : "ghost"}
-                                    size="sm"
-                                    onClick={() => setFilterType("standard")}
-                                    className="h-auto shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap"
-                                >
-                                    Standard (<span className="font-mono tabular-nums">{standardCount}</span>)
-                                </Button>
-                            </div>
-                        </div>
-
-                        {/* Desktop Sort Dropdown (>= sm) */}
-                        <div className="hidden sm:block self-end lg:self-auto shrink-0">
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <Button
-                                        variant="outline"
-                                        size="smd"
-                                        className="flex items-center gap-2 border border-dashboard bg-white dark:bg-[#1E2028] text-gray-700 dark:text-gray-300"
-                                    >
-                                        <ArrowUpDown
-                                            size={16}
-                                            className="text-gray-500"
-                                        />
-                                        <span>{currentSortLabel}</span>
-                                        <ChevronDown
-                                            size={14}
-                                            className="text-gray-500"
-                                        />
-                                    </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent
-                                    align="end"
-                                    className="min-w-[180px]"
-                                >
-                                    {sortOptions.map((option) => (
-                                        <DropdownMenuItem
-                                            key={option.value}
-                                            onClick={() => setSortBy(option.value)}
-                                            className={cn(
-                                                "flex items-center justify-between gap-2",
-                                                sortBy === option.value &&
-                                                    "text-primary font-semibold"
-                                            )}
-                                        >
-                                            {option.label}
-                                            {sortBy === option.value && (
-                                                <Check
-                                                    size={14}
-                                                    className="text-primary"
+                                                <ArrowUpDown
+                                                    size={15}
+                                                    className="text-gray-500 shrink-0"
                                                 />
-                                            )}
-                                        </DropdownMenuItem>
-                                    ))}
-                                </DropdownMenuContent>
-                            </DropdownMenu>
+                                                <span className="max-w-[90px] sm:max-w-none truncate">
+                                                    {currentSortLabel}
+                                                </span>
+                                                <ChevronDown
+                                                    size={14}
+                                                    className="text-gray-500 shrink-0"
+                                                />
+                                            </Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent
+                                            align="end"
+                                            className="min-w-[180px]"
+                                        >
+                                            {sortOptions.map((option) => (
+                                                <DropdownMenuItem
+                                                    key={option.value}
+                                                    onClick={() =>
+                                                        setSortBy(option.value)
+                                                    }
+                                                    className={cn(
+                                                        "flex items-center justify-between gap-2",
+                                                        sortBy ===
+                                                            option.value &&
+                                                            "text-primary font-semibold"
+                                                    )}
+                                                >
+                                                    {option.label}
+                                                    {sortBy ===
+                                                        option.value && (
+                                                        <Check
+                                                            size={14}
+                                                            className="text-primary"
+                                                        />
+                                                    )}
+                                                </DropdownMenuItem>
+                                            ))}
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
+                                </div>
+                            </div>
                         </div>
+                    )}
+
+                    {filteredStrategies.length > 0 ? (
+                        <div
+                            id="onborda-strategy-list"
+                            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3"
+                        >
+                            {filteredStrategies.map((strategy) => {
+                                const perf = performance.find(
+                                    (p) => p.strategy === strategy.name
+                                );
+                                const isGhost = strategy.id.startsWith("temp-");
+
+                                return (
+                                    <StrategyCard
+                                        key={strategy.id}
+                                        strategy={strategy}
+                                        performance={perf}
+                                        isGhost={isGhost}
+                                        currency={currency}
+                                        onEdit={() => {
+                                            setEditingStrategy(strategy);
+                                            setShowModal(true);
+                                        }}
+                                        onDelete={() =>
+                                            confirmDelete(
+                                                strategy.id,
+                                                strategy.name
+                                            )
+                                        }
+                                    />
+                                );
+                            })}
+                        </div>
+                    ) : (
+                        <StrategyEmptyState
+                            onAdd={() => setShowModal(true)}
+                            onBrowseTemplates={() => handleTabChange("templates")}
+                        />
+                    )}
+
+                    <div className="mt-0 md:mt-8">
+                        <PaginationControl
+                            currentPage={page}
+                            totalPages={meta.totalPages}
+                            pageSize={limit}
+                            totalItems={meta.total}
+                            onPageChange={(p) =>
+                                router.push(
+                                    `/dashboard/strategies?page=${p}&limit=${limit}`
+                                )
+                            }
+                            onPageSizeChange={(l) =>
+                                router.push(
+                                    `/dashboard/strategies?page=1&limit=${l}`
+                                )
+                            }
+                            itemName="strategies"
+                        />
                     </div>
+                </TabsContent>
 
-                    {/* Mobile Underline Tabs (< sm): All · Playbooks · Standard */}
-                    <div className="sm:hidden grid grid-cols-3 border-t border-dashboard/70 dark:border-white/[0.06] -mx-2.5 px-1 mt-2.5">
-                        {[
-                            {
-                                key: "all" as const,
-                                label: "All",
-                                count: allStrategies.length,
-                            },
-                            {
-                                key: "playbook" as const,
-                                label: "Playbooks",
-                                count: playbookCount,
-                            },
-                            {
-                                key: "standard" as const,
-                                label: "Standard",
-                                count: standardCount,
-                            },
-                        ].map((tab) => {
-                            const isActive = filterType === tab.key;
-                            return (
-                                <Button
-                                    key={tab.key}
-                                    type="button"
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => setFilterType(tab.key)}
-                                    className={cn(
-                                        "relative h-auto py-2 px-1 rounded-none text-xs font-bold flex items-center justify-center gap-1 hover:bg-transparent border-0 whitespace-nowrap",
-                                        isActive
-                                            ? "text-amber-600 dark:text-amber-400"
-                                            : "text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
-                                    )}
-                                >
-                                    <span>{tab.label}</span>
-                                    <span
-                                        className={cn(
-                                            "font-mono tabular-nums text-[11px]",
-                                            isActive
-                                                ? "text-amber-600 dark:text-amber-400"
-                                                : "text-gray-400 dark:text-gray-500"
-                                        )}
-                                    >
-                                        ({tab.count})
-                                    </span>
-                                    {isActive && (
-                                        <span className="absolute inset-x-2 bottom-0 h-[2px] rounded-full bg-gold" />
-                                    )}
-                                </Button>
-                            );
-                        })}
-                    </div>
-                </div>
-            )}
+                {/* TAB 2: ILLUSTRATED TEMPLATE GALLERY */}
+                <TabsContent value="templates" className="mt-2 md:mt-6">
+                    <PlaybookGalleryPanel
+                        existingStrategyNames={strategies.map((s) => s.name)}
+                        onCloned={() => {
+                            router.refresh();
+                            fetchPerformanceAndCompliance();
+                        }}
+                    />
+                </TabsContent>
 
-            {/* Strategy Cards */}
-            {filteredStrategies.length > 0 ? (
-                <div
-                    id="onborda-strategy-list"
-                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-6 mt-0 md:mt-6"
-                >
-                    {filteredStrategies.map((strategy) => {
-                        const perf = performance.find(
-                            (p) => p.strategy === strategy.name
-                        );
-                        const isGhost = strategy.id.startsWith("temp-");
+                {/* TAB 3: GLOBAL RULES */}
+                <TabsContent value="global-rules" className="mt-2 md:mt-6">
+                    <GlobalRulesPanel
+                        rules={initialRules}
+                        onAddRule={() => {
+                            setRuleToEdit(null);
+                            setIsRuleModalOpen(true);
+                        }}
+                        onEditRule={(rule) => {
+                            setRuleToEdit(rule);
+                            setIsRuleModalOpen(true);
+                        }}
+                        onRefresh={handleRuleRefresh}
+                    />
+                </TabsContent>
 
-                        return (
-                            <StrategyCard
-                                key={strategy.id}
-                                strategy={strategy}
-                                performance={perf}
-                                isGhost={isGhost}
-                                currency={currency}
-                                onEdit={() => {
-                                    setEditingStrategy(strategy);
-                                    setShowModal(true);
-                                }}
-                                onDelete={() =>
-                                    confirmDelete(strategy.id, strategy.name)
-                                }
-                            />
-                        );
-                    })}
-                </div>
-            ) : (
-                <StrategyEmptyState onAdd={() => setShowModal(true)} />
-            )}
+                {/* TAB 3: PERFORMANCE & COMPLIANCE */}
+                <TabsContent value="compliance" className="mt-2 md:mt-6">
+                    <StrategyCompliancePanel
+                        summary={summary}
+                        enrichedPerformance={enrichedPerformance}
+                        isLoadingPerformance={isLoadingPerformance}
+                        currency={currency}
+                        complianceStats={complianceStats}
+                    />
+                </TabsContent>
+            </Tabs>
 
-            <div className="mt-0 md:mt-8">
-                <PaginationControl
-                    currentPage={page}
-                    totalPages={meta.totalPages}
-                    pageSize={limit}
-                    totalItems={meta.total}
-                    onPageChange={(p) =>
-                        router.push(
-                            `/dashboard/strategies?page=${p}&limit=${limit}`
-                        )
-                    }
-                    onPageSizeChange={(l) =>
-                        router.push(`/dashboard/strategies?page=1&limit=${l}`)
-                    }
-                    itemName="strategies"
-                />
-            </div>
-
-            {/* Modal */}
             <AnimatePresence>
                 {showModal && (
-                <StrategyModal
-                    strategy={editingStrategy}
-                    defaultPlaybook={defaultPlaybook}
-                    onClose={() => {
-                        setShowModal(false);
-                        setEditingStrategy(null);
-                        setDefaultPlaybook(false);
-                    }}
-                    onSave={handleSave}
-                />
+                    <StrategyModal
+                        strategy={editingStrategy}
+                        onClose={() => {
+                            setShowModal(false);
+                            setEditingStrategy(null);
+                        }}
+                        onSave={handleSave}
+                    />
                 )}
             </AnimatePresence>
+
+            <TradingRuleModal
+                isOpen={isRuleModalOpen}
+                onClose={() => {
+                    setIsRuleModalOpen(false);
+                    setRuleToEdit(null);
+                }}
+                onSuccess={handleRuleRefresh}
+                ruleToEdit={ruleToEdit}
+                accounts={accounts}
+                strategies={strategies.map((s) => ({ id: s.id, name: s.name }))}
+                lockGlobalStrategy
+            />
 
             <ConfirmDialog
                 isOpen={isConfirmOpen}
                 title="Delete Strategy"
-                description={`Delete strategy "${strategyToDelete?.name}"? This will untag all associated trades.`}
+                description={`Delete strategy "${strategyToDelete?.name}"? This will untag associated trades and remove strategy-specific rules.`}
                 confirmText="Delete Strategy"
                 cancelText="Cancel"
                 isLoading={isDeleting}

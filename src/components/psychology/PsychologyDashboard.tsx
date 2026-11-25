@@ -371,12 +371,12 @@ export function PsychologyDashboard({
                         <ul className="text-xs text-red-600 dark:text-red-300 list-disc list-inside space-y-0.5">
                             {data.tiltIndicators.revengeTradeCount > 0 && (
                                 <li>
-                                    You made{" "}
+                                    You tagged{" "}
                                     <strong>
                                         {data.tiltIndicators.revengeTradeCount}{" "}
-                                        revenge trade(s)
-                                    </strong>
-                                    . Stop and reset.
+                                        trade(s)
+                                    </strong>{" "}
+                                    as revenge. Stop and reset.
                                 </li>
                             )}
                             {data.tiltIndicators.fomoTradeCount > 0 && (

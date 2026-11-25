@@ -26,10 +26,10 @@ export function TiltIndicators({ data }: TiltIndicatorsProps) {
                 {/* Behavioral Flags */}
                 <div className="grid grid-cols-2 gap-4">
                     <IndicatorCard
-                        label="Revenge Trades"
+                        label="Revenge (tagged)"
                         value={data.revengeTradeCount}
                         isGood={data.revengeTradeCount === 0}
-                        subtext="Tagged manually"
+                        subtext="Self-reported, not detected"
                     />
                     <IndicatorCard
                         label="FOMO Trades"

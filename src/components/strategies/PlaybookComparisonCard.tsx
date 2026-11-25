@@ -41,10 +41,10 @@ export function PlaybookComparisonCard({
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-2.5 mb-2 sm:mb-3 relative z-10 border-b border-dashboard/80 pb-2 sm:pb-2.5">
                 <div>
                     <h3 className="text-sm sm:text-base font-bold text-gray-800 dark:text-white">
-                        Playbook vs Discretionary Edge
+                        Strategy vs Discretionary Edge
                     </h3>
                     <p className="text-[11px] text-gray-500 font-medium">
-                        Compare your performance when executing disciplined Playbook setups vs impulsive trades
+                        Compare your performance when executing tagged strategies vs untagged impulsive trades
                     </p>
                 </div>
 
@@ -54,8 +54,8 @@ export function PlaybookComparisonCard({
                         <Zap size={13} className="animate-pulse shrink-0" />
                         <span>
                             {winRateDiff >= 0
-                                ? `+${winRateDiff.toFixed(1)}% Win Rate with Playbook`
-                                : `Keep optimizing your Playbook entries`}
+                                ? `+${winRateDiff.toFixed(1)}% Win Rate with Strategy`
+                                : `Keep optimizing your strategy entries`}
                         </span>
                     </div>
                 )}
@@ -63,14 +63,14 @@ export function PlaybookComparisonCard({
 
             {/* Side-by-side comparison grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3 relative z-10">
-                {/* 1. Playbook Setups (Disciplined) */}
+                {/* 1. Strategy Setups (Disciplined) */}
                 <div className="p-2.5 sm:p-3.5 rounded-lg bg-gray-50/70 dark:bg-white/[0.02] border border-dashboard relative overflow-hidden">
                     <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-1.5">
                             <span className="w-2 h-2 rounded-full bg-gray-400" />
                             <h4 className="text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
                                 <ShieldCheck size={14} className="text-gray-500 dark:text-gray-400" />
-                                Playbook Trades
+                                Strategy Trades
                             </h4>
                         </div>
                         <span className="text-[11px] font-semibold font-mono tabular-nums text-gray-500 bg-gray-200/80 dark:bg-white/10 px-2 py-0.5 rounded-lg">
@@ -104,14 +104,14 @@ export function PlaybookComparisonCard({
                     </div>
                 </div>
 
-                {/* 2. Discretionary / No Playbook */}
+                {/* 2. Discretionary / Untagged */}
                 <div className="p-2.5 sm:p-3.5 rounded-lg bg-gray-50/70 dark:bg-white/[0.02] border border-dashboard relative overflow-hidden">
                     <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-1.5">
                             <span className="w-2 h-2 rounded-full bg-gray-400" />
                             <h4 className="text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
                                 <AlertCircle size={14} className="text-gray-400" />
-                                Other / Discretionary
+                                Untagged / Discretionary
                             </h4>
                         </div>
                         <span className="text-[11px] font-semibold font-mono tabular-nums text-gray-500 bg-gray-200/80 dark:bg-white/10 px-2 py-0.5 rounded-lg">

@@ -81,6 +81,15 @@ export function WorkflowStepList({
                     />
                 </Link>
             </div>
+            {!isLoggedIn && (
+                <p className="mt-2.5 text-[11px] font-medium text-gray-500 dark:text-gray-400 text-center sm:text-left">
+                    Not at your MT5 desk? Toggle{" "}
+                    <span className="font-bold text-gray-700 dark:text-gray-300">
+                        1-Click Sample Mode
+                    </span>{" "}
+                    inside the dashboard to test-drive Playbooks &amp; Analytics first.
+                </p>
+            )}
         </div>
     );
 }

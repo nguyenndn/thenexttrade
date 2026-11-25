@@ -62,7 +62,7 @@ export function DisciplineCockpit() {
                     </h3>
 
                     <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 leading-relaxed font-normal">
-                        Manual spreadsheets fail after a red day. Attach our Trade Manager EA to your Demo or Live MT5 chart using a secure Sync Key — zero MT5 password sharing required — and every entry, SL/TP, and exit streams automatically.
+                        Manual spreadsheets fail after a red day. Stream via our Trade Manager EA on PC/VPS (Sync Key, zero password) or run 1-Click Cloud Sync from mobile (read-only Investor Password) — every entry, SL/TP, and exit logs automatically.
                     </p>
                 </div>
 

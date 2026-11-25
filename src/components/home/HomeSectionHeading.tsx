@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
 import { ArrowRight } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface HomeSectionHeadingProps {
     title: React.ReactNode | string;
@@ -52,20 +53,20 @@ export function HomeSectionHeading({
 
     return (
         <div
-            className={[
+            className={cn(
                 isCenter
                     ? "mx-auto max-w-3xl text-center"
                     : "flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between",
-                className,
-            ].join(" ")}
+                className
+            )}
         >
             <div
-                className={[
+                className={cn(
                     isCenter
                         ? "mx-auto flex max-w-3xl flex-col items-center"
                         : "max-w-3xl",
-                    contentClassName,
-                ].join(" ")}
+                    contentClassName
+                )}
             >
                 {eyebrow && (
                     <div
@@ -88,11 +89,11 @@ export function HomeSectionHeading({
                 <div>
                     <div>
                         <h2
-                            className={[
+                            className={cn(
                                 "font-heading text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-gray-900 dark:text-white [text-wrap:balance]",
                                 isCenter ? "leading-[1.15] sm:leading-[1.08]" : "leading-tight",
-                                titleClassName,
-                            ].join(" ")}
+                                titleClassName
+                            )}
                         >
                             {renderTitle(title, highlight)}
                         </h2>

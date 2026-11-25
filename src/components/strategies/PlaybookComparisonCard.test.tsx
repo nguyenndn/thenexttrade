@@ -35,18 +35,18 @@ describe("PlaybookComparisonCard", () => {
         const html = renderToString(<PlaybookComparisonCard summary={summary} />);
 
         // Header and badges
-        expect(html).toContain("Playbook vs Discretionary Edge");
-        expect(html).toContain("+27.6% Win Rate with Playbook");
+        expect(html).toContain("Strategy vs Discretionary Edge");
+        expect(html).toContain("+27.6% Win Rate with Strategy");
 
-        // Playbook metrics
-        expect(html).toContain("Playbook Trades");
+        // Strategy metrics
+        expect(html).toContain("Strategy Trades");
         expect(html).toContain("12 trades");
         expect(html).toContain("65.5%");
         expect(html).toContain("$14,500");
         expect(html).toContain("2.35");
 
         // Discretionary metrics with proper negative format
-        expect(html).toContain("Other / Discretionary");
+        expect(html).toContain("Untagged / Discretionary");
         expect(html).toContain("16111 trades");
         expect(html).toContain("37.9%");
         expect(html).toContain("-$77,064");

@@ -15,14 +15,15 @@ import {
     ExternalLink,
     ChevronDown,
     ClipboardList,
-    BookOpen,
-    CheckSquare,
-    Square,
-    ShieldCheck,
+    Route,
     Sparkles,
     ImagePlus,
 } from "lucide-react";
 import { PlaybookLightbox } from "@/components/strategies/PlaybookLightbox";
+import {
+    filterApplicableRules,
+    computeSuggestedPlaybookGrade,
+} from "@/lib/strategies/playbook-presets";
 import { EmotionSelector } from "@/components/psychology/EmotionSelector";
 import { MistakeSelector } from "@/components/mistakes/MistakeSelector";
 
@@ -98,11 +99,11 @@ export default function JournalForm({
         result: initialData?.result || "",
         pnl:
             initialData?.grossProfit !== undefined &&
-            initialData?.grossProfit !== null
+                initialData?.grossProfit !== null
                 ? initialData.grossProfit
                 : initialData?.pnl !== undefined && initialData?.pnl !== null
-                  ? initialData.pnl
-                  : "",
+                    ? initialData.pnl
+                    : "",
         commission: initialData?.commission !== undefined && initialData?.commission !== null ? initialData.commission : "",
         swap: initialData?.swap !== undefined && initialData?.swap !== null ? initialData.swap : "",
         notes: initialData?.notes || "",
@@ -129,11 +130,22 @@ export default function JournalForm({
         playbookComplianceScore: initialData?.playbookComplianceScore ?? null,
     });
 
-    const [playbookChecks, setPlaybookChecks] = useState<Record<number, boolean>>({});
     const [formLightboxIndex, setFormLightboxIndex] = useState<number | null>(null);
     const [showSyncedFieldsMobile, setShowSyncedFieldsMobile] = useState(false);
     const [customTagInput, setCustomTagInput] = useState("");
-    const [activeRules, setActiveRules] = useState<any[]>([]);
+    const [activeRules, setActiveRules] = useState<
+        Array<{
+            id: string;
+            title: string;
+            description?: string | null;
+            category: string;
+            severity: string;
+            isActive: boolean;
+            accountId?: string | null;
+            strategyId?: string | null;
+            strategy?: { name: string } | null;
+        }>
+    >([]);
     const [ruleChecks, setRuleChecks] = useState<
         Record<
             string,
@@ -147,7 +159,10 @@ export default function JournalForm({
                 setActiveRules(activeRulesList.filter((r) => r.isActive));
 
                 if (initialData?.ruleChecks) {
-                    const checksMap: any = {};
+                    const checksMap: Record<
+                        string,
+                        { status: "FOLLOWED" | "BROKEN" | "SKIPPED"; note: string }
+                    > = {};
                     initialData.ruleChecks.forEach((c: any) => {
                         checksMap[c.tradingRuleId] = {
                             status: c.status,
@@ -163,25 +178,15 @@ export default function JournalForm({
         loadRules();
     }, [initialData]);
 
-    const applicableRules = useMemo(() => {
-        return activeRules.filter((rule) => {
-            if (
-                rule.accountId &&
-                formData.accountId &&
-                rule.accountId !== formData.accountId
-            ) {
-                return false;
-            }
-            if (
-                rule.strategy?.name &&
-                formData.strategy &&
-                rule.strategy.name !== formData.strategy
-            ) {
-                return false;
-            }
-            return true;
-        });
-    }, [activeRules, formData.accountId, formData.strategy]);
+    const applicableRules = useMemo(
+        () =>
+            filterApplicableRules(
+                activeRules,
+                formData.accountId,
+                formData.strategy
+            ),
+        [activeRules, formData.accountId, formData.strategy]
+    );
 
     const addCustomTag = () => {
         if (!customTagInput.trim()) return;
@@ -203,9 +208,13 @@ export default function JournalForm({
 
     const fetchStrategies = async () => {
         try {
-            const res = await fetch("/api/strategies");
+            const [res, latestRules] = await Promise.all([
+                fetch("/api/strategies"),
+                getTradingRulesList(),
+            ]);
             const data = await res.json();
             setStrategies(data.strategies || []);
+            setActiveRules(latestRules.filter((r) => r.isActive));
         } catch (error) {
             console.error("Failed to load strategies", error);
         }
@@ -226,8 +235,8 @@ export default function JournalForm({
                 const cookieMatch =
                     typeof document !== "undefined"
                         ? document.cookie.match(
-                              /(?:^|;\s*)last_account_id=([^;]+)/
-                          )
+                            /(?:^|;\s*)last_account_id=([^;]+)/
+                        )
                         : null;
                 const cookieAccountId = cookieMatch?.[1];
 
@@ -300,8 +309,8 @@ export default function JournalForm({
                         netProfit > 0
                             ? "WIN"
                             : netProfit < 0
-                              ? "LOSS"
-                              : "BREAK_EVEN";
+                                ? "LOSS"
+                                : "BREAK_EVEN";
                     return {
                         ...prev,
                         pnl: result.profitLoss.toString(),
@@ -538,9 +547,8 @@ export default function JournalForm({
                         </div>
                         <ChevronDown
                             size={16}
-                            className={`shrink-0 transition-transform duration-200 ${
-                                showSyncedFieldsMobile ? "rotate-180" : ""
-                            }`}
+                            className={`shrink-0 transition-transform duration-200 ${showSyncedFieldsMobile ? "rotate-180" : ""
+                                }`}
                         />
                     </Button>
                 </>
@@ -556,270 +564,269 @@ export default function JournalForm({
                             : "space-y-4"
                     }
                 >
-                {/* Main Info Card */}
-                <div className="bg-white dark:bg-[#1E2028] p-4 sm:p-5 rounded-xl border border-dashboard shadow-sm space-y-4">
-                    <h3 className="text-base font-bold font-sans tracking-tight text-gray-700 dark:text-white flex items-center gap-2">
-                        <div className="w-1 h-4 bg-gold rounded-full"></div>
-                        Trade Details
-                    </h3>
+                    {/* Main Info Card */}
+                    <div className="bg-white dark:bg-[#1E2028] p-4 sm:p-5 rounded-xl border border-dashboard shadow-sm space-y-4">
+                        <h3 className="text-base font-bold font-sans tracking-tight text-gray-700 dark:text-white flex items-center gap-2">
+                            <div className="w-1 h-4 bg-gold rounded-full"></div>
+                            Trade Details
+                        </h3>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-                        {/* Account Selection */}
-                        <div className="col-span-1 md:col-span-2 space-y-1.5">
-                            <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
-                                Trading Account
-                            </label>
-                            <Select
-                                value={formData.accountId || "none"}
-                                onValueChange={(value) =>
-                                    setFormData((prev) => ({
-                                        ...prev,
-                                        accountId: value === "none" ? "" : value,
-                                    }))
-                                }
-                                disabled={isSynced || isEditMode}
-                            >
-                                <SelectTrigger
-                                    className={`w-full h-10 px-3 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-dashboard focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none text-xs sm:text-sm font-medium transition-all ${isSynced || isEditMode ? "opacity-60 cursor-not-allowed" : ""}`}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                            {/* Account Selection */}
+                            <div className="col-span-1 md:col-span-2 space-y-1.5">
+                                <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
+                                    Trading Account
+                                </label>
+                                <Select
+                                    value={formData.accountId || "none"}
+                                    onValueChange={(value) =>
+                                        setFormData((prev) => ({
+                                            ...prev,
+                                            accountId: value === "none" ? "" : value,
+                                        }))
+                                    }
+                                    disabled={isSynced || isEditMode}
                                 >
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="none">
-                                        Select Account (Optional)
-                                    </SelectItem>
-                                    {accounts.map((acc: any) => (
-                                        <SelectItem key={acc.id} value={acc.id}>
-                                            {formatAccountLabel(acc)}
+                                    <SelectTrigger
+                                        className={`w-full h-10 px-3 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-dashboard focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none text-xs sm:text-sm font-medium transition-all ${isSynced || isEditMode ? "opacity-60 cursor-not-allowed" : ""}`}
+                                    >
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="none">
+                                            Select Account (Optional)
                                         </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
+                                        {accounts.map((acc: any) => (
+                                            <SelectItem key={acc.id} value={acc.id}>
+                                                {formatAccountLabel(acc)}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
 
 
 
-                        <div className="space-y-1.5">
-                            <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
-                                Pair / Symbol
-                            </label>
-                            <input
-                                name="symbol"
-                                value={formData.symbol}
-                                onChange={handleChange}
-                                disabled={isSynced}
-                                className={`w-full h-10 px-3 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-dashboard focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none uppercase font-mono font-bold tracking-wider text-xs sm:text-sm transition-all ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
-                                required
-                            />
-                        </div>
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
+                                    Pair / Symbol
+                                </label>
+                                <input
+                                    name="symbol"
+                                    value={formData.symbol}
+                                    onChange={handleChange}
+                                    disabled={isSynced}
+                                    className={`w-full h-10 px-3 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-dashboard focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none uppercase font-mono font-bold tracking-wider text-xs sm:text-sm transition-all ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
+                                    required
+                                />
+                            </div>
 
-                        <div className="space-y-1.5">
-                            <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
-                                Date & Time
-                            </label>
-                            <input
-                                type="datetime-local"
-                                name="entryDate"
-                                value={formData.entryDate}
-                                onChange={handleChange}
-                                disabled={isSynced}
-                                className={`w-full h-10 px-3 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-dashboard focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none font-mono tabular-nums text-xs sm:text-sm transition-all ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
-                                required
-                            />
-                        </div>
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
+                                    Date & Time
+                                </label>
+                                <input
+                                    type="datetime-local"
+                                    name="entryDate"
+                                    value={formData.entryDate}
+                                    onChange={handleChange}
+                                    disabled={isSynced}
+                                    className={`w-full h-10 px-3 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-dashboard focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none font-mono tabular-nums text-xs sm:text-sm transition-all ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
+                                    required
+                                />
+                            </div>
 
-                        <div className="space-y-1.5">
-                            <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
-                                Type
-                            </label>
-                            <div
-                                className={`flex bg-gray-50/80 dark:bg-[#151925] p-1 rounded-lg border border-dashboard h-10 ${isSynced ? "opacity-60 pointer-events-none" : ""}`}
-                            >
-                                {["BUY", "SELL"].map((type) => (
-                                    <Button
-                                        key={type}
-                                        type="button"
-                                        variant="ghost"
-                                        onClick={() =>
-                                            setFormData((p) => ({ ...p, type }))
-                                        }
-                                        className={`flex-1 h-full text-xs font-bold transition-all rounded-lg ${
-                                            formData.type === type
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
+                                    Type
+                                </label>
+                                <div
+                                    className={`flex bg-gray-50/80 dark:bg-[#151925] p-1 rounded-lg border border-dashboard h-10 ${isSynced ? "opacity-60 pointer-events-none" : ""}`}
+                                >
+                                    {["BUY", "SELL"].map((type) => (
+                                        <Button
+                                            key={type}
+                                            type="button"
+                                            variant="ghost"
+                                            onClick={() =>
+                                                setFormData((p) => ({ ...p, type }))
+                                            }
+                                            className={`flex-1 h-full text-xs font-bold transition-all rounded-lg ${formData.type === type
                                                 ? type === "BUY"
                                                     ? "bg-emerald-500 hover:bg-emerald-600 text-white hover:text-white shadow-md shadow-emerald-500/20"
                                                     : "bg-red-500 hover:bg-red-600 text-white hover:text-white shadow-md shadow-red-500/20"
                                                 : "bg-transparent text-gray-600 dark:text-gray-400 hover:bg-white dark:hover:bg-white/5"
-                                        }`}
+                                                }`}
+                                        >
+                                            {type}
+                                        </Button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
+                                    Status
+                                </label>
+                                <Select
+                                    value={formData.status}
+                                    onValueChange={(value) =>
+                                        setFormData((prev) => ({
+                                            ...prev,
+                                            status: value,
+                                        }))
+                                    }
+                                    disabled={isSynced}
+                                >
+                                    <SelectTrigger
+                                        className={`w-full h-10 px-3 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-dashboard focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none text-xs sm:text-sm transition-all ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
                                     >
-                                        {type}
-                                    </Button>
-                                ))}
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="OPEN">
+                                            OPEN - Running
+                                        </SelectItem>
+                                        <SelectItem value="CLOSED">
+                                            CLOSED - Completed
+                                        </SelectItem>
+                                    </SelectContent>
+                                </Select>
                             </div>
                         </div>
+                    </div>
 
-                        <div className="space-y-1.5">
-                            <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
-                                Status
-                            </label>
-                            <Select
-                                value={formData.status}
-                                onValueChange={(value) =>
-                                    setFormData((prev) => ({
-                                        ...prev,
-                                        status: value,
-                                    }))
-                                }
-                                disabled={isSynced}
-                            >
-                                <SelectTrigger
-                                    className={`w-full h-10 px-3 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-dashboard focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none text-xs sm:text-sm transition-all ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
-                                >
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="OPEN">
-                                        OPEN - Running
-                                    </SelectItem>
-                                    <SelectItem value="CLOSED">
-                                        CLOSED - Completed
-                                    </SelectItem>
-                                </SelectContent>
-                            </Select>
+                    {/* Price & Risk */}
+                    <div className="bg-white dark:bg-[#1E2028] p-4 sm:p-5 rounded-xl border border-dashboard shadow-sm space-y-4">
+                        <h3 className="text-base font-bold font-sans tracking-tight text-gray-700 dark:text-white flex items-center gap-2">
+                            <div className="w-1 h-4 bg-gold rounded-full"></div>
+                            Pricing & Risk
+                        </h3>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5">
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
+                                    Entry Price
+                                </label>
+                                <input
+                                    type="number"
+                                    step="any"
+                                    name="entryPrice"
+                                    value={formData.entryPrice}
+                                    onChange={handleChange}
+                                    disabled={isSynced}
+                                    className={`w-full h-10 px-3 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-dashboard focus:border-primary focus:outline-none font-mono tabular-nums text-xs sm:text-sm ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
+                                    required
+                                />
+                            </div>
+
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
+                                    Lot Size
+                                </label>
+                                <input
+                                    type="number"
+                                    step="any"
+                                    name="lotSize"
+                                    value={formData.lotSize}
+                                    onChange={handleChange}
+                                    disabled={isSynced}
+                                    className={`w-full h-10 px-3 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-dashboard focus:border-primary focus:outline-none font-mono tabular-nums text-xs sm:text-sm ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
+                                    required
+                                />
+                            </div>
+
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
+                                    Exit Price
+                                </label>
+                                <input
+                                    type="number"
+                                    step="any"
+                                    name="exitPrice"
+                                    value={formData.exitPrice}
+                                    onChange={handleChange}
+                                    disabled={isSynced}
+                                    className={`w-full h-10 px-3 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-dashboard focus:border-primary focus:outline-none font-mono tabular-nums text-xs sm:text-sm ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
+                                />
+                            </div>
+
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-red-500">
+                                    Stop Loss
+                                </label>
+                                <input
+                                    type="number"
+                                    step="any"
+                                    name="stopLoss"
+                                    value={formData.stopLoss}
+                                    onChange={handleChange}
+                                    disabled={isSynced}
+                                    className={`w-full h-10 px-3 rounded-lg bg-red-50 dark:bg-red-500/5 border border-red-100 dark:border-red-500/20 focus:border-red-500 focus:outline-none font-mono tabular-nums text-xs sm:text-sm ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
+                                />
+                            </div>
+
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-primary">
+                                    Take Profit
+                                </label>
+                                <input
+                                    type="number"
+                                    step="any"
+                                    name="takeProfit"
+                                    value={formData.takeProfit}
+                                    onChange={handleChange}
+                                    disabled={isSynced}
+                                    className={`w-full h-10 px-3 rounded-lg bg-green-50 dark:bg-green-500/5 border border-green-100 dark:border-green-500/20 focus:border-primary focus:outline-none font-mono tabular-nums text-xs sm:text-sm ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
+                                />
+                            </div>
+
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
+                                    Profit / Loss (Cash)
+                                </label>
+                                <input
+                                    type="number"
+                                    step="any"
+                                    name="pnl"
+                                    value={formData.pnl}
+                                    onChange={handleChange}
+                                    disabled={isSynced}
+                                    className={`w-full h-10 px-3 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-dashboard focus:border-primary focus:outline-none font-mono tabular-nums font-bold text-xs sm:text-sm ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
+                                />
+                            </div>
+
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
+                                    Commission
+                                </label>
+                                <input
+                                    type="number"
+                                    step="any"
+                                    name="commission"
+                                    value={formData.commission}
+                                    onChange={handleChange}
+                                    disabled={isSynced}
+                                    className={`w-full h-10 px-3 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-dashboard focus:border-primary focus:outline-none font-mono tabular-nums text-xs sm:text-sm ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
+                                />
+                            </div>
+
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
+                                    Swap
+                                </label>
+                                <input
+                                    type="number"
+                                    step="any"
+                                    name="swap"
+                                    value={formData.swap}
+                                    onChange={handleChange}
+                                    disabled={isSynced}
+                                    className={`w-full h-10 px-3 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-dashboard focus:border-primary focus:outline-none font-mono tabular-nums text-xs sm:text-sm ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
+                                />
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                {/* Price & Risk */}
-                <div className="bg-white dark:bg-[#1E2028] p-4 sm:p-5 rounded-xl border border-dashboard shadow-sm space-y-4">
-                    <h3 className="text-base font-bold font-sans tracking-tight text-gray-700 dark:text-white flex items-center gap-2">
-                        <div className="w-1 h-4 bg-gold rounded-full"></div>
-                        Pricing & Risk
-                    </h3>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5">
-                        <div className="space-y-1.5">
-                            <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
-                                Entry Price
-                            </label>
-                            <input
-                                type="number"
-                                step="any"
-                                name="entryPrice"
-                                value={formData.entryPrice}
-                                onChange={handleChange}
-                                disabled={isSynced}
-                                className={`w-full h-10 px-3 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-dashboard focus:border-primary focus:outline-none font-mono tabular-nums text-xs sm:text-sm ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
-                                required
-                            />
-                        </div>
-
-                        <div className="space-y-1.5">
-                            <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
-                                Lot Size
-                            </label>
-                            <input
-                                type="number"
-                                step="any"
-                                name="lotSize"
-                                value={formData.lotSize}
-                                onChange={handleChange}
-                                disabled={isSynced}
-                                className={`w-full h-10 px-3 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-dashboard focus:border-primary focus:outline-none font-mono tabular-nums text-xs sm:text-sm ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
-                                required
-                            />
-                        </div>
-
-                        <div className="space-y-1.5">
-                            <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
-                                Exit Price
-                            </label>
-                            <input
-                                type="number"
-                                step="any"
-                                name="exitPrice"
-                                value={formData.exitPrice}
-                                onChange={handleChange}
-                                disabled={isSynced}
-                                className={`w-full h-10 px-3 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-dashboard focus:border-primary focus:outline-none font-mono tabular-nums text-xs sm:text-sm ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
-                            />
-                        </div>
-
-                        <div className="space-y-1.5">
-                            <label className="text-xs font-bold text-red-500">
-                                Stop Loss
-                            </label>
-                            <input
-                                type="number"
-                                step="any"
-                                name="stopLoss"
-                                value={formData.stopLoss}
-                                onChange={handleChange}
-                                disabled={isSynced}
-                                className={`w-full h-10 px-3 rounded-lg bg-red-50 dark:bg-red-500/5 border border-red-100 dark:border-red-500/20 focus:border-red-500 focus:outline-none font-mono tabular-nums text-xs sm:text-sm ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
-                            />
-                        </div>
-
-                        <div className="space-y-1.5">
-                            <label className="text-xs font-bold text-primary">
-                                Take Profit
-                            </label>
-                            <input
-                                type="number"
-                                step="any"
-                                name="takeProfit"
-                                value={formData.takeProfit}
-                                onChange={handleChange}
-                                disabled={isSynced}
-                                className={`w-full h-10 px-3 rounded-lg bg-green-50 dark:bg-green-500/5 border border-green-100 dark:border-green-500/20 focus:border-primary focus:outline-none font-mono tabular-nums text-xs sm:text-sm ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
-                            />
-                        </div>
-
-                        <div className="space-y-1.5">
-                            <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
-                                Profit / Loss (Cash)
-                            </label>
-                            <input
-                                type="number"
-                                step="any"
-                                name="pnl"
-                                value={formData.pnl}
-                                onChange={handleChange}
-                                disabled={isSynced}
-                                className={`w-full h-10 px-3 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-dashboard focus:border-primary focus:outline-none font-mono tabular-nums font-bold text-xs sm:text-sm ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
-                            />
-                        </div>
-
-                        <div className="space-y-1.5">
-                            <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
-                                Commission
-                            </label>
-                            <input
-                                type="number"
-                                step="any"
-                                name="commission"
-                                value={formData.commission}
-                                onChange={handleChange}
-                                disabled={isSynced}
-                                className={`w-full h-10 px-3 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-dashboard focus:border-primary focus:outline-none font-mono tabular-nums text-xs sm:text-sm ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
-                            />
-                        </div>
-
-                        <div className="space-y-1.5">
-                            <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
-                                Swap
-                            </label>
-                            <input
-                                type="number"
-                                step="any"
-                                name="swap"
-                                value={formData.swap}
-                                onChange={handleChange}
-                                disabled={isSynced}
-                                className={`w-full h-10 px-3 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-dashboard focus:border-primary focus:outline-none font-mono tabular-nums text-xs sm:text-sm ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`}
-                            />
-                        </div>
-                    </div>
-                </div>
                 </div>
 
                 {/* Analysis */}
@@ -904,6 +911,8 @@ export default function JournalForm({
                                                         setFormData((p) => ({
                                                             ...p,
                                                             strategy: "",
+                                                            playbookGrade: "",
+                                                            playbookComplianceScore: null,
                                                         }))
                                                     }
                                                     className={
@@ -917,18 +926,38 @@ export default function JournalForm({
                                                 {strategies.map((s: any) => (
                                                     <DropdownMenuItem
                                                         key={s.id}
-                                                        onClick={() =>
-                                                            setFormData(
-                                                                (p) => ({
-                                                                    ...p,
-                                                                    strategy:
-                                                                        s.name,
-                                                                })
-                                                            )
-                                                        }
+                                                        onClick={() => {
+                                                            const rulesForSelection =
+                                                                filterApplicableRules(
+                                                                    activeRules,
+                                                                    formData.accountId,
+                                                                    s.name
+                                                                );
+                                                            const followed =
+                                                                rulesForSelection.reduce(
+                                                                    (acc, r) =>
+                                                                        (ruleChecks[r.id]?.status ||
+                                                                            "FOLLOWED") ===
+                                                                            "FOLLOWED"
+                                                                            ? acc + 1
+                                                                            : acc,
+                                                                    0
+                                                                );
+                                                            const { score, grade } =
+                                                                computeSuggestedPlaybookGrade(
+                                                                    rulesForSelection.length,
+                                                                    followed
+                                                                );
+                                                            setFormData((p) => ({
+                                                                ...p,
+                                                                strategy: s.name,
+                                                                playbookComplianceScore: score,
+                                                                playbookGrade: grade,
+                                                            }));
+                                                        }}
                                                         className={
                                                             formData.strategy ===
-                                                            s.name
+                                                                s.name
                                                                 ? "bg-gray-100 dark:bg-white/10"
                                                                 : ""
                                                         }
@@ -961,149 +990,86 @@ export default function JournalForm({
                                     </div>
                                 )}
 
-                                {/* Playbook Quick Guide Card & Setup Grade */}
+                                {/* Strategy Benchmark & Setup Execution Grade */}
                                 {(() => {
+                                    if (!formData.strategy) return null;
                                     const selectedStrategy = strategies.find(
                                         (s: any) => s.name === formData.strategy
                                     );
-                                    if (!selectedStrategy || !selectedStrategy.isPlaybook) return null;
 
-                                    const ruleItems: string[] = selectedStrategy.rules
-                                        ? selectedStrategy.rules
-                                              .split("\n")
-                                              .map((r: string) => r.replace(/^[-*•\d.]+\s*/, "").trim())
-                                              .filter(Boolean)
-                                        : [];
-
-                                    const totalRules = ruleItems.length;
-                                    const checkedCount = ruleItems.reduce(
-                                        (acc, _, idx) => (playbookChecks[idx] ? acc + 1 : acc),
+                                    const totalRules = applicableRules.length;
+                                    const followedCount = applicableRules.reduce(
+                                        (acc, rule) =>
+                                            (ruleChecks[rule.id]?.status || "FOLLOWED") === "FOLLOWED"
+                                                ? acc + 1
+                                                : acc,
                                         0
                                     );
-                                    const complianceScore =
-                                        totalRules > 0 ? Math.round((checkedCount / totalRules) * 100) : 100;
-
-                                    const toggleRuleCheck = (idx: number) => {
-                                        const nextChecks = { ...playbookChecks, [idx]: !playbookChecks[idx] };
-                                        setPlaybookChecks(nextChecks);
-
-                                        const nextCheckedCount = ruleItems.reduce(
-                                            (acc, _, i) => (nextChecks[i] ? acc + 1 : acc),
-                                            0
-                                        );
-                                        const nextScore =
-                                            totalRules > 0
-                                                ? Math.round((nextCheckedCount / totalRules) * 100)
-                                                : 100;
-
-                                        let suggestedGrade = "C";
-                                        if (nextScore === 100) suggestedGrade = "A+";
-                                        else if (nextScore >= 75) suggestedGrade = "A";
-                                        else if (nextScore >= 50) suggestedGrade = "B";
-
-                                        setFormData((p) => ({
-                                            ...p,
-                                            playbookComplianceScore: nextScore,
-                                            playbookGrade: suggestedGrade,
-                                        }));
-                                    };
+                                    const { score: complianceScore } =
+                                        computeSuggestedPlaybookGrade(totalRules, followedCount);
+                                    const hasIdealSpecs = Boolean(
+                                        selectedStrategy?.idealEntry ||
+                                            selectedStrategy?.idealStopLoss ||
+                                            selectedStrategy?.riskRewardMin != null
+                                    );
 
                                     return (
                                         <div className="mt-3 p-4 rounded-lg bg-amber-500/5 border border-amber-500/20 space-y-3.5">
                                             {/* Header */}
-                                            <div className="flex items-center justify-between">
+                                            <div className="flex items-center justify-between flex-wrap gap-2">
                                                 <div className="flex items-center gap-2">
-                                                    <BookOpen size={16} className="text-gold" />
+                                                    <Route size={16} className="text-gold" />
                                                     <span className="text-xs font-bold text-gold uppercase tracking-wider">
-                                                        Playbook Benchmark
+                                                        Strategy Benchmark
                                                     </span>
                                                 </div>
-                                                {selectedStrategy.setupType && (
-                                                    <span className="text-xs font-bold px-2.5 py-0.5 rounded-lg bg-amber-500/10 text-gold dark:text-amber-400 border border-amber-500/20">
-                                                        {selectedStrategy.setupType}
-                                                    </span>
-                                                )}
+                                                <div className="flex items-center gap-2">
+                                                    {totalRules > 0 && (
+                                                        <span
+                                                            className={`text-[10px] font-extrabold font-mono tabular-nums px-2 py-0.5 rounded-lg ${complianceScore === 100
+                                                                ? "bg-emerald-500/10 text-emerald-600"
+                                                                : complianceScore >= 50
+                                                                    ? "bg-amber-500/10 text-amber-600"
+                                                                    : "bg-red-500/10 text-red-600"
+                                                                }`}
+                                                        >
+                                                            {followedCount}/{totalRules} Rules ({complianceScore}%)
+                                                        </span>
+                                                    )}
+                                                    {selectedStrategy?.setupType && (
+                                                        <span className="text-xs font-bold px-2.5 py-0.5 rounded-lg bg-amber-500/10 text-gold dark:text-amber-400 border border-amber-500/20">
+                                                            {selectedStrategy.setupType}
+                                                        </span>
+                                                    )}
+                                                </div>
                                             </div>
 
                                             {/* Ideal Zones & Min RR */}
-                                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
-                                                {selectedStrategy.idealEntry && (
-                                                    <div className="bg-white/60 dark:bg-white/5 p-2.5 rounded-lg border border-dashboard">
-                                                        <span className="text-[10px] text-gray-500 font-bold block uppercase">Ideal Entry</span>
-                                                        <span className="font-semibold text-gray-700 dark:text-gray-200 line-clamp-1">{selectedStrategy.idealEntry}</span>
-                                                    </div>
-                                                )}
-                                                {selectedStrategy.idealStopLoss && (
-                                                    <div className="bg-white/60 dark:bg-white/5 p-2.5 rounded-lg border border-dashboard">
-                                                        <span className="text-[10px] text-gray-500 font-bold block uppercase">Ideal SL</span>
-                                                        <span className="font-semibold text-gray-700 dark:text-gray-200 line-clamp-1">{selectedStrategy.idealStopLoss}</span>
-                                                    </div>
-                                                )}
-                                                {selectedStrategy.riskRewardMin != null && (
-                                                    <div className="bg-white/60 dark:bg-white/5 p-2.5 rounded-lg border border-dashboard">
-                                                        <span className="text-[10px] text-gray-500 font-bold block uppercase">Min R:R</span>
-                                                        <span className="font-mono tabular-nums font-bold text-gold">{selectedStrategy.riskRewardMin}:1</span>
-                                                    </div>
-                                                )}
-                                            </div>
-
-                                            {/* Pre-Flight Execution Checklist */}
-                                            {totalRules > 0 && (
-                                                <div className="p-3 rounded-lg bg-white/70 dark:bg-white/5 border border-dashboard space-y-2.5">
-                                                    <div className="flex items-center justify-between">
-                                                        <div className="flex items-center gap-1.5">
-                                                            <ShieldCheck size={14} className="text-gold" />
-                                                            <span className="text-xs font-bold text-gray-700 dark:text-gray-200">
-                                                                Pre-Flight Execution Checklist
-                                                            </span>
+                                            {hasIdealSpecs && selectedStrategy && (
+                                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+                                                    {selectedStrategy.idealEntry && (
+                                                        <div className="bg-white/60 dark:bg-white/5 p-2.5 rounded-lg border border-dashboard">
+                                                            <span className="text-[10px] text-gray-500 font-bold block uppercase">Ideal Entry</span>
+                                                            <span className="font-semibold text-gray-700 dark:text-gray-200 line-clamp-1">{selectedStrategy.idealEntry}</span>
                                                         </div>
-                                                        <div className="flex items-center gap-2">
-                                                            <span className="text-[11px] font-mono tabular-nums font-bold text-gold">
-                                                                {checkedCount}/{totalRules} ({complianceScore}%)
-                                                            </span>
-                                                            <span
-                                                                className={`text-[10px] font-extrabold px-1.5 py-0.5 rounded-lg ${
-                                                                    complianceScore === 100
-                                                                        ? "bg-emerald-500/10 text-emerald-600"
-                                                                        : complianceScore >= 50
-                                                                        ? "bg-amber-500/10 text-amber-600"
-                                                                        : "bg-red-500/10 text-red-600"
-                                                                }`}
-                                                            >
-                                                                {complianceScore === 100 ? "A+ Ready" : complianceScore >= 50 ? "Caution" : "Unverified"}
-                                                            </span>
+                                                    )}
+                                                    {selectedStrategy.idealStopLoss && (
+                                                        <div className="bg-white/60 dark:bg-white/5 p-2.5 rounded-lg border border-dashboard">
+                                                            <span className="text-[10px] text-gray-500 font-bold block uppercase">Ideal SL</span>
+                                                            <span className="font-semibold text-gray-700 dark:text-gray-200 line-clamp-1">{selectedStrategy.idealStopLoss}</span>
                                                         </div>
-                                                    </div>
-
-                                                    <div className="space-y-1.5">
-                                                        {ruleItems.map((rule, idx) => (
-                                                            <Button
-                                                                type="button"
-                                                                variant="ghost"
-                                                                key={idx}
-                                                                onClick={() => toggleRuleCheck(idx)}
-                                                                className={`w-full text-left p-2 rounded-lg text-xs flex items-center gap-2.5 transition-all cursor-pointer border h-auto font-normal justify-start ${
-                                                                    playbookChecks[idx]
-                                                                        ? "bg-amber-500/10 border-amber-500/40 text-gray-800 dark:text-white hover:bg-amber-500/15"
-                                                                        : "bg-gray-50/80 dark:bg-[#151925] border-dashboard text-gray-600 dark:text-gray-400 hover:border-gray-300"
-                                                                }`}
-                                                            >
-                                                                {playbookChecks[idx] ? (
-                                                                    <CheckSquare size={15} className="text-gold shrink-0" />
-                                                                ) : (
-                                                                    <Square size={15} className="text-gray-400 shrink-0" />
-                                                                )}
-                                                                <span className={playbookChecks[idx] ? "font-medium line-through opacity-90" : "font-normal"}>
-                                                                    {rule}
-                                                                </span>
-                                                            </Button>
-                                                        ))}
-                                                    </div>
+                                                    )}
+                                                    {selectedStrategy.riskRewardMin != null && (
+                                                        <div className="bg-white/60 dark:bg-white/5 p-2.5 rounded-lg border border-dashboard">
+                                                            <span className="text-[10px] text-gray-500 font-bold block uppercase">Min R:R</span>
+                                                            <span className="font-mono tabular-nums font-bold text-gold">{selectedStrategy.riskRewardMin}:1</span>
+                                                        </div>
+                                                    )}
                                                 </div>
                                             )}
 
                                             {/* Reference Charts Preview */}
-                                            {selectedStrategy.referenceImages && selectedStrategy.referenceImages.length > 0 && (
+                                            {selectedStrategy?.referenceImages && selectedStrategy.referenceImages.length > 0 && (
                                                 <div>
                                                     <span className="text-[10px] uppercase font-bold text-gray-500 block mb-1.5">
                                                         Reference Charts (Click to inspect)
@@ -1133,7 +1099,7 @@ export default function JournalForm({
                                                     </label>
                                                     {totalRules > 0 && (
                                                         <span className="text-[10px] text-gray-400 flex items-center gap-1">
-                                                            <Sparkles size={10} className="text-primary" /> Auto-suggested by checklist
+                                                            <Sparkles size={10} className="text-primary" /> Synced with rule checklist below
                                                         </span>
                                                     )}
                                                 </div>
@@ -1149,11 +1115,10 @@ export default function JournalForm({
                                                             type="button"
                                                             variant="ghost"
                                                             onClick={() => setFormData((p) => ({ ...p, playbookGrade: p.playbookGrade === g.grade ? "" : g.grade }))}
-                                                            className={`py-1.5 px-2 rounded-lg text-xs font-bold border transition-all text-center h-auto ${
-                                                                formData.playbookGrade === g.grade
-                                                                    ? `${g.color} ring-2 ring-primary/40`
-                                                                    : "bg-white/60 dark:bg-white/5 border-dashboard text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
-                                                            }`}
+                                                            className={`py-1.5 px-2 rounded-lg text-xs font-bold border transition-all text-center h-auto ${formData.playbookGrade === g.grade
+                                                                ? `${g.color} ring-2 ring-primary/40`
+                                                                : "bg-white/60 dark:bg-white/5 border-dashboard text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                                                                }`}
                                                         >
                                                             <span>
                                                                 {g.grade}
@@ -1296,17 +1261,16 @@ export default function JournalForm({
                                                 >
                                                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
                                                         <div className="min-w-0 flex-1">
-                                                            <div className="flex items-center gap-2">
+                                                            <div className="flex items-center gap-2 flex-wrap">
                                                                 <span
-                                                                    className={`inline-flex items-center px-1.5 py-0.5 rounded-lg text-[9px] font-black uppercase border ${
-                                                                        rule.severity ===
+                                                                    className={`inline-flex items-center px-1.5 py-0.5 rounded-lg text-[9px] font-black uppercase border ${rule.severity ===
                                                                         "HIGH"
-                                                                            ? "bg-red-50 text-red-500 border-red-100 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/20"
-                                                                            : rule.severity ===
-                                                                                "MEDIUM"
-                                                                              ? "bg-amber-50 text-amber-500 border-amber-100 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20"
-                                                                              : "bg-gray-100 text-gray-600 border-gray-200 dark:bg-white/5 dark:text-gray-400 dark:border-white/10"
-                                                                    }`}
+                                                                        ? "bg-red-50 text-red-500 border-red-100 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/20"
+                                                                        : rule.severity ===
+                                                                            "MEDIUM"
+                                                                            ? "bg-amber-50 text-amber-500 border-amber-100 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20"
+                                                                            : "bg-gray-100 text-gray-600 border-gray-200 dark:bg-white/5 dark:text-gray-400 dark:border-white/10"
+                                                                        }`}
                                                                 >
                                                                     {
                                                                         rule.severity
@@ -1316,6 +1280,11 @@ export default function JournalForm({
                                                                     {
                                                                         rule.category
                                                                     }
+                                                                </span>
+                                                                <span className="px-1.5 py-0.5 rounded-lg text-[9px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400">
+                                                                    {rule.strategy?.name
+                                                                        ? rule.strategy.name
+                                                                        : "Global"}
                                                                 </span>
                                                             </div>
                                                             <h4 className="text-xs font-bold text-gray-700 dark:text-white mt-0.5">
@@ -1342,32 +1311,50 @@ export default function JournalForm({
                                                                     key={status}
                                                                     type="button"
                                                                     variant="ghost"
-                                                                    onClick={() =>
-                                                                        setRuleChecks(
-                                                                            (
-                                                                                prev
-                                                                            ) => ({
-                                                                                ...prev,
-                                                                                [rule.id]:
-                                                                                    {
-                                                                                        ...currentCheck,
-                                                                                        status,
-                                                                                    },
-                                                                            })
-                                                                        )
-                                                                    }
-                                                                    className={`px-2.5 py-1 rounded-lg text-[10px] font-black uppercase border transition-all h-auto ${
-                                                                        currentCheck.status ===
+                                                                    onClick={() => {
+                                                                        const nextChecks = {
+                                                                            ...ruleChecks,
+                                                                            [rule.id]: {
+                                                                                ...currentCheck,
+                                                                                status,
+                                                                            },
+                                                                        };
+                                                                        setRuleChecks(nextChecks);
+
+                                                                        if (formData.strategy) {
+                                                                            const followed =
+                                                                                applicableRules.reduce(
+                                                                                    (acc, r) =>
+                                                                                        (nextChecks[r.id]?.status ||
+                                                                                            "FOLLOWED") ===
+                                                                                            "FOLLOWED"
+                                                                                            ? acc + 1
+                                                                                            : acc,
+                                                                                    0
+                                                                                );
+                                                                            const { score, grade } =
+                                                                                computeSuggestedPlaybookGrade(
+                                                                                    applicableRules.length,
+                                                                                    followed
+                                                                                );
+                                                                            setFormData((p) => ({
+                                                                                ...p,
+                                                                                playbookComplianceScore: score,
+                                                                                playbookGrade: grade,
+                                                                            }));
+                                                                        }
+                                                                    }}
+                                                                    className={`px-2.5 py-1 rounded-lg text-[10px] font-black uppercase border transition-all h-auto ${currentCheck.status ===
                                                                         status
-                                                                            ? status ===
-                                                                              "FOLLOWED"
-                                                                                ? "bg-emerald-500 border-emerald-500 text-white shadow-sm shadow-emerald-500/10 hover:bg-emerald-500 hover:text-white"
-                                                                                : status ===
-                                                                                    "BROKEN"
-                                                                                  ? "bg-red-500 border-red-500 text-white shadow-sm shadow-red-500/10 hover:bg-red-500 hover:text-white"
-                                                                                  : "bg-gray-500 border-gray-500 text-white shadow-sm shadow-gray-500/10 hover:bg-gray-500 hover:text-white"
-                                                                            : "bg-white dark:bg-[#1E2028] text-gray-500 border-dashboard hover:border-gray-400"
-                                                                    }`}
+                                                                        ? status ===
+                                                                            "FOLLOWED"
+                                                                            ? "bg-emerald-500 border-emerald-500 text-white shadow-sm shadow-emerald-500/10 hover:bg-emerald-500 hover:text-white"
+                                                                            : status ===
+                                                                                "BROKEN"
+                                                                                ? "bg-red-500 border-red-500 text-white shadow-sm shadow-red-500/10 hover:bg-red-500 hover:text-white"
+                                                                                : "bg-gray-500 border-gray-500 text-white shadow-sm shadow-gray-500/10 hover:bg-gray-500 hover:text-white"
+                                                                        : "bg-white dark:bg-[#1E2028] text-gray-500 border-dashboard hover:border-gray-400"
+                                                                        }`}
                                                                 >
                                                                     {status}
                                                                 </Button>
@@ -1378,35 +1365,35 @@ export default function JournalForm({
                                                     {(currentCheck.status ===
                                                         "BROKEN" ||
                                                         currentCheck.status ===
-                                                            "SKIPPED") && (
-                                                        <div className="pt-2 border-t border-dashboard/50 dark:border-white/[0.04]">
-                                                            <input
-                                                                type="text"
-                                                                aria-label="Rule violation or skip reason"
-                                                                value={
-                                                                    currentCheck.note ||
-                                                                    ""
-                                                                }
-                                                                onChange={(e) =>
-                                                                    setRuleChecks(
-                                                                        (
-                                                                            prev
-                                                                        ) => ({
-                                                                            ...prev,
-                                                                            [rule.id]:
+                                                        "SKIPPED") && (
+                                                            <div className="pt-2 border-t border-dashboard/50 dark:border-white/[0.04]">
+                                                                <input
+                                                                    type="text"
+                                                                    aria-label="Rule violation or skip reason"
+                                                                    value={
+                                                                        currentCheck.note ||
+                                                                        ""
+                                                                    }
+                                                                    onChange={(e) =>
+                                                                        setRuleChecks(
+                                                                            (
+                                                                                prev
+                                                                            ) => ({
+                                                                                ...prev,
+                                                                                [rule.id]:
                                                                                 {
                                                                                     ...currentCheck,
                                                                                     note: e
                                                                                         .target
                                                                                         .value,
                                                                                 },
-                                                                        })
-                                                                    )
-                                                                }
-                                                                className="w-full text-xs p-2 rounded-lg bg-white dark:bg-[#1E2028] border border-dashboard focus:border-primary focus:outline-none"
-                                                            />
-                                                        </div>
-                                                    )}
+                                                                            })
+                                                                        )
+                                                                    }
+                                                                    className="w-full text-xs p-2 rounded-lg bg-white dark:bg-[#1E2028] border border-dashboard focus:border-primary focus:outline-none"
+                                                                />
+                                                            </div>
+                                                        )}
                                                 </div>
                                             );
                                         })}
@@ -1462,13 +1449,12 @@ export default function JournalForm({
                                                             result: res,
                                                         }))
                                                     }
-                                                    className={`flex-1 py-2 text-xs font-bold transition-all rounded-lg ${
-                                                        isActive
-                                                            ? activeColorMap[
-                                                                  res
-                                                              ]
-                                                            : `border-dashboard text-gray-600 hover:border-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`
-                                                    }`}
+                                                    className={`flex-1 py-2 text-xs font-bold transition-all rounded-lg ${isActive
+                                                        ? activeColorMap[
+                                                        res
+                                                        ]
+                                                        : `border-dashboard text-gray-600 hover:border-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 ${isSynced ? "opacity-60 cursor-not-allowed" : ""}`
+                                                        }`}
                                                 >
                                                     {labelMap[res]}
                                                 </Button>
@@ -1553,11 +1539,10 @@ export default function JournalForm({
                                             }
                                             className={`
  w-9 h-9 rounded-lg font-mono tabular-nums font-bold text-sm transition-all border p-0
- ${
-     formData.confidenceLevel === level
-         ? "bg-gold !text-white border-gold ring-2 ring-gold/30 ring-offset-2 dark:ring-offset-gray-900 shadow-sm shadow-amber-500/20 hover:bg-amber-600 hover:!text-white"
-         : "bg-gray-50/80 dark:bg-[#151925] text-gray-600 dark:text-gray-500 hover:bg-gray-200 dark:hover:bg-white/5 border-dashboard "
- }
+ ${formData.confidenceLevel === level
+                                                    ? "bg-gold !text-white border-gold ring-2 ring-gold/30 ring-offset-2 dark:ring-offset-gray-900 shadow-sm shadow-amber-500/20 hover:bg-amber-600 hover:!text-white"
+                                                    : "bg-gray-50/80 dark:bg-[#151925] text-gray-600 dark:text-gray-500 hover:bg-gray-200 dark:hover:bg-white/5 border-dashboard "
+                                                }
  `}
                                         >
                                             {level}
@@ -1590,11 +1575,10 @@ export default function JournalForm({
                                         }
                                         className={`
  flex-1 h-9 rounded-lg font-bold text-xs transition-all flex items-center justify-center gap-1.5 border
- ${
-     formData.followedPlan === true
-         ? "bg-green-500 text-white border-green-500 shadow-sm shadow-green-500/20 hover:bg-green-600"
-         : "bg-gray-50/80 dark:bg-[#151925] text-gray-600 dark:text-gray-500 border-dashboard hover:bg-white dark:hover:bg-white/5"
- }
+ ${formData.followedPlan === true
+                                                ? "bg-green-500 text-white border-green-500 shadow-sm shadow-green-500/20 hover:bg-green-600"
+                                                : "bg-gray-50/80 dark:bg-[#151925] text-gray-600 dark:text-gray-500 border-dashboard hover:bg-white dark:hover:bg-white/5"
+                                            }
  `}
                                     >
                                         <Check size={14} />
@@ -1615,11 +1599,10 @@ export default function JournalForm({
                                         }
                                         className={`
  flex-1 h-9 rounded-lg font-bold text-xs transition-all flex items-center justify-center gap-1.5 border
- ${
-     formData.followedPlan === false
-         ? "bg-red-500 text-white border-red-500 shadow-sm shadow-red-500/20 hover:bg-red-600"
-         : "bg-gray-50/80 dark:bg-[#151925] text-gray-600 dark:text-gray-500 border-dashboard hover:bg-white dark:hover:bg-white/5"
- }
+ ${formData.followedPlan === false
+                                                ? "bg-red-500 text-white border-red-500 shadow-sm shadow-red-500/20 hover:bg-red-600"
+                                                : "bg-gray-50/80 dark:bg-[#151925] text-gray-600 dark:text-gray-500 border-dashboard hover:bg-white dark:hover:bg-white/5"
+                                            }
  `}
                                     >
                                         <X size={14} />
@@ -1669,38 +1652,38 @@ export default function JournalForm({
                         {/* Existing Images */}
                         {(formData.images || []).map(
                             (imgUrl: string, idx: number) => (
-                                    <div
-                                        key={idx}
-                                        className="relative aspect-video rounded-lg overflow-hidden group border border-dashboard"
-                                    >
-                                        <img
-                                            src={imgUrl}
-                                            alt={`Screenshot ${idx + 1}`}
-                                            className="w-full h-full object-cover"
-                                            onError={(e) => {
-                                                e.currentTarget.style.display = "none";
+                                <div
+                                    key={idx}
+                                    className="relative aspect-video rounded-lg overflow-hidden group border border-dashboard"
+                                >
+                                    <img
+                                        src={imgUrl}
+                                        alt={`Screenshot ${idx + 1}`}
+                                        className="w-full h-full object-cover"
+                                        onError={(e) => {
+                                            e.currentTarget.style.display = "none";
+                                        }}
+                                    />
+                                    <div className="absolute inset-0 bg-black/40 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
+                                        <Button
+                                            type="button"
+                                            variant="destructive"
+                                            size="icon"
+                                            aria-label="Remove image"
+                                            onClick={() => {
+                                                const newImages = [...(formData.images || [])];
+                                                newImages.splice(idx, 1);
+                                                setFormData((prev) => ({
+                                                    ...prev,
+                                                    images: newImages,
+                                                }));
                                             }}
-                                        />
-                                        <div className="absolute inset-0 bg-black/40 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
-                                            <Button
-                                                type="button"
-                                                variant="destructive"
-                                                size="icon"
-                                                aria-label="Remove image"
-                                                onClick={() => {
-                                                    const newImages = [...(formData.images || [])];
-                                                    newImages.splice(idx, 1);
-                                                    setFormData((prev) => ({
-                                                        ...prev,
-                                                        images: newImages,
-                                                    }));
-                                                }}
-                                                className="w-8 h-8 rounded-lg hover:scale-110 transition-transform shadow-lg"
-                                            >
-                                                <X size={16} />
-                                            </Button>
-                                        </div>
+                                            className="w-8 h-8 rounded-lg hover:scale-110 transition-transform shadow-lg"
+                                        >
+                                            <X size={16} />
+                                        </Button>
                                     </div>
+                                </div>
                             )
                         )}
 

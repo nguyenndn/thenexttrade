@@ -199,5 +199,6 @@ export async function addExperimentAsTradingRule(experimentId: string) {
     });
 
     revalidatePath("/dashboard/rules");
+    revalidatePath("/dashboard/strategies");
     return { success: true, ruleId: newRule.id, created: true };
 }

@@ -12,22 +12,25 @@ describe("HomeSections SSR Suite (Modular Sections Verification)", () => {
         it("renders core capital preservation contrast and essence cards", () => {
             const html = renderToString(<SpreadsheetComparisonSection isLoggedIn={false} />);
 
-            // Header contrast
-            expect(html).toContain("Spreadsheets record history.");
+            // Header contrast (single-line desktop lock)
+            expect(html).toContain("Spreadsheets log history.");
             expect(html).toContain("TheNextTrade protects your capital.");
+            expect(html).toContain("md:whitespace-nowrap");
             expect(html).toContain("Excel tells you that you lost money on Thursday.");
 
             // 4 Essence Cards
             expect(html).toContain("Zero Manual Entry");
             expect(html).toContain("Tilt &amp; Leak Radar");
-            expect(html).toContain("Playbook Studio");
+            expect(html).toContain("Playbooks &amp; Rulebook");
             expect(html).toContain("10-Trade Sprints");
 
-            // Comparison Table
-            expect(html).toContain("Excel &amp; Manual Spreadsheets");
+            // Comparison Table (Excel & CSV Imports vs Proprietary Cloud Sync)
+            expect(html).toContain("Excel &amp; Manual CSV Journals");
             expect(html).toContain("TheNextTrade OS");
-            expect(html).toContain("45 mins wasted copy-pasting tickets into Excel");
-            expect(html).toContain("Zero manual entry — live MT5 EA logs every trade instantly");
+            expect(html).toContain("45 mins wasted copy-pasting MT5 tickets into Excel");
+            expect(html).toContain("Clunky CSV/HTML file imports that break formatting");
+            expect(html).toContain("Proprietary MT5 Cloud Sync — sync in 1 click from mobile or web (no VPS needed)");
+            expect(html).toContain("5 SMC/ICT playbooks + auditable rule checklists &amp; A+ setup compliance rates");
 
             // Logged-out CTA
             expect(html).toContain("Start Free Journal");
@@ -50,9 +53,14 @@ describe("HomeSections SSR Suite (Modular Sections Verification)", () => {
             expect(loggedOutHtml).toContain("Zero manual journaling. Connect your MT5 account");
 
             // Workflow Step items
-            expect(loggedOutHtml).toContain("1. Live MT5 EA Sync");
-            expect(loggedOutHtml).toContain("2. Expose The Leaks");
+            expect(loggedOutHtml).toContain("1. Dual MT5 Sync (EA &amp; Cloud)");
+            expect(loggedOutHtml).toContain("2. Audit Playbooks &amp; Leaks");
             expect(loggedOutHtml).toContain("3. Execute The Fix");
+
+            // Sample Telemetry transparency badge & 1-Click Sample Mode note
+            expect(loggedOutHtml).toContain("SAMPLE TELEMETRY");
+            expect(loggedOutHtml).toContain("Illustrative sample data");
+            expect(loggedOutHtml).toContain("1-Click Sample Mode");
 
             // Console Preview elements
             expect(loggedOutHtml).toContain("Trade Manager EA");

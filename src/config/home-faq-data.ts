@@ -24,8 +24,8 @@ export const MEMBERSHIP_FAQS: FAQItem[] = [
 
 export const PLATFORM_FAQS: FAQItem[] = [
     {
-        question: "How do I sync MT5 trades automatically? Do I need to share my MT5 password?",
-        answer: "Never — we never ask for your MT5 password. Automated sync is powered by our GSN Trade Manager EA, which you attach to your Demo or Live MT5 chart (PC or VPS) using a secure Sync Key. It streams your executed trades, stop-losses, and exits to your web journal in real time with zero manual typing.",
+        question: "How do I sync MT5 trades automatically? Do I need a VPS or master password?",
+        answer: "Never share your master trading password. You have two flexible ways to sync Demo or Live MT5 accounts: (1) Live EA Sync on PC/VPS using our GSN Trade Manager EA and a Sync Key (zero password required), or (2) 1-Click Cloud Sync directly from mobile/web using your read-only MT5 Investor Password (which cannot place trades or withdraw funds).",
     },
     {
         question: "What is the Weekly Coach & 10-Trade Action Plan?",

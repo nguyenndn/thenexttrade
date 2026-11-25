@@ -1,13 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { Target, Plus, GraduationCap } from "lucide-react";
+import { Target, Plus, GraduationCap, LayoutTemplate } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { cn } from "@/lib/utils";
 import { useFeatureFlags } from "@/lib/dashboard-context";
 
-export function StrategyEmptyState({ onAdd }: { onAdd: () => void }) {
+export function StrategyEmptyState({
+    onAdd,
+    onBrowseTemplates,
+}: {
+    onAdd: () => void;
+    onBrowseTemplates?: () => void;
+}) {
     const { isEnabled } = useFeatureFlags();
     const academyEnabled = isEnabled("feature_academy");
 
@@ -44,6 +50,12 @@ export function StrategyEmptyState({ onAdd }: { onAdd: () => void }) {
                     <Plus size={18} strokeWidth={2.5} />
                     Add Strategy
                 </Button>
+                {onBrowseTemplates && (
+                    <Button variant="outline" onClick={onBrowseTemplates}>
+                        <LayoutTemplate size={16} />
+                        Browse Templates
+                    </Button>
+                )}
                 {academyEnabled && (
                     <Link
                         href="/dashboard/academy"

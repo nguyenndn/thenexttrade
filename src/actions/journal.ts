@@ -7,6 +7,7 @@ import { onUserTradesUpdated } from "@/lib/experiments/progress.server";
 import { z } from "zod";
 import { TradeType, TradeStatus, TradeResult, Prisma } from "@prisma/client";
 import { buildDateRangeFilter } from "@/lib/utils";
+import { buildReviewStatusPrismaWhere } from "@/lib/journal/trade-review-status";
 import {
     CENT_LOT_DIVISOR,
     convertToUsdEquivalent,
@@ -99,6 +100,7 @@ export async function getJournalEntries(
         sortBy?: string;
         sortOrder?: "asc" | "desc";
         hasImages?: boolean;
+        reviewStatus?: string;
         timezone?: string;
     } = {}
 ) {
@@ -123,6 +125,7 @@ export async function getJournalEntries(
         sortBy,
         sortOrder,
         hasImages,
+        reviewStatus,
         timezone,
     } = filters;
     const safePage = Number.isInteger(page) && page > 0 ? page : 1;
@@ -201,6 +204,22 @@ export async function getJournalEntries(
 
     if (tag) {
         where.tags = { has: tag };
+    }
+
+    // Clone scope BEFORE applying reviewStatus so unreviewed badge count stays
+    // accurate even while the user has toggled the REVIEWED/UNREVIEWED filter.
+    const unreviewedScopeWhere: Prisma.JournalEntryWhereInput = {
+        ...where,
+        status: "CLOSED",
+        AND: [
+            ...(Array.isArray(where.AND) ? where.AND : []),
+            buildReviewStatusPrismaWhere("UNREVIEWED"),
+        ],
+    };
+
+    if (reviewStatus === "REVIEWED" || reviewStatus === "UNREVIEWED") {
+        const reviewCond = buildReviewStatusPrismaWhere(reviewStatus);
+        where.AND = [...(Array.isArray(where.AND) ? where.AND : []), reviewCond];
     }
 
     // Determine sorting
@@ -287,6 +306,7 @@ export async function getJournalEntries(
         perAccountAggregates,
         resultsGrouped,
         statsTotal,
+        unreviewedCount,
     ] = await Promise.all([
         prisma.journalEntry.findMany({
             where,
@@ -392,6 +412,7 @@ export async function getJournalEntries(
         status === "OPEN"
             ? Promise.resolve(0)
             : prisma.journalEntry.count({ where: statsWhere }),
+        prisma.journalEntry.count({ where: unreviewedScopeWhere }),
     ]);
 
     let winCount = 0;
@@ -469,6 +490,7 @@ export async function getJournalEntries(
         totalLots: Number(totalLots.toFixed(2)),
         totalCommission: Number(totalCommission.toFixed(2)),
         totalSwap: Number(totalSwap.toFixed(2)),
+        unreviewedCount,
     };
 
     const formattedEntries = entries.map((entry) => {

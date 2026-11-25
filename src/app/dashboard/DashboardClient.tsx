@@ -6,6 +6,7 @@ import { GreetingHeader } from "@/components/dashboard/GreetingHeader";
 import { DashboardManager } from "@/components/dashboard/grid/DashboardManager";
 import { MobileProStatusBanner } from "@/components/dashboard/MobileProStatusBanner";
 import { ActivationChecklist } from "@/components/dashboard/ActivationChecklist";
+import { DailyDisciplineRitual } from "@/components/dashboard/DailyDisciplineRitual";
 import { WelcomeHero } from "@/components/dashboard/WelcomeHero";
 import { DashboardCoachNudge } from "@/components/coach/DashboardCoachNudge";
 import { FirstSessionWizard } from "@/components/onboarding/FirstSessionWizard";
@@ -240,6 +241,14 @@ export default function DashboardClient(data: DashboardPageData) {
                             <div data-tour="dashboard-action-center">
                                 <ActivationChecklist state={activationState} />
                             </div>
+                        )}
+
+                        {/* Auto-Verified Daily Review Ritual & 28-Day Consistency Heatmap */}
+                        {effectiveData.disciplineRitual && (
+                            <DailyDisciplineRitual
+                                ritual={effectiveData.disciplineRitual}
+                                currentAccountId={currentAccountId}
+                            />
                         )}
 
                         <DashboardManager

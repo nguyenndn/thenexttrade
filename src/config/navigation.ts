@@ -115,12 +115,6 @@ export const dashboardMenuItems = [
         icon: Route,
         requiresTradeData: false,
     },
-    {
-        name: "Rules",
-        href: "/dashboard/rules",
-        icon: ClipboardCheck,
-        requiresTradeData: false,
-    },
 
     // --- PERFORMANCE ---
     {
@@ -258,7 +252,6 @@ export const dashboardMenuGroups = [
                 icon: FileText,
             },
             { name: "Strategies", href: "/dashboard/strategies", icon: Route },
-            { name: "Rules", href: "/dashboard/rules", icon: ClipboardCheck },
         ],
     },
     {

@@ -2,11 +2,26 @@ import { NextRequest, NextResponse } from "next/server";
 import { getAuthUser } from "@/lib/auth-cache";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
+import {
+    RULE_CATEGORIES,
+    RULE_SEVERITIES,
+    parseLegacyStrategyRules,
+} from "@/lib/strategies/playbook-presets";
+
+const strategyRuleItemSchema = z.object({
+    id: z.string().optional(),
+    title: z.string().min(3).max(140),
+    description: z.string().max(1000).nullable().optional(),
+    category: z.enum(RULE_CATEGORIES).default("ENTRY"),
+    severity: z.enum(RULE_SEVERITIES).default("HIGH"),
+    isActive: z.boolean().optional().default(true),
+});
 
 const strategySchema = z.object({
     name: z.string().min(1).max(100),
     description: z.string().nullable().optional(),
     rules: z.string().nullable().optional(),
+    ruleItems: z.array(strategyRuleItemSchema).max(30).optional(),
     color: z
         .string()
         .transform((val) =>
@@ -70,6 +85,19 @@ export async function GET(request: NextRequest) {
                     idealTakeProfit: true,
                     riskRewardMin: true,
                     referenceImages: true,
+                    tradingRules: {
+                        orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+                        select: {
+                            id: true,
+                            title: true,
+                            description: true,
+                            category: true,
+                            severity: true,
+                            isActive: true,
+                            sortOrder: true,
+                            strategyId: true,
+                        },
+                    },
                 },
                 skip,
                 take: limit,
@@ -119,6 +147,7 @@ export async function POST(request: NextRequest) {
             name,
             description,
             rules,
+            ruleItems,
             color,
             isPlaybook,
             setupType,
@@ -142,23 +171,47 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        const strategy = await prisma.strategy.create({
-            data: {
-                userId: user.id,
-                name,
-                description: description || null,
-                rules: rules || null,
-                color: color || "#6366F1",
-                isPlaybook: isPlaybook ?? false,
-                setupType: setupType || null,
-                timeframes: timeframes || [],
-                pairs: pairs || [],
-                idealEntry: idealEntry || null,
-                idealStopLoss: idealStopLoss || null,
-                idealTakeProfit: idealTakeProfit || null,
-                riskRewardMin: riskRewardMin ?? null,
-                referenceImages: referenceImages || [],
-            },
+        const resolvedRules =
+            ruleItems !== undefined
+                ? ruleItems
+                : parseLegacyStrategyRules(rules);
+
+        const strategy = await prisma.$transaction(async (tx) => {
+            const created = await tx.strategy.create({
+                data: {
+                    userId: user.id,
+                    name,
+                    description: description || null,
+                    rules: null,
+                    color: color || "#F59E0B",
+                    isPlaybook: isPlaybook ?? true,
+                    setupType: setupType || null,
+                    timeframes: timeframes || [],
+                    pairs: pairs || [],
+                    idealEntry: idealEntry || null,
+                    idealStopLoss: idealStopLoss || null,
+                    idealTakeProfit: idealTakeProfit || null,
+                    riskRewardMin: riskRewardMin ?? null,
+                    referenceImages: referenceImages || [],
+                },
+            });
+
+            if (resolvedRules.length > 0) {
+                await tx.tradingRule.createMany({
+                    data: resolvedRules.map((item, idx) => ({
+                        userId: user.id,
+                        strategyId: created.id,
+                        title: item.title.trim(),
+                        description: item.description?.trim() || null,
+                        category: item.category,
+                        severity: item.severity,
+                        isActive: item.isActive ?? true,
+                        sortOrder: idx,
+                    })),
+                });
+            }
+
+            return created;
         });
 
         return NextResponse.json({ strategy }, { status: 201 });

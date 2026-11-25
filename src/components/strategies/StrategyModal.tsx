@@ -1,13 +1,14 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { toast } from "sonner";
 import {
     X,
     ImagePlus,
     Loader2,
-    BookOpen,
+    Route,
+    SlidersHorizontal,
     Trash2,
     ChevronDown,
     Check,
@@ -15,7 +16,17 @@ import {
 import { Button } from "@/components/ui/Button";
 import { createStrategy, updateStrategy } from "@/actions/strategies";
 import { SPRING_SOFT, backdropVariants, panelVariants } from "@/lib/animations";
-import { PLAYBOOK_PRESETS, PlaybookPreset } from "@/lib/strategies/playbook-presets";
+import {
+    PLAYBOOK_PRESETS,
+    PlaybookPreset,
+    RULE_CATEGORIES,
+    RULE_SEVERITIES,
+    RuleCategory,
+    RuleSeverity,
+    StrategyRuleInput,
+    parseLegacyStrategyRules,
+} from "@/lib/strategies/playbook-presets";
+import { StrategyRulesEditor } from "./StrategyRulesEditor";
 import {
     DropdownMenu,
     DropdownMenuTrigger,
@@ -51,13 +62,20 @@ interface Strategy {
     idealTakeProfit: string | null;
     riskRewardMin: number | null;
     referenceImages: string[];
+    tradingRules?: Array<{
+        id: string;
+        title: string;
+        description?: string | null;
+        category: string;
+        severity: string;
+        isActive: boolean;
+    }>;
 }
 
 interface StrategyModalProps {
     strategy?: Strategy | null;
     onClose: () => void;
     onSave: () => void;
-    defaultPlaybook?: boolean;
 }
 
 const COLORS = [
@@ -111,7 +129,6 @@ export function StrategyModal({
     strategy,
     onClose,
     onSave,
-    defaultPlaybook = false,
 }: StrategyModalProps) {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -121,7 +138,6 @@ export function StrategyModal({
         description: strategy?.description || "",
         rules: strategy?.rules || "",
         color: strategy?.color || COLORS[0],
-        isPlaybook: strategy?.isPlaybook ?? defaultPlaybook,
         setupType: strategy?.setupType || "",
         timeframes: strategy?.timeframes || [],
         pairs: strategy?.pairs || [],
@@ -130,6 +146,23 @@ export function StrategyModal({
         idealTakeProfit: strategy?.idealTakeProfit || "",
         riskRewardMin: strategy?.riskRewardMin ?? null,
         referenceImages: strategy?.referenceImages || [],
+    });
+    const [ruleItems, setRuleItems] = useState<StrategyRuleInput[]>(() => {
+        if (strategy?.tradingRules && strategy.tradingRules.length > 0) {
+            return strategy.tradingRules.map((r) => ({
+                id: r.id,
+                title: r.title,
+                description: r.description ?? null,
+                category: (RULE_CATEGORIES.includes(r.category as RuleCategory)
+                    ? r.category
+                    : "ENTRY") as RuleCategory,
+                severity: (RULE_SEVERITIES.includes(r.severity as RuleSeverity)
+                    ? r.severity
+                    : "HIGH") as RuleSeverity,
+                isActive: r.isActive,
+            }));
+        }
+        return parseLegacyStrategyRules(strategy?.rules);
     });
 
     const [colorPickerOpen, setColorPickerOpen] = useState(false);
@@ -151,7 +184,6 @@ export function StrategyModal({
             description: preset.description,
             rules: preset.rules,
             color: preset.color,
-            isPlaybook: true,
             setupType: preset.setupType,
             timeframes: preset.timeframes,
             pairs: preset.pairs,
@@ -161,6 +193,7 @@ export function StrategyModal({
             riskRewardMin: preset.riskRewardMin,
             referenceImages: formData.referenceImages.length > 0 ? formData.referenceImages : preset.referenceImages,
         });
+        setRuleItems(preset.ruleItems.map((item) => ({ ...item, isActive: true })));
         toast.success(`Loaded "${preset.name}" template!`);
     };
 
@@ -258,17 +291,18 @@ export function StrategyModal({
             const payload = {
                 name: formData.name.trim(),
                 description: formData.description.trim() || null,
-                rules: formData.rules.trim() || null,
+                rules: null,
+                ruleItems,
                 color: formData.color,
-                isPlaybook: formData.isPlaybook,
-                setupType: formData.isPlaybook && formData.setupType ? formData.setupType : null,
-                timeframes: formData.isPlaybook ? formData.timeframes : [],
-                pairs: formData.isPlaybook ? formData.pairs : [],
-                idealEntry: formData.isPlaybook && formData.idealEntry ? formData.idealEntry.trim() : null,
-                idealStopLoss: formData.isPlaybook && formData.idealStopLoss ? formData.idealStopLoss.trim() : null,
-                idealTakeProfit: formData.isPlaybook && formData.idealTakeProfit ? formData.idealTakeProfit.trim() : null,
-                riskRewardMin: formData.isPlaybook && formData.riskRewardMin != null ? formData.riskRewardMin : null,
-                referenceImages: formData.isPlaybook ? formData.referenceImages : [],
+                isPlaybook: true,
+                setupType: formData.setupType ? formData.setupType : null,
+                timeframes: formData.timeframes,
+                pairs: formData.pairs,
+                idealEntry: formData.idealEntry.trim() || null,
+                idealStopLoss: formData.idealStopLoss.trim() || null,
+                idealTakeProfit: formData.idealTakeProfit.trim() || null,
+                riskRewardMin: formData.riskRewardMin != null ? formData.riskRewardMin : null,
+                referenceImages: formData.referenceImages,
             };
 
             const result = !strategy || strategy.id.startsWith("temp-")
@@ -279,8 +313,8 @@ export function StrategyModal({
 
             toast.success(
                 strategy && !strategy.id.startsWith("temp-")
-                    ? formData.isPlaybook ? "Playbook updated" : "Strategy updated"
-                    : formData.isPlaybook ? "Playbook created" : "Strategy created"
+                    ? "Strategy updated"
+                    : "Strategy created"
             );
             onSave();
         } catch (error) {
@@ -323,28 +357,22 @@ export function StrategyModal({
                 animate="animate"
                 exit="exit"
                 transition={SPRING_SOFT}
-                className={`relative z-10 bg-white dark:bg-[#0D111C] w-full max-h-[90vh] flex flex-col rounded-2xl shadow-2xl border border-dashboard ${
-                    formData.isPlaybook ? "max-w-2xl" : "max-w-lg"
-                } transition-all duration-300 overflow-hidden`}
+                className="relative z-10 bg-white dark:bg-[#0D111C] w-full max-w-2xl max-h-[90vh] flex flex-col rounded-2xl shadow-2xl border border-dashboard transition-all duration-300 overflow-hidden"
             >
                 {/* Fixed Header */}
                 <div className="flex items-center justify-between gap-2 p-4 sm:p-6 border-b border-dashboard shrink-0 bg-white dark:bg-[#0D111C]">
                     <div className="flex items-center gap-3 min-w-0">
-                        {formData.isPlaybook && (
-                            <div className="w-9 h-9 rounded-lg bg-amber-500/10 flex items-center justify-center text-gold shrink-0">
-                                <BookOpen size={18} />
-                            </div>
-                        )}
+                        <div className="w-9 h-9 rounded-lg bg-amber-500/10 flex items-center justify-center text-gold shrink-0">
+                            <Route size={18} />
+                        </div>
                         <div className="min-w-0">
                             <h2 className="text-lg sm:text-xl font-bold text-gray-700 dark:text-white truncate">
-                                {strategy
-                                    ? formData.isPlaybook ? "Edit Playbook" : "Edit Strategy"
-                                    : formData.isPlaybook ? "New Playbook" : "New Strategy"}
+                                {strategy && !strategy.id.startsWith("temp-")
+                                    ? "Edit Strategy"
+                                    : "New Strategy"}
                             </h2>
                             <p className="text-xs text-gray-500 line-clamp-1">
-                                {formData.isPlaybook
-                                    ? "Define your A+ setup rules and reference charts"
-                                    : "Create a strategy tag to group your trades"}
+                                Define entry rules, setup parameters, and reference charts
                             </p>
                         </div>
                     </div>
@@ -411,7 +439,7 @@ export function StrategyModal({
                     <div className="space-y-4">
                         <PremiumInput
                             id="name"
-                            label={formData.isPlaybook ? "Playbook Name" : "Strategy / Setup Name"}
+                            label="Strategy Name"
                             required
                             value={formData.name}
                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -426,8 +454,8 @@ export function StrategyModal({
                                             variant="ghost"
                                             size="sm"
                                             className="h-auto p-0 flex items-center gap-1.5 px-2 py-1 rounded-lg hover:bg-gray-200/70 dark:hover:bg-white/10 transition-colors cursor-pointer group/color focus:outline-none"
-                                            title={formData.isPlaybook ? "Choose playbook color badge" : "Choose strategy color badge"}
-                                            aria-label={formData.isPlaybook ? "Choose playbook color badge" : "Choose strategy color badge"}
+                                            title="Choose strategy color badge"
+                                            aria-label="Choose strategy color badge"
                                         >
                                             <span
                                                 className="w-4 h-4 rounded-full border border-black/15 dark:border-white/20 shadow-sm shrink-0 transition-transform group-hover/color:scale-110"
@@ -449,7 +477,7 @@ export function StrategyModal({
                                         <div className="space-y-2.5">
                                             <div className="flex items-center justify-between pb-1.5 border-b border-dashboard">
                                                 <span className="text-xs font-bold uppercase tracking-wider text-gray-500">
-                                                    {formData.isPlaybook ? "Playbook Color Badge" : "Strategy Color Badge"}
+                                                    Strategy Color Badge
                                                 </span>
                                                 <span
                                                     className="w-3.5 h-3.5 rounded-full border border-black/10 dark:border-white/10"
@@ -512,88 +540,50 @@ export function StrategyModal({
                             />
                         </div>
 
-                        <div className="space-y-2">
-                            <label htmlFor="rules" className={labelClasses}>
-                                Rules & Checklist <span className="font-normal text-gray-500 text-xs">(1 rule per line)</span>
-                            </label>
-                            <textarea
-                                id="rules"
-                                rows={3}
-                                className={`${inputClasses} font-mono text-xs`}
-                                value={formData.rules}
-                                onChange={(e) => setFormData({ ...formData, rules: e.target.value })}
-                            />
-                        </div>
+                        <StrategyRulesEditor
+                            rules={ruleItems}
+                            onChange={setRuleItems}
+                        />
                     </div>
 
-                    {/* Playbook Section Toggle */}
-                    <div className="border border-amber-500/20 rounded-lg bg-amber-500/[0.02] dark:bg-amber-500/[0.04] overflow-hidden">
-                        <div className="p-4 flex items-center justify-between border-b border-amber-500/10">
-                            <div className="flex items-center gap-3">
-                                <Button
-                                    type="button"
-                                    variant="ghost"
-                                    onClick={() => setFormData((p) => ({ ...p, isPlaybook: !p.isPlaybook }))}
-                                    className={`p-0 relative inline-flex items-center justify-start h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-                                        formData.isPlaybook
-                                            ? "bg-gold hover:bg-gold"
-                                            : "bg-gray-200 dark:bg-white/20 hover:bg-gray-300 dark:hover:bg-white/25"
-                                    }`}
-                                    role="switch"
-                                    aria-checked={formData.isPlaybook}
-                                    aria-label="Toggle Playbook details"
-                                >
-                                    <span
-                                        className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out ${
-                                            formData.isPlaybook ? "translate-x-5" : "translate-x-0"
-                                        }`}
-                                    />
-                                </Button>
-                                <div>
-                                    <h3 className="text-sm font-bold text-gray-700 dark:text-white flex items-center gap-1.5">
-                                        <BookOpen size={14} className="text-gold dark:text-amber-400" />
-                                        Enable Playbook Details
-                                    </h3>
-                                    <p className="text-xs text-gray-500">
-                                        Add setup template with reference charts, timeframes, and entry rules
-                                    </p>
-                                </div>
+                    {/* Setup Parameters (Optional) */}
+                    <div className="border border-dashboard rounded-xl bg-gray-50/50 dark:bg-white/[0.02] overflow-hidden">
+                        <div className="px-4 py-3 border-b border-dashboard flex items-center justify-between gap-2">
+                            <div>
+                                <h3 className="text-sm font-bold text-gray-700 dark:text-white flex items-center gap-1.5">
+                                    <SlidersHorizontal size={14} className="text-gold dark:text-amber-400" />
+                                    Setup Parameters
+                                    <span className="font-normal text-gray-500 text-xs">(Optional)</span>
+                                </h3>
+                                <p className="text-xs text-gray-500">
+                                    Timeframes, target pairs, entry/SL zones, minimum R:R, and reference charts
+                                </p>
                             </div>
                         </div>
 
-                        {/* Collapsible Playbook Fields */}
-                        <AnimatePresence initial={false}>
-                            {formData.isPlaybook && (
-                                <motion.div
-                                    initial={{ height: 0, opacity: 0 }}
-                                    animate={{ height: "auto", opacity: 1 }}
-                                    exit={{ height: 0, opacity: 0 }}
-                                    transition={{ duration: 0.25, ease: "easeInOut" }}
-                                    className="overflow-hidden"
+                        <div className="p-4 space-y-4">
+                            {/* Setup Type */}
+                            <div className="space-y-2">
+                                <label className={labelClasses}>Setup Type</label>
+                                <Select
+                                    value={formData.setupType || "none"}
+                                    onValueChange={(val) => setFormData({ ...formData, setupType: val === "none" ? "" : val })}
                                 >
-                                    <div className="p-4 space-y-4 border-t border-amber-500/10">
-                                        {/* Setup Type */}
-                                        <div className="space-y-2">
-                                            <label className={labelClasses}>Setup Type</label>
-                                            <Select
-                                                value={formData.setupType || "none"}
-                                                onValueChange={(val) => setFormData({ ...formData, setupType: val === "none" ? "" : val })}
-                                            >
-                                                <SelectTrigger className="w-full h-10 px-4 rounded-lg border border-dashboard bg-white dark:bg-white/5 text-sm text-gray-700 dark:text-white">
-                                                    <SelectValue placeholder="Select type..." />
-                                                </SelectTrigger>
-                                                <SelectContent className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925]">
-                                                    <SelectItem value="none" className="rounded-lg text-sm text-gray-400">
-                                                        Select type...
-                                                    </SelectItem>
-                                                    {SETUP_TYPES.map((t) => (
-                                                        <SelectItem key={t} value={t} className="rounded-lg text-sm">
-                                                            {t}
-                                                        </SelectItem>
-                                                    ))}
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
+                                    <SelectTrigger className="w-full h-10 px-4 rounded-lg border border-dashboard bg-white dark:bg-[#151925] text-sm text-gray-700 dark:text-white">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent className="rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151925]">
+                                        <SelectItem value="none" className="rounded-lg text-sm text-gray-400">
+                                            None (Optional)
+                                        </SelectItem>
+                                        {SETUP_TYPES.map((t) => (
+                                            <SelectItem key={t} value={t} className="rounded-lg text-sm">
+                                                {t}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
 
                                         {/* Timeframes */}
                                         <div className="space-y-2">
@@ -841,10 +831,7 @@ export function StrategyModal({
                                                 )}
                                             </div>
                                         </div>
-                                    </div>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
+                        </div>
                     </div>
                 </form>
 
@@ -867,7 +854,7 @@ export function StrategyModal({
                         isLoading={isLoading}
                         className="font-bold shadow-md shadow-amber-500/20"
                     >
-                        {formData.isPlaybook ? "Save Playbook" : "Save Strategy"}
+                        Save Strategy
                     </Button>
                 </div>
             </motion.div>

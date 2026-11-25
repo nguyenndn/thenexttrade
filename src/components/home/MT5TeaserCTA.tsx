@@ -58,7 +58,7 @@ export function MT5TeaserCTA() {
                                 {/* Step Eyebrow Badge */}
                                 <div className="mb-2.5 inline-flex items-center gap-1.5 text-[10px] font-mono tabular-nums font-black uppercase tracking-[0.25em] text-amber-600 dark:text-gold/90 select-none">
                                     <Bot size={11} strokeWidth={2.8} className="opacity-80" />
-                                    <span>STEP 02 / 04 · EXECUTION &amp; DISCIPLINE</span>
+                                    <span>STEP 03 / 04 · EXECUTION &amp; DISCIPLINE</span>
                                 </div>
 
                                 <h2 className="text-2xl sm:text-3xl font-black text-gray-800 dark:text-white leading-tight tracking-tight">

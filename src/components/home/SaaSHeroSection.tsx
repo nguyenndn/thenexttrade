@@ -36,12 +36,12 @@ export function SaaSHeroSection({ isLoggedIn }: SaaSHeroSectionProps) {
                 </h1>
 
                 {/* Supporting Copy */}
-                <p className="text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-300 leading-relaxed mb-8 sm:mb-10 max-w-3xl sm:max-w-4xl font-normal sm:font-medium animate-in fade-in duration-1000 text-center [text-wrap:balance]">
+                <p className="text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-300 leading-relaxed mb-8 sm:mb-10 max-w-3xl sm:max-w-4xl lg:max-w-5xl font-normal sm:font-medium animate-in fade-in duration-1000 text-center [text-wrap:balance] lg:[text-wrap:wrap]">
                     The strategy was never the problem — the revenge size after a red day
                     was.{" "}
                     <br className="hidden sm:inline" />
-                    <span className="font-semibold text-gray-900 dark:text-white">
-                        We sync every Demo or Live MT5 trade via EA and show you the exact moment discipline broke.
+                    <span className="font-semibold text-gray-900 dark:text-white lg:whitespace-nowrap">
+                        We sync every MT5 trade via EA or Cloud and show the exact moment discipline broke.
                     </span>
                 </p>
 
@@ -87,33 +87,17 @@ export function SaaSHeroSection({ isLoggedIn }: SaaSHeroSectionProps) {
                     dropped: nothing here is forever-free-with-no-condition, and
                     the $200 broker deposit is explained in full further down.
                     Claiming more than we do costs more trust than it buys. */}
-                <div className="mt-6 sm:mt-7 flex flex-col items-center gap-2 text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 animate-in fade-in duration-1000">
+                <div className="mt-6 sm:mt-7 flex flex-col items-center gap-1.5 text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 animate-in fade-in duration-1000">
                     <span className="inline-flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-gray-700 dark:text-gray-300 font-semibold">
                         <span className="inline-flex items-center gap-1.5">
                             <ShieldCheck size={14} className="text-emerald-500 shrink-0" />
-                            Zero MT5 password required (Sync Key via EA)
+                            Zero master password (EA Key or Read-Only Cloud)
                         </span>
                         <span className="hidden sm:inline text-gray-300 dark:text-white/20">·</span>
-                        <span>Works on Demo &amp; Live accounts</span>
+                        <span>Demo &amp; Live MT5</span>
                     </span>
                     <span className="text-center">
                         We&apos;re paid by the broker, not by you · Your funds stay 100% in your own name
-                    </span>
-                    <span className="text-center text-xs text-gray-500 dark:text-gray-400 pt-1">
-                        No MT5 account yet?{" "}
-                        <Link
-                            href="/trading-style"
-                            className="font-bold text-amber-600 dark:text-gold hover:underline"
-                        >
-                            Take the 3-Minute Trading Style Audit →
-                        </Link>{" "}
-                        or{" "}
-                        <Link
-                            href="/tools"
-                            className="font-bold text-amber-600 dark:text-gold hover:underline"
-                        >
-                            try 17 Risk Calculators →
-                        </Link>
                     </span>
                 </div>
             </section>

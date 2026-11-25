@@ -2,11 +2,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Edit2, Trash2, Target, TrendingUp, Percent, Save, BookOpen, Layers, ArrowRight } from "lucide-react";
+import { Edit2, Trash2, Target, TrendingUp, Percent, Save, Layers, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Strategy, StrategyPerformance } from "./StrategyManager";
 import { PlaybookLightbox } from "./PlaybookLightbox";
 import { formatDashboardCurrency } from "@/lib/utils/cent-account";
+import { parseLegacyStrategyRules } from "@/lib/strategies/playbook-presets";
 
 export function StrategyCard({
     strategy,
@@ -24,11 +25,21 @@ export function StrategyCard({
     onDelete: () => void;
 }) {
     const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+    const hasSetupDetails = Boolean(
+        strategy.setupType ||
+            strategy.riskRewardMin != null ||
+            strategy.timeframes.length > 0 ||
+            strategy.pairs.length > 0 ||
+            strategy.idealEntry ||
+            strategy.idealStopLoss ||
+            strategy.idealTakeProfit ||
+            strategy.referenceImages.length > 0
+    );
 
     return (
         <>
             <div
-                className={`bg-white dark:bg-[#1E2028] p-6 rounded-xl border shadow-sm group hover:border-primary/50 hover:shadow-md transition-shadow flex flex-col justify-between ${
+                className={`bg-white dark:bg-[#1E2028] p-3.5 sm:p-4 rounded-xl border shadow-sm group hover:border-primary/50 hover:shadow-md transition-shadow flex flex-col justify-between min-w-0 ${
                     isGhost
                         ? "border-dashed border-gray-300 dark:border-white/20"
                         : "border-dashboard"
@@ -36,20 +47,14 @@ export function StrategyCard({
             >
                 <div>
                     {/* Header */}
-                    <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center gap-3">
+                    <div className="flex items-start justify-between gap-1.5 mb-2.5">
+                        <div className="flex items-start gap-2 min-w-0">
                             <div
-                                className="w-4 h-4 rounded-full flex-shrink-0"
+                                className="w-3 h-3 rounded-full flex-shrink-0 mt-1"
                                 style={{ backgroundColor: strategy.color }}
                             />
-                            <h3 className="font-bold text-lg text-gray-700 dark:text-white flex items-center gap-2 flex-wrap">
+                            <h3 className="font-bold text-sm sm:text-[15px] text-gray-700 dark:text-white flex items-center gap-1.5 flex-wrap leading-snug">
                                 {strategy.name}
-                                {strategy.isPlaybook && (
-                                    <span className="inline-flex items-center gap-1 text-[10px] bg-amber-500/10 text-gold dark:text-amber-400 px-2 py-0.5 rounded-lg font-bold">
-                                        <BookOpen size={10} />
-                                        Playbook
-                                    </span>
-                                )}
                                 {isGhost && (
                                     <span className="text-[10px] bg-gray-100 dark:bg-white/10 px-2 py-0.5 rounded-lg text-gray-600 font-medium">
                                         Unsaved
@@ -92,25 +97,27 @@ export function StrategyCard({
                         )}
                     </div>
 
-                    {/* Playbook Metadata */}
-                    {strategy.isPlaybook && (
+                    {/* Setup Metadata */}
+                    {hasSetupDetails && (
                         <div className="mb-4 space-y-2.5 p-3 rounded-lg bg-gray-50/80 dark:bg-[#151925] border border-dashboard">
                             {/* Setup type + R:R */}
-                            <div className="flex items-center justify-between text-xs text-gray-500">
-                                {strategy.setupType ? (
-                                    <span className="font-bold text-gray-700 dark:text-gray-300 flex items-center gap-1">
-                                        <Layers size={12} className="text-primary" />
-                                        {strategy.setupType}
-                                    </span>
-                                ) : (
-                                    <span className="italic text-gray-400">Setup Pattern</span>
-                                )}
-                                {strategy.riskRewardMin != null && (
-                                    <span>
-                                        Min R:R <strong className="text-primary font-mono tabular-nums">{strategy.riskRewardMin}:1</strong>
-                                    </span>
-                                )}
-                            </div>
+                            {(strategy.setupType || strategy.riskRewardMin != null) && (
+                                <div className="flex items-center justify-between text-xs text-gray-500">
+                                    {strategy.setupType ? (
+                                        <span className="font-bold text-gray-700 dark:text-gray-300 flex items-center gap-1">
+                                            <Layers size={12} className="text-primary" />
+                                            {strategy.setupType}
+                                        </span>
+                                    ) : (
+                                        <span />
+                                    )}
+                                    {strategy.riskRewardMin != null && (
+                                        <span>
+                                            Min R:R <strong className="text-primary font-mono tabular-nums">{strategy.riskRewardMin}:1</strong>
+                                        </span>
+                                    )}
+                                </div>
+                            )}
 
                             {/* Timeframes + Pairs chips */}
                             {(strategy.timeframes.length > 0 || strategy.pairs.length > 0) && (
@@ -177,41 +184,70 @@ export function StrategyCard({
                     )}
 
                     {/* Rules */}
-                    {strategy.rules && (
-                        <div className="mb-4">
-                            <p className="text-xs font-bold text-gray-500 uppercase mb-1">
-                                Rules & Confirmations
-                            </p>
-                            <div className="text-sm text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-white/5 p-3 rounded-lg border border-dashboard whitespace-pre-line max-h-[100px] overflow-y-auto custom-scrollbar font-mono text-xs">
-                                {strategy.rules}
+                    {(() => {
+                        const structuredRules =
+                            strategy.tradingRules && strategy.tradingRules.length > 0
+                                ? strategy.tradingRules.filter((r) => r.isActive !== false)
+                                : parseLegacyStrategyRules(strategy.rules);
+
+                        if (structuredRules.length === 0) return null;
+
+                        return (
+                            <div className="mb-4">
+                                <div className="flex items-center justify-between mb-1.5">
+                                    <p className="text-xs font-bold text-gray-500 uppercase">
+                                        Rules & Checklist
+                                    </p>
+                                    <span className="text-[10px] font-bold font-mono tabular-nums px-2 py-0.5 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400">
+                                        {structuredRules.length}
+                                    </span>
+                                </div>
+                                <div className="space-y-1.5 bg-gray-50 dark:bg-white/5 p-2.5 rounded-lg border border-dashboard">
+                                    {structuredRules.slice(0, 4).map((r, idx) => (
+                                        <div
+                                            key={"id" in r && r.id ? r.id : idx}
+                                            className="flex items-center gap-2 text-xs text-gray-700 dark:text-gray-300"
+                                        >
+                                            <span className="px-1.5 py-0.5 rounded-lg text-[9px] font-black uppercase bg-white dark:bg-[#151925] border border-dashboard text-gray-500 dark:text-gray-400 shrink-0">
+                                                {r.category}
+                                            </span>
+                                            <span className="truncate">{r.title}</span>
+                                        </div>
+                                    ))}
+                                    {structuredRules.length > 4 && (
+                                        <p className="text-[11px] font-semibold text-gray-400 pt-0.5">
+                                            +{structuredRules.length - 4} more rules
+                                        </p>
+                                    )}
+                                </div>
                             </div>
-                        </div>
-                    )}
+                        );
+                    })()}
                 </div>
 
                 <div>
                     {/* Stats */}
                     {performance ? (
-                        <div className="grid grid-cols-3 gap-3 pt-4 border-t border-gray-100 dark:border-white/5">
-                            <div className="text-center p-2 bg-gray-50/80 dark:bg-[#151925] rounded-lg">
+                        <div className="grid grid-cols-3 gap-2 pt-3 border-t border-gray-100 dark:border-white/5">
+                            <div className="text-center p-2 bg-gray-50/80 dark:bg-[#151925] rounded-lg min-w-0">
                                 <Target
-                                    size={16}
+                                    size={14}
                                     className="mx-auto mb-1 text-amber-600 dark:text-gold"
                                 />
-                                <p className="text-base font-bold font-mono tabular-nums text-gray-700 dark:text-white">
+                                <p className="text-sm font-bold font-mono tabular-nums text-gray-700 dark:text-white truncate">
                                     {(performance.winRate ?? 0).toFixed(0)}%
                                 </p>
-                                <p className="text-[10px] uppercase font-bold text-gray-500">
+                                <p className="text-[9px] uppercase font-bold text-gray-500">
                                     Win Rate
                                 </p>
                             </div>
-                            <div className="text-center p-2 bg-gray-50/80 dark:bg-[#151925] rounded-lg">
+                            <div className="text-center p-2 bg-gray-50/80 dark:bg-[#151925] rounded-lg min-w-0">
                                 <TrendingUp
-                                    size={16}
+                                    size={14}
                                     className={`mx-auto mb-1 ${performance.totalPnL >= 0 ? "text-emerald-500" : "text-red-500"}`}
                                 />
                                 <p
-                                    className={`text-base font-bold font-mono tabular-nums ${performance.totalPnL >= 0 ? "text-emerald-500" : "text-red-500"}`}
+                                    className={`text-sm font-bold font-mono tabular-nums truncate ${performance.totalPnL >= 0 ? "text-emerald-500" : "text-red-500"}`}
                                 >
                                     {formatDashboardCurrency(
                                         performance.totalPnL ?? 0,
@@ -219,21 +255,21 @@ export function StrategyCard({
                                         { fractionDigits: 0 }
                                     )}
                                 </p>
-                                <p className="text-[10px] uppercase font-bold text-gray-500">
+                                <p className="text-[9px] uppercase font-bold text-gray-500">
                                     P&L
                                 </p>
                             </div>
-                            <div className="text-center p-2 bg-gray-50/80 dark:bg-[#151925] rounded-lg">
+                            <div className="text-center p-2 bg-gray-50/80 dark:bg-[#151925] rounded-lg min-w-0">
                                 <Percent
-                                    size={16}
+                                    size={14}
                                     className="mx-auto mb-1 text-amber-600 dark:text-gold"
                                 />
-                                <p className="text-base font-bold font-mono tabular-nums text-gray-700 dark:text-white">
+                                <p className="text-sm font-bold font-mono tabular-nums text-gray-700 dark:text-white truncate">
                                     {performance.profitFactor === Infinity || performance.profitFactor >= 99
                                         ? "MAX"
                                         : (performance.profitFactor ?? 0).toFixed(1)}
                                 </p>
-                                <p className="text-[10px] uppercase font-bold text-gray-500">
+                                <p className="text-[9px] uppercase font-bold text-gray-500">
                                     PF
                                 </p>
                             </div>

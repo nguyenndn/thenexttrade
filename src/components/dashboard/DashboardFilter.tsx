@@ -6,9 +6,7 @@ import { DateRangePicker } from "@/components/ui/DateRangePicker";
 import { AccountSelector } from "./AccountSelector";
 import { startOfMonth, format, endOfDay, startOfDay } from "date-fns";
 import { Button } from "@/components/ui/Button";
-import { RefreshCw, Filter, X } from "lucide-react";
-import { toast } from "sonner";
-import { requestAccountSync } from "@/actions/accounts";
+import { Filter, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useSampleMode } from "@/components/providers/SampleModeProvider";
 import { SAMPLE_DATE_RANGE } from "@/lib/sample-data/mock-sample-data";
@@ -42,7 +40,6 @@ export function DashboardFilter({
         pathname === "/dashboard/intelligence";
     const { isSampleMode } = useSampleMode();
     const prevSampleModeRef = useRef<boolean>(isSampleMode);
-    const [isSyncing, setIsSyncing] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
 
     // Parse dates from URL
@@ -232,31 +229,6 @@ export function DashboardFilter({
         router.push(`?${params.toString()}`);
     };
 
-    const handleSyncNow = async () => {
-        if (!currentAccountId || currentAccountId === "all") {
-            toast.error("Please select a specific trading account to sync");
-            return;
-        }
-
-        setIsSyncing(true);
-        try {
-            const res = await requestAccountSync(currentAccountId, "3D");
-            if (res.success) {
-                toast.success(
-                    "Sync request sent! The Trade Manager EA will process it shortly."
-                );
-            } else {
-                toast.error(res.error || "Failed to trigger sync");
-            }
-        } catch {
-            toast.error("Failed to request sync");
-        } finally {
-            setTimeout(() => {
-                setIsSyncing(false);
-            }, 3000);
-        }
-    };
-
     const handleApplyFilters = () => {
         const liveQuery =
             typeof window !== "undefined"
@@ -333,28 +305,6 @@ export function DashboardFilter({
             )}
         >
             <div className="flex items-center gap-1.5 sm:gap-2 w-full md:w-auto flex-1 md:flex-initial">
-                <Button
-                    onClick={handleSyncNow}
-                    disabled={
-                        isSyncing ||
-                        !currentAccountId ||
-                        currentAccountId === "all"
-                    }
-                    variant="outline"
-                    aria-label="Sync Now"
-                    className="flex items-center justify-center gap-1.5 h-10 w-10 px-0 sm:w-auto sm:px-3.5 text-[13px] font-medium border-gray-200 dark:border-[#382F1D] text-slate-700 dark:text-gray-200 bg-white dark:bg-[#1E2028] hover:bg-gray-50 dark:hover:bg-white/5 active:scale-95 transition-all shadow-sm rounded-lg shrink-0"
-                    title="Sync Account Now"
-                >
-                    <RefreshCw
-                        size={14}
-                        className={cn(
-                            "shrink-0",
-                            isSyncing && "animate-spin text-amber-500"
-                        )}
-                    />
-                    <span className="hidden sm:inline">Sync Now</span>
-                </Button>
-
                 {!hideAdvancedFilters && (
                 <Popover open={isOpen} onOpenChange={handleOpenChange}>
                     <PopoverTrigger asChild>
