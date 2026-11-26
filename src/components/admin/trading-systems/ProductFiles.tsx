@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { Upload, Loader2 } from "lucide-react";
 import { EAProduct } from "@/types/ea-license";
 import { Button } from "@/components/ui/Button";
-import { uploadEAFile } from "@/app/admin/trading-systems/actions";
+import { uploadAdminEAFile } from "@/lib/admin/trading-systems/admin-ea-api.client";
 
 interface ProductFilesProps {
     product: EAProduct;
@@ -21,19 +21,17 @@ export function ProductFiles({ product }: ProductFilesProps) {
         if (!file) return;
 
         setUploading(true);
-        const formData = new FormData();
-        formData.append("file", file);
 
         try {
-            const result = await uploadEAFile(
+            const result = await uploadAdminEAFile(
                 product.id,
                 "THUMBNAIL",
-                formData
+                file
             );
             if (result.success) {
                 toast.success("Thumbnail updated");
             } else {
-                toast.error(result.error);
+                toast.error(result.error || "Upload failed");
             }
         } catch (error: any) {
             toast.error(
@@ -109,7 +107,7 @@ export function ProductFiles({ product }: ProductFilesProps) {
                     <p className="font-bold text-gray-700 dark:text-gray-300 text-sm mb-1">
                         MT5 File
                     </p>
-                    <p className="text-xs text-gray-600 font-mono break-all">
+                    <p className="text-xs text-gray-600 break-all">
                         {product.fileMT5 || "Not uploaded"}
                     </p>
                 </div>

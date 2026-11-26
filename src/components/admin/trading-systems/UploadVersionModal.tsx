@@ -17,9 +17,9 @@ import {
 import { Button } from "@/components/ui/Button";
 import { PremiumInput } from "@/components/ui/PremiumInput";
 import {
-    updateEAProduct,
-    uploadEAFile,
-} from "@/app/admin/trading-systems/actions";
+    updateAdminEAProduct,
+    uploadAdminEAFile,
+} from "@/lib/admin/trading-systems/admin-ea-api.client";
 import { EAProduct } from "@/types/ea-license";
 import { z } from "zod";
 
@@ -56,20 +56,22 @@ export function UploadVersionModal({
         setIsSubmitting(true);
         try {
             // 1. Update Version Info
-            const updateResult = await updateEAProduct(product.id, {
+            const updateResult = await updateAdminEAProduct(product.id, {
                 version: data.version,
                 changelog: data.changelog,
             });
 
-            if (!updateResult.success) {
-                throw new Error(updateResult.error);
+            if (!updateResult?.success) {
+                throw new Error(updateResult?.error || "Update failed");
             }
 
             // 2. Upload MT5 File
             if (fileMT5) {
-                const formData = new FormData();
-                formData.append("file", fileMT5);
-                const upRes = await uploadEAFile(product.id, "MT5", formData);
+                const upRes = await uploadAdminEAFile(
+                    product.id,
+                    "MT5",
+                    fileMT5
+                );
                 if (!upRes.success) {
                     toast.error(upRes.error || "MT5 upload failed");
                     return;
@@ -111,7 +113,7 @@ export function UploadVersionModal({
                             label="New Version"
                             {...register("version")}
                             defaultValue={product.version}
-                            className="font-mono tabular-nums"
+                            className="tabular-nums"
                             error={errors.version ? "Required" : undefined}
                         />
                     </div>

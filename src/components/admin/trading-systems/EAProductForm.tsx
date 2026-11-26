@@ -19,10 +19,8 @@ import {
     createEAProductSchema,
     updateEAProductSchema,
 } from "@/lib/validations/ea-license";
-import {
-    createEAProduct,
-    updateEAProduct,
-} from "@/app/admin/trading-systems/actions";
+import { createEAProduct } from "@/app/admin/trading-systems/actions";
+import { updateAdminEAProduct } from "@/lib/admin/trading-systems/admin-ea-api.client";
 import {
     CreateEAProductInput,
     UpdateEAProductInput,
@@ -81,20 +79,22 @@ export function EAProductForm({ product }: EAProductFormProps) {
         setIsSubmitting(true);
         try {
             if (isEdit && product) {
-                const result = await updateEAProduct(product.id, data);
-                if (result.success) {
+                const result = await updateAdminEAProduct(product.id, data);
+                if (result?.success) {
                     toast.success("Product updated successfully");
                     router.refresh();
                 } else {
-                    toast.error(result.error);
+                    toast.error(result?.error || "Update failed");
                 }
             } else {
                 const result = await createEAProduct(data);
-                if (result.success && result.data) {
+                if (result?.success && result.data) {
                     toast.success("Product created successfully");
-                    router.push(`/admin/trading-systems/${result.data.id}`);
+                    router.push(
+                        `/admin/trading-systems/${result.data.slug || result.data.id}`
+                    );
                 } else {
-                    toast.error(result.error);
+                    toast.error(result?.error || "Creation failed");
                 }
             }
         } catch (error: any) {

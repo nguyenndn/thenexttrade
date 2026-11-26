@@ -6,8 +6,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { createEAProduct, updateEAProduct } from "@/app/admin/trading-systems/actions";
-import { uploadEAFile } from "@/app/admin/trading-systems/actions";
+import { createEAProduct } from "@/app/admin/trading-systems/actions";
+import {
+    updateAdminEAProduct,
+    uploadAdminEAFile,
+} from "@/lib/admin/trading-systems/admin-ea-api.client";
 import { Button } from "@/components/ui/Button";
 import { PremiumInput } from "@/components/ui/PremiumInput";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
@@ -94,32 +97,26 @@ export function ProductForm({ initialData }: ProductFormProps) {
         }
     }, [nameValue, initialData, slugDirty, form]);
 
-    // Helper to upload files
+    // Helper to upload files via dedicated Admin API route (no 1MB Server Action limit)
     const handleFileUploads = async (productId: string) => {
         const promises = [];
 
         if (mt5File) {
-            const formData = new FormData();
-            formData.append("file", mt5File);
-            promises.push(uploadEAFile(productId, "MT5", formData));
+            promises.push(uploadAdminEAFile(productId, "MT5", mt5File));
         }
 
         if (thumbnailFile) {
-            const formData = new FormData();
-            formData.append("file", thumbnailFile);
-            promises.push(uploadEAFile(productId, "THUMBNAIL", formData));
+            promises.push(
+                uploadAdminEAFile(productId, "THUMBNAIL", thumbnailFile)
+            );
         }
 
         if (promises.length > 0) {
             const results = await Promise.all(promises);
-            const failed = results.filter((r: any) => !r.success);
+            const failed = results.filter((r) => !r.success);
             if (failed.length > 0) {
-                console.error(
-                    "[Upload] Failed uploads:",
-                    JSON.stringify(failed)
-                );
                 toast.error(
-                    `Failed to upload ${failed.length} file(s): ${failed.map((f: any) => f.error).join(", ")}`
+                    `Failed to upload ${failed.length} file(s): ${failed.map((f) => f.error || "Upload error").join(", ")}`
                 );
                 return false;
             }
@@ -135,8 +132,6 @@ export function ProductForm({ initialData }: ProductFormProps) {
                 slug: values.slug.trim().toLowerCase(),
                 platform: "MT5" as PlatformType,
                 changelog: values.changelog || "",
-                // If files are selected, we don't rely on the form strings for files as they will be updated by upload
-                // However, if NO file selected, we keep existing values (which might be in form state)
                 fileMT5: mt5File ? undefined : values.fileMT5 || undefined,
             };
 
@@ -144,24 +139,23 @@ export function ProductForm({ initialData }: ProductFormProps) {
             let success = false;
 
             if (initialData) {
-                const res = await updateEAProduct(initialData.id, cleanValues);
-                if (res.success) {
+                const res = await updateAdminEAProduct(
+                    initialData.id,
+                    cleanValues
+                );
+                if (res?.success) {
                     success = true;
                 } else {
-                    toast.error(res.error || "Update failed");
+                    toast.error(res?.error || "Update failed");
                     return;
                 }
             } else {
-                // For create, we need to pass platform in the main object if the schema expects it.
-                // The `cleanValues` has it.
-                // Note: The `createEAProduct` action expects `CreateEAProductInput`.
-                // If `CreateEAProductInput` requires `platform`, we are good.
                 const res = await createEAProduct(cleanValues as any);
-                if (res.success && res.data) {
+                if (res?.success && res.data) {
                     productId = res.data.id;
                     success = true;
                 } else {
-                    toast.error(res.error || "Creation failed");
+                    toast.error(res?.error || "Creation failed");
                     return;
                 }
             }
@@ -179,7 +173,6 @@ export function ProductForm({ initialData }: ProductFormProps) {
                 }
             }
         } catch (err: any) {
-            console.error(err);
             toast.error(
                 err instanceof Error
                     ? err.message

@@ -46,7 +46,7 @@ const nextConfig = {
   experimental: {
     appNavFailHandling: true,
     serverActions: {
-      bodySizeLimit: '1mb',
+      bodySizeLimit: '10mb',
     },
     optimizePackageImports: [
       'lucide-react',
@@ -79,7 +79,10 @@ const nextConfig = {
     ],
   },
   compiler: {
-    removeConsole: process.env.NODE_ENV === 'production',
+    removeConsole:
+      process.env.NODE_ENV === 'production'
+        ? { exclude: ['error', 'warn'] }
+        : false,
   },
   images: {
     formats: ['image/avif', 'image/webp'],

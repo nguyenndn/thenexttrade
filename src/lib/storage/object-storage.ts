@@ -6,20 +6,32 @@ import {
 import crypto from "crypto";
 import path from "path";
 
-// Parse env vars (read runtime env first so container env changes take effect without rebuild)
-const R2_ENDPOINT = process.env.R2_ENDPOINT || "";
-const R2_REGION = process.env.R2_REGION || "auto";
-const R2_BUCKET = process.env.R2_BUCKET || "";
-const R2_ACCESS_KEY_ID = process.env.R2_ACCESS_KEY_ID || "";
-const R2_SECRET_ACCESS_KEY = process.env.R2_SECRET_ACCESS_KEY || "";
+// Parse env vars dynamically so runtime container env works even without build-time inlining
+function getR2Config() {
+    return {
+        endpoint: process.env.R2_ENDPOINT || "",
+        region: process.env.R2_REGION || "auto",
+        bucket: process.env.R2_BUCKET || "",
+        accessKeyId: process.env.R2_ACCESS_KEY_ID || "",
+        secretAccessKey: process.env.R2_SECRET_ACCESS_KEY || "",
+    };
+}
 
 function getAssetPublicBaseUrl(): string {
     return (
         process.env["R2_PUBLIC_URL"] ||
+        process.env["ASSET_PUBLIC_BASE_URL"] ||
         process.env["NEXT_PUBLIC_R2_PUBLIC_URL"] ||
         process.env.NEXT_PUBLIC_R2_PUBLIC_URL ||
         ""
     ).replace(/\/+$/, "");
+}
+
+export function hasR2Credentials(): boolean {
+    const cfg = getR2Config();
+    return Boolean(
+        cfg.endpoint && cfg.bucket && cfg.accessKeyId && cfg.secretAccessKey
+    );
 }
 
 /**
@@ -57,26 +69,32 @@ export function canDeleteAssetKeyInEnv(
 }
 
 export const isR2Configured = Boolean(
-    R2_ENDPOINT &&
-        R2_BUCKET &&
-        R2_ACCESS_KEY_ID &&
-        R2_SECRET_ACCESS_KEY &&
-        getAssetPublicBaseUrl()
+    hasR2Credentials() && getAssetPublicBaseUrl()
 );
 
-let r2Client: S3Client | null = null;
+let cachedR2Client: S3Client | null = null;
+let cachedR2Fingerprint = "";
 
-if (isR2Configured) {
-    r2Client = new S3Client({
-        region: R2_REGION,
-        endpoint: R2_ENDPOINT,
-        credentials: {
-            accessKeyId: R2_ACCESS_KEY_ID,
-            secretAccessKey: R2_SECRET_ACCESS_KEY,
-        },
-        // Cloudflare R2 requires path style
-        forcePathStyle: true,
-    });
+function getR2Client(): { client: S3Client; bucket: string } | null {
+    if (!hasR2Credentials()) {
+        return null;
+    }
+    const cfg = getR2Config();
+    const fingerprint = `${cfg.endpoint}|${cfg.region}|${cfg.bucket}|${cfg.accessKeyId}`;
+    if (!cachedR2Client || cachedR2Fingerprint !== fingerprint) {
+        cachedR2Client = new S3Client({
+            region: cfg.region,
+            endpoint: cfg.endpoint,
+            credentials: {
+                accessKeyId: cfg.accessKeyId,
+                secretAccessKey: cfg.secretAccessKey,
+            },
+            // Cloudflare R2 requires path style
+            forcePathStyle: true,
+        });
+        cachedR2Fingerprint = fingerprint;
+    }
+    return { client: cachedR2Client, bucket: cfg.bucket };
 }
 
 /**
@@ -89,7 +107,8 @@ export async function uploadPublicAsset(
     originalFilename: string,
     contentType: string
 ): Promise<string | null> {
-    if (!isR2Configured || !r2Client) {
+    const r2 = getR2Client();
+    if (!r2 || !getAssetPublicBaseUrl()) {
         return null;
     }
 
@@ -103,9 +122,9 @@ export async function uploadPublicAsset(
     const key = `${scopedDirectory}/${uniqueFilename}`;
 
     try {
-        await r2Client.send(
+        await r2.client.send(
             new PutObjectCommand({
-                Bucket: R2_BUCKET,
+                Bucket: r2.bucket,
                 Key: key,
                 Body: buffer,
                 ContentType: contentType,
@@ -125,7 +144,8 @@ export async function uploadPublicAsset(
  */
 export async function deletePublicAsset(url: string): Promise<boolean> {
     const baseUrl = getAssetPublicBaseUrl();
-    if (!isR2Configured || !r2Client || !url) {
+    const r2 = getR2Client();
+    if (!r2 || !baseUrl || !url) {
         return false;
     }
 
@@ -147,9 +167,9 @@ export async function deletePublicAsset(url: string): Promise<boolean> {
             return false;
         }
 
-        await r2Client.send(
+        await r2.client.send(
             new DeleteObjectCommand({
-                Bucket: R2_BUCKET,
+                Bucket: r2.bucket,
                 Key: key,
             })
         );
@@ -172,13 +192,14 @@ export async function uploadProtectedAsset(
     key: string,
     contentType: string
 ): Promise<boolean> {
-    if (!isR2Configured || !r2Client) {
+    const r2 = getR2Client();
+    if (!r2) {
         return false;
     }
     try {
-        await r2Client.send(
+        await r2.client.send(
             new PutObjectCommand({
-                Bucket: R2_BUCKET,
+                Bucket: r2.bucket,
                 Key: key,
                 Body: buffer,
                 ContentType: contentType,
@@ -196,14 +217,15 @@ export async function uploadProtectedAsset(
 }
 
 export async function getProtectedAssetStream(key: string) {
-    if (!isR2Configured || !r2Client) {
+    const r2 = getR2Client();
+    if (!r2) {
         return null;
     }
     try {
         const { GetObjectCommand } = await import("@aws-sdk/client-s3");
-        const response = await r2Client.send(
+        const response = await r2.client.send(
             new GetObjectCommand({
-                Bucket: R2_BUCKET,
+                Bucket: r2.bucket,
                 Key: key,
             })
         );
