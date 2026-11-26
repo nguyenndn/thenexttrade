@@ -20,6 +20,7 @@ export function isStaleDeploymentError(
         /error loading dynamically imported module/i.test(msg) ||
         /Failed to find Server Action/i.test(msg) ||
         /Server Action .* was not found on the server/i.test(msg) ||
-        /Expected RSC navigation response to have a body/i.test(msg)
+        /Expected RSC navigation response to have a body/i.test(msg) ||
+        /Cannot read properties of undefined \(reading 'call'\)/i.test(msg)
     );
 }

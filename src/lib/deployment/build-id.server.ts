@@ -12,6 +12,7 @@ export function getServerBuildId(): string {
 
     const envId =
         process.env.NEXT_BUILD_ID ||
+        process.env.SOURCE_COMMIT ||
         process.env.COOLIFY_GIT_COMMIT_SHA ||
         process.env.VERCEL_GIT_COMMIT_SHA ||
         process.env.GITHUB_SHA;

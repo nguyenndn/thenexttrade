@@ -15,7 +15,9 @@ export default function Error({
 }) {
     useEffect(() => {
         console.error(error);
-        if (isStaleDeploymentError(error) && typeof window !== "undefined") {
+        if (typeof window === "undefined") return;
+
+        const reloadOnceWithCooldown = () => {
             try {
                 const lastReload = Number(
                     sessionStorage.getItem("tnt_chunk_reload_at") || "0"
@@ -30,11 +32,43 @@ export default function Error({
             } catch {
                 window.location.reload();
             }
+        };
+
+        if (isStaleDeploymentError(error)) {
+            reloadOnceWithCooldown();
+            return;
         }
+
+        const bootBuildId =
+            document.documentElement.getAttribute("data-tnt-build") || "";
+        if (!bootBuildId) return;
+
+        let cancelled = false;
+        fetch(`/api/build-id?t=${Date.now()}`, {
+            cache: "no-store",
+            credentials: "same-origin",
+        })
+            .then((res) => (res.ok ? res.json() : null))
+            .then((data: { buildId?: string } | null) => {
+                if (
+                    !cancelled &&
+                    data?.buildId &&
+                    data.buildId !== bootBuildId
+                ) {
+                    reloadOnceWithCooldown();
+                }
+            })
+            .catch(() => {
+                /* ignore network failure while offline */
+            });
+
+        return () => {
+            cancelled = true;
+        };
     }, [error]);
 
     const handleRetry = () => {
-        if (isStaleDeploymentError(error) && typeof window !== "undefined") {
+        if (typeof window !== "undefined") {
             window.location.reload();
             return;
         }

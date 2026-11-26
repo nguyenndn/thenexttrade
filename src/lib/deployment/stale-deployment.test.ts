@@ -57,6 +57,13 @@ describe("Deployment Skew & Stale Asset Guard", () => {
                     new Error("Expected RSC navigation response to have a body")
                 )
             ).toBe(true);
+            expect(
+                isStaleDeploymentError(
+                    new TypeError(
+                        "Cannot read properties of undefined (reading 'call')"
+                    )
+                )
+            ).toBe(true);
         });
 
         it("returns false for ordinary runtime or application errors", () => {
