@@ -193,7 +193,7 @@ export const PLAYBOOK_PRESETS: PlaybookPreset[] = [
         commonTrap:
             "Placing blind limits at HTF POI before an LTF liquidity sweep + MSS, or forcing entries when the FVG does not overlap OTE.",
         style: "Intraday",
-        market: "Indices & Gold",
+        market: "Forex & Gold",
         schematicType: "ict-ote",
         rules: "1. Price taps pre-marked HTF POI near resting liquidity\n2. LTF sweeps liquidity and prints displacement body-close MSS\n3. Displacement leg leaves a clean Fair Value Gap overlapping 0.62-0.79 OTE\n4. Enter inside FVG ∩ OTE with hard SL beyond structural invalidation\n5. Require >= 2R to external HTF liquidity pool",
         ruleItems: [
@@ -231,7 +231,7 @@ export const PLAYBOOK_PRESETS: PlaybookPreset[] = [
         color: "#00C888",
         setupType: "Reversal",
         timeframes: ["H4", "M15", "M5"],
-        pairs: ["XAUUSD", "NAS100", "US30", "EURUSD"],
+        pairs: ["XAUUSD", "EURUSD", "GBPUSD", "US30"],
         idealEntry: "Intersection of LTF Fair Value Gap and 0.62-0.79 OTE retracement",
         idealStopLoss: "Beyond sweep / displacement origin swing + spread",
         idealTakeProfit: "Opposing HTF external liquidity pool (>= 2.5R)",
@@ -280,7 +280,7 @@ export const PLAYBOOK_PRESETS: PlaybookPreset[] = [
         color: "#06B6D4",
         setupType: "Scalp",
         timeframes: ["H1", "M5"],
-        pairs: ["XAUUSD", "NAS100", "GBPUSD"],
+        pairs: ["XAUUSD", "EURUSD", "GBPUSD"],
         idealEntry: "Tier 1 (bullish/bearish initiation candle Open) or split Tier 1 + Tier 2",
         idealStopLoss: "Tightly beyond Tier 3 origin wick + spread buffer",
         idealTakeProfit: "Post-CHoCH high/low and H1 continuation swing",
@@ -585,7 +585,7 @@ export const PLAYBOOK_PRESETS: PlaybookPreset[] = [
         commonTrap:
             "Buying extended breakout candles far from structure instead of letting price come back to retest the broken pivot.",
         style: "Intraday",
-        market: "Indices & Gold",
+        market: "Forex & Gold",
         schematicType: "break-retest",
         rules: "1. Clear H4 trend structure (Higher Highs / Lower Lows)\n2. Decisive break through major Key Level / Structural Pivot\n3. Wait for price retest of breakout zone\n4. M15 rejection confirmation (Pinbar / Bullish Engulfing)",
         ruleItems: [
@@ -613,7 +613,7 @@ export const PLAYBOOK_PRESETS: PlaybookPreset[] = [
         color: "#3B82F6",
         setupType: "Continuation",
         timeframes: ["H4", "H1", "M15"],
-        pairs: ["NAS100", "US30", "XAUUSD", "EURUSD"],
+        pairs: ["XAUUSD", "EURUSD", "GBPUSD", "US30"],
         idealEntry: "Retest of Support/Resistance Flip Zone",
         idealStopLoss: "Beyond retested structure level + volatility buffer",
         idealTakeProfit: "Next structural high/low on H4 timeframe",
@@ -717,7 +717,7 @@ export const PLAYBOOK_PRESETS: PlaybookPreset[] = [
         commonTrap:
             "Taking Silver Bullet FVG setups outside the strict 60-minute macro window when institutional algorithmic delivery is inactive.",
         style: "Scalp",
-        market: "Indices & Gold",
+        market: "Forex & Gold",
         schematicType: "silver-bullet",
         rules: "1. Trade exclusively inside designated Silver Bullet window\n2. Sweep of nearest session liquidity pool (BSL / SSL)\n3. Displacement creating clean Fair Value Gap (FVG)\n4. Set limit entry inside FVG",
         ruleItems: [
@@ -745,7 +745,7 @@ export const PLAYBOOK_PRESETS: PlaybookPreset[] = [
         color: "#06B6D4",
         setupType: "Scalp",
         timeframes: ["M5", "M1"],
-        pairs: ["NAS100", "US30", "XAUUSD"],
+        pairs: ["XAUUSD", "EURUSD", "US30"],
         idealEntry: "Fair Value Gap (FVG) discount/premium midpoint",
         idealStopLoss: "Beyond displacement candle swing extreme",
         idealTakeProfit: "Target 10-15 pips or nearest opposing liquidity pool",

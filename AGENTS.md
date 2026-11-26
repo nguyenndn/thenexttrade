@@ -70,6 +70,7 @@
 | Entity Color Picker | Sprawling 2-row / 30-button sections | Prefix popover swatch `[🟢▾]` in Name input |
 | Spec Lists / Info Cards | Long vertical 4-row lists | 2x2 Matrix Card (`grid-cols-2` with `divide-x/y`) |
 | Telemetry Status | Rigid text badges like `Live (EA)` | Pulsing dot + relative time (`formatDistanceToNow`) |
+| Typography / Font Lock | Introducing `font-mono`, `font-serif`, new Google Fonts, or custom `fontFamily` without explicit user approval | Reuse ONLY the existing system sans-serif font (matching `ProfitCalendar` / sibling components) + `tabular-nums` for numbers |
 
 ## TECH CONVENTIONS
 

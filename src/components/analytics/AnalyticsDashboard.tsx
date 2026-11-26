@@ -45,12 +45,20 @@ export interface AnalyticsData {
         pnl: number;
         tradeCount: number;
         winRate: number;
+        profitFactor?: number;
+        longTrades?: number;
+        longPnl?: number;
+        longWinRate?: number;
+        shortTrades?: number;
+        shortPnl?: number;
+        shortWinRate?: number;
     }>;
     dayOfWeekPerformance: Array<{
         day: string;
         dayIndex: number;
         pnl: number;
         tradeCount: number;
+        winRate?: number;
     }>;
     recentTrades: Array<{
         id: string;

@@ -348,6 +348,13 @@ async function AnalyticsDataWrapper({
         pnl: p.pnl,
         tradeCount: p.trades,
         winRate: p.winRate,
+        profitFactor: p.profitFactor,
+        longTrades: p.longTrades,
+        longPnl: p.longPnl,
+        longWinRate: p.longWinRate,
+        shortTrades: p.shortTrades,
+        shortPnl: p.shortPnl,
+        shortWinRate: p.shortWinRate,
     }));
 
     // 4. Construct Final Data Object
@@ -414,7 +421,8 @@ async function AnalyticsDataWrapper({
 
     const psychologyData = await calculatePsychologyDiagnostic(
         user.id,
-        accountId
+        accountId,
+        timezone
     );
 
     const { TradingPsychologyPanel } = await import(
@@ -435,7 +443,10 @@ async function AnalyticsDataWrapper({
                 data={psychologyData}
                 confidence={confidence}
             />
-            <IntradayHeatmapChart data={psychologyData.heatmap} />
+            <IntradayHeatmapChart
+                data={psychologyData.heatmap}
+                currency={resolvedCurrency}
+            />
         </div>
     );
 }

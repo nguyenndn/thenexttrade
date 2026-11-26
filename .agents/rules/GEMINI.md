@@ -110,6 +110,9 @@ Before modifying any file:
 4. **Clean Telemetry Status:**
    - ❌ CẤM nhãn chữ cứng `Live (EA)` trong table data cells.
    - ✅ Dùng chấm trạng thái phát xung (pulsing green dot) + timestamp tương đối (`formatDistanceToNow`) kèm tooltip.
+5. **Strict Font Consistency Lock (CRITICAL):**
+   - ❌ CẤM tự ý sử dụng thêm các font chữ khác nhau (`font-mono`, `font-serif`, import font mới, hoặc custom `fontFamily`) trong lúc dev/fix UI, số liệu P&L, bảng biểu hay badge khi chưa có sự đồng ý rõ ràng của user.
+   - ✅ Chỉ được phép tái sử dụng đồng nhất font chữ sẵn có của hệ thống (giống `ProfitCalendar` và các component hiện hữu), kết hợp `tabular-nums` cho các con số. Mọi đề xuất dùng font khác bắt buộc phải hỏi ý kiến user trước.
 
 ### 🧠 Autonomous Sequential Thinking (MCP)
 - **Tự chủ kích hoạt tool `sequentialthinking` khi gặp:**

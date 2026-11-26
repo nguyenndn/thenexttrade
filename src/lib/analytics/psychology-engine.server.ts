@@ -6,10 +6,21 @@ import {
 } from "@/lib/utils/cent-account";
 import { findRevengeTrades } from "@/lib/analytics/revenge";
 import { resolveRevengeWindows } from "@/lib/analytics/cadence";
+import {
+    computeMedian,
+    computePayoffExpectancy,
+    computeStreakAndCadence,
+    type PayoffExpectancyData,
+    type StreakCadenceData,
+} from "@/lib/analytics/execution-diagnostic-math";
+
+export type { PayoffExpectancyData, StreakCadenceData };
 
 export type DispositionEffectData = {
     avgHoldTimeWinMinutes: number;
     avgHoldTimeLossMinutes: number;
+    medianHoldWinMinutes: number;
+    medianHoldLossMinutes: number;
     dispositionRatio: number;
     severity: "NORMAL" | "MEDIUM" | "HIGH";
     insight: string;
@@ -50,6 +61,8 @@ export type PsychologyDiagnosticReport = {
     automatedAccount: boolean;
     validSlTradesCount: number;
     disposition: DispositionEffectData;
+    payoff: PayoffExpectancyData;
+    streakCadence: StreakCadenceData;
     tilt: TiltIndexData;
     heatmap: HeatmapCell[];
     rrOptimizer: OptimalRROption[];
@@ -60,7 +73,8 @@ const MIN_VALID_SL_TRADES = 5;
 
 export async function calculatePsychologyDiagnostic(
     userId: string,
-    accountId?: string
+    accountId?: string,
+    timezone?: string
 ): Promise<PsychologyDiagnosticReport> {
     const normalizedAccountId =
         accountId && accountId !== "all" ? accountId : undefined;
@@ -123,11 +137,15 @@ export async function calculatePsychologyDiagnostic(
             disposition: {
                 avgHoldTimeWinMinutes: 0,
                 avgHoldTimeLossMinutes: 0,
+                medianHoldWinMinutes: 0,
+                medianHoldLossMinutes: 0,
                 dispositionRatio: 0,
                 severity: "NORMAL",
                 insight:
                     "No closed trades recorded yet. Sync MT5 or log your first closed trades to measure holding behavior.",
             },
+            payoff: computePayoffExpectancy([]),
+            streakCadence: computeStreakAndCadence([], timezone),
             tilt: {
                 tiltScore: 0,
                 revengeTradesCount: 0,
@@ -171,6 +189,8 @@ export async function calculatePsychologyDiagnostic(
     let winCount = 0;
     let lossHoldTotalMinutes = 0;
     let lossCount = 0;
+    const winDurations: number[] = [];
+    const lossDurations: number[] = [];
 
     trades.forEach((t) => {
         if (t.entryDate && t.exitDate) {
@@ -185,9 +205,11 @@ export async function calculatePsychologyDiagnostic(
             if (t.result === "WIN") {
                 winHoldTotalMinutes += durationMinutes;
                 winCount++;
+                winDurations.push(durationMinutes);
             } else if (t.result === "LOSS") {
                 lossHoldTotalMinutes += durationMinutes;
                 lossCount++;
+                lossDurations.push(durationMinutes);
             }
         }
     });
@@ -196,6 +218,8 @@ export async function calculatePsychologyDiagnostic(
         winCount > 0 ? Math.round(winHoldTotalMinutes / winCount) : 0;
     const avgHoldTimeLossMinutes =
         lossCount > 0 ? Math.round(lossHoldTotalMinutes / lossCount) : 0;
+    const medianHoldWinMinutes = computeMedian(winDurations);
+    const medianHoldLossMinutes = computeMedian(lossDurations);
     const dispositionRatio =
         avgHoldTimeWinMinutes > 0
             ? Math.round(
@@ -408,6 +432,20 @@ export async function calculatePsychologyDiagnostic(
         }));
     }
 
+    const diagnosticTradeInputs = trades.map((t) => ({
+        symbol: t.symbol,
+        result: t.result,
+        netPnl: getScaledNetPnl(t),
+        entryDate: new Date(t.entryDate),
+        exitDate: t.exitDate ? new Date(t.exitDate) : null,
+    }));
+
+    const payoff = computePayoffExpectancy(diagnosticTradeInputs);
+    const streakCadence = computeStreakAndCadence(
+        diagnosticTradeInputs,
+        timezone
+    );
+
     return {
         totalTrades: trades.length,
         currency,
@@ -417,10 +455,14 @@ export async function calculatePsychologyDiagnostic(
         disposition: {
             avgHoldTimeWinMinutes,
             avgHoldTimeLossMinutes,
+            medianHoldWinMinutes,
+            medianHoldLossMinutes,
             dispositionRatio,
             severity: dispositionSeverity,
             insight: dispositionInsight,
         },
+        payoff,
+        streakCadence,
         tilt: {
             tiltScore,
             revengeTradesCount,

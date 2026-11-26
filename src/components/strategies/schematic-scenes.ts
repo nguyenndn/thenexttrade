@@ -133,7 +133,7 @@ export const SCHEMATIC_SCENES: Record<PlaybookSchematicType, SchematicScene> = {
     },
 
     "ict-ote": {
-        symbol: "NAS100",
+        symbol: "XAUUSD",
         timeframe: "15m",
         direction: "LONG",
         rrLabel: "2.5R",
@@ -600,7 +600,7 @@ export const SCHEMATIC_SCENES: Record<PlaybookSchematicType, SchematicScene> = {
     },
 
     "break-retest": {
-        symbol: "NAS100",
+        symbol: "GBPUSD",
         timeframe: "1h",
         direction: "LONG",
         rrLabel: "2.5R",
@@ -752,7 +752,7 @@ export const SCHEMATIC_SCENES: Record<PlaybookSchematicType, SchematicScene> = {
     },
 
     "silver-bullet": {
-        symbol: "NAS100",
+        symbol: "XAUUSD",
         timeframe: "5m",
         direction: "LONG",
         rrLabel: "2.0R",

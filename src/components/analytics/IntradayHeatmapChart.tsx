@@ -1,91 +1,112 @@
 "use client";
 
-import React from "react";
-import { HeatmapCell } from "@/lib/analytics/psychology-engine.server";
+import { useMemo, useState } from "react";
 import { Clock } from "lucide-react";
+import { Button } from "@/components/ui/Button";
+import type { HeatmapCell } from "@/lib/analytics/psychology-engine.server";
+import { IntradayHeatmapGrid } from "./IntradayHeatmapGrid";
+import { formatCompactCurrency } from "./utils/chartHelpers";
+import {
+    findExtremes,
+    HEATMAP_DAYS,
+    type HeatmapMetricMode,
+} from "./heatmap-helpers";
 
 interface IntradayHeatmapChartProps {
     data: HeatmapCell[];
+    currency?: string;
 }
 
-const DAYS = [
-    { id: 1, name: "Mon" },
-    { id: 2, name: "Tue" },
-    { id: 3, name: "Wed" },
-    { id: 4, name: "Thu" },
-    { id: 5, name: "Fri" },
-];
+export function IntradayHeatmapChart({
+    data,
+    currency = "USD",
+}: IntradayHeatmapChartProps) {
+    const [mode, setMode] = useState<HeatmapMetricMode>("pnl");
 
-const HOURS = Array.from({ length: 24 }, (_, i) => i);
+    const { dataMap, maxAbsPnl, best, worst } = useMemo(() => {
+        const map = new Map<string, HeatmapCell>();
+        let maxAbs = 1;
+        for (const item of data) {
+            map.set(`${item.dayOfWeek}:${item.hour}`, item);
+            if (Math.abs(item.pnl) > maxAbs) maxAbs = Math.abs(item.pnl);
+        }
+        const extremes = findExtremes(data);
+        return { dataMap: map, maxAbsPnl: maxAbs, ...extremes };
+    }, [data]);
 
-export function IntradayHeatmapChart({ data }: IntradayHeatmapChartProps) {
-    const dataMap = new Map<string, HeatmapCell>();
-    data.forEach((item) => {
-        dataMap.set(`${item.dayOfWeek}:${item.hour}`, item);
-    });
-
-    const getCellColor = (cell?: HeatmapCell) => {
-        if (!cell || cell.tradeCount === 0) {
-            return "bg-gray-50/80 dark:bg-[#151925] border-gray-200/80 dark:border-white/[0.06] text-gray-400 dark:text-gray-500";
-        }
-        if (cell.pnl > 0 && cell.winRate >= 55) {
-            return "bg-emerald-500/20 dark:bg-emerald-500/30 border-emerald-500/40 text-emerald-700 dark:text-emerald-300 font-bold";
-        }
-        if (cell.pnl < 0 || cell.winRate < 40) {
-            return "bg-red-500/20 dark:bg-red-500/30 border-red-500/40 text-red-700 dark:text-red-300 font-bold";
-        }
-        return "bg-gold/15 dark:bg-gold/20 border-gold/30 text-amber-700 dark:text-gold font-semibold";
-    };
+    const dayLabel = (dayOfWeek: number) =>
+        HEATMAP_DAYS.find((d) => d.id === dayOfWeek)?.name ?? "";
 
     return (
-        <div className="hidden md:block p-5 rounded-xl bg-white dark:bg-[#1E2028] border border-dashboard dark:border-white/[0.08] shadow-sm space-y-4 text-slate-900 dark:text-white overflow-hidden">
-            <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                    <Clock className="w-5 h-5 text-amber-600 dark:text-gold" />
+        <div className="p-4 sm:p-6 rounded-xl bg-white dark:bg-[#1E2028] border border-dashboard dark:border-white/[0.08] shadow-sm space-y-4 text-gray-700 dark:text-white overflow-hidden">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+                <div className="flex items-center gap-2.5">
+                    <div className="p-2 rounded-lg bg-primary/10 text-primary shrink-0">
+                        <Clock size={18} />
+                    </div>
                     <div>
-                        <h3 className="text-base font-bold">24-Hour Intraday & Day-of-Week Performance Heatmap</h3>
-                        <p className="text-xs text-slate-500 dark:text-slate-400">Green = Gold Zone (High Win Rate) | Red = Danger Zone (Loss Heavy)</p>
+                        <h3 className="text-sm font-bold text-gray-700 dark:text-white">
+                            24-Hour Intraday & Day-of-Week Heatmap
+                        </h3>
+                        <p className="text-xs text-gray-500">
+                            {mode === "pnl"
+                                ? "Realized Net P&L by entry hour · Low-sample cells (<3 trades) dimmed"
+                                : "Win rate % weighted by realized profitability · Unprofitable hours highlighted red"}
+                        </p>
+                    </div>
+                </div>
+
+                <div className="flex flex-wrap items-center justify-between sm:justify-end gap-2">
+                    {best && (
+                        <span className="px-2.5 py-1 rounded-lg bg-primary/10 border border-primary/20 text-xs tabular-nums font-bold text-primary">
+                            Best: {dayLabel(best.dayOfWeek)} {best.hour}h (
+                            {formatCompactCurrency(best.pnl, currency)})
+                        </span>
+                    )}
+                    {worst && (
+                        <span className="px-2.5 py-1 rounded-lg bg-red-500/10 border border-red-500/20 text-xs tabular-nums font-bold text-red-500">
+                            Leak: {dayLabel(worst.dayOfWeek)} {worst.hour}h (
+                            {formatCompactCurrency(worst.pnl, currency)})
+                        </span>
+                    )}
+
+                    <div className="inline-flex items-center p-0.5 rounded-lg bg-gray-100 dark:bg-[#151925] border border-dashboard">
+                        <Button
+                            type="button"
+                            variant={mode === "pnl" ? "primary" : "outline"}
+                            size="sm"
+                            onClick={() => setMode("pnl")}
+                            className={`h-7 px-2.5 rounded-lg text-xs font-semibold border-0 ${
+                                mode !== "pnl"
+                                    ? "bg-transparent text-gray-500 hover:text-gray-800 dark:hover:text-white shadow-none"
+                                    : ""
+                            }`}
+                        >
+                            Net P&L
+                        </Button>
+                        <Button
+                            type="button"
+                            variant={mode === "winRate" ? "primary" : "outline"}
+                            size="sm"
+                            onClick={() => setMode("winRate")}
+                            className={`h-7 px-2.5 rounded-lg text-xs font-semibold border-0 ${
+                                mode !== "winRate"
+                                    ? "bg-transparent text-gray-500 hover:text-gray-800 dark:hover:text-white shadow-none"
+                                    : ""
+                            }`}
+                        >
+                            Win Rate %
+                        </Button>
                     </div>
                 </div>
             </div>
 
-            {/* Scrollable Heatmap Grid */}
-            <div className="overflow-x-auto pb-2 custom-scrollbar">
-                <div className="min-w-[650px] space-y-1.5 text-xs">
-                    {/* Header Hours */}
-                    <div className="grid grid-cols-[50px_repeat(24,1fr)] gap-1 text-[10px] font-bold font-mono tabular-nums text-slate-400 text-center">
-                        <div>Day</div>
-                        {HOURS.map((h) => (
-                            <div key={h}>{h}h</div>
-                        ))}
-                    </div>
-
-                    {/* Rows per Day */}
-                    {DAYS.map((day) => (
-                        <div key={day.id} className="grid grid-cols-[50px_repeat(24,1fr)] gap-1 items-center">
-                            <div className="font-bold text-slate-500 dark:text-slate-400 text-xs">{day.name}</div>
-                            {HOURS.map((hour) => {
-                                const cell = dataMap.get(`${day.id}:${hour}`);
-                                return (
-                                    <div
-                                        key={hour}
-                                        title={
-                                            cell
-                                                ? `${day.name} ${hour}:00 - ${cell.tradeCount} trades (${cell.winRate}% Win Rate, $${cell.pnl})`
-                                                : `${day.name} ${hour}:00 - No trades`
-                                        }
-                                        className={`h-7 rounded-lg border flex items-center justify-center text-[10px] font-mono tabular-nums transition-all hover:scale-105 cursor-pointer ${getCellColor(
-                                            cell
-                                        )}`}
-                                    >
-                                        {cell && cell.tradeCount > 0 ? `${cell.winRate}%` : ""}
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    ))}
-                </div>
-            </div>
+            <IntradayHeatmapGrid
+                dataMap={dataMap}
+                mode={mode}
+                maxAbsPnl={maxAbsPnl}
+                currency={currency}
+            />
         </div>
     );
 }

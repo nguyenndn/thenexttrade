@@ -47,8 +47,8 @@ export function formatAxisPrice(symbol: string, normPrice: number): string {
     if (symbol === "XAUUSD") {
         return (2625 + ratio * 40).toFixed(1);
     }
-    if (symbol === "NAS100") {
-        return Math.round(20180 + ratio * 360).toString();
+    if (symbol === "US30") {
+        return Math.round(43800 + ratio * 420).toString();
     }
     if (symbol === "GBPUSD") {
         return (1.2615 + ratio * 0.0095).toFixed(4);

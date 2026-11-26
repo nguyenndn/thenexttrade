@@ -54,7 +54,7 @@ const DEMO_STRATEGIES = [
         isPlaybook: true,
         setupType: "Scalp",
         timeframes: ["M15", "M5", "M1"],
-        pairs: ["XAUUSD", "NAS100", "US30"],
+        pairs: ["XAUUSD", "EURUSD", "US30"],
         idealEntry: "Proximal or 50% FVG formed inside 10:00-11:00 AM EST window",
         idealStopLoss: "Beyond displacement swing extreme (max 25 pips on Gold)",
         idealTakeProfit: "Nearest opposing session liquidity pool (15-30 pips)",

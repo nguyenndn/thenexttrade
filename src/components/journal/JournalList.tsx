@@ -443,6 +443,7 @@ export default function JournalList({
         try {
             const res = await updateJournalEntry(id, data);
             if (res.error) throw new Error(res.error);
+            router.refresh();
         } catch (error: unknown) {
             setEntries(previousEntries);
             toast.error(

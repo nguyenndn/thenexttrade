@@ -38,8 +38,6 @@ import type { WeeklyReviewEligibility } from "@/lib/reports/weekly-review-eligib
 import { getTraderGrowthViewModel } from "@/lib/trader-growth/orchestrator.server";
 import type { TraderGrowthViewModel } from "@/lib/trader-growth/types";
 import { triggerCoachNotifications } from "@/lib/coach/coach-notifications.server";
-import { getDisciplineRitualData } from "@/lib/dashboard/discipline-ritual.server";
-import type { DisciplineRitualData } from "@/lib/dashboard/discipline-ritual-types";
 import {
     convertToUsdEquivalent,
     normalizeCurrencyCode,
@@ -133,7 +131,6 @@ export interface DashboardPageData {
         coachNudge?: boolean;
     };
     growthViewModel?: TraderGrowthViewModel;
-    disciplineRitual?: DisciplineRitualData;
 }
 
 // ─── Account & Date Resolution ──────────────────────────────────────────
@@ -540,7 +537,6 @@ export async function getFullDashboardData(
         activationState,
         latestReport,
         userDashboards,
-        disciplineRitual,
     ] = await measurePerformance("dashboard_data_fetch", "db", () =>
         Promise.all([
             prisma.user.findUnique({
@@ -647,7 +643,6 @@ export async function getFullDashboardData(
                     isDefault: true,
                 },
             }),
-            getDisciplineRitualData(userId, accountId, accountTimezone),
         ])
     );
 
@@ -929,7 +924,6 @@ export async function getFullDashboardData(
         growthViewModel,
         suppress,
         dailyPerformance,
-        disciplineRitual,
     };
 }
 

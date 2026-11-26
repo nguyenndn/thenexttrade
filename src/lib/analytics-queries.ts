@@ -188,9 +188,20 @@ interface SymbolPerformanceRow {
     tradeCount: number | bigint | null;
     netProfit: number | null;
     grossProfit: number | null;
+    grossLoss: number | null;
     winCount: number | bigint | null;
     lossCount: number | bigint | null;
     breakEvenCount: number | bigint | null;
+    longTrades: number | bigint | null;
+    longPnl: number | null;
+    longWins: number | bigint | null;
+    longLosses: number | bigint | null;
+    longBreakEvens: number | bigint | null;
+    shortTrades: number | bigint | null;
+    shortPnl: number | null;
+    shortWins: number | bigint | null;
+    shortLosses: number | bigint | null;
+    shortBreakEvens: number | bigint | null;
 }
 
 interface TopTradeRow {
@@ -505,6 +516,7 @@ export async function getSymbolPerformance(
   WITH scoped AS (
     SELECT
       je."symbol",
+      je."type",
       je."result",
       ((COALESCE(je."pnl", 0) + COALESCE(je."commission", 0) + COALESCE(je."swap", 0)) * ${scaleSql}) AS "scaledNetPnl"
     FROM "journal_entries" je
@@ -520,9 +532,20 @@ export async function getSymbolPerformance(
     COUNT(*) as "tradeCount",
     SUM("scaledNetPnl") as "netProfit",
     SUM(CASE WHEN "scaledNetPnl" > 0 THEN "scaledNetPnl" ELSE 0 END) as "grossProfit",
+    SUM(CASE WHEN "scaledNetPnl" < 0 THEN ABS("scaledNetPnl") ELSE 0 END) as "grossLoss",
     COUNT(*) FILTER (WHERE "result" = 'WIN') as "winCount",
     COUNT(*) FILTER (WHERE "result" = 'LOSS') as "lossCount",
-    COUNT(*) FILTER (WHERE "result" IN ('BREAK_EVEN', 'BE_PLUS')) as "breakEvenCount"
+    COUNT(*) FILTER (WHERE "result" IN ('BREAK_EVEN', 'BE_PLUS')) as "breakEvenCount",
+    COUNT(*) FILTER (WHERE "type" = 'BUY') as "longTrades",
+    SUM(CASE WHEN "type" = 'BUY' THEN "scaledNetPnl" ELSE 0 END) as "longPnl",
+    COUNT(*) FILTER (WHERE "type" = 'BUY' AND "result" = 'WIN') as "longWins",
+    COUNT(*) FILTER (WHERE "type" = 'BUY' AND "result" = 'LOSS') as "longLosses",
+    COUNT(*) FILTER (WHERE "type" = 'BUY' AND "result" IN ('BREAK_EVEN', 'BE_PLUS')) as "longBreakEvens",
+    COUNT(*) FILTER (WHERE "type" = 'SELL') as "shortTrades",
+    SUM(CASE WHEN "type" = 'SELL' THEN "scaledNetPnl" ELSE 0 END) as "shortPnl",
+    COUNT(*) FILTER (WHERE "type" = 'SELL' AND "result" = 'WIN') as "shortWins",
+    COUNT(*) FILTER (WHERE "type" = 'SELL' AND "result" = 'LOSS') as "shortLosses",
+    COUNT(*) FILTER (WHERE "type" = 'SELL' AND "result" IN ('BREAK_EVEN', 'BE_PLUS')) as "shortBreakEvens"
   FROM scoped
   GROUP BY "symbol"
   ORDER BY "netProfit" DESC
@@ -534,13 +557,39 @@ export async function getSymbolPerformance(
         const losses = Number(row.lossCount || 0);
         const breakEvens = Number(row.breakEvenCount || 0);
         const totalClosed = wins + losses + breakEvens;
+        const grossProfit = Number(row.grossProfit || 0);
+        const grossLoss = Number(row.grossLoss || 0);
+
+        const lWins = Number(row.longWins || 0);
+        const lClosed =
+            lWins +
+            Number(row.longLosses || 0) +
+            Number(row.longBreakEvens || 0);
+
+        const sWins = Number(row.shortWins || 0);
+        const sClosed =
+            sWins +
+            Number(row.shortLosses || 0) +
+            Number(row.shortBreakEvens || 0);
 
         return {
             symbol: row.symbol,
             trades: Number(row.tradeCount),
             pnl: Number(row.netProfit || 0),
-            grossProfit: Number(row.grossProfit || 0),
+            grossProfit,
+            profitFactor:
+                grossLoss > 0
+                    ? Number((grossProfit / grossLoss).toFixed(2))
+                    : grossProfit > 0
+                      ? 99.9
+                      : 0,
             winRate: totalClosed > 0 ? (wins / totalClosed) * 100 : 0,
+            longTrades: Number(row.longTrades || 0),
+            longPnl: Number(row.longPnl || 0),
+            longWinRate: lClosed > 0 ? (lWins / lClosed) * 100 : 0,
+            shortTrades: Number(row.shortTrades || 0),
+            shortPnl: Number(row.shortPnl || 0),
+            shortWinRate: sClosed > 0 ? (sWins / sClosed) * 100 : 0,
         };
     });
 }

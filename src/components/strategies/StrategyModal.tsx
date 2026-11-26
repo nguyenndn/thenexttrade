@@ -120,7 +120,7 @@ const SETUP_TYPES = [
 const COMMON_TIMEFRAMES = ["M1", "M5", "M15", "M30", "H1", "H4", "D1", "W1", "MN"];
 const COMMON_PAIRS = [
     "XAUUSD", "EURUSD", "GBPUSD", "USDJPY", "AUDUSD", "NZDUSD",
-    "USDCAD", "USDCHF", "GBPJPY", "EURJPY", "NAS100", "US30", "SPX500", "BTCUSD"
+    "USDCAD", "USDCHF", "GBPJPY", "EURJPY", "US30", "SPX500", "BTCUSD"
 ];
 
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];

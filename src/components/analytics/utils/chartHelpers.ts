@@ -1,7 +1,41 @@
+import { getCurrencyTickerProps } from "@/lib/utils/cent-account";
+
 export interface EquityCurveDataItem {
     date: string;
     balance: number;
     pnl: number;
+}
+
+export function formatCompactCurrency(
+    amount: number,
+    currency: string = "USD",
+    alwaysSign: boolean = true
+): string {
+    const sign: "+" | "-" | "" =
+        amount > 0 ? (alwaysSign ? "+" : "") : amount < 0 ? "-" : "";
+    const { prefix, suffix } = getCurrencyTickerProps(currency, sign);
+    const abs = Math.abs(amount);
+
+    if (abs >= 1_000_000) {
+        return `${prefix}${(abs / 1_000_000).toFixed(2)}M${suffix}`;
+    }
+    if (abs >= 1_000) {
+        return `${prefix}${(abs / 1_000).toFixed(abs >= 10_000 ? 1 : 2)}k${suffix}`;
+    }
+    return `${prefix}${abs.toFixed(abs >= 100 ? 0 : 2)}${suffix}`;
+}
+
+export function formatHoldMinutes(minutes: number): string {
+    if (!Number.isFinite(minutes) || minutes <= 0) return "0m";
+    if (minutes < 60) return `${Math.round(minutes)}m`;
+    const hours = Math.floor(minutes / 60);
+    const remMins = Math.round(minutes % 60);
+    if (hours < 24) {
+        return remMins > 0 ? `${hours}h ${remMins}m` : `${hours}h`;
+    }
+    const days = Math.floor(hours / 24);
+    const remHours = hours % 24;
+    return remHours > 0 ? `${days}d ${remHours}h` : `${days}d`;
 }
 
 export function processEquityCurveData(data: EquityCurveDataItem[]) {
@@ -32,7 +66,6 @@ export function processEquityCurveData(data: EquityCurveDataItem[]) {
     const minBalance = Math.min(...balances, firstBalance);
     const maxBalance = Math.max(...balances, firstBalance);
 
-    // Calculate gradient split offset where firstBalance is the 0 point (split line)
     const splitOffset =
         maxBalance === minBalance
             ? 0
@@ -52,22 +85,42 @@ export interface PairPerformanceDataItem {
     pnl: number;
     tradeCount: number;
     winRate: number;
+    profitFactor?: number;
+    longTrades?: number;
+    longPnl?: number;
+    longWinRate?: number;
+    shortTrades?: number;
+    shortPnl?: number;
+    shortWinRate?: number;
 }
 
 export function processPairPerformanceData(
     data: PairPerformanceDataItem[],
-    limit: number = 8
+    limit: number = 6
 ) {
     if (!data || data.length === 0) {
-        return { isEmpty: true, chartData: [], bestPair: null };
+        return {
+            isEmpty: true,
+            chartData: [],
+            bestPair: null,
+            worstPair: null,
+            maxAbsPnl: 0,
+        };
     }
 
-    const chartData = [...data].sort((a, b) => b.pnl - a.pnl).slice(0, limit);
+    const sorted = [...data].sort((a, b) => b.pnl - a.pnl);
+    const chartData = sorted.slice(0, limit);
+    const maxAbsPnl = Math.max(
+        1,
+        ...chartData.map((item) => Math.abs(item.pnl))
+    );
 
     return {
         isEmpty: false,
         chartData,
-        bestPair: chartData[0],
+        bestPair: sorted[0] || null,
+        worstPair: sorted.length > 1 ? sorted[sorted.length - 1] : null,
+        maxAbsPnl,
     };
 }
 
@@ -76,6 +129,7 @@ export interface DayPerformanceDataItem {
     dayIndex: number;
     pnl: number;
     tradeCount: number;
+    winRate?: number;
 }
 
 export function processDayPerformanceData(data: DayPerformanceDataItem[]) {
@@ -86,15 +140,25 @@ export function processDayPerformanceData(data: DayPerformanceDataItem[]) {
             name: day,
             pnl: dayData?.pnl || 0,
             tradeCount: dayData?.tradeCount || 0,
+            winRate: Math.round(dayData?.winRate || 0),
         };
     });
 
-    const bestDay = [...chartData].sort((a, b) => b.pnl - a.pnl)[0];
-    const hasData = chartData.some((d) => d.pnl !== 0);
+    const activeDays = chartData.filter((d) => d.tradeCount > 0 || d.pnl !== 0);
+    const sortedActive = [...activeDays].sort((a, b) => b.pnl - a.pnl);
+    const bestDay = sortedActive[0] || null;
+    const worstDay =
+        sortedActive.length > 1
+            ? sortedActive[sortedActive.length - 1]
+            : null;
+    const maxAbsPnl = Math.max(1, ...chartData.map((d) => Math.abs(d.pnl)));
+    const hasData = activeDays.length > 0;
 
     return {
         chartData,
         bestDay,
+        worstDay,
+        maxAbsPnl,
         hasData,
     };
 }

@@ -49,6 +49,7 @@ import { deleteJournalEntry } from "@/actions/journal";
 
 import { PlanVsActualPanel } from "./PlanVsActualPanel";
 import { formatDashboardCurrency, normalizeCurrencyCode } from "@/lib/utils/cent-account";
+import { evaluateTradeReview } from "@/lib/journal/trade-review-status";
 
 function isSafeImageUrl(url: unknown): url is string {
     return (
@@ -291,11 +292,42 @@ export function TradeDetailSheet({
                 {/* Fixed Non-Scrolling Minimal Icon Header */}
                 <div className="shrink-0 relative z-30 bg-white dark:bg-[#0D111C] border-b border-dashboard px-3.5 sm:px-5 py-2">
                     <div className="flex items-center justify-between gap-2">
-                        <span className="text-[11px] font-mono tabular-nums text-gray-400 dark:text-gray-500 truncate">
-                            {entry.externalTicket
-                                ? `#${entry.externalTicket}`
-                                : utcTime(entry.entryDate, "MMM dd, yyyy")}
-                        </span>
+                        <div className="flex items-center gap-2 min-w-0">
+                            <span className="text-[11px] font-mono tabular-nums text-gray-400 dark:text-gray-500 truncate">
+                                {entry.externalTicket
+                                    ? `#${entry.externalTicket}`
+                                    : utcTime(entry.entryDate, "MMM dd, yyyy")}
+                            </span>
+                            {entry.status === "CLOSED" && (() => {
+                                const reviewEval = evaluateTradeReview(entry);
+                                if (reviewEval.isReviewed) {
+                                    return (
+                                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 shrink-0">
+                                            <Check size={11} />
+                                            Reviewed
+                                        </span>
+                                    );
+                                }
+                                if (onEdit) {
+                                    return (
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() => {
+                                                onClose();
+                                                onEdit(entry);
+                                            }}
+                                            className="h-6 px-2 rounded-lg text-[10px] font-bold gap-1 bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-gold border-amber-500/30 shrink-0"
+                                        >
+                                            <Pencil size={10} />
+                                            <span>Review Trade ({reviewEval.completedSteps}/3)</span>
+                                        </Button>
+                                    );
+                                }
+                                return null;
+                            })()}
+                        </div>
 
                         {/* Right: Pure Frameless Action Icons (Edit, Delete, Share, Close) */}
                         <div className="flex items-center gap-1 shrink-0">
