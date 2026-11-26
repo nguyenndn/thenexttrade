@@ -2,18 +2,32 @@ import "server-only";
 import { prisma } from "@/lib/prisma";
 import type { ActivationState, ActivationStep } from "./activation-types";
 import { getUserTradingDataState } from "@/lib/trading-data-state";
-import { getWeeklyReviewEligibility } from "@/lib/reports/weekly-review-eligibility";
+import {
+    getWeeklyReviewEligibility,
+    type WeeklyReviewEligibility,
+} from "@/lib/reports/weekly-review-eligibility";
 import { isAcademyEnabled } from "@/app/admin/academy/actions";
 
+export interface ActivationPrecomputedInputs {
+    settings?: Record<string, unknown> | null;
+    tradingDataState?: Awaited<ReturnType<typeof getUserTradingDataState>>;
+    weeklyReviewEligibility?: WeeklyReviewEligibility;
+}
+
 export async function getActivationState(
-    userId: string
+    userId: string,
+    precomputed?: ActivationPrecomputedInputs
 ): Promise<ActivationState> {
-    // Read user settings for onboarding preferences
-    const user = await prisma.user.findUnique({
-        where: { id: userId },
-        select: { settings: true },
-    });
-    const settings = (user?.settings as Record<string, unknown>) || {};
+    // Read user settings for onboarding preferences (reuse precomputed when provided)
+    const settings: Record<string, unknown> =
+        precomputed?.settings !== undefined
+            ? precomputed.settings || {}
+            : (((
+                  await prisma.user.findUnique({
+                      where: { id: userId },
+                      select: { settings: true },
+                  })
+              )?.settings as Record<string, unknown>) || {});
     const onboarding =
         (settings.onboarding as { preferredSyncMethod?: string }) || {};
     const syncMethod = onboarding.preferredSyncMethod || "EA_SYNC";
@@ -26,11 +40,19 @@ export async function getActivationState(
         weeklyReviewEligibility,
         academyEnabled,
     ] = await Promise.all([
-        getUserTradingDataState(userId),
-        prisma.tradingReport.count({ where: { userId, type: "WEEKLY" } }),
+        precomputed?.tradingDataState
+            ? Promise.resolve(precomputed.tradingDataState)
+            : getUserTradingDataState(userId),
+        precomputed?.weeklyReviewEligibility
+            ? Promise.resolve(
+                  precomputed.weeklyReviewEligibility.weeklyReportCount
+              )
+            : prisma.tradingReport.count({ where: { userId, type: "WEEKLY" } }),
         prisma.userProgress.count({ where: { userId, isCompleted: true } }),
         prisma.edgeEvent.count({ where: { userId, eventType: "CHECKIN" } }),
-        getWeeklyReviewEligibility({ userId }),
+        precomputed?.weeklyReviewEligibility
+            ? Promise.resolve(precomputed.weeklyReviewEligibility)
+            : getWeeklyReviewEligibility({ userId }),
         isAcademyEnabled(),
     ]);
 

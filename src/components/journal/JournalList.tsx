@@ -12,8 +12,6 @@ import { StrategyCell } from "@/components/journal/cells/StrategyCell";
 import { MindsetCell } from "@/components/journal/cells/MindsetCell";
 import { TagsCell } from "@/components/journal/cells/TagsCell";
 import { MistakesCell } from "@/components/journal/cells/MistakesCell";
-import { ReviewStatusCell } from "@/components/journal/cells/ReviewStatusCell";
-import { evaluateTradeReview } from "@/lib/journal/trade-review-status";
 import { DashboardFilter } from "@/components/dashboard/DashboardFilter";
 import { PaginationControl } from "@/components/ui/PaginationControl";
 import { TradeTypeBadge } from "@/components/ui/TradeTypeBadge";
@@ -69,8 +67,6 @@ const getColumnWidthClass = (colId: string) => {
         case "openTime":
         case "closeTime":
             return "text-center min-w-[130px]";
-        case "reviewStatus":
-            return "text-center min-w-[140px]";
         case "type":
         case "volume":
             return "text-center min-w-[100px]";
@@ -81,7 +77,7 @@ const getColumnWidthClass = (colId: string) => {
 
 const getColumnAlignmentClass = (colId: string) => {
     if (["pnl", "tp", "sl", "commission", "swap"].includes(colId)) return "justify-end pr-2";
-    if (["openTime", "closeTime", "type", "volume", "mindset", "reviewStatus"].includes(colId))
+    if (["openTime", "closeTime", "type", "volume", "mindset"].includes(colId))
         return "justify-center whitespace-nowrap";
     return "justify-start whitespace-nowrap";
 };
@@ -154,7 +150,6 @@ export default function JournalList({
     const filterType = searchParams.get("type") || "ALL";
     const filterStatus = searchParams.get("status") || "ALL";
     const filterTag = searchParams.get("tag") || "ALL";
-    const filterReview = searchParams.get("review") || "ALL";
 
     // Convert initial data
     const [entries, setEntries] = useState<any[]>(initialEntries);
@@ -188,31 +183,7 @@ export default function JournalList({
         ? Array.from(new Set([...userTags, ...SAMPLE_TAGS]))
         : userTags;
     const [isLoading, _setIsLoading] = useState(false);
-
-    const displayedEntries = useMemo(() => {
-        if (!isSampleMode || filterReview === "ALL") return effectiveEntries;
-        return effectiveEntries.filter((entry) => {
-            const reviewed = evaluateTradeReview(entry).isReviewed;
-            return filterReview === "REVIEWED" ? reviewed : !reviewed;
-        });
-    }, [effectiveEntries, isSampleMode, filterReview]);
-
-    const unreviewedCount = useMemo(() => {
-        if (isSampleMode) {
-            return sampleEntries.filter(
-                (entry) =>
-                    entry.status === "CLOSED" &&
-                    !evaluateTradeReview(entry).isReviewed
-            ).length;
-        }
-        return typeof effectiveStats?.unreviewedCount === "number"
-            ? effectiveStats.unreviewedCount
-            : entries.filter(
-                  (entry) =>
-                      entry.status === "CLOSED" &&
-                      !evaluateTradeReview(entry).isReviewed
-              ).length;
-    }, [isSampleMode, sampleEntries, effectiveStats, entries]);
+    const displayedEntries = effectiveEntries;
 
     // Column Visibility State
     const [visibleColumns, setVisibleColumns] = useState<Set<string>>(
@@ -223,7 +194,6 @@ export default function JournalList({
             "commission",
             "swap",
             "pnl",
-            "reviewStatus",
             "strategy",
             "mindset",
             "customTags",
@@ -245,7 +215,6 @@ export default function JournalList({
         { id: "commission", label: "Commission" },
         { id: "swap", label: "Swap" },
         { id: "pnl", label: "Net Profit" },
-        { id: "reviewStatus", label: "Review" },
         { id: "tp", label: "Take Profit" },
         { id: "sl", label: "Stop Loss" },
         { id: "strategy", label: "Strategy Tags" },
@@ -287,19 +256,9 @@ export default function JournalList({
                             parsed.push("swap");
                         }
                     }
-                    if (
-                        !localStorage.getItem("journal_columns_review_v1") &&
-                        !parsed.includes("reviewStatus")
-                    ) {
-                        const pnlIdx = parsed.indexOf("pnl");
-                        if (pnlIdx !== -1) {
-                            parsed.splice(pnlIdx + 1, 0, "reviewStatus");
-                        } else {
-                            parsed.push("reviewStatus");
-                        }
-                        localStorage.setItem("journal_columns_review_v1", "1");
-                    }
-                    setVisibleColumns(new Set(parsed));
+                    setVisibleColumns(
+                        new Set(parsed.filter((id: string) => id !== "reviewStatus"))
+                    );
                 }
             } catch {
                 // Ignore corrupted localStorage column preferences
@@ -517,8 +476,6 @@ export default function JournalList({
                         filterTag={filterTag}
                         filterResult={filterStatus}
                         filterStrategy={searchParams.get("strategy") || ""}
-                        filterReview={filterReview}
-                        unreviewedCount={unreviewedCount}
                         userTags={availableUserTags}
                         strategies={availableStrategies}
                         updateParams={updateParams}
@@ -895,29 +852,6 @@ export default function JournalList({
                                                                             </span>
                                                                         )}
                                                                         {col.id ===
-                                                                            "reviewStatus" && (
-                                                                            <div className="flex justify-center w-full">
-                                                                                <ReviewStatusCell
-                                                                                    entry={
-                                                                                        entry
-                                                                                    }
-                                                                                    onReviewClick={() =>
-                                                                                        handleEdit(
-                                                                                            entry
-                                                                                        )
-                                                                                    }
-                                                                                    onInspectClick={() => {
-                                                                                        setSelectedDetailEntry(
-                                                                                            entry
-                                                                                        );
-                                                                                        setIsDetailOpen(
-                                                                                            true
-                                                                                        );
-                                                                                    }}
-                                                                                />
-                                                                            </div>
-                                                                        )}
-                                                                        {col.id ===
                                                                             "tp" && (
                                                                             <span className="font-mono tabular-nums text-primary font-medium">
                                                                                 {(
@@ -1111,22 +1045,6 @@ export default function JournalList({
                                                             {formattedLots} lots
                                                         </span>
                                                     </div>
-                                                    {entry.status === "CLOSED" && (
-                                                        <span
-                                                            className={cn(
-                                                                "px-1.5 py-0.5 rounded-lg text-[9px] font-black uppercase",
-                                                                evaluateTradeReview(entry)
-                                                                    .isReviewed
-                                                                    ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-                                                                    : "bg-amber-500/10 text-amber-600 dark:text-amber-400"
-                                                            )}
-                                                        >
-                                                            {evaluateTradeReview(entry)
-                                                                .isReviewed
-                                                                ? "Reviewed"
-                                                                : "Needs Review"}
-                                                        </span>
-                                                    )}
                                                 </div>
 
                                                 {/* Line 3: Entry → Exit Price + Date › */}

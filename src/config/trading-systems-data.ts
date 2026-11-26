@@ -867,7 +867,7 @@ export const TRADING_SYSTEMS_DATA: SystemData[] = [
         ],
     },
     {
-        slug: "gsn-shadown-matrix",
+        slug: "shadow-matrix",
         title: "GSN Shadow Matrix",
         version: "v1.0",
         description:
@@ -1501,7 +1501,7 @@ export function getSystemBySlug(slug: string): SystemData | undefined {
         normalized === "shadownmatrix"
     ) {
         return TRADING_SYSTEMS_DATA.find(
-            (s) => s.slug === "gsn-shadown-matrix"
+            (s) => s.slug === "shadow-matrix"
         );
     }
     return TRADING_SYSTEMS_DATA.find(

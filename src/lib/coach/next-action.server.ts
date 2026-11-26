@@ -5,6 +5,7 @@ import {
     ImprovementExperimentView,
 } from "@/lib/trader-growth/types";
 import { computeTraderSignals } from "./signal-engine.server";
+import type { TraderSignalInput } from "./signal-types";
 
 export interface NextBestActionInput {
     userId: string;
@@ -12,6 +13,7 @@ export interface NextBestActionInput {
     firstInsight?: InsightSnapshotView | null;
     activeExperiment?: ImprovementExperimentView | null;
     tradingGoal?: string | null;
+    signals?: TraderSignalInput[];
 }
 
 export async function getNextBestAction(
@@ -119,8 +121,9 @@ export async function getNextBestAction(
         };
     }
 
-    // Signals check for high severity
-    const signals = await computeTraderSignals(userId, { persist: false });
+    // Signals check for high severity (reuse precomputed signals when available)
+    const signals =
+        input.signals ?? (await computeTraderSignals(userId, { persist: false }));
     // Signals returned by computeTraderSignals are computed on the fly from the
     // user's current state (persist: false) and never carry a `status` field —
     // anything pushed is active by definition, so match on severity alone.

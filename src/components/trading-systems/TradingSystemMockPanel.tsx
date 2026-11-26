@@ -26,7 +26,12 @@ export function TradingSystemMockPanel({
         return <TradeManagerMockPanel />;
     }
 
-    if (slug === "gsn-shadown-matrix" || slug === "gsn-phoenix-grid") {
+    if (
+        slug === "shadow-matrix" ||
+        slug === "gsn-shadow-matrix" ||
+        slug === "gsn-shadown-matrix" ||
+        slug === "gsn-phoenix-grid"
+    ) {
         return <ShadowMatrixMockPanel />;
     }
 

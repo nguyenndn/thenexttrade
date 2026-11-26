@@ -12,6 +12,7 @@ import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
 import { CookieConsentBanner } from "@/components/layout/CookieConsentBanner";
 import { getBaseUrl, absoluteUrl } from "@/lib/url";
 import { TELEGRAM_CHANNEL_URL } from "@/config/telegram";
+import { getServerBuildId } from "@/lib/deployment/build-id.server";
 
 const SystemAnnouncementBanner = dynamic(
     () =>
@@ -148,9 +149,10 @@ export default async function RootLayout({
     // CSP nonce set by src/proxy.ts on the forwarded request. Reading request
     // headers makes this layout dynamic, which a per-request nonce requires.
     const nonce = (await headers()).get("x-nonce") ?? undefined;
+    const buildId = getServerBuildId();
 
     return (
-        <html lang="en" suppressHydrationWarning>
+        <html lang="en" data-tnt-build={buildId} suppressHydrationWarning>
             <head>
                 <link
                     rel="dns-prefetch"
@@ -192,33 +194,110 @@ export default async function RootLayout({
                         dangerouslySetInnerHTML={{
                             __html: `
 (function() {
+  var RELOAD_KEY = 'tnt_chunk_reload_at';
+  var COOLDOWN_MS = 20000;
+  var CHECK_THROTTLE_MS = 15000;
+  var STALE_RE = /ChunkLoadError|UnrecognizedActionError|Loading (?:CSS )?chunk [\\w-]+ failed|CSS_CHUNK_LOAD_FAILED|Unable to preload CSS|Failed to fetch dynamically imported module|Importing a module script failed|error loading dynamically imported module|Failed to find Server Action|was not found on the server|Expected RSC navigation response to have a body/i;
+  var bootBuildId = document.documentElement.getAttribute('data-tnt-build') || '';
+  var lastSkewCheckAt = Date.now();
+  var checkInFlight = false;
+  var skewPendingReload = false;
+
+  function isEditingField() {
+    var el = document.activeElement;
+    if (!el) return false;
+    var tag = el.tagName;
+    return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || el.isContentEditable === true;
+  }
+
   function reloadOnceOnStaleChunk() {
     try {
-      var last = Number(sessionStorage.getItem('tnt_chunk_reload_at') || '0');
-      if (Date.now() - last > 15000) {
-        sessionStorage.setItem('tnt_chunk_reload_at', String(Date.now()));
+      if (navigator.onLine === false) return;
+      var last = Number(sessionStorage.getItem(RELOAD_KEY) || '0');
+      if (Date.now() - last > COOLDOWN_MS) {
+        sessionStorage.setItem(RELOAD_KEY, String(Date.now()));
         window.location.reload();
       }
     } catch (e) {}
   }
-  window.addEventListener('error', function(ev) {
-    var t = ev && ev.target;
-    if (t && t.tagName === 'SCRIPT' && t.src && t.src.indexOf('/_next/static/') !== -1) {
-      reloadOnceOnStaleChunk();
-      return;
-    }
-    var msg = (ev && ev.message) || '';
-    if (/ChunkLoadError|Loading chunk [\\w-]+ failed|Failed to fetch dynamically imported module|Importing a module script failed/i.test(msg)) {
-      reloadOnceOnStaleChunk();
-    }
-  }, true);
-  window.addEventListener('unhandledrejection', function(ev) {
-    var r = ev && ev.reason;
-    var msg = (r && (r.name + ' ' + r.message)) || String(r || '');
-    if (/ChunkLoadError|Loading chunk [\\w-]+ failed|Failed to fetch dynamically imported module|Importing a module script failed/i.test(msg)) {
+
+  function checkBuildSkew(force) {
+    if (!bootBuildId || checkInFlight || navigator.onLine === false) return;
+    var now = Date.now();
+    if (!force && now - lastSkewCheckAt < CHECK_THROTTLE_MS) return;
+    lastSkewCheckAt = now;
+    checkInFlight = true;
+    fetch('/api/build-id?t=' + now, { cache: 'no-store', credentials: 'same-origin' })
+      .then(function(res) { return res.ok ? res.json() : null; })
+      .then(function(data) {
+        if (data && data.buildId && data.buildId !== bootBuildId) {
+          if (!isEditingField()) {
+            reloadOnceOnStaleChunk();
+          } else {
+            skewPendingReload = true;
+          }
+        }
+      })
+      .catch(function() {})
+      .finally(function() { checkInFlight = false; });
+  }
+
+  document.addEventListener('focusout', function() {
+    if (skewPendingReload && !isEditingField()) {
       reloadOnceOnStaleChunk();
     }
   });
+  document.addEventListener('click', function(ev) {
+    if (!skewPendingReload) return;
+    var link = ev.target && ev.target.closest ? ev.target.closest('a[href]') : null;
+    if (link && link.href && link.origin === location.origin && !link.target) {
+      ev.preventDefault();
+      window.location.href = link.href;
+    }
+  }, true);
+
+  document.addEventListener('visibilitychange', function() {
+    if (document.visibilityState === 'visible') checkBuildSkew(false);
+  });
+  window.addEventListener('pageshow', function(ev) {
+    if (ev && ev.persisted) checkBuildSkew(true);
+  });
+  window.addEventListener('focus', function() {
+    checkBuildSkew(false);
+  });
+
+  if (typeof MutationObserver !== 'undefined') {
+    var rootObserver = new MutationObserver(function() {
+      if (document.documentElement.id === '__next_error__') {
+        reloadOnceOnStaleChunk();
+      }
+    });
+    rootObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['id'] });
+  }
+
+  window.addEventListener('error', function(ev) {
+    var t = ev && ev.target;
+    if (t && (t.tagName === 'SCRIPT' || t.tagName === 'LINK')) {
+      var url = t.src || t.href || '';
+      if (url.indexOf('/_next/static/') !== -1) {
+        reloadOnceOnStaleChunk();
+        return;
+      }
+    }
+    var msg = (ev && ev.message) || '';
+    if (STALE_RE.test(msg)) {
+      reloadOnceOnStaleChunk();
+    }
+  }, true);
+
+  window.addEventListener('unhandledrejection', function(ev) {
+    var r = ev && ev.reason;
+    var msg = (r && ((r.name || '') + ' ' + (r.message || ''))) || String(r || '');
+    if (STALE_RE.test(msg)) {
+      reloadOnceOnStaleChunk();
+    }
+  });
+
   if ('serviceWorker' in navigator && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
     (window.requestIdleCallback || function(cb){setTimeout(cb,1)})(function() {
       navigator.serviceWorker.register('/sw.js').then(function(reg) { reg.update(); }).catch(function() {});

@@ -186,10 +186,15 @@ export async function PUT(
                 typeof updateData.pnl === "number"
                     ? updateData.pnl
                     : existing.pnl;
+            const pnlOrFeesChanged =
+                "pnl" in body || "commission" in body || "swap" in body;
+            const explicitResultProvided =
+                "result" in body && Boolean(updateData.result);
+
             if (
-                !updateData.result &&
-                !existing.result &&
-                typeof effectivePnl === "number"
+                typeof effectivePnl === "number" &&
+                ((!updateData.result && !existing.result) ||
+                    (pnlOrFeesChanged && !explicitResultProvided))
             ) {
                 const effComm =
                     typeof updateData.commission === "number"
@@ -201,7 +206,11 @@ export async function PUT(
                         : existing.swap || 0;
                 const netPnl = effectivePnl + effComm + effSwap;
                 updateData.result =
-                    netPnl > 0 ? "WIN" : netPnl < 0 ? "LOSS" : "BREAK_EVEN";
+                    netPnl > 0.01
+                        ? "WIN"
+                        : netPnl < -0.01
+                          ? "LOSS"
+                          : "BREAK_EVEN";
             }
         }
 

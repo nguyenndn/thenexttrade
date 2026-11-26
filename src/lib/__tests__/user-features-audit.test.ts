@@ -340,6 +340,41 @@ describe("User Features Audit — Real R-Multiple Psychology Optimizer", () => {
         expect(target1R?.simulatedNetPnL).toBe(300); // 4 * $100 - 1 * $100
         expect(target2R?.isOptimal).toBe(true);
     });
+
+    it("deducts exact per-trade commission and swap when simulating R-multiple caps", async () => {
+        // 5 BUY trades risking 10 points ($100 gross 1R), closing at +2.0R (+$200 gross) with -$7 commission & -$3 swap (-$10 fees each)
+        const feeTrades = [1, 2, 3, 4, 5].map((idx) => ({
+            id: `fee-${idx}`,
+            symbol: "XAUUSD",
+            type: "BUY",
+            result: "WIN",
+            entryPrice: 2900,
+            exitPrice: 2920,
+            stopLoss: 2890,
+            pnl: 200,
+            commission: -7,
+            swap: -3,
+            entryDate: new Date(`2026-05-0${idx}T10:00:00Z`),
+            exitDate: new Date(`2026-05-0${idx}T11:00:00Z`),
+            lotSize: 0.1,
+            syncSource: "EA_SYNC",
+            tradingSession: "London",
+            account: { currency: "USD", server: "Vantage-Live" },
+        }));
+
+        vi.mocked(prisma.journalEntry.findMany).mockResolvedValue(
+            feeTrades as never
+        );
+
+        const report = await calculatePsychologyDiagnostic("user-1", "all");
+        const target1R = report.rrOptimizer.find((o) => o.targetRR === 1.0);
+        const target2R = report.rrOptimizer.find((o) => o.targetRR === 2.0);
+        // At 1.0R cap: each trade earns +$100 gross - $10 fees = +$90 net -> 5 * $90 = $450
+        expect(target1R?.simulatedNetPnL).toBe(450);
+        // At 2.0R cap: each trade earns +$200 gross - $10 fees = +$190 net -> 5 * $190 = $950
+        expect(target2R?.simulatedNetPnL).toBe(950);
+        expect(report.payoff.avgWin).toBe(190);
+    });
 });
 
 describe("User Features Audit — Multi-Account Journal Summary Cent Scaling", () => {

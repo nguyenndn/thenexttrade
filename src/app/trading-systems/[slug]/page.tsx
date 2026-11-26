@@ -100,8 +100,15 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
     const dbProduct = await prisma.eAProduct.findFirst({
         where: {
             slug:
-                system.slug === "gsn-shadown-matrix"
-                    ? { in: ["gsn-shadown-matrix", "gsn-phoenix-grid"] }
+                system.slug === "shadow-matrix"
+                    ? {
+                          in: [
+                              "shadow-matrix",
+                              "gsn-shadow-matrix",
+                              "gsn-shadown-matrix",
+                              "gsn-phoenix-grid",
+                          ],
+                      }
                     : system.slug,
         },
     });
@@ -330,7 +337,7 @@ export default async function TradingSystemDetailPage({ params }: PageProps) {
                                     the sole responsibility of the user.
                                 </p>
                             )}
-                            {system.slug === "gsn-shadown-matrix" && (
+                            {system.slug === "shadow-matrix" && (
                                 <p>
                                     Risk Warning: GSN Shadow Matrix is an
                                     advanced grid and hedging system designed

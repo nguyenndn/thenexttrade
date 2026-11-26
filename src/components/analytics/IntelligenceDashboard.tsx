@@ -34,6 +34,8 @@ import { RuleViolationTracker } from "@/components/pro/RuleViolationTracker";
 import { BehavioralRadarChart } from "./BehavioralRadarChart";
 import { AiCoachCard } from "./AiCoachCard";
 import { BiasProfileWidget } from "./BiasProfileWidget";
+import { WinLossBehavioralMirror } from "./WinLossBehavioralMirror";
+import type { WinLossMirrorReport } from "@/lib/analytics/win-loss-mirror";
 import { EmptyStateCTAs } from "@/components/ui/EmptyStateCTAs";
 
 // ============================================================================
@@ -757,6 +759,7 @@ export function IntelligenceDashboard({
     data,
     previousData,
     scoreHistory,
+    winLossMirror,
     accountId,
     timezone,
     dateFrom,
@@ -767,6 +770,7 @@ export function IntelligenceDashboard({
     data: IntelligenceData;
     previousData?: IntelligenceData | null;
     scoreHistory?: ScoreHistoryPoint[];
+    winLossMirror?: WinLossMirrorReport | null;
     accountId?: string;
     timezone?: string;
     dateFrom?: string;
@@ -850,6 +854,9 @@ export function IntelligenceDashboard({
 
             {/* Unified Score & Risk Panel — full width, 3 columns */}
             <ScoreAndRiskPanel data={data} />
+
+            {/* Win vs Loss Real-World Behavioral Mirror & Profit Giveback */}
+            <WinLossBehavioralMirror report={winLossMirror} />
 
             {/* Radar Charts Grid (50% / 50% split) */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 md:gap-4">

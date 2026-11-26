@@ -3,7 +3,7 @@ import { getUserProAccess } from "@/lib/pro-access";
 import { prisma } from "@/lib/prisma";
 import { DashboardLayoutClient } from "./layout.client";
 import { redirect } from "next/navigation";
-import { isOnboardingDone } from "@/lib/onboarding/onboarding.server";
+import type { OnboardingState } from "@/lib/onboarding/onboarding.server";
 import { getUserTradingDataState } from "@/lib/trading-data-state";
 import { dashboardMenuItems, dashboardMenuGroups } from "@/config/navigation";
 import {
@@ -65,17 +65,7 @@ export default async function DashboardLayout({
 }) {
     const user = await getAuthUser();
 
-    if (user) {
-        const onboardingDone = await isOnboardingDone(user.id);
-        if (!onboardingDone) {
-            const dataState = await getUserTradingDataState(user.id);
-            if (dataState.accountCount === 0 && dataState.tradeCount === 0) {
-                redirect("/onboarding");
-            }
-        }
-    }
-
-    const [userContext, initialDisabledFlags] = await Promise.all([
+    const [userBundle, initialDisabledFlags] = await Promise.all([
         user
             ? Promise.all([
                   getUserProAccess(user.id),
@@ -87,7 +77,31 @@ export default async function DashboardLayout({
                       where: { id: user.id },
                       select: { settings: true },
                   }),
-              ]).then(([r, profile, dbUser]) => ({
+              ])
+            : Promise.resolve(null),
+        getDisabledDashboardFlags(),
+    ]);
+
+    if (user && userBundle) {
+        const [, , dbUser] = userBundle;
+        const rawSettings =
+            (dbUser?.settings as Record<string, unknown> | null) || {};
+        const onboarding = (rawSettings.onboarding as OnboardingState) || {};
+        const onboardingDone = Boolean(
+            onboarding.completedAt || onboarding.skippedAt
+        );
+        if (!onboardingDone) {
+            const dataState = await getUserTradingDataState(user.id);
+            if (dataState.accountCount === 0 && dataState.tradeCount === 0) {
+                redirect("/onboarding");
+            }
+        }
+    }
+
+    const userContext = userBundle
+        ? (() => {
+              const [r, profile, dbUser] = userBundle;
+              return {
                   proStatus: {
                       isPro: r.isPro,
                       status: r.status,
@@ -149,10 +163,9 @@ export default async function DashboardLayout({
                       })),
                   },
                   tourState: getDashboardTourState(dbUser?.settings),
-              }))
-            : Promise.resolve(null),
-        getDisabledDashboardFlags(),
-    ]);
+              };
+          })()
+        : null;
 
     return (
         <DashboardLayoutClient

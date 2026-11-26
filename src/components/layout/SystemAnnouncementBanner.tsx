@@ -40,7 +40,7 @@ export function SystemAnnouncementBanner() {
                 }
             })
             .catch(() => {});
-    }, [isHiddenRoute, pathname]); // Re-check if it changes, but respect sessionStorage
+    }, [isHiddenRoute]); // Fetch once per session when entering visible routes (not on every route navigation)
 
     const dismiss = () => {
         setVisible(false);

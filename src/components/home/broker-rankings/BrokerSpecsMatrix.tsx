@@ -24,7 +24,7 @@ export function BrokerSpecsMatrix({
                     <span className="text-[9px] font-bold text-gray-400 uppercase tracking-wider block mb-0.5">
                         {activeTab === "brokers" ? "Min Deposit" : "Type"}
                     </span>
-                    <span className="font-mono tabular-nums font-bold text-gray-800 dark:text-gray-200 block truncate">
+                    <span className="tabular-nums font-bold text-gray-800 dark:text-gray-200 block truncate">
                         {activeTab === "brokers" ? minDeposit : marketType}
                     </span>
                 </div>
@@ -32,7 +32,7 @@ export function BrokerSpecsMatrix({
                     <span className="text-[9px] font-bold text-gray-400 uppercase tracking-wider block mb-0.5">
                         {activeTab === "brokers" ? "Max Leverage" : "Assets"}
                     </span>
-                    <span className="font-mono tabular-nums font-bold text-gray-800 dark:text-gray-200 block truncate">
+                    <span className="tabular-nums font-bold text-gray-800 dark:text-gray-200 block truncate">
                         {activeTab === "brokers" ? (maxLeverage || "N/A") : assets}
                     </span>
                 </div>
@@ -50,7 +50,7 @@ export function BrokerSpecsMatrix({
                     <span className="text-[9px] font-bold text-gray-400 uppercase tracking-wider block mb-0.5">
                         Rating
                     </span>
-                    <span className="font-mono tabular-nums font-semibold text-gray-800 dark:text-gray-200 block truncate">
+                    <span className="tabular-nums font-semibold text-gray-800 dark:text-gray-200 block truncate">
                         {rating.toFixed(1)} / 5.0
                     </span>
                 </div>

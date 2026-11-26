@@ -4,8 +4,6 @@ import {
     Settings2,
     Plus,
     SlidersHorizontal,
-    ClipboardList,
-    X,
 } from "lucide-react";
 import {
     DropdownMenu,
@@ -31,8 +29,6 @@ interface JournalTableFiltersProps {
     filterTag: string;
     filterResult: string;
     filterStrategy: string;
-    filterReview?: string;
-    unreviewedCount?: number;
     userTags: string[];
     strategies: string[];
     updateParams: (updates: Record<string, string | null | undefined>) => void;
@@ -52,8 +48,6 @@ export function JournalTableFilters({
     filterTag,
     filterResult,
     filterStrategy,
-    filterReview = "ALL",
-    unreviewedCount = 0,
     userTags,
     strategies,
     updateParams,
@@ -68,7 +62,6 @@ export function JournalTableFilters({
         (filterType && filterType !== "ALL" ? 1 : 0) +
         (userTags.length > 0 && filterTag && filterTag !== "ALL" ? 1 : 0) +
         (filterResult && filterResult !== "ALL" ? 1 : 0) +
-        (filterReview && filterReview !== "ALL" ? 1 : 0) +
         (strategies.length > 0 && filterStrategy ? 1 : 0);
 
     const renderSecondaryFilters = (isMobilePopover = false) => (
@@ -256,59 +249,6 @@ export function JournalTableFilters({
                     </DropdownMenuContent>
                 </DropdownMenu>
             )}
-
-            {/* Review Status Filter */}
-            <DropdownMenu className={isMobilePopover ? "w-full" : undefined}>
-                <DropdownMenuTrigger asChild>
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        className={`flex items-center gap-2 text-xs font-medium text-gray-700 dark:text-gray-300 ${
-                            isMobilePopover ? "w-full justify-between h-9" : ""
-                        }`}
-                    >
-                        <span className="whitespace-nowrap">
-                            Review:{" "}
-                            <span
-                                className={
-                                    filterReview === "REVIEWED"
-                                        ? "text-emerald-500 font-semibold"
-                                        : filterReview === "UNREVIEWED"
-                                          ? "text-amber-500 font-semibold"
-                                          : "text-gold dark:text-amber-400 font-semibold"
-                                }
-                            >
-                                {filterReview === "REVIEWED"
-                                    ? "Reviewed"
-                                    : filterReview === "UNREVIEWED"
-                                      ? "Needs Review"
-                                      : "All"}
-                            </span>
-                        </span>
-                        <ChevronDown size={14} className="shrink-0" />
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                    align="start"
-                    data-journal-filter-dropdown="true"
-                >
-                    <DropdownMenuItem
-                        onClick={() => updateParams({ review: null })}
-                    >
-                        All Trades
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                        onClick={() => updateParams({ review: "UNREVIEWED" })}
-                    >
-                        Needs Review ({unreviewedCount})
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                        onClick={() => updateParams({ review: "REVIEWED" })}
-                    >
-                        Reviewed
-                    </DropdownMenuItem>
-                </DropdownMenuContent>
-            </DropdownMenu>
         </>
     );
 
@@ -386,37 +326,6 @@ export function JournalTableFilters({
                 {/* Desktop Filters Group (>= md) */}
                 <div className="hidden md:flex items-center gap-2 flex-wrap">
                     {renderSecondaryFilters(false)}
-                    {(unreviewedCount > 0 || filterReview === "UNREVIEWED") && (
-                        <Button
-                            type="button"
-                            variant={
-                                filterReview === "UNREVIEWED" ? "gold" : "outline"
-                            }
-                            size="sm"
-                            onClick={() =>
-                                updateParams({
-                                    review:
-                                        filterReview === "UNREVIEWED"
-                                            ? null
-                                            : "UNREVIEWED",
-                                })
-                            }
-                            className={`flex items-center gap-1.5 text-xs font-bold whitespace-nowrap ${
-                                filterReview === "UNREVIEWED"
-                                    ? ""
-                                    : "border-amber-500/35 text-amber-600 dark:text-amber-400 bg-amber-500/5 hover:bg-amber-500/10"
-                            }`}
-                        >
-                            <ClipboardList size={13} className="shrink-0" />
-                            <span>Needs Review</span>
-                            <span className="font-mono tabular-nums">
-                                ({unreviewedCount})
-                            </span>
-                            {filterReview === "UNREVIEWED" && (
-                                <X size={12} className="shrink-0 ml-0.5" />
-                            )}
-                        </Button>
-                    )}
                 </div>
             </div>
 

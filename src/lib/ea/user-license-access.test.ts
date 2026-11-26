@@ -9,15 +9,15 @@ describe("Dashboard EA Detail Slugs (All 4 Current EAs)", () => {
     const dbProductSlugs = [
         "goldscalperninja",
         "trade-manager",
-        "gsn-phoenix-grid",
+        "shadow-matrix",
         "snr-system",
     ];
 
-    it("maps the 4 DB EA slugs to the exact 4 canonical page URLs using gsn-shadown-matrix", () => {
+    it("maps the 4 DB EA slugs to the exact 4 canonical page URLs", () => {
         expect(dbProductSlugs.map(getCanonicalSystemPageSlug)).toEqual([
             "goldscalperninja",
             "trade-manager",
-            "gsn-shadown-matrix",
+            "shadow-matrix",
             "snr-system",
         ]);
     });
@@ -26,7 +26,7 @@ describe("Dashboard EA Detail Slugs (All 4 Current EAs)", () => {
         for (const slug of [
             "goldscalperninja",
             "trade-manager",
-            "gsn-shadown-matrix",
+            "shadow-matrix",
             "snr-system",
         ]) {
             const system = getSystemBySlug(slug);
@@ -39,18 +39,17 @@ describe("Dashboard EA Detail Slugs (All 4 Current EAs)", () => {
         }
     });
 
-    it("maps Shadow Matrix aliases to canonical page slug gsn-shadown-matrix while querying DB compatibly", () => {
+    it("maps Shadow Matrix aliases to canonical page slug shadow-matrix while querying DB compatibly", () => {
         for (const alias of [
+            "shadow-matrix",
+            "gsn-shadow-matrix",
             "gsn-shadown-matrix",
             "shadown-matrix",
-            "shadow-matrix",
             "gsn-phoenix-grid",
         ]) {
-            expect(getCanonicalSystemPageSlug(alias)).toBe(
-                "gsn-shadown-matrix"
-            );
+            expect(getCanonicalSystemPageSlug(alias)).toBe("shadow-matrix");
             const candidates = buildCandidateProductSlugs(alias);
-            expect(candidates).toContain("gsn-shadown-matrix");
+            expect(candidates).toContain("shadow-matrix");
             expect(candidates).toContain("gsn-phoenix-grid");
         }
     });

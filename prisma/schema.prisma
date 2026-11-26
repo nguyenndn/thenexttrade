@@ -355,6 +355,8 @@ model JournalEntry {
   @@unique([accountId, externalTicket])
   @@unique([userId, accountId, externalTicket])
   @@index([userId, status])
+  @@index([userId, status, exitDate])
+  @@index([userId, accountId, status, exitDate])
   @@index([entryDate])
   @@index([strategy])
   @@index([userId, exitDate])

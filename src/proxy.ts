@@ -514,6 +514,6 @@ export const config = {
          * - Static assets (svg, png, jpg, etc.)
          * - robots.txt, sitemap.xml, feed.xml
          */
-        "/((?!_next/static|_next/image|favicon.ico|images/|uploads/|robots\\.txt|sitemap\\.xml|feed\\.xml|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|txt|xml)$).*)",
+        "/((?!_next/static|_next/image|api/build-id|favicon.ico|images/|uploads/|robots\\.txt|sitemap\\.xml|feed\\.xml|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|txt|xml)$).*)",
     ],
 };

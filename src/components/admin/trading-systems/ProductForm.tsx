@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -15,7 +15,6 @@ import { RichTextEditor } from "@/components/admin/articles/RichTextEditor";
 import {
     Save,
     Upload,
-    Info,
     FileCode,
     Image as ImageIcon,
     ChevronDown,
@@ -32,6 +31,13 @@ import { EAType, PlatformType } from "@prisma/client";
 // Zod Schema
 const productSchema = z.object({
     name: z.string().min(3, "Name is required"),
+    slug: z
+        .string()
+        .min(2, "Slug is required")
+        .regex(
+            /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+            "Use lowercase letters, numbers, and hyphens only"
+        ),
     description: z.string().min(1, "Description is required"),
     type: z.nativeEnum(EAType),
     version: z
@@ -59,6 +65,7 @@ export function ProductForm({ initialData }: ProductFormProps) {
         resolver: zodResolver(productSchema),
         defaultValues: {
             name: initialData?.name || "",
+            slug: initialData?.slug || "",
             description: initialData?.description || "",
             type: initialData?.type || "AUTO_TRADE",
             version: initialData?.version || "1.0.0",
@@ -69,8 +76,23 @@ export function ProductForm({ initialData }: ProductFormProps) {
         },
     });
 
+    const nameValue = form.watch("name");
     const typeValue = form.watch("type");
     const isFreeValue = form.watch("isFree");
+    const slugDirty = Boolean(form.formState.dirtyFields.slug);
+    const existingMt5FileName = initialData?.fileMT5
+        ? String(initialData.fileMT5).split("/").pop()
+        : null;
+
+    useEffect(() => {
+        if (!initialData && !slugDirty && nameValue) {
+            const generated = nameValue
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, "-")
+                .replace(/^-+|-+$/g, "");
+            form.setValue("slug", generated, { shouldValidate: false });
+        }
+    }, [nameValue, initialData, slugDirty, form]);
 
     // Helper to upload files
     const handleFileUploads = async (productId: string) => {
@@ -108,16 +130,9 @@ export function ProductForm({ initialData }: ProductFormProps) {
     const onSubmit = async (values: ProductFormValues) => {
         setIsLoading(true);
         try {
-            // Force Platform to MT5
-            const generatedSlug =
-                initialData?.slug ||
-                values.name
-                    .toLowerCase()
-                    .replace(/[^a-z0-9]+/g, "-")
-                    .replace(/^-+|-+$/g, "");
             const cleanValues = {
                 ...values,
-                slug: generatedSlug,
+                slug: values.slug.trim().toLowerCase(),
                 platform: "MT5" as PlatformType,
                 changelog: values.changelog || "",
                 // If files are selected, we don't rely on the form strings for files as they will be updated by upload
@@ -159,7 +174,7 @@ export function ProductForm({ initialData }: ProductFormProps) {
                             ? "Product updated successfully"
                             : "Product created successfully"
                     );
-                    router.push("/admin/trading-systems/products");
+                    router.push("/admin/trading-systems");
                     router.refresh();
                 }
             }
@@ -185,9 +200,9 @@ export function ProductForm({ initialData }: ProductFormProps) {
                 <AdminPageHeader
                     title="New EA Product"
                     description="Create a new EA product."
-                    backHref="/admin/trading-systems/products"
+                    backHref="/admin/trading-systems"
                 >
-                    <Link href="/admin/trading-systems/products">
+                    <Link href="/admin/trading-systems">
                         <Button variant="outline" type="button">
                             Cancel
                         </Button>
@@ -204,13 +219,21 @@ export function ProductForm({ initialData }: ProductFormProps) {
                             Basic Information
                         </h3>
 
-                        {/* Product Name - full width */}
-                        <PremiumInput
-                            label="Product Name"
-                            {...form.register("name")}
-                            error={form.formState.errors.name?.message}
-                            required
-                        />
+                        {/* Product Name + Slug */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-start">
+                            <PremiumInput
+                                label="Product Name"
+                                {...form.register("name")}
+                                error={form.formState.errors.name?.message}
+                                required
+                            />
+                            <PremiumInput
+                                label="URL Slug"
+                                {...form.register("slug")}
+                                error={form.formState.errors.slug?.message}
+                                required
+                            />
+                        </div>
 
                         {/* Version + Type + Access Tier - 3 columns */}
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-start">
@@ -218,7 +241,7 @@ export function ProductForm({ initialData }: ProductFormProps) {
                                 label="Version"
                                 {...form.register("version")}
                                 error={form.formState.errors.version?.message}
-                                className="font-mono tabular-nums"
+                                className="tabular-nums"
                                 required
                             />
 
@@ -358,6 +381,53 @@ export function ProductForm({ initialData }: ProductFormProps) {
                             </div>
                         </div>
 
+                        {/* MT5 File (.ex5) */}
+                        <div className="space-y-2">
+                            <div className="flex items-center justify-between gap-2">
+                                <label className="text-[11px] font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wider">
+                                    MT5 File (.ex5)
+                                </label>
+                                {initialData?.fileMT5 && !mt5File && (
+                                    <span className="text-xs text-emerald-500 flex items-center gap-1 font-bold truncate max-w-[65%]">
+                                        <FileCode size={12} className="shrink-0" />
+                                        <span className="truncate">
+                                            {existingMt5FileName || "Uploaded"}
+                                        </span>
+                                    </span>
+                                )}
+                            </div>
+                            <div className="border-2 border-dashed border-gray-200 dark:border-white/10 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group relative flex items-center justify-between gap-3 px-4 py-3.5">
+                                <input
+                                    type="file"
+                                    accept=".ex5"
+                                    aria-label="Upload MT5 .ex5 file"
+                                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                                    onChange={(e) =>
+                                        setMt5File(e.target.files?.[0] || null)
+                                    }
+                                />
+                                <div className="flex items-center gap-3 min-w-0">
+                                    <div className="p-2.5 bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 rounded-lg group-hover:scale-105 transition-transform shrink-0">
+                                        <Upload size={18} />
+                                    </div>
+                                    <div className="min-w-0 text-left">
+                                        <p className="text-sm font-semibold text-gray-700 dark:text-gray-200 truncate">
+                                            {mt5File
+                                                ? mt5File.name
+                                                : existingMt5FileName
+                                                  ? "Replace .ex5 file"
+                                                  : "Upload .ex5 file"}
+                                        </p>
+                                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                                            {mt5File
+                                                ? "Ready to upload when you save changes"
+                                                : "Uploading a new .ex5 replaces the current binary in secure storage"}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         {/* Description - Rich Text */}
                         <div className="space-y-2">
                             <label className="text-[11px] font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wider">
@@ -381,7 +451,7 @@ export function ProductForm({ initialData }: ProductFormProps) {
                     </div>
                 </div>
 
-                {/* RIGHT COLUMN: Product Assets (1/3 width) */}
+                {/* RIGHT COLUMN: Product Assets */}
                 <div className="space-y-6">
                     {/* Thumbnail */}
                     <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-6 space-y-4">
@@ -392,6 +462,7 @@ export function ProductForm({ initialData }: ProductFormProps) {
                             <input
                                 type="file"
                                 accept="image/*"
+                                aria-label="Upload product thumbnail"
                                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                                 onChange={(e) => {
                                     const file = e.target.files?.[0];
@@ -424,53 +495,12 @@ export function ProductForm({ initialData }: ProductFormProps) {
                                     <p className="text-sm font-medium text-gray-600 dark:text-gray-500">
                                         Upload Image
                                     </p>
-                                    <p className="text-[10px] font-mono tabular-nums text-gray-500">
+                                    <p className="text-[10px] tabular-nums text-gray-500">
                                         1200x630 (Rec)
                                     </p>
                                 </div>
                             )}
                         </div>
-                    </div>
-
-                    {/* MT5 File */}
-                    <div className="bg-white dark:bg-[#1E2028] border border-gray-200 dark:border-white/10 rounded-xl p-6 space-y-4">
-                        <div className="flex justify-between items-center border-b border-gray-200 dark:border-white/10 pb-3">
-                            <h3 className="text-base font-bold text-gray-700 dark:text-white">
-                                MT5 File (.ex5)
-                            </h3>
-                            {initialData?.fileMT5 && !mt5File && (
-                                <span className="text-xs text-emerald-500 flex items-center gap-1 font-bold">
-                                    <FileCode size={12} /> Uploaded
-                                </span>
-                            )}
-                        </div>
-                        <div className="border-2 border-dashed border-gray-200 dark:border-white/10 rounded-lg text-center hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group relative flex flex-col items-center justify-center min-h-[120px]">
-                            <input
-                                type="file"
-                                accept=".ex5"
-                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                                onChange={(e) =>
-                                    setMt5File(e.target.files?.[0] || null)
-                                }
-                            />
-                            <div className="flex flex-col items-center gap-2 py-4">
-                                <div className="p-3 bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 rounded-lg group-hover:scale-110 transition-transform">
-                                    <Upload size={20} />
-                                </div>
-                                <p className="text-sm font-medium text-gray-600 dark:text-gray-500">
-                                    {mt5File ? mt5File.name : "Upload .ex5"}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Info Note */}
-                    <div className="p-4 bg-gray-50/80 dark:bg-[#151925] rounded-xl flex items-start gap-3 text-gray-600 dark:text-gray-400 text-xs border border-gray-200 dark:border-white/10">
-                        <Info size={16} className="shrink-0 mt-0.5" />
-                        <p>
-                            Files are uploaded to secure storage. Uploading a
-                            new file replaces the existing one.
-                        </p>
                     </div>
                 </div>
             </div>

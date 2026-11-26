@@ -54,6 +54,17 @@ export async function createEAProduct(data: CreateEAProductInput) {
             return { success: false, error: validated.error.issues[0].message };
         }
 
+        const existingSlug = await prisma.eAProduct.findUnique({
+            where: { slug: validated.data.slug },
+            select: { id: true },
+        });
+        if (existingSlug) {
+            return {
+                success: false,
+                error: `Slug "${validated.data.slug}" is already in use`,
+            };
+        }
+
         const newProduct = await prisma.eAProduct.create({
             data: {
                 ...validated.data,
@@ -73,6 +84,9 @@ export async function createEAProduct(data: CreateEAProductInput) {
         });
 
         revalidatePath("/admin/trading-systems");
+        revalidatePath("/admin/trading-systems/products");
+        revalidatePath("/dashboard/trading-systems");
+        revalidatePath("/trading-systems");
         return { success: true, data: newProduct };
     } catch (error) {
         console.error("createEAProduct error:", error);
@@ -100,7 +114,23 @@ export async function updateEAProduct(
         if (!product)
             return { success: false, error: ErrorCode.PRODUCT_NOT_FOUND };
 
-        await prisma.eAProduct.update({
+        if (validated.data.slug && validated.data.slug !== product.slug) {
+            const existingSlug = await prisma.eAProduct.findFirst({
+                where: {
+                    slug: validated.data.slug,
+                    id: { not: productId },
+                },
+                select: { id: true },
+            });
+            if (existingSlug) {
+                return {
+                    success: false,
+                    error: `Slug "${validated.data.slug}" is already in use`,
+                };
+            }
+        }
+
+        const updatedProduct = await prisma.eAProduct.update({
             where: { id: productId },
             data: validated.data,
         });
@@ -116,7 +146,12 @@ export async function updateEAProduct(
         });
 
         revalidatePath("/admin/trading-systems");
+        revalidatePath("/admin/trading-systems/products");
         revalidatePath(`/admin/trading-systems/${productId}`);
+        revalidatePath(`/admin/trading-systems/${product.slug}`);
+        revalidatePath(`/admin/trading-systems/${updatedProduct.slug}`);
+        revalidatePath("/dashboard/trading-systems");
+        revalidatePath("/trading-systems");
         return { success: true };
     } catch (error) {
         console.error("updateEAProduct error:", error);
@@ -154,6 +189,11 @@ export async function toggleProductStatus(productId: string) {
         });
 
         revalidatePath("/admin/trading-systems");
+        revalidatePath("/admin/trading-systems/products");
+        revalidatePath(`/admin/trading-systems/${product.slug}`);
+        revalidatePath("/dashboard/trading-systems");
+        revalidatePath(`/dashboard/trading-systems/${product.slug}`);
+        revalidatePath("/trading-systems");
         return { success: true };
     } catch (error) {
         console.error("toggleProductStatus error:", error);
@@ -199,7 +239,7 @@ export async function uploadEAFile(
         const name = folder
             ? `${folder}/${safeFileName}`
             : `thumbnail_${safeFileName}`;
-        
+
         let path = "";
         let finalUrl = "";
 
@@ -227,6 +267,11 @@ export async function uploadEAFile(
         });
 
         revalidatePath(`/admin/trading-systems/${productId}`);
+        revalidatePath(`/admin/trading-systems/${product.slug}`);
+        revalidatePath("/admin/trading-systems/products");
+        revalidatePath("/dashboard/trading-systems");
+        revalidatePath(`/dashboard/trading-systems/${product.slug}`);
+        revalidatePath("/trading-systems");
         return { success: true, url: path || finalUrl };
     } catch (error) {
         console.error("uploadEAFile error:", error);
@@ -255,6 +300,10 @@ export async function deleteEAProduct(productId: string) {
         });
 
         revalidatePath("/admin/trading-systems");
+        revalidatePath("/admin/trading-systems/products");
+        revalidatePath("/dashboard/trading-systems");
+        revalidatePath(`/dashboard/trading-systems/${product.slug}`);
+        revalidatePath("/trading-systems");
         return { success: true };
     } catch (error) {
         console.error("deleteEAProduct error:", error);

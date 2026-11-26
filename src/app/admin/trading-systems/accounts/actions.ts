@@ -71,6 +71,47 @@ function buildSyncEventKey(action: string, accountId: string): string {
     return `license-sync:${action}:${accountId}:${Date.now()}`;
 }
 
+async function resolveOrMaterializeEaLicense(accountId: string, adminId: string) {
+    if (!accountId.startsWith("ta:")) {
+        return prisma.eALicense.findUnique({ where: { id: accountId } });
+    }
+    const taId = accountId.slice(3).trim();
+    if (!taId) return null;
+    const ta = await prisma.tradingAccount.findUnique({
+        where: { id: taId },
+        select: {
+            id: true,
+            userId: true,
+            broker: true,
+            accountNumber: true,
+        },
+    });
+    const cleanAcct = ta?.accountNumber?.trim();
+    if (!ta || !cleanAcct) return null;
+    const cleanBroker = (ta.broker || "Partner Broker").trim();
+    return prisma.eALicense.upsert({
+        where: {
+            broker_accountNumber: {
+                broker: cleanBroker,
+                accountNumber: cleanAcct,
+            },
+        },
+        update: {},
+        create: {
+            userId: ta.userId,
+            broker: cleanBroker,
+            accountNumber: cleanAcct,
+            status: AccountStatus.APPROVED,
+            isVerified: true,
+            verifiedAt: new Date(),
+            approvedBy: adminId,
+            approvedAt: new Date(),
+            startDate: new Date(),
+            note: "Synced from Verified Trading Account",
+        },
+    });
+}
+
 async function checkAdmin() {
     const supabase = await createClient();
     const {
@@ -284,9 +325,7 @@ export async function rejectAccount(
             };
         }
 
-        const license = await prisma.eALicense.findUnique({
-            where: { id: accountId },
-        });
+        const license = await resolveOrMaterializeEaLicense(accountId, user.id);
 
         if (!license) {
             return { success: false, error: ErrorCode.ACCOUNT_NOT_FOUND };
@@ -390,9 +429,7 @@ export async function deleteLicense(
         if (!isAuthorized || !user)
             return { success: false, error: ErrorCode.NOT_ADMIN };
 
-        const license = await prisma.eALicense.findUnique({
-            where: { id: accountId },
-        });
+        const license = await resolveOrMaterializeEaLicense(accountId, user.id);
 
         if (!license) {
             return { success: false, error: ErrorCode.ACCOUNT_NOT_FOUND };
@@ -401,7 +438,7 @@ export async function deleteLicense(
         const { accountRetained } = await prisma.$transaction(
             async (tx) => {
                 await tx.eALicense.delete({
-                    where: { id: accountId },
+                    where: { id: license.id },
                 });
 
                 const deletedCandidates = await tx.tradingAccount.findMany({
@@ -579,9 +616,7 @@ export async function suspendLicense(
         if (!isAuthorized || !user)
             return { success: false, error: ErrorCode.NOT_ADMIN };
 
-        const license = await prisma.eALicense.findUnique({
-            where: { id: accountId },
-        });
+        const license = await resolveOrMaterializeEaLicense(accountId, user.id);
 
         if (!license) {
             return { success: false, error: ErrorCode.ACCOUNT_NOT_FOUND };
@@ -592,7 +627,7 @@ export async function suspendLicense(
         await prisma.$transaction(
             async (tx) => {
                 await tx.eALicense.update({
-                    where: { id: accountId },
+                    where: { id: license.id },
                     data: {
                         status: AccountStatus.SUSPENDED,
                         isVerified: false,
@@ -684,9 +719,7 @@ export async function reactivateLicense(
         if (!isAuthorized || !user)
             return { success: false, error: ErrorCode.NOT_ADMIN };
 
-        const license = await prisma.eALicense.findUnique({
-            where: { id: accountId },
-        });
+        const license = await resolveOrMaterializeEaLicense(accountId, user.id);
 
         if (!license) {
             return { success: false, error: ErrorCode.ACCOUNT_NOT_FOUND };
@@ -766,9 +799,7 @@ export async function regenerateAccountLicenseKey(
         if (!isAuthorized || !user)
             return { success: false, error: ErrorCode.NOT_ADMIN };
 
-        const license = await prisma.eALicense.findUnique({
-            where: { id: accountId },
-        });
+        const license = await resolveOrMaterializeEaLicense(accountId, user.id);
 
         if (!license) {
             return { success: false, error: ErrorCode.ACCOUNT_NOT_FOUND };

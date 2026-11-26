@@ -3,6 +3,7 @@ import { getOrCreateFirstInsight } from "@/lib/insights/first-insight.server";
 import { computeDataConfidence } from "@/lib/insights/data-confidence";
 import { getNextBestAction } from "@/lib/coach/next-action.server";
 import { getLearningRecommendations } from "@/lib/coach/lesson-recommendations.server";
+import type { TraderSignalInput } from "@/lib/coach/signal-types";
 import {
     TraderGrowthViewModel,
     DashboardSurfacePolicy,
@@ -16,7 +17,12 @@ import { prisma } from "@/lib/prisma";
 export async function getTraderGrowthViewModel(
     userId: string,
     selectedAccountId?: string,
-    flags: GrowthFeatureFlags = DEFAULT_GROWTH_FEATURE_FLAGS
+    flags: GrowthFeatureFlags = DEFAULT_GROWTH_FEATURE_FLAGS,
+    precomputed?: {
+        signals?: TraderSignalInput[];
+        tradingGoal?: string | null;
+        learningRecommendations?: TraderGrowthViewModel["learningRecommendations"];
+    }
 ): Promise<TraderGrowthViewModel> {
     if (!flags.GROWTH_ORCHESTRATOR_ENABLED) {
         return {
@@ -70,9 +76,10 @@ export async function getTraderGrowthViewModel(
         };
     }
 
-    const maturity = await evaluateTraderMaturity(userId, selectedAccountId);
-
-    const firstInsight = await getOrCreateFirstInsight(userId, selectedAccountId);
+    const [maturity, firstInsight] = await Promise.all([
+        evaluateTraderMaturity(userId, selectedAccountId),
+        getOrCreateFirstInsight(userId, selectedAccountId),
+    ]);
 
     const dataConfidence = computeDataConfidence({
         usableClosedTradeCount: maturity.usableClosedTradeCount,
@@ -80,85 +87,103 @@ export async function getTraderGrowthViewModel(
         latestSyncAt: maturity.latestSyncAt,
     });
 
-    // Fetch active experiment if enabled
-    let activeExperimentView: ImprovementExperimentView | null = null;
-    if (flags.IMPROVEMENT_EXPERIMENTS_ENABLED && (maturity.activeExperimentId || maturity.reviewReadyExperimentId)) {
-        const expId = maturity.activeExperimentId || maturity.reviewReadyExperimentId;
-        if (expId) {
-            const exp = await prisma.improvementExperiment.findUnique({
-                where: { id: expId },
-            });
-            if (exp) {
-                const followUp = (exp.followUp as Record<string, any>) || {};
-                const currentCount = followUp.sampleSize || 0;
-                const targetCount = exp.targetTradeCount || 10;
-                const pct = Math.min(100, Math.round((currentCount / targetCount) * 100));
+    const expId =
+        flags.IMPROVEMENT_EXPERIMENTS_ENABLED &&
+        (maturity.activeExperimentId || maturity.reviewReadyExperimentId)
+            ? maturity.activeExperimentId || maturity.reviewReadyExperimentId
+            : null;
 
-                activeExperimentView = {
-                    id: exp.id,
-                    title: exp.title,
-                    hypothesis: exp.hypothesis,
-                    instruction: exp.instruction,
-                    primaryMetric: exp.primaryMetric,
-                    targetTradeCount: targetCount,
-                    currentTradeCount: currentCount,
-                    progressPercent: pct,
-                    status: exp.status as any,
-                    outcome: exp.outcome as any,
-                    baselineSummary: `Baseline: ${(exp.baseline as any)?.winRate ?? 0}% Win Rate`,
-                    currentSummary: currentCount > 0 ? `Current: ${followUp.winRate ?? 0}% Win Rate` : undefined,
-                    acceptedAt: exp.acceptedAt?.toISOString() || exp.createdAt.toISOString(),
-                };
-            }
-        }
+    const [activeExpRecord, completedExp] = flags.IMPROVEMENT_EXPERIMENTS_ENABLED
+        ? await Promise.all([
+              expId
+                  ? prisma.improvementExperiment.findUnique({
+                        where: { id: expId },
+                    })
+                  : Promise.resolve(null),
+              prisma.improvementExperiment.findFirst({
+                  where: {
+                      userId,
+                      accountId: selectedAccountId || null,
+                      status: "COMPLETED",
+                  },
+                  orderBy: { completedAt: "desc" },
+              }),
+          ])
+        : [null, null];
+
+    let activeExperimentView: ImprovementExperimentView | null = null;
+    if (activeExpRecord) {
+        const followUp = (activeExpRecord.followUp as Record<string, any>) || {};
+        const currentCount = followUp.sampleSize || 0;
+        const targetCount = activeExpRecord.targetTradeCount || 10;
+        const pct = Math.min(100, Math.round((currentCount / targetCount) * 100));
+
+        activeExperimentView = {
+            id: activeExpRecord.id,
+            title: activeExpRecord.title,
+            hypothesis: activeExpRecord.hypothesis,
+            instruction: activeExpRecord.instruction,
+            primaryMetric: activeExpRecord.primaryMetric,
+            targetTradeCount: targetCount,
+            currentTradeCount: currentCount,
+            progressPercent: pct,
+            status: activeExpRecord.status as any,
+            outcome: activeExpRecord.outcome as any,
+            baselineSummary: `Baseline: ${(activeExpRecord.baseline as any)?.winRate ?? 0}% Win Rate`,
+            currentSummary:
+                currentCount > 0
+                    ? `Current: ${followUp.winRate ?? 0}% Win Rate`
+                    : undefined,
+            acceptedAt:
+                activeExpRecord.acceptedAt?.toISOString() ||
+                activeExpRecord.createdAt.toISOString(),
+        };
     }
 
     let completedExperimentView: ImprovementExperimentView | null = null;
-    if (flags.IMPROVEMENT_EXPERIMENTS_ENABLED) {
-        const completedExp = await prisma.improvementExperiment.findFirst({
-            where: {
-                userId,
-                accountId: selectedAccountId || null,
-                status: "COMPLETED",
-            },
-            orderBy: { completedAt: "desc" },
-        });
+    if (completedExp) {
+        const followUp = (completedExp.followUp as Record<string, any>) || {};
+        const currentCount = followUp.sampleSize || 0;
+        const targetCount = completedExp.targetTradeCount || 10;
+        const pct = Math.min(100, Math.round((currentCount / targetCount) * 100));
 
-        if (completedExp) {
-            const followUp = (completedExp.followUp as Record<string, any>) || {};
-            const currentCount = followUp.sampleSize || 0;
-            const targetCount = completedExp.targetTradeCount || 10;
-            const pct = Math.min(100, Math.round((currentCount / targetCount) * 100));
-
-            completedExperimentView = {
-                id: completedExp.id,
-                title: completedExp.title,
-                hypothesis: completedExp.hypothesis,
-                instruction: completedExp.instruction,
-                primaryMetric: completedExp.primaryMetric,
-                targetTradeCount: targetCount,
-                currentTradeCount: currentCount,
-                progressPercent: pct,
-                status: completedExp.status as any,
-                outcome: completedExp.outcome as any,
-                baselineSummary: `Baseline: ${(completedExp.baseline as any)?.winRate ?? 0}% Win Rate`,
-                currentSummary: `Follow-up: ${followUp.winRate ?? 0}% Win Rate`,
-                acceptedAt: completedExp.acceptedAt?.toISOString() || completedExp.createdAt.toISOString(),
-            };
-        }
+        completedExperimentView = {
+            id: completedExp.id,
+            title: completedExp.title,
+            hypothesis: completedExp.hypothesis,
+            instruction: completedExp.instruction,
+            primaryMetric: completedExp.primaryMetric,
+            targetTradeCount: targetCount,
+            currentTradeCount: currentCount,
+            progressPercent: pct,
+            status: completedExp.status as any,
+            outcome: completedExp.outcome as any,
+            baselineSummary: `Baseline: ${(completedExp.baseline as any)?.winRate ?? 0}% Win Rate`,
+            currentSummary: `Follow-up: ${followUp.winRate ?? 0}% Win Rate`,
+            acceptedAt:
+                completedExp.acceptedAt?.toISOString() ||
+                completedExp.createdAt.toISOString(),
+        };
     }
 
-    const nextAction = await getNextBestAction({
-        userId,
-        maturity,
-        firstInsight,
-        activeExperiment: activeExperimentView,
-    });
-
-    const learningRecommendations = await getLearningRecommendations({
-        userId,
-        limit: 2,
-    });
+    const [nextAction, learningRecommendations] = await Promise.all([
+        getNextBestAction({
+            userId,
+            maturity,
+            firstInsight,
+            activeExperiment: activeExperimentView,
+            tradingGoal: precomputed?.tradingGoal,
+            signals: precomputed?.signals,
+        }),
+        precomputed?.learningRecommendations
+            ? Promise.resolve(precomputed.learningRecommendations)
+            : getLearningRecommendations({
+                  userId,
+                  activeSignals: precomputed?.signals,
+                  tradingGoal: precomputed?.tradingGoal,
+                  limit: 2,
+              }),
+    ]);
 
     // Define adaptive surface policy based on feature flags & maturity stage
     const surfacePolicy: DashboardSurfacePolicy = {

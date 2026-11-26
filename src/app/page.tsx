@@ -9,6 +9,7 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth-cache";
 import { getBaseUrl, absoluteUrl } from "@/lib/url";
+import { unstable_cache } from "next/cache";
 import dynamic from "next/dynamic";
 import type { Metadata } from "next";
 
@@ -121,9 +122,8 @@ const SiteFooter = dynamic(
     { loading: () => <div className="h-64" /> }
 );
 
-export default async function Home() {
-    const [user, quote] = await Promise.all([
-        getAuthUser(),
+const getCachedHomepageQuote = unstable_cache(
+    async () =>
         prisma.quote
             .findFirst({
                 where: { type: "HOMEPAGE", isActive: true },
@@ -131,6 +131,14 @@ export default async function Home() {
                 select: { text: true, author: true },
             })
             .catch(() => null),
+    ["homepage-quote"],
+    { revalidate: 300, tags: ["homepage-quote"] }
+);
+
+export default async function Home() {
+    const [user, quote] = await Promise.all([
+        getAuthUser(),
+        getCachedHomepageQuote(),
     ]);
 
     return (

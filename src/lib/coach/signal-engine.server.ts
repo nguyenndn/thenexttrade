@@ -1,14 +1,33 @@
 import { prisma } from "@/lib/prisma";
+import { Prisma, TradeResult } from "@prisma/client";
 import { TraderSignalInput } from "./signal-types";
 import { getMistakeByCode } from "@/lib/mistakes";
 import { subDays } from "date-fns";
-import { getWeeklyReviewEligibility } from "@/lib/reports/weekly-review-eligibility";
+import {
+    getWeeklyReviewEligibility,
+    type WeeklyReviewEligibility,
+} from "@/lib/reports/weekly-review-eligibility";
 import {
     classifyTradeOutcome,
     isConfirmedStopLossExit,
 } from "@/lib/journal/trade-outcomes";
 import { isAcademyEnabled } from "@/app/admin/academy/actions";
 import { REVENGE_RULES, isRevengeSizeUp } from "@/lib/analytics/revenge";
+
+interface SignalTradeRow {
+    result: TradeResult | null;
+    pnl: number | null;
+    commission: number | null;
+    swap: number | null;
+    exitReason: string | null;
+    entryDate: Date;
+    exitDate: Date | null;
+    lotSize: number;
+    followedPlan: boolean | null;
+    symbol: string;
+    tradingSession: string | null;
+    mistakes: unknown;
+}
 
 function getTradeNetPnl(trade: {
     pnl: number | null;
@@ -18,6 +37,61 @@ function getTradeNetPnl(trade: {
     return (trade.pnl ?? 0) + (trade.commission ?? 0) + (trade.swap ?? 0);
 }
 
+export async function persistTraderSignals(
+    userId: string,
+    signals: TraderSignalInput[]
+): Promise<void> {
+    const activeTypes = signals.map((s) => s.signalType);
+    await Promise.all([
+        ...signals.map((sig) =>
+            prisma.traderSignal.upsert({
+                where: {
+                    userId_signalType_sourceType_sourceId: {
+                        userId,
+                        signalType: sig.signalType,
+                        sourceType: sig.sourceType || "SYSTEM",
+                        sourceId: sig.sourceId || "GLOBAL",
+                    },
+                },
+                update: {
+                    severity: sig.severity,
+                    status: "ACTIVE",
+                    title: sig.title,
+                    summary: sig.summary,
+                    actionLabel: sig.actionLabel,
+                    actionHref: sig.actionHref,
+                    metadata: sig.metadata || undefined,
+                    lastSeenAt: new Date(),
+                },
+                create: {
+                    userId,
+                    signalType: sig.signalType,
+                    severity: sig.severity,
+                    status: "ACTIVE",
+                    sourceType: sig.sourceType || "SYSTEM",
+                    sourceId: sig.sourceId || "GLOBAL",
+                    title: sig.title,
+                    summary: sig.summary,
+                    actionLabel: sig.actionLabel,
+                    actionHref: sig.actionHref,
+                    metadata: sig.metadata || undefined,
+                },
+            })
+        ),
+        prisma.traderSignal.updateMany({
+            where: {
+                userId,
+                status: "ACTIVE",
+                signalType: { notIn: activeTypes },
+            },
+            data: {
+                status: "RESOLVED",
+                resolvedAt: new Date(),
+            },
+        }),
+    ]);
+}
+
 export async function computeTraderSignals(
     userId: string,
     options?: {
@@ -25,6 +99,7 @@ export async function computeTraderSignals(
         periodStart?: Date;
         periodEnd?: Date;
         persist?: boolean;
+        weeklyReviewEligibility?: WeeklyReviewEligibility;
     }
 ): Promise<TraderSignalInput[]> {
     const persist = options?.persist ?? true;
@@ -36,6 +111,7 @@ export async function computeTraderSignals(
     // Gather inputs
     const allUserAccounts = await prisma.tradingAccount.findMany({
         where: { userId },
+        select: { id: true, lastSync: true },
     });
     const matchedAccount = requestedAccountId
         ? allUserAccounts.find((a) => a.id === requestedAccountId)
@@ -45,29 +121,53 @@ export async function computeTraderSignals(
 
     const countAccounts = accounts.length;
 
-    // Fetch closed trades by exitDate (default last 30 days)
+    // Fetch closed trades by exitDate (default last 30 days) using narrow SQL projection
     const since = options?.periodStart ?? subDays(new Date(), 30);
-    const [trades, countCompletedLessons, academyEnabled] = await Promise.all([
-        prisma.journalEntry.findMany({
-            where: {
-                userId,
-                status: "CLOSED",
-                ...(resolvedAccountId ? { accountId: resolvedAccountId } : {}),
-                exitDate: {
-                    gte: since,
-                    ...(options?.periodEnd ? { lte: options.periodEnd } : {}),
+    const accountFilter = resolvedAccountId
+        ? Prisma.sql`AND "accountId" = ${resolvedAccountId}`
+        : Prisma.empty;
+    const periodEndFilter = options?.periodEnd
+        ? Prisma.sql`AND "exitDate" <= ${options.periodEnd}`
+        : Prisma.empty;
+
+    const [trades, countCompletedLessons, academyEnabled, weeklyReviewEligibility] =
+        await Promise.all([
+            prisma.$queryRaw<SignalTradeRow[]>`
+                SELECT
+                    "result",
+                    "pnl",
+                    "commission",
+                    "swap",
+                    "exitReason",
+                    "entryDate",
+                    "exitDate",
+                    "lotSize",
+                    "followedPlan",
+                    "symbol",
+                    "trading_session" AS "tradingSession",
+                    "mistakes"
+                FROM "journal_entries"
+                WHERE "userId" = ${userId}::uuid
+                  AND "status" = 'CLOSED'
+                  ${accountFilter}
+                  AND "exitDate" >= ${since}
+                  ${periodEndFilter}
+                ORDER BY "exitDate" DESC
+            `,
+            prisma.userProgress.count({
+                where: {
+                    userId,
+                    isCompleted: true,
                 },
-            },
-            orderBy: { exitDate: "desc" },
-        }),
-        prisma.userProgress.count({
-            where: {
-                userId,
-                isCompleted: true,
-            },
-        }),
-        isAcademyEnabled(),
-    ]);
+            }),
+            isAcademyEnabled(),
+            options?.weeklyReviewEligibility
+                ? Promise.resolve(options.weeklyReviewEligibility)
+                : getWeeklyReviewEligibility({
+                      userId,
+                      accountId: resolvedAccountId,
+                  }),
+        ]);
 
     const signals: TraderSignalInput[] = [];
 
@@ -162,9 +262,6 @@ export async function computeTraderSignals(
     }
 
     // 6. NO_WEEKLY_REVIEW
-    const weeklyReviewEligibility = await getWeeklyReviewEligibility({
-        userId,
-    });
     const showFirstWeeklyReview =
         weeklyReviewEligibility.ready &&
         weeklyReviewEligibility.isFirstWeeklyReview;
@@ -558,55 +655,7 @@ export async function computeTraderSignals(
 
     // Persist to DB
     if (persist) {
-        for (const sig of signals) {
-            await prisma.traderSignal.upsert({
-                where: {
-                    userId_signalType_sourceType_sourceId: {
-                        userId,
-                        signalType: sig.signalType,
-                        sourceType: sig.sourceType || "SYSTEM",
-                        sourceId: sig.sourceId || "GLOBAL",
-                    },
-                },
-                update: {
-                    severity: sig.severity,
-                    status: "ACTIVE",
-                    title: sig.title,
-                    summary: sig.summary,
-                    actionLabel: sig.actionLabel,
-                    actionHref: sig.actionHref,
-                    metadata: sig.metadata || undefined,
-                    lastSeenAt: new Date(),
-                },
-                create: {
-                    userId,
-                    signalType: sig.signalType,
-                    severity: sig.severity,
-                    status: "ACTIVE",
-                    sourceType: sig.sourceType || "SYSTEM",
-                    sourceId: sig.sourceId || "GLOBAL",
-                    title: sig.title,
-                    summary: sig.summary,
-                    actionLabel: sig.actionLabel,
-                    actionHref: sig.actionHref,
-                    metadata: sig.metadata || undefined,
-                },
-            });
-        }
-
-        // Resolve signals that are no longer active
-        const activeTypes = signals.map((s) => s.signalType);
-        await prisma.traderSignal.updateMany({
-            where: {
-                userId,
-                status: "ACTIVE",
-                signalType: { notIn: activeTypes },
-            },
-            data: {
-                status: "RESOLVED",
-                resolvedAt: new Date(),
-            },
-        });
+        await persistTraderSignals(userId, signals);
     }
 
     return signals;

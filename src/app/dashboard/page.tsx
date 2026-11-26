@@ -39,25 +39,27 @@ async function DashboardLoader({
         redirect("/auth/login");
     }
 
-    // 1. Resolve account & date params (handles redirect if needed)
+    // 1. Resolve account & date params + global trade state in parallel where safe
     const params = await resolveAccountAndDates(user.id, searchParams);
 
     // 2. Short-circuit for users with 0 trades globally
-    const tradingDataState = await getUserTradingDataState(user.id);
+    const [tradingDataState, initialDashboards] = await Promise.all([
+        getUserTradingDataState(user.id),
+        getUserDashboards(),
+    ]);
     const globalTradeCount = tradingDataState.tradeCount;
 
     if (globalTradeCount === 0) {
-        const [data, initialDashboards] = await Promise.all([
-            getEmptyDashboardData(
-                user.id,
-                params.accountId,
-                params.fromParam,
-                params.toParam,
-                params.accountCurrency,
-                params.currentAccountId
-            ),
-            getUserDashboards(),
-        ]);
+        const data = await getEmptyDashboardData(
+            user.id,
+            params.accountId,
+            params.fromParam,
+            params.toParam,
+            params.accountCurrency,
+            params.currentAccountId,
+            tradingDataState,
+            initialDashboards
+        );
         return (
             <DashboardClient
                 {...data}
@@ -66,11 +68,14 @@ async function DashboardLoader({
         );
     }
 
-    // 3. Full dashboard data fetch
-    const [data, initialDashboards] = await Promise.all([
-        getFullDashboardData(user.id, params, globalTradeCount),
-        getUserDashboards(),
-    ]);
+    // 3. Full dashboard data fetch (reuses tradingDataState & initialDashboards)
+    const data = await getFullDashboardData(
+        user.id,
+        params,
+        globalTradeCount,
+        tradingDataState,
+        initialDashboards
+    );
 
     return (
         <DashboardClient {...data} initialDashboards={initialDashboards} />

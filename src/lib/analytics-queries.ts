@@ -21,6 +21,12 @@ function buildAccountFilterSql(normalizedAccountId?: string): Prisma.Sql {
         : Prisma.empty;
 }
 
+function buildAccountJoinSql(normalizedAccountId?: string): Prisma.Sql {
+    return normalizedAccountId
+        ? Prisma.empty
+        : Prisma.sql`LEFT JOIN "trading_accounts" ta ON ta."id" = je."accountId"`;
+}
+
 function buildDateFilterSql(startDate?: Date, endDate?: Date): Prisma.Sql {
     const parts: Prisma.Sql[] = [];
     if (startDate) {
@@ -37,7 +43,7 @@ function buildDateFilterSql(startDate?: Date, endDate?: Date): Prisma.Sql {
  * SQL FX/Cent multiplier matching `convertToUsdEquivalent` in `src/lib/utils/cent-account.ts`.
  * Applied ONLY when `accountId` is NOT pinned to a single account (`!normalizedAccountId`).
  */
-function buildPnlScaleSql(normalizedAccountId?: string): Prisma.Sql {
+export function buildPnlScaleSql(normalizedAccountId?: string): Prisma.Sql {
     if (normalizedAccountId) {
         return Prisma.sql`1.0`;
     }
@@ -255,6 +261,7 @@ export async function getMonthlyAnalytics(
     const normalizedAccountId = normalizeAccountIdParam(accountId);
     const tz = timezone || "Etc/UTC";
     const accountFilter = buildAccountFilterSql(normalizedAccountId);
+    const accountJoin = buildAccountJoinSql(normalizedAccountId);
     const scaleSql = buildPnlScaleSql(normalizedAccountId);
     const advancedFiltersSql = buildAdvancedFiltersSql(filters);
 
@@ -263,9 +270,9 @@ export async function getMonthlyAnalytics(
     TO_CHAR(je."exitDate" AT TIME ZONE ${tz}, 'YYYY-MM') as "date",
     SUM((COALESCE(je."pnl", 0) + COALESCE(je."commission", 0) + COALESCE(je."swap", 0)) * ${scaleSql}) as "profit",
     COUNT(*) as "tradeCount",
-    SUM(CASE WHEN je."result" = 'WIN' THEN 1 ELSE 0 END) as "winCount"
+    SUM(CASE WHEN ((COALESCE(je."pnl", 0) + COALESCE(je."commission", 0) + COALESCE(je."swap", 0)) * ${scaleSql}) > 0.01 THEN 1 ELSE 0 END) as "winCount"
   FROM "journal_entries" je
-  LEFT JOIN "trading_accounts" ta ON ta."id" = je."accountId"
+  ${accountJoin}
   WHERE je."userId" = ${userId}::uuid
     AND je."status" = 'CLOSED'
     ${accountFilter}
@@ -299,6 +306,7 @@ export async function getKeyStats(
 ) {
     const normalizedAccountId = normalizeAccountIdParam(accountId);
     const accountFilter = buildAccountFilterSql(normalizedAccountId);
+    const accountJoin = buildAccountJoinSql(normalizedAccountId);
     const dateFilter = buildDateFilterSql(startDate, endDate);
     const scaleSql = buildPnlScaleSql(normalizedAccountId);
     const advancedFiltersSql = buildAdvancedFiltersSql(filters);
@@ -313,7 +321,7 @@ export async function getKeyStats(
       (COALESCE(je."swap", 0) * ${scaleSql}) AS "scaledSwap",
       ((COALESCE(je."pnl", 0) + COALESCE(je."commission", 0) + COALESCE(je."swap", 0)) * ${scaleSql}) AS "scaledNetPnl"
     FROM "journal_entries" je
-    LEFT JOIN "trading_accounts" ta ON ta."id" = je."accountId"
+    ${accountJoin}
     WHERE je."userId" = ${userId}::uuid
       AND je."status" = 'CLOSED'
       ${accountFilter}
@@ -323,11 +331,11 @@ export async function getKeyStats(
   SELECT 
     COUNT(*) as "totalTrades",
     SUM("scaledNetPnl") as "totalPnL",
-    COUNT(*) FILTER (WHERE "result" = 'WIN') as "wins",
-    COUNT(*) FILTER (WHERE "result" = 'LOSS') as "losses",
-    COUNT(*) FILTER (WHERE "result" IN ('BREAK_EVEN', 'BE_PLUS')) as "breakEvens",
-    COUNT(*) FILTER (WHERE "scaledNetPnl" > 0) as "positiveTrades",
-    COUNT(*) FILTER (WHERE "scaledNetPnl" < 0) as "negativeTrades",
+    COUNT(*) FILTER (WHERE "scaledNetPnl" > 0.01) as "wins",
+    COUNT(*) FILTER (WHERE "scaledNetPnl" < -0.01) as "losses",
+    COUNT(*) FILTER (WHERE ABS("scaledNetPnl") <= 0.01) as "breakEvens",
+    COUNT(*) FILTER (WHERE "scaledNetPnl" > 0.01) as "positiveTrades",
+    COUNT(*) FILTER (WHERE "scaledNetPnl" < -0.01) as "negativeTrades",
     SUM(CASE WHEN "scaledNetPnl" > 0 THEN "scaledNetPnl" ELSE 0 END) as "grossProfit",
     SUM(CASE WHEN "scaledNetPnl" < 0 THEN ABS("scaledNetPnl") ELSE 0 END) as "grossLoss",
     SUM("scaledCommission") as "commission",
@@ -418,6 +426,7 @@ export async function getDailyPerformance(
     const normalizedAccountId = normalizeAccountIdParam(accountId);
     const tz = timezone || "Etc/UTC";
     const accountFilter = buildAccountFilterSql(normalizedAccountId);
+    const accountJoin = buildAccountJoinSql(normalizedAccountId);
     const dateFilter = buildDateFilterSql(startDate, endDate);
     const scaleSql = buildPnlScaleSql(normalizedAccountId);
     const advancedFiltersSql = buildAdvancedFiltersSql(filters);
@@ -431,7 +440,7 @@ export async function getDailyPerformance(
     COUNT(*) FILTER (WHERE je."result" = 'LOSS') as "lossCount",
     COUNT(*) FILTER (WHERE je."result" IN ('BREAK_EVEN', 'BE_PLUS')) as "breakEvenCount"
   FROM "journal_entries" je
-  LEFT JOIN "trading_accounts" ta ON ta."id" = je."accountId"
+  ${accountJoin}
   WHERE je."userId" = ${userId}::uuid
     AND je."status" = 'CLOSED'
     ${accountFilter}
@@ -471,6 +480,7 @@ export async function getIntradayPerformance(
 ) {
     const normalizedAccountId = normalizeAccountIdParam(accountId);
     const accountFilter = buildAccountFilterSql(normalizedAccountId);
+    const accountJoin = buildAccountJoinSql(normalizedAccountId);
     const dateFilter = buildDateFilterSql(startDate, endDate);
     const scaleSql = buildPnlScaleSql(normalizedAccountId);
     const advancedFiltersSql = buildAdvancedFiltersSql(filters);
@@ -480,7 +490,7 @@ export async function getIntradayPerformance(
     je."exitDate" as "date",
     ((COALESCE(je."pnl", 0) + COALESCE(je."commission", 0) + COALESCE(je."swap", 0)) * ${scaleSql}) as "pnl"
   FROM "journal_entries" je
-  LEFT JOIN "trading_accounts" ta ON ta."id" = je."accountId"
+  ${accountJoin}
   WHERE je."userId" = ${userId}::uuid
     AND je."status" = 'CLOSED'
     AND je."exitDate" IS NOT NULL
@@ -508,6 +518,7 @@ export async function getSymbolPerformance(
 ) {
     const normalizedAccountId = normalizeAccountIdParam(accountId);
     const accountFilter = buildAccountFilterSql(normalizedAccountId);
+    const accountJoin = buildAccountJoinSql(normalizedAccountId);
     const dateFilter = buildDateFilterSql(startDate, endDate);
     const scaleSql = buildPnlScaleSql(normalizedAccountId);
     const advancedFiltersSql = buildAdvancedFiltersSql(filters);
@@ -520,7 +531,7 @@ export async function getSymbolPerformance(
       je."result",
       ((COALESCE(je."pnl", 0) + COALESCE(je."commission", 0) + COALESCE(je."swap", 0)) * ${scaleSql}) AS "scaledNetPnl"
     FROM "journal_entries" je
-    LEFT JOIN "trading_accounts" ta ON ta."id" = je."accountId"
+    ${accountJoin}
     WHERE je."userId" = ${userId}::uuid
       AND je."status" = 'CLOSED'
       ${accountFilter}
@@ -533,19 +544,19 @@ export async function getSymbolPerformance(
     SUM("scaledNetPnl") as "netProfit",
     SUM(CASE WHEN "scaledNetPnl" > 0 THEN "scaledNetPnl" ELSE 0 END) as "grossProfit",
     SUM(CASE WHEN "scaledNetPnl" < 0 THEN ABS("scaledNetPnl") ELSE 0 END) as "grossLoss",
-    COUNT(*) FILTER (WHERE "result" = 'WIN') as "winCount",
-    COUNT(*) FILTER (WHERE "result" = 'LOSS') as "lossCount",
-    COUNT(*) FILTER (WHERE "result" IN ('BREAK_EVEN', 'BE_PLUS')) as "breakEvenCount",
+    COUNT(*) FILTER (WHERE "scaledNetPnl" > 0.01) as "winCount",
+    COUNT(*) FILTER (WHERE "scaledNetPnl" < -0.01) as "lossCount",
+    COUNT(*) FILTER (WHERE ABS("scaledNetPnl") <= 0.01) as "breakEvenCount",
     COUNT(*) FILTER (WHERE "type" = 'BUY') as "longTrades",
     SUM(CASE WHEN "type" = 'BUY' THEN "scaledNetPnl" ELSE 0 END) as "longPnl",
-    COUNT(*) FILTER (WHERE "type" = 'BUY' AND "result" = 'WIN') as "longWins",
-    COUNT(*) FILTER (WHERE "type" = 'BUY' AND "result" = 'LOSS') as "longLosses",
-    COUNT(*) FILTER (WHERE "type" = 'BUY' AND "result" IN ('BREAK_EVEN', 'BE_PLUS')) as "longBreakEvens",
+    COUNT(*) FILTER (WHERE "type" = 'BUY' AND "scaledNetPnl" > 0.01) as "longWins",
+    COUNT(*) FILTER (WHERE "type" = 'BUY' AND "scaledNetPnl" < -0.01) as "longLosses",
+    COUNT(*) FILTER (WHERE "type" = 'BUY' AND ABS("scaledNetPnl") <= 0.01) as "longBreakEvens",
     COUNT(*) FILTER (WHERE "type" = 'SELL') as "shortTrades",
     SUM(CASE WHEN "type" = 'SELL' THEN "scaledNetPnl" ELSE 0 END) as "shortPnl",
-    COUNT(*) FILTER (WHERE "type" = 'SELL' AND "result" = 'WIN') as "shortWins",
-    COUNT(*) FILTER (WHERE "type" = 'SELL' AND "result" = 'LOSS') as "shortLosses",
-    COUNT(*) FILTER (WHERE "type" = 'SELL' AND "result" IN ('BREAK_EVEN', 'BE_PLUS')) as "shortBreakEvens"
+    COUNT(*) FILTER (WHERE "type" = 'SELL' AND "scaledNetPnl" > 0.01) as "shortWins",
+    COUNT(*) FILTER (WHERE "type" = 'SELL' AND "scaledNetPnl" < -0.01) as "shortLosses",
+    COUNT(*) FILTER (WHERE "type" = 'SELL' AND ABS("scaledNetPnl") <= 0.01) as "shortBreakEvens"
   FROM scoped
   GROUP BY "symbol"
   ORDER BY "netProfit" DESC
@@ -606,6 +617,7 @@ export async function getTopTrades(
 ) {
     const normalizedAccountId = normalizeAccountIdParam(accountId);
     const accountFilter = buildAccountFilterSql(normalizedAccountId);
+    const accountJoin = buildAccountJoinSql(normalizedAccountId);
     const dateFilter = buildDateFilterSql(startDate, endDate);
     const scaleSql = buildPnlScaleSql(normalizedAccountId);
     const lotScaleSql = buildLotScaleSql(normalizedAccountId);
@@ -623,7 +635,7 @@ export async function getTopTrades(
     je."result",
     (COALESCE(je."lotSize", 0) * ${lotScaleSql}) as "lotSize"
   FROM "journal_entries" je
-  LEFT JOIN "trading_accounts" ta ON ta."id" = je."accountId"
+  ${accountJoin}
   WHERE je."userId" = ${userId}::uuid
     AND je."status" = 'CLOSED'
     ${accountFilter}
@@ -644,7 +656,7 @@ export async function getTopTrades(
     je."result",
     (COALESCE(je."lotSize", 0) * ${lotScaleSql}) as "lotSize"
   FROM "journal_entries" je
-  LEFT JOIN "trading_accounts" ta ON ta."id" = je."accountId"
+  ${accountJoin}
   WHERE je."userId" = ${userId}::uuid
     AND je."status" = 'CLOSED'
     ${accountFilter}
@@ -684,6 +696,7 @@ export async function getLotDistribution(
 ) {
     const normalizedAccountId = normalizeAccountIdParam(accountId);
     const accountFilter = buildAccountFilterSql(normalizedAccountId);
+    const accountJoin = buildAccountJoinSql(normalizedAccountId);
     const dateFilter = buildDateFilterSql(startDate, endDate);
     const lotScaleSql = buildLotScaleSql(normalizedAccountId);
     const advancedFiltersSql = buildAdvancedFiltersSql(filters);
@@ -693,7 +706,7 @@ export async function getLotDistribution(
     je."symbol",
     SUM(COALESCE(je."lotSize", 0) * ${lotScaleSql}) as "totalLots"
   FROM "journal_entries" je
-  LEFT JOIN "trading_accounts" ta ON ta."id" = je."accountId"
+  ${accountJoin}
   WHERE je."userId" = ${userId}::uuid
     AND je."status" = 'CLOSED'
     ${accountFilter}
@@ -725,25 +738,32 @@ export async function getDayOfWeekPerformance(
     const normalizedAccountId = normalizeAccountIdParam(accountId);
     const tz = timezone || "Etc/UTC";
     const accountFilter = buildAccountFilterSql(normalizedAccountId);
+    const accountJoin = buildAccountJoinSql(normalizedAccountId);
     const dateFilter = buildDateFilterSql(startDate, endDate);
     const scaleSql = buildPnlScaleSql(normalizedAccountId);
     const advancedFiltersSql = buildAdvancedFiltersSql(filters);
 
     const result = await prisma.$queryRaw<DayOfWeekRow[]>`
+  WITH scoped AS (
+    SELECT
+      EXTRACT(DOW FROM je."exitDate" AT TIME ZONE ${tz}) as "dayIndex",
+      ((COALESCE(je."pnl", 0) + COALESCE(je."commission", 0) + COALESCE(je."swap", 0)) * ${scaleSql}) AS "scaledNetPnl"
+    FROM "journal_entries" je
+    ${accountJoin}
+    WHERE je."userId" = ${userId}::uuid
+      AND je."status" = 'CLOSED'
+      ${accountFilter}
+      ${dateFilter}
+      ${advancedFiltersSql}
+  )
   SELECT 
-    EXTRACT(DOW FROM je."exitDate" AT TIME ZONE ${tz}) as "dayIndex",
+    "dayIndex",
     COUNT(*) as "tradeCount",
-    SUM((COALESCE(je."pnl", 0) + COALESCE(je."commission", 0) + COALESCE(je."swap", 0)) * ${scaleSql}) as "netProfit",
-    COUNT(*) FILTER (WHERE je."result" = 'WIN') as "winCount",
-    COUNT(*) FILTER (WHERE je."result" = 'LOSS') as "lossCount",
-    COUNT(*) FILTER (WHERE je."result" IN ('BREAK_EVEN', 'BE_PLUS')) as "breakEvenCount"
-  FROM "journal_entries" je
-  LEFT JOIN "trading_accounts" ta ON ta."id" = je."accountId"
-  WHERE je."userId" = ${userId}::uuid
-    AND je."status" = 'CLOSED'
-    ${accountFilter}
-    ${dateFilter}
-    ${advancedFiltersSql}
+    SUM("scaledNetPnl") as "netProfit",
+    COUNT(*) FILTER (WHERE "scaledNetPnl" > 0.01) as "winCount",
+    COUNT(*) FILTER (WHERE "scaledNetPnl" < -0.01) as "lossCount",
+    COUNT(*) FILTER (WHERE ABS("scaledNetPnl") <= 0.01) as "breakEvenCount"
+  FROM scoped
   GROUP BY 1
   ORDER BY 1 ASC
   `;
@@ -827,6 +847,7 @@ export async function getSessionPerformance(
 ) {
     const normalizedAccountId = normalizeAccountIdParam(accountId);
     const accountFilter = buildAccountFilterSql(normalizedAccountId);
+    const accountJoin = buildAccountJoinSql(normalizedAccountId);
     const dateFilter = buildDateFilterSql(startDate, endDate);
     const scaleSql = buildPnlScaleSql(normalizedAccountId);
     const advancedFiltersSql = buildAdvancedFiltersSql(filters);
@@ -846,7 +867,7 @@ export async function getSessionPerformance(
     COUNT(*) FILTER (WHERE je."result" = 'LOSS') as "lossCount",
     COUNT(*) FILTER (WHERE je."result" IN ('BREAK_EVEN', 'BE_PLUS')) as "breakEvenCount"
   FROM "journal_entries" je
-  LEFT JOIN "trading_accounts" ta ON ta."id" = je."accountId"
+  ${accountJoin}
   WHERE je."userId" = ${userId}::uuid
     AND je."status" = 'CLOSED'
     AND je."entryDate" IS NOT NULL

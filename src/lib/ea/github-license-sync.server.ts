@@ -469,7 +469,8 @@ export async function syncLicensesToGitHubBackup(options?: {
             );
         }
 
-        // 2. Fetch all EALicense records + IB-verified TradingAccounts from Web DB
+        // 2. Fetch all EALicense records + IB-verified / ProEntitlement TradingAccounts from Web DB
+        const now = new Date();
         const [licenses, verifiedAccounts] = await Promise.all([
             prisma.eALicense.findMany({
                 include: {
@@ -491,6 +492,24 @@ export async function syncLicensesToGitHubBackup(options?: {
                             proEntitlement: {
                                 is: {
                                     status: { in: ["ACTIVE", "GRACE"] },
+                                    OR: [
+                                        { expiresAt: null },
+                                        { expiresAt: { gte: now } },
+                                    ],
+                                },
+                            },
+                        },
+                        {
+                            user: {
+                                proEntitlements: {
+                                    some: {
+                                        tradingAccountId: null,
+                                        status: { in: ["ACTIVE", "GRACE"] },
+                                        OR: [
+                                            { expiresAt: null },
+                                            { expiresAt: { gte: now } },
+                                        ],
+                                    },
                                 },
                             },
                         },
@@ -504,6 +523,22 @@ export async function syncLicensesToGitHubBackup(options?: {
                         select: {
                             name: true,
                             email: true,
+                            proEntitlements: {
+                                where: {
+                                    tradingAccountId: null,
+                                    status: { in: ["ACTIVE", "GRACE"] },
+                                    OR: [
+                                        { expiresAt: null },
+                                        { expiresAt: { gte: now } },
+                                    ],
+                                },
+                                select: {
+                                    startsAt: true,
+                                    expiresAt: true,
+                                },
+                                orderBy: { createdAt: "desc" },
+                                take: 1,
+                            },
                         },
                     },
                     proEntitlement: {
@@ -574,12 +609,17 @@ export async function syncLicensesToGitHubBackup(options?: {
             const existingRow = rowsMap.get(rowKey);
             if (existingRow && existingRow.status === "active") continue;
 
-            const startDate = formatDateYmd(
-                va.proEntitlement?.startsAt || va.createdAt,
-                todayYmd
-            );
-            const endDate = va.proEntitlement?.expiresAt
-                ? formatDateYmd(va.proEntitlement.expiresAt, "2099-12-31")
+            const globalPro = va.user?.proEntitlements?.[0];
+            const effectiveStartsAt =
+                va.proEntitlement?.startsAt ||
+                globalPro?.startsAt ||
+                va.createdAt;
+            const effectiveExpiresAt =
+                va.proEntitlement?.expiresAt || globalPro?.expiresAt || null;
+
+            const startDate = formatDateYmd(effectiveStartsAt, todayYmd);
+            const endDate = effectiveExpiresAt
+                ? formatDateYmd(effectiveExpiresAt, "2099-12-31")
                 : "2099-12-31";
             const userLabel = va.user?.name || va.user?.email || "VIP User";
             const note = sanitizeCsvField(

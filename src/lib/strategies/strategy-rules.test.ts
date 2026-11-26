@@ -5,6 +5,8 @@ import {
     RULE_SEVERITIES,
     parseLegacyStrategyRules,
     filterApplicableRules,
+    filterStrategyRules,
+    filterGlobalRules,
     computeSuggestedPlaybookGrade,
 } from "./playbook-presets";
 
@@ -111,6 +113,22 @@ describe("Unified Strategy & TradingRule Helpers", () => {
                 (r) => r.id
             )
         ).toEqual(["global-1", "strat-b"]);
+
+        // Strategy-only filter: empty when no strategy selected, strictly strategy-scoped when selected
+        expect(filterStrategyRules(rules, "acc-prop", "")).toEqual([]);
+        expect(
+            filterStrategyRules(rules, "acc-prop", "London Sweep").map(
+                (r) => r.id
+            )
+        ).toEqual(["strat-a"]);
+
+        // Global-only filter: strictly independent rules (global + matching account, zero strategy rules)
+        expect(
+            filterGlobalRules(rules, "acc-prop").map((r) => r.id)
+        ).toEqual(["global-1", "acct-1"]);
+        expect(
+            filterGlobalRules(rules, "acc-personal").map((r) => r.id)
+        ).toEqual(["global-1"]);
     });
 
     it("computes suggested Playbook Execution Grade from rule compliance ratio", () => {

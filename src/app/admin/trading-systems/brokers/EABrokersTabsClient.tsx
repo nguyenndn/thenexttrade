@@ -31,27 +31,50 @@ export function EABrokersTabsClient({
 }: EABrokersTabsClientProps) {
     const [activeTab, setActiveTab] = useState("brokers");
 
+    const countBadgeClass = (isActive: boolean) =>
+        isActive
+            ? "text-[11px] px-2 py-0.5 rounded-lg font-bold tabular-nums transition-colors bg-white/20 text-white"
+            : "text-[11px] px-2 py-0.5 rounded-lg font-bold tabular-nums transition-colors bg-gray-200/80 text-gray-600 dark:bg-white/10 dark:text-gray-300";
+
     return (
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <TabsList className="bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg p-1">
+                <TabsList className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg p-1 gap-1">
                     <TabsTrigger
                         value="brokers"
-                        className="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold whitespace-nowrap"
+                        className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:hover:border-white/10 flex items-center gap-2 cursor-pointer transition-colors"
+                        activeIndicatorClassName="!bg-gradient-to-r from-gold to-amber-600 shadow-md shadow-amber-500/20 border-0"
+                        activeTextClassName="!text-white"
                     >
-                        <Building2 size={15} />
+                        <Building2
+                            size={15}
+                            className={
+                                activeTab === "brokers"
+                                    ? "text-white"
+                                    : "text-gray-400 dark:text-gray-500"
+                            }
+                        />
                         <span>Partner Brokers</span>
-                        <span className="ml-1 text-[10px] px-1.5 py-0.5 rounded-lg bg-gray-200 dark:bg-white/10 font-mono tabular-nums">
+                        <span className={countBadgeClass(activeTab === "brokers")}>
                             {brokers.length}
                         </span>
                     </TabsTrigger>
                     <TabsTrigger
                         value="rates"
-                        className="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold whitespace-nowrap"
+                        className="px-4 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap border border-transparent hover:border-gray-200 dark:hover:border-white/10 flex items-center gap-2 cursor-pointer transition-colors"
+                        activeIndicatorClassName="!bg-gradient-to-r from-gold to-amber-600 shadow-md shadow-amber-500/20 border-0"
+                        activeTextClassName="!text-white"
                     >
-                        <DollarSign size={15} />
+                        <DollarSign
+                            size={15}
+                            className={
+                                activeTab === "rates"
+                                    ? "text-white"
+                                    : "text-gray-400 dark:text-gray-500"
+                            }
+                        />
                         <span>Commission Rates</span>
-                        <span className="ml-1 text-[10px] px-1.5 py-0.5 rounded-lg bg-gray-200 dark:bg-white/10 font-mono tabular-nums">
+                        <span className={countBadgeClass(activeTab === "rates")}>
                             {commissionRates.length}
                         </span>
                     </TabsTrigger>

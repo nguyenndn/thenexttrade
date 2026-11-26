@@ -73,6 +73,14 @@ interface LicenseAccountsPanelProps {
     userTradingAccounts?: SelectableTradingAccount[];
     hasApprovedLicense?: boolean;
     vipLink?: string | null;
+    productNames?: string[];
+}
+
+function formatProductList(names: string[]): string {
+    if (names.length === 0) return "";
+    if (names.length === 1) return names[0];
+    if (names.length === 2) return `${names[0]} and ${names[1]}`;
+    return `${names.slice(0, -1).join(", ")}, and ${names[names.length - 1]}`;
 }
 
 export function LicenseAccountsPanel({
@@ -80,7 +88,10 @@ export function LicenseAccountsPanel({
     userTradingAccounts = [],
     hasApprovedLicense = false,
     vipLink = null,
+    productNames = [],
 }: LicenseAccountsPanelProps) {
+    const productCount = productNames.length;
+    const formattedProductNames = formatProductList(productNames);
     const [showAddForm, setShowAddForm] = useState(false);
 
     useEffect(() => {
@@ -295,18 +306,23 @@ export function LicenseAccountsPanel({
                             <h3 className="text-sm sm:text-base font-bold text-gray-900 dark:text-white truncate">
                                 EA License Keys
                             </h3>
-                            <span className="hidden sm:inline-flex px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-gold/10 text-amber-600 dark:text-gold border border-gold/20">
-                                1 Account License = Unlocks All 3 EAs
+                            <span className="hidden sm:inline-flex px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-gold/10 text-amber-600 dark:text-gold border border-gold/20 tabular-nums">
+                                {productCount > 0
+                                    ? `1 Account License = Unlocks All ${productCount} MT5 Systems`
+                                    : "1 Account License = Unlocks All MT5 Systems"}
                             </span>
                         </div>
-                        <p className="sm:hidden text-[11px] text-gray-500 dark:text-gray-400 truncate mt-0.5">
-                            1 account license unlocks all 3 MT5 EAs
+                        <p className="sm:hidden text-[11px] text-gray-500 dark:text-gray-400 truncate mt-0.5 tabular-nums">
+                            {productCount > 0
+                                ? `1 account license unlocks all ${productCount} MT5 systems`
+                                : "1 account license unlocks all MT5 systems & EAs"}
                         </p>
-                        <p className="hidden sm:block text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                        <p className="hidden sm:block text-xs text-gray-500 dark:text-gray-400 mt-0.5 tabular-nums">
                             Each MT5 trading account verified under our IB
-                            network receives 1 unified License Key that unlocks
-                            all 3 Expert Advisors (Trade Manager,
-                            GoldScalperNinja, and Apex Gold Sentinel).
+                            network receives 1 unified License Key that unlocks{" "}
+                            {productCount > 0
+                                ? `all ${productCount} active MT5 systems (${formattedProductNames}).`
+                                : "all active MT5 systems & Expert Advisors."}
                         </p>
                     </div>
                 </div>
@@ -909,9 +925,11 @@ export function LicenseAccountsPanel({
                                                         />
                                                         IB Verified • Lifetime
                                                     </span>
-                                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-bold bg-gold/10 text-amber-600 dark:text-gold border border-gold/20">
+                                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-bold bg-gold/10 text-amber-600 dark:text-gold border border-gold/20 tabular-nums">
                                                         <Bot size={11} />
-                                                        All 3 EAs Unlocked
+                                                        {productCount > 0
+                                                            ? `All ${productCount} Systems Unlocked`
+                                                            : "All MT5 Systems Unlocked"}
                                                     </span>
                                                 </>
                                             ) : item.status === "PENDING" ? (

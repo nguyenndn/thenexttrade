@@ -30,7 +30,7 @@ export function SystemDetailSidebar({
                 <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500">
                     CONTENTS
                 </span>
-                <span className="text-[10px] font-mono tabular-nums text-gray-400 dark:text-gray-500">
+                <span className="text-[10px] tabular-nums text-gray-400 dark:text-gray-500">
                     {items.length} SECTIONS
                 </span>
             </div>
@@ -54,7 +54,7 @@ export function SystemDetailSidebar({
                         >
                             <span
                                 className={cn(
-                                    "text-[11px] font-mono tabular-nums font-bold tracking-wider",
+                                    "text-[11px] tabular-nums font-bold tracking-wider",
                                     isActive
                                         ? "text-amber-500"
                                         : "text-gray-400 dark:text-gray-600"

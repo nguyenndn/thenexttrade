@@ -84,9 +84,10 @@ export function ProductList({ products }: ProductListProps) {
 
     const filteredProducts = useMemo(() => {
         return products.filter((product) => {
-            const matchesSearch = product.name
-                .toLowerCase()
-                .includes(searchTerm.toLowerCase());
+            const q = searchTerm.toLowerCase();
+            const matchesSearch =
+                product.name.toLowerCase().includes(q) ||
+                product.slug.toLowerCase().includes(q);
             const matchesType =
                 filterType === "ALL" || product.type === filterType;
             return matchesSearch && matchesType;
@@ -269,7 +270,7 @@ export function ProductList({ products }: ProductListProps) {
                         ))}
                     </div>
 
-                    <div className="mt-6 text-xs font-mono tabular-nums text-gray-500 dark:text-gray-400">
+                    <div className="mt-6 text-xs tabular-nums text-gray-500 dark:text-gray-400">
                         Showing {sortedProducts.length} of {products.length}{" "}
                         products
                     </div>

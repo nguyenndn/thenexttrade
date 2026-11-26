@@ -13,9 +13,15 @@ export const CANONICAL_PRODUCTS = [
     },
     {
         id: "gsn-phoenix-grid",
-        slug: "gsn-phoenix-grid",
-        name: "GSN - Apex Gold Sentinel",
-        description: "Automated Grid & Trend EA",
+        slug: "shadow-matrix",
+        name: "Shadow Matrix",
+        description: "Asymmetric Dual-Grid & Counter-Hedge EA",
+    },
+    {
+        id: "764eef7e-4400-4411-801d-98a3d1127421",
+        slug: "snr-system",
+        name: "SNR System",
+        description: "Malaysian SNR & ICT OTE Semi-Auto EA",
     },
 ] as const;
 

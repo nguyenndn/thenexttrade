@@ -139,7 +139,7 @@ export const dashboardMenuItems = [
         requiresTradeData: false,
     },
     {
-        name: "Trading Systems",
+        name: "MT5 Systems & EAs",
         href: "/dashboard/trading-systems",
         icon: Bot,
         requiresTradeData: false,
@@ -281,7 +281,7 @@ export const dashboardMenuGroups = [
                 icon: Trophy,
             },
             {
-                name: "Trading Systems",
+                name: "MT5 Systems & EAs",
                 href: "/dashboard/trading-systems",
                 icon: Bot,
             },

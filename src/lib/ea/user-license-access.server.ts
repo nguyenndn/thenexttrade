@@ -2,10 +2,11 @@ import { AccountStatus, type EAProduct } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 
 const SHADOW_MATRIX_SLUG_ALIASES = [
-    "gsn-phoenix-grid",
+    "shadow-matrix",
+    "gsn-shadow-matrix",
     "gsn-shadown-matrix",
     "shadown-matrix",
-    "shadow-matrix",
+    "gsn-phoenix-grid",
 ];
 
 export function buildCandidateProductSlugs(rawSlug: string): string[] {

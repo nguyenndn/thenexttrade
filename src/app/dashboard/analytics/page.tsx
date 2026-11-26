@@ -422,7 +422,9 @@ async function AnalyticsDataWrapper({
     const psychologyData = await calculatePsychologyDiagnostic(
         user.id,
         accountId,
-        timezone
+        timezone,
+        startDate,
+        endDate
     );
 
     const { TradingPsychologyPanel } = await import(

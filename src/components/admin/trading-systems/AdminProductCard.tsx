@@ -69,12 +69,13 @@ export function AdminProductCard({
     const accountsCount = product.activeUsers?.length ?? 0;
     const totalDownloads =
         product.totalDownloads || product._count?.downloads || 0;
+    const detailHref = `/admin/trading-systems/${product.slug || product.id}`;
 
     return (
         <div className="group relative bg-white dark:bg-[#14161E] rounded-xl overflow-hidden border border-gray-200 dark:border-white/[0.08] hover:border-amber-500/40 hover:shadow-xl transition-all duration-300 shadow-sm flex flex-col justify-between">
             {/* Top Media Preview */}
             <Link
-                href={`/admin/trading-systems/${product.id}`}
+                href={detailHref}
                 className="relative w-full aspect-video bg-[#0E1118] overflow-hidden block border-b border-gray-200 dark:border-white/[0.08]"
             >
                 {/* Top-left Type Badge */}
@@ -115,7 +116,7 @@ export function AdminProductCard({
                                 aria-hidden="true"
                             />
                         </div>
-                        <span className="text-xs font-mono uppercase tracking-wider text-gray-400">
+                        <span className="text-xs uppercase tracking-wider text-gray-400">
                             MT5 System
                         </span>
                     </div>
@@ -126,7 +127,7 @@ export function AdminProductCard({
             <div className="p-4 sm:p-5 flex flex-col flex-1 justify-between bg-white dark:bg-[#151925]">
                 <div>
                     <Link
-                        href={`/admin/trading-systems/${product.id}`}
+                        href={detailHref}
                         className="block"
                     >
                         <h3 className="text-sm sm:text-base font-bold text-gray-900 dark:text-white hover:text-amber-500 dark:hover:text-amber-400 transition-colors line-clamp-1">
@@ -135,10 +136,14 @@ export function AdminProductCard({
                     </Link>
 
                     {/* Metadata Row */}
-                    <div className="text-[11px] text-gray-500 dark:text-gray-400 font-mono tabular-nums tracking-wide mt-0.5 mb-2 flex items-center gap-1.5 flex-wrap">
+                    <div className="text-[11px] text-gray-500 dark:text-gray-400 tabular-nums tracking-wide mt-0.5 mb-2 flex items-center gap-1.5 flex-wrap">
                         <span>v{product.version}</span>
                         <span>•</span>
                         <span>{product.platform}</span>
+                        <span>•</span>
+                        <span className="text-amber-600 dark:text-amber-400 font-semibold">
+                            /{product.slug}
+                        </span>
                         <span>•</span>
                         <span>
                             {format(new Date(product.createdAt), "dd MMM yyyy")}
@@ -228,7 +233,7 @@ export function AdminProductCard({
 
                 {/* Footer Actions */}
                 <div className="pt-2.5 border-t border-gray-200 dark:border-white/[0.08] flex items-center justify-between gap-2">
-                    <Link href={`/admin/trading-systems/${product.id}`}>
+                    <Link href={detailHref}>
                         <Button
                             variant="outline"
                             size="sm"

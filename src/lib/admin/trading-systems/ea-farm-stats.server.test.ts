@@ -21,7 +21,7 @@ describe("resolveCanonicalProductSlug", () => {
             resolveCanonicalProductSlug({
                 eaName: "GSN - Apex Gold Sentinel",
             })
-        ).toBe("gsn-phoenix-grid");
+        ).toBe("shadow-matrix");
 
         expect(
             resolveCanonicalProductSlug({
@@ -39,7 +39,13 @@ describe("resolveCanonicalProductSlug", () => {
             resolveCanonicalProductSlug({
                 eaName: "GoldScalperNinja - Shadow Matrix",
             })
-        ).toBe("goldscalperninja");
+        ).toBe("shadow-matrix");
+
+        expect(
+            resolveCanonicalProductSlug({
+                eaName: "GoldScalperNinja_SNR",
+            })
+        ).toBe("snr-system");
 
         expect(resolveCanonicalProductSlug({})).toBeNull();
     });

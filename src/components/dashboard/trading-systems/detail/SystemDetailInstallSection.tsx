@@ -37,7 +37,7 @@ export function SystemDetailInstallSection({
                                 key={stepItem.step}
                                 className="p-3.5 rounded-lg border border-dashboard dark:border-white/[0.08] bg-gray-50/40 dark:bg-white/[0.02] flex items-start gap-3"
                             >
-                                <span className="px-2 py-0.5 rounded-lg bg-gold/10 border border-gold/20 text-amber-600 dark:text-gold text-[10px] font-black font-mono tabular-nums shrink-0 mt-0.5">
+                                <span className="px-2 py-0.5 rounded-lg bg-gold/10 border border-gold/20 text-amber-600 dark:text-gold text-[10px] font-black tabular-nums shrink-0 mt-0.5">
                                     {stepItem.step}
                                 </span>
                                 <div className="min-w-0">

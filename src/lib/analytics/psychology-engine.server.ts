@@ -74,11 +74,22 @@ const MIN_VALID_SL_TRADES = 5;
 export async function calculatePsychologyDiagnostic(
     userId: string,
     accountId?: string,
-    timezone?: string
+    timezone?: string,
+    startDate?: Date,
+    endDate?: Date
 ): Promise<PsychologyDiagnosticReport> {
     const normalizedAccountId =
         accountId && accountId !== "all" ? accountId : undefined;
     const isMultiAccount = !normalizedAccountId;
+    const exitDateFilter =
+        startDate || endDate
+            ? {
+                  exitDate: {
+                      ...(startDate ? { gte: startDate } : {}),
+                      ...(endDate ? { lte: endDate } : {}),
+                  },
+              }
+            : {};
 
     const [trades, targetAccount] = await Promise.all([
         prisma.journalEntry.findMany({
@@ -88,6 +99,7 @@ export async function calculatePsychologyDiagnostic(
                     ? { accountId: normalizedAccountId }
                     : {}),
                 status: "CLOSED",
+                ...exitDateFilter,
             },
             select: {
                 id: true,
@@ -158,15 +170,18 @@ export async function calculatePsychologyDiagnostic(
         };
     }
 
-    const getScaledNetPnl = (t: (typeof trades)[number]) => {
-        const rawNet = (t.pnl || 0) + (t.commission || 0) + (t.swap || 0);
-        return isMultiAccount
+    const getScaledAmount = (raw: number, t: (typeof trades)[number]) =>
+        isMultiAccount
             ? convertToUsdEquivalent(
-                  rawNet,
+                  raw,
                   t.account?.currency,
                   t.account?.server
               )
-            : rawNet;
+            : raw;
+
+    const getScaledNetPnl = (t: (typeof trades)[number]) => {
+        const rawNet = (t.pnl || 0) + (t.commission || 0) + (t.swap || 0);
+        return getScaledAmount(rawNet, t);
     };
 
     const getNormalizedLots = (t: (typeof trades)[number]) =>
@@ -202,11 +217,12 @@ export async function calculatePsychologyDiagnostic(
                         (1000 * 60)
                 )
             );
-            if (t.result === "WIN") {
+            const net = getScaledNetPnl(t);
+            if (net > 0.01) {
                 winHoldTotalMinutes += durationMinutes;
                 winCount++;
                 winDurations.push(durationMinutes);
-            } else if (t.result === "LOSS") {
+            } else if (net < -0.01) {
                 lossHoldTotalMinutes += durationMinutes;
                 lossCount++;
                 lossDurations.push(durationMinutes);
@@ -302,8 +318,8 @@ export async function calculatePsychologyDiagnostic(
             const net = getScaledNetPnl(t);
             existing.count++;
             existing.pnl += net;
-            if (t.result === "WIN") existing.wins++;
-            if (t.result === "LOSS") existing.losses++;
+            if (net > 0.01) existing.wins++;
+            if (net < -0.01) existing.losses++;
             heatmapMap.set(key, existing);
         }
     });
@@ -353,9 +369,16 @@ export async function calculatePsychologyDiagnostic(
             const signedMove =
                 t.type === "BUY" ? exit - entry : entry - exit;
             const realizedR = signedMove / riskPrice;
-            const netPnl = getScaledNetPnl(t);
+            const grossPnl = getScaledAmount(t.pnl || 0, t);
+            const fees = getScaledAmount(
+                (t.commission || 0) + (t.swap || 0),
+                t
+            );
+            const netPnl = grossPnl + fees;
             return {
                 realizedR,
+                grossPnl,
+                fees,
                 netPnl,
             };
         })
@@ -364,6 +387,8 @@ export async function calculatePsychologyDiagnostic(
                 item
             ): item is {
                 realizedR: number;
+                grossPnl: number;
+                fees: number;
                 netPnl: number;
             } => item !== null && Number.isFinite(item.realizedR)
         );
@@ -375,9 +400,9 @@ export async function calculatePsychologyDiagnostic(
     if (!insufficientData) {
         const impliedUnitRisks = validSlTrades
             .filter(
-                (t) => Math.abs(t.realizedR) >= 0.2 && Math.abs(t.netPnl) > 0
+                (t) => Math.abs(t.realizedR) >= 0.1 && Math.abs(t.grossPnl) > 0
             )
-            .map((t) => Math.abs(t.netPnl / t.realizedR));
+            .map((t) => Math.abs(t.grossPnl / t.realizedR));
 
         const lossAmounts = validSlTrades
             .filter((t) => t.netPnl < 0)
@@ -387,7 +412,7 @@ export async function calculatePsychologyDiagnostic(
             .map((t) => Math.abs(t.netPnl))
             .filter((v) => v > 0);
 
-        const avgRisk =
+        const fallbackRisk =
             impliedUnitRisks.length > 0
                 ? impliedUnitRisks.reduce((s, v) => s + v, 0) /
                   impliedUnitRisks.length
@@ -402,11 +427,18 @@ export async function calculatePsychologyDiagnostic(
             let hitCount = 0;
 
             for (const trade of validSlTrades) {
+                const tradeUnitRisk =
+                    Math.abs(trade.realizedR) >= 0.1 &&
+                    Math.abs(trade.grossPnl) > 0
+                        ? Math.abs(trade.grossPnl / trade.realizedR)
+                        : fallbackRisk;
+
                 if (trade.realizedR >= targetRR) {
-                    simTotalPnL += targetRR * avgRisk;
-                    hitCount++;
+                    const cappedNet = targetRR * tradeUnitRisk + trade.fees;
+                    simTotalPnL += cappedNet;
+                    if (cappedNet > 0.01) hitCount++;
                 } else {
-                    simTotalPnL += trade.realizedR * avgRisk;
+                    simTotalPnL += trade.netPnl;
                 }
             }
 

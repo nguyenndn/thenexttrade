@@ -25,13 +25,16 @@ import { format, subDays, startOfMonth } from "date-fns";
 import { SAMPLE_DATE_RANGE } from "@/lib/sample-data/mock-sample-data";
 import { parseLocalStartOfDay, parseLocalEndOfDay } from "@/lib/utils";
 import { measurePerformance } from "@/lib/performance/timing";
-import { getNextBestAction } from "@/lib/coach/next-action.server";
-import { computeTraderSignals } from "@/lib/coach/signal-engine.server";
+import {
+    computeTraderSignals,
+    persistTraderSignals,
+} from "@/lib/coach/signal-engine.server";
 import { getLearningRecommendations } from "@/lib/coach/lesson-recommendations.server";
 import { getFirstSessionState } from "@/lib/onboarding/first-session.server";
 import { checkAndTriggerMilestones } from "@/lib/milestones/milestones.server";
 import type { ActivationState } from "@/lib/activation/activation-types";
 import type { FirstSessionComputedState } from "@/lib/onboarding/first-session.server";
+import type { getUserTradingDataState } from "@/lib/trading-data-state";
 import { redirect } from "next/navigation";
 import { getWeeklyReviewEligibility } from "@/lib/reports/weekly-review-eligibility";
 import type { WeeklyReviewEligibility } from "@/lib/reports/weekly-review-eligibility";
@@ -335,46 +338,57 @@ export async function getEmptyDashboardData(
     fromParam: string,
     toParam: string,
     accountCurrency?: string,
-    currentAccountId?: string
+    currentAccountId?: string,
+    tradingDataState?: Awaited<ReturnType<typeof getUserTradingDataState>>,
+    preloadedDashboards?: DashboardPageData["initialDashboards"]
 ): Promise<DashboardPageData> {
+    const userDataPromise = prisma.user.findUnique({
+        where: { id: userId },
+        select: { streak: true, name: true, settings: true },
+    });
+    const weeklyReviewPromise = getWeeklyReviewEligibility({
+        userId,
+        accountId: accountId || undefined,
+    });
+
     const [
         userData,
-        activationState,
-        firstSessionState,
         weeklyReviewEligibility,
+        firstSessionState,
         initialDashboards,
         selectedAccount,
+        growthViewModel,
     ] = await Promise.all([
-        prisma.user.findUnique({
-            where: { id: userId },
-            select: { streak: true, name: true, settings: true },
-        }),
-        getActivationState(userId),
+        userDataPromise,
+        weeklyReviewPromise,
         getFirstSessionState(userId),
-        getWeeklyReviewEligibility({
-            userId,
-            accountId: accountId || undefined,
-        }),
-        prisma.userDashboard.findMany({
-            where: { userId },
-            orderBy: [{ isDefault: "desc" }, { createdAt: "asc" }],
-            select: {
-                id: true,
-                name: true,
-                layout: true,
-                isDefault: true,
-            },
-        }),
+        preloadedDashboards
+            ? Promise.resolve(preloadedDashboards)
+            : prisma.userDashboard.findMany({
+                  where: { userId },
+                  orderBy: [{ isDefault: "desc" }, { createdAt: "asc" }],
+                  select: {
+                      id: true,
+                      name: true,
+                      layout: true,
+                      isDefault: true,
+                  },
+              }),
         prisma.tradingAccount.findMany({
             where: accountId ? { id: accountId, userId } : { userId },
             select: { balance: true, currency: true, server: true },
         }),
+        getTraderGrowthViewModel(userId, accountId),
     ]);
 
     const settings = (userData?.settings as Record<string, any>) || {};
     const tradingGoal = (settings.onboarding as any)?.tradingGoal || null;
 
-    const growthViewModel = await getTraderGrowthViewModel(userId, accountId);
+    const activationState = await getActivationState(userId, {
+        settings,
+        tradingDataState,
+        weeklyReviewEligibility,
+    });
 
     // Fire-and-forget coach notification trigger
     triggerCoachNotifications(userId).catch(() => {
@@ -468,7 +482,9 @@ export async function getEmptyDashboardData(
 export async function getFullDashboardData(
     userId: string,
     params: ResolvedParams,
-    globalTradeCount: number
+    globalTradeCount: number,
+    tradingDataState?: Awaited<ReturnType<typeof getUserTradingDataState>>,
+    preloadedDashboards?: DashboardPageData["initialDashboards"]
 ): Promise<DashboardPageData> {
     const {
         accountId,
@@ -520,7 +536,108 @@ export async function getFullDashboardData(
                     : filters.result;
     }
 
-    // Parallel data fetch
+    // Unified single-wave parallel fetch with dependency pipelining (zero duplicate SQL queries)
+    const userDataPromise = prisma.user.findUnique({
+        where: { id: userId },
+        select: { streak: true, name: true, settings: true },
+    });
+    const dashboardStatsPromise = getCachedDashboardStats(
+        userId,
+        accountId,
+        startDate.toISOString(),
+        endDate.toISOString(),
+        filters ? JSON.stringify(filters) : undefined
+    );
+    const symbolStatsPromise = getSymbolPerformance(
+        userId,
+        accountId,
+        startDate,
+        endDate,
+        filters
+    );
+    const dayOfWeekPromise = getDayOfWeekPerformance(
+        userId,
+        accountId,
+        startDate,
+        endDate,
+        accountTimezone,
+        filters
+    );
+    const weeklyReviewPromise = getWeeklyReviewEligibility({
+        userId,
+        accountId: accountId || undefined,
+    });
+
+    // Pipeline intelligenceData off already-in-flight stats/dayOfWeek/symbols so those 3 SQL queries never run twice
+    const intelligencePromise = Promise.all([
+        dashboardStatsPromise,
+        dayOfWeekPromise,
+        symbolStatsPromise,
+    ])
+        .then(([ds, dow, syms]) =>
+            getIntelligenceData(
+                userId,
+                accountId,
+                startDate,
+                endDate,
+                accountTimezone,
+                {
+                    stats: ds.stats,
+                    dayOfWeek: dow,
+                    symbols: syms,
+                }
+            )
+        )
+        .catch(() => null);
+
+    // Pipeline coach/growth graph concurrently alongside main dashboard queries
+    const coachAndGrowthPromise = Promise.all([
+        userDataPromise,
+        weeklyReviewPromise,
+    ]).then(async ([uData, wrEligibility]) => {
+        const uSettings = (uData?.settings as Record<string, unknown>) || {};
+        const goal =
+            ((uSettings.onboarding as Record<string, unknown> | undefined)
+                ?.tradingGoal as string | null) || null;
+
+        const [computedSignals, actState] = await Promise.all([
+            computeTraderSignals(userId, {
+                accountId,
+                persist: false,
+                weeklyReviewEligibility: wrEligibility,
+            }),
+            getActivationState(userId, {
+                settings: uSettings,
+                tradingDataState,
+                weeklyReviewEligibility: wrEligibility,
+            }),
+        ]);
+
+        const recs = await getLearningRecommendations(
+            userId,
+            computedSignals,
+            goal
+        );
+        const growthVm = await getTraderGrowthViewModel(
+            userId,
+            accountId,
+            undefined,
+            {
+                signals: computedSignals,
+                tradingGoal: goal,
+                learningRecommendations: recs,
+            }
+        );
+
+        return {
+            signals: computedSignals,
+            activationState: actState,
+            learningRecommendations: recs,
+            growthViewModel: growthVm,
+            tradingGoal: goal,
+        };
+    });
+
     const [
         userData,
         accounts,
@@ -534,15 +651,15 @@ export async function getFullDashboardData(
         dayOfWeekPerformance,
         intelligenceData,
         dailyWinRateLast7,
-        activationState,
         latestReport,
         userDashboards,
+        firstSessionState,
+        activeCoachPlan,
+        weeklyReviewEligibility,
+        coachGraph,
     ] = await measurePerformance("dashboard_data_fetch", "db", () =>
         Promise.all([
-            prisma.user.findUnique({
-                where: { id: userId },
-                select: { streak: true, name: true, settings: true },
-            }),
+            userDataPromise,
             prisma.tradingAccount.findMany({
                 where: accountFilter,
                 select: { balance: true, currency: true, server: true },
@@ -573,13 +690,7 @@ export async function getFullDashboardData(
                 orderBy: [{ exitDate: "desc" }, { entryDate: "desc" }],
                 take: 10,
             }),
-            getCachedDashboardStats(
-                userId,
-                accountId,
-                startDate.toISOString(),
-                endDate.toISOString(),
-                filters ? JSON.stringify(filters) : undefined
-            ),
+            dashboardStatsPromise,
             getDailyPerformance(
                 userId,
                 accountId,
@@ -588,13 +699,7 @@ export async function getFullDashboardData(
                 accountTimezone,
                 filters
             ),
-            getSymbolPerformance(
-                userId,
-                accountId,
-                startDate,
-                endDate,
-                filters
-            ),
+            symbolStatsPromise,
             getTopTrades(userId, accountId, startDate, endDate, filters),
             getLotDistribution(userId, accountId, startDate, endDate, filters),
             getSessionPerformance(
@@ -604,21 +709,8 @@ export async function getFullDashboardData(
                 endDate,
                 filters
             ),
-            getDayOfWeekPerformance(
-                userId,
-                accountId,
-                startDate,
-                endDate,
-                accountTimezone,
-                filters
-            ),
-            getIntelligenceData(
-                userId,
-                accountId,
-                startDate,
-                endDate,
-                accountTimezone
-            ).catch(() => null),
+            dayOfWeekPromise,
+            intelligencePromise,
             getDailyPerformance(
                 userId,
                 accountId,
@@ -627,24 +719,45 @@ export async function getFullDashboardData(
                 accountTimezone,
                 filters
             ),
-            getActivationState(userId),
             prisma.tradingReport.findFirst({
                 where: { userId },
                 orderBy: { createdAt: "desc" },
                 select: { createdAt: true },
             }),
-            prisma.userDashboard.findMany({
-                where: { userId },
-                orderBy: [{ isDefault: "desc" }, { createdAt: "asc" }],
-                select: {
-                    id: true,
-                    name: true,
-                    layout: true,
-                    isDefault: true,
+            preloadedDashboards
+                ? Promise.resolve(preloadedDashboards)
+                : prisma.userDashboard.findMany({
+                      where: { userId },
+                      orderBy: [{ isDefault: "desc" }, { createdAt: "asc" }],
+                      select: {
+                          id: true,
+                          name: true,
+                          layout: true,
+                          isDefault: true,
+                      },
+                  }),
+            getFirstSessionState(userId),
+            prisma.coachActionPlan.findFirst({
+                where: { userId, status: "ACTIVE" },
+                orderBy: { createdAt: "desc" },
+                include: {
+                    items: {
+                        orderBy: { position: "asc" },
+                    },
                 },
             }),
+            weeklyReviewPromise,
+            coachAndGrowthPromise,
         ])
     );
+
+    const {
+        signals,
+        activationState,
+        learningRecommendations,
+        growthViewModel,
+        tradingGoal,
+    } = coachGraph;
 
     // Destructure stats
     const { stats, monthly } = dashboardStats;
@@ -729,43 +842,7 @@ export async function getFullDashboardData(
         totalTrades: stats.totalTrades,
     };
 
-    // Extract trading goal for content personalization
-    const userSettings = (userData?.settings as Record<string, any>) || {};
-    const tradingGoal = (userSettings.onboarding as any)?.tradingGoal || null;
-
-    // Coach, growth loop, and weekly review eligibility in parallel
-    const [
-        growthViewModel,
-        signals,
-        firstSessionState,
-        activeCoachPlan,
-        weeklyReviewEligibility,
-    ] = await Promise.all([
-        getTraderGrowthViewModel(userId, accountId),
-        computeTraderSignals(userId, { persist: true }),
-        getFirstSessionState(userId),
-        prisma.coachActionPlan.findFirst({
-            where: { userId, status: "ACTIVE" },
-            orderBy: { createdAt: "desc" },
-            include: {
-                items: {
-                    orderBy: { position: "asc" },
-                },
-            },
-        }),
-        getWeeklyReviewEligibility({
-            userId,
-            accountId: accountId || undefined,
-        }),
-    ]);
-
     const nextBestAction = growthViewModel.nextAction;
-
-    const learningRecommendations = await getLearningRecommendations(
-        userId,
-        signals,
-        tradingGoal
-    );
 
     // Fire-and-forget milestone check
     checkAndTriggerMilestones(userId, {
@@ -775,10 +852,12 @@ export async function getFullDashboardData(
         /* silent */
     });
 
-    // Fire-and-forget coach notification trigger
-    triggerCoachNotifications(userId).catch(() => {
-        /* silent */
-    });
+    // Fire-and-forget signal persistence + coach notification trigger (never block GET /dashboard TTFB)
+    persistTraderSignals(userId, signals)
+        .then(() => triggerCoachNotifications(userId))
+        .catch(() => {
+            /* silent */
+        });
 
     const showFirstWeeklyReview =
         weeklyReviewEligibility.ready &&

@@ -11,7 +11,6 @@ import { htmlToPlainText } from "@/lib/sanitize";
 import { trackEvent } from "@/lib/track";
 import { toast } from "sonner";
 import type { EAProduct } from "@prisma/client";
-import { getCanonicalSystemPageSlug } from "@/config/trading-systems-data";
 
 export function SystemDetailCard({
     product,
@@ -25,8 +24,8 @@ export function SystemDetailCard({
     const [isFavorite, setIsFavorite] = useState(false);
     const router = useRouter();
 
-    const canonicalSlug = getCanonicalSystemPageSlug(product.slug);
-    const detailHref = `/dashboard/trading-systems/${canonicalSlug}`;
+    const cleanSlug = product.slug.trim();
+    const detailHref = `/dashboard/trading-systems/${cleanSlug}`;
 
     useEffect(() => {
         try {
@@ -262,10 +261,14 @@ export function SystemDetailCard({
                         </Button>
                     </div>
 
-                    <div className="text-[11px] text-gray-500 dark:text-gray-400 font-mono tabular-nums tracking-wide mt-0.5 mb-2 flex items-center gap-1.5">
+                    <div className="text-[11px] text-gray-500 dark:text-gray-400 tabular-nums tracking-wide mt-0.5 mb-2 flex items-center gap-1.5">
                         <span>v{normalizedVersion}</span>
                         <span>&bull;</span>
-                        <span>MT5</span>
+                        <span>
+                            {product.platform === "BOTH"
+                                ? "MT4 / MT5"
+                                : product.platform}
+                        </span>
                         <span>&bull;</span>
                         <span
                             className={

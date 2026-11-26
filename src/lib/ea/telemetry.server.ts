@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { captureCapitalSnapshot } from "@/lib/admin/ib/capital.server";
+import { buildCandidateProductSlugs } from "@/lib/ea/user-license-access.server";
 import {
     isDemoTradingAccount,
     isLiveTradingAccount,
@@ -27,7 +28,7 @@ const HEARTBEAT_EVENT_DEDUP_MS = 15 * 60 * 1000; // 15 minutes
 
 /**
  * Normalizes productSlug / eaName / eaVersion into a canonical product slug
- * if recognizable ("goldscalperninja" | "trade-manager" | "gsn-phoenix-grid").
+ * if recognizable ("goldscalperninja" | "trade-manager" | "shadow-matrix" | "snr-system").
  */
 export function resolveCanonicalProductSlug(input: {
     productSlug?: string | null;
@@ -45,16 +46,7 @@ export function resolveCanonicalProductSlug(input: {
             return "trade-manager";
         }
         if (
-            rawSlug === "goldscalperninja" ||
-            rawSlug.includes("goldscalper") ||
-            rawSlug.includes("arum") ||
-            rawSlug.includes("oneshot") ||
-            rawSlug.includes("waverider") ||
-            rawSlug === "gsn"
-        ) {
-            return "goldscalperninja";
-        }
-        if (
+            rawSlug === "shadow-matrix" ||
             rawSlug === "gsn-phoenix-grid" ||
             rawSlug.includes("phoenix") ||
             rawSlug.includes("sentinel") ||
@@ -63,7 +55,20 @@ export function resolveCanonicalProductSlug(input: {
             rawSlug.includes("shadown-matrix") ||
             rawSlug.includes("dual-grid")
         ) {
-            return "gsn-phoenix-grid";
+            return "shadow-matrix";
+        }
+        if (rawSlug === "snr-system" || rawSlug.includes("snr")) {
+            return "snr-system";
+        }
+        if (
+            rawSlug === "goldscalperninja" ||
+            rawSlug.includes("goldscalper") ||
+            rawSlug.includes("arum") ||
+            rawSlug.includes("oneshot") ||
+            rawSlug.includes("waverider") ||
+            rawSlug === "gsn"
+        ) {
+            return "goldscalperninja";
         }
         return rawSlug;
     }
@@ -81,6 +86,19 @@ export function resolveCanonicalProductSlug(input: {
         return "trade-manager";
     }
     if (
+        combined.includes("shadow matrix") ||
+        combined.includes("shadown matrix") ||
+        combined.includes("dual grid") ||
+        combined.includes("phoenix") ||
+        combined.includes("sentinel") ||
+        combined.includes("apex gold")
+    ) {
+        return "shadow-matrix";
+    }
+    if (combined.includes("snr")) {
+        return "snr-system";
+    }
+    if (
         combined.includes("goldscalper") ||
         combined.includes("gold scalper") ||
         combined.includes("arum") ||
@@ -89,16 +107,6 @@ export function resolveCanonicalProductSlug(input: {
         combined.includes("ninja")
     ) {
         return "goldscalperninja";
-    }
-    if (
-        combined.includes("shadow matrix") ||
-        combined.includes("shadown matrix") ||
-        combined.includes("dual grid") ||
-        combined.includes("phoenix") ||
-        combined.includes("sentinel") ||
-        combined.includes("apex gold")
-    ) {
-        return "gsn-phoenix-grid";
     }
 
     return null;
@@ -185,11 +193,14 @@ export async function recordEaProductTelemetry(
         let product: { id: string; slug: string; name: string } | null = null;
 
         if (canonicalSlug) {
+            const candidateSlugs = buildCandidateProductSlugs(canonicalSlug);
             product = await prisma.eAProduct.findFirst({
                 where: {
                     OR: [
-                        { slug: { equals: canonicalSlug, mode: "insensitive" } },
-                        { id: canonicalSlug },
+                        { slug: { in: candidateSlugs } },
+                        ...candidateSlugs.map((candidate) => ({
+                            id: candidate,
+                        })),
                         ...(input.eaName
                             ? [
                                   {

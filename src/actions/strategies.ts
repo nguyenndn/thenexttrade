@@ -448,7 +448,7 @@ export async function getStrategyPerformance(accountId?: string) {
             const netPnl = normalizeTradePnl(rawNetPnl, trade.accountId);
             stats.totalTrades++;
             stats.totalPnL += netPnl;
-            if (trade.result === "WIN") stats.winCount++;
+            if (netPnl > 0.01) stats.winCount++;
             if (netPnl > 0) stats.grossProfit += netPnl;
             if (netPnl < 0) stats.grossLoss += Math.abs(netPnl);
         });
@@ -522,7 +522,7 @@ export async function getStrategyPerformance(accountId?: string) {
             const rawPnl =
                 (t.pnl || 0) + (t.commission || 0) + (t.swap || 0);
             const pnl = normalizeTradePnl(rawPnl, t.accountId);
-            const isWin = t.result === "WIN";
+            const isWin = pnl > 0.01;
 
             if (hasStrategy) {
                 pbTrades++;

@@ -112,6 +112,75 @@ export function filterApplicableRules<
     });
 }
 
+/**
+ * Returns ONLY rules explicitly attached to the selected Strategy (Playbook).
+ * Returns [] when no strategy is selected so trade modals never dump Global rules
+ * as setup conditions or dilute Playbook Execution Grades.
+ */
+export function filterStrategyRules<
+    T extends {
+        accountId?: string | null;
+        strategyId?: string | null;
+        strategy?: { name: string } | null;
+    },
+>(
+    rules: T[],
+    selectedAccountId?: string | null,
+    selectedStrategyName?: string | null
+): T[] {
+    const normalizedStrategy =
+        selectedStrategyName && selectedStrategyName.trim().length > 0
+            ? selectedStrategyName.trim()
+            : null;
+    if (!normalizedStrategy) return [];
+
+    const normalizedAccount =
+        selectedAccountId &&
+        selectedAccountId !== "none" &&
+        selectedAccountId !== "all"
+            ? selectedAccountId
+            : null;
+
+    return rules.filter((rule) => {
+        if (rule.accountId) {
+            if (!normalizedAccount || rule.accountId !== normalizedAccount) {
+                return false;
+            }
+        }
+        return rule.strategy?.name === normalizedStrategy;
+    });
+}
+
+/**
+ * Returns ONLY independent Global / Account-scoped guardrails (no strategyId).
+ */
+export function filterGlobalRules<
+    T extends {
+        accountId?: string | null;
+        strategyId?: string | null;
+        strategy?: { name: string } | null;
+    },
+>(rules: T[], selectedAccountId?: string | null): T[] {
+    const normalizedAccount =
+        selectedAccountId &&
+        selectedAccountId !== "none" &&
+        selectedAccountId !== "all"
+            ? selectedAccountId
+            : null;
+
+    return rules.filter((rule) => {
+        if (rule.strategyId || rule.strategy?.name) {
+            return false;
+        }
+        if (rule.accountId) {
+            if (!normalizedAccount || rule.accountId !== normalizedAccount) {
+                return false;
+            }
+        }
+        return true;
+    });
+}
+
 export function computeSuggestedPlaybookGrade(
     totalRules: number,
     followedCount: number

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { BookOpen, Cpu, HelpCircle, ListChecks, Shield } from "lucide-react";
+import { BookOpen, HelpCircle, ListChecks, Shield } from "lucide-react";
 import type { EAProduct } from "@prisma/client";
 import { toast } from "sonner";
 import { getSystemBySlug } from "@/config/trading-systems-data";
@@ -11,7 +11,7 @@ import { SystemDetailHeader } from "./SystemDetailHeader";
 import { SystemDetailSections } from "./SystemDetailSections";
 import { SystemDetailSidebar, type SystemDetailNavItem } from "./SystemDetailSidebar";
 
-const VALID_TABS = new Set(["specs", "parameters", "guide", "risk", "faqs"]);
+const VALID_TABS = new Set(["specs", "guide", "risk", "faqs"]);
 
 interface DashboardSystemDetailViewProps {
     product: EAProduct;
@@ -60,16 +60,8 @@ export function DashboardSystemDetailView({
             title: "Specifications & Core Engine",
         },
         {
-            id: "parameters",
-            num: "02",
-            label: `Parameters (${system?.parameters?.length || 0})`,
-            icon: Cpu,
-            category: "INPUT SETTINGS",
-            title: "Configuration Parameters",
-        },
-        {
             id: "guide",
-            num: "03",
+            num: "02",
             label: "Installation",
             icon: BookOpen,
             category: "SETUP WIZARD",
@@ -77,7 +69,7 @@ export function DashboardSystemDetailView({
         },
         {
             id: "risk",
-            num: "04",
+            num: "03",
             label: "Risk Management",
             icon: Shield,
             category: "CAPITAL PROTECTION",
@@ -85,7 +77,7 @@ export function DashboardSystemDetailView({
         },
         {
             id: "faqs",
-            num: "05",
+            num: "04",
             label: "FAQs & Support",
             icon: HelpCircle,
             category: "KNOWLEDGE BASE",
@@ -100,7 +92,6 @@ export function DashboardSystemDetailView({
         <div className="space-y-2 md:space-y-5 pb-4 md:pb-8">
             <SystemDetailHeader
                 product={product}
-                fallbackDescription={system?.description}
                 isLocked={isLocked}
                 downloading={downloading}
                 onDownload={handleDownload}
@@ -119,7 +110,7 @@ export function DashboardSystemDetailView({
                             <div className="w-6 h-6 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500">
                                 <currentNavItem.icon size={13} />
                             </div>
-                            <span className="text-[11px] font-black uppercase tracking-wider text-amber-500 font-mono tabular-nums">
+                            <span className="text-[11px] font-black uppercase tracking-wider text-amber-500 tabular-nums">
                                 {currentNavItem.num} &bull;{" "}
                                 {currentNavItem.category}
                             </span>
@@ -132,6 +123,7 @@ export function DashboardSystemDetailView({
                     <SystemDetailSections
                         activeTab={activeTab}
                         system={system}
+                        productDescription={product.description}
                     />
                 </div>
             </div>

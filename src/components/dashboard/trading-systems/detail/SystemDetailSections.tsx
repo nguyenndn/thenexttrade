@@ -1,7 +1,7 @@
 "use client";
 
 import type { SystemData } from "@/config/trading-systems-data";
-import { TradingSystemsParamsTable } from "@/components/trading-systems/TradingSystemsParamsTable";
+import { htmlToPlainText } from "@/lib/sanitize";
 import { SystemDetailInstallSection } from "./SystemDetailInstallSection";
 import {
     SystemDetailFaqSection,
@@ -11,11 +11,35 @@ import {
 interface SystemDetailSectionsProps {
     activeTab: string;
     system?: SystemData;
+    productDescription?: string | null;
+}
+
+function extractDescriptionParagraphs(
+    rawDescription?: string | null,
+    fallback?: string
+): string[] {
+    const source = rawDescription?.trim() || "";
+    if (source) {
+        const chunks = source
+            .split(/<\/(?:p|div|blockquote)>|<br\s*\/?>\s*<br\s*\/?>|\r?\n\s*\r?\n/gi)
+            .map((chunk) => htmlToPlainText(chunk))
+            .filter(Boolean);
+        if (chunks.length > 0) {
+            return chunks;
+        }
+    }
+    const cleanFallback = htmlToPlainText(fallback);
+    return cleanFallback
+        ? [cleanFallback]
+        : [
+              "MetaTrader 5 execution system built with strict risk controls and server-side stop-loss protection.",
+          ];
 }
 
 export function SystemDetailSections({
     activeTab,
     system,
+    productDescription,
 }: SystemDetailSectionsProps) {
     const specItems = system?.specHighlights?.length
         ? system.specHighlights
@@ -38,16 +62,6 @@ export function SystemDetailSections({
               },
           ];
 
-    if (activeTab === "parameters") {
-        return system?.parameters && system.parameters.length > 0 ? (
-            <TradingSystemsParamsTable parameters={system.parameters} />
-        ) : (
-            <div className="p-8 text-center text-xs text-gray-500 dark:text-gray-400">
-                No parameters specified for this system.
-            </div>
-        );
-    }
-
     if (activeTab === "guide") {
         return (
             <SystemDetailInstallSection
@@ -64,8 +78,21 @@ export function SystemDetailSections({
         return <SystemDetailFaqSection faqs={system?.faqs} />;
     }
 
+    const overviewParagraphs = extractDescriptionParagraphs(
+        productDescription,
+        system?.description
+    );
+
     return (
-        <div className="space-y-2 md:space-y-6">
+        <div className="space-y-3 md:space-y-6">
+            {overviewParagraphs.length > 0 && (
+                <div className="space-y-2.5 text-xs sm:text-sm text-gray-600 dark:text-gray-300 leading-relaxed tabular-nums">
+                    {overviewParagraphs.map((paragraph, idx) => (
+                        <p key={idx}>{paragraph}</p>
+                    ))}
+                </div>
+            )}
+
             {/* Mobile Unified 2x2 Matrix Card (< sm) */}
             <div className="sm:hidden grid grid-cols-2 rounded-xl border border-dashboard bg-white dark:bg-[#1E2028] shadow-sm overflow-hidden [&>*:nth-child(even)]:border-l [&>*:nth-child(n+3)]:border-t [&>*]:border-dashboard/70 dark:[&>*]:border-white/[0.06]">
                 {specItems.map((spec, i) => (

@@ -49,7 +49,6 @@ import { deleteJournalEntry } from "@/actions/journal";
 
 import { PlanVsActualPanel } from "./PlanVsActualPanel";
 import { formatDashboardCurrency, normalizeCurrencyCode } from "@/lib/utils/cent-account";
-import { evaluateTradeReview } from "@/lib/journal/trade-review-status";
 
 function isSafeImageUrl(url: unknown): url is string {
     return (
@@ -271,6 +270,50 @@ export function TradeDetailSheet({
                 : entry.exitPrice >= entry.stopLoss
             : false;
 
+    const grossProfitVal = Number(
+        entry.grossProfit ??
+            (entry.pnl != null
+                ? entry.pnl - (entry.commission || 0) - (entry.swap || 0)
+                : 0)
+    );
+    const netProfitVal = Number(entry.pnl ?? 0);
+
+    // Protective SL Risk-Reward calculations (Planned R:R & Realized Net R after fees)
+    const hasValidProtectiveSl =
+        typeof entry.entryPrice === "number" &&
+        typeof entry.stopLoss === "number" &&
+        entry.entryPrice > 0 &&
+        entry.stopLoss > 0 &&
+        (isBuy ? entry.stopLoss < entry.entryPrice : entry.stopLoss > entry.entryPrice);
+
+    const slDistance = hasValidProtectiveSl
+        ? Math.abs(entry.entryPrice - (entry.stopLoss as number))
+        : 0;
+
+    const plannedRR =
+        hasValidProtectiveSl &&
+        typeof entry.takeProfit === "number" &&
+        entry.takeProfit > 0 &&
+        (isBuy ? entry.takeProfit > entry.entryPrice : entry.takeProfit < entry.entryPrice) &&
+        slDistance > 1e-8
+            ? Number((Math.abs(entry.takeProfit - entry.entryPrice) / slDistance).toFixed(2))
+            : null;
+
+    const realizedNetR = (() => {
+        if (!hasValidProtectiveSl || entry.status !== "CLOSED" || !entry.exitPrice || slDistance <= 1e-8) {
+            return null;
+        }
+        const signedPriceMove = isBuy
+            ? entry.exitPrice - entry.entryPrice
+            : entry.entryPrice - entry.exitPrice;
+        const priceR = signedPriceMove / slDistance;
+        if (Math.abs(priceR) >= 0.05 && Math.abs(grossProfitVal) > 0.01) {
+            const oneRDollars = Math.abs(grossProfitVal / priceR);
+            return Number((netProfitVal / oneRDollars).toFixed(2));
+        }
+        return Number(priceR.toFixed(2));
+    })();
+
     return (
         <Sheet open={isOpen} onOpenChange={onClose}>
             {/* Main Sheet Container - Compact ~20% narrower drawer (720px max) */}
@@ -298,35 +341,6 @@ export function TradeDetailSheet({
                                     ? `#${entry.externalTicket}`
                                     : utcTime(entry.entryDate, "MMM dd, yyyy")}
                             </span>
-                            {entry.status === "CLOSED" && (() => {
-                                const reviewEval = evaluateTradeReview(entry);
-                                if (reviewEval.isReviewed) {
-                                    return (
-                                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 shrink-0">
-                                            <Check size={11} />
-                                            Reviewed
-                                        </span>
-                                    );
-                                }
-                                if (onEdit) {
-                                    return (
-                                        <Button
-                                            type="button"
-                                            variant="outline"
-                                            size="sm"
-                                            onClick={() => {
-                                                onClose();
-                                                onEdit(entry);
-                                            }}
-                                            className="h-6 px-2 rounded-lg text-[10px] font-bold gap-1 bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-gold border-amber-500/30 shrink-0"
-                                        >
-                                            <Pencil size={10} />
-                                            <span>Review Trade ({reviewEval.completedSteps}/3)</span>
-                                        </Button>
-                                    );
-                                }
-                                return null;
-                            })()}
                         </div>
 
                         {/* Right: Pure Frameless Action Icons (Edit, Delete, Share, Close) */}
@@ -831,65 +845,82 @@ export function TradeDetailSheet({
                                                         </span>
                                                         <span
                                                             className={cn(
-                                                                "text-xs sm:text-base font-black font-mono tabular-nums",
-                                                                (entry.grossProfit ?? (entry.pnl != null ? entry.pnl - (entry.commission || 0) - (entry.swap || 0) : 0)) >= 0
+                                                                "text-xs sm:text-base font-black tabular-nums",
+                                                                grossProfitVal >= 0
                                                                     ? "text-green-500"
                                                                     : "text-red-500"
                                                             )}
                                                         >
-                                                            {Number(
-                                                                entry.grossProfit ??
-                                                                    (entry.pnl != null
-                                                                        ? entry.pnl -
-                                                                          (entry.commission || 0) -
-                                                                          (entry.swap || 0)
-                                                                        : 0)
-                                                            ).toFixed(2)}
+                                                            {formatDashboardCurrency(
+                                                                grossProfitVal,
+                                                                entryCurrency,
+                                                                { signDisplay: "always" }
+                                                            )}
                                                         </span>
                                                     </div>
                                                     <div>
                                                         <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider block mb-0.5">
-                                                            Percent Gain
+                                                            {realizedNetR !== null
+                                                                ? "Realized R (Net)"
+                                                                : plannedRR !== null
+                                                                  ? "Planned R:R"
+                                                                  : "Percent Gain"}
                                                         </span>
                                                         <div className="flex items-center gap-2">
                                                             <span
                                                                 className={cn(
-                                                                    "text-xs sm:text-base font-black font-mono tabular-nums",
-                                                                    percentGain !== null
-                                                                        ? pnlColor
-                                                                        : "text-gray-500"
+                                                                    "text-xs sm:text-base font-black tabular-nums",
+                                                                    realizedNetR !== null
+                                                                        ? realizedNetR >= 0
+                                                                            ? "text-primary"
+                                                                            : "text-red-500"
+                                                                        : plannedRR !== null
+                                                                          ? "text-primary"
+                                                                          : percentGain !== null
+                                                                            ? pnlColor
+                                                                            : "text-gray-500"
                                                                 )}
                                                             >
-                                                                {percentGain !== null
-                                                                    ? `${percentGain > 0 ? "+" : ""}${percentGain.toFixed(2)}%`
-                                                                    : "—"}
+                                                                {realizedNetR !== null
+                                                                    ? `${realizedNetR > 0 ? "+" : ""}${realizedNetR}R`
+                                                                    : plannedRR !== null
+                                                                      ? `1:${plannedRR}`
+                                                                      : percentGain !== null
+                                                                        ? `${percentGain > 0 ? "+" : ""}${percentGain.toFixed(2)}%`
+                                                                        : "—"}
                                                             </span>
                                                         </div>
                                                     </div>
-                                                    <div className="col-span-2 pt-2.5 sm:pt-3 border-t border-dashboard">
-                                                        <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider block mb-1">
-                                                            Net Profit
-                                                        </span>
-                                                        <div className="flex items-center gap-2">
-                                                            <span
-                                                                className={cn(
-                                                                    "text-base sm:text-2xl font-black font-mono tabular-nums tracking-tight",
-                                                                    pnlColor
-                                                                )}
-                                                            >
-                                                                {isWin
-                                                                    ? "+"
-                                                                    : ""}
-                                                                {entry.pnl?.toFixed(
-                                                                    2
-                                                                ) || "0.00"}
+                                                    <div className="col-span-2 pt-2.5 sm:pt-3 border-t border-dashboard flex items-end justify-between gap-2">
+                                                        <div>
+                                                            <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider block mb-1">
+                                                                Net Profit (After Fees)
                                                             </span>
-                                                            {isWin && (
-                                                                <span className="bg-green-500/10 text-green-500 p-1 sm:p-1.5 rounded-lg shadow-xs shadow-green-500/20">
-                                                                    <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                                                            <div className="flex items-center gap-2">
+                                                                <span
+                                                                    className={cn(
+                                                                        "text-base sm:text-2xl font-black tabular-nums tracking-tight",
+                                                                        pnlColor
+                                                                    )}
+                                                                >
+                                                                    {formatDashboardCurrency(
+                                                                        netProfitVal,
+                                                                        entryCurrency,
+                                                                        { signDisplay: "always" }
+                                                                    )}
                                                                 </span>
-                                                            )}
+                                                                {isWin && (
+                                                                    <span className="bg-green-500/10 text-green-500 p-1 sm:p-1.5 rounded-lg shadow-xs shadow-green-500/20">
+                                                                        <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                                                                    </span>
+                                                                )}
+                                                            </div>
                                                         </div>
+                                                        {plannedRR !== null && realizedNetR !== null && (
+                                                            <span className="text-[10px] font-bold tabular-nums text-gray-500 dark:text-gray-400">
+                                                                Plan 1:{plannedRR}
+                                                            </span>
+                                                        )}
                                                     </div>
                                                 </div>
                                             </div>

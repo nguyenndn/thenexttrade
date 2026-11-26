@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { getAuthUser } from "@/lib/auth-cache";
-import { getCanonicalSystemPageSlug } from "@/config/trading-systems-data";
 import {
     findActiveDashboardEaProduct,
     getUserHasApprovedEaLicense,
 } from "@/lib/ea/user-license-access.server";
 import { DashboardSystemDetailView } from "@/components/dashboard/trading-systems/detail/DashboardSystemDetailView";
+
+export const dynamic = "force-dynamic";
 
 interface PageProps {
     params: Promise<{ slug: string }>;
@@ -27,7 +28,7 @@ export async function generateMetadata({
 
     return {
         title: `${product.name} | Trading Systems | TheNextTrade`,
-        description: `Specifications, parameters, installation guide, and download access for ${product.name}.`,
+        description: `Specifications, installation guide, risk controls, and download access for ${product.name}.`,
     };
 }
 
@@ -47,7 +48,7 @@ export default async function DashboardTradingSystemDetailPage({
         notFound();
     }
 
-    const canonicalSlug = getCanonicalSystemPageSlug(product.slug);
+    const canonicalSlug = product.slug.trim();
     if (slug !== canonicalSlug) {
         const suffix = tab ? `?tab=${encodeURIComponent(tab)}` : "";
         redirect(`/dashboard/trading-systems/${canonicalSlug}${suffix}`);

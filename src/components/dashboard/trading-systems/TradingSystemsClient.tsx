@@ -38,41 +38,18 @@ export function TradingSystemsClient({
     const rawTab = searchParams.get("tab");
     const defaultTab =
         rawTab === "MT5_INDICATOR" ? "MT5_INDICATOR" : "MT5_EA";
-    // Product counts for tab badges
-    const eaCount = products.filter(
-        (p) =>
-            (p.platform === "MT5" || p.platform === "BOTH") &&
-            (p.type === "AUTO_TRADE" ||
-                p.type === "SEMI_AUTO" ||
-                p.type === "MANUAL_ASSIST")
-    ).length;
-
-    const indicatorCount = products.filter(
-        (p) =>
-            (p.platform === "MT5" || p.platform === "BOTH") &&
-            p.type === "INDICATOR"
-    ).length;
-
-    const eaProducts = products.filter(
-        (p) =>
-            (p.platform === "MT5" || p.platform === "BOTH") &&
-            (p.type === "AUTO_TRADE" ||
-                p.type === "SEMI_AUTO" ||
-                p.type === "MANUAL_ASSIST")
-    );
-
-    const indicatorProducts = products.filter(
-        (p) =>
-            (p.platform === "MT5" || p.platform === "BOTH") &&
-            p.type === "INDICATOR"
-    );
+    const eaProducts = products.filter((p) => p.type !== "INDICATOR");
+    const indicatorProducts = products.filter((p) => p.type === "INDICATOR");
+    const eaCount = eaProducts.length;
+    const indicatorCount = indicatorProducts.length;
+    const activeProductNames = products.map((p) => p.name).filter(Boolean);
 
     return (
         <>
             {/* Header */}
             <PageHeader
-                title="Trading Systems"
-                description="Verified execution algorithms, indicators, and institutional license controls."
+                title="MT5 Systems & EAs"
+                description="Verified execution algorithms, indicators, and account license controls."
             />
 
             {/* Per-Account EA License Keys Panel */}
@@ -81,6 +58,7 @@ export function TradingSystemsClient({
                 userTradingAccounts={userTradingAccounts}
                 hasApprovedLicense={hasApprovedLicense}
                 vipLink={vipLink}
+                productNames={activeProductNames}
             />
 
             {/* Unified Tabs */}
@@ -99,7 +77,7 @@ export function TradingSystemsClient({
                         <CustomBotIcon size={14} className="sm:w-4 sm:h-4 shrink-0" />
                         <span className="truncate">Expert Advisor</span>
                         {eaCount > 0 && (
-                            <span className="flex items-center justify-center min-w-[18px] h-[18px] rounded-full text-[10px] font-extrabold font-mono tabular-nums px-1 bg-amber-500/15 text-amber-600 dark:text-gold sm:bg-white sm:dark:bg-[#1A1D27] sm:shadow-sm shrink-0">
+                            <span className="flex items-center justify-center min-w-[18px] h-[18px] rounded-full text-[10px] font-extrabold tabular-nums px-1 bg-amber-500/15 text-amber-600 dark:text-gold sm:bg-white sm:dark:bg-[#1A1D27] sm:shadow-sm shrink-0">
                                 {eaCount}
                             </span>
                         )}
@@ -113,7 +91,7 @@ export function TradingSystemsClient({
                         <BarChart2 size={14} className="sm:w-4 sm:h-4 shrink-0" />
                         <span className="truncate">Indicators</span>
                         {indicatorCount > 0 && (
-                            <span className="flex items-center justify-center min-w-[18px] h-[18px] rounded-full text-[10px] font-extrabold font-mono tabular-nums px-1 bg-amber-500/15 text-amber-600 dark:text-gold sm:bg-white sm:dark:bg-[#1A1D27] sm:shadow-sm shrink-0">
+                            <span className="flex items-center justify-center min-w-[18px] h-[18px] rounded-full text-[10px] font-extrabold tabular-nums px-1 bg-amber-500/15 text-amber-600 dark:text-gold sm:bg-white sm:dark:bg-[#1A1D27] sm:shadow-sm shrink-0">
                                 {indicatorCount}
                             </span>
                         )}

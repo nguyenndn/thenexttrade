@@ -138,12 +138,6 @@ export default async function JournalPage({
         resolvedParams.status !== "ALL"
             ? resolvedParams.status
             : undefined;
-    const reviewStatus =
-        typeof resolvedParams.review === "string" &&
-        (resolvedParams.review === "REVIEWED" ||
-            resolvedParams.review === "UNREVIEWED")
-            ? resolvedParams.review
-            : undefined;
 
     let dateFrom =
         typeof resolvedParams.from === "string"
@@ -205,7 +199,6 @@ export default async function JournalPage({
                 dateTo,
                 sortBy,
                 sortOrder,
-                reviewStatus,
                 timezone: accountTimezone,
             }),
             getStrategies(),

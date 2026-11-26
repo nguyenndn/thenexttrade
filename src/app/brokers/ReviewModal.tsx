@@ -56,7 +56,7 @@ function StarRating({ rating }: { rating: number }) {
                     />
                 ))}
             </div>
-            <span className="text-base font-bold font-mono tabular-nums text-gray-700 dark:text-white">
+            <span className="text-base font-bold tabular-nums text-gray-700 dark:text-white">
                 {rating.toFixed(1)}
             </span>
         </div>

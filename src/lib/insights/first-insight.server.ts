@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 import { DataConfidenceLevel, InsightSnapshotView } from "@/lib/trader-growth/types";
 import {
     MIN_OBSERVATION_TRADES,
@@ -10,29 +11,63 @@ export async function getOrCreateFirstInsight(
     userId: string,
     accountId?: string
 ): Promise<InsightSnapshotView | null> {
-    const whereAccount = accountId ? { accountId, userId } : { userId };
+    const normalizedAccountId =
+        accountId && accountId !== "all" ? accountId : undefined;
+    const accountFilter = normalizedAccountId
+        ? Prisma.sql`AND "accountId" = ${normalizedAccountId}`
+        : Prisma.empty;
 
-    // Fetch closed trades
-    const trades = await prisma.journalEntry.findMany({
-        where: {
-            ...whereAccount,
-            status: "CLOSED",
-        },
-        select: {
-            id: true,
-            symbol: true,
-            result: true,
-            pnl: true,
-            entryDate: true,
-            exitDate: true,
-            tradingSession: true,
-            followedPlan: true,
-            mistakes: true,
-        },
-        orderBy: { exitDate: "desc" },
-    });
+    const [summaryRows, topSymbolRows, topSessionRows] = await Promise.all([
+        prisma.$queryRaw<
+            Array<{
+                sampleSize: number | bigint;
+                wins: number | bigint;
+                losses: number | bigint;
+                breakEvens: number | bigint;
+                periodStart: Date | null;
+                periodEnd: Date | null;
+            }>
+        >`
+            SELECT
+                COUNT(*)::int AS "sampleSize",
+                COUNT(*) FILTER (WHERE "result" = 'WIN')::int AS "wins",
+                COUNT(*) FILTER (WHERE "result" = 'LOSS')::int AS "losses",
+                COUNT(*) FILTER (WHERE "result" IN ('BREAK_EVEN', 'BE_PLUS'))::int AS "breakEvens",
+                MIN("entryDate") AS "periodStart",
+                MAX("entryDate") AS "periodEnd"
+            FROM "journal_entries"
+            WHERE "userId" = ${userId}::uuid
+              AND "status" = 'CLOSED'
+              ${accountFilter}
+        `,
+        prisma.$queryRaw<Array<{ symbol: string; cnt: number | bigint }>>`
+            SELECT "symbol", COUNT(*)::int AS "cnt"
+            FROM "journal_entries"
+            WHERE "userId" = ${userId}::uuid
+              AND "status" = 'CLOSED'
+              AND "symbol" IS NOT NULL
+              AND "symbol" <> ''
+              ${accountFilter}
+            GROUP BY "symbol"
+            ORDER BY "cnt" DESC
+            LIMIT 1
+        `,
+        prisma.$queryRaw<Array<{ session: string; cnt: number | bigint }>>`
+            SELECT "trading_session" AS "session", COUNT(*)::int AS "cnt"
+            FROM "journal_entries"
+            WHERE "userId" = ${userId}::uuid
+              AND "status" = 'CLOSED'
+              AND "trading_session" IS NOT NULL
+              AND "trading_session" <> ''
+              ${accountFilter}
+            GROUP BY "trading_session"
+            ORDER BY "cnt" DESC
+            LIMIT 1
+        `,
+    ]);
 
-    const sampleSize = trades.length;
+    const summaryStats = summaryRows[0];
+    const sampleSize = Number(summaryStats?.sampleSize || 0);
     if (sampleSize < MIN_OBSERVATION_TRADES) {
         return null; // Not enough trades for an observation
     }
@@ -46,33 +81,20 @@ export async function getOrCreateFirstInsight(
     }
 
     // Calculate decisive stats (excluding break-even from denominator)
-    const wins = trades.filter((t) => t.result === "WIN").length;
-    const losses = trades.filter((t) => t.result === "LOSS").length;
-    const breakEvens = trades.filter((t) => t.result === "BREAK_EVEN" || t.result === "BE_PLUS").length;
+    const wins = Number(summaryStats?.wins || 0);
+    const losses = Number(summaryStats?.losses || 0);
+    const breakEvens = Number(summaryStats?.breakEvens || 0);
     const decisiveCount = wins + losses;
-    const winRateVal = decisiveCount > 0 ? Math.round((wins / decisiveCount) * 100) : null;
-    const winRateText = winRateVal !== null ? `${winRateVal}% win rate` : `${breakEvens} break-even trades`;
+    const winRateVal =
+        decisiveCount > 0 ? Math.round((wins / decisiveCount) * 100) : null;
+    const winRateText =
+        winRateVal !== null
+            ? `${winRateVal}% win rate`
+            : `${breakEvens} break-even trades`;
 
-    // Symbol distribution
-    const symbolCounts: Record<string, number> = {};
-    trades.forEach((t) => {
-        if (t.symbol) {
-            symbolCounts[t.symbol] = (symbolCounts[t.symbol] || 0) + 1;
-        }
-    });
-
-    const topSymbolEntry = Object.entries(symbolCounts).sort((a, b) => b[1] - a[1])[0];
-    const topSymbol = topSymbolEntry ? topSymbolEntry[0] : "XAUUSD";
-    const topSymbolCount = topSymbolEntry ? topSymbolEntry[1] : 0;
-
-    // Session distribution
-    const sessionCounts: Record<string, number> = {};
-    trades.forEach((t) => {
-        if (t.tradingSession) {
-            sessionCounts[t.tradingSession] = (sessionCounts[t.tradingSession] || 0) + 1;
-        }
-    });
-    const topSession = Object.entries(sessionCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || "US";
+    const topSymbol = topSymbolRows[0]?.symbol || "XAUUSD";
+    const topSymbolCount = Number(topSymbolRows[0]?.cnt || 0);
+    const topSession = topSessionRows[0]?.session || "US";
 
     let insightType = "MOST_TRADED_DESCRIPTIVE";
     let title = `Primary Focus: ${topSymbol} (${topSymbolCount} trades)`;
@@ -88,11 +110,11 @@ export async function getOrCreateFirstInsight(
     const fingerprint = `${insightType}:${topSymbol || "GENERAL"}`;
     const engineVersion = "v1.0";
 
-    const periodStart = trades[trades.length - 1]?.entryDate || new Date();
-    const periodEnd = trades[0]?.entryDate || new Date();
+    const periodStart = summaryStats?.periodStart || new Date();
+    const periodEnd = summaryStats?.periodEnd || new Date();
 
-    // Idempotent upsert of snapshot
-    const snapshot = await prisma.traderInsightSnapshot.upsert({
+    // Fast read-first check: skip DB write if the snapshot is already current for this sampleSize
+    const existingSnapshot = await prisma.traderInsightSnapshot.findUnique({
         where: {
             userId_fingerprint_engineVersion: {
                 userId,
@@ -100,50 +122,65 @@ export async function getOrCreateFirstInsight(
                 engineVersion,
             },
         },
-        create: {
-            userId,
-            accountId: accountId || null,
-            insightType,
-            fingerprint,
-            title,
-            summary,
-            evidence: {
-                sampleSize,
-                topSymbol,
-                topSymbolCount,
-                topSession,
-                winRate: winRateVal,
-                wins,
-                losses,
-                breakEvens,
-            },
-            sampleSize,
-            confidence,
-            periodStart,
-            periodEnd,
-            engineVersion,
-            status: "ACTIVE",
-        },
-        update: {
-            title,
-            summary,
-            evidence: {
-                sampleSize,
-                topSymbol,
-                topSymbolCount,
-                topSession,
-                winRate: winRateVal,
-                wins,
-                losses,
-                breakEvens,
-            },
-            sampleSize,
-            confidence,
-            periodStart,
-            periodEnd,
-            updatedAt: new Date(),
-        },
     });
+
+    const snapshot =
+        existingSnapshot &&
+        existingSnapshot.sampleSize === sampleSize &&
+        existingSnapshot.status === "ACTIVE"
+            ? existingSnapshot
+            : await prisma.traderInsightSnapshot.upsert({
+                  where: {
+                      userId_fingerprint_engineVersion: {
+                          userId,
+                          fingerprint,
+                          engineVersion,
+                      },
+                  },
+                  create: {
+                      userId,
+                      accountId: normalizedAccountId || null,
+                      insightType,
+                      fingerprint,
+                      title,
+                      summary,
+                      evidence: {
+                          sampleSize,
+                          topSymbol,
+                          topSymbolCount,
+                          topSession,
+                          winRate: winRateVal,
+                          wins,
+                          losses,
+                          breakEvens,
+                      },
+                      sampleSize,
+                      confidence,
+                      periodStart,
+                      periodEnd,
+                      engineVersion,
+                      status: "ACTIVE",
+                  },
+                  update: {
+                      title,
+                      summary,
+                      evidence: {
+                          sampleSize,
+                          topSymbol,
+                          topSymbolCount,
+                          topSession,
+                          winRate: winRateVal,
+                          wins,
+                          losses,
+                          breakEvens,
+                      },
+                      sampleSize,
+                      confidence,
+                      periodStart,
+                      periodEnd,
+                      updatedAt: new Date(),
+                  },
+              });
 
     return {
         id: snapshot.id,
@@ -152,7 +189,7 @@ export async function getOrCreateFirstInsight(
         summary: snapshot.summary,
         sampleSize: snapshot.sampleSize,
         confidence: snapshot.confidence as DataConfidenceLevel,
-        evidence: (snapshot.evidence as Record<string, any>) || {},
+        evidence: (snapshot.evidence as Record<string, unknown>) || {},
         createdAt: snapshot.createdAt.toISOString(),
     };
 }

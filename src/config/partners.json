@@ -17,35 +17,35 @@
                 "rating": 4.8,
                 "minDeposit": "$10",
                 "maxLeverage": "Unlimited",
-                "regulation": "FCA, CySEC, FSA",
+                "regulation": "FSA, FSC, FSCA, FCA",
                 "features": [
-                    "Instant withdrawals 24/7",
-                    "Spreads from 0.0 pips",
-                    "No commission on Standard accounts",
-                    "Swap-free on all accounts"
+                    "Instant automated withdrawals 24/7",
+                    "Raw Spread & Zero accounts from 0.0 pips",
+                    "Zero commission on Standard & Cent",
+                    "Extended swap-free on Gold, Majors & Crypto"
                 ],
                 "review": {
-                    "summary": "Exness is **one of the world's largest brokers** with monthly trading volume exceeding $4 trillion. Their standout feature is **instant withdrawals 24/7** — funds arrive in your wallet within seconds.",
+                    "summary": "Exness is **one of the world's largest multi-asset brokers** with monthly trading volume exceeding $4 trillion. Its standout edge is **automated 24/7 withdrawals** processed in seconds alongside stable Gold & FX liquidity.",
                     "pros": [
-                        "Instant withdrawals 24/7 with no limits",
-                        "Ultra-low spreads from 0.0 pips on Raw Spread",
-                        "Unlimited leverage available",
-                        "Swap-free on all account types",
-                        "Regulated by FCA (UK), CySEC, FSA"
+                        "Automated 24/7 deposits and withdrawals in seconds",
+                        "Raw Spread & Zero accounts from 0.0 pips ($200 min deposit)",
+                        "Unlimited leverage unlocked under $5,000 equity",
+                        "Extended swap-free on XAUUSD, FX majors, crypto & indices",
+                        "Group entities licensed by FCA (B2B), CySEC (B2B), FSCA, FSC & FSA"
                     ],
                     "cons": [
-                        "No bonus or promotional programs",
-                        "Spreads can widen significantly during major news",
-                        "Unlimited leverage only available when equity < $1,000"
+                        "No deposit bonuses or promotional credit programs",
+                        "FCA & CySEC entities are B2B only (retail onboards via FSA/FSC/FSCA)",
+                        "Unlimited leverage steps down to 1:2000 once equity reaches $5,000+"
                     ],
-                    "bestFor": "Scalpers and day traders who need **fast withdrawals** and tight spreads.",
-                    "verdict": "**4.8/5** — Top choice for traders who need high liquidity and instant withdrawals."
+                    "bestFor": "Scalpers, EA runners, and XAUUSD day traders who prioritize **instant withdrawals** and tight spreads.",
+                    "verdict": "**4.8/5** — Benchmark execution liquidity and fastest withdrawal processing in retail FX."
                 }
             },
             {
                 "active": true,
                 "name": "Vantage Markets",
-                "desc": "Raw ECN • ASIC Regulated",
+                "desc": "Raw ECN • Up to 1:2000 Leverage",
                 "badge": "Popular",
                 "badgeType": "green",
                 "logo": "/images/brokers/vantage.png",
@@ -54,36 +54,36 @@
                 "url": "https://www.vantagemarkets.com/open-live-account/?affid=MTExNDUx&invitecode=FzzbC6Qy",
                 "rating": 4.5,
                 "minDeposit": "$50",
-                "maxLeverage": "1:500",
-                "regulation": "ASIC, FCA, CIMA",
+                "maxLeverage": "1:2000",
+                "regulation": "ASIC, FCA, FSCA, VFSC",
                 "features": [
-                    "Raw ECN spreads from 0.0",
-                    "Commission from $3/lot round-turn",
-                    "MT5 & ProTrader",
-                    "Copy trading platform"
+                    "Raw ECN spreads from 0.0 pips",
+                    "$3/lot per side ($6 round-turn) on Raw ECN",
+                    "Leverage up to 1:2000 on global accounts",
+                    "MT5, TradingView & Copy Trading"
                 ],
                 "review": {
-                    "summary": "Vantage Markets is a **top-tier ECN broker** regulated by ASIC (Australia), FCA (UK), and CIMA. Known for **Raw ECN spreads from 0.0** with commissions as low as $3/lot.",
+                    "summary": "Vantage Markets is an **institutional-grade ECN broker** regulated across ASIC (Australia), FCA (UK), FSCA, and VFSC. Built for algorithmic and discretionary MT5 traders needing **0.0-pip Raw ECN pricing** at $3/lot per side ($6 round-turn).",
                     "pros": [
-                        "True Raw ECN spreads from 0.0 pips",
-                        "Low commission: $3/lot round-turn",
-                        "Regulated by ASIC & FCA — highly trusted",
-                        "Supports MT5 & ProTrader",
-                        "Built-in copy trading platform"
+                        "True Raw ECN spreads from 0.0 pips via Equinix fiber",
+                        "Competitive $3.00 per side ($6.00 round-turn) ECN commission",
+                        "Dynamic leverage up to 1:2000 on international entities",
+                        "Tier-1 group oversight (ASIC & FCA) plus FSCA/VFSC",
+                        "Full MT5, ProTrader & copy trading ecosystem"
                     ],
                     "cons": [
-                        "Minimum deposit $50 (higher than Exness)",
-                        "Standard account spreads less competitive",
-                        "Withdrawals take 1-3 business days"
+                        "$50 minimum deposit ($200 recommended for VIP/EA margin cushion)",
+                        "ASIC & FCA retail entities cap leverage at 1:30",
+                        "Standard STP spreads are wider than Raw ECN"
                     ],
-                    "bestFor": "Professional traders who want **true ECN pricing** with the lowest spreads and ASIC regulation.",
-                    "verdict": "**4.5/5** — Excellent choice for serious traders who need raw ECN execution."
+                    "bestFor": "EA and intraday traders seeking **low-slippage Raw ECN execution** backed by a multi-regulated broker group.",
+                    "verdict": "**4.5/5** — Reliable ECN liquidity and transparent $6/lot round-turn pricing for MT5 traders."
                 }
             },
             {
                 "active": true,
                 "name": "Ultima Markets",
-                "desc": "CySEC & FCA • Up to 1:2000",
+                "desc": "FCA, CySEC & FSC • Up to 1:2000",
                 "badge": "Beginner Friendly",
                 "badgeType": "green",
                 "logo": "/images/brokers/ultima.png",
@@ -93,35 +93,35 @@
                 "rating": 4.1,
                 "minDeposit": "$50",
                 "maxLeverage": "1:2000",
-                "regulation": "CySEC, FCA, FSC",
+                "regulation": "FCA, CySEC, FSC",
                 "features": [
-                    "CySEC & FCA regulated",
-                    "250+ CFD instruments",
-                    "MT5 platforms",
-                    "Leverage up to 1:2000"
+                    "FCA (UK), CySEC & FSC Mauritius licensed",
+                    "250+ Forex, Metals, Indices & CFD pairs",
+                    "Full MT5 & EA execution support",
+                    "Up to 1:2000 leverage (FSC global entity)"
                 ],
                 "review": {
-                    "summary": "Ultima Markets is a **dual-regulated broker** with CySEC and FCA (secured 2025) licenses. Offers **250+ instruments** with leverage up to 1:2000 on global entities.",
+                    "summary": "Ultima Markets operates a **multi-regulated corporate structure** holding FCA (UK), CySEC (Cyprus), and FSC (Mauritius) licenses, offering **250+ CFD instruments** and leverage up to 1:2000 on international accounts.",
                     "pros": [
-                        "CySEC & FCA regulated — strong trust",
-                        "Leverage up to 1:2000 (global)",
-                        "$50 minimum deposit",
-                        "MT5 supported",
-                        "Segregated client funds"
+                        "Group licenses across FCA (UK), CySEC (EU) & FSC Mauritius",
+                        "Leverage up to 1:2000 on global FSC accounts",
+                        "$50 minimum deposit on Standard & ECN accounts",
+                        "Full MT5 & automated EA support",
+                        "Segregated client funds & FinaCom membership"
                     ],
                     "cons": [
-                        "FCA entity has strict leverage caps",
-                        "Less well-known than major brokers",
-                        "Offshore entities have limited protection"
+                        "FCA & CySEC entities enforce strict 1:30 retail leverage caps",
+                        "Global high-leverage clients onboard under FSC Mauritius",
+                        "Smaller instrument catalog (250+) than legacy multi-asset brokers"
                     ],
-                    "bestFor": "Traders who want a **CySEC/FCA-regulated broker** with competitive leverage on global accounts.",
-                    "verdict": "**4.1/5** — Promising dual-regulated broker with growing reputation."
+                    "bestFor": "MT5 traders looking for **high-leverage global execution** under a group holding UK/EU licenses.",
+                    "verdict": "**4.1/5** — Fast-growing multi-regulated broker with clean MT5 execution."
                 }
             },
             {
                 "active": true,
                 "name": "VT Markets",
-                "desc": "Fast Execution • Multi-Asset",
+                "desc": "ASIC & FSCA • Equinix ECN",
                 "badge": "Trusted",
                 "badgeType": "blue",
                 "logo": "/images/brokers/vtmarkets.png",
@@ -129,36 +129,36 @@
                 "color": "from-indigo-500 to-indigo-600",
                 "url": "https://www.vtmarkets.com/trade-now/?affid=ODMwNDIy&invitecode=n9d2cKEY",
                 "rating": 4.3,
-                "minDeposit": "$50",
+                "minDeposit": "$100",
                 "maxLeverage": "1:500",
-                "regulation": "FSCA, FSC",
+                "regulation": "ASIC, FSCA, FSC",
                 "features": [
-                    "Execution under 1ms",
-                    "1000+ trading instruments",
-                    "MT5 supported",
-                    "Copy trading available"
+                    "Low-latency Equinix fiber bridge (oneZero)",
+                    "1,000+ Forex, Metals, Indices & Stock CFDs",
+                    "Full MT5 & VTrade copy trading",
+                    "ASIC, FSCA & FSC regulated group"
                 ],
                 "review": {
-                    "summary": "VT Markets is a **multi-asset broker** regulated by FSCA and FSC. Their biggest strength is **execution speed under 1ms** and access to 1,000+ trading instruments.",
+                    "summary": "VT Markets is a **multi-asset MT5 broker** regulated by ASIC (Australia), FSCA (South Africa), and FSC (Mauritius). Powered by **oneZero Equinix fiber bridges** with access to 1,000+ tradable instruments.",
                     "pros": [
-                        "Ultra-fast execution under 1ms",
-                        "1,000+ instruments: Forex, Stocks, Crypto, Commodities",
-                        "MT5 supported",
-                        "Copy trading for beginners"
+                        "Institutional oneZero ECN bridge in Equinix NY4/LD4 hubs",
+                        "1,000+ instruments across FX, Gold, Indices, Shares & Crypto",
+                        "Regulated across ASIC, FSCA & FSC Mauritius",
+                        "Full MT5 & VTrade copy trading support"
                     ],
                     "cons": [
-                        "Regulation not as strong as FCA/ASIC",
-                        "Minimum deposit $50",
-                        "No cTrader support yet"
+                        "$100 minimum deposit on Standard STP & Raw ECN ($50 on Cent)",
+                        "ASIC retail accounts capped at 1:30 (1:500 via FSC global entity)",
+                        "No cTrader desktop support"
                     ],
-                    "bestFor": "Traders who want **multi-asset trading** (forex + stocks + crypto) on a single platform.",
-                    "verdict": "**4.3/5** — Great fit for traders who need speed and product diversity."
+                    "bestFor": "Traders who want **stable ECN bridge execution** and 1,000+ multi-asset CFDs on MT5.",
+                    "verdict": "**4.3/5** — Dependable ASIC/FSCA-backed multi-asset broker for discretionary and EA trading."
                 }
             },
             {
                 "active": true,
                 "name": "RoboForex",
-                "desc": "11,000+ Assets • 1:2000 Leverage",
+                "desc": "MT5 & R StocksTrader • 1:2000",
                 "badge": "High Leverage",
                 "badgeType": "blue",
                 "logo": "/images/brokers/roboforex.png",
@@ -170,33 +170,33 @@
                 "maxLeverage": "1:2000",
                 "regulation": "FSC Belize, FinaCom",
                 "features": [
-                    "11,000+ trading instruments",
-                    "Leverage up to 1:2000",
-                    "5 account types available",
-                    "€2.5M insurance coverage"
+                    "Pro & ProCent MT5 accounts from $10",
+                    "Leverage up to 1:2000 on FX & Metals",
+                    "12,000+ stocks & CFDs via R StocksTrader",
+                    "€2.5M civil liability insurance + FinaCom"
                 ],
                 "review": {
-                    "summary": "RoboForex offers the **widest asset range** with 11,000+ instruments and leverage up to 1:2000. Backed by **€2.5M insurance** and FinaCom membership.",
+                    "summary": "RoboForex combines **$10-entry Pro & ProCent MT5 accounts** (up to 1:2000 leverage) with 12,000+ equities on its proprietary R StocksTrader platform, backed by a **€2.5M civil liability insurance** policy.",
                     "pros": [
-                        "11,000+ instruments — largest range",
-                        "Up to 1:2000 leverage",
-                        "€2.5M insurance protection",
-                        "FinaCom Category A member",
-                        "$10 minimum deposit"
+                        "$10 minimum deposit on Pro, ProCent & ECN MT5 accounts",
+                        "Up to 1:2000 leverage for FX & precious metals",
+                        "12,000+ stock & ETF CFDs available on R StocksTrader ($100 min)",
+                        "€2.5M civil liability insurance + FinaCom Category A protection",
+                        "Popular CopyFX social trading ecosystem"
                     ],
                     "cons": [
-                        "Offshore regulation only (FSC Belize)",
-                        "High leverage auto-reduces above $10K equity",
-                        "Not available in US, Canada, Japan"
+                        "Offshore FSC Belize license only (no FCA/ASIC entity)",
+                        "12,000+ stock catalog requires R StocksTrader (fewer pairs on MT5)",
+                        "Leverage steps down automatically on higher equity tiers"
                     ],
-                    "bestFor": "Traders who want the **widest product range** with high leverage and insurance protection.",
-                    "verdict": "**4.1/5** — Best instrument variety with solid insurance backing."
+                    "bestFor": "Cent-account EA testers and high-leverage traders wanting **low $10 MT5 entry**.",
+                    "verdict": "**4.1/5** — Versatile MT5 Cent/ECN environment with strong third-party liability insurance."
                 }
             },
             {
                 "active": true,
                 "name": "JustMarkets",
-                "desc": "From $1 • Up to 1:3000",
+                "desc": "From $10 • Up to 1:3000",
                 "badge": null,
                 "badgeType": "green",
                 "logo": "/images/brokers/jm.png",
@@ -204,31 +204,31 @@
                 "color": "from-green-600 to-teal-600",
                 "url": "https://one.justmarkets.link/a/u212s0f32l",
                 "rating": 4.1,
-                "minDeposit": "$1",
+                "minDeposit": "$10",
                 "maxLeverage": "1:3000",
                 "regulation": "CySEC, FSA, FSCA",
                 "features": [
-                    "Start from just $1",
-                    "Leverage up to 1:3000",
-                    "Swap-free for all traders",
-                    "Copy trading system"
+                    "Standard & Standard Cent from $10",
+                    "Dynamic leverage up to 1:3000",
+                    "Extended swap-free on majors & Gold",
+                    "MT5 & built-in Copytrading"
                 ],
                 "review": {
-                    "summary": "JustMarkets is a **highly accessible broker** with CySEC regulation and a $1 minimum deposit. Offers up to **1:3000 leverage** and swap-free accounts.",
+                    "summary": "JustMarkets is an **accessible MT5 broker** regulated by CySEC (EU), FSCA, and FSA Seychelles, offering **$10 minimum deposits** on Standard & Cent accounts and dynamic leverage up to **1:3000**.",
                     "pros": [
-                        "$1 minimum deposit — lowest in industry",
-                        "Up to 1:3000 leverage",
-                        "CySEC regulated",
-                        "Swap-free on all accounts",
-                        "Built-in copy trading"
+                        "$10 minimum deposit on Standard & Standard Cent accounts",
+                        "Dynamic leverage up to 1:3000 on offshore FSA accounts",
+                        "CySEC (EU), FSCA & FSA regulated group entities",
+                        "Swap-free trading on major FX pairs & metals",
+                        "Built-in Copytrading platform"
                     ],
                     "cons": [
-                        "Offshore entities have less protection",
-                        "Raw Spread account needs $100+",
-                        "Less established than top-tier brokers"
+                        "Pro and Raw Spread accounts require $100+ minimum deposit",
+                        "CySEC EU entity caps retail leverage at 1:30",
+                        "High 1:3000 leverage only applies below small equity thresholds"
                     ],
-                    "bestFor": "Budget traders who want to **start with minimal capital** and high leverage options.",
-                    "verdict": "**4.1/5** — Best for traders who want to start with just $1."
+                    "bestFor": "Small-account and Cent traders starting from **$10** who want flexible leverage.",
+                    "verdict": "**4.1/5** — Practical low-deposit MT5 option for Cent and micro-lot testing."
                 }
             },
             {
@@ -320,29 +320,29 @@
                 "rating": 4.3,
                 "minDeposit": "$0",
                 "maxLeverage": "1:2000",
-                "regulation": "FCA, CySEC, FSCA",
+                "regulation": "FCA, CySEC, DFSA, FSCA",
                 "features": [
-                    "$0 minimum deposit on most accounts",
-                    "Leverage up to 1:2000",
-                    "FCA (UK) regulated",
-                    "Copy trading available"
+                    "$0 min deposit on Cent, Premium & Zero",
+                    "Leverage up to 1:2000 (offshore entity)",
+                    "FCA, CySEC, DFSA & FSCA regulated",
+                    "MT5 & HFcopy social trading"
                 ],
                 "review": {
-                    "summary": "HFM (formerly HotForex) is a **multi-regulated broker** with FCA, CySEC, and FSCA licenses. Stands out with **$0 minimum deposit** and leverage up to 1:2000.",
+                    "summary": "HFM (formerly HotForex) is a **globally regulated broker** holding FCA (UK), CySEC, DFSA (Dubai), and FSCA licenses, offering **$0 minimum deposits** on Cent, Premium, and Zero accounts with leverage up to 1:2000.",
                     "pros": [
-                        "$0 minimum deposit — most accessible",
-                        "FCA regulated — top-tier trust",
-                        "Leverage up to 1:2000",
-                        "Copy trading platform included",
-                        "Multi-regulated across 6 jurisdictions"
+                        "$0 minimum deposit on Cent, Premium & Zero accounts",
+                        "Regulated across FCA, CySEC, DFSA & FSCA",
+                        "Leverage up to 1:2000 on international entities",
+                        "Zero account with raw spreads + $3/side commission",
+                        "HFcopy social trading included"
                     ],
                     "cons": [
-                        "Unlimited leverage restricted to equity < $1,000",
-                        "Spreads widen during news events",
-                        "Some account types have higher minimums"
+                        "Pro & Pro Plus accounts require $100+ minimum deposit",
+                        "FCA & DFSA entities cap retail leverage at 1:30",
+                        "Spreads widen around high-impact macro news"
                     ],
-                    "bestFor": "Traders seeking **maximum accessibility** with zero deposit and FCA regulation.",
-                    "verdict": "**4.3/5** — Great all-rounder with zero barriers to entry."
+                    "bestFor": "Traders seeking **$0 deposit flexibility** across Cent and Standard MT5 accounts under a well-established brand.",
+                    "verdict": "**4.3/5** — Strong multi-regulated all-rounder with zero minimum deposit barriers."
                 }
             },
             {
@@ -386,7 +386,7 @@
             {
                 "active": true,
                 "name": "XM",
-                "desc": "Micro Lots • $5 Min Deposit",
+                "desc": "Ultra Low Spreads • $5 Min Deposit",
                 "badge": null,
                 "badgeType": "green",
                 "logo": "/images/brokers/xm.png",
@@ -396,29 +396,29 @@
                 "rating": 4.4,
                 "minDeposit": "$5",
                 "maxLeverage": "1:1000",
-                "regulation": "CySEC, ASIC, FSCA",
+                "regulation": "ASIC, CySEC, DFSA, FSC",
                 "features": [
-                    "Micro & Standard accounts from $5",
-                    "Up to 1:1000 leverage",
-                    "Zero account with 0.0 spreads",
-                    "1,000+ instruments available"
+                    "Micro, Standard & Ultra Low from $5",
+                    "Ultra Low account from 0.6 pips ($0 comm)",
+                    "Leverage up to 1:1000 (global entity)",
+                    "1,400+ instruments on MT5"
                 ],
                 "review": {
-                    "summary": "XM is a **globally popular broker** regulated by CySEC, ASIC, and FSCA. Known for its **$5 minimum deposit** and beginner-friendly approach with multiple account types.",
+                    "summary": "XM is a **long-standing global broker** regulated by ASIC, CySEC, DFSA, and FSC. Known for its **$5 minimum deposit** and commission-free **XM Ultra Low** account with spreads starting from 0.6 pips.",
                     "pros": [
-                        "Ultra-low $5 minimum deposit",
-                        "Regulated by CySEC & ASIC",
-                        "Up to 1:1000 leverage",
-                        "Zero account with raw spreads",
-                        "Excellent educational resources"
+                        "Low $5 minimum deposit across Micro, Standard & Ultra Low",
+                        "XM Ultra Low offers 0.6-pip spreads with $0 commission & swap-free majors",
+                        "Regulated by ASIC, CySEC, DFSA & FSC",
+                        "Up to 1:1000 leverage on international accounts",
+                        "1,400+ CFDs on MT5 with negative balance protection"
                     ],
                     "cons": [
-                        "Spreads on Standard account not the tightest",
-                        "No cTrader support",
-                        "Shares account requires $10,000 minimum"
+                        "Standard account spreads are wider than Ultra Low",
+                        "ASIC & CySEC retail entities cap leverage at 1:30",
+                        "No cTrader platform support"
                     ],
-                    "bestFor": "Beginners and traders who want to **start small** with a highly regulated broker.",
-                    "verdict": "**4.4/5** — Best entry point for new traders with solid regulation."
+                    "bestFor": "Traders wanting **$5 entry and commission-free Ultra Low spreads** on MT5.",
+                    "verdict": "**4.4/5** — Trusted multi-regulated MT5 broker with strong Ultra Low pricing."
                 }
             }
         ]
@@ -628,9 +628,9 @@
                         "Copy trading & AI-powered tools"
                     ],
                     "cons": [
-                        "$5,000 quarterly affiliate cap (new 2026 rule)",
-                        "UI more complex than beginner exchanges",
-                        "Dynamic leverage reduces during volatility"
+                        "Mandatory KYC verification required for all deposits and trading",
+                        "Unavailable in the US, UK, Canada, and select restricted jurisdictions",
+                        "Dynamic leverage steps down on larger perpetual position tiers"
                     ],
                     "bestFor": "Derivatives traders who want **professional-grade tools** and deep perpetual contract liquidity.",
                     "verdict": "**4.6/5** — Best-in-class for crypto derivatives trading."

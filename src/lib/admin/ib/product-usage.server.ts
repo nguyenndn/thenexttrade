@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { CANONICAL_PRODUCTS } from "./ib-monitor.constants";
+import { buildCandidateProductSlugs } from "@/lib/ea/user-license-access.server";
 import {
     ProductUsageSummary,
     ProductAccessState,
@@ -177,7 +178,12 @@ export async function grantUserProductAccess(params: {
     // Resolve the real EAProduct row by slug — productId must be a real FK, never the slug
     // string. Skip gracefully when the product isn't seeded yet so the caller (e.g. the
     // approveVipRequest tx) is never aborted by an FK violation.
-    const product = await prisma.eAProduct.findUnique({ where: { slug: productSlug } });
+    const candidateSlugs = buildCandidateProductSlugs(productSlug);
+    const product = await prisma.eAProduct.findFirst({
+        where: {
+            OR: [{ slug: { in: candidateSlugs } }, { id: productSlug }],
+        },
+    });
     if (!product) {
         console.warn(
             `[grantUserProductAccess] Skipping grant for unknown EAProduct slug "${productSlug}" (target user ${targetUserId})`
@@ -227,7 +233,12 @@ export async function revokeUserProductAccess(params: {
 }): Promise<void> {
     const { adminUserId, targetUserId, productSlug, tradingAccountId } = params;
 
-    const product = await prisma.eAProduct.findUnique({ where: { slug: productSlug } });
+    const candidateSlugs = buildCandidateProductSlugs(productSlug);
+    const product = await prisma.eAProduct.findFirst({
+        where: {
+            OR: [{ slug: { in: candidateSlugs } }, { id: productSlug }],
+        },
+    });
     if (!product) {
         console.warn(
             `[revokeUserProductAccess] Skipping revoke for unknown EAProduct slug "${productSlug}" (target user ${targetUserId})`

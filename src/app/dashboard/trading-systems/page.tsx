@@ -13,10 +13,12 @@ import type {
 } from "@/components/dashboard/trading-systems/LicenseAccountsPanel";
 
 export const metadata: Metadata = {
-    title: "Trading Systems | TheNextTrade",
+    title: "MT5 Systems & EAs | TheNextTrade",
     description:
-        "Verified execution algorithms, indicators, and institutional license controls.",
+        "Verified execution algorithms, indicators, and license controls.",
 };
+
+export const dynamic = "force-dynamic";
 
 export default async function TradingSystemsPage() {
     const user = await getAuthUser();

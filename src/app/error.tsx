@@ -4,18 +4,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { AlertTriangle, Home, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-
-function isStaleChunkError(error: Error | null | undefined): boolean {
-    if (!error) return false;
-    const msg = `${error.name || ""} ${error.message || ""}`;
-    return (
-        error.name === "ChunkLoadError" ||
-        /Loading chunk [\w-]+ failed/i.test(msg) ||
-        /Failed to fetch dynamically imported module/i.test(msg) ||
-        /Importing a module script failed/i.test(msg) ||
-        /error loading dynamically imported module/i.test(msg)
-    );
-}
+import { isStaleDeploymentError } from "@/lib/deployment/stale-deployment";
 
 export default function Error({
     error,
@@ -26,12 +15,12 @@ export default function Error({
 }) {
     useEffect(() => {
         console.error(error);
-        if (isStaleChunkError(error) && typeof window !== "undefined") {
+        if (isStaleDeploymentError(error) && typeof window !== "undefined") {
             try {
                 const lastReload = Number(
                     sessionStorage.getItem("tnt_chunk_reload_at") || "0"
                 );
-                if (Date.now() - lastReload > 15_000) {
+                if (Date.now() - lastReload > 20_000) {
                     sessionStorage.setItem(
                         "tnt_chunk_reload_at",
                         String(Date.now())
@@ -45,7 +34,7 @@ export default function Error({
     }, [error]);
 
     const handleRetry = () => {
-        if (isStaleChunkError(error) && typeof window !== "undefined") {
+        if (isStaleDeploymentError(error) && typeof window !== "undefined") {
             window.location.reload();
             return;
         }

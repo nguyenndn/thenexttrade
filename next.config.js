@@ -31,11 +31,20 @@ if (assetHostname) {
 
 const nextConfig = {
   output: 'standalone',
+  generateBuildId: async () => {
+    return (
+      process.env.COOLIFY_GIT_COMMIT_SHA ||
+      process.env.VERCEL_GIT_COMMIT_SHA ||
+      process.env.GITHUB_SHA ||
+      `build-${Date.now()}`
+    );
+  },
   serverExternalPackages: ['nodemailer'],
   poweredByHeader: false,
   reactStrictMode: true,
   allowedDevOrigins: ['192.168.1.14', '127.0.0.1'],
   experimental: {
+    appNavFailHandling: true,
     serverActions: {
       bodySizeLimit: '1mb',
     },

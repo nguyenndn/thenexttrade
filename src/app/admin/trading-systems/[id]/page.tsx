@@ -1,9 +1,10 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { ProductDetailClient } from "./ProductDetailClient";
 import { requireAdminPageAccess } from "@/lib/admin/auth.server";
 import { buildProductFarmData } from "@/lib/admin/trading-systems/ea-farm-stats.server";
+import { buildCandidateProductSlugs } from "@/lib/ea/user-license-access.server";
 
 export const metadata: Metadata = {
     title: "Product Detail | Admin",
@@ -36,74 +37,85 @@ export default async function ProductDetailPage({
     const { id } = await params;
     if (!id) return notFound();
 
-    const product = await prisma.eAProduct.findUnique({
-        where: { id },
-        include: {
-            downloads: {
-                orderBy: { createdAt: "desc" },
-                take: 100,
-                include: {
-                    user: {
-                        select: {
-                            id: true,
-                            name: true,
-                            email: true,
-                            image: true,
-                            tradingAccounts: {
-                                select: ACCOUNT_SELECT,
-                            },
+    const candidateSlugs = buildCandidateProductSlugs(id);
+    const productInclude = {
+        downloads: {
+            orderBy: { createdAt: "desc" as const },
+            take: 100,
+            include: {
+                user: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
+                        image: true,
+                        tradingAccounts: {
+                            select: ACCOUNT_SELECT,
                         },
                     },
                 },
-            },
-            accessRecords: {
-                where: { status: "GRANTED" },
-                orderBy: { createdAt: "desc" },
-                include: {
-                    user: {
-                        select: {
-                            id: true,
-                            name: true,
-                            email: true,
-                            image: true,
-                            createdAt: true,
-                            tradingAccounts: {
-                                select: ACCOUNT_SELECT,
-                            },
-                        },
-                    },
-                    tradingAccount: {
-                        select: ACCOUNT_SELECT,
-                    },
-                },
-            },
-            usageEvents: {
-                orderBy: { occurredAt: "desc" },
-                take: 250,
-                include: {
-                    user: {
-                        select: {
-                            id: true,
-                            name: true,
-                            email: true,
-                            image: true,
-                            tradingAccounts: {
-                                select: ACCOUNT_SELECT,
-                            },
-                        },
-                    },
-                    tradingAccount: {
-                        select: ACCOUNT_SELECT,
-                    },
-                },
-            },
-            _count: {
-                select: { downloads: true, accessRecords: true },
             },
         },
-    });
+        accessRecords: {
+            where: { status: "GRANTED" as const },
+            orderBy: { createdAt: "desc" as const },
+            include: {
+                user: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
+                        image: true,
+                        createdAt: true,
+                        tradingAccounts: {
+                            select: ACCOUNT_SELECT,
+                        },
+                    },
+                },
+                tradingAccount: {
+                    select: ACCOUNT_SELECT,
+                },
+            },
+        },
+        usageEvents: {
+            orderBy: { occurredAt: "desc" as const },
+            take: 250,
+            include: {
+                user: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
+                        image: true,
+                        tradingAccounts: {
+                            select: ACCOUNT_SELECT,
+                        },
+                    },
+                },
+                tradingAccount: {
+                    select: ACCOUNT_SELECT,
+                },
+            },
+        },
+        _count: {
+            select: { downloads: true, accessRecords: true },
+        },
+    };
+
+    const product =
+        (await prisma.eAProduct.findFirst({
+            where: { slug: { in: candidateSlugs } },
+            include: productInclude,
+        })) ??
+        (await prisma.eAProduct.findUnique({
+            where: { id },
+            include: productInclude,
+        }));
 
     if (!product) return notFound();
+    if (id !== product.slug) {
+        redirect(`/admin/trading-systems/${product.slug}`);
+    }
 
     const { activeUsers, farmStats } = buildProductFarmData(product);
 

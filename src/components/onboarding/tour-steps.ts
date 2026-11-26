@@ -58,7 +58,7 @@ export const DASHBOARD_TOUR_STEPS: DashboardTourStep[] = [
         selector: '[data-tour="sidebar-group-growth"]',
         title: "Growth, Systems & Rewards",
         description:
-            "Work through structured lessons in Academy, compete on verified Leaderboards, download MT5 EAs in Trading Systems, and claim milestone payouts in Loyalty.",
+            "Work through structured lessons in Academy, compete on verified Leaderboards, download tools in MT5 Systems & EAs, and claim milestone payouts in Loyalty.",
         placement: "right",
         padding: 4,
     },

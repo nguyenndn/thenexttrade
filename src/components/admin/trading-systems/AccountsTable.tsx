@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { format, formatDistanceToNow } from "date-fns";
 import {
     Trash2,
@@ -82,6 +82,7 @@ import { maskSyncApiKey } from "@/lib/utils/api-key";
 interface AccountsTableProps {
     licenses: EALicenseWithUser[];
     brokers?: { name: string; slug: string }[];
+    initialStatus?: AccountStatus | "ALL";
 }
 
 const DEFAULT_BROKERS = [
@@ -94,11 +95,16 @@ const DEFAULT_BROKERS = [
 export function AccountsTable({
     licenses,
     brokers = DEFAULT_BROKERS,
+    initialStatus = "ALL",
 }: AccountsTableProps) {
     const [searchTerm, setSearchTerm] = useState("");
     const [filterStatus, setFilterStatus] = useState<AccountStatus | "ALL">(
-        "ALL"
+        initialStatus
     );
+
+    useEffect(() => {
+        setFilterStatus(initialStatus);
+    }, [initialStatus]);
 
     const [selectedLicense, setSelectedLicense] =
         useState<EALicenseWithUser | null>(null);

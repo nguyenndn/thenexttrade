@@ -224,6 +224,7 @@ export async function upsertBrokerCommissionRate(data: {
             });
         }
 
+        revalidatePath("/admin/trading-systems");
         revalidatePath("/admin/trading-systems/brokers");
         revalidatePath("/admin/ib");
         return { success: true, data: result };
@@ -265,6 +266,7 @@ export async function deleteBrokerCommissionRate(id: string) {
             },
         });
 
+        revalidatePath("/admin/trading-systems");
         revalidatePath("/admin/trading-systems/brokers");
         revalidatePath("/admin/ib");
         return { success: true };

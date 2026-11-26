@@ -70,7 +70,7 @@ export function BrokerRankingCard({
                                 size={11}
                                 className="fill-yellow-400 text-yellow-400"
                             />
-                            <span className="text-xs font-mono tabular-nums font-bold text-gray-800 dark:text-gray-200">
+                            <span className="text-xs tabular-nums font-bold text-gray-800 dark:text-gray-200">
                                 {item.rating.toFixed(1)}
                             </span>
                         </div>

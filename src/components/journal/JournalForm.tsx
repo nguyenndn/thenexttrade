@@ -21,9 +21,12 @@ import {
 } from "lucide-react";
 import { PlaybookLightbox } from "@/components/strategies/PlaybookLightbox";
 import {
-    filterApplicableRules,
+    filterStrategyRules,
+    filterGlobalRules,
     computeSuggestedPlaybookGrade,
 } from "@/lib/strategies/playbook-presets";
+import { RuleChecklistRow, type RuleCheckStatus } from "./RuleChecklistRow";
+import { GlobalGuardrailsAccordion } from "./GlobalGuardrailsAccordion";
 import { EmotionSelector } from "@/components/psychology/EmotionSelector";
 import { MistakeSelector } from "@/components/mistakes/MistakeSelector";
 
@@ -178,15 +181,61 @@ export default function JournalForm({
         loadRules();
     }, [initialData]);
 
-    const applicableRules = useMemo(
+    const strategyRules = useMemo(
         () =>
-            filterApplicableRules(
+            filterStrategyRules(
                 activeRules,
                 formData.accountId,
                 formData.strategy
             ),
         [activeRules, formData.accountId, formData.strategy]
     );
+
+    const globalRules = useMemo(
+        () => filterGlobalRules(activeRules, formData.accountId),
+        [activeRules, formData.accountId]
+    );
+
+    const updateStrategyRuleStatus = (
+        ruleId: string,
+        status: RuleCheckStatus
+    ) => {
+        const current = ruleChecks[ruleId] || { status: "FOLLOWED", note: "" };
+        const nextChecks = {
+            ...ruleChecks,
+            [ruleId]: { ...current, status },
+        };
+        setRuleChecks(nextChecks);
+
+        if (formData.strategy && strategyRules.length > 0) {
+            const followed = strategyRules.reduce(
+                (acc, r) =>
+                    (nextChecks[r.id]?.status || "FOLLOWED") === "FOLLOWED"
+                        ? acc + 1
+                        : acc,
+                0
+            );
+            const { score, grade } = computeSuggestedPlaybookGrade(
+                strategyRules.length,
+                followed
+            );
+            setFormData((p) => ({
+                ...p,
+                playbookComplianceScore: score,
+                playbookGrade: grade,
+            }));
+        }
+    };
+
+    const updateRuleNote = (ruleId: string, note: string) => {
+        setRuleChecks((prev) => ({
+            ...prev,
+            [ruleId]: {
+                status: prev[ruleId]?.status || "FOLLOWED",
+                note,
+            },
+        }));
+    };
 
     const addCustomTag = () => {
         if (!customTagInput.trim()) return;
@@ -306,16 +355,16 @@ export default function JournalForm({
                         (prev.commission !== "" ? parseFloat(String(prev.commission)) || 0 : 0) +
                         (prev.swap !== "" ? parseFloat(String(prev.swap)) || 0 : 0);
                     const autoResult =
-                        netProfit > 0
+                        netProfit > 0.01
                             ? "WIN"
-                            : netProfit < 0
+                            : netProfit < -0.01
                                 ? "LOSS"
                                 : "BREAK_EVEN";
                     return {
                         ...prev,
                         pnl: result.profitLoss.toString(),
                         status: !isEditMode ? "CLOSED" : prev.status,
-                        result: prev.result || autoResult,
+                        result: autoResult,
                     };
                 });
             }
@@ -327,6 +376,8 @@ export default function JournalForm({
         formData.lotSize,
         formData.type,
         formData.symbol,
+        formData.commission,
+        formData.swap,
     ]);
 
     const handleChange = (
@@ -373,9 +424,9 @@ export default function JournalForm({
         try {
             const currentImages = formData.images || [];
 
-            // Convert applicable ruleChecks mapping back to ruleChecks payload array
-            // (Defaulting visually-selected "FOLLOWED" rules so Compliance Analytics & Goals track them)
-            const ruleChecksPayload = applicableRules.map((rule) => {
+            // Save Strategy setup rule checks (when a Strategy is selected) + independent Global guardrails
+            const trackedRules = [...strategyRules, ...globalRules];
+            const ruleChecksPayload = trackedRules.map((rule) => {
                 const check = ruleChecks[rule.id];
                 return {
                     tradingRuleId: rule.id,
@@ -928,7 +979,7 @@ export default function JournalForm({
                                                         key={s.id}
                                                         onClick={() => {
                                                             const rulesForSelection =
-                                                                filterApplicableRules(
+                                                                filterStrategyRules(
                                                                     activeRules,
                                                                     formData.accountId,
                                                                     s.name
@@ -951,8 +1002,14 @@ export default function JournalForm({
                                                             setFormData((p) => ({
                                                                 ...p,
                                                                 strategy: s.name,
-                                                                playbookComplianceScore: score,
-                                                                playbookGrade: grade,
+                                                                playbookComplianceScore:
+                                                                    rulesForSelection.length > 0
+                                                                        ? score
+                                                                        : null,
+                                                                playbookGrade:
+                                                                    rulesForSelection.length > 0
+                                                                        ? grade
+                                                                        : p.playbookGrade,
                                                             }));
                                                         }}
                                                         className={
@@ -997,8 +1054,8 @@ export default function JournalForm({
                                         (s: any) => s.name === formData.strategy
                                     );
 
-                                    const totalRules = applicableRules.length;
-                                    const followedCount = applicableRules.reduce(
+                                    const totalRules = strategyRules.length;
+                                    const followedCount = strategyRules.reduce(
                                         (acc, rule) =>
                                             (ruleChecks[rule.id]?.status || "FOLLOWED") === "FOLLOWED"
                                                 ? acc + 1
@@ -1026,7 +1083,7 @@ export default function JournalForm({
                                                 <div className="flex items-center gap-2">
                                                     {totalRules > 0 && (
                                                         <span
-                                                            className={`text-[10px] font-extrabold font-mono tabular-nums px-2 py-0.5 rounded-lg ${complianceScore === 100
+                                                            className={`text-[10px] font-extrabold tabular-nums px-2 py-0.5 rounded-lg ${complianceScore === 100
                                                                 ? "bg-emerald-500/10 text-emerald-600"
                                                                 : complianceScore >= 50
                                                                     ? "bg-amber-500/10 text-amber-600"
@@ -1062,7 +1119,7 @@ export default function JournalForm({
                                                     {selectedStrategy.riskRewardMin != null && (
                                                         <div className="bg-white/60 dark:bg-white/5 p-2.5 rounded-lg border border-dashboard">
                                                             <span className="text-[10px] text-gray-500 font-bold block uppercase">Min R:R</span>
-                                                            <span className="font-mono tabular-nums font-bold text-gold">{selectedStrategy.riskRewardMin}:1</span>
+                                                            <span className="tabular-nums font-bold text-gold">{selectedStrategy.riskRewardMin}:1</span>
                                                         </div>
                                                     )}
                                                 </div>
@@ -1091,6 +1148,38 @@ export default function JournalForm({
                                                 </div>
                                             )}
 
+                                            {/* Strategy-Specific Setup Checklist */}
+                                            {strategyRules.length > 0 && (
+                                                <div className="pt-2 border-t border-dashboard/50 space-y-1.5">
+                                                    <div className="flex items-center justify-between">
+                                                        <span className="text-xs font-bold text-gray-700 dark:text-gray-200 flex items-center gap-1.5">
+                                                            <ClipboardList size={14} className="text-primary" />
+                                                            Setup Rules ({formData.strategy})
+                                                        </span>
+                                                    </div>
+                                                    <div className="space-y-1.5">
+                                                        {strategyRules.map((rule) => (
+                                                            <RuleChecklistRow
+                                                                key={rule.id}
+                                                                rule={rule}
+                                                                check={
+                                                                    ruleChecks[rule.id] || {
+                                                                        status: "FOLLOWED",
+                                                                        note: "",
+                                                                    }
+                                                                }
+                                                                onStatusChange={(status) =>
+                                                                    updateStrategyRuleStatus(rule.id, status)
+                                                                }
+                                                                onNoteChange={(note) =>
+                                                                    updateRuleNote(rule.id, note)
+                                                                }
+                                                            />
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            )}
+
                                             {/* Setup Grade Selector */}
                                             <div className="pt-2 border-t border-dashboard/50">
                                                 <div className="flex items-center justify-between mb-1.5">
@@ -1099,7 +1188,7 @@ export default function JournalForm({
                                                     </label>
                                                     {totalRules > 0 && (
                                                         <span className="text-[10px] text-gray-400 flex items-center gap-1">
-                                                            <Sparkles size={10} className="text-primary" /> Synced with rule checklist below
+                                                            <Sparkles size={10} className="text-primary" /> Synced with strategy rules
                                                         </span>
                                                     )}
                                                 </div>
@@ -1235,171 +1324,21 @@ export default function JournalForm({
                                 />
                             </div>
 
-                            {/* Rulebook Compliance Checklist */}
-                            {applicableRules.length > 0 && (
-                                <div className="space-y-3 pt-3 border-t border-dashboard">
-                                    <h3 className="text-sm font-bold font-sans tracking-tight text-gray-700 dark:text-white flex items-center gap-1.5">
-                                        <ClipboardList
-                                            size={16}
-                                            className="text-primary"
-                                        />
-                                        Rulebook Compliance Checklist
-                                    </h3>
-                                    <div className="space-y-2.5">
-                                        {applicableRules.map((rule) => {
-                                            const currentCheck = ruleChecks[
-                                                rule.id
-                                            ] || {
-                                                status: "FOLLOWED",
-                                                note: "",
-                                            };
-
-                                            return (
-                                                <div
-                                                    key={rule.id}
-                                                    className="p-3 rounded-lg border border-dashboard bg-gray-50/80 dark:bg-[#151925] space-y-2.5"
-                                                >
-                                                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
-                                                        <div className="min-w-0 flex-1">
-                                                            <div className="flex items-center gap-2 flex-wrap">
-                                                                <span
-                                                                    className={`inline-flex items-center px-1.5 py-0.5 rounded-lg text-[9px] font-black uppercase border ${rule.severity ===
-                                                                        "HIGH"
-                                                                        ? "bg-red-50 text-red-500 border-red-100 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/20"
-                                                                        : rule.severity ===
-                                                                            "MEDIUM"
-                                                                            ? "bg-amber-50 text-amber-500 border-amber-100 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20"
-                                                                            : "bg-gray-100 text-gray-600 border-gray-200 dark:bg-white/5 dark:text-gray-400 dark:border-white/10"
-                                                                        }`}
-                                                                >
-                                                                    {
-                                                                        rule.severity
-                                                                    }
-                                                                </span>
-                                                                <span className="text-xs font-black uppercase text-gray-400">
-                                                                    {
-                                                                        rule.category
-                                                                    }
-                                                                </span>
-                                                                <span className="px-1.5 py-0.5 rounded-lg text-[9px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400">
-                                                                    {rule.strategy?.name
-                                                                        ? rule.strategy.name
-                                                                        : "Global"}
-                                                                </span>
-                                                            </div>
-                                                            <h4 className="text-xs font-bold text-gray-700 dark:text-white mt-0.5">
-                                                                {rule.title}
-                                                            </h4>
-                                                            {rule.description && (
-                                                                <p className="text-[11px] text-gray-500 mt-0.5">
-                                                                    {
-                                                                        rule.description
-                                                                    }
-                                                                </p>
-                                                            )}
-                                                        </div>
-
-                                                        <div className="flex flex-wrap items-center gap-1.5">
-                                                            {(
-                                                                [
-                                                                    "FOLLOWED",
-                                                                    "BROKEN",
-                                                                    "SKIPPED",
-                                                                ] as const
-                                                            ).map((status) => (
-                                                                <Button
-                                                                    key={status}
-                                                                    type="button"
-                                                                    variant="ghost"
-                                                                    onClick={() => {
-                                                                        const nextChecks = {
-                                                                            ...ruleChecks,
-                                                                            [rule.id]: {
-                                                                                ...currentCheck,
-                                                                                status,
-                                                                            },
-                                                                        };
-                                                                        setRuleChecks(nextChecks);
-
-                                                                        if (formData.strategy) {
-                                                                            const followed =
-                                                                                applicableRules.reduce(
-                                                                                    (acc, r) =>
-                                                                                        (nextChecks[r.id]?.status ||
-                                                                                            "FOLLOWED") ===
-                                                                                            "FOLLOWED"
-                                                                                            ? acc + 1
-                                                                                            : acc,
-                                                                                    0
-                                                                                );
-                                                                            const { score, grade } =
-                                                                                computeSuggestedPlaybookGrade(
-                                                                                    applicableRules.length,
-                                                                                    followed
-                                                                                );
-                                                                            setFormData((p) => ({
-                                                                                ...p,
-                                                                                playbookComplianceScore: score,
-                                                                                playbookGrade: grade,
-                                                                            }));
-                                                                        }
-                                                                    }}
-                                                                    className={`px-2.5 py-1 rounded-lg text-[10px] font-black uppercase border transition-all h-auto ${currentCheck.status ===
-                                                                        status
-                                                                        ? status ===
-                                                                            "FOLLOWED"
-                                                                            ? "bg-emerald-500 border-emerald-500 text-white shadow-sm shadow-emerald-500/10 hover:bg-emerald-500 hover:text-white"
-                                                                            : status ===
-                                                                                "BROKEN"
-                                                                                ? "bg-red-500 border-red-500 text-white shadow-sm shadow-red-500/10 hover:bg-red-500 hover:text-white"
-                                                                                : "bg-gray-500 border-gray-500 text-white shadow-sm shadow-gray-500/10 hover:bg-gray-500 hover:text-white"
-                                                                        : "bg-white dark:bg-[#1E2028] text-gray-500 border-dashboard hover:border-gray-400"
-                                                                        }`}
-                                                                >
-                                                                    {status}
-                                                                </Button>
-                                                            ))}
-                                                        </div>
-                                                    </div>
-
-                                                    {(currentCheck.status ===
-                                                        "BROKEN" ||
-                                                        currentCheck.status ===
-                                                        "SKIPPED") && (
-                                                            <div className="pt-2 border-t border-dashboard/50 dark:border-white/[0.04]">
-                                                                <input
-                                                                    type="text"
-                                                                    aria-label="Rule violation or skip reason"
-                                                                    value={
-                                                                        currentCheck.note ||
-                                                                        ""
-                                                                    }
-                                                                    onChange={(e) =>
-                                                                        setRuleChecks(
-                                                                            (
-                                                                                prev
-                                                                            ) => ({
-                                                                                ...prev,
-                                                                                [rule.id]:
-                                                                                {
-                                                                                    ...currentCheck,
-                                                                                    note: e
-                                                                                        .target
-                                                                                        .value,
-                                                                                },
-                                                                            })
-                                                                        )
-                                                                    }
-                                                                    className="w-full text-xs p-2 rounded-lg bg-white dark:bg-[#1E2028] border border-dashboard focus:border-primary focus:outline-none"
-                                                                />
-                                                            </div>
-                                                        )}
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-                                </div>
-                            )}
+                            {/* Compact Global Guardrails (1-line collapsed by default, independent of Strategy) */}
+                            <GlobalGuardrailsAccordion
+                                rules={globalRules}
+                                ruleChecks={ruleChecks}
+                                onStatusChange={(ruleId, status) =>
+                                    setRuleChecks((prev) => ({
+                                        ...prev,
+                                        [ruleId]: {
+                                            status,
+                                            note: prev[ruleId]?.note || "",
+                                        },
+                                    }))
+                                }
+                                onNoteChange={updateRuleNote}
+                            />
 
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-gray-700 dark:text-gray-300">
@@ -1644,7 +1583,7 @@ export default function JournalForm({
                     <h3 className="text-base font-bold font-sans tracking-tight text-gray-700 dark:text-white flex items-center gap-2">
                         <div className="w-1 h-4 bg-gold rounded-full"></div>
                         Trade Screenshots
-                        <span className="text-xs font-mono tabular-nums font-medium text-gray-400 ml-auto">
+                        <span className="text-xs tabular-nums font-medium text-gray-400 ml-auto">
                             {(formData.images || []).length}/2
                         </span>
                     </h3>

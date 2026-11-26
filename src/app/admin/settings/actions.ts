@@ -2,7 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { createClient } from "@/lib/supabase/server";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 export async function updateProfile(formData: FormData) {
     const supabase = await createClient();
@@ -90,6 +90,7 @@ export async function updateProfile(formData: FormData) {
             },
         });
 
+        revalidateTag("site-config", "max");
         revalidatePath("/admin/settings");
         return { success: true };
     } catch (error) {
@@ -126,6 +127,7 @@ export async function updateSystemConfig(config: any) {
             },
         });
 
+        revalidateTag("site-config", "max");
         revalidatePath("/admin/settings");
         return { success: true };
     } catch (error) {

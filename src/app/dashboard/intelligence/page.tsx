@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { parseLocalStartOfDay, parseLocalEndOfDay } from "@/lib/utils";
 import { getUserTradingDataState } from "@/lib/trading-data-state";
 import { getIntelligenceData, getScoreHistory } from "@/lib/smart-analytics";
+import { getWinLossBehavioralMirror } from "@/lib/analytics/win-loss-mirror.server";
 import {
     IntelligenceDashboard,
     IntelligenceProSections,
@@ -159,8 +160,8 @@ async function IntelligenceDataLoader({
     dateFrom?: string;
     dateTo?: string;
 }) {
-    // Fetch current data, previous period data, and score history in parallel
-    const [data, previousData, scoreHistory] = await Promise.all([
+    // Fetch current data, previous period data, score history, and win/loss mirror in parallel
+    const [data, previousData, scoreHistory, winLossMirror] = await Promise.all([
         getIntelligenceData(userId, accountId, startDate, endDate, timezone),
         prevStartDate && prevEndDate
             ? getIntelligenceData(
@@ -172,6 +173,7 @@ async function IntelligenceDataLoader({
               )
             : Promise.resolve(null),
         getScoreHistory(userId, accountId, 12),
+        getWinLossBehavioralMirror(userId, accountId, startDate, endDate, timezone),
     ]);
 
     return (
@@ -180,6 +182,7 @@ async function IntelligenceDataLoader({
                 data={data}
                 previousData={previousData}
                 scoreHistory={scoreHistory}
+                winLossMirror={winLossMirror}
                 accountId={accountId}
                 timezone={timezone}
                 dateFrom={dateFrom}

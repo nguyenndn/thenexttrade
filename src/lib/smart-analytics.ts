@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import {
+    buildPnlScaleSql,
     getKeyStats,
     getCurrentStreak,
     getDayOfWeekPerformance,
@@ -8,6 +9,7 @@ import {
 } from "@/lib/analytics-queries";
 import { findRevengeTrades, type RevengeTradeLike } from "@/lib/analytics/revenge";
 import {
+    CADENCE_RULES,
     resolveRevengeWindows,
     type TradingStyle,
 } from "@/lib/analytics/cadence";
@@ -81,28 +83,44 @@ async function getSessionPerformance(
     startDate?: Date,
     endDate?: Date
 ): Promise<SessionPerf[]> {
+    const normalizedAccountId =
+        accountId && accountId !== "all" ? accountId : undefined;
+    const scaleSql = buildPnlScaleSql(normalizedAccountId);
     const dateFilter =
         startDate && endDate
-            ? Prisma.sql`AND "exitDate" >= ${startDate} AND "exitDate" <= ${endDate}`
+            ? Prisma.sql`AND je."exitDate" >= ${startDate} AND je."exitDate" <= ${endDate}`
             : Prisma.empty;
+    const accountFilter = normalizedAccountId
+        ? Prisma.sql`AND je."accountId" = ${normalizedAccountId}`
+        : Prisma.empty;
+    const accountJoin = normalizedAccountId
+        ? Prisma.empty
+        : Prisma.sql`LEFT JOIN "trading_accounts" ta ON ta."id" = je."accountId"`;
 
     const result = await prisma.$queryRaw`
- SELECT 
- "trading_session" as "session",
- COUNT(*) as "tradeCount",
- SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) > 0 THEN 1 ELSE 0 END) as "winCount",
- SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) < 0 THEN 1 ELSE 0 END) as "lossCount",
- SUM(COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) as "pnl"
- FROM "journal_entries"
- WHERE "userId" = ${userId}::uuid
- AND "status" = 'CLOSED'
- AND "trading_session" IS NOT NULL
- AND (${accountId ? accountId : "1"} = '1' OR "accountId" = ${accountId})
- ${dateFilter}
- GROUP BY "trading_session"
- HAVING COUNT(*) >= 5
- ORDER BY "tradeCount" DESC
- `;
+  WITH scoped AS (
+    SELECT
+      je."trading_session" as "session",
+      ((COALESCE(je."pnl", 0) + COALESCE(je."commission", 0) + COALESCE(je."swap", 0)) * ${scaleSql}) AS "scaledNetPnl"
+    FROM "journal_entries" je
+    ${accountJoin}
+    WHERE je."userId" = ${userId}::uuid
+      AND je."status" = 'CLOSED'
+      AND je."trading_session" IS NOT NULL
+      ${accountFilter}
+      ${dateFilter}
+  )
+  SELECT 
+    "session",
+    COUNT(*) as "tradeCount",
+    COUNT(*) FILTER (WHERE "scaledNetPnl" > 0.01) as "winCount",
+    COUNT(*) FILTER (WHERE "scaledNetPnl" < -0.01) as "lossCount",
+    SUM("scaledNetPnl") as "pnl"
+  FROM scoped
+  GROUP BY "session"
+  HAVING COUNT(*) >= 5
+  ORDER BY "tradeCount" DESC
+  `;
 
     return (result as any[]).map((r) => {
         const wins = Number(r.winCount || 0);
@@ -132,52 +150,89 @@ interface RevengeTrade {
     windowMinutes: number;
 }
 
+interface RevengeRawRow {
+    symbol: string | null;
+    result: string | null;
+    entryDate: Date;
+    exitDate: Date | null;
+    lotSize: number | null;
+    syncSource: string | null;
+    accountId: string | null;
+}
+
 async function getRevengeTradePatterns(
     userId: string,
     accountId?: string,
     startDate?: Date,
     endDate?: Date
 ): Promise<RevengeTrade> {
-    // Definition lives in @/lib/analytics/revenge so every surface reports the
-    // same count. The whole closed-trade history is scanned (the previous trade
-    // may fall outside the period); only the flagged trade's exitDate is
-    // filtered by the requested range.
-    const rows = await prisma.journalEntry.findMany({
-        where: {
-            userId,
-            status: "CLOSED",
-            ...(accountId ? { accountId } : {}),
-        },
-        select: {
-            symbol: true,
-            result: true,
-            entryDate: true,
-            exitDate: true,
-            lotSize: true,
-            syncSource: true,
-            account: {
-                select: { currency: true, server: true },
-            },
-        },
-        orderBy: { entryDate: "asc" },
-    });
+    const normalizedAccountId =
+        accountId && accountId !== "all" ? accountId : undefined;
+    const accountFilter = normalizedAccountId
+        ? Prisma.sql`AND "accountId" = ${normalizedAccountId}`
+        : Prisma.empty;
 
-    const isMultiAccount = !accountId;
-    const trades: RevengeTradeLike[] = rows.map((row) => ({
-        symbol: row.symbol,
-        result: row.result,
-        entryDate: row.entryDate,
-        exitDate: row.exitDate,
-        lots:
-            isMultiAccount &&
-            (!row.syncSource || row.syncSource === "MANUAL")
-                ? normalizeLotSize(row.lotSize || 0, {
-                      symbol: row.symbol,
-                      currency: row.account?.currency,
-                      server: row.account?.server,
-                  })
-                : row.lotSize || 0,
-    }));
+    // Bound SQL scan strictly to the mathematical window needed by:
+    // 1. Cadence measurement (CADENCE_RULES.windowDays = 60d from now)
+    // 2. Current + Previous comparison period + 48h pre-period loss buffer
+    const DAY_MS = 24 * 60 * 60 * 1000;
+    let dateBoundSql = Prisma.empty;
+    if (startDate && endDate) {
+        const lengthMs = Math.max(0, endDate.getTime() - startDate.getTime());
+        const prevStartMs = startDate.getTime() - lengthMs;
+        const cadenceSinceMs =
+            Date.now() - (CADENCE_RULES.windowDays + 2) * DAY_MS;
+        const minScanDate = new Date(
+            Math.min(cadenceSinceMs, prevStartMs - 2 * DAY_MS)
+        );
+        dateBoundSql = Prisma.sql`AND COALESCE("exitDate", "entryDate") >= ${minScanDate}`;
+    }
+
+    const isMultiAccount = !normalizedAccountId;
+    const [rows, userAccounts] = await Promise.all([
+        prisma.$queryRaw<RevengeRawRow[]>`
+            SELECT
+                "symbol",
+                "result"::text AS "result",
+                "entryDate",
+                "exitDate",
+                "lotSize",
+                "sync_source" AS "syncSource",
+                "accountId"
+            FROM "journal_entries"
+            WHERE "userId" = ${userId}::uuid
+              AND "status" = 'CLOSED'
+              ${accountFilter}
+              ${dateBoundSql}
+            ORDER BY "entryDate" ASC
+        `,
+        isMultiAccount
+            ? prisma.tradingAccount.findMany({
+                  where: { userId },
+                  select: { id: true, currency: true, server: true },
+              })
+            : Promise.resolve([]),
+    ]);
+
+    const accountMap = new Map(userAccounts.map((a) => [a.id, a]));
+    const trades: RevengeTradeLike[] = rows.map((row) => {
+        const acc = row.accountId ? accountMap.get(row.accountId) : undefined;
+        return {
+            symbol: row.symbol,
+            result: row.result,
+            entryDate: row.entryDate,
+            exitDate: row.exitDate,
+            lots:
+                isMultiAccount &&
+                (!row.syncSource || row.syncSource === "MANUAL")
+                    ? normalizeLotSize(row.lotSize || 0, {
+                          symbol: row.symbol,
+                          currency: acc?.currency,
+                          server: acc?.server,
+                      })
+                    : row.lotSize || 0,
+        };
+    });
 
     // Windows follow the trader's own cadence (@/lib/analytics/cadence) so a
     // scalper is judged by bursts, not a fixed 60-minute rule, and a swing
@@ -260,6 +315,11 @@ async function getPlanCompliance(
     startDate?: Date,
     endDate?: Date
 ): Promise<ComplianceData> {
+    const normalizedAccountId =
+        accountId && accountId !== "all" ? accountId : undefined;
+    const accountFilter = normalizedAccountId
+        ? Prisma.sql`AND "accountId" = ${normalizedAccountId}`
+        : Prisma.empty;
     const dateFilter =
         startDate && endDate
             ? Prisma.sql`AND "exitDate" >= ${startDate} AND "exitDate" <= ${endDate}`
@@ -272,7 +332,7 @@ async function getPlanCompliance(
  FROM "journal_entries"
  WHERE "userId" = ${userId}::uuid
  AND "status" = 'CLOSED'
- AND (${accountId ? accountId : "1"} = '1' OR "accountId" = ${accountId})
+ ${accountFilter}
  ${dateFilter}
  `;
 
@@ -299,6 +359,11 @@ async function getEmotionCorrelation(
     startDate?: Date,
     endDate?: Date
 ): Promise<EmotionPattern[]> {
+    const normalizedAccountId =
+        accountId && accountId !== "all" ? accountId : undefined;
+    const accountFilter = normalizedAccountId
+        ? Prisma.sql`AND "accountId" = ${normalizedAccountId}`
+        : Prisma.empty;
     const dateFilter =
         startDate && endDate
             ? Prisma.sql`AND "exitDate" >= ${startDate} AND "exitDate" <= ${endDate}`
@@ -308,12 +373,12 @@ async function getEmotionCorrelation(
  SELECT
  "emotionBefore" as "emotion",
  COUNT(*) as "tradeCount",
- SUM(CASE WHEN "result" = 'LOSS' THEN 1 ELSE 0 END) as "lossCount"
+ SUM(CASE WHEN (COALESCE("pnl", 0) + COALESCE("commission", 0) + COALESCE("swap", 0)) < -0.01 THEN 1 ELSE 0 END) as "lossCount"
  FROM "journal_entries"
  WHERE "userId" = ${userId}::uuid
  AND "status" = 'CLOSED'
  AND "emotionBefore" IS NOT NULL
- AND (${accountId ? accountId : "1"} = '1' OR "accountId" = ${accountId})
+ ${accountFilter}
  ${dateFilter}
  GROUP BY "emotionBefore"
  HAVING COUNT(*) >= 5
@@ -336,6 +401,11 @@ async function getRiskDiscipline(
     startDate?: Date,
     endDate?: Date
 ): Promise<number> {
+    const normalizedAccountId =
+        accountId && accountId !== "all" ? accountId : undefined;
+    const accountFilter = normalizedAccountId
+        ? Prisma.sql`AND "accountId" = ${normalizedAccountId}`
+        : Prisma.empty;
     const dateFilter =
         startDate && endDate
             ? Prisma.sql`AND "exitDate" >= ${startDate} AND "exitDate" <= ${endDate}`
@@ -348,7 +418,7 @@ async function getRiskDiscipline(
  FROM "journal_entries"
  WHERE "userId" = ${userId}::uuid
  AND "status" = 'CLOSED'
- AND (${accountId ? accountId : "1"} = '1' OR "accountId" = ${accountId})
+ ${accountFilter}
  ${dateFilter}
  `;
 
@@ -748,14 +818,21 @@ export async function getScoreHistory(
 // MAIN ORCHESTRATOR
 // ============================================================================
 
+export interface PrecomputedIntelligenceInputs {
+    stats?: Awaited<ReturnType<typeof getKeyStats>>;
+    dayOfWeek?: Awaited<ReturnType<typeof getDayOfWeekPerformance>>;
+    symbols?: Awaited<ReturnType<typeof getSymbolPerformance>>;
+}
+
 export async function getIntelligenceData(
     userId: string,
     accountId?: string,
     startDate?: Date,
     endDate?: Date,
-    timezone?: string
+    timezone?: string,
+    precomputed?: PrecomputedIntelligenceInputs
 ): Promise<IntelligenceData> {
-    // Run all queries in parallel
+    // Run all queries in parallel, reusing pre-fetched dashboard aggregations when provided
     const [
         stats,
         _streak,
@@ -767,16 +844,22 @@ export async function getIntelligenceData(
         emotions,
         riskDiscipline,
     ] = await Promise.all([
-        getKeyStats(userId, accountId, startDate, endDate),
+        precomputed?.stats
+            ? Promise.resolve(precomputed.stats)
+            : getKeyStats(userId, accountId, startDate, endDate),
         getCurrentStreak(userId, accountId),
-        getDayOfWeekPerformance(
-            userId,
-            accountId,
-            startDate,
-            endDate,
-            timezone
-        ),
-        getSymbolPerformance(userId, accountId, startDate, endDate),
+        precomputed?.dayOfWeek
+            ? Promise.resolve(precomputed.dayOfWeek)
+            : getDayOfWeekPerformance(
+                  userId,
+                  accountId,
+                  startDate,
+                  endDate,
+                  timezone
+              ),
+        precomputed?.symbols
+            ? Promise.resolve(precomputed.symbols)
+            : getSymbolPerformance(userId, accountId, startDate, endDate),
         getSessionPerformance(userId, accountId, startDate, endDate),
         getRevengeTradePatterns(userId, accountId, startDate, endDate),
         getPlanCompliance(userId, accountId, startDate, endDate),
