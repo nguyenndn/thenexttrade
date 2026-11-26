@@ -126,7 +126,7 @@ export function EABrokersTabsClient({
                                     className="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
                                 >
                                     <td className="p-4">
-                                        <span className="text-sm font-mono tabular-nums text-gray-500">
+                                        <span className="text-sm font-semibold tabular-nums text-gray-500">
                                             {broker.order}
                                         </span>
                                     </td>
@@ -151,7 +151,7 @@ export function EABrokersTabsClient({
                                                                 broker.color,
                                                         }}
                                                     />
-                                                    <span className="text-xs font-mono text-gray-500">
+                                                    <span className="text-xs tabular-nums text-gray-500">
                                                         {broker.color}
                                                     </span>
                                                 </div>
@@ -159,9 +159,9 @@ export function EABrokersTabsClient({
                                         </div>
                                     </td>
                                     <td className="p-4">
-                                        <code className="text-xs bg-gray-100 dark:bg-white/5 px-2 py-1 rounded-lg font-mono text-gray-600 dark:text-gray-300">
+                                        <span className="text-xs font-semibold bg-gray-100 dark:bg-white/5 px-2.5 py-1 rounded-lg text-gray-600 dark:text-gray-300">
                                             {broker.slug}
-                                        </code>
+                                        </span>
                                     </td>
                                     <td className="p-4">
                                         {broker.affiliateUrl ? (

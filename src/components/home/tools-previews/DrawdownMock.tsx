@@ -41,7 +41,7 @@ export function DrawdownMock() {
             <div className="absolute top-0 right-0 w-24 h-24 bg-amber-500/5 rounded-full blur-2xl pointer-events-none" />
 
             {/* Header */}
-            <div className="flex items-center justify-between z-10 font-mono tabular-nums text-[9px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest">
+            <div className="flex items-center justify-between z-10 tabular-nums text-[9px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest">
                 <span>Asymmetric Recovery</span>
                 <span className="text-amber-600 dark:text-gold font-black">
                     MATH MODEL
@@ -54,7 +54,7 @@ export function DrawdownMock() {
                 <div className="space-y-1">
                     <div className="flex justify-between text-[8px] font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                         <span>Account Drawdown</span>
-                        <span className="text-rose-600 dark:text-rose-400 font-mono tabular-nums">
+                        <span className="text-rose-600 dark:text-rose-400 tabular-nums">
                             -{drawdown}%
                         </span>
                     </div>
@@ -70,7 +70,7 @@ export function DrawdownMock() {
                 <div className="space-y-1">
                     <div className="flex justify-between text-[8px] font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                         <span>Recovery Gain Required</span>
-                        <span className="text-emerald-600 dark:text-emerald-400 font-mono tabular-nums">
+                        <span className="text-emerald-600 dark:text-emerald-400 tabular-nums">
                             +{recovery}%
                         </span>
                     </div>
@@ -84,7 +84,7 @@ export function DrawdownMock() {
             </div>
 
             {/* Footer */}
-            <div className="text-[8px] font-bold text-slate-400 dark:text-slate-400 flex justify-between items-center z-10 border-t border-gray-200 dark:border-white/10 pt-2 font-mono tabular-nums">
+            <div className="text-[8px] font-bold text-slate-400 dark:text-slate-400 flex justify-between items-center z-10 border-t border-gray-200 dark:border-white/10 pt-2 tabular-nums">
                 <span>Initial Cap: $10,000</span>
                 <span
                     className={drawdown >= 45 ? "text-rose-500 font-bold" : ""}

@@ -54,13 +54,13 @@ export function FibonacciMock() {
             <div className="absolute top-0 right-0 w-24 h-24 bg-gold/5 rounded-full blur-2xl pointer-events-none" />
 
             {/* Header */}
-            <div className="flex items-center justify-between z-10 font-mono tabular-nums text-[9px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest">
+            <div className="flex items-center justify-between z-10 tabular-nums text-[9px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest">
                 <span>Fibonacci Levels</span>
                 <span className="text-amber-600 dark:text-gold">RETRACEMENT MODEL</span>
             </div>
 
             {/* Levels list */}
-            <div className="flex-1 flex flex-col justify-center gap-1.5 z-10 py-1.5 font-mono tabular-nums text-[9px] font-bold">
+            <div className="flex-1 flex flex-col justify-center gap-1.5 z-10 py-1.5 tabular-nums text-[9px] font-bold">
                 {levels.map((lvl) => (
                     <div
                         key={lvl.label}
@@ -99,7 +99,7 @@ export function FibonacciMock() {
             </div>
 
             {/* Footer */}
-            <div className="text-[8px] font-bold text-slate-400 dark:text-slate-400 flex justify-between items-center z-10 border-t border-gray-200 dark:border-white/10 pt-2 font-mono tabular-nums">
+            <div className="text-[8px] font-bold text-slate-400 dark:text-slate-400 flex justify-between items-center z-10 border-t border-gray-200 dark:border-white/10 pt-2 tabular-nums">
                 <span>EURUSD Daily Anchor</span>
                 <span>Auto calculate active</span>
             </div>

@@ -40,7 +40,7 @@ export function StartByGoalSection(_props: StartByGoalSectionProps) {
         {
             stepBadge: "STEP 03 · MANUAL CO-PILOT & AUTO EAs",
             title: "Automated Discipline",
-            description: "Use GSN Trade Manager for 1-click manual lot sizing & journal sync, or run GoldScalperNinja & GSN Shadow Matrix for automated MT5 execution.",
+            description: "Use GSN Trade Manager for 1-click lot sizing & journal sync, or run GoldScalperNinja, Shadow Matrix & SNR System for automated MT5 execution.",
             icon: <Bot size={20} />,
             href: "/trading-systems",
             color: "text-gold",
@@ -88,7 +88,7 @@ export function StartByGoalSection(_props: StartByGoalSectionProps) {
                             <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-transparent via-transparent to-gray-50/50 dark:to-white/[0.01] pointer-events-none" />
 
                             <div className="relative z-10 w-full flex flex-col items-center sm:items-start">
-                                <div className="mb-2 text-[10px] font-mono tabular-nums font-extrabold uppercase tracking-wider text-amber-600 dark:text-gold">
+                                <div className="mb-2 text-[10px] tabular-nums font-extrabold uppercase tracking-wider text-amber-600 dark:text-gold">
                                     {card.stepBadge}
                                 </div>
                                 {/* Icon and Title: Stacked centered on mobile, inline on sm+ */}

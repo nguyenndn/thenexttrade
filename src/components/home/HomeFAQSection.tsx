@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { FAQAccordion } from "@/components/tools/FAQAccordion";
-import { HelpCircle, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { HomeSectionHeading } from "@/components/home/HomeSectionHeading";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { cn } from "@/lib/utils";
@@ -26,7 +26,6 @@ export function HomeFAQSection() {
                         title="Frequently Asked Questions"
                         highlight="Questions"
                         description="Quick answers to common questions about our broker-funded model, automated journal, and trading systems."
-                        icon={HelpCircle}
                         className="mb-8 sm:mb-10"
                     />
 
@@ -69,7 +68,7 @@ export function HomeFAQSection() {
                                     >
                                         <span>About TheNextTrade</span>
                                         <span className={cn(
-                                            "text-[10px] px-1.5 py-0.5 rounded-lg font-mono font-bold transition-colors",
+                                            "text-[10px] px-1.5 py-0.5 rounded-lg tabular-nums font-bold transition-colors",
                                             activeTab === "membership"
                                                 ? "bg-white/20 text-white"
                                                 : "bg-gray-200/70 dark:bg-white/10 text-gray-500 dark:text-gray-400"
@@ -86,7 +85,7 @@ export function HomeFAQSection() {
                                     >
                                         <span>Platform & Systems</span>
                                         <span className={cn(
-                                            "text-[10px] px-1.5 py-0.5 rounded-lg font-mono font-bold transition-colors",
+                                            "text-[10px] px-1.5 py-0.5 rounded-lg tabular-nums font-bold transition-colors",
                                             activeTab === "platform"
                                                 ? "bg-white/20 text-white"
                                                 : "bg-gray-200/70 dark:bg-white/10 text-gray-500 dark:text-gray-400"

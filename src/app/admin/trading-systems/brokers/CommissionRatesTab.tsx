@@ -204,18 +204,18 @@ export function CommissionRatesTab({
                                 >
                                     <td className="p-4">
                                         <div className="flex items-center gap-2">
-                                            <span className="px-2.5 py-1 rounded-lg text-xs font-mono font-bold bg-gray-100 dark:bg-white/10 text-gray-900 dark:text-white">
+                                            <span className="px-2.5 py-1 rounded-lg text-xs font-bold bg-gray-100 dark:bg-white/10 text-gray-900 dark:text-white">
                                                 {brokerName}
                                             </span>
                                             {brokerSlug && (
-                                                <span className="text-[11px] font-mono text-gray-400">
+                                                <span className="text-[11px] text-gray-400">
                                                     ({brokerSlug})
                                                 </span>
                                             )}
                                         </div>
                                     </td>
                                     <td className="p-4">
-                                        <span className={`px-2 py-0.5 rounded-lg text-xs font-mono font-bold ${
+                                        <span className={`px-2 py-0.5 rounded-lg text-xs font-bold ${
                                             isWildcard
                                                 ? "bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20"
                                                 : "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20"
@@ -224,13 +224,13 @@ export function CommissionRatesTab({
                                         </span>
                                     </td>
                                     <td className="p-4">
-                                        <span className="font-mono tabular-nums text-sm font-black text-gray-900 dark:text-white">
+                                        <span className="tabular-nums text-sm font-black text-gray-900 dark:text-white">
                                             ${rate.commissionPerLot.toFixed(2)}
                                         </span>
                                         <span className="text-xs text-gray-400 ml-1">/ lot</span>
                                     </td>
                                     <td className="p-4">
-                                        <span className="text-xs font-mono font-bold text-gray-600 dark:text-gray-300">
+                                        <span className="text-xs font-bold text-gray-600 dark:text-gray-300">
                                             {rate.currency}
                                         </span>
                                     </td>

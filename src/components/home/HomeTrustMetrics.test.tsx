@@ -74,4 +74,10 @@ describe("HomeTrustMetrics (Unified Discipline OS Section)", () => {
         expect(html).not.toContain("10+ Leaks Caught");
         expect(html).not.toContain("0 Friction");
     });
+
+    it("switches footer CTA to Open My Journal when logged in", () => {
+        const html = renderToString(<HomeTrustMetrics isLoggedIn={true} />);
+        expect(html).toContain("Open My Journal");
+        expect(html).toContain('href="/dashboard"');
+    });
 });

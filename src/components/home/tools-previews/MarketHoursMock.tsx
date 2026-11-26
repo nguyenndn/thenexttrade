@@ -29,7 +29,7 @@ export function MarketHoursMock() {
 
             {/* Header */}
             <div className="flex items-center justify-between z-10">
-                <span className="text-[10px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest font-mono tabular-nums">
+                <span className="text-[10px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest tabular-nums">
                     Sessions Timeline
                 </span>
                 <div className="flex items-center gap-1 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-500/30 px-2 py-0.5 rounded-lg">
@@ -43,7 +43,7 @@ export function MarketHoursMock() {
             {/* Grid Timeline Bars */}
             <div className="flex-1 flex flex-col justify-center gap-2.5 relative my-2 z-10">
                 {/* Time markers at the top */}
-                <div className="flex justify-between text-[9px] font-bold text-slate-400 dark:text-slate-400 font-mono tabular-nums px-1">
+                <div className="flex justify-between text-[9px] font-bold text-slate-400 dark:text-slate-400 tabular-nums px-1">
                     <span>00</span>
                     <span>06</span>
                     <span>12</span>
@@ -114,7 +114,7 @@ export function MarketHoursMock() {
             </div>
 
             {/* Footer Info */}
-            <div className="text-[8px] font-bold text-slate-400 dark:text-slate-400 flex justify-between items-center z-10 border-t border-gray-200 dark:border-white/10 pt-2 font-mono tabular-nums">
+            <div className="text-[8px] font-bold text-slate-400 dark:text-slate-400 flex justify-between items-center z-10 border-t border-gray-200 dark:border-white/10 pt-2 tabular-nums">
                 <span>GMT+7 timezone</span>
                 <span>Auto-sync active</span>
             </div>

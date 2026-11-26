@@ -80,7 +80,7 @@ export function AcademyTeaserSection({
                                 className="group relative flex flex-col rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0D111C] p-4 sm:p-5 transition-all duration-300 hover:shadow-md hover:border-gray-300 dark:hover:border-white/20"
                             >
                                 <div className="flex items-center justify-between mb-3">
-                                    <span className="text-[9px] font-mono tabular-nums font-black uppercase tracking-wider text-gray-400 dark:text-gray-500">
+                                    <span className="text-[9px] tabular-nums font-black uppercase tracking-wider text-gray-400 dark:text-gray-500">
                                         {level.level}
                                     </span>
                                     <div className="rounded-lg bg-gray-100 dark:bg-[#151925] p-1.5">
@@ -97,7 +97,7 @@ export function AcademyTeaserSection({
                                 <p className="text-xs font-medium text-gray-600 dark:text-gray-400 leading-relaxed flex-1">
                                     {level.description}
                                 </p>
-                                <div className="mt-3 pt-3 border-t border-gray-100 dark:border-white/10 flex items-center justify-between font-mono tabular-nums">
+                                <div className="mt-3 pt-3 border-t border-gray-100 dark:border-white/10 flex items-center justify-between tabular-nums">
                                     <span className="text-[10px] font-bold text-gray-500 dark:text-gray-400">
                                         {level.lessonCount} lessons
                                     </span>

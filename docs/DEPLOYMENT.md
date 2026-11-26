@@ -1,7 +1,7 @@
 # Deployment & Disaster Recovery
 
-Last reviewed: 2026-11-23 · verified against production VPS `84.247.158.233`
-(Coolify 4.7.6, application uuid `cqpy15g8yqpvuqbilexsvt1u`).
+Last reviewed: 2026-11-26 · verified against production VPS `84.247.158.233`
+(Contabo Tokyo · native IPv6 `2400:d320:2375:4720::1`, Coolify 4.7.6, application uuid `cqpy15g8yqpvuqbilexsvt1u`).
 
 **Purpose:** rebuild the whole production environment on a brand-new VPS without guessing
 anything, and know exactly what must be archived outside the VPS so an expired/lost server
@@ -116,6 +116,75 @@ Rules:
 - Use an R2 token for backups that is **separate** from the app's `R2_*` token, so a leaked app
   credential cannot read database dumps.
 - Redis needs no restore: cache and counters rebuild themselves.
+
+### 3.2 Network, TCP BBR & Cloudflare Origin Routing (Critical on New VPS)
+
+Two real-world failure modes caused Cloudflare `Error 524` timeouts during Asia evening peak hours
+even when Next.js + PostgreSQL answered locally in `< 100 ms`:
+
+#### A. Enable Google TCP BBR + `fq` + MTU Probing (Host **and** `coolify-proxy` namespace)
+
+Linux defaults to `cubic` (`tcp_mtu_probing = 0`). Any international packet loss between Cloudflare
+Edge and the VPS collapses `cubic` `cwnd` down to `2` (`~1 kbps`), stalling responses past
+Cloudflare's 100-second `524` timeout. Enabling **Google TCP BBR** prevents `cwnd` collapse and
+multiplies throughput 10–35× on lossy paths.
+
+> **Linux kernel gotcha:** `net.ipv4.tcp_congestion_control` and `net.ipv4.tcp_mtu_probing` are
+> **per-network-namespace**. Enable BBR **before** installing Docker/Coolify on a new VPS so every
+> container inherits `bbr`. If `coolify-proxy` is already running, also apply it inside its network
+> namespace via `nsenter` and flush pre-existing `cubic` keep-alive sockets:
+
+```bash
+# 1. Persist BBR + FQ + MTU probing on the VPS host kernel
+echo "tcp_bbr" > /etc/modules-load.d/bbr.conf
+modprobe tcp_bbr
+cat <<'EOF' > /etc/sysctl.d/99-tnt-bbr.conf
+net.core.default_qdisc = fq
+net.ipv4.tcp_congestion_control = bbr
+net.ipv4.tcp_mtu_probing = 1
+EOF
+sysctl --system
+
+# 2. If Coolify is already running, apply inside coolify-proxy netns & flush stale cubic sockets
+PROXY_PID=$(docker inspect -f '{{.State.Pid}}' coolify-proxy)
+nsenter -t "$PROXY_PID" -n sysctl -w net.ipv4.tcp_congestion_control=bbr
+nsenter -t "$PROXY_PID" -n sysctl -w net.ipv4.tcp_mtu_probing=1
+for iface in $(nsenter -t "$PROXY_PID" -n ls /sys/class/net | grep -v lo); do
+  nsenter -t "$PROXY_PID" -n tc qdisc replace dev "$iface" root fq 2>/dev/null || true
+done
+nsenter -t "$PROXY_PID" -n ss -K state established '( sport = :443 )' >/dev/null 2>&1 || true
+```
+
+#### B. Avoid Out-of-Region IPv4 Tromboning Behind Cloudflare (Use Native Regional `AAAA` IPv6)
+
+Budget cloud providers (notably **Contabo** in Tokyo/Singapore) frequently assign **European RIPE
+IPv4** blocks (e.g., `84.247.158.233`) to Asian datacenters while assigning a **native APNIC
+(Asia-Pacific) IPv6** block (e.g., `2400:d320:2375:4720::1`):
+
+- Direct Vietnam → VPS transfers `400 KB` in **`0.69s – 1.10s`** (`0%` packet loss).
+- However, when Cloudflare DNS points `@` / `www` to a European-registered `A` record (`84.247.x.x`),
+  Cloudflare Hong Kong (`HKG`) routes origin traffic asymmetrically (`asymm 9`) **all the way to
+  Europe and back to Tokyo** (`RTT ~1,980 ms`, `~45%` packet loss)!
+- **Best practice whenever provisioning or migrating a VPS:**
+  1. Check both `ip -4 addr` and `ip -6 addr`, and inspect routing symmetry from the VPS:
+     `tracepath -n -m 8 172.71.218.172` (look for `asymm` hops or high RTT on `ss -tin`).
+  2. Verify `coolify-proxy` answers on IPv6 `:443`:
+     `curl -6 -k -I --resolve "thenexttrade.app:443:[<vps-ipv6>]" https://thenexttrade.app/api/health`
+  3. If the VPS is in Asia with a RIPE/ARIN IPv4 and a native APNIC IPv6, configure Cloudflare DNS
+     for `thenexttrade.app` and `www` using **proxied `AAAA` (`Orange Cloud ON`)** pointing to the
+     native IPv6 **instead of** the out-of-region `A` record (or use `cloudflared` Tunnel).
+     Cloudflare Edge still serves **100% of IPv4 and IPv6 visitors** normally, while forcing
+     Cloudflare Edge → Origin traffic onto the clean intra-Asia IPv6 backbone (`~50 ms`).
+
+#### C. Periodic Docker Build Cache Cleanup (Safe Disk Maintenance)
+
+Repeated Coolify Dockerfile deployments accumulate dangling images and BuildKit cache (`30–40 GB+`).
+Run periodically when disk exceeds ~60% (**never** run `docker volume prune`, which risks deleting
+unmounted data volumes):
+
+```bash
+docker image prune -af && docker builder prune -af && df -h /
+```
 
 ---
 
@@ -258,38 +327,44 @@ provider dashboard or a random string you can re-create.
 Assumes a fresh Ubuntu/Debian VPS with ≥ 4 vCPU / ≥ 8 GB RAM / ≥ 80 GB disk (current:
 6 vCPU EPYC, 11 GB RAM, 96 GB, 4 GB swap).
 
-1. **DNS first.** Point `thenexttrade.app` and `www` at the new IP (Cloudflare, proxy off until
-   the certificate issues, then re-enable).
-2. **Install Docker** and **Coolify** (official installer). Open ports `22`, `80`, `443`.
-3. **Archive the old `/data/coolify/source/.env`** if the old VPS still exists — you need its
+1. **Enable TCP BBR first (before Docker).** Run step 1 of [§3.2A](#a-enable-google-tcp-bbr--fq--mtu-probing-host-and-coolify-proxy-namespace)
+   so the host kernel uses `bbr` + `fq` + `tcp_mtu_probing = 1` before any Docker container
+   network namespace is created.
+2. **DNS.** Point `thenexttrade.app` and `www` at the new VPS in Cloudflare (proxy off until
+   Let's Encrypt issues the certificate, then turn Orange Cloud back on). If the VPS is in Asia
+   with an out-of-region RIPE/ARIN IPv4, switch Cloudflare to **proxied `AAAA` (native APNIC IPv6)**
+   once SSL is active — see [§3.2B](#b-avoid-out-of-region-ipv4-tromboning-behind-cloudflare-use-native-regional-aaaa-ipv6).
+3. **Install Docker** and **Coolify** (official installer). Open ports `22`, `80`, `443` (both IPv4 and IPv6 in UFW).
+4. **Archive the old `/data/coolify/source/.env`** if the old VPS still exists — you need its
    `APP_KEY`, DB/Redis/root passwords only if you restore the Coolify DB. For a clean rebuild
    you skip it.
-4. **Create project + environment** (`my-first-project` / `production`).
-5. **Create the database** — Coolify → + New → Database → PostgreSQL 16, name
+5. **Create project + environment** (`my-first-project` / `production`).
+6. **Create the database** — Coolify → + New → Database → PostgreSQL 16, name
    `thenexttrade-db`, database `thenexttrade`. Do **not** publish a public port.
    Copy its connection string into `DATABASE_URL` **and** `DIRECT_URL`.
-6. **Restore the latest dump** from R2 (Coolify → `thenexttrade-db` → Backups → restore), then
+7. **Restore the latest dump** from R2 (Coolify → `thenexttrade-db` → Backups → restore), then
    confirm row counts or simply that the app boots and login works.
-7. **Create Redis** — + New → Redis (7-alpine), name `thenexttrade-redis`, not public.
+8. **Create Redis** — + New → Redis (7-alpine), name `thenexttrade-redis`, not public.
    Copy its URL into `REDIS_URL`.
-8. **New resource → Dockerfile application** from `https://github.com/nguyenndn/thenexttrade`,
+9. **New resource → Dockerfile application** from `https://github.com/nguyenndn/thenexttrade`,
    branch `main`; set base directory `/`, port `3000`, **disable the health check**.
-9. **Add the 47 env vars** from your vault (§4.2). Production scope only.
-   Make sure `NEXT_PUBLIC_*` are present **before** the first build.
-10. **Advanced → Custom Docker Options:**
+10. **Add the 47 env vars** from your vault (§4.2). Production scope only.
+    Make sure `NEXT_PUBLIC_*` are present **before** the first build.
+11. **Advanced → Custom Docker Options:**
     `--tmpfs /app/mt5-cloud-sync/unidbg-workdir:size=2g,mode=1777`
-11. **Persistent storage** (Coolify → Persistent Storage):
+12. **Persistent storage** (Coolify → Persistent Storage):
     - volume `mt5-cloud-sync-bases` → `/app/mt5-cloud-sync/bases`
     - volume `mt5-trade-cache` → `/app/mt5-cloud-sync/trade-cache`
-12. **Domains:** `https://thenexttrade.app`, `https://www.thenexttrade.app` (both with
+13. **Domains:** `https://thenexttrade.app`, `https://www.thenexttrade.app` (both with
     Let's Encrypt via Traefik).
-13. **Re-create the scheduled backup** — Coolify → `thenexttrade-db` → Backups:
+14. **Re-create the scheduled backup** — Coolify → `thenexttrade-db` → Backups:
     `0 */6 * * *` (every 6 hours), S3/R2 bucket `thenexttrade`, 30-day retention.
-    **Do this before announcing the new server.**
-14. **Deploy** and verify (§7).
-15. **Cron:** Coolify does not schedule `/api/cron/*`. Keep whatever external scheduler feeds
+    **Do this before announcing the new server.** (No paid VPS-provider VM snapshot add-on is
+    needed once this 6-hour R2 backup is `success` and secrets in §6 are vaulted.)
+15. **Deploy** and verify (§7).
+16. **Cron:** Coolify does not schedule `/api/cron/*`. Keep whatever external scheduler feeds
     `Authorization: Bearer $CRON_SECRET` (see `docs/OPERATIONS.md`).
-16. **GitHub webhook** for auto-deploy, if that was enabled on the old instance.
+17. **GitHub webhook** for auto-deploy, if that was enabled on the old instance.
 
 Estimated time from a clean VPS: 30–45 minutes, most of it re-entering env values.
 
@@ -350,3 +425,5 @@ into git.
    - tens of thousands+ → tmpfs missing or sizes wrong (§2, §3).
 7. `docker exec <container> df -h /app/mt5-cloud-sync/unidbg-workdir` shows a ~2 GB tmpfs.
 8. `docker exec <container> java -version` → OpenJDK 17.
+9. `nsenter -t $(docker inspect -f '{{.State.Pid}}' coolify-proxy) -n sysctl net.ipv4.tcp_congestion_control net.ipv4.tcp_mtu_probing` → `bbr` and `1` (§3.2A).
+10. Measure TTFB from Vietnam through Cloudflare (`curl -w "%{time_starttransfer}s\n" -o /dev/null -s https://thenexttrade.app/`) — should be `< 1.5s` without `Error 524` (§3.2B).

@@ -10,7 +10,7 @@ export const MEMBERSHIP_FAQS: FAQItem[] = [
     },
     {
         question: "What's the catch? How does TheNextTrade make money if VIP is free?",
-        answer: "Zero catch. We operate as an authorized Introducing Broker (IB) partner with regulated brokers (Exness, XM, Vantage Markets, RoboForex). When you execute trades, the broker compensates us directly from their standard spread at zero added cost to you. We succeed only when you trade with strict risk management and stay profitable for the long term.",
+        answer: "Zero catch. We operate as an authorized Introducing Broker (IB) partner with regulated brokers (Exness, Vantage, VT Markets, Ultima Markets). When you execute trades, the broker compensates us directly from their standard spread at zero added cost to you. We succeed only when you trade with strict risk management and stay profitable for the long term.",
     },
     {
         question: "Is my $200 deposit safe? Can I withdraw it anytime?",
@@ -33,7 +33,7 @@ export const PLATFORM_FAQS: FAQItem[] = [
     },
     {
         question: "How do I unlock the MT5 Expert Advisors for free?",
-        answer: "Our MT5 Expert Advisors (GoldScalperNinja, GSN Shadow Matrix, Trade Manager) are available for $0 upfront cost through our verified broker partner paths. Once your account qualifies, license keys and downloads appear inside your dashboard.",
+        answer: "Our MT5 systems (GSN Trade Manager, GoldScalperNinja EA, GSN Shadow Matrix, and GSN SNR System) are available for $0 upfront cost through our verified broker partner paths. Once your account qualifies, license keys and downloads appear inside your dashboard.",
     },
     {
         question: "Can I connect multiple accounts or Prop Firms?",

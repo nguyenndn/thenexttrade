@@ -189,7 +189,7 @@ function HomeFeed({ isLoggedIn, quote }: HomeFeedProps) {
             <SaaSHeroSection isLoggedIn={isLoggedIn} />
 
             {/* 2. Transparency Strip (Unwrapped for instant above-the-fold visibility) */}
-            <HomeTrustMetrics />
+            <HomeTrustMetrics isLoggedIn={isLoggedIn} />
 
             {/* 3. Product Proof & Workflow (Connect -> Analyze -> Improve) */}
             <FadeIn delay={0.1} direction="up">
@@ -228,7 +228,7 @@ function HomeFeed({ isLoggedIn, quote }: HomeFeedProps) {
 
             {/* 9. About Us (Founder note with integrated Telegram connection) */}
             <FadeIn delay={0.1} direction="up">
-                <AboutUsSection />
+                <AboutUsSection isLoggedIn={isLoggedIn} />
             </FadeIn>
 
             {/* 11. Daily Quote */}

@@ -6,7 +6,7 @@ export function BrokerCapitalFlow() {
             <div className="text-center max-w-2xl mx-auto mb-5">
                 <h4 className="text-base sm:text-lg font-black text-gray-900 dark:text-white mb-1">
                     Where does your{" "}
-                    <span className="text-gold font-mono tabular-nums">$200</span> deposit actually go?
+                    <span className="text-gold tabular-nums">$200</span> deposit actually go?
                 </h4>
                 <p className="text-xs text-gray-600 dark:text-gray-400">
                     See how your funds flow directly between you and your chosen regulated broker without touching TheNextTrade.
@@ -21,7 +21,7 @@ export function BrokerCapitalFlow() {
                     </div>
                     <h5 className="text-sm font-extrabold text-gray-900 dark:text-white">You (Trader)</h5>
                     <span className="text-[11px] text-gray-500 dark:text-gray-400 font-medium">
-                        <span className="font-mono tabular-nums">100%</span> Sole Owner of Capital
+                        <span className="tabular-nums">100%</span> Sole Owner of Capital
                     </span>
                 </div>
 
@@ -36,7 +36,7 @@ export function BrokerCapitalFlow() {
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-gold opacity-75" />
                                 <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500" />
                             </span>
-                            <span className="font-mono tabular-nums">Deposit $200</span>
+                            <span className="tabular-nums">Deposit $200</span>
                             <ArrowRight size={13} className="text-gold hidden md:inline" />
                             <ArrowDown size={13} className="text-gold md:hidden" />
                         </div>
@@ -55,7 +55,7 @@ export function BrokerCapitalFlow() {
                     </div>
                     <h5 className="text-sm font-extrabold text-gray-900 dark:text-white">Your Broker Account</h5>
                     <span className="text-[11px] font-bold text-amber-900 dark:text-gold">
-                        <span className="font-mono tabular-nums">100%</span> In Your Legal Name
+                        <span className="tabular-nums">100%</span> In Your Legal Name
                     </span>
                 </div>
             </div>
@@ -65,7 +65,7 @@ export function BrokerCapitalFlow() {
                 <ShieldCheck size={16} className="text-emerald-600 dark:text-emerald-400 shrink-0 hidden sm:block" />
                 <span>
                     <strong>
-                        TheNextTrade receives <span className="font-mono tabular-nums">$0</span>.
+                        TheNextTrade receives <span className="tabular-nums">$0</span>.
                     </strong>{" "}
                     Your full VIP membership unlocks automatically — there is nothing to pay us, ever.
                 </span>

@@ -10,7 +10,7 @@ export function BrokerComparisonCards() {
                         <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg bg-gray-200/60 dark:bg-white/10 text-slate-700 dark:text-slate-300 text-xs font-black uppercase tracking-wider border border-gray-300/40 dark:border-white/10">
                             <XCircle size={12} /> Typical Signal / Course Group
                         </span>
-                        <span className="text-[11px] font-mono tabular-nums text-slate-500 dark:text-slate-400 font-bold">
+                        <span className="text-[11px] tabular-nums text-slate-500 dark:text-slate-400 font-bold">
                             High Sunk Cost
                         </span>
                     </div>
@@ -72,7 +72,7 @@ export function BrokerComparisonCards() {
                         <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg bg-gold/15 text-amber-900 dark:text-gold text-xs font-black uppercase tracking-wider border border-gold/30">
                             <Check size={12} strokeWidth={3} /> TheNextTrade Ecosystem
                         </span>
-                        <span className="text-[11px] font-mono tabular-nums text-emerald-600 dark:text-emerald-400 font-black">
+                        <span className="text-[11px] tabular-nums text-emerald-600 dark:text-emerald-400 font-black">
                             100% Liquid Capital
                         </span>
                     </div>
@@ -103,7 +103,7 @@ export function BrokerComparisonCards() {
                                 <CheckCircle2 size={13} strokeWidth={2.5} />
                             </div>
                             <span>
-                                <strong>Full VIP Suite unlocked:</strong> GSN Trade Manager, GoldScalperNinja EA, GSN Shadow Matrix, AI Coach &amp; Playbook Studio
+                                <strong>Full VIP Suite unlocked:</strong> GSN Trade Manager, GoldScalperNinja EA, GSN Shadow Matrix, GSN SNR System, AI Coach &amp; Playbook Studio
                             </span>
                         </div>
                         <div className="flex items-start gap-2.5 text-gray-900 dark:text-white font-medium text-xs sm:text-sm">

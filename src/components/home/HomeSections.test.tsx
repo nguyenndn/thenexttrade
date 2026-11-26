@@ -15,7 +15,7 @@ describe("HomeSections SSR Suite (Modular Sections Verification)", () => {
             // Header contrast (single-line desktop lock)
             expect(html).toContain("Spreadsheets log history.");
             expect(html).toContain("TheNextTrade protects your capital.");
-            expect(html).toContain("md:whitespace-nowrap");
+            expect(html).toContain("lg:whitespace-nowrap");
             expect(html).toContain("Excel tells you that you lost money on Thursday.");
 
             // 4 Essence Cards
@@ -139,6 +139,13 @@ describe("HomeSections SSR Suite (Modular Sections Verification)", () => {
             expect(html).toContain("Free account");
             expect(html).toContain("Setup in minutes");
             expect(html).toContain("Official community");
+        });
+
+        it("switches strip CTA to Open My Journal when user is logged in", () => {
+            const html = renderToString(<AboutUsSection isLoggedIn={true} />);
+            expect(html).toContain("Jump back into your journal");
+            expect(html).toContain("Open My Journal");
+            expect(html).toContain('href="/dashboard"');
         });
     });
 });

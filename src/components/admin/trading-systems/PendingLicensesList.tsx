@@ -59,13 +59,13 @@ export function PendingLicensesList({
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                         <div className="space-y-1">
                             <div className="flex items-center gap-3">
-                                <span className="text-xl font-bold text-gray-700 dark:text-white font-mono tabular-nums">
+                                <span className="text-xl font-bold text-gray-700 dark:text-white tabular-nums">
                                     {req.accountNumber}
                                 </span>
                                 <span className="text-xs px-2.5 py-0.5 rounded-lg bg-gold/10 text-amber-600 dark:text-gold border border-gold/20 font-bold tracking-wide">
                                     {req.broker}
                                 </span>
-                                <span className="text-xs font-mono tabular-nums text-gray-500">
+                                <span className="text-xs tabular-nums text-gray-500">
                                     {formatDistanceToNow(
                                         new Date(req.createdAt)
                                     )}{" "}

@@ -73,7 +73,7 @@ export function RejectModal({ license, isOpen, onClose }: RejectModalProps) {
                     </DialogTitle>
                     <DialogDescription>
                         This action will reject the account request{" "}
-                        <span className="font-bold font-mono tabular-nums text-gray-700 dark:text-white">
+                        <span className="font-bold tabular-nums text-gray-700 dark:text-white">
                             {license.accountNumber}
                         </span>
                         .

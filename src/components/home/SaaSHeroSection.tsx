@@ -40,7 +40,7 @@ export function SaaSHeroSection({ isLoggedIn }: SaaSHeroSectionProps) {
                     The strategy was never the problem — the revenge size after a red day
                     was.{" "}
                     <br className="hidden sm:inline" />
-                    <span className="font-semibold text-gray-900 dark:text-white lg:whitespace-nowrap">
+                    <span className="font-semibold text-gray-900 dark:text-white xl:whitespace-nowrap">
                         We sync every MT5 trade via EA or Cloud and show the exact moment discipline broke.
                     </span>
                 </p>

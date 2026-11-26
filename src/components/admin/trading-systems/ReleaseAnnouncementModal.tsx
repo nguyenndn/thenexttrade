@@ -291,7 +291,7 @@ export function ReleaseAnnouncementModal({
                                             </p>
                                         </div>
                                     </div>
-                                    <span className="px-2 py-0.5 rounded-lg text-[10px] font-mono tabular-nums font-bold bg-gold/15 text-amber-600 dark:text-gold">
+                                    <span className="px-2 py-0.5 rounded-lg text-[10px] tabular-nums font-bold bg-gold/15 text-amber-600 dark:text-gold">
                                         {audienceCounts.ACTIVE_HOLDERS} users
                                     </span>
                                 </div>
@@ -315,7 +315,7 @@ export function ReleaseAnnouncementModal({
                                             </p>
                                         </div>
                                     </div>
-                                    <span className="px-2 py-0.5 rounded-lg text-[10px] font-mono tabular-nums font-bold bg-gold/15 text-amber-600 dark:text-gold">
+                                    <span className="px-2 py-0.5 rounded-lg text-[10px] tabular-nums font-bold bg-gold/15 text-amber-600 dark:text-gold">
                                         {audienceCounts.PRO_TRADERS} users
                                     </span>
                                 </div>
@@ -339,7 +339,7 @@ export function ReleaseAnnouncementModal({
                                             </p>
                                         </div>
                                     </div>
-                                    <span className="px-2 py-0.5 rounded-lg text-[10px] font-mono tabular-nums font-bold bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300">
+                                    <span className="px-2 py-0.5 rounded-lg text-[10px] tabular-nums font-bold bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300">
                                         {audienceCounts.ALL_USERS} users
                                     </span>
                                 </div>
@@ -355,7 +355,7 @@ export function ReleaseAnnouncementModal({
                                 <PremiumInput
                                     value={version}
                                     onChange={(e) => setVersion(e.target.value)}
-                                    className="h-9 text-xs font-mono tabular-nums font-bold"
+                                    className="h-9 text-xs tabular-nums font-bold"
                                 />
                             </div>
                             <div className="col-span-2 space-y-1.5">
@@ -376,7 +376,7 @@ export function ReleaseAnnouncementModal({
                                 <label className="block text-xs font-bold text-gray-700 dark:text-gray-200">
                                     What's New (One feature per line)
                                 </label>
-                                <span className="text-[11px] font-mono tabular-nums text-gray-400">
+                                <span className="text-[11px] tabular-nums text-gray-400">
                                     {getHighlightsArray().length} bullet points
                                 </span>
                             </div>
@@ -462,7 +462,7 @@ export function ReleaseAnnouncementModal({
                     <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
                         <CheckCircle2 size={15} className="text-emerald-500" />
                         <span>
-                            Ready to send to <strong className="font-mono tabular-nums">{currentCount}</strong> recipients in group <strong>{targetAudience.replace("_", " ")}</strong>.
+                            Ready to send to <strong className="tabular-nums">{currentCount}</strong> recipients in group <strong>{targetAudience.replace("_", " ")}</strong>.
                         </span>
                     </div>
 
@@ -487,7 +487,7 @@ export function ReleaseAnnouncementModal({
                             ) : (
                                 <>
                                     <Send size={16} />
-                                    <span className="font-mono tabular-nums">Launch Broadcast ({currentCount} Traders)</span>
+                                    <span className="tabular-nums">Launch Broadcast ({currentCount} Traders)</span>
                                 </>
                             )}
                         </Button>

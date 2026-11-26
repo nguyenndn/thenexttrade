@@ -36,14 +36,14 @@ export function LotSizeMock() {
             <div className="absolute top-0 right-0 w-24 h-24 bg-gold/5 rounded-full blur-2xl pointer-events-none" />
 
             {/* Header */}
-            <div className="flex items-center justify-between z-10 font-mono tabular-nums text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+            <div className="flex items-center justify-between z-10 tabular-nums text-[9px] font-bold text-slate-400 uppercase tracking-widest">
                 <span>Optimal Lot Size</span>
                 <span className="text-amber-600 dark:text-gold">RISK MODEL: 1.0%</span>
             </div>
 
             {/* Main output display */}
             <div className="flex-1 flex flex-col items-center justify-center z-10 py-1">
-                <span className="text-3xl font-black text-amber-600 dark:text-gold tracking-tight font-mono tabular-nums">
+                <span className="text-3xl font-black text-amber-600 dark:text-gold tracking-tight tabular-nums">
                     {displayValue.toFixed(2)}
                 </span>
                 <span className="text-[9px] font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-0.5">
@@ -58,7 +58,7 @@ export function LotSizeMock() {
                     <span className="text-[7px] font-black text-slate-400 uppercase tracking-wider leading-none">
                         Risk $
                     </span>
-                    <span className="text-[10px] font-bold text-slate-700 dark:text-slate-200 font-mono tabular-nums mt-1 leading-none">
+                    <span className="text-[10px] font-bold text-slate-700 dark:text-slate-200 tabular-nums mt-1 leading-none">
                         $200
                     </span>
                 </div>
@@ -67,7 +67,7 @@ export function LotSizeMock() {
                     <span className="text-[7px] font-black text-slate-400 uppercase tracking-wider leading-none">
                         Max DD
                     </span>
-                    <span className="text-[10px] font-bold text-slate-700 dark:text-slate-200 font-mono tabular-nums mt-1 leading-none">
+                    <span className="text-[10px] font-bold text-slate-700 dark:text-slate-200 tabular-nums mt-1 leading-none">
                         6.0%
                     </span>
                 </div>
@@ -76,7 +76,7 @@ export function LotSizeMock() {
                     <span className="text-[7px] font-black text-slate-400 uppercase tracking-wider leading-none">
                         Avg P/L
                     </span>
-                    <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 font-mono tabular-nums mt-1 leading-none">
+                    <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 tabular-nums mt-1 leading-none">
                         +$400
                     </span>
                 </div>
@@ -85,7 +85,7 @@ export function LotSizeMock() {
                     <span className="text-[7px] font-black text-slate-400 uppercase tracking-wider leading-none">
                         Growth
                     </span>
-                    <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 font-mono tabular-nums mt-1 leading-none">
+                    <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 tabular-nums mt-1 leading-none">
                         +4.0%
                     </span>
                 </div>

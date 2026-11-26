@@ -3,7 +3,11 @@ import { ArrowRight, Quote, MessageCircle, ShieldCheck, Zap } from "lucide-react
 import { buttonVariants } from "@/components/ui/button-variants";
 import { TELEGRAM_CHANNEL_URL } from "@/config/telegram";
 
-export function AboutUsSection() {
+interface AboutUsSectionProps {
+    isLoggedIn?: boolean;
+}
+
+export function AboutUsSection({ isLoggedIn = false }: AboutUsSectionProps) {
     return (
         <div className="relative overflow-hidden border-t border-gray-200 dark:border-white/10 bg-slate-50/50 dark:bg-transparent py-12 sm:py-16">
             {/* Background decorative grids and gradients */}
@@ -67,7 +71,11 @@ export function AboutUsSection() {
                         <div className="text-center sm:text-left">
                             <div className="text-sm font-bold text-gray-900 dark:text-white flex items-center justify-center sm:justify-start gap-2">
                                 <Zap size={14} className="text-gold" />
-                                <span>Start with a free account</span>
+                                <span>
+                                    {isLoggedIn
+                                        ? "Jump back into your journal"
+                                        : "Start with a free account"}
+                                </span>
                             </div>
                             <div className="mt-1 flex flex-wrap items-center justify-center sm:justify-start gap-2.5 text-xs text-gray-500 dark:text-gray-400">
                                 <span className="inline-flex items-center gap-1">
@@ -83,14 +91,18 @@ export function AboutUsSection() {
 
                         <div className="flex flex-col sm:flex-row items-center gap-2.5 w-full sm:w-auto shrink-0">
                             <Link
-                                href="/auth/signup"
+                                href={isLoggedIn ? "/dashboard" : "/auth/signup"}
                                 className={buttonVariants({
                                     variant: "gold",
                                     size: "smd",
                                     className: "w-full sm:w-auto font-extrabold text-white bg-gold hover:bg-amber-600 shadow-sm flex items-center justify-center gap-1.5",
                                 })}
                             >
-                                <span>Create Free Account</span>
+                                <span>
+                                    {isLoggedIn
+                                        ? "Open My Journal"
+                                        : "Create Free Account"}
+                                </span>
                                 <ArrowRight size={14} />
                             </Link>
 

@@ -23,7 +23,7 @@ export function CorrelationMock() {
             <div className="absolute top-0 right-0 w-24 h-24 bg-gold/5 rounded-full blur-2xl pointer-events-none" />
 
             {/* Header */}
-            <div className="flex items-center justify-between z-10 font-mono tabular-nums text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+            <div className="flex items-center justify-between z-10 tabular-nums text-[9px] font-bold text-slate-400 uppercase tracking-widest">
                 <span>Correlation Matrix</span>
                 <div className="flex items-center gap-1 bg-gold/10 border border-gold/20 px-2 py-0.5 rounded-lg">
                     <span className="w-1.5 h-1.5 rounded-full bg-gold" />
@@ -34,7 +34,7 @@ export function CorrelationMock() {
             </div>
 
             {/* Matrix Grid */}
-            <div className="flex-1 flex flex-col justify-center my-1 z-10 font-mono tabular-nums">
+            <div className="flex-1 flex flex-col justify-center my-1 z-10 tabular-nums">
                 {/* Currencies Headers */}
                 <div className="grid grid-cols-5 gap-1 text-[8px] font-black text-slate-400 dark:text-slate-500 text-center mb-1">
                     <div /> {/* Top-left empty cell */}
@@ -111,7 +111,7 @@ export function CorrelationMock() {
             </div>
 
             {/* Footer */}
-            <div className="text-[8px] font-bold text-slate-400 dark:text-slate-500 flex justify-between items-center z-10 border-t border-gray-200 dark:border-white/10 pt-2 font-mono tabular-nums">
+            <div className="text-[8px] font-bold text-slate-400 dark:text-slate-500 flex justify-between items-center z-10 border-t border-gray-200 dark:border-white/10 pt-2 tabular-nums">
                 <span>180-day correlation coefficient</span>
                 <span>Auto-sync active</span>
             </div>

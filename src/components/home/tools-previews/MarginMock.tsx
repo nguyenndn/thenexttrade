@@ -15,7 +15,7 @@ export function MarginMock() {
             <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl pointer-events-none" />
 
             {/* Header */}
-            <div className="flex items-center justify-between z-10 font-mono tabular-nums text-[9px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest">
+            <div className="flex items-center justify-between z-10 tabular-nums text-[9px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest">
                 <span>Margin Requirement</span>
                 <span className="text-emerald-600/80 dark:text-emerald-400">BASE CRNCY: USD</span>
             </div>
@@ -26,7 +26,7 @@ export function MarginMock() {
                     Required Margin
                 </span>
                 <span
-                    className={`text-2xl font-black text-emerald-700 dark:text-emerald-400 tracking-tight font-mono tabular-nums transition-transform duration-300 ${hovered ? "scale-105" : "scale-100"}`}
+                    className={`text-2xl font-black text-emerald-700 dark:text-emerald-400 tracking-tight tabular-nums transition-transform duration-300 ${hovered ? "scale-105" : "scale-100"}`}
                 >
                     $1,000
                 </span>
@@ -42,7 +42,7 @@ export function MarginMock() {
                     <span className="text-[7px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                         Pos Val
                     </span>
-                    <span className="text-[10px] font-bold text-slate-700 dark:text-slate-200 font-mono tabular-nums mt-0.5">
+                    <span className="text-[10px] font-bold text-slate-700 dark:text-slate-200 tabular-nums mt-0.5">
                         $100k
                     </span>
                 </div>
@@ -51,7 +51,7 @@ export function MarginMock() {
                     <span className="text-[7px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                         Leverage
                     </span>
-                    <span className="text-[10px] font-bold text-slate-700 dark:text-slate-200 font-mono tabular-nums mt-0.5">
+                    <span className="text-[10px] font-bold text-slate-700 dark:text-slate-200 tabular-nums mt-0.5">
                         1:100
                     </span>
                 </div>
@@ -60,7 +60,7 @@ export function MarginMock() {
                     <span className="text-[7px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                         Mgn %
                     </span>
-                    <span className="text-[10px] font-bold text-slate-700 dark:text-slate-200 font-mono tabular-nums mt-0.5">
+                    <span className="text-[10px] font-bold text-slate-700 dark:text-slate-200 tabular-nums mt-0.5">
                         1.00%
                     </span>
                 </div>
@@ -69,7 +69,7 @@ export function MarginMock() {
                     <span className="text-[7px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                         2 Lots
                     </span>
-                    <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 font-mono tabular-nums mt-0.5">
+                    <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 tabular-nums mt-0.5">
                         $2,000
                     </span>
                 </div>

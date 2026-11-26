@@ -26,7 +26,7 @@ export function ProfitLossMock() {
             />
 
             {/* Header */}
-            <div className="flex items-center justify-between z-10 font-mono tabular-nums text-[9px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest">
+            <div className="flex items-center justify-between z-10 tabular-nums text-[9px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest">
                 <span>Profit/Loss Projection</span>
                 <span
                     className={`px-2 py-0.5 rounded-lg text-[8px] font-black tracking-wider ${isLong ? "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200/50 dark:border-emerald-500/30" : "bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-200/50 dark:border-rose-500/30"}`}
@@ -41,19 +41,19 @@ export function ProfitLossMock() {
                     Projected Net P/L
                 </span>
                 <span
-                    className={`text-2xl font-black font-mono tabular-nums tracking-tight transition-all duration-300 ${isLong ? "text-emerald-700 dark:text-emerald-400 scale-100" : "text-rose-700 dark:text-rose-400 scale-105"}`}
+                    className={`text-2xl font-black tabular-nums tracking-tight transition-all duration-300 ${isLong ? "text-emerald-700 dark:text-emerald-400 scale-100" : "text-rose-700 dark:text-rose-400 scale-105"}`}
                 >
                     {isLong ? "+$800.00" : "-$400.00"}
                 </span>
                 <span
-                    className={`text-[8.5px] font-extrabold font-mono tabular-nums mt-0.5 ${isLong ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"}`}
+                    className={`text-[8.5px] font-extrabold tabular-nums mt-0.5 ${isLong ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"}`}
                 >
                     {isLong ? "+80 Pips" : "-40 Pips"}
                 </span>
             </div>
 
             {/* Trade Parameters List */}
-            <div className="grid grid-cols-3 gap-1 z-10 border-t border-gray-200 dark:border-white/10 pt-3 text-center text-[7px] font-bold text-slate-500 dark:text-slate-400 font-mono tabular-nums">
+            <div className="grid grid-cols-3 gap-1 z-10 border-t border-gray-200 dark:border-white/10 pt-3 text-center text-[7px] font-bold text-slate-500 dark:text-slate-400 tabular-nums">
                 <div className="bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 rounded-lg p-1">
                     <span className="block text-slate-400 dark:text-slate-400 uppercase text-[6px]">
                         Entry

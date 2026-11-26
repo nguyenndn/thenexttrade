@@ -59,7 +59,7 @@ export const ANALYTICS_TABS: AnalyticsTabItem[] = [
 
 export const menuItems: PublicMenuItem[] = [
     {
-        name: "Trading Systems",
+        name: "MT5 Systems",
         shortName: "Systems",
         href: "/trading-systems",
         type: "link",

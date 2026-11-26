@@ -36,7 +36,7 @@ export function PipValueMock() {
             <div className="absolute top-0 right-0 w-24 h-24 bg-gold/5 rounded-full blur-2xl pointer-events-none" />
 
             {/* Header */}
-            <div className="flex items-center justify-between z-10 font-mono tabular-nums text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+            <div className="flex items-center justify-between z-10 tabular-nums text-[9px] font-bold text-slate-400 uppercase tracking-widest">
                 <span>Pip Value Calculator</span>
                 <span className="text-amber-600 dark:text-gold font-black">
                     PAIR: EUR/USD
@@ -47,13 +47,13 @@ export function PipValueMock() {
             <div className="flex-1 flex flex-col justify-center gap-2 z-10 my-1">
                 <div className="flex justify-between items-center text-[10px] font-bold text-slate-500 dark:text-slate-400">
                     <span>Live Mid Rate</span>
-                    <span className="font-mono tabular-nums text-slate-700 dark:text-slate-200 bg-white dark:bg-white/10 px-1.5 py-0.5 rounded-lg border border-gray-200 dark:border-white/10">
+                    <span className="tabular-nums text-slate-700 dark:text-slate-200 bg-white dark:bg-white/10 px-1.5 py-0.5 rounded-lg border border-gray-200 dark:border-white/10">
                         {rate.toFixed(4)}
                     </span>
                 </div>
 
                 {/* Triple lot sizes grid */}
-                <div className="grid grid-cols-3 gap-2 font-mono tabular-nums text-center">
+                <div className="grid grid-cols-3 gap-2 tabular-nums text-center">
                     <div className="bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 rounded-lg py-1.5 px-1 flex flex-col items-center justify-center">
                         <span className="text-[6.5px] font-sans font-black text-slate-400 uppercase tracking-wider block leading-none">
                             Standard
@@ -93,7 +93,7 @@ export function PipValueMock() {
             </div>
 
             {/* Footer */}
-            <div className="text-[8px] font-bold text-slate-400 flex justify-between items-center z-10 border-t border-gray-200 dark:border-white/10 pt-2 font-mono tabular-nums">
+            <div className="text-[8px] font-bold text-slate-400 flex justify-between items-center z-10 border-t border-gray-200 dark:border-white/10 pt-2 tabular-nums">
                 <span>Account Base: USD</span>
                 <span className="inline-flex items-center gap-1">
                     {hovered && (

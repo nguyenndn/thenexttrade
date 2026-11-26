@@ -74,7 +74,7 @@ export function ForexToolCard({ tool, fullTool }: ForexToolCardProps) {
                             className="group-hover:translate-x-1 transition-transform duration-200"
                         />
                     </span>
-                    <span className="text-[11px] font-mono tabular-nums font-semibold text-gray-400 dark:text-slate-500">
+                    <span className="text-[11px] tabular-nums font-semibold text-gray-400 dark:text-slate-500">
                         100% Free · No login
                     </span>
                 </div>

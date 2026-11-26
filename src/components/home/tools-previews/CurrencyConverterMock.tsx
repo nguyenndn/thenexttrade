@@ -16,7 +16,7 @@ export function CurrencyConverterMock() {
             <div className="absolute top-0 right-0 w-24 h-24 bg-gold/5 rounded-full blur-2xl pointer-events-none" />
 
             {/* Header */}
-            <div className="flex items-center justify-between z-10 font-mono tabular-nums text-[9px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest">
+            <div className="flex items-center justify-between z-10 tabular-nums text-[9px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest">
                 <span>Currency Converter</span>
                 <span className="text-amber-600 dark:text-gold font-black">
                     RATE: 1.0850
@@ -24,7 +24,7 @@ export function CurrencyConverterMock() {
             </div>
 
             {/* Inputs mockup */}
-            <div className="flex-1 flex flex-col justify-center gap-1.5 z-10 my-1 font-mono tabular-nums">
+            <div className="flex-1 flex flex-col justify-center gap-1.5 z-10 my-1 tabular-nums">
                 {/* Source currency input */}
                 <div className="bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 rounded-lg p-2 flex justify-between items-center text-[10px] font-bold text-slate-700 dark:text-slate-200">
                     <div className="flex items-center gap-1.5">
@@ -58,7 +58,7 @@ export function CurrencyConverterMock() {
             </div>
 
             {/* Footer */}
-            <div className="text-[8px] font-bold text-slate-400 dark:text-slate-400 flex justify-between items-center z-10 border-t border-gray-200 dark:border-white/10 pt-2 font-mono tabular-nums">
+            <div className="text-[8px] font-bold text-slate-400 dark:text-slate-400 flex justify-between items-center z-10 border-t border-gray-200 dark:border-white/10 pt-2 tabular-nums">
                 <span>Quotes: Real-time</span>
                 <span>Hover to swap directions</span>
             </div>

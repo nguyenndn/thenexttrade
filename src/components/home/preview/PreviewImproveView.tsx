@@ -3,7 +3,7 @@ import { Award, Bot, Sparkles, Target } from "lucide-react";
 
 export function PreviewImproveView() {
     return (
-        <div className="h-full flex flex-col justify-between gap-2 animate-in fade-in duration-300">
+        <div className="h-full flex-1 flex flex-col justify-between gap-2 animate-in fade-in duration-300">
             {/* Top: AI Weekly Coach Action Card */}
             <div className="p-2.5 rounded-lg bg-gold/[0.08] dark:bg-gold/[0.04] border border-gold/30 shadow-[0_8px_20px_rgba(245,158,11,0.08)] flex-1 flex flex-col justify-between">
                 <div className="flex items-center justify-between mb-1 shrink-0">
@@ -60,11 +60,11 @@ export function PreviewImproveView() {
                         <span className="text-[8px] text-gray-400 font-bold uppercase block">
                             Discipline Score
                         </span>
-                        <span className="text-xs font-mono tabular-nums font-black text-emerald-600 dark:text-emerald-400 block">
+                        <span className="text-xs tabular-nums font-black text-emerald-600 dark:text-emerald-400 block">
                             94 / 100
                         </span>
                     </div>
-                    <span className="px-1.5 py-0.5 rounded-lg font-mono tabular-nums text-[8px] font-black uppercase bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300">
+                    <span className="px-1.5 py-0.5 rounded-lg tabular-nums text-[8px] font-black uppercase bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300">
                         Top 5%
                     </span>
                 </div>
@@ -76,13 +76,13 @@ export function PreviewImproveView() {
                     <Target size={11} className="text-gold" />
                     <span className="text-gray-600 dark:text-gray-300 font-medium">
                         Weekly Focus:{" "}
-                        <span className="font-mono tabular-nums font-bold text-gray-900 dark:text-white">
+                        <span className="tabular-nums font-bold text-gray-900 dark:text-white">
                             10/10
                         </span>{" "}
                         trades checked
                     </span>
                 </div>
-                <span className="font-mono tabular-nums text-emerald-600 dark:text-emerald-400 font-bold">
+                <span className="tabular-nums text-emerald-600 dark:text-emerald-400 font-bold">
                     Next Review in 3d
                 </span>
             </div>

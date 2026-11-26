@@ -479,7 +479,7 @@ export function AccountsTable({
                                                     />
                                                 </div>
                                                 <div>
-                                                    <p className="font-bold text-gray-900 dark:text-white font-mono tabular-nums group-hover:text-primary transition-colors">
+                                                    <p className="font-bold text-gray-900 dark:text-white tabular-nums group-hover:text-primary transition-colors">
                                                         #{license.accountNumber}
                                                     </p>
                                                     <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">
@@ -516,7 +516,7 @@ export function AccountsTable({
                                                         size={13}
                                                         className="text-emerald-500 shrink-0"
                                                     />
-                                                    <span className="font-mono tabular-nums text-xs font-bold text-gray-800 dark:text-gray-200 select-all">
+                                                    <span className="tabular-nums text-xs font-bold tracking-wide text-gray-800 dark:text-gray-200 select-all">
                                                         {isRevealed
                                                             ? effectiveKey
                                                             : maskSyncApiKey(
@@ -578,7 +578,7 @@ export function AccountsTable({
                                                                     : "bg-gray-400"
                                                             }`}
                                                         />
-                                                        <span className="text-xs font-mono tabular-nums font-medium text-gray-700 dark:text-gray-300">
+                                                        <span className="text-xs tabular-nums font-medium text-gray-700 dark:text-gray-300">
                                                             {formatDistanceToNow(
                                                                 lastHbDate,
                                                                 {
@@ -589,7 +589,7 @@ export function AccountsTable({
                                                     </div>
                                                     {typeof license.balance ===
                                                         "number" && (
-                                                        <p className="text-xs font-mono tabular-nums text-gray-500 dark:text-gray-400">
+                                                        <p className="text-xs tabular-nums text-gray-500 dark:text-gray-400">
                                                             Bal: $
                                                             {license.balance.toLocaleString(
                                                                 "en-US",
@@ -626,7 +626,7 @@ export function AccountsTable({
 
                                         {/* Expiry / Note */}
                                         <td className="px-5 py-4 text-xs text-gray-600 dark:text-gray-300">
-                                            <p className="font-semibold font-mono tabular-nums">
+                                            <p className="font-semibold text-gray-800 dark:text-white tabular-nums">
                                                 {license.expiryDate
                                                     ? `Exp: ${format(
                                                           new Date(
@@ -778,7 +778,7 @@ export function AccountsTable({
                         </tbody>
                     </table>
                 </div>
-                <div className="border-t border-gray-200 dark:border-white/10 py-3 px-6 bg-gray-50/50 dark:bg-white/5 flex items-center justify-between text-sm text-gray-600 dark:text-gray-400 mt-auto font-mono tabular-nums">
+                <div className="border-t border-gray-200 dark:border-white/10 py-3 px-6 bg-gray-50/50 dark:bg-white/5 flex items-center justify-between text-xs font-medium text-gray-600 dark:text-gray-400 mt-auto tabular-nums">
                     <span>
                         Showing {filteredLicenses.length} of {licenses.length}{" "}
                         licenses

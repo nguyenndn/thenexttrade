@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { cn } from "@/lib/utils";
 import { HomeSectionHeading } from "@/components/home/HomeSectionHeading";
@@ -28,10 +28,9 @@ export function SpreadsheetComparisonSection({
                         </>
                     }
                     description="Excel tells you that you lost money on Thursday. TheNextTrade tells you why: 3x revenge lot size on Gold after London close."
-                    icon={Sparkles}
                     className="mb-8 max-w-none"
                     contentClassName="max-w-none"
-                    titleClassName="text-xl sm:text-2xl md:text-[23px] lg:text-[28px] xl:text-[32px] md:whitespace-nowrap md:[text-wrap:nowrap]"
+                    titleClassName="text-xl sm:text-2xl md:text-[23px] lg:text-[28px] xl:text-[32px] lg:whitespace-nowrap lg:[text-wrap:nowrap]"
                 />
 
                 <div className="w-full">

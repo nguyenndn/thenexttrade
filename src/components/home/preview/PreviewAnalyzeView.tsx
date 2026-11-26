@@ -2,14 +2,14 @@ import { BarChart3, TrendingUp } from "lucide-react";
 
 export function PreviewAnalyzeView() {
     return (
-        <div className="h-full flex flex-col justify-between gap-2 animate-in fade-in duration-300">
+        <div className="h-full flex-1 flex flex-col justify-between gap-2 animate-in fade-in duration-300">
             {/* Top 3 KPI Cards */}
             <div className="grid grid-cols-3 gap-2 shrink-0">
                 <div className="p-2 rounded-lg bg-white dark:bg-[#151925] border border-gray-200 dark:border-white/10 shadow-sm">
                     <span className="text-[9px] text-gray-500 font-bold uppercase tracking-wider block">
                         Net P/L
                     </span>
-                    <span className="text-xs sm:text-sm font-mono tabular-nums font-black text-emerald-600 dark:text-emerald-400 mt-0.5 flex items-center gap-0.5">
+                    <span className="text-xs sm:text-sm tabular-nums font-black text-emerald-600 dark:text-emerald-400 mt-0.5 flex items-center gap-0.5">
                         +$12,450.00 <TrendingUp size={11} className="hidden sm:inline" />
                     </span>
                 </div>
@@ -17,7 +17,7 @@ export function PreviewAnalyzeView() {
                     <span className="text-[9px] text-gray-500 font-bold uppercase tracking-wider block">
                         Win Rate
                     </span>
-                    <span className="text-xs sm:text-sm font-mono tabular-nums font-black text-gray-900 dark:text-white mt-0.5 block">
+                    <span className="text-xs sm:text-sm tabular-nums font-black text-gray-900 dark:text-white mt-0.5 block">
                         64.2%
                     </span>
                 </div>
@@ -25,7 +25,7 @@ export function PreviewAnalyzeView() {
                     <span className="text-[9px] text-gray-500 font-bold uppercase tracking-wider block">
                         Profit Factor
                     </span>
-                    <span className="text-xs sm:text-sm font-mono tabular-nums font-black text-gray-900 dark:text-white mt-0.5 block">
+                    <span className="text-xs sm:text-sm tabular-nums font-black text-gray-900 dark:text-white mt-0.5 block">
                         2.18
                     </span>
                 </div>
@@ -40,7 +40,7 @@ export function PreviewAnalyzeView() {
                             Equity Curve
                         </span>
                     </div>
-                    <span className="text-[9px] font-mono tabular-nums text-emerald-600 dark:text-emerald-400 font-bold">
+                    <span className="text-[9px] tabular-nums text-emerald-600 dark:text-emerald-400 font-bold">
                         Last 30 Days · +18.4%
                     </span>
                 </div>
@@ -95,13 +95,13 @@ export function PreviewAnalyzeView() {
                     <span className="text-gray-500 font-bold uppercase">Sessions:</span>
                     <span className="font-bold text-gray-800 dark:text-gray-200">
                         London{" "}
-                        <span className="text-emerald-600 dark:text-emerald-400 font-mono tabular-nums font-extrabold">
+                        <span className="text-emerald-600 dark:text-emerald-400 tabular-nums font-extrabold">
                             72.0%
                         </span>
                     </span>
                     <span className="font-bold text-gray-800 dark:text-gray-200">
                         New York{" "}
-                        <span className="text-emerald-600 dark:text-emerald-400 font-mono tabular-nums font-extrabold">
+                        <span className="text-emerald-600 dark:text-emerald-400 tabular-nums font-extrabold">
                             65.0%
                         </span>
                     </span>

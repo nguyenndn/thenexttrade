@@ -81,7 +81,7 @@ export function RejectLicenseModal({
                 <div className="space-y-6 py-4">
                     <p className="text-sm text-gray-600 dark:text-gray-300">
                         You are about to reject the request for account{" "}
-                        <span className="font-bold font-mono tabular-nums text-gray-700 dark:text-white">
+                        <span className="font-bold tabular-nums text-gray-700 dark:text-white">
                             {license.accountNumber}
                         </span>
                         .

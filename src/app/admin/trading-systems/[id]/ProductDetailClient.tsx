@@ -86,7 +86,7 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
                             className="shrink-0 gap-2 px-4 py-2 whitespace-nowrap"
                         >
                             <Users size={15} /> Telemetry & Accounts
-                            <span className="ml-1 rounded-lg bg-gray-200 px-1.5 py-0.5 text-[10px] font-mono tabular-nums font-bold text-gray-700 dark:bg-white/10 dark:text-gray-300">
+                            <span className="ml-1 rounded-lg bg-gray-200 px-1.5 py-0.5 text-[10px] tabular-nums font-bold text-gray-700 dark:bg-white/10 dark:text-gray-300">
                                 {allocationsCount}
                             </span>
                         </TabsTrigger>
@@ -113,7 +113,7 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
                                 <h3 className="text-base font-bold text-gray-700 dark:text-white">
                                     Recent Downloads
                                 </h3>
-                                <span className="text-xs font-mono tabular-nums font-bold text-gray-500 bg-gray-100 dark:bg-white/5 px-2.5 py-1 rounded-lg">
+                                <span className="text-xs tabular-nums font-bold text-gray-500 bg-gray-100 dark:bg-white/5 px-2.5 py-1 rounded-lg">
                                     {product._count?.downloads || 0} total
                                 </span>
                             </div>
@@ -146,12 +146,12 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
                                                             dl.user?.email ||
                                                             "Unknown"}
                                                     </p>
-                                                    <p className="text-[10px] text-gray-500 font-mono tabular-nums font-medium">
+                                                    <p className="text-[10px] text-gray-500 tabular-nums font-medium">
                                                         v{dl.version} · {dl.platform}
                                                     </p>
                                                 </div>
                                             </div>
-                                            <span className="text-[10px] text-gray-500 font-mono tabular-nums font-medium whitespace-nowrap">
+                                            <span className="text-[10px] text-gray-500 tabular-nums font-medium whitespace-nowrap">
                                                 {new Date(dl.createdAt).toLocaleDateString(
                                                     "en-GB",
                                                     {

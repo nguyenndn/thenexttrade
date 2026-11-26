@@ -13,12 +13,18 @@ import { DisciplineCockpit } from "./discipline-os/DisciplineCockpit";
  * The queries feeding that prop were removed from `src/app/page.tsx` in the
  * same change. Do not reintroduce a total-count contract here.
  */
-export function HomeTrustMetrics() {
+interface HomeTrustMetricsProps {
+    isLoggedIn?: boolean;
+}
+
+export function HomeTrustMetrics({
+    isLoggedIn = false,
+}: HomeTrustMetricsProps) {
     return (
         <section className="relative w-full overflow-hidden bg-white dark:bg-transparent pt-2 sm:pt-4 pb-16">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 {/* All-in-One Discipline OS Cockpit (Top Status Bar + Manifesto Header + 3 Foundational Pillars) */}
-                <DisciplineCockpit />
+                <DisciplineCockpit isLoggedIn={isLoggedIn} />
             </div>
         </section>
     );

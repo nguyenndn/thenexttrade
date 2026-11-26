@@ -45,7 +45,7 @@ export function CompoundingMock() {
             <div className="absolute top-0 right-0 w-24 h-24 bg-gold/5 rounded-full blur-2xl pointer-events-none" />
 
             {/* Header */}
-            <div className="flex items-center justify-between z-10 font-mono tabular-nums text-[9px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest">
+            <div className="flex items-center justify-between z-10 tabular-nums text-[9px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest">
                 <span>Compound Interest</span>
                 <span className="text-amber-600 dark:text-gold font-black">
                     {periods} PERIODS @ 10%
@@ -59,14 +59,14 @@ export function CompoundingMock() {
                     <span className="text-[7.5px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                         Future Balance
                     </span>
-                    <span className="text-2xl font-black text-amber-600 dark:text-gold tracking-tight font-mono tabular-nums transition-transform duration-300">
+                    <span className="text-2xl font-black text-amber-600 dark:text-gold tracking-tight tabular-nums transition-transform duration-300">
                         $
                         {balance.toLocaleString(undefined, {
                             minimumFractionDigits: 2,
                             maximumFractionDigits: 2,
                         })}
                     </span>
-                    <span className="text-[6.5px] font-bold font-mono tabular-nums text-slate-400 dark:text-slate-500">
+                    <span className="text-[6.5px] font-bold tabular-nums text-slate-400 dark:text-slate-500">
                         Principal: $1,000
                     </span>
                 </div>
@@ -88,7 +88,7 @@ export function CompoundingMock() {
             </div>
 
             {/* Footer */}
-            <div className="text-[8px] font-bold text-slate-400 dark:text-slate-400 flex justify-between items-center z-10 border-t border-gray-200 dark:border-white/10 pt-2 font-mono tabular-nums">
+            <div className="text-[8px] font-bold text-slate-400 dark:text-slate-400 flex justify-between items-center z-10 border-t border-gray-200 dark:border-white/10 pt-2 tabular-nums">
                 <span>Compounding Mode: Monthly</span>
                 <span className={hovered ? "text-amber-600 dark:text-gold font-bold" : ""}>
                     {hovered

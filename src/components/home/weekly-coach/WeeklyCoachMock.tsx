@@ -21,11 +21,11 @@ export function WeeklyCoachMock() {
                         <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
                         Sample Report
                     </span>
-                    <span className="text-[10px] font-mono tabular-nums font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
+                    <span className="text-[10px] tabular-nums font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
                         Week 42
                     </span>
                 </div>
-                <span className="text-[10px] font-mono text-gray-400 dark:text-gray-500">
+                <span className="text-[10px] text-gray-400 dark:text-gray-500">
                     audit.thenexttrade.app
                 </span>
             </div>
@@ -49,11 +49,11 @@ export function WeeklyCoachMock() {
                         </p>
                         <p className="mt-1 text-[11px] font-medium text-gray-600 dark:text-gray-400 leading-snug">
                             Lot size increased{" "}
-                            <span className="font-mono tabular-nums font-bold text-gray-800 dark:text-gray-200">
+                            <span className="tabular-nums font-bold text-gray-800 dark:text-gray-200">
                                 2.4×
                             </span>{" "}
                             on the trade immediately following a loss —{" "}
-                            <span className="font-mono tabular-nums font-bold text-gray-800 dark:text-gray-200">
+                            <span className="tabular-nums font-bold text-gray-800 dark:text-gray-200">
                                 3
                             </span>{" "}
                             occurrences this week.
@@ -77,8 +77,8 @@ export function WeeklyCoachMock() {
                             Prescribed Rule
                         </p>
                         <p className="text-xs sm:text-sm font-bold text-gray-900 dark:text-white leading-snug">
-                            Hard cap: <span className="font-mono tabular-nums">1.0%</span> risk for next{" "}
-                            <span className="font-mono tabular-nums">10</span> trades
+                            Hard cap: <span className="tabular-nums">1.0%</span> risk for next{" "}
+                            <span className="tabular-nums">10</span> trades
                         </p>
                         <p className="mt-1 text-[11px] font-medium text-gray-600 dark:text-gray-400 leading-snug">
                             Practice one rule until it becomes reflex. No
@@ -101,7 +101,7 @@ export function WeeklyCoachMock() {
                             10-Trade Sprint
                         </span>
                     </div>
-                    <span className="text-[10px] font-mono tabular-nums font-black text-gray-900 dark:text-white">
+                    <span className="text-[10px] tabular-nums font-black text-gray-900 dark:text-white">
                         3 / 10
                     </span>
                 </div>
@@ -112,7 +112,7 @@ export function WeeklyCoachMock() {
                     />
                 </div>
                 <p className="mt-2 text-[10px] font-medium text-gray-500 dark:text-gray-400">
-                    <span className="font-mono tabular-nums font-bold text-gray-700 dark:text-gray-300">
+                    <span className="tabular-nums font-bold text-gray-700 dark:text-gray-300">
                         7
                     </span>{" "}
                     trades remaining to complete this sprint.

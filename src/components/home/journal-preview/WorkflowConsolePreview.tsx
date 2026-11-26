@@ -55,7 +55,7 @@ export function WorkflowConsolePreview({
                                         : "text-gray-500 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-transparent"
                                 )}
                             >
-                                <span className="hidden sm:inline font-mono tabular-nums mr-0.5">
+                                <span className="hidden sm:inline tabular-nums mr-0.5">
                                     {step.number}
                                 </span>
                                 <span>{step.tag}</span>
@@ -79,7 +79,7 @@ export function WorkflowConsolePreview({
                     role="tabpanel"
                     id={`preview-panel-${activeStep}`}
                     aria-label={steps[activeStep]?.tag}
-                    className="w-full h-[265px] sm:h-[275px] overflow-hidden"
+                    className="w-full min-h-[296px] sm:min-h-[304px] flex-1 flex flex-col"
                 >
                     {activeStep === 0 && <PreviewConnectView />}
                     {activeStep === 1 && <PreviewAnalyzeView />}
@@ -88,7 +88,7 @@ export function WorkflowConsolePreview({
 
                 {/* Cockpit Status Bar Footer */}
                 <div className="mt-2.5 pt-2 border-t border-gray-100 dark:border-white/10 flex items-center justify-between gap-2 text-[10px] text-gray-400 shrink-0">
-                    <span className="font-mono text-[9px]">Illustrative sample data</span>
+                    <span className="text-[9px]">Illustrative sample data</span>
                     <span className="text-[9px] truncate">1-Click Sample Mode included inside dashboard</span>
                 </div>
             </div>

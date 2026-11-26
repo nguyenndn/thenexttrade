@@ -39,7 +39,7 @@ export function EconomicCalendarMock() {
             <div className="absolute top-0 right-0 w-24 h-24 bg-amber-500/5 rounded-full blur-2xl pointer-events-none" />
 
             {/* Header */}
-            <div className="flex items-center justify-between z-10 font-mono tabular-nums text-[9px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest">
+            <div className="flex items-center justify-between z-10 tabular-nums text-[9px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest">
                 <span>Economic Calendar</span>
                 <div className="flex items-center gap-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
@@ -50,7 +50,7 @@ export function EconomicCalendarMock() {
             </div>
 
             {/* News Entries */}
-            <div className="flex-1 flex flex-col justify-center gap-2.5 z-10 my-1 font-mono tabular-nums">
+            <div className="flex-1 flex flex-col justify-center gap-2.5 z-10 my-1 tabular-nums">
                 {/* News Item 1 */}
                 <div className="flex items-center justify-between text-[9px] font-bold border-b border-gray-200 dark:border-white/10 pb-1.5">
                     <div className="flex items-center gap-1.5">
@@ -97,7 +97,7 @@ export function EconomicCalendarMock() {
             </div>
 
             {/* Footer */}
-            <div className="text-[8px] font-bold text-slate-400 dark:text-slate-400 flex justify-between items-center z-10 border-t border-gray-200 dark:border-white/10 pt-2 font-mono tabular-nums">
+            <div className="text-[8px] font-bold text-slate-400 dark:text-slate-400 flex justify-between items-center z-10 border-t border-gray-200 dark:border-white/10 pt-2 tabular-nums">
                 <span>Data Feed: Live</span>
                 <span>Auto-countdown active</span>
             </div>

@@ -76,7 +76,7 @@ export function ApproveModal({ license, isOpen, onClose }: ApproveModalProps) {
                     </DialogTitle>
                     <DialogDescription>
                         You are approving account{" "}
-                        <span className="font-bold font-mono tabular-nums text-gray-700 dark:text-white">
+                        <span className="font-bold tabular-nums text-gray-700 dark:text-white">
                             {license.accountNumber}
                         </span>{" "}
                         for {license.user.name || license.user.email}

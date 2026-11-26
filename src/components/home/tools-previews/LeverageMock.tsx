@@ -15,7 +15,7 @@ export function LeverageMock() {
             <div className="absolute top-0 right-0 w-24 h-24 bg-gold/5 rounded-full blur-2xl pointer-events-none" />
 
             {/* Header */}
-            <div className="flex items-center justify-between z-10 font-mono tabular-nums text-[9px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest">
+            <div className="flex items-center justify-between z-10 tabular-nums text-[9px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest">
                 <span>Leverage Visualizer</span>
                 <span className="text-amber-600 dark:text-gold">RISK METRIC</span>
             </div>
@@ -25,7 +25,7 @@ export function LeverageMock() {
                 <span className="text-[8px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-0.5">
                     Effective Leverage
                 </span>
-                <span className="text-2xl font-black text-amber-600 dark:text-gold tracking-tight font-mono tabular-nums">
+                <span className="text-2xl font-black text-amber-600 dark:text-gold tracking-tight tabular-nums">
                     1:10
                 </span>
 
@@ -45,7 +45,7 @@ export function LeverageMock() {
                     <span className="text-[7px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                         Margin Used
                     </span>
-                    <span className="text-[10px] font-bold text-slate-700 dark:text-slate-200 font-mono tabular-nums mt-0.5">
+                    <span className="text-[10px] font-bold text-slate-700 dark:text-slate-200 tabular-nums mt-0.5">
                         10.00%
                     </span>
                 </div>
@@ -54,7 +54,7 @@ export function LeverageMock() {
                     <span className="text-[7px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                         Multiplier
                     </span>
-                    <span className="text-[10px] font-bold text-slate-700 dark:text-slate-200 font-mono tabular-nums mt-0.5">
+                    <span className="text-[10px] font-bold text-slate-700 dark:text-slate-200 tabular-nums mt-0.5">
                         10x
                     </span>
                 </div>
@@ -63,7 +63,7 @@ export function LeverageMock() {
                     <span className="text-[7px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                         1% Move
                     </span>
-                    <span className="text-[10px] font-bold text-amber-600 dark:text-gold font-mono tabular-nums mt-0.5">
+                    <span className="text-[10px] font-bold text-amber-600 dark:text-gold tabular-nums mt-0.5">
                         10% ACCT
                     </span>
                 </div>

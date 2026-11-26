@@ -79,7 +79,7 @@ export function ProductUsersTable({
                             <h3 className="text-base font-bold text-gray-900 dark:text-white">
                                 EA Farm Telemetry & Active Accounts
                             </h3>
-                            <span className="text-xs font-mono tabular-nums font-bold text-amber-600 dark:text-gold bg-gold/10 px-2.5 py-0.5 rounded-lg border border-gold/20">
+                            <span className="text-xs tabular-nums font-bold text-amber-600 dark:text-gold bg-gold/10 px-2.5 py-0.5 rounded-lg border border-gold/20">
                                 {users.length} allocations
                             </span>
                         </div>
@@ -114,10 +114,10 @@ export function ProductUsersTable({
                             <span>Confirmed EA Farm Capital</span>
                             <Wallet size={14} />
                         </div>
-                        <p className="text-lg font-extrabold text-gray-900 dark:text-white mt-1 font-mono tabular-nums">
+                        <p className="text-lg font-extrabold text-gray-900 dark:text-white mt-1 tabular-nums">
                             {formatMoney(farmStats.confirmedFarmBalanceUSD)}
                         </p>
-                        <p className="text-[11px] font-mono tabular-nums text-gray-500 dark:text-gray-400 mt-0.5">
+                        <p className="text-[11px] tabular-nums text-gray-500 dark:text-gray-400 mt-0.5">
                             Eq: {formatMoney(farmStats.confirmedFarmEquityUSD)} · {farmStats.confirmedAccountsCount} linked accts
                         </p>
                     </div>
@@ -127,10 +127,10 @@ export function ProductUsersTable({
                             <span>User Pool Capital</span>
                             <Layers size={14} />
                         </div>
-                        <p className="text-lg font-extrabold text-gray-900 dark:text-white mt-1 font-mono tabular-nums">
+                        <p className="text-lg font-extrabold text-gray-900 dark:text-white mt-1 tabular-nums">
                             {formatMoney(farmStats.userPoolBalanceUSD)}
                         </p>
-                        <p className="text-[11px] font-mono tabular-nums text-gray-500 dark:text-gray-400 mt-0.5">
+                        <p className="text-[11px] tabular-nums text-gray-500 dark:text-gray-400 mt-0.5">
                             Eq: {formatMoney(farmStats.userPoolEquityUSD)} · {farmStats.totalAccountsCount} total accts
                             {farmStats.demoAccountsCount > 0
                                 ? ` (${farmStats.demoAccountsCount} demo)`
@@ -156,14 +156,14 @@ export function ProductUsersTable({
                                     }`}
                                 />
                             </span>
-                            <p className="text-lg font-extrabold text-gray-900 dark:text-white font-mono tabular-nums">
+                            <p className="text-lg font-extrabold text-gray-900 dark:text-white tabular-nums">
                                 {farmStats.onlineAccountsCount} / {farmStats.totalAccountsCount}
                                 <span className="text-xs font-bold text-gray-400 dark:text-gray-500 ml-1">
                                     ({farmStats.liveAccountsCount} live)
                                 </span>
                             </p>
                         </div>
-                        <p className="text-[11px] font-mono tabular-nums text-gray-500 dark:text-gray-400 mt-0.5">
+                        <p className="text-[11px] tabular-nums text-gray-500 dark:text-gray-400 mt-0.5">
                             Fresh capital: {formatMoney(farmStats.confirmedFreshBalanceUSD)}
                         </p>
                     </div>
@@ -173,10 +173,10 @@ export function ProductUsersTable({
                             <span>Licensed Traders</span>
                             <Users size={14} />
                         </div>
-                        <p className="text-lg font-extrabold text-gray-900 dark:text-white mt-1 font-mono tabular-nums">
+                        <p className="text-lg font-extrabold text-gray-900 dark:text-white mt-1 tabular-nums">
                             {farmStats.uniqueTradersCount}
                         </p>
-                        <p className="text-[11px] font-mono tabular-nums text-gray-500 dark:text-gray-400 mt-0.5">
+                        <p className="text-[11px] tabular-nums text-gray-500 dark:text-gray-400 mt-0.5">
                             {users.length} account allocations
                         </p>
                     </div>
@@ -283,7 +283,7 @@ export function ProductUsersTable({
                                             <td className="py-3 px-4">
                                                 <div className="flex flex-col gap-0.5">
                                                     <div className="flex items-center gap-1.5 flex-wrap">
-                                                        <span className="font-mono tabular-nums font-bold text-gray-800 dark:text-gray-200">
+                                                        <span className="tabular-nums font-bold text-gray-800 dark:text-gray-200">
                                                             {user.accountNumber &&
                                                             user.accountNumber !== "—"
                                                                 ? `#${user.accountNumber}`
@@ -292,13 +292,13 @@ export function ProductUsersTable({
                                                         {user.platform &&
                                                             user.accountNumber !==
                                                                 "—" && (
-                                                                <span className="px-1.5 py-0.2 rounded-lg text-[10px] font-bold bg-gold/10 text-amber-600 dark:text-gold border border-gold/20 font-mono">
+                                                                <span className="px-1.5 py-0.2 rounded-lg text-[10px] font-bold bg-gold/10 text-amber-600 dark:text-gold border border-gold/20">
                                                                     {user.platform}
                                                                 </span>
                                                             )}
                                                         {user.accountType && (
                                                             <span
-                                                                className={`px-1.5 py-0.2 rounded-lg text-[10px] font-bold border font-mono ${
+                                                                className={`px-1.5 py-0.2 rounded-lg text-[10px] font-bold border ${
                                                                     isDemo
                                                                         ? "bg-gray-500/10 text-gray-600 dark:text-gray-400 border-gray-500/20"
                                                                         : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
@@ -331,7 +331,7 @@ export function ProductUsersTable({
                                                 user.balance !== undefined ? (
                                                     <div className="flex flex-col gap-0.5">
                                                         <span
-                                                            className={`font-mono tabular-nums font-bold text-xs ${
+                                                            className={`tabular-nums font-bold text-xs ${
                                                                 isDemo
                                                                     ? "text-gray-500 dark:text-gray-400"
                                                                     : "text-gray-900 dark:text-white"
@@ -342,7 +342,7 @@ export function ProductUsersTable({
                                                                 user.currency || "USD"
                                                             )}
                                                         </span>
-                                                        <span className="text-[11px] text-gray-500 dark:text-gray-400 font-mono tabular-nums">
+                                                        <span className="text-[11px] text-gray-500 dark:text-gray-400 tabular-nums">
                                                             Eq:{" "}
                                                             {formatMoney(
                                                                 user.equity ??
@@ -383,7 +383,7 @@ export function ProductUsersTable({
                                                                 }`}
                                                             />
                                                         </span>
-                                                        <span className="text-xs font-mono tabular-nums font-medium text-gray-800 dark:text-gray-200">
+                                                        <span className="text-xs tabular-nums font-medium text-gray-800 dark:text-gray-200">
                                                             {lastSignal
                                                                 ? formatDistanceToNow(
                                                                       new Date(
@@ -397,7 +397,7 @@ export function ProductUsersTable({
                                                         </span>
                                                     </div>
                                                     {user.grantedAt && (
-                                                        <span className="text-[10px] font-mono tabular-nums text-gray-400 pl-4">
+                                                        <span className="text-[10px] tabular-nums text-gray-400 pl-4">
                                                             Granted{" "}
                                                             {format(
                                                                 new Date(

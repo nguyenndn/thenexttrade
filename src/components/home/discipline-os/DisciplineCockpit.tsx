@@ -2,7 +2,13 @@ import { Target, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { MissionManifestoHeader } from "./MissionManifestoHeader";
 
-export function DisciplineCockpit() {
+interface DisciplineCockpitProps {
+    isLoggedIn?: boolean;
+}
+
+export function DisciplineCockpit({
+    isLoggedIn = false,
+}: DisciplineCockpitProps) {
     return (
         <div className="relative isolate overflow-hidden rounded-xl border border-gray-200 dark:border-white/10 bg-white/90 dark:bg-[#0D111C] backdrop-blur-2xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.08)] dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)]">
             {/* Ambient Subtle Warm Depth */}
@@ -53,7 +59,7 @@ export function DisciplineCockpit() {
                 <div
                     className="group relative flex flex-col p-6 sm:p-7 md:px-5 md:py-6 lg:p-7 transition-colors duration-200 hover:bg-gray-50/80 dark:hover:bg-white/[0.02]"
                 >
-                    <div className="text-[10px] xl:text-[11px] font-mono tabular-nums font-extrabold uppercase tracking-wide xl:tracking-wider text-gold mb-1.5">
+                    <div className="text-[10px] xl:text-[11px] tabular-nums font-extrabold uppercase tracking-wide xl:tracking-wider text-gold mb-1.5">
                         Pillar 01 · No More Manual Logging
                     </div>
 
@@ -70,7 +76,7 @@ export function DisciplineCockpit() {
                 <div
                     className="group relative flex flex-col p-6 sm:p-7 md:px-5 md:py-6 lg:p-7 transition-colors duration-200 hover:bg-gray-50/80 dark:hover:bg-white/[0.02]"
                 >
-                    <div className="text-[10px] xl:text-[11px] font-mono tabular-nums font-extrabold uppercase tracking-wide xl:tracking-wider text-gold mb-1.5">
+                    <div className="text-[10px] xl:text-[11px] tabular-nums font-extrabold uppercase tracking-wide xl:tracking-wider text-gold mb-1.5">
                         Pillar 02 · It Names The Mistake
                     </div>
 
@@ -87,7 +93,7 @@ export function DisciplineCockpit() {
                 <div
                     className="group relative flex flex-col p-6 sm:p-7 md:px-5 md:py-6 lg:p-7 transition-colors duration-200 hover:bg-gray-50/80 dark:hover:bg-white/[0.02]"
                 >
-                    <div className="text-[10px] xl:text-[11px] font-mono tabular-nums font-extrabold uppercase tracking-wide xl:tracking-wider text-gold mb-1.5">
+                    <div className="text-[10px] xl:text-[11px] tabular-nums font-extrabold uppercase tracking-wide xl:tracking-wider text-gold mb-1.5">
                         Pillar 03 · One Fix At A Time
                     </div>
 
@@ -103,7 +109,7 @@ export function DisciplineCockpit() {
 
             {/* 4. VALUE FLOW FOOTER */}
             <div className="flex flex-col items-center md:flex-row md:items-center justify-center md:justify-between gap-3 md:gap-4 border-t border-gray-200 dark:border-white/[0.08] px-4 py-3.5 sm:px-6 lg:px-7 bg-gray-50/70 dark:bg-[#151925] text-xs text-gray-600 dark:text-gray-400 text-center md:text-left">
-                <div className="flex flex-wrap items-center justify-center md:justify-start gap-2.5 sm:gap-3 lg:gap-6 font-mono tabular-nums font-semibold text-[11px] lg:text-xs">
+                <div className="flex flex-wrap items-center justify-center md:justify-start gap-2.5 sm:gap-3 lg:gap-6 tabular-nums font-semibold text-[11px] lg:text-xs">
                     <span className="flex items-center gap-1.5 text-gray-800 dark:text-gray-200 whitespace-nowrap">
                         <span className="w-1.5 h-1.5 rounded-full bg-gold" />
                         1. Auto-log
@@ -121,10 +127,10 @@ export function DisciplineCockpit() {
                 </div>
 
                 <Link
-                    href="/auth/signup"
+                    href={isLoggedIn ? "/dashboard" : "/auth/signup"}
                     className="inline-flex items-center justify-center gap-1.5 font-sans font-bold text-gold hover:underline text-[11px] lg:text-xs whitespace-nowrap shrink-0 self-center md:self-auto"
                 >
-                    <span>Sync My MT5 — Free</span>
+                    <span>{isLoggedIn ? "Open My Journal" : "Sync My MT5 — Free"}</span>
                     <ArrowRight size={13} className="shrink-0" />
                 </Link>
             </div>

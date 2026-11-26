@@ -1,4 +1,4 @@
-import { Wrench, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { FadeIn } from "@/components/ui/FadeIn";
 import Link from "next/link";
 import { ALL_TOOLS } from "@/config/tools-data";
@@ -55,7 +55,6 @@ export function WebForexTools() {
                             title="Know your risk before you enter"
                             highlight="risk"
                             description="Amateur traders guess their position size; professional traders calculate it. Model lot size, pip values, and drawdown odds before taking execution."
-                            icon={Wrench}
                         />
                         <div className="mt-3">
                             <Link

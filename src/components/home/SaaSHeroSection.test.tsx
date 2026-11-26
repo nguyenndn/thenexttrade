@@ -91,7 +91,7 @@ describe("SaaSHeroSection", () => {
         // it. Anything longer and the hero stops being scannable.
         expect(html).toContain("The strategy was never the problem — the revenge size after a red");
         expect(html).toContain("We sync every MT5 trade via EA or Cloud and show the exact moment discipline broke.");
-        expect(html).toContain("lg:whitespace-nowrap");
+        expect(html).toContain("xl:whitespace-nowrap");
 
         // The old copy ran to three lines and re-explained the thesis twice.
         expect(html).not.toContain("The stop you moved at 2am was.");
