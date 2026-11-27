@@ -173,6 +173,7 @@ export function MobileBottomTabBar() {
                                     <Link
                                         key={item.href}
                                         href={resolvedHref}
+                                        prefetch={false}
                                         className={cn(
                                             "flex items-center gap-3 px-4 py-3 rounded-lg text-sm nav-menu-text transition-colors",
                                             isActive
@@ -268,6 +269,7 @@ export function MobileBottomTabBar() {
                                     key={group.label}
                                     href={singleDirectHref}
                                     onClick={() => setOpenGroup(null)}
+                                    prefetch={false}
                                     className={cn(
                                         "flex flex-col items-center justify-center gap-1 flex-1 h-full transition-colors relative font-normal",
                                         isActive

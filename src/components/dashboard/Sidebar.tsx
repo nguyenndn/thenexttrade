@@ -134,6 +134,7 @@ function SidebarItemComponent({
                         <Link
                             href={resolvedItemHref}
                             aria-label={item.name}
+                            prefetch={false}
                             className="absolute inset-0 z-0"
                         />
                     )}
@@ -189,6 +190,7 @@ function SidebarItemComponent({
                             <Link
                                 key={subItem.name}
                                 href={resolvedSubHref}
+                                prefetch={false}
                                 className={cn(
                                     "flex items-center gap-2 py-1.5 pl-2 pr-3 rounded-lg text-[13px] font-semibold transition-colors relative",
                                     isSubActive

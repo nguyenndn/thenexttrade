@@ -142,6 +142,7 @@ function MobileSidebarItem({
                                         key={sub.name}
                                         href={resolvedSubHref}
                                         onClick={onClose}
+                                        prefetch={false}
                                         className={cn(
                                             "flex items-center gap-2 py-1.5 pl-1.5 pr-3 rounded-lg text-[13px] font-semibold transition-colors relative",
                                             isSubActive
@@ -168,6 +169,7 @@ function MobileSidebarItem({
                 <Link
                     href={resolvedItemHref}
                     onClick={onClose}
+                    prefetch={false}
                     className={cn(
                         "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm nav-menu-text transition-colors mb-0.5",
                         isActive
