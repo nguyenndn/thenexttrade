@@ -32,6 +32,9 @@ export default async function SessionAnalysisPage({
         redirect("/auth/login");
     }
 
+    // Independent of account resolution — start it now so it overlaps.
+    const tradingDataStatePromise = getUserTradingDataState(user.id);
+
     let accountId =
         typeof resolvedParams?.accountId === "string"
             ? resolvedParams.accountId
@@ -43,7 +46,7 @@ export default async function SessionAnalysisPage({
         accountId = await resolveDefaultAccountId(user.id, lastAccountId);
     }
 
-    const tradingDataState = await getUserTradingDataState(user.id);
+    const tradingDataState = await tradingDataStatePromise;
 
     return (
         <div className="space-y-2 md:space-y-4">

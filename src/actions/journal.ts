@@ -857,19 +857,16 @@ export async function getUserTags(): Promise<string[]> {
     const user = await getAuthUser();
     if (!user) return [];
 
-    const result = await prisma.journalEntry.findMany({
-        where: { userId: user.id },
-        select: { tags: true },
-        distinct: ["tags"],
-    });
+    // Flatten + dedupe in Postgres: `distinct: ["tags"]` used to ship one row
+    // per distinct tag-array back to Node just to re-dedupe it here.
+    const rows = await prisma.$queryRaw<Array<{ tag: string }>>`
+        SELECT DISTINCT unnest("tags") AS "tag"
+        FROM "journal_entries"
+        WHERE "userId" = ${user.id}::uuid
+          AND "tags" IS NOT NULL
+    `;
 
-    // Flatten and deduplicate
-    const allTags = new Set<string>();
-    result.forEach((entry) => {
-        entry.tags.forEach((tag) => allTags.add(tag));
-    });
-
-    return Array.from(allTags).sort();
+    return rows.map((row) => row.tag).sort();
 }
 
 /**

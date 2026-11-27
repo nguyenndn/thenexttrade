@@ -1,9 +1,9 @@
+import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import {
     buildPnlScaleSql,
     getKeyStats,
-    getCurrentStreak,
     getDayOfWeekPerformance,
     getSymbolPerformance,
 } from "@/lib/analytics-queries";
@@ -775,6 +775,28 @@ async function getQuickScore(
 }
 
 /**
+ * A completed week is a closed window: re-running its 4 queries on every page
+ * load returns the same score. Cache it per exact window (the key carries both
+ * ISO bounds, so a new day simply produces a new key and recomputes).
+ */
+const getCachedQuickScore = unstable_cache(
+    async (
+        userId: string,
+        accountId: string | null,
+        startIso: string,
+        endIso: string
+    ) =>
+        getQuickScore(
+            userId,
+            accountId ?? undefined,
+            new Date(startIso),
+            new Date(endIso)
+        ),
+    ["intelligence-week-score"],
+    { revalidate: 3600, tags: ["intelligence-score-history"] }
+);
+
+/**
  * Get score history for the last N weeks.
  * Returns weekly score data points for trend chart.
  */
@@ -798,9 +820,19 @@ export async function getScoreHistory(
         weekRanges.push({ start: weekStart, end: weekEnd });
     }
 
+    // The trailing week is still moving, so compute it live; every earlier
+    // window is closed and can come from cache (4 queries instead of 48).
+    const liveIndex = weekRanges.length - 1;
     const results = await Promise.all(
-        weekRanges.map(({ start, end }) =>
-            getQuickScore(userId, accountId, start, end)
+        weekRanges.map(({ start, end }, index) =>
+            index === liveIndex
+                ? getQuickScore(userId, accountId, start, end)
+                : getCachedQuickScore(
+                      userId,
+                      accountId ?? null,
+                      start.toISOString(),
+                      end.toISOString()
+                  )
         )
     );
 
@@ -835,7 +867,6 @@ export async function getIntelligenceData(
     // Run all queries in parallel, reusing pre-fetched dashboard aggregations when provided
     const [
         stats,
-        _streak,
         dayOfWeek,
         symbols,
         sessions,
@@ -847,7 +878,6 @@ export async function getIntelligenceData(
         precomputed?.stats
             ? Promise.resolve(precomputed.stats)
             : getKeyStats(userId, accountId, startDate, endDate),
-        getCurrentStreak(userId, accountId),
         precomputed?.dayOfWeek
             ? Promise.resolve(precomputed.dayOfWeek)
             : getDayOfWeekPerformance(
@@ -860,6 +890,8 @@ export async function getIntelligenceData(
         precomputed?.symbols
             ? Promise.resolve(precomputed.symbols)
             : getSymbolPerformance(userId, accountId, startDate, endDate),
+        // NOTE: this is the stored `trading_session` breakdown, not the entry-hour
+        // buckets from analytics-queries.ts — the two are not interchangeable.
         getSessionPerformance(userId, accountId, startDate, endDate),
         getRevengeTradePatterns(userId, accountId, startDate, endDate),
         getPlanCompliance(userId, accountId, startDate, endDate),

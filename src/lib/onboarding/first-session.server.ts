@@ -80,9 +80,16 @@ export async function getFirstSessionState(
     const { onboarding, userCreatedAt } = await readSettings(userId);
     const firstSession = onboarding.firstSession || {};
 
+    // Once the wizard itself is completed its live counts are never rendered
+    // (the launcher, the first-sync toast and the auto-open all require an
+    // unfinished state), so skip the full-history COUNT(*) on journal_entries.
+    const isWizardFinished = Boolean(firstSession.completedAt);
+
     // Parallel data queries
     const [journalTradeCount, accounts, reportCount] = await Promise.all([
-        prisma.journalEntry.count({ where: { userId } }),
+        isWizardFinished
+            ? Promise.resolve(0)
+            : prisma.journalEntry.count({ where: { userId } }),
         prisma.tradingAccount.findMany({
             where: { userId },
             select: {

@@ -35,13 +35,15 @@ export default async function IntelligencePage({
     if (!user) {
         redirect("/auth/login");
     }
-    const tradingDataState = await getUserTradingDataState(user.id);
-
-    // Account filter (Priority 1: Main Account from /dashboard/accounts)
-    const userAccounts = await prisma.tradingAccount.findMany({
-        where: { userId: user.id },
-        select: { id: true, timezone: true },
-    });
+    // Account filter (Priority 1: Main Account from /dashboard/accounts).
+    // Both queries are independent — resolve them together.
+    const [tradingDataState, userAccounts] = await Promise.all([
+        getUserTradingDataState(user.id),
+        prisma.tradingAccount.findMany({
+            where: { userId: user.id },
+            select: { id: true, timezone: true },
+        }),
+    ]);
 
     const rawAccountId =
         typeof resolvedParams?.accountId === "string"

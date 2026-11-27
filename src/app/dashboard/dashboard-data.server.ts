@@ -46,6 +46,28 @@ import {
     normalizeCurrencyCode,
 } from "@/lib/utils/cent-account";
 
+// ─── Write-path throttling ──────────────────────────────────────────────
+// Signal persistence, milestone checks and coach notifications are
+// bookkeeping, not render data. Running them on every dashboard load
+// multiplies DB writes under traffic; once per user per 5 minutes is
+// enough for every surface they feed.
+const WRITE_PATH_THROTTLE_MS = 5 * 60_000;
+const writePathLastRun = new Map<string, number>();
+
+function shouldRunWritePath(userId: string): boolean {
+    const now = Date.now();
+    const last = writePathLastRun.get(userId);
+    if (last && now - last < WRITE_PATH_THROTTLE_MS) return false;
+    writePathLastRun.set(userId, now);
+    // Keep the map bounded on long-lived processes
+    if (writePathLastRun.size > 5000) {
+        for (const [key, ts] of writePathLastRun) {
+            if (now - ts > WRITE_PATH_THROTTLE_MS) writePathLastRun.delete(key);
+        }
+    }
+    return true;
+}
+
 // ─── Types ──────────────────────────────────────────────────────────────
 
 export interface DashboardData {
@@ -390,10 +412,12 @@ export async function getEmptyDashboardData(
         weeklyReviewEligibility,
     });
 
-    // Fire-and-forget coach notification trigger
-    triggerCoachNotifications(userId).catch(() => {
-        /* silent */
-    });
+    // Fire-and-forget coach notification trigger (throttled per user)
+    if (shouldRunWritePath(userId)) {
+        triggerCoachNotifications(userId).catch(() => {
+            /* silent */
+        });
+    }
 
     const resolvedCurrency =
         accountCurrency ||
@@ -567,8 +591,42 @@ export async function getFullDashboardData(
         userId,
         accountId: accountId || undefined,
     });
+    const sessionPerformancePromise = getSessionPerformance(
+        userId,
+        accountId,
+        startDate,
+        endDate,
+        filters
+    );
 
-    // Pipeline intelligenceData off already-in-flight stats/dayOfWeek/symbols so those 3 SQL queries never run twice
+    // Last-7-days win rate: when the selected range already covers the last
+    // 7 days (and runs up to now), derive it from the range rows instead of
+    // scanning journal_entries a second time.
+    const last7Start = subDays(new Date(), 6);
+    const last7StartKey = format(last7Start, "yyyy-MM-dd");
+    const canDeriveLast7 =
+        startDate.getTime() <= last7Start.getTime() &&
+        endDate.getTime() >= Date.now();
+    const last7Promise = canDeriveLast7
+        ? Promise.resolve(null)
+        : getDailyPerformance(
+              userId,
+              accountId,
+              last7Start,
+              new Date(),
+              accountTimezone,
+              filters
+          );
+
+    // Single-day charts need the trade-by-trade series; start it with the rest
+    // of the wave instead of after it.
+    const isSingleDay = fromParam === toParam;
+    const intradayPromise = isSingleDay
+        ? getIntradayPerformance(userId, accountId, startDate, endDate)
+        : Promise.resolve(null);
+
+    // Pipeline intelligenceData off already-in-flight aggregations so those
+    // SQL queries never run twice (stats/dayOfWeek/symbols)
     const intelligencePromise = Promise.all([
         dashboardStatsPromise,
         dayOfWeekPromise,
@@ -650,13 +708,14 @@ export async function getFullDashboardData(
         sessionPerformance,
         dayOfWeekPerformance,
         intelligenceData,
-        dailyWinRateLast7,
+        dailyWinRateRows,
         latestReport,
         userDashboards,
         firstSessionState,
         activeCoachPlan,
         weeklyReviewEligibility,
         coachGraph,
+        intradayTrades,
     ] = await measurePerformance("dashboard_data_fetch", "db", () =>
         Promise.all([
             userDataPromise,
@@ -702,23 +761,10 @@ export async function getFullDashboardData(
             symbolStatsPromise,
             getTopTrades(userId, accountId, startDate, endDate, filters),
             getLotDistribution(userId, accountId, startDate, endDate, filters),
-            getSessionPerformance(
-                userId,
-                accountId,
-                startDate,
-                endDate,
-                filters
-            ),
+            sessionPerformancePromise,
             dayOfWeekPromise,
             intelligencePromise,
-            getDailyPerformance(
-                userId,
-                accountId,
-                subDays(new Date(), 6),
-                new Date(),
-                accountTimezone,
-                filters
-            ),
+            last7Promise,
             prisma.tradingReport.findFirst({
                 where: { userId },
                 orderBy: { createdAt: "desc" },
@@ -748,6 +794,7 @@ export async function getFullDashboardData(
             }),
             weeklyReviewPromise,
             coachAndGrowthPromise,
+            intradayPromise,
         ])
     );
 
@@ -797,10 +844,15 @@ export async function getFullDashboardData(
         toParam,
         startDate,
         endDate,
-        dailyPerformance
+        dailyPerformance,
+        intradayTrades
     );
 
-    // Daily win rates (always last 7 days)
+    // Daily win rates (always last 7 days) — derived from the range rows when
+    // the selected range already covers them, otherwise fetched above.
+    const dailyWinRateLast7 =
+        dailyWinRateRows ??
+        dailyPerformance.filter((day) => day.date >= last7StartKey);
     const dailyWinRates = buildDailyWinRates(dailyWinRateLast7);
 
     // Symbol performance for pie chart (net profitable symbols only)
@@ -844,20 +896,23 @@ export async function getFullDashboardData(
 
     const nextBestAction = growthViewModel.nextAction;
 
-    // Fire-and-forget milestone check
-    checkAndTriggerMilestones(userId, {
-        tradeCount: recentTrades.length > 0 ? globalTradeCount : 0,
-        accountCount: accounts.length,
-    }).catch(() => {
-        /* silent */
-    });
-
-    // Fire-and-forget signal persistence + coach notification trigger (never block GET /dashboard TTFB)
-    persistTraderSignals(userId, signals)
-        .then(() => triggerCoachNotifications(userId))
-        .catch(() => {
+    // Fire-and-forget write-path (throttled per user): milestone checks, signal
+    // persistence and coach notifications are bookkeeping and never block
+    // GET /dashboard TTFB.
+    if (shouldRunWritePath(userId)) {
+        checkAndTriggerMilestones(userId, {
+            tradeCount: recentTrades.length > 0 ? globalTradeCount : 0,
+            accountCount: accounts.length,
+        }).catch(() => {
             /* silent */
         });
+
+        persistTraderSignals(userId, signals)
+            .then(() => triggerCoachNotifications(userId))
+            .catch(() => {
+                /* silent */
+            });
+    }
 
     const showFirstWeeklyReview =
         weeklyReviewEligibility.ready &&
@@ -1068,23 +1123,26 @@ async function buildChartData(
     toParam: string,
     startDate: Date,
     endDate: Date,
-    dailyPerformance: any[]
+    dailyPerformance: any[],
+    intradayTrades: Awaited<ReturnType<typeof getIntradayPerformance>> | null
 ): Promise<{ date: string; balance: number }[]> {
     const isSingleDay = fromParam === toParam;
 
     if (isSingleDay) {
-        const intradayTrades = await getIntradayPerformance(
-            userId,
-            accountId,
-            startDate,
-            endDate
-        );
+        const trades =
+            intradayTrades ??
+            (await getIntradayPerformance(
+                userId,
+                accountId,
+                startDate,
+                endDate
+            ));
         const BUCKET_MS = 15 * 60 * 1000;
         const dayStartTime = new Date(`${fromParam}T00:00:00`).getTime();
         const nowTime = Date.now();
 
         let cumPnl = 0;
-        const tradePoints = intradayTrades.map((t) => {
+        const tradePoints = trades.map((t) => {
             cumPnl += t.pnl;
             return { time: new Date(t.date).getTime(), balance: cumPnl };
         });

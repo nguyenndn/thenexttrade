@@ -1,6 +1,13 @@
+import { cache } from "react";
 import { prisma } from "@/lib/prisma";
 
-export async function getUserTradingDataState(userId: string) {
+/**
+ * Per-request memoised. The layout (onboarding gate) and the page body can both
+ * ask for this state within one render, and it costs a full-history COUNT(*)
+ * on journal_entries — `cache()` makes the second caller free instead of
+ * repeating both queries.
+ */
+export const getUserTradingDataState = cache(async (userId: string) => {
     const [accounts, journalTradeCount] = await Promise.all([
         prisma.tradingAccount.findMany({
             where: { userId },
@@ -42,4 +49,4 @@ export async function getUserTradingDataState(userId: string) {
         firstAccountCreatedAt: accounts[0]?.createdAt,
         firstAccountId: accounts[0]?.id,
     };
-}
+});

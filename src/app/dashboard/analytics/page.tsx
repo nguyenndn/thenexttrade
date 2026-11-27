@@ -55,13 +55,15 @@ export default async function AnalyticsPage({
     if (!user) {
         redirect("/auth/login");
     }
-    const tradingDataState = await getUserTradingDataState(user.id);
-
-    // 1. Account & Date Filters
-    const userAccounts = await prisma.tradingAccount.findMany({
-        where: { userId: user.id },
-        select: { id: true, timezone: true },
-    });
+    // 1. Account & Date Filters — state and account list are independent, so
+    // resolve them together instead of stacking two round-trips.
+    const [tradingDataState, userAccounts] = await Promise.all([
+        getUserTradingDataState(user.id),
+        prisma.tradingAccount.findMany({
+            where: { userId: user.id },
+            select: { id: true, timezone: true },
+        }),
+    ]);
 
     const rawAccountId =
         typeof resolvedParams?.accountId === "string"
