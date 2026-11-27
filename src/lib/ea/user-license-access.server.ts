@@ -23,6 +23,10 @@ export function buildCandidateProductSlugs(rawSlug: string): string[] {
         return SHADOW_MATRIX_SLUG_ALIASES;
     }
 
+    if (trimmed === "snr-system" || trimmed === "gsn-snr-system") {
+        return ["snr-system", "gsn-snr-system"];
+    }
+
     return [trimmed];
 }
 
