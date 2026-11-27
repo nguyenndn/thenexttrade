@@ -59,24 +59,45 @@ async function getMaintenanceConfig(
 // =============================================================================
 // SESSION + ROUTE PROTECTION
 // =============================================================================
+/**
+ * Internal request header carrying the user id the proxy just verified.
+ * Empty string = the session was verified and there is no user.
+ * Kept in sync with `AUTH_USER_ID_HEADER` in `src/lib/auth-cache.ts`.
+ */
+const AUTH_USER_ID_HEADER = "x-auth-user-id";
+
 export async function updateSession(
     request: NextRequest,
     extraRequestHeaders?: Record<string, string>
 ) {
-    // Rebuild the forwarded request headers on every NextResponse.next() so the
-    // proxy-provided nonce/CSP survive cookie refreshes performed by setAll().
-    const nextWithRequestHeaders = () => {
-        if (!extraRequestHeaders) {
-            return NextResponse.next({ request: { headers: request.headers } });
-        }
-        const headers = new Headers(request.headers);
-        for (const [name, value] of Object.entries(extraRequestHeaders)) {
-            headers.set(name, value);
-        }
-        return NextResponse.next({ request: { headers } });
-    };
+    // Cookies refreshed by Supabase during getUser() can only be applied to a
+    // response built after the user is known, because that response is the one
+    // that must also carry the verified identity header.
+    let refreshedCookies: {
+        name: string;
+        value: string;
+        options?: Parameters<NextResponse["cookies"]["set"]>[2];
+    }[] = [];
 
-    let response = nextWithRequestHeaders();
+    const buildForwardedResponse = (userId: string | null) => {
+        // Rebuild the forwarded request headers on every NextResponse.next() so
+        // the proxy-provided nonce/CSP survive cookie refreshes, and so a
+        // client-supplied identity header can never pass through: it is always
+        // replaced by the session we just verified.
+        const headers = new Headers(request.headers);
+        headers.delete(AUTH_USER_ID_HEADER);
+        headers.set(AUTH_USER_ID_HEADER, userId ?? "");
+        if (extraRequestHeaders) {
+            for (const [name, value] of Object.entries(extraRequestHeaders)) {
+                headers.set(name, value);
+            }
+        }
+        const next = NextResponse.next({ request: { headers } });
+        for (const { name, value, options } of refreshedCookies) {
+            next.cookies.set(name, value, options);
+        }
+        return next;
+    };
 
     // Create client to check session
     const supabase = createServerClient(
@@ -94,10 +115,7 @@ export async function updateSession(
                     cookiesToSet.forEach(({ name, value }) =>
                         request.cookies.set(name, value)
                     );
-                    response = nextWithRequestHeaders();
-                    cookiesToSet.forEach(({ name, value, options }) =>
-                        response.cookies.set(name, value, options)
-                    );
+                    refreshedCookies = cookiesToSet;
                 },
             },
         }
@@ -106,6 +124,10 @@ export async function updateSession(
     const {
         data: { user },
     } = await supabase.auth.getUser();
+
+    // Response forwarded to the app, stamped with the verified identity so the
+    // server components (src/lib/auth-cache.ts) do not call Supabase again.
+    const response = buildForwardedResponse(user?.id ?? null);
 
     const path = request.nextUrl.pathname;
 

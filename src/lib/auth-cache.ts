@@ -1,26 +1,57 @@
 import { cache } from "react";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { AuthUser } from "@/lib/auth-types";
 
+/**
+ * Internal request header stamped by the proxy
+ * (`src/lib/supabase/middleware.ts`) after it verified the Supabase session.
+ * Empty string = verified anonymous request.
+ * Keep both copies of this constant in sync.
+ */
+const AUTH_USER_ID_HEADER = "x-auth-user-id";
+
 export const getAuthUser = cache(async (): Promise<AuthUser | null> => {
-    const supabase = await createClient();
-    const {
-        data: { user },
-    } = await supabase.auth.getUser();
+    let forwardedUserId: string | null = null;
+    let impersonatedId: string | undefined;
 
-    if (!user) return null;
+    try {
+        const [headerStore, cookieStore] = await Promise.all([
+            headers(),
+            cookies(),
+        ]);
+        forwardedUserId = headerStore.get(AUTH_USER_ID_HEADER);
+        impersonatedId = cookieStore.get("impersonate_user_id")?.value;
+    } catch {
+        // Outside a request scope (e.g. build-time render) — fall back below.
+    }
 
-    let effectiveUserId = user.id;
+    let userId: string;
+    if (forwardedUserId !== null && !impersonatedId) {
+        // The proxy already called Supabase for this request; trust its result
+        // instead of paying a second network round-trip here.
+        if (!forwardedUserId) return null;
+        userId = forwardedUserId;
+    } else {
+        // No proxy proof (unrouted context), or impersonation is active and we
+        // need the real admin identity: verify the session ourselves.
+        const supabase = await createClient();
+        const {
+            data: { user },
+        } = await supabase.auth.getUser();
+
+        if (!user) return null;
+        userId = user.id;
+    }
+
+    let effectiveUserId = userId;
     let isImpersonated = false;
 
     try {
-        const cookieStore = await cookies();
-        const impersonatedId = cookieStore.get("impersonate_user_id")?.value;
-        if (impersonatedId && impersonatedId !== user.id) {
+        if (impersonatedId && impersonatedId !== userId) {
             const adminCheck = await prisma.profile.findUnique({
-                where: { userId: user.id },
+                where: { userId },
                 select: { role: true },
             });
             if (adminCheck?.role === "ADMIN") {
@@ -72,7 +103,7 @@ export const getAuthUser = cache(async (): Promise<AuthUser | null> => {
     return {
         ...userData,
         isImpersonated,
-        originalAdminId: isImpersonated ? user.id : undefined,
+        originalAdminId: isImpersonated ? userId : undefined,
         profile: userData.profile
             ? {
                   ...userData.profile,
