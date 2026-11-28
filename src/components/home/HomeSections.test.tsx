@@ -6,6 +6,8 @@ import { TradeJournalPreviewSection } from "./TradeJournalPreviewSection";
 import { BrokerRankingsSection } from "./BrokerRankingsSection";
 import { HomeFAQSection } from "./HomeFAQSection";
 import { AboutUsSection } from "./AboutUsSection";
+import { WorkflowConsolePreview } from "./journal-preview/WorkflowConsolePreview";
+import { WORKFLOW_STEPS } from "./journal-preview/journal-preview-steps";
 
 describe("HomeSections SSR Suite (Modular Sections Verification)", () => {
     describe("1. SpreadsheetComparisonSection", () => {
@@ -45,6 +47,24 @@ describe("HomeSections SSR Suite (Modular Sections Verification)", () => {
     });
 
     describe("2. TradeJournalPreviewSection", () => {
+        it.each([0, 1, 2])("mounts only the selected preview content for step %i", (activeStep) => {
+            const html = renderToString(
+                <WorkflowConsolePreview
+                    steps={WORKFLOW_STEPS}
+                    activeStep={activeStep}
+                    onSelectStep={() => {}}
+                />
+            );
+            const document = new DOMParser().parseFromString(html, "text/html");
+            const panel = document.querySelector('[role="tabpanel"]');
+            const contentMarkers = ["Trade Manager EA", "Equity Curve", "High Priority Rule Fix"];
+
+            expect(document.querySelectorAll('[role="tabpanel"]')).toHaveLength(1);
+            contentMarkers.forEach((marker, index) => {
+                expect(panel?.textContent?.includes(marker)).toBe(index === activeStep);
+            });
+        });
+
         it("renders workflow steps and live MT5 EA stream preview", () => {
             const loggedOutHtml = renderToString(<TradeJournalPreviewSection isLoggedIn={false} />);
 

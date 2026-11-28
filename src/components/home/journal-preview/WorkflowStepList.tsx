@@ -19,20 +19,21 @@ export function WorkflowStepList({
     isLoggedIn,
 }: WorkflowStepListProps) {
     return (
-        <div className="lg:col-span-5 flex flex-col justify-between h-full text-left">
+        <div className="lg:col-span-5 flex flex-col text-left">
             {/* Interactive Steps List */}
             <div
                 role="tablist"
                 aria-label="Trading workflow steps"
-                className="flex-1 flex flex-col justify-between gap-3 mb-4 sm:mb-5 w-full"
+                className="flex flex-col gap-3 mb-4 sm:mb-5 w-full"
             >
                 {steps.map((step) => (
-                    <WorkflowStepCard
-                        key={step.id}
-                        step={step}
-                        isActive={activeStep === step.id}
-                        onSelect={() => onSelectStep(step.id)}
-                    />
+                    <div key={step.id} className="flex min-h-[104px]">
+                        <WorkflowStepCard
+                            step={step}
+                            isActive={activeStep === step.id}
+                            onSelect={() => onSelectStep(step.id)}
+                        />
+                    </div>
                 ))}
             </div>
 

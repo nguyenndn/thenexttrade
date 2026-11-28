@@ -17,8 +17,8 @@ export function WorkflowConsolePreview({
     onSelectStep,
 }: WorkflowConsolePreviewProps) {
     return (
-        <div className="lg:col-span-7 flex flex-col h-full">
-            <div className="relative p-3.5 sm:p-4 rounded-xl border border-gold/25 dark:border-gold/15 bg-white/95 dark:bg-[#0D111C] shadow-[0_20px_50px_rgba(15,23,42,0.1)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.45)] backdrop-blur-md overflow-hidden flex flex-col justify-between h-full">
+        <div className="lg:col-span-7 flex flex-col min-h-[408px]">
+            <div className="relative p-3.5 sm:p-4 rounded-xl border border-gold/25 dark:border-gold/15 bg-white/95 dark:bg-[#0D111C] shadow-[0_20px_50px_rgba(15,23,42,0.1)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.45)] backdrop-blur-md overflow-hidden flex flex-1 flex-col justify-between">
                 {/* Subtle Ambient Decorative Glows */}
                 <div className="absolute -top-12 -left-12 w-48 h-48 bg-gold/15 dark:bg-gold/5 rounded-full blur-3xl pointer-events-none" />
                 <div className="absolute -bottom-12 -right-12 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -74,12 +74,11 @@ export function WorkflowConsolePreview({
                     </div>
                 </div>
 
-                {/* Interactive Screens Body */}
                 <div
                     role="tabpanel"
                     id={`preview-panel-${activeStep}`}
                     aria-label={steps[activeStep]?.tag}
-                    className="w-full min-h-[296px] sm:min-h-[304px] flex-1 flex flex-col"
+                    className="w-full min-h-[280px] flex flex-1 flex-col"
                 >
                     {activeStep === 0 && <PreviewConnectView />}
                     {activeStep === 1 && <PreviewAnalyzeView />}

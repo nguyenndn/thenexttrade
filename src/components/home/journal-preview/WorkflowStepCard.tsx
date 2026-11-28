@@ -25,7 +25,7 @@ export function WorkflowStepCard({
             aria-label={step.title}
             onClick={onSelect}
             className={cn(
-                "group w-full h-auto flex items-start gap-3.5 rounded-lg p-3.5 sm:p-4 text-left transition-all duration-300 relative border font-normal",
+                "group w-full h-auto flex items-start gap-3.5 rounded-xl p-3 sm:p-3.5 text-left transition-all duration-300 relative border font-normal",
                 isActive
                     ? "border-gold bg-white dark:bg-white/[0.05] shadow-[0_10px_24px_rgba(229,165,10,0.14)] ring-1 ring-gold/40 hover:bg-white dark:hover:bg-white/[0.05]"
                     : "border-gray-200 bg-white/70 dark:border-white/10 dark:bg-white/[0.02] hover:border-gold/30 hover:bg-white dark:hover:bg-white/[0.04]"
