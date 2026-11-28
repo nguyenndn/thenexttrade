@@ -7,9 +7,10 @@ import { NextRequest } from "next/server";
 
 vi.mock("@/lib/prisma", () => ({
     prisma: {
-        journalEntry: {
+        tradingAccount: {
             findMany: vi.fn(),
         },
+        $queryRaw: vi.fn(),
     },
 }));
 
@@ -21,224 +22,235 @@ vi.mock("@/actions/main-account", () => ({
     resolveDefaultAccountId: vi.fn(),
 }));
 
-describe("Session Analytics API Route - Backend Logic & Edge Case Stress Testing", () => {
-    const mockUser = {
-        id: "user-session-challenger",
-        email: "session-challenger@example.com",
-    };
+type SqlCall = { strings: string[]; values: unknown[] };
 
-    const mockTrades = [
-        {
-            id: "trade-1",
-            pnl: 100,
-            commission: -2,
-            swap: -1,
-            status: "CLOSED",
-            exitPrice: 1.105,
-            entryDate: new Date("2026-10-15T14:30:00Z"),
-            tradingSession: "LONDON_NY_OVERLAP",
-        },
-    ];
+function sqlCalls(): SqlCall[] {
+    return vi
+        .mocked(prisma.$queryRaw)
+        .mock.calls.map((call) => call[0] as unknown as SqlCall);
+}
 
+function sqlText(call: SqlCall): string {
+    return call.strings.join("?");
+}
+
+const mockUser = {
+    id: "user-session-challenger",
+    email: "session-challenger@example.com",
+};
+
+const mockAccounts = [
+    { id: "acc-cent", currency: "USC", server: "Exness-MT5Cent" },
+    { id: "acc-usd", currency: "USD", server: "ICMarkets-Live" },
+];
+
+const sessionAggRows = [
+    {
+        session: "LONDON",
+        totalTrades: 3,
+        winCount: 2,
+        lossCount: 1,
+        totalPnL: 150,
+        grossProfit: 200,
+        grossLoss: 50,
+    },
+];
+
+const hourAggRows = [{ hour: 8, totalTrades: 3, winCount: 2, totalPnL: 150 }];
+
+describe("Session Analytics API Route - SQL aggregation contract", () => {
     beforeEach(() => {
         vi.clearAllMocks();
         vi.mocked(getAuthUser).mockResolvedValue(mockUser as never);
-        vi.mocked(prisma.journalEntry.findMany).mockResolvedValue(mockTrades as never);
         vi.mocked(resolveDefaultAccountId).mockResolvedValue("acc-default-primary");
+        vi.mocked(prisma.tradingAccount.findMany).mockResolvedValue(
+            mockAccounts as never
+        );
+        vi.mocked(prisma.$queryRaw)
+            .mockResolvedValueOnce(sessionAggRows as never)
+            .mockResolvedValueOnce(hourAggRows as never);
     });
 
-    describe("Authentication & Authorization", () => {
-        it("returns 401 Unauthorized when session is unauthenticated", async () => {
-            vi.mocked(getAuthUser).mockResolvedValue(null);
+    it("returns 401 Unauthorized when unauthenticated and runs no SQL", async () => {
+        vi.mocked(getAuthUser).mockResolvedValue(null);
 
-            const req = new NextRequest("http://localhost:3000/api/analytics/sessions");
-            const res = await GET(req);
-            const json = await res.json();
+        const req = new NextRequest("http://localhost:3000/api/analytics/sessions");
+        const res = await GET(req);
+        const json = await res.json();
 
-            expect(res.status).toBe(401);
-            expect(json.error).toBe("Unauthorized");
-            expect(prisma.journalEntry.findMany).not.toHaveBeenCalled();
-        });
-
-        it("always scopes database query to the authenticated userId", async () => {
-            const req = new NextRequest(
-                "http://localhost:3000/api/analytics/sessions?accountId=target-victim-account"
-            );
-            await GET(req);
-
-            expect(prisma.journalEntry.findMany).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    where: expect.objectContaining({
-                        userId: mockUser.id,
-                        accountId: "target-victim-account",
-                        status: "CLOSED",
-                    }),
-                })
-            );
-        });
+        expect(res.status).toBe(401);
+        expect(json.error).toBe("Unauthorized");
+        expect(prisma.$queryRaw).not.toHaveBeenCalled();
     });
 
-    describe("accountId Parameter Filter Testing", () => {
-        it('omits accountId in whereClause when accountId="all" to aggregate across all accounts', async () => {
-            const req = new NextRequest("http://localhost:3000/api/analytics/sessions?accountId=all");
-            const res = await GET(req);
-            const json = await res.json();
+    it("queries the mapped trading_session column (not the Prisma field name)", async () => {
+        const req = new NextRequest("http://localhost:3000/api/analytics/sessions");
+        await GET(req);
 
-            expect(res.status).toBe(200);
-            expect(json.sessionStats).toBeDefined();
-
-            const callArgs = vi.mocked(prisma.journalEntry.findMany).mock.calls[0][0];
-            expect(callArgs?.where?.userId).toBe(mockUser.id);
-            expect(callArgs?.where?.status).toBe("CLOSED");
-            expect(callArgs?.where?.accountId).toBeUndefined();
-            expect(callArgs?.where?.exitDate).toBeUndefined();
-            // Should NOT call resolveDefaultAccountId when explicit "all" is requested
-            expect(resolveDefaultAccountId).not.toHaveBeenCalled();
-        });
-
-        it("scales Cent (USC) trades to USD equivalent when accountId='all'", async () => {
-            vi.mocked(prisma.journalEntry.findMany).mockResolvedValueOnce([
-                {
-                    id: "cent-trade-1",
-                    accountId: "acc-cent",
-                    account: { currency: "USC", server: "Exness-MT5Cent" },
-                    pnl: 10000,
-                    commission: 0,
-                    swap: 0,
-                    status: "CLOSED",
-                    exitPrice: 1.105,
-                    entryDate: new Date("2026-10-15T08:30:00Z"),
-                    exitDate: new Date("2026-10-15T09:30:00Z"),
-                    tradingSession: "LONDON",
-                },
-                {
-                    id: "usd-trade-1",
-                    accountId: "acc-usd",
-                    account: { currency: "USD", server: "ICMarkets-Live" },
-                    pnl: 50,
-                    commission: 0,
-                    swap: 0,
-                    status: "CLOSED",
-                    exitPrice: 1.106,
-                    entryDate: new Date("2026-10-15T09:00:00Z"),
-                    exitDate: new Date("2026-10-15T10:00:00Z"),
-                    tradingSession: "LONDON",
-                },
-            ] as never);
-
-            const req = new NextRequest("http://localhost:3000/api/analytics/sessions?accountId=all");
-            const res = await GET(req);
-            const json = await res.json();
-
-            expect(res.status).toBe(200);
-            expect(json.currency).toBe("USD");
-            const london = json.sessionStats.find(
-                (s: { session: string }) => s.session === "LONDON"
-            );
-            // 10,000 USC ($100) + $50 USD = $150 USD (not $10,050)
-            expect(london.totalPnL).toBeCloseTo(150, 2);
-        });
-
-        it("falls back to default account resolution when accountId is omitted (undefined)", async () => {
-            vi.mocked(resolveDefaultAccountId).mockResolvedValue("acc-resolved-default");
-
-            const req = new NextRequest("http://localhost:3000/api/analytics/sessions");
-            const res = await GET(req);
-            expect(res.status).toBe(200);
-
-            expect(resolveDefaultAccountId).toHaveBeenCalledWith(mockUser.id, undefined);
-            const callArgs = vi.mocked(prisma.journalEntry.findMany).mock.calls[0][0];
-            expect(callArgs?.where?.accountId).toBe("acc-resolved-default");
-            expect(callArgs?.where?.exitDate).toBeUndefined();
-        });
-
-        it("falls back to default account resolution when accountId is empty string", async () => {
-            vi.mocked(resolveDefaultAccountId).mockResolvedValue("acc-resolved-from-empty");
-
-            const req = new NextRequest("http://localhost:3000/api/analytics/sessions?accountId=");
-            const res = await GET(req);
-            expect(res.status).toBe(200);
-
-            expect(resolveDefaultAccountId).toHaveBeenCalledWith(mockUser.id, undefined);
-            const callArgs = vi.mocked(prisma.journalEntry.findMany).mock.calls[0][0];
-            expect(callArgs?.where?.accountId).toBe("acc-resolved-from-empty");
-        });
-
-        it("leaves accountId omitted if default account resolver returns null (no accounts registered)", async () => {
-            vi.mocked(resolveDefaultAccountId).mockResolvedValue(null as never);
-
-            const req = new NextRequest("http://localhost:3000/api/analytics/sessions");
-            const res = await GET(req);
-            expect(res.status).toBe(200);
-
-            const callArgs = vi.mocked(prisma.journalEntry.findMany).mock.calls[0][0];
-            expect(callArgs?.where?.accountId).toBeUndefined();
-        });
-
-        it("leaves accountId omitted if default account resolver returns 'all'", async () => {
-            vi.mocked(resolveDefaultAccountId).mockResolvedValue("all");
-
-            const req = new NextRequest("http://localhost:3000/api/analytics/sessions");
-            const res = await GET(req);
-            expect(res.status).toBe(200);
-
-            const callArgs = vi.mocked(prisma.journalEntry.findMany).mock.calls[0][0];
-            expect(callArgs?.where?.accountId).toBeUndefined();
-        });
-
-        it("filters by valid CUID without invoking default account resolver", async () => {
-            const validCuid = "cm39xyz12000008l4defg5678";
-            const req = new NextRequest(
-                `http://localhost:3000/api/analytics/sessions?accountId=${validCuid}`
-            );
-            const res = await GET(req);
-            expect(res.status).toBe(200);
-
-            expect(resolveDefaultAccountId).not.toHaveBeenCalled();
-            const callArgs = vi.mocked(prisma.journalEntry.findMany).mock.calls[0][0];
-            expect(callArgs?.where?.accountId).toBe(validCuid);
-        });
-
-        it("safely binds SQL injection attempts as literal accountId without query corruption", async () => {
-            const sqlInjection = "' OR 1=1; DROP TABLE trades; --";
-            const req = new NextRequest(
-                `http://localhost:3000/api/analytics/sessions?accountId=${encodeURIComponent(sqlInjection)}`
-            );
-            const res = await GET(req);
-            expect(res.status).toBe(200);
-
-            const callArgs = vi.mocked(prisma.journalEntry.findMany).mock.calls[0][0];
-            expect(callArgs?.where?.accountId).toBe(sqlInjection);
-            expect(callArgs?.where?.userId).toBe(mockUser.id);
-            expect(callArgs?.where?.status).toBe("CLOSED");
-        });
-
-        it("safely binds XSS payload strings as literal accountId strings", async () => {
-            const xssPayload = "<script>alert(document.cookie)</script>";
-            const req = new NextRequest(
-                `http://localhost:3000/api/analytics/sessions?accountId=${encodeURIComponent(xssPayload)}`
-            );
-            const res = await GET(req);
-            expect(res.status).toBe(200);
-
-            const callArgs = vi.mocked(prisma.journalEntry.findMany).mock.calls[0][0];
-            expect(callArgs?.where?.accountId).toBe(xssPayload);
-        });
+        const [sessionQuery] = sqlCalls();
+        expect(sqlText(sessionQuery)).toContain('je."trading_session"');
+        expect(sqlText(sessionQuery)).not.toContain("tradingSession");
     });
 
-    describe("Cookie Forwarding for Default Account Resolution", () => {
-        it("passes last_account_id cookie value to resolveDefaultAccountId", async () => {
-            const req = new NextRequest("http://localhost:3000/api/analytics/sessions", {
-                headers: {
-                    cookie: "last_account_id=acc-cookie-preferred",
-                },
-            });
-            await GET(req);
+    it("scopes both aggregates to the authenticated user and CLOSED trades", async () => {
+        const req = new NextRequest(
+            "http://localhost:3000/api/analytics/sessions?accountId=acc-usd"
+        );
+        await GET(req);
 
-            expect(resolveDefaultAccountId).toHaveBeenCalledWith(
-                mockUser.id,
-                "acc-cookie-preferred"
-            );
+        const calls = sqlCalls();
+        expect(calls).toHaveLength(2);
+        for (const call of calls) {
+            const text = sqlText(call);
+            expect(text).toContain('je."userId"');
+            expect(text).toContain('je."status"');
+            expect(text).toContain('je."accountId" =');
+            expect(call.values).toContain(mockUser.id);
+            expect(text).toContain("'CLOSED'");
+            expect(call.values).toContain("acc-usd");
+            // Single-account mode reports native currency: no FX/Cent rates CTE
+            expect(text).not.toContain("rates(account_id, rate)");
+        }
+    });
+
+    it("aggregates across all accounts with per-account FX/Cent rates", async () => {
+        const req = new NextRequest(
+            "http://localhost:3000/api/analytics/sessions?accountId=all"
+        );
+        const res = await GET(req);
+        const json = await res.json();
+
+        expect(res.status).toBe(200);
+        expect(json.currency).toBe("USD");
+        expect(resolveDefaultAccountId).not.toHaveBeenCalled();
+
+        const [sessionQuery] = sqlCalls();
+        expect(sqlText(sessionQuery)).toContain("rates(account_id, rate)");
+        expect(sqlText(sessionQuery)).not.toContain('je."accountId" =');
+        // USC account contributes a 0.01 USD rate; the USD account 1.0
+        expect(sessionQuery.values).toContain(0.01);
+        expect(sessionQuery.values).toContain(1);
+        expect(sessionQuery.values).toContain("acc-cent");
+        expect(sessionQuery.values).toContain("acc-usd");
+    });
+
+    it("reports the single account's native currency without converting", async () => {
+        const req = new NextRequest(
+            "http://localhost:3000/api/analytics/sessions?accountId=acc-cent"
+        );
+        const res = await GET(req);
+        const json = await res.json();
+
+        expect(res.status).toBe(200);
+        expect(json.currency).toBe("USC");
+        // Mocked aggregate is returned unchanged (no JS-side conversion)
+        expect(json.sessionStats[0].totalPnL).toBe(150);
+    });
+
+    it("resolves the default account when accountId is omitted", async () => {
+        vi.mocked(resolveDefaultAccountId).mockResolvedValue("acc-resolved-default");
+
+        const req = new NextRequest("http://localhost:3000/api/analytics/sessions");
+        await GET(req);
+
+        expect(resolveDefaultAccountId).toHaveBeenCalledWith(mockUser.id, undefined);
+        const [sessionQuery] = sqlCalls();
+        expect(sessionQuery.values).toContain("acc-resolved-default");
+    });
+
+    it("passes the last_account_id cookie to default account resolution", async () => {
+        const req = new NextRequest("http://localhost:3000/api/analytics/sessions", {
+            headers: {
+                cookie: "last_account_id=acc-cookie-preferred",
+            },
         });
+        await GET(req);
+
+        expect(resolveDefaultAccountId).toHaveBeenCalledWith(
+            mockUser.id,
+            "acc-cookie-preferred"
+        );
+    });
+
+    it.each([
+        ["null (no accounts registered)", null],
+        ["'all'", "all"],
+    ])(
+        "omits the account filter when the default resolver returns %s",
+        async (_label, resolved) => {
+            vi.mocked(resolveDefaultAccountId).mockResolvedValue(resolved as never);
+
+            const req = new NextRequest("http://localhost:3000/api/analytics/sessions");
+            const res = await GET(req);
+            expect(res.status).toBe(200);
+
+            const [sessionQuery] = sqlCalls();
+            expect(sqlText(sessionQuery)).not.toContain('je."accountId" =');
+        }
+    );
+
+    it("binds an injection payload as a value, never inside the SQL text", async () => {
+        const sqlInjection = "' OR 1=1; DROP TABLE journal_entries; --";
+        const req = new NextRequest(
+            `http://localhost:3000/api/analytics/sessions?accountId=${encodeURIComponent(sqlInjection)}`
+        );
+        const res = await GET(req);
+        expect(res.status).toBe(200);
+
+        for (const call of sqlCalls()) {
+            expect(sqlText(call)).not.toContain(sqlInjection);
+            expect(call.values).toContain(sqlInjection);
+        }
+    });
+
+    it("binds an XSS payload as a literal value", async () => {
+        const xssPayload = "<script>alert(document.cookie)</script>";
+        const req = new NextRequest(
+            `http://localhost:3000/api/analytics/sessions?accountId=${encodeURIComponent(xssPayload)}`
+        );
+        const res = await GET(req);
+        expect(res.status).toBe(200);
+
+        const [sessionQuery] = sqlCalls();
+        expect(sqlText(sessionQuery)).not.toContain(xssPayload);
+        expect(sessionQuery.values).toContain(xssPayload);
+    });
+
+    it("passes date-range bounds as bound Date parameters", async () => {
+        const req = new NextRequest(
+            "http://localhost:3000/api/analytics/sessions?startDate=2026-01-01&endDate=2026-01-31"
+        );
+        await GET(req);
+
+        const [sessionQuery] = sqlCalls();
+        const text = sqlText(sessionQuery);
+        expect(text).toContain('je."exitDate" >=');
+        expect(text).toContain('je."exitDate" <=');
+        expect(sessionQuery.values.filter((v) => v instanceof Date)).toHaveLength(2);
+    });
+
+    it("shapes session and hourly aggregates with the expected derived fields", async () => {
+        const req = new NextRequest("http://localhost:3000/api/analytics/sessions");
+        const res = await GET(req);
+        const json = await res.json();
+
+        expect(json.sessionStats[0]).toMatchObject({
+            session: "LONDON",
+            displayName: "London",
+            totalTrades: 3,
+            winCount: 2,
+            lossCount: 1,
+            totalPnL: 150,
+        });
+        expect(json.sessionStats[0].winRate).toBeCloseTo((2 / 3) * 100, 6);
+        expect(json.sessionStats[0].profitFactor).toBeCloseTo(4, 6);
+        expect(json.hourlyStats).toHaveLength(24);
+        expect(json.hourlyStats[8]).toMatchObject({
+            hour: 8,
+            hourLabel: "08:00",
+            totalTrades: 3,
+            totalPnL: 150,
+        });
+        expect(json.hourlyStats[0]).toMatchObject({ totalTrades: 0, totalPnL: 0 });
     });
 });

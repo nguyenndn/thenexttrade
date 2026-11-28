@@ -133,7 +133,7 @@ export async function GET(request: NextRequest) {
         ];
         if (normalizedAccountId) {
             conditions.push(
-                Prisma.sql`je."accountId" = ${normalizedAccountId}::uuid`
+                Prisma.sql`je."accountId" = ${normalizedAccountId}::text`
             );
         }
         if (startDate) {
@@ -148,7 +148,7 @@ export async function GET(request: NextRequest) {
             ? Prisma.sql`rates(account_id, rate) AS (VALUES ${Prisma.join(
                   userAccounts.map(
                       (acc) =>
-                          Prisma.sql`(${acc.id}::uuid, ${getCurrencyInfo(acc.currency, acc.server).usdRate}::numeric)`
+                          Prisma.sql`(${acc.id}::text, ${getCurrencyInfo(acc.currency, acc.server).usdRate}::numeric)`
                   )
               )}),`
             : Prisma.empty;
@@ -164,7 +164,7 @@ export async function GET(request: NextRequest) {
             scoped AS (
                 SELECT
                     COALESCE(
-                        NULLIF(je."tradingSession", ''),
+                        NULLIF(je."trading_session", ''),
                         CASE
                             WHEN hours.utc_h BETWEEN 0 AND 5 THEN 'SYDNEY'
                             WHEN hours.utc_h = 6 THEN 'TOKYO'
