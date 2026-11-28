@@ -21,10 +21,59 @@ function buildAccountFilterSql(normalizedAccountId?: string): Prisma.Sql {
         : Prisma.empty;
 }
 
-function buildAccountJoinSql(normalizedAccountId?: string): Prisma.Sql {
+/**
+ * Resolves the FX/Cent rate ONCE per trading account instead of re-evaluating
+ * the currency CASE for every journal row (the per-row CASE dominated the
+ * dashboard aggregates: ~225ms vs ~25ms per query on 23k rows).
+ *
+ * `rate` mirrors `getCurrencyInfo(...).usdRate` in `src/lib/utils/cent-account.ts`
+ * (guarded by the parity test) and `is_cent` carries the same Cent detection
+ * that lot scaling needs, so one CTE replaces both per-row CASE expressions.
+ */
+export function buildRatesCteSql(userId: string): Prisma.Sql {
+    return Prisma.sql`rates AS (
+        SELECT
+            ta."id" AS "account_id",
+            (CASE
+                WHEN UPPER(COALESCE(ta."currency", '')) IN ('USC','USCENT','USDCENT','US_CENT','USDT_CENT','CENT') THEN 0.01
+                WHEN UPPER(COALESCE(ta."currency", '')) IN ('EUC','EURC','EURCENT','EU_CENT','EUR_CENT') THEN 0.0108
+                WHEN UPPER(COALESCE(ta."currency", '')) IN ('GBC','GBPC','GBPCENT','GB_CENT','GBP_CENT') THEN 0.0128
+                WHEN UPPER(COALESCE(ta."currency", '')) IN ('JPC','JPYC','JPYCENT') THEN 0.000067
+                WHEN UPPER(COALESCE(ta."currency", '')) IN ('AUC','AUDC','AUDCENT') THEN 0.0065
+                WHEN UPPER(COALESCE(ta."currency", '')) IN ('CAC','CADC','CADCENT') THEN 0.0073
+                WHEN UPPER(COALESCE(ta."currency", '')) IN ('CHC','CHFC','CHFCENT') THEN 0.0113
+                WHEN UPPER(COALESCE(ta."currency", '')) IN ('NZC','NZDC','NZDCENT') THEN 0.006
+                WHEN COALESCE(ta."server", '') ILIKE '%cent%' OR COALESCE(ta."account_type", '') ILIKE '%cent%' THEN
+                    CASE
+                        WHEN UPPER(COALESCE(ta."currency", '')) = 'EUR' THEN 0.0108
+                        WHEN UPPER(COALESCE(ta."currency", '')) = 'GBP' THEN 0.0128
+                        ELSE 0.01
+                    END
+                WHEN UPPER(COALESCE(ta."currency", '')) = 'EUR' THEN 1.08
+                WHEN UPPER(COALESCE(ta."currency", '')) = 'GBP' THEN 1.28
+                WHEN UPPER(COALESCE(ta."currency", '')) = 'JPY' THEN 0.0067
+                WHEN UPPER(COALESCE(ta."currency", '')) = 'AUD' THEN 0.65
+                WHEN UPPER(COALESCE(ta."currency", '')) = 'CAD' THEN 0.73
+                WHEN UPPER(COALESCE(ta."currency", '')) = 'CHF' THEN 1.13
+                WHEN UPPER(COALESCE(ta."currency", '')) = 'NZD' THEN 0.60
+                WHEN UPPER(COALESCE(ta."currency", '')) = 'SGD' THEN 0.76
+                ELSE 1.0
+            END) AS "rate",
+            (CASE
+                WHEN UPPER(COALESCE(ta."currency", '')) IN ('USC','USCENT','USDCENT','US_CENT','USDT_CENT','CENT','EUC','EURC','EURCENT','EU_CENT','EUR_CENT','GBC','GBPC','GBPCENT','GB_CENT','GBP_CENT','JPC','JPYC','JPYCENT','AUC','AUDC','AUDCENT','CAC','CADC','CADCENT','CHC','CHFC','CHFCENT','NZC','NZDC','NZDCENT') THEN TRUE
+                WHEN COALESCE(ta."server", '') ILIKE '%cent%' THEN TRUE
+                WHEN COALESCE(ta."account_type", '') ILIKE '%cent%' THEN TRUE
+                ELSE FALSE
+            END) AS "is_cent"
+        FROM "trading_accounts" ta
+        WHERE ta."userId" = ${userId}::uuid
+    )`;
+}
+
+export function buildRatesJoinSql(normalizedAccountId?: string): Prisma.Sql {
     return normalizedAccountId
         ? Prisma.empty
-        : Prisma.sql`LEFT JOIN "trading_accounts" ta ON ta."id" = je."accountId"`;
+        : Prisma.sql`LEFT JOIN rates r ON r."account_id" = je."accountId"`;
 }
 
 function buildDateFilterSql(startDate?: Date, endDate?: Date): Prisma.Sql {
@@ -41,37 +90,14 @@ function buildDateFilterSql(startDate?: Date, endDate?: Date): Prisma.Sql {
 
 /**
  * SQL FX/Cent multiplier matching `convertToUsdEquivalent` in `src/lib/utils/cent-account.ts`.
- * Applied ONLY when `accountId` is NOT pinned to a single account (`!normalizedAccountId`).
+ * Reads the per-account rate resolved by `buildRatesCteSql`; applied ONLY when `accountId`
+ * is NOT pinned to a single account (`!normalizedAccountId`).
  */
 export function buildPnlScaleSql(normalizedAccountId?: string): Prisma.Sql {
     if (normalizedAccountId) {
         return Prisma.sql`1.0`;
     }
-    return Prisma.sql`(CASE
-        WHEN UPPER(COALESCE(ta."currency", '')) IN ('USC','USCENT','USDCENT','US_CENT','USDT_CENT','CENT') THEN 0.01
-        WHEN UPPER(COALESCE(ta."currency", '')) IN ('EUC','EURC','EURCENT','EU_CENT','EUR_CENT') THEN 0.0108
-        WHEN UPPER(COALESCE(ta."currency", '')) IN ('GBC','GBPC','GBPCENT','GB_CENT','GBP_CENT') THEN 0.0128
-        WHEN UPPER(COALESCE(ta."currency", '')) IN ('JPC','JPYC','JPYCENT') THEN 0.000067
-        WHEN UPPER(COALESCE(ta."currency", '')) IN ('AUC','AUDC','AUDCENT') THEN 0.0065
-        WHEN UPPER(COALESCE(ta."currency", '')) IN ('CAC','CADC','CADCENT') THEN 0.0073
-        WHEN UPPER(COALESCE(ta."currency", '')) IN ('CHC','CHFC','CHFCENT') THEN 0.0113
-        WHEN UPPER(COALESCE(ta."currency", '')) IN ('NZC','NZDC','NZDCENT') THEN 0.006
-        WHEN COALESCE(ta."server", '') ILIKE '%cent%' OR COALESCE(ta."account_type", '') ILIKE '%cent%' THEN
-            CASE
-                WHEN UPPER(COALESCE(ta."currency", '')) = 'EUR' THEN 0.0108
-                WHEN UPPER(COALESCE(ta."currency", '')) = 'GBP' THEN 0.0128
-                ELSE 0.01
-            END
-        WHEN UPPER(COALESCE(ta."currency", '')) = 'EUR' THEN 1.08
-        WHEN UPPER(COALESCE(ta."currency", '')) = 'GBP' THEN 1.28
-        WHEN UPPER(COALESCE(ta."currency", '')) = 'JPY' THEN 0.0067
-        WHEN UPPER(COALESCE(ta."currency", '')) = 'AUD' THEN 0.65
-        WHEN UPPER(COALESCE(ta."currency", '')) = 'CAD' THEN 0.73
-        WHEN UPPER(COALESCE(ta."currency", '')) = 'CHF' THEN 1.13
-        WHEN UPPER(COALESCE(ta."currency", '')) = 'NZD' THEN 0.60
-        WHEN UPPER(COALESCE(ta."currency", '')) = 'SGD' THEN 0.76
-        ELSE 1.0
-    END)`;
+    return Prisma.sql`COALESCE(r."rate", 1.0)`;
 }
 
 /**
@@ -84,11 +110,7 @@ function buildLotScaleSql(normalizedAccountId?: string): Prisma.Sql {
     }
     return Prisma.sql`(CASE
         WHEN COALESCE(je."sync_source", 'MANUAL') = 'MANUAL'
-             AND (
-                 UPPER(COALESCE(ta."currency", '')) IN ('USC','USCENT','USDCENT','US_CENT','USDT_CENT','CENT','EUC','EURC','EURCENT','EU_CENT','EUR_CENT','GBC','GBPC','GBPCENT','GB_CENT','GBP_CENT','JPC','JPYC','JPYCENT','AUC','AUDC','AUDCENT','CAC','CADC','CADCENT','CHC','CHFC','CHFCENT','NZC','NZDC','NZDCENT')
-                 OR COALESCE(ta."server", '') ILIKE '%cent%'
-                 OR COALESCE(ta."account_type", '') ILIKE '%cent%'
-             )
+             AND COALESCE(r."is_cent", FALSE)
         THEN 0.01
         ELSE 1.0
     END)`;
@@ -261,18 +283,20 @@ export async function getMonthlyAnalytics(
     const normalizedAccountId = normalizeAccountIdParam(accountId);
     const tz = timezone || "Etc/UTC";
     const accountFilter = buildAccountFilterSql(normalizedAccountId);
-    const accountJoin = buildAccountJoinSql(normalizedAccountId);
+    const ratesCte = buildRatesCteSql(userId);
+    const ratesJoin = buildRatesJoinSql(normalizedAccountId);
     const scaleSql = buildPnlScaleSql(normalizedAccountId);
     const advancedFiltersSql = buildAdvancedFiltersSql(filters);
 
     const result = await prisma.$queryRaw<MonthlyAnalyticsRow[]>`
-  SELECT 
+  WITH ${ratesCte}
+  SELECT
     TO_CHAR(je."exitDate" AT TIME ZONE ${tz}, 'YYYY-MM') as "date",
     SUM((COALESCE(je."pnl", 0) + COALESCE(je."commission", 0) + COALESCE(je."swap", 0)) * ${scaleSql}) as "profit",
     COUNT(*) as "tradeCount",
     SUM(CASE WHEN ((COALESCE(je."pnl", 0) + COALESCE(je."commission", 0) + COALESCE(je."swap", 0)) * ${scaleSql}) > 0.01 THEN 1 ELSE 0 END) as "winCount"
   FROM "journal_entries" je
-  ${accountJoin}
+  ${ratesJoin}
   WHERE je."userId" = ${userId}::uuid
     AND je."status" = 'CLOSED'
     ${accountFilter}
@@ -306,13 +330,15 @@ export async function getKeyStats(
 ) {
     const normalizedAccountId = normalizeAccountIdParam(accountId);
     const accountFilter = buildAccountFilterSql(normalizedAccountId);
-    const accountJoin = buildAccountJoinSql(normalizedAccountId);
+    const ratesCte = buildRatesCteSql(userId);
+    const ratesJoin = buildRatesJoinSql(normalizedAccountId);
     const dateFilter = buildDateFilterSql(startDate, endDate);
     const scaleSql = buildPnlScaleSql(normalizedAccountId);
     const advancedFiltersSql = buildAdvancedFiltersSql(filters);
 
     const result = await prisma.$queryRaw<KeyStatsRow[]>`
-  WITH scoped AS (
+  WITH ${ratesCte},
+  scoped AS (
     SELECT
       je."result",
       je."entryDate",
@@ -321,7 +347,7 @@ export async function getKeyStats(
       (COALESCE(je."swap", 0) * ${scaleSql}) AS "scaledSwap",
       ((COALESCE(je."pnl", 0) + COALESCE(je."commission", 0) + COALESCE(je."swap", 0)) * ${scaleSql}) AS "scaledNetPnl"
     FROM "journal_entries" je
-    ${accountJoin}
+    ${ratesJoin}
     WHERE je."userId" = ${userId}::uuid
       AND je."status" = 'CLOSED'
       ${accountFilter}
@@ -426,13 +452,15 @@ export async function getDailyPerformance(
     const normalizedAccountId = normalizeAccountIdParam(accountId);
     const tz = timezone || "Etc/UTC";
     const accountFilter = buildAccountFilterSql(normalizedAccountId);
-    const accountJoin = buildAccountJoinSql(normalizedAccountId);
+    const ratesCte = buildRatesCteSql(userId);
+    const ratesJoin = buildRatesJoinSql(normalizedAccountId);
     const dateFilter = buildDateFilterSql(startDate, endDate);
     const scaleSql = buildPnlScaleSql(normalizedAccountId);
     const advancedFiltersSql = buildAdvancedFiltersSql(filters);
 
     const result = await prisma.$queryRaw<DailyPerformanceRow[]>`
-  SELECT 
+  WITH ${ratesCte}
+  SELECT
     TO_CHAR(je."exitDate" AT TIME ZONE ${tz}, 'YYYY-MM-DD') as "date",
     SUM((COALESCE(je."pnl", 0) + COALESCE(je."commission", 0) + COALESCE(je."swap", 0)) * ${scaleSql}) as "profit",
     COUNT(*) as "tradeCount",
@@ -440,7 +468,7 @@ export async function getDailyPerformance(
     COUNT(*) FILTER (WHERE je."result" = 'LOSS') as "lossCount",
     COUNT(*) FILTER (WHERE je."result" IN ('BREAK_EVEN', 'BE_PLUS')) as "breakEvenCount"
   FROM "journal_entries" je
-  ${accountJoin}
+  ${ratesJoin}
   WHERE je."userId" = ${userId}::uuid
     AND je."status" = 'CLOSED'
     ${accountFilter}
@@ -480,17 +508,19 @@ export async function getIntradayPerformance(
 ) {
     const normalizedAccountId = normalizeAccountIdParam(accountId);
     const accountFilter = buildAccountFilterSql(normalizedAccountId);
-    const accountJoin = buildAccountJoinSql(normalizedAccountId);
+    const ratesCte = buildRatesCteSql(userId);
+    const ratesJoin = buildRatesJoinSql(normalizedAccountId);
     const dateFilter = buildDateFilterSql(startDate, endDate);
     const scaleSql = buildPnlScaleSql(normalizedAccountId);
     const advancedFiltersSql = buildAdvancedFiltersSql(filters);
 
     const result = await prisma.$queryRaw<IntradayPerformanceRow[]>`
-  SELECT 
+  WITH ${ratesCte}
+  SELECT
     je."exitDate" as "date",
     ((COALESCE(je."pnl", 0) + COALESCE(je."commission", 0) + COALESCE(je."swap", 0)) * ${scaleSql}) as "pnl"
   FROM "journal_entries" je
-  ${accountJoin}
+  ${ratesJoin}
   WHERE je."userId" = ${userId}::uuid
     AND je."status" = 'CLOSED'
     AND je."exitDate" IS NOT NULL
@@ -518,20 +548,22 @@ export async function getSymbolPerformance(
 ) {
     const normalizedAccountId = normalizeAccountIdParam(accountId);
     const accountFilter = buildAccountFilterSql(normalizedAccountId);
-    const accountJoin = buildAccountJoinSql(normalizedAccountId);
+    const ratesCte = buildRatesCteSql(userId);
+    const ratesJoin = buildRatesJoinSql(normalizedAccountId);
     const dateFilter = buildDateFilterSql(startDate, endDate);
     const scaleSql = buildPnlScaleSql(normalizedAccountId);
     const advancedFiltersSql = buildAdvancedFiltersSql(filters);
 
     const result = await prisma.$queryRaw<SymbolPerformanceRow[]>`
-  WITH scoped AS (
+  WITH ${ratesCte},
+  scoped AS (
     SELECT
       je."symbol",
       je."type",
       je."result",
       ((COALESCE(je."pnl", 0) + COALESCE(je."commission", 0) + COALESCE(je."swap", 0)) * ${scaleSql}) AS "scaledNetPnl"
     FROM "journal_entries" je
-    ${accountJoin}
+    ${ratesJoin}
     WHERE je."userId" = ${userId}::uuid
       AND je."status" = 'CLOSED'
       ${accountFilter}
@@ -617,7 +649,8 @@ export async function getTopTrades(
 ) {
     const normalizedAccountId = normalizeAccountIdParam(accountId);
     const accountFilter = buildAccountFilterSql(normalizedAccountId);
-    const accountJoin = buildAccountJoinSql(normalizedAccountId);
+    const ratesCte = buildRatesCteSql(userId);
+    const ratesJoin = buildRatesJoinSql(normalizedAccountId);
     const dateFilter = buildDateFilterSql(startDate, endDate);
     const scaleSql = buildPnlScaleSql(normalizedAccountId);
     const lotScaleSql = buildLotScaleSql(normalizedAccountId);
@@ -625,6 +658,7 @@ export async function getTopTrades(
 
     const [bestResult, worstResult] = await Promise.all([
         prisma.$queryRaw<TopTradeRow[]>`
+  WITH ${ratesCte}
   SELECT
     je."id",
     je."symbol",
@@ -635,7 +669,7 @@ export async function getTopTrades(
     je."result",
     (COALESCE(je."lotSize", 0) * ${lotScaleSql}) as "lotSize"
   FROM "journal_entries" je
-  ${accountJoin}
+  ${ratesJoin}
   WHERE je."userId" = ${userId}::uuid
     AND je."status" = 'CLOSED'
     ${accountFilter}
@@ -646,6 +680,7 @@ export async function getTopTrades(
   LIMIT 3
   `,
         prisma.$queryRaw<TopTradeRow[]>`
+  WITH ${ratesCte}
   SELECT
     je."id",
     je."symbol",
@@ -656,7 +691,7 @@ export async function getTopTrades(
     je."result",
     (COALESCE(je."lotSize", 0) * ${lotScaleSql}) as "lotSize"
   FROM "journal_entries" je
-  ${accountJoin}
+  ${ratesJoin}
   WHERE je."userId" = ${userId}::uuid
     AND je."status" = 'CLOSED'
     ${accountFilter}
@@ -696,17 +731,19 @@ export async function getLotDistribution(
 ) {
     const normalizedAccountId = normalizeAccountIdParam(accountId);
     const accountFilter = buildAccountFilterSql(normalizedAccountId);
-    const accountJoin = buildAccountJoinSql(normalizedAccountId);
+    const ratesCte = buildRatesCteSql(userId);
+    const ratesJoin = buildRatesJoinSql(normalizedAccountId);
     const dateFilter = buildDateFilterSql(startDate, endDate);
     const lotScaleSql = buildLotScaleSql(normalizedAccountId);
     const advancedFiltersSql = buildAdvancedFiltersSql(filters);
 
     const result = await prisma.$queryRaw<LotDistributionRow[]>`
-  SELECT 
+  WITH ${ratesCte}
+  SELECT
     je."symbol",
     SUM(COALESCE(je."lotSize", 0) * ${lotScaleSql}) as "totalLots"
   FROM "journal_entries" je
-  ${accountJoin}
+  ${ratesJoin}
   WHERE je."userId" = ${userId}::uuid
     AND je."status" = 'CLOSED'
     ${accountFilter}
@@ -738,18 +775,20 @@ export async function getDayOfWeekPerformance(
     const normalizedAccountId = normalizeAccountIdParam(accountId);
     const tz = timezone || "Etc/UTC";
     const accountFilter = buildAccountFilterSql(normalizedAccountId);
-    const accountJoin = buildAccountJoinSql(normalizedAccountId);
+    const ratesCte = buildRatesCteSql(userId);
+    const ratesJoin = buildRatesJoinSql(normalizedAccountId);
     const dateFilter = buildDateFilterSql(startDate, endDate);
     const scaleSql = buildPnlScaleSql(normalizedAccountId);
     const advancedFiltersSql = buildAdvancedFiltersSql(filters);
 
     const result = await prisma.$queryRaw<DayOfWeekRow[]>`
-  WITH scoped AS (
+  WITH ${ratesCte},
+  scoped AS (
     SELECT
       EXTRACT(DOW FROM je."exitDate" AT TIME ZONE ${tz}) as "dayIndex",
       ((COALESCE(je."pnl", 0) + COALESCE(je."commission", 0) + COALESCE(je."swap", 0)) * ${scaleSql}) AS "scaledNetPnl"
     FROM "journal_entries" je
-    ${accountJoin}
+    ${ratesJoin}
     WHERE je."userId" = ${userId}::uuid
       AND je."status" = 'CLOSED'
       ${accountFilter}
@@ -847,13 +886,15 @@ export async function getSessionPerformance(
 ) {
     const normalizedAccountId = normalizeAccountIdParam(accountId);
     const accountFilter = buildAccountFilterSql(normalizedAccountId);
-    const accountJoin = buildAccountJoinSql(normalizedAccountId);
+    const ratesCte = buildRatesCteSql(userId);
+    const ratesJoin = buildRatesJoinSql(normalizedAccountId);
     const dateFilter = buildDateFilterSql(startDate, endDate);
     const scaleSql = buildPnlScaleSql(normalizedAccountId);
     const advancedFiltersSql = buildAdvancedFiltersSql(filters);
 
     const result = await prisma.$queryRaw<SessionPerformanceRow[]>`
-  SELECT 
+  WITH ${ratesCte}
+  SELECT
     CASE 
       WHEN EXTRACT(HOUR FROM je."entryDate") >= 21 OR EXTRACT(HOUR FROM je."entryDate") < 6 THEN 'Sydney'
       WHEN EXTRACT(HOUR FROM je."entryDate") >= 0 AND EXTRACT(HOUR FROM je."entryDate") < 9 THEN 'Tokyo'
@@ -867,7 +908,7 @@ export async function getSessionPerformance(
     COUNT(*) FILTER (WHERE je."result" = 'LOSS') as "lossCount",
     COUNT(*) FILTER (WHERE je."result" IN ('BREAK_EVEN', 'BE_PLUS')) as "breakEvenCount"
   FROM "journal_entries" je
-  ${accountJoin}
+  ${ratesJoin}
   WHERE je."userId" = ${userId}::uuid
     AND je."status" = 'CLOSED'
     AND je."entryDate" IS NOT NULL

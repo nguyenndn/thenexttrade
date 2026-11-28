@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import {
     buildPnlScaleSql,
+    buildRatesCteSql,
+    buildRatesJoinSql,
     getKeyStats,
     getDayOfWeekPerformance,
     getSymbolPerformance,
@@ -93,17 +95,17 @@ async function getSessionPerformance(
     const accountFilter = normalizedAccountId
         ? Prisma.sql`AND je."accountId" = ${normalizedAccountId}`
         : Prisma.empty;
-    const accountJoin = normalizedAccountId
-        ? Prisma.empty
-        : Prisma.sql`LEFT JOIN "trading_accounts" ta ON ta."id" = je."accountId"`;
+    const ratesCte = buildRatesCteSql(userId);
+    const ratesJoin = buildRatesJoinSql(normalizedAccountId);
 
     const result = await prisma.$queryRaw`
-  WITH scoped AS (
+  WITH ${ratesCte},
+  scoped AS (
     SELECT
       je."trading_session" as "session",
       ((COALESCE(je."pnl", 0) + COALESCE(je."commission", 0) + COALESCE(je."swap", 0)) * ${scaleSql}) AS "scaledNetPnl"
     FROM "journal_entries" je
-    ${accountJoin}
+    ${ratesJoin}
     WHERE je."userId" = ${userId}::uuid
       AND je."status" = 'CLOSED'
       AND je."trading_session" IS NOT NULL

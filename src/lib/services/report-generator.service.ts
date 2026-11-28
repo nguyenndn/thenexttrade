@@ -1,6 +1,11 @@
 import { prisma } from "@/lib/prisma";
 import { Prisma, ReportType } from "@prisma/client";
 import { getMistakeByCode } from "@/lib/mistakes";
+import {
+    buildPnlScaleSql,
+    buildRatesCteSql,
+    buildRatesJoinSql,
+} from "@/lib/analytics-queries";
 
 // ============================================================================
 // REPORT GENERATOR SERVICE
@@ -153,37 +158,6 @@ function buildAccountFilterSql(accountId: string | undefined): Prisma.Sql {
         : Prisma.empty;
 }
 
-function buildPnlScaleSql(accountId: string | undefined): Prisma.Sql {
-    if (accountId) {
-        return Prisma.sql`1.0`;
-    }
-    return Prisma.sql`(CASE
-        WHEN UPPER(COALESCE(ta."currency", '')) IN ('USC','USCENT','USDCENT','US_CENT','USDT_CENT','CENT') THEN 0.01
-        WHEN UPPER(COALESCE(ta."currency", '')) IN ('EUC','EURC','EURCENT','EU_CENT','EUR_CENT') THEN 0.0108
-        WHEN UPPER(COALESCE(ta."currency", '')) IN ('GBC','GBPC','GBPCENT','GB_CENT','GBP_CENT') THEN 0.0128
-        WHEN UPPER(COALESCE(ta."currency", '')) IN ('JPC','JPYC','JPYCENT') THEN 0.000067
-        WHEN UPPER(COALESCE(ta."currency", '')) IN ('AUC','AUDC','AUDCENT') THEN 0.0065
-        WHEN UPPER(COALESCE(ta."currency", '')) IN ('CAC','CADC','CADCENT') THEN 0.0073
-        WHEN UPPER(COALESCE(ta."currency", '')) IN ('CHC','CHFC','CHFCENT') THEN 0.0113
-        WHEN UPPER(COALESCE(ta."currency", '')) IN ('NZC','NZDC','NZDCENT') THEN 0.006
-        WHEN COALESCE(ta."server", '') ILIKE '%cent%' OR COALESCE(ta."account_type", '') ILIKE '%cent%' THEN
-            CASE
-                WHEN UPPER(COALESCE(ta."currency", '')) = 'EUR' THEN 0.0108
-                WHEN UPPER(COALESCE(ta."currency", '')) = 'GBP' THEN 0.0128
-                ELSE 0.01
-            END
-        WHEN UPPER(COALESCE(ta."currency", '')) = 'EUR' THEN 1.08
-        WHEN UPPER(COALESCE(ta."currency", '')) = 'GBP' THEN 1.28
-        WHEN UPPER(COALESCE(ta."currency", '')) = 'JPY' THEN 0.0067
-        WHEN UPPER(COALESCE(ta."currency", '')) = 'AUD' THEN 0.65
-        WHEN UPPER(COALESCE(ta."currency", '')) = 'CAD' THEN 0.73
-        WHEN UPPER(COALESCE(ta."currency", '')) = 'CHF' THEN 1.13
-        WHEN UPPER(COALESCE(ta."currency", '')) = 'NZD' THEN 0.60
-        WHEN UPPER(COALESCE(ta."currency", '')) = 'SGD' THEN 0.76
-        ELSE 1.0
-    END)`;
-}
-
 interface CoreStatsRow {
     totalTrades: number | bigint | null;
     winCount: number | bigint | null;
@@ -225,15 +199,18 @@ async function getCoreStats(
     end: Date
 ) {
     const accountFilter = buildAccountFilterSql(accountId);
+    const ratesCte = buildRatesCteSql(userId);
+    const ratesJoin = buildRatesJoinSql(accountId);
     const scaleSql = buildPnlScaleSql(accountId);
 
     const result = await prisma.$queryRaw<CoreStatsRow[]>`
-  WITH scoped AS (
+  WITH ${ratesCte},
+  scoped AS (
     SELECT
       je."result",
       ((COALESCE(je."pnl", 0) + COALESCE(je."commission", 0) + COALESCE(je."swap", 0)) * ${scaleSql}) AS "scaledNetPnl"
     FROM "journal_entries" je
-    LEFT JOIN "trading_accounts" ta ON ta."id" = je."accountId"
+    ${ratesJoin}
     WHERE je."userId" = ${userId}::uuid
       AND je."status" = 'CLOSED'
       AND je."exitDate" >= ${start}
@@ -293,16 +270,19 @@ async function getSymbolBreakdown(
     end: Date
 ): Promise<BreakdownItem[]> {
     const accountFilter = buildAccountFilterSql(accountId);
+    const ratesCte = buildRatesCteSql(userId);
+    const ratesJoin = buildRatesJoinSql(accountId);
     const scaleSql = buildPnlScaleSql(accountId);
 
     const result = await prisma.$queryRaw<BreakdownRow[]>`
+  WITH ${ratesCte}
   SELECT 
     je."symbol" as "name",
     COUNT(*) as "trades",
     SUM((COALESCE(je."pnl", 0) + COALESCE(je."commission", 0) + COALESCE(je."swap", 0)) * ${scaleSql}) as "pnl",
     SUM(CASE WHEN je."result" = 'WIN' THEN 1 ELSE 0 END) as "wins"
   FROM "journal_entries" je
-  LEFT JOIN "trading_accounts" ta ON ta."id" = je."accountId"
+  ${ratesJoin}
   WHERE je."userId" = ${userId}::uuid
     AND je."status" = 'CLOSED'
     AND je."exitDate" >= ${start} AND je."exitDate" <= ${end}
@@ -329,16 +309,19 @@ async function getStrategyBreakdown(
     end: Date
 ): Promise<BreakdownItem[]> {
     const accountFilter = buildAccountFilterSql(accountId);
+    const ratesCte = buildRatesCteSql(userId);
+    const ratesJoin = buildRatesJoinSql(accountId);
     const scaleSql = buildPnlScaleSql(accountId);
 
     const result = await prisma.$queryRaw<BreakdownRow[]>`
+  WITH ${ratesCte}
   SELECT 
     COALESCE(je."strategy", 'No Strategy') as "name",
     COUNT(*) as "trades",
     SUM((COALESCE(je."pnl", 0) + COALESCE(je."commission", 0) + COALESCE(je."swap", 0)) * ${scaleSql}) as "pnl",
     SUM(CASE WHEN je."result" = 'WIN' THEN 1 ELSE 0 END) as "wins"
   FROM "journal_entries" je
-  LEFT JOIN "trading_accounts" ta ON ta."id" = je."accountId"
+  ${ratesJoin}
   WHERE je."userId" = ${userId}::uuid
     AND je."status" = 'CLOSED'
     AND je."exitDate" >= ${start} AND je."exitDate" <= ${end}
@@ -365,16 +348,19 @@ async function getSessionBreakdown(
     end: Date
 ): Promise<BreakdownItem[]> {
     const accountFilter = buildAccountFilterSql(accountId);
+    const ratesCte = buildRatesCteSql(userId);
+    const ratesJoin = buildRatesJoinSql(accountId);
     const scaleSql = buildPnlScaleSql(accountId);
 
     const result = await prisma.$queryRaw<BreakdownRow[]>`
+  WITH ${ratesCte}
   SELECT 
     COALESCE(je."trading_session", 'Unknown') as "name",
     COUNT(*) as "trades",
     SUM((COALESCE(je."pnl", 0) + COALESCE(je."commission", 0) + COALESCE(je."swap", 0)) * ${scaleSql}) as "pnl",
     SUM(CASE WHEN je."result" = 'WIN' THEN 1 ELSE 0 END) as "wins"
   FROM "journal_entries" je
-  LEFT JOIN "trading_accounts" ta ON ta."id" = je."accountId"
+  ${ratesJoin}
   WHERE je."userId" = ${userId}::uuid
     AND je."status" = 'CLOSED'
     AND je."exitDate" >= ${start} AND je."exitDate" <= ${end}
@@ -401,16 +387,19 @@ async function getDirectionBreakdown(
     end: Date
 ): Promise<BreakdownItem[]> {
     const accountFilter = buildAccountFilterSql(accountId);
+    const ratesCte = buildRatesCteSql(userId);
+    const ratesJoin = buildRatesJoinSql(accountId);
     const scaleSql = buildPnlScaleSql(accountId);
 
     const result = await prisma.$queryRaw<BreakdownRow[]>`
+  WITH ${ratesCte}
   SELECT 
     je."type"::text as "name",
     COUNT(*) as "trades",
     SUM((COALESCE(je."pnl", 0) + COALESCE(je."commission", 0) + COALESCE(je."swap", 0)) * ${scaleSql}) as "pnl",
     SUM(CASE WHEN je."result" = 'WIN' THEN 1 ELSE 0 END) as "wins"
   FROM "journal_entries" je
-  LEFT JOIN "trading_accounts" ta ON ta."id" = je."accountId"
+  ${ratesJoin}
   WHERE je."userId" = ${userId}::uuid
     AND je."status" = 'CLOSED'
     AND je."exitDate" >= ${start} AND je."exitDate" <= ${end}
@@ -438,15 +427,18 @@ async function getDailyBreakdown(
     timezone: string
 ): Promise<{ date: string; trades: number; pnl: number }[]> {
     const accountFilter = buildAccountFilterSql(accountId);
+    const ratesCte = buildRatesCteSql(userId);
+    const ratesJoin = buildRatesJoinSql(accountId);
     const scaleSql = buildPnlScaleSql(accountId);
 
     const result = await prisma.$queryRaw<DailyBreakdownRow[]>`
+  WITH ${ratesCte}
   SELECT 
     TO_CHAR(je."exitDate" AT TIME ZONE ${timezone}, 'YYYY-MM-DD') as "date",
     COUNT(*) as "trades",
     SUM((COALESCE(je."pnl", 0) + COALESCE(je."commission", 0) + COALESCE(je."swap", 0)) * ${scaleSql}) as "pnl"
   FROM "journal_entries" je
-  LEFT JOIN "trading_accounts" ta ON ta."id" = je."accountId"
+  ${ratesJoin}
   WHERE je."userId" = ${userId}::uuid
     AND je."status" = 'CLOSED'
     AND je."exitDate" >= ${start} AND je."exitDate" <= ${end}
@@ -580,16 +572,19 @@ async function getBestWorstTrades(
     end: Date
 ): Promise<{ best: TradeSnippet[]; worst: TradeSnippet[] }> {
     const accountFilter = buildAccountFilterSql(accountId);
+    const ratesCte = buildRatesCteSql(userId);
+    const ratesJoin = buildRatesJoinSql(accountId);
     const scaleSql = buildPnlScaleSql(accountId);
 
     const [bestResult, worstResult] = await Promise.all([
         prisma.$queryRaw<TradeSnippetRow[]>`
+  WITH ${ratesCte}
   SELECT
     je."symbol",
     ((COALESCE(je."pnl", 0) + COALESCE(je."commission", 0) + COALESCE(je."swap", 0)) * ${scaleSql}) as "pnl",
     je."exitDate"
   FROM "journal_entries" je
-  LEFT JOIN "trading_accounts" ta ON ta."id" = je."accountId"
+  ${ratesJoin}
   WHERE je."userId" = ${userId}::uuid AND je."status" = 'CLOSED'
     AND je."exitDate" >= ${start} AND je."exitDate" <= ${end}
     ${accountFilter}
@@ -597,12 +592,13 @@ async function getBestWorstTrades(
   LIMIT 3
   `,
         prisma.$queryRaw<TradeSnippetRow[]>`
+  WITH ${ratesCte}
   SELECT
     je."symbol",
     ((COALESCE(je."pnl", 0) + COALESCE(je."commission", 0) + COALESCE(je."swap", 0)) * ${scaleSql}) as "pnl",
     je."exitDate"
   FROM "journal_entries" je
-  LEFT JOIN "trading_accounts" ta ON ta."id" = je."accountId"
+  ${ratesJoin}
   WHERE je."userId" = ${userId}::uuid AND je."status" = 'CLOSED'
     AND je."exitDate" >= ${start} AND je."exitDate" <= ${end}
     ${accountFilter}
