@@ -9,8 +9,10 @@ interface DisciplineCockpitProps {
 export function DisciplineCockpit({
     isLoggedIn = false,
 }: DisciplineCockpitProps) {
+    // No backdrop-blur on the card: bg-white/90 made it invisible, while the
+    // blur cost ~1s of above-the-fold paint on a throttled mobile CPU.
     return (
-        <div className="relative isolate overflow-hidden rounded-xl border border-gray-200 dark:border-white/10 bg-white/90 dark:bg-[#0D111C] backdrop-blur-2xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.08)] dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)]">
+        <div className="relative isolate overflow-hidden rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0D111C] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.08)] dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)]">
             {/* Ambient Subtle Warm Depth */}
             <div className="pointer-events-none absolute -left-20 -top-20 h-64 w-64 rounded-full bg-gold/[0.04] blur-[80px]" />
 

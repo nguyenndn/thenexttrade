@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { CheckCircle2, ShieldCheck, Zap } from "lucide-react";
 
 export function PreviewConnectView() {
@@ -23,7 +24,10 @@ export function PreviewConnectView() {
                         </div>
 
                         <div className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-500/15 dark:bg-emerald-500/15 border border-emerald-500/35 flex items-center justify-center shadow-xs shrink-0">
-                            <img
+                            {/* next/image: the source logo is a 1.1MB 1024px
+                                PNG; served raw it was the largest transfer on
+                                the homepage and pushed FCP/LCP back. */}
+                            <Image
                                 src="/images/logo_thenexttrade_brain.png"
                                 alt=""
                                 width={20}
