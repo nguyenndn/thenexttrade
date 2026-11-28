@@ -10,6 +10,7 @@ import {
 } from "date-fns";
 import {
     convertToUsdEquivalent,
+    getCurrencyInfo,
     normalizeCurrencyCode,
 } from "@/lib/utils/cent-account";
 
@@ -132,12 +133,16 @@ export async function GET(request: NextRequest) {
         ]);
 
         const isMultiAccount = !normalizedAccountId;
+        // Aggregate in full precision: scale each trade by the account's USD
+        // rate without rounding, and round only when building the response.
+        // Per-trade rounding here made these totals drift from the dashboard
+        // aggregates (getKeyStats) on multi-account Cent/FX portfolios.
         const scaleAmount = (
             val: number,
             acc?: { currency?: string | null; server?: string | null } | null
         ) =>
             isMultiAccount
-                ? convertToUsdEquivalent(val, acc?.currency, acc?.server)
+                ? val * getCurrencyInfo(acc?.currency, acc?.server).usdRate
                 : val;
 
         const getNetPnl = (t: {

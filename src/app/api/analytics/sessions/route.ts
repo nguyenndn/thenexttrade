@@ -116,17 +116,14 @@ export async function GET(request: NextRequest) {
         // ── Aggregation runs in Postgres ────────────────────────────────────
         // This route used to stream every closed trade in range into Node just
         // to group it. The CTE below reproduces the previous Node pipeline:
-        // `net_pnl` is ROUND(ROUND(pnl + commission + swap, 4) × usdRate, 2),
-        // the USD rate applies only in all-accounts mode (a single account is
-        // reported in its own currency) and defaults to 1 for trades without an
-        // account.
+        // `net_pnl` is ROUND(pnl + commission + swap, 4) × usdRate, the USD
+        // rate applies only in all-accounts mode (a single account is reported
+        // in its own currency) and defaults to 1 for trades without an account.
         //
-        // Known difference: JS `toFixed` rounds on the binary value with ties
-        // toward +∞, while `ROUND(numeric, n)` rounds the decimal value with
-        // ties away from zero. A converted trade whose net lands exactly on a
-        // half cent (e.g. 98.50 cents × 0.01 = 0.985) can therefore differ by
-        // 0.01 from the old output. Measured on broker-shaped data: ~0.1% of
-        // trades, session totals off by at most a cent. Accepted trade-off.
+        // Totals are summed at full precision and rounded only at display time,
+        // matching the dashboard aggregates (getKeyStats). Win/loss use the
+        // same ±0.01 threshold as the dashboard so a $0.01 trade is a break-even
+        // everywhere instead of a win here and a break-even on the dashboard.
         const conditions: Prisma.Sql[] = [
             Prisma.sql`je."userId" = ${user.id}::uuid`,
             Prisma.sql`je."status" = 'CLOSED'`,
@@ -179,16 +176,13 @@ export async function GET(request: NextRequest) {
                     CASE
                         WHEN je."pnl" IS NULL THEN NULL
                         ELSE ROUND(
-                            ROUND(
-                                (
-                                    je."pnl"
-                                    + COALESCE(je."commission", 0)
-                                    + COALESCE(je."swap", 0)
-                                )::numeric,
-                                4
-                            ) * (${rateExpr})::numeric,
-                            2
-                        )
+                            (
+                                je."pnl"
+                                + COALESCE(je."commission", 0)
+                                + COALESCE(je."swap", 0)
+                            )::numeric,
+                            4
+                        ) * (${rateExpr})::numeric
                     END AS net_pnl
                 FROM "journal_entries" je
                 ${rateJoin}
@@ -217,11 +211,11 @@ export async function GET(request: NextRequest) {
                 SELECT
                     "session",
                     COUNT(*)::int AS "totalTrades",
-                    COUNT(*) FILTER (WHERE net_pnl > 0)::int AS "winCount",
-                    COUNT(*) FILTER (WHERE net_pnl < 0)::int AS "lossCount",
+                    COUNT(*) FILTER (WHERE net_pnl > 0.01)::int AS "winCount",
+                    COUNT(*) FILTER (WHERE net_pnl < -0.01)::int AS "lossCount",
                     COALESCE(SUM(net_pnl), 0)::float8 AS "totalPnL",
-                    COALESCE(SUM(net_pnl) FILTER (WHERE net_pnl > 0), 0)::float8 AS "grossProfit",
-                    COALESCE(SUM(-net_pnl) FILTER (WHERE net_pnl < 0), 0)::float8 AS "grossLoss"
+                    COALESCE(SUM(net_pnl) FILTER (WHERE net_pnl > 0.01), 0)::float8 AS "grossProfit",
+                    COALESCE(SUM(-net_pnl) FILTER (WHERE net_pnl < -0.01), 0)::float8 AS "grossLoss"
                 FROM scoped
                 GROUP BY "session"
             `),
@@ -237,7 +231,7 @@ export async function GET(request: NextRequest) {
                 SELECT
                     utc_h AS "hour",
                     COUNT(*)::int AS "totalTrades",
-                    COUNT(*) FILTER (WHERE net_pnl > 0)::int AS "winCount",
+                    COUNT(*) FILTER (WHERE net_pnl > 0.01)::int AS "winCount",
                     COALESCE(SUM(net_pnl), 0)::float8 AS "totalPnL"
                 FROM scoped
                 GROUP BY utc_h

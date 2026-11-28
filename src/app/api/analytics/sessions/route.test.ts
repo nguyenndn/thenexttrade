@@ -92,6 +92,24 @@ describe("Session Analytics API Route - SQL aggregation contract", () => {
         expect(sqlText(sessionQuery)).not.toContain("tradingSession");
     });
 
+    it("keeps net_pnl at full precision and classifies wins/losses at ±0.01", async () => {
+        const req = new NextRequest("http://localhost:3000/api/analytics/sessions");
+        await GET(req);
+
+        const [sessionQuery, hourQuery] = sqlCalls();
+        for (const call of [sessionQuery, hourQuery]) {
+            expect(sqlText(call)).toContain("net_pnl > 0.01");
+        }
+        expect(sqlText(sessionQuery)).toContain("net_pnl < -0.01");
+        // Totals are summed at full precision; the only rounding left is the
+        // per-trade ROUND(..., 4) that keeps float noise from flipping a
+        // break-even. A ROUND(SUM(...)) would reintroduce display rounding here.
+        const text = sqlText(sessionQuery);
+        expect(text).toContain("ROUND(");
+        expect(text).toMatch(/ROUND\(\s*\(/);
+        expect(text).not.toMatch(/ROUND\(\s*(COALESCE\(\s*)?SUM\(/);
+    });
+
     it("scopes both aggregates to the authenticated user and CLOSED trades", async () => {
         const req = new NextRequest(
             "http://localhost:3000/api/analytics/sessions?accountId=acc-usd"

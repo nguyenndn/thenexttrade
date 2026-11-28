@@ -60,7 +60,7 @@ export interface CurrencyDisplayInfo {
     usdRate: number;
 }
 
-const CURRENCY_METADATA: Record<string, CurrencyDisplayInfo> = {
+export const CURRENCY_METADATA: Record<string, CurrencyDisplayInfo> = {
     USD: { code: "USD", symbol: "$", label: "USD ($)", isCent: false, usdRate: 1.0 },
     USDT: { code: "USDT", symbol: "$", label: "USDT ($)", isCent: false, usdRate: 1.0 },
     USDC: { code: "USDC", symbol: "$", label: "USDC ($)", isCent: false, usdRate: 1.0 },
