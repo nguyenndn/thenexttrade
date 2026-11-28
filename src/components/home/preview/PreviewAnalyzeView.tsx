@@ -45,9 +45,9 @@ export function PreviewAnalyzeView() {
                     </span>
                 </div>
 
-                <div className="h-16 sm:h-20 flex-1 w-full relative mt-1 flex items-end">
+                <div className="h-28 sm:h-32 shrink-0 w-full relative mt-1">
                     <svg
-                        className="w-full h-full overflow-visible"
+                        className="absolute inset-0 w-full h-full overflow-visible"
                         viewBox="0 0 300 100"
                         preserveAspectRatio="none"
                     >
