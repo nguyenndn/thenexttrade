@@ -1,28 +1,30 @@
 "use client";
 
-import type { SystemSetupStep } from "@/config/trading-systems-data";
+import type { SystemData, SystemSetupStep } from "@/config/trading-systems-data";
 import { Mt5WebRequestUrlList } from "@/components/trading-accounts/Mt5WebRequestUrlList";
 
 interface SystemDetailInstallSectionProps {
     setupSteps?: SystemSetupStep[];
+    webRequestServers?: SystemData["webRequestServers"];
 }
 
 export function SystemDetailInstallSection({
     setupSteps,
+    webRequestServers,
 }: SystemDetailInstallSectionProps) {
     return (
         <div className="space-y-2 md:space-y-6">
             {/* WebRequest Whitelist Quick Copy */}
             <div className="rounded-xl border border-dashboard dark:border-white/[0.08] p-3.5 sm:p-5 bg-gray-50/40 dark:bg-[#151925]">
                 <h4 className="text-xs font-bold uppercase tracking-wider text-gray-800 dark:text-white mb-1">
-                    MT5 WebRequest Whitelist (Main + Backup Servers)
+                    MT5 WebRequest Whitelist
                 </h4>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mb-3 leading-relaxed">
                     In MetaTrader 5 (Tools &rarr; Options &rarr; Expert Advisors),
                     enable &ldquo;Allow WebRequest for listed URL&rdquo; and add
-                    all 3 URLs below:
+                    the URLs below for this EA release:
                 </p>
-                <Mt5WebRequestUrlList compact />
+                <Mt5WebRequestUrlList compact servers={webRequestServers} />
             </div>
 
             {/* EA-Specific Setup Checklist */}

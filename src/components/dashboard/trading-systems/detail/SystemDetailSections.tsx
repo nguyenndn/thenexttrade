@@ -66,6 +66,7 @@ export function SystemDetailSections({
         return (
             <SystemDetailInstallSection
                 setupSteps={system?.setupSteps}
+                webRequestServers={system?.webRequestServers}
             />
         );
     }
@@ -79,8 +80,8 @@ export function SystemDetailSections({
     }
 
     const overviewParagraphs = extractDescriptionParagraphs(
-        productDescription,
-        system?.description
+        system?.longDescription || system?.description || productDescription,
+        productDescription || undefined
     );
 
     return (

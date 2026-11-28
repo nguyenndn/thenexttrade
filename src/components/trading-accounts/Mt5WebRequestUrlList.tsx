@@ -6,18 +6,20 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import { getMt5WebRequestServers } from "@/lib/sync/sync-urls";
+import type { Mt5WebRequestServerEntry } from "@/lib/sync/sync-urls";
 
 interface Mt5WebRequestUrlListProps {
     className?: string;
     compact?: boolean;
+    servers?: Mt5WebRequestServerEntry[];
 }
 
 export function Mt5WebRequestUrlList({
     className,
     compact = false,
+    servers = getMt5WebRequestServers(),
 }: Mt5WebRequestUrlListProps) {
     const [copiedId, setCopiedId] = useState<string | null>(null);
-    const servers = getMt5WebRequestServers();
 
     const handleCopy = (id: string, url: string) => {
         navigator.clipboard.writeText(url);

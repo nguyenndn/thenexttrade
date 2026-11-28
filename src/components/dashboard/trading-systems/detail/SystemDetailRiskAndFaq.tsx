@@ -25,9 +25,9 @@ export function SystemDetailRiskSection({
                     <p className="text-xs text-gray-700 dark:text-gray-300 leading-relaxed">
                         Algorithmic trading entails capital risk. Always test
                         this EA on a demo account first to understand its
-                        drawdown profile, basket dynamics, and lot sizing before
-                        deploying live capital. Never disable hard equity
-                        stop-loss limits.
+                        execution, drawdown, and lot sizing before deploying
+                        live capital. Configure the loss limits available in
+                        your EA; some protections are disabled by default.
                     </p>
                 </div>
             </div>
@@ -43,8 +43,9 @@ export function SystemDetailRiskSection({
                     </p>
                     <p className="text-[11px] text-gray-600 dark:text-gray-300 mt-1 leading-relaxed">
                         For automated Expert Advisors, running on a low-latency
-                        Virtual Private Server ensures 24/7 uptime without risk
-                        of home internet drops or power interruptions.
+                        Virtual Private Server helps keep trade management
+                        running when your computer is offline. Monitor terminal
+                        connectivity, broker execution, and VPS uptime.
                     </p>
                 </div>
             </div>
